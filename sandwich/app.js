@@ -1,9 +1,9 @@
 (function () {
-  var P = "dinner_";
+  var P = "sandwich_";
   var KIDS = ["lia", "daniela", "evyatar"];
   var DISHES = ["חומוס ומלפפון חמוץ", "חומוס ופסטרמה", "חומוס וסלמי", "גבינה לבנה", "גבינת נפוליאון", "חומוס",
     "חביתה", "ריבה", "שוקולד", "פיתה זעתר", "טוסט", "סלט ביצים", "טונה", "קוטג"];
-  var cfg = window.DINNER_CONFIG || {};
+  var cfg = window.SANDWICH_CONFIG || {};
   var demo = !(cfg.supabaseUrl && cfg.supabaseAnonKey);
   var app = document.getElementById("app");
   var timer = null;
@@ -13,13 +13,14 @@
   }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]; }); }
 
-  // עד 12:00 מציגים להיום, אחר כך למחר
-  function target() {
+  function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  // ילדים: תמיד הסנדוויץ' של מחר בבוקר.
+  // ליאורי: עד 12:00 רואה את של היום (מה שמכינים עכשיו), אחרי 12:00 את של מחר.
+  function target(forMom) {
     var d = new Date();
-    var tomorrow = d.getHours() >= 12;
+    var tomorrow = !forMom || d.getHours() >= 12;
     if (tomorrow) d.setDate(d.getDate() + 1);
-    var iso = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-    return {iso: iso, label: tomorrow ? "מחר" : "היום"};
+    return {iso: iso(d), label: tomorrow ? "מחר" : "היום"};
   }
 
   // ---- שכבת נתונים ----
@@ -35,7 +36,7 @@
   }
   function getAll(code, date) {
     if (demo) return Promise.resolve(JSON.parse(store("demo_" + date) || "[]"));
-    return rpc("dinner_get", {p_code: code, p_date: date});
+    return rpc("sandwich_get", {p_code: code, p_date: date});
   }
   function setChoice(code, child, date, dish) {
     if (demo) {
@@ -44,7 +45,7 @@
       store("demo_" + date, JSON.stringify(rows));
       return Promise.resolve();
     }
-    return rpc("dinner_set", {p_code: code, p_child: child, p_date: date, p_dish: dish});
+    return rpc("sandwich_set", {p_code: code, p_child: child, p_date: date, p_dish: dish});
   }
 
   // ---- מסכים ----
@@ -60,7 +61,7 @@
       if (!c) return;
       store("code", c);
       // בדיקת קוד מול השרת
-      getAll(c, target().iso).then(function () { screenWho(); }).catch(function (e) {
+      getAll(c, target(false).iso).then(function () { screenWho(); }).catch(function (e) {
         store("code", null);
         screenCode(e.message === "bad code" ? "הקוד לא נכון" : "אין חיבור. נסו שוב");
       });
@@ -88,11 +89,11 @@
   }
 
   function screenPick(child, saved) {
-    var t = target(), code = store("code");
+    var t = target(false), code = store("code");
     getAll(code, t.iso).then(function (rows) {
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && mine.dish;
-      show(topBar() + '<h1>היי ' + CHARACTERS[child].name + '!</h1><p class="sub">מה תרצו לאכול ' + t.label + '?</p>' +
+      show(topBar() + '<h1>היי ' + CHARACTERS[child].name + '!</h1><p class="sub">איזה סנדוויץ\' תרצו לקחת לבית הספר מחר בבוקר?</p>' +
         (saved ? '<div class="ok">נשמר ✔ אפשר לשנות</div>' : cur ? '<div class="ok">בחרתם: <b>' + esc(cur) + '</b></div>' : '') +
         '<div class="grid">' + DISHES.map(function (d, i) {
           return '<button class="card dish' + (d === cur ? " sel" : "") + '" data-i="' + i + '">' + esc(d) + '</button>';
@@ -108,12 +109,12 @@
   }
 
   function screenMom() {
-    var t = target(), code = store("code");
+    var t = target(true), code = store("code");
     function render() {
       getAll(code, t.iso).then(function (rows) {
         var by = {}; rows.forEach(function (r) { by[r.child] = r.dish; });
         var left = KIDS.filter(function (k) { return !by[k]; }).length;
-        var html = topBar() + '<h1>הבחירות ל' + t.label + '</h1><p class="sub">' + (left ? "עוד לא בחרו: " + left : "כולם בחרו 🎉") + '</p>' +
+        var html = topBar() + '<h1>הסנדוויץ\'ים ל' + t.label + ' בבוקר</h1><p class="sub">' + (left ? "עוד לא בחרו: " + left : "כולם בחרו 🎉") + '</p>' +
           KIDS.map(function (k) {
             return '<div class="row ' + (by[k] ? "done" : "wait") + '">' + drawCharacter(k) + '<div><b>' + CHARACTERS[k].name + '</b>' +
               (by[k] ? '<span class="d">' + esc(by[k]) + '</span>' : '<span class="none">עדיין לא בחר/ה</span>') + '</div></div>';
