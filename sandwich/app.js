@@ -35,13 +35,19 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]; }); }
 
   function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
-  // ילדים: תמיד הסנדוויץ' של מחר בבוקר.
-  // ליאורי: עד 12:00 רואה את של היום (מה שמכינים עכשיו), אחרי 12:00 את של מחר.
+  // לימודים ראשון עד שישי, בלי שבת.
+  // ילדים: תמיד היום הבא (שישי וגם שבת מובילים לראשון).
+  // ליאורי: עד 12:00 רואה את היום (מה שמכינים עכשיו), מ-12:00 את היום הבא.
+  function nextSchoolDay(d) {
+    var n = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 12);
+    if (n.getDay() === 6) n.setDate(n.getDate() + 1);
+    return n;
+  }
   function target(forMom) {
-    var d = new Date();
-    var tomorrow = !forMom || d.getHours() >= 12;
-    if (tomorrow) d.setDate(d.getDate() + 1);
-    return {iso: iso(d), label: tomorrow ? "מחר" : "היום"};
+    var now = new Date();
+    var d = (forMom && now.getHours() < 12 && now.getDay() !== 6) ? now : nextSchoolDay(now);
+    var days = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5);
+    return {iso: iso(d), label: days === 0 ? "היום" : days === 1 ? "מחר" : "יום " + DAYS[d.getDay()]};
   }
 
   // ---- שכבת נתונים ----
@@ -75,6 +81,41 @@
     return rpc("sandwich_set", {p_child: child, p_date: date, p_dish: dish});
   }
 
+  // ---- תזכורות (Web Push) ----
+  function pushSupported() { return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window; }
+  function urlB64(b) {
+    var p = "=".repeat((4 - b.length % 4) % 4), raw = atob((b + p).replace(/-/g, "+").replace(/_/g, "/")), out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+  function saveSub(child, sub) {
+    var j = sub.toJSON();
+    return rpc("sandwich_push_save", {p_child: child, p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth});
+  }
+  function pushState() {
+    if (demo || !pushSupported() || Notification.permission !== "granted") return Promise.resolve(null);
+    return navigator.serviceWorker.ready.then(function (reg) { return reg.pushManager.getSubscription(); });
+  }
+  // חשוב: הבקשה לאישור חייבת לצאת ישר מהלחיצה (בלי await לפניה), אחרת iPhone לא יציג אותה.
+  function enablePush(child) {
+    var ask = Notification.requestPermission();
+    return Promise.resolve(ask).then(function (perm) {
+      if (perm !== "granted") throw new Error("denied");
+      return navigator.serviceWorker.ready;
+    }).then(function (reg) {
+      return reg.pushManager.getSubscription().then(function (sub) {
+        return sub || reg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: urlB64(cfg.vapidPublicKey)});
+      });
+    }).then(function (sub) { return saveSub(child, sub); });
+  }
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    if (!t) { t = document.createElement("div"); t.id = "toast"; document.body.appendChild(t); }
+    t.textContent = msg; t.className = "show";
+    clearTimeout(toast.t); toast.t = setTimeout(function () { t.className = ""; }, 6000);
+  }
+  function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1); }
+
   // ---- מסכים ----
   function show(html) { clearInterval(timer); app.className = ""; app.innerHTML = html; window.scrollTo(0, 0); }
   function colorOf(id) { return "--c:" + CHARACTERS[id].color; }
@@ -82,8 +123,8 @@
   // קונפטי קטן מנקודה במסך
   function burst(x, y) {
     if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var set = ["⭐", "🥪", "🍅", "🥒"];
-    for (var i = 0; i < 8; i++) {
+    var set = ["⭐", "✨", "🥪", "🎉", "💛"];
+    for (var i = 0; i < 12; i++) {
       var el = document.createElement("span");
       el.className = "fx"; el.textContent = set[i % set.length];
       el.style.left = x + "px"; el.style.top = y + "px";
@@ -95,6 +136,12 @@
       ], {duration: 600 + Math.random() * 300, easing: "cubic-bezier(.2,.7,.3,1)"});
       anim.onfinish = (function (e) { return function () { e.remove(); }; })(el);
     }
+  }
+
+  function burstFrom(el) {
+    if (!el) return;
+    var r = el.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + r.height / 2);
   }
 
   function screenWho() {
@@ -114,28 +161,58 @@
     if (s) s.onclick = function () { store("who", null); screenWho(); };
   }
 
-  function screenPick(child, saved, at) {
+  function screenPick(child) {
     var t = target(false);
+    var forTxt = t.label === "מחר" ? "למחר" : "ל" + t.label;
     getAll(t.iso).then(function (rows) {
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && mine.dish;
-      var first = !at;
-      show(topBar() + '<div class="greet" style="' + colorOf(child) + '"><div class="pic">' + drawCharacter(child) + '</div>' +
-        '<div class="bubble"><small>היי ' + CHARACTERS[child].name + '!</small><h1>בחירת סנדוויץ\' למחר</h1><p>' + dayLabel(t.iso) + '</p></div></div>' +
-        (cur ? '<div class="ok' + (saved ? " pop" : "") + '" style="' + colorOf(child) + '"><span class="e">' + emoji(cur) + '</span><span>' + (saved ? "נשמר! " : "בחרתם: ") + '<b>' + esc(cur) + '</b> · אפשר לשנות</span></div>' : '<div class="ok idle"><span>לחצו על מנה כדי לבחור</span></div>') +
-        '<div class="grid" style="' + colorOf(child) + '">' + DISHES.map(function (d, i) {
-          return '<button class="dish' + (d.n === cur ? " sel" : "") + '" data-i="' + i + '"><span class="em">' + ico(d.e) + '</span><span class="nm">' + esc(d.n) + '</span></button>';
-        }).join("") + '</div>');
+      show('<header class="phead" style="' + colorOf(child) + '"><div class="ptop">' +
+        (demo ? "" : '<button class="pill" id="bell" type="button">🔔 תזכורות</button>') +
+        '<button class="pill" id="switch" type="button">חזרה לדמויות</button></div>' +
+        '<div class="greet"><div class="pic">' + drawCharacter(child) + '</div>' +
+        '<div class="bubble"><small>היי ' + CHARACTERS[child].name + '!</small><h1>בחירת סנדוויץ\' ' + forTxt + '</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"></div></div></div></header>' +
+        '<div class="plist" style="' + colorOf(child) + '"><div class="grid">' + DISHES.map(function (d, i) {
+          return '<button class="dish" data-i="' + i + '"><span class="em">' + ico(d.e) + '</span><span class="nm">' + esc(d.n) + '</span></button>';
+        }).join("") + '</div></div>');
       app.className = "pick";
       bindSwitch();
-      if (saved && at) burst(at.x, Math.min(at.y, window.innerHeight - 40));
-      Array.prototype.forEach.call(app.querySelectorAll(".dish"), function (b) {
-        b.onclick = function (ev) {
-          var pt = {x: ev.clientX || window.innerWidth / 2, y: ev.clientY || 200};
-          setChoice(child, t.iso, DISHES[b.dataset.i].n).then(function () { screenPick(child, true, pt); })
-            .catch(function () { alert("לא הצלחנו לשמור. נסו שוב"); });
+      var status = document.getElementById("status");
+      var dishes = Array.prototype.slice.call(app.querySelectorAll(".dish"));
+      function paint(saved) {
+        dishes.forEach(function (b) { b.classList.toggle("sel", DISHES[b.dataset.i].n === cur); });
+        status.className = "ok" + (cur ? "" : " idle") + (saved ? " pop" : "");
+        status.innerHTML = cur
+          ? '<span class="e">' + emoji(cur) + '</span><span>' + (saved ? "נשמר! כל הכבוד " : "בחרת: ") + '<b>' + esc(cur) + '</b></span>'
+          : '<span>לחצו על מנה כדי לבחור</span>';
+      }
+      paint(false);
+      dishes.forEach(function (b) {
+        b.onclick = function () {
+          var name = DISHES[b.dataset.i].n;
+          setChoice(child, t.iso, name).then(function () {
+            cur = name; paint(true); burstFrom(status);
+          }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
         };
       });
+      var bell = document.getElementById("bell");
+      if (bell) {
+        pushState().then(function (sub) {
+          if (sub) { bell.textContent = "🔔 תזכורות פעילות ✓"; bell.classList.add("on"); saveSub(child, sub).catch(function () {}); }
+        }).catch(function () {});
+        bell.onclick = function () {
+          if (!pushSupported()) {
+            toast(isIOS() ? "כדי לקבל תזכורות: לחצו על כפתור השיתוף בספארי, בחרו 'הוספה למסך הבית', ופתחו את האפליקציה משם." : "הדפדפן הזה לא תומך בתזכורות.");
+            return;
+          }
+          enablePush(child).then(function () {
+            bell.textContent = "🔔 תזכורות פעילות ✓"; bell.classList.add("on");
+            toast("מעולה! תקבלו תזכורת ב-17:00 וב-19:00 אם עוד לא בחרתם.");
+          }).catch(function (e) {
+            toast(e && e.message === "denied" ? "התזכורות חסומות. אפשר לאשר אותן בהגדרות הטלפון." : "לא הצלחנו להפעיל תזכורות. נסו שוב.");
+          });
+        };
+      }
     }).catch(function () { show('<h1>אין חיבור 📡</h1><button class="main" id="retry">נסו שוב</button>'); document.getElementById("retry").onclick = route; });
   }
 
@@ -147,7 +224,7 @@
         var done = KIDS.filter(function (k) { return by[k]; }).length;
         var all = done === KIDS.length;
         app.innerHTML = topBar() +
-          '<div class="mom-head" style="' + colorOf("mom") + '"><div class="pic">' + drawCharacter("mom") + '</div><div><h1>הסנדוויץ\'ים ל' + t.label + ' בבוקר</h1><p class="sub" style="margin:0">' + done + ' מתוך ' + KIDS.length + ' בחרו</p></div></div>' +
+          '<div class="mom-head" style="' + colorOf("mom") + '"><div class="pic">' + drawCharacter("mom") + '</div><div><h1>הסנדוויץ\'ים של ' + t.label + ' בבוקר</h1><p class="sub" style="margin:0">' + done + ' מתוך ' + KIDS.length + ' בחרו</p></div></div>' +
           '<div class="progress"><i style="width:' + (done / KIDS.length * 100) + '%"></i></div>' +
           (all ? '<div class="all">כולם בחרו 🎉</div>' : '') +
           KIDS.map(function (k) {
@@ -173,6 +250,7 @@
     screenPick(who);
   }
 
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function () {});
   if (demo) document.getElementById("demo").hidden = false;
   route();
 })();
