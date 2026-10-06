@@ -29,10 +29,16 @@
   }
 
   // ---- שכבת נתונים ----
+  // מפתח ישן (anon, מתחיל ב-eyJ) נשלח גם כ-Bearer. מפתח חדש (sb_publishable_...) רק ב-apikey.
+  function authHeaders() {
+    var h = {"Content-Type": "application/json", apikey: cfg.supabaseAnonKey};
+    if (String(cfg.supabaseAnonKey).indexOf("eyJ") === 0) h.Authorization = "Bearer " + cfg.supabaseAnonKey;
+    return h;
+  }
   function rpc(name, body) {
     return fetch(cfg.supabaseUrl + "/rest/v1/rpc/" + name, {
       method: "POST",
-      headers: {"Content-Type": "application/json", apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + cfg.supabaseAnonKey},
+      headers: authHeaders(),
       body: JSON.stringify(body)
     }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error(t.indexOf("bad code") >= 0 ? "bad code" : "שגיאה " + r.status); });
@@ -60,23 +66,23 @@
   // קונפטי קטן מנקודה במסך
   function burst(x, y) {
     if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var set = ["⭐", "🥪", "✨", "🍅", "🥒", "🧀", "💖"];
-    for (var i = 0; i < 16; i++) {
+    var set = ["⭐", "🥪", "🍅", "🥒"];
+    for (var i = 0; i < 8; i++) {
       var el = document.createElement("span");
       el.className = "fx"; el.textContent = set[i % set.length];
       el.style.left = x + "px"; el.style.top = y + "px";
       document.body.appendChild(el);
-      var ang = Math.random() * Math.PI * 2, dist = 70 + Math.random() * 90;
+      var ang = Math.random() * Math.PI * 2, dist = 50 + Math.random() * 60;
       var anim = el.animate([
         {transform: "translate(-50%,-50%) scale(.4)", opacity: 1},
         {transform: "translate(calc(-50% + " + Math.cos(ang) * dist + "px),calc(-50% + " + (Math.sin(ang) * dist - 30) + "px)) scale(1.2) rotate(" + (Math.random() * 360) + "deg)", opacity: 0}
-      ], {duration: 800 + Math.random() * 400, easing: "cubic-bezier(.2,.7,.3,1)"});
+      ], {duration: 600 + Math.random() * 300, easing: "cubic-bezier(.2,.7,.3,1)"});
       anim.onfinish = (function (e) { return function () { e.remove(); }; })(el);
     }
   }
 
   function screenCode(msg) {
-    show('<div class="hero"><div class="mascot">' + drawCharacter("mom") + '</div><h1>סנדוויץ\' לבית הספר 🥪</h1><p class="sub">הקלידו את הקוד המשפחתי</p></div>' +
+    show('<div class="hero"><div class="mascot">' + drawCharacter("mom") + '</div><h1>סנדוויץ\' לבית הספר</h1><p class="sub">הקלידו את הקוד המשפחתי</p></div>' +
       '<input id="code" autocomplete="off" autocapitalize="off"><div class="err">' + (msg || "") + '</div>' +
       '<button class="main" id="go">כניסה</button>');
     var inp = document.getElementById("code");
@@ -94,7 +100,7 @@
   }
 
   function screenWho() {
-    show('<div class="hero"><h1>מי אתם? ✨</h1><p class="sub">לחצו על הדמות שלכם</p></div><div class="who">' +
+    show('<div class="hero"><h1>מי אתם?</h1><p class="sub">לחצו על הדמות שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
       '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom", "face") + '<span><b>ליאורי</b><small>לראות מה כולם בחרו</small></span></button>');
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
@@ -150,7 +156,7 @@
             return '<div class="row ' + (d ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
               (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא בחר/ה…</span>') + '</div>' +
               '<span class="chip ' + (d ? "y" : "n") + '">' + (d ? "בחר/ה ✓" : "ממתין") + '</span></div>';
-          }).join("") + '<button class="main refresh" id="refresh">רענון 🔄</button>';
+          }).join("") + '<button class="main refresh" id="refresh">רענון</button>';
         bindSwitch();
         document.getElementById("refresh").onclick = render;
         if (all && !celebrated) { celebrated = true; burst(window.innerWidth / 2, 160); }

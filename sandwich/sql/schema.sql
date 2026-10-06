@@ -1,5 +1,6 @@
--- מריצים פעם אחת ב-Supabase: SQL Editor -> Run.
--- החליפו את CHANGE_ME בקוד המשפחתי (לפני ההרצה, ולא לשמור אותו במאגר).
+-- שלב 1: מריצים את כל הקובץ הזה פעם אחת ב-Supabase (SQL Editor -> Run).
+-- שלב 2: מריצים שורה נפרדת עם הקוד המשפחתי (לא שומרים אותו במאגר):
+--   insert into sandwich_settings(code) values ('הקוד-שלכם');
 
 create table if not exists sandwich_settings (code text not null);
 create table if not exists sandwich_choices (
@@ -13,9 +14,6 @@ create table if not exists sandwich_choices (
 alter table sandwich_settings enable row level security;
 alter table sandwich_choices enable row level security;
 -- בלי policies: אין גישה ישירה לטבלאות. הגישה רק דרך הפונקציות למטה.
-
-delete from sandwich_settings;
-insert into sandwich_settings(code) values ('CHANGE_ME');
 
 create or replace function sandwich_get(p_code text, p_date date)
 returns table(child text, dish text, updated_at timestamptz)

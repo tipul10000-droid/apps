@@ -1,8 +1,8 @@
 // הדמויות: איורים שקופים (WebP) בתיקיית characters/.
 // full = גוף מלא, face = חיתוך פנים עגול.
 window.CHARACTERS = {
-  lia:     {name: "ליה",    color: "#ff6fb5", color2: "#b57bff"},
-  daniela: {name: "דניאלה", color: "#8fe04a", color2: "#ffd43b"},
+  lia:     {name: "ליה",    color: "#8fe04a", color2: "#ffd43b"},
+  daniela: {name: "דניאלה", color: "#ff6fb5", color2: "#b57bff"},
   evyatar: {name: "אביתר",  color: "#4d9bff", color2: "#ff5a5a"},
   mom:     {name: "ליאורי", color: "#ffa04d", color2: "#ff5f6d"}
 };
