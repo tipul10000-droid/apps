@@ -1,5 +1,6 @@
 (function () {
   var P = "sandwich_";
+  var VERSION = ((document.currentScript && document.currentScript.src || "").split("v=")[1] || "").split("&")[0];
   var KIDS = ["lia", "daniela", "evyatar"];
   var DISHES = [
     {n: "חומוס ומלפפון חמוץ", e: ["hummus", "pickle"]}, {n: "חומוס ופסטרמה", e: ["hummus", "pastrami"]}, {n: "חומוס וסלמי", e: ["hummus", "salami"]},
@@ -123,6 +124,7 @@
       });
     }).then(function (sub) { return saveSub(child, sub); });
   }
+  function bellOn(b) { b.textContent = "תזכורות"; b.classList.remove("off"); b.classList.add("on"); }
   function toast(msg) {
     var t = document.getElementById("toast");
     if (!t) { t = document.createElement("div"); t.id = "toast"; document.body.appendChild(t); }
@@ -155,11 +157,12 @@
 
   // ---- הגדלת דמות למסך מלא ----
   var MAGNIFY = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.2" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M15 15l5.5 5.5" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg>';
-  function zoomBtn(id) { return '<button class="zoom" type="button" data-zoom="' + id + '" aria-label="הגדלת הדמות">' + MAGNIFY + '</button>'; }
+  function zoomBtn() { return '<span class="zoom" aria-hidden="true">' + MAGNIFY + '</span>'; }
+  function picBox(id) { return '<div class="pic" data-zoom="' + id + '" role="button" aria-label="הגדלת הדמות">' + drawCharacter(id) + zoomBtn() + '</div>'; }
   function openZoom(id) {
     var z = document.createElement("div");
     z.id = "zoom"; z.style.cssText = "--c:" + CHARACTERS[id].color;
-    z.innerHTML = '<button class="zx" type="button" aria-label="סגירה">✕</button>' + drawCharacter(id);
+    z.innerHTML = '<button class="zx" type="button" aria-label="סגירה">✕</button>' + drawCharacter(id, "big");
     function close() { z.remove(); document.removeEventListener("keydown", onKey); }
     function onKey(e) { if (e.key === "Escape") close(); }
     z.onclick = close; document.addEventListener("keydown", onKey);
@@ -176,10 +179,15 @@
     burst(r.left + r.width / 2, r.top + r.height / 2);
   }
 
+  // "הצו של אורן": דף עם חותמת אדומה
+  var TZAV = '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 6h30l12 12v38q0 3-3 3H12q-3 0-3-3V9q0-3 3-3z" fill="#fff6dc" stroke="#cdbb86" stroke-width="2.2"/><path d="M42 6v12h12" fill="#eadcae" stroke="#cdbb86" stroke-width="2.2" stroke-linejoin="round"/><path d="M17 26h24M17 33h30M17 40h20" stroke="#b9a66c" stroke-width="2.6" stroke-linecap="round"/><circle cx="42" cy="47" r="12.5" fill="#d92b3a" stroke="#8f1521" stroke-width="2"/><text x="42" y="52.5" text-anchor="middle" font-size="15" font-weight="800" fill="#fff" font-family="Rubik,Arial,sans-serif">צו</text></svg>';
+
   function screenWho() {
-    show('<div class="hero"><h1>בוחרים סנדוויץ\'</h1><p class="sub">בוחרים סנדוויץ\' למחר בבוקר!</p></div><div class="who">' +
+    show('<div class="hero"><h1>בוחרים סנדוויץ\' למחר בבוקר!</h1><p class="sub">לחצו על השם שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
-      '</div><p class="pickhint">לחצו על השם שלכם</p><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>ליאורי</b><small>לראות מה כולם בחרו</small></span></button>');
+      '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>' + CHARACTERS.mom.name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
+      '<footer class="credit"><div class="by">נבנה על ידי אבא אורן <span class="tzav">' + TZAV + '</span></div><div class="ver">גרסה ' + esc(VERSION) + '</div></footer>');
+    app.className = "home";
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
     });
@@ -211,9 +219,9 @@
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && canon(mine.dish);
       show('<header class="phead" style="' + colorOf(child) + '"><div class="ptop">' +
-        (demo ? "" : '<button class="pill" id="bell" type="button">🔔 תזכורות</button>') +
-        '<button class="pill" id="switch" type="button">חזרה למסך הדמויות</button></div>' +
-        '<div class="greet"><div class="pic">' + drawCharacter(child) + zoomBtn(child) + '</div>' +
+        (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות</button>') +
+        '<button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
+        '<div class="greet">' + picBox(child) + '' +
         '<div class="bubble"><small>היי ' + CHARACTERS[child].name + '!</small><h1>בחירת סנדוויץ\' ' + forTxt + '</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"></div></div></div></header>' +
         '<div class="plist" style="' + colorOf(child) + '"><div class="grid">' + DISHES.map(function (d, i) {
           return '<button class="dish" data-i="' + i + '"><span class="em">' + ico(d.e) + '</span><span class="nm">' + esc(d.n) + '</span></button>';
@@ -242,7 +250,7 @@
       var bell = document.getElementById("bell");
       if (bell) {
         pushState().then(function (sub) {
-          if (sub) { bell.textContent = "🔔 תזכורות פעילות ✓"; bell.classList.add("on"); saveSub(child, sub).catch(function () {}); }
+          if (sub) { bellOn(bell); saveSub(child, sub).catch(function () {}); }
         }).catch(function () {});
         bell.onclick = function () {
           if (!pushSupported()) {
@@ -250,7 +258,7 @@
             return;
           }
           enablePush(child).then(function () {
-            bell.textContent = "🔔 תזכורות פעילות ✓"; bell.classList.add("on");
+            bellOn(bell);
             toast("מעולה! תקבלו תזכורת ב-17:00 וב-19:00 אם עוד לא בחרתם.");
           }).catch(function (e) {
             toast(e && e.message === "denied" ? "התזכורות חסומות. אפשר לאשר אותן בהגדרות הטלפון." : "לא הצלחנו להפעיל תזכורות. נסו שוב.");
@@ -262,8 +270,8 @@
 
   function screenMom() {
     var t = target(true), celebrated = false;
-    show('<header class="phead" style="' + colorOf("mom") + '"><div class="ptop"><button class="pill" id="switch" type="button">חזרה למסך הדמויות</button></div>' +
-      '<div class="greet"><div class="pic">' + drawCharacter("mom") + zoomBtn("mom") + '</div>' +
+    show('<header class="phead" style="' + colorOf("mom") + '"><div class="ptop"><button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
+      '<div class="greet">' + picBox("mom") + '' +
       '<div class="bubble"><h1>הסנדוויצ\'ים של ' + t.label + ' בבוקר</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"><span class="tx">טוענים…</span></div></div></div></header>' +
       '<div class="plist" id="rows"></div>');
     app.className = "pick";

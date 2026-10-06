@@ -106,7 +106,6 @@ button.main:active{transform:scale(.97)}
 .pair{display:inline-flex;align-items:center;gap:.08em}
 .pair svg{width:.82em;height:.82em}
 .pickhint{text-align:center;color:var(--muted);font-size:16px;margin:14px 0 0}
-.pickhint + .mom-card{margin-top:96px}
 
 /* מסך בחירת מנה: סרגל עליון קבוע (כרבע עד שליש מסך), ורק רשימת המנות נגללת */
 main.pick{height:100vh;height:100dvh;display:flex;flex-direction:column;padding:0;overflow:hidden;max-width:480px}
@@ -134,7 +133,6 @@ main.pick{height:100vh;height:100dvh;display:flex;flex-direction:column;padding:
 #toast{position:fixed;left:14px;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;max-width:452px;margin:0 auto;background:#fff;color:#1b1340;font-size:15px;font-weight:600;line-height:1.35;padding:12px 14px;border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.5);opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s}
 #toast.show{opacity:1;transform:none}
 
-#ver{position:fixed;bottom:3px;right:8px;z-index:1;font-size:10px;color:rgba(255,255,255,.28);pointer-events:none}
 
 /* סיבוב אחרון: אייקונים בודדים, שורת בחירה קבועה, הגדלה למסך מלא, רמז גלילה */
 .pair.one svg{width:1em;height:1em}
@@ -157,3 +155,25 @@ main.pick{height:100vh;height:100dvh;display:flex;flex-direction:column;padding:
 @keyframes nudge{0%,100%{transform:translateY(-2px)}50%{transform:translateY(4px)}}
 #rows .progress{margin:0 0 14px}
 #rows .row:last-of-type{margin-bottom:12px}
+
+/* עמוד ראשי: כותרת אחת, שורת "נבנה על ידי", ומספר גרסה (רק כאן) */
+.hero h1{text-wrap:balance}
+main.home{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding-bottom:18px}
+.credit{margin-top:auto;padding-top:26px;text-align:center}
+.credit .by{display:inline-flex;align-items:center;gap:7px;font-size:15px;font-weight:600;color:var(--muted)}
+.credit .tzav svg{display:block;width:26px;height:26px}
+.credit .ver{margin-top:4px;font-size:11px;color:rgba(255,255,255,.32)}
+/* תמונת דמות לחיצה בכל שטחה; הזכוכית המגדלת היא רק סימן */
+.pic[data-zoom]{cursor:pointer}
+.zoom{pointer-events:none}
+/* כפתור חזרה עם חץ בצד שמאל, ותזכורות עם נקודה אדומה/ירוקה */
+.pill.back{display:inline-flex;align-items:center;gap:7px}
+.pill.back svg{width:16px;height:16px;flex:none}
+.pill.bell{display:inline-flex;align-items:center;gap:7px}
+.pill.bell::before{content:"";width:10px;height:10px;border-radius:50%;flex:none;background:#ff4d5a;box-shadow:0 0 0 2px rgba(255,77,90,.3)}
+.pill.bell.on::before{background:#3ddc6e;box-shadow:0 0 0 2px rgba(61,220,110,.35)}
+
+/* שורת הכפתורים העליונה לא נכנסת מתחת לתמונת הדמות */
+.phead .greet .pic{width:clamp(92px,28%,140px)}
+.phead .pill{font-size:13px;padding:6px 10px}
+.phead .ptop{flex-wrap:nowrap;gap:6px}

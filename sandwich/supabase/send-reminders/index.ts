@@ -4,7 +4,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 // שעות התזכורת (שעון ישראל). אפשר לשנות כאן.
 const SLOTS = [17, 19];
 const DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
-const NAMES: Record<string, string> = { lia: "ליה", daniela: "דניאלה", evyatar: "אביתר" };
+const NAMES: Record<string, string> = { lia: "ליקי", daniela: "דנדי", evyatar: "אביה" };
 const APP_URL = "https://tipul10000-droid.github.io/apps/sandwich/";
 
 const json = (o: unknown, status = 200) =>
