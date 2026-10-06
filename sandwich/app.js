@@ -102,7 +102,7 @@
   function screenWho() {
     show('<div class="hero"><h1>מי אתם?</h1><p class="sub">לחצו על הדמות שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
-      '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom", "face") + '<span><b>ליאורי</b><small>לראות מה כולם בחרו</small></span></button>');
+      '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>ליאורי</b><small>לראות מה כולם בחרו</small></span></button>');
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
     });
