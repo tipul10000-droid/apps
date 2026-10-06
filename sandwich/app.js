@@ -340,7 +340,8 @@
     screenPick(who);
   }
 
-  // iOS: כשהאפליקציה פתוחה ממסך הבית הטלפון לפעמים מדווח 0 על אזור שורת הסטטוס. אז מוסיפים ידנית לפי גודל המסך.
+  // iOS, אפליקציה שנפתחת ממסך הבית: בראש המסך יש שורת שעה וגם אזור מעומעם מתחת לאיילנד (גבוה יותר מהשורה עצמה).
+  // לכן מורידים את התוכן: אזור בטוח (או לפי גודל המסך אם הטלפון מדווח 0) ועוד כ-48 פיקסלים.
   (function () {
     try {
       var probe = document.createElement("div");
@@ -350,10 +351,10 @@
       probe.remove();
       var standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
       var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-      if (!inset && standalone && ios) {
-        var h = Math.max(screen.width, screen.height);
-        document.documentElement.style.setProperty("--st", (h >= 852 ? 59 : h >= 812 ? 47 : 20) + "px");
-      }
+      if (!standalone || !ios) return;
+      var h = Math.max(screen.width, screen.height);
+      var base = inset || (h >= 852 ? 59 : h >= 812 ? 47 : 20);
+      document.documentElement.style.setProperty("--st", (base + (base >= 44 ? 48 : 0)) + "px");
     } catch (e) {}
   })();
   // בלי זום בטעות: לא מגיבים לצביטה ב-iOS, ולחיצה כפולה לא מקרבת (touch-action ב-CSS)
