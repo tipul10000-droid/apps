@@ -222,3 +222,8 @@ main.home .credit .cr{text-align:right}
 .credit .tzav svg{width:34px;height:25px}
 .credit .ver{margin-top:2px;text-align:right}
 main.home .credit .pill.bell{flex:none;font-size:13.5px;padding:8px 12px}
+
+/* סיבוב אחרון: העמוד תקוע במקום (בלי גרירה), הכותרת הראשית צמודה למעלה */
+html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+main.home{padding-top:calc(6px + var(--st,env(safe-area-inset-top,0px)))}
+.plist{overscroll-behavior:contain}

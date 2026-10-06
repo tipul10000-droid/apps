@@ -124,8 +124,8 @@
       });
     }).then(function (sub) { return child ? saveSub(child, sub) : null; });
   }
-  function bellOn(b) { b.textContent = "תזכורות מופעל"; b.classList.remove("off"); b.classList.add("on"); }
-  function bellOff(b) { b.textContent = "תזכורות כבוי"; b.classList.remove("on"); b.classList.add("off"); }
+  function bellOn(b) { b.textContent = "תזכורות - מופעל"; b.classList.remove("off"); b.classList.add("on"); }
+  function bellOff(b) { b.textContent = "תזכורות - כבוי"; b.classList.remove("on"); b.classList.add("off"); }
   function setupBell() {
     var bell = document.getElementById("bell");
     if (!bell) return;
@@ -234,7 +234,7 @@
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
       '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>' + CHARACTERS.mom.name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
       '<footer class="credit"><div class="cr"><div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + '</div></div>' +
-      (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות כבוי</button>') + '</footer>');
+      (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות - כבוי</button>') + '</footer>');
     app.className = "home";
     setupBell();
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
@@ -342,7 +342,7 @@
   }
 
   // iOS, אפליקציה שנפתחת ממסך הבית: בראש המסך יש שורת שעה וגם אזור מעומעם מתחת לאיילנד (גבוה יותר מהשורה עצמה).
-  // לכן מורידים את התוכן: אזור בטוח (או לפי גודל המסך אם הטלפון מדווח 0) ועוד כ-30 פיקסלים.
+  // לכן מורידים את התוכן: אזור בטוח (או לפי גודל המסך אם הטלפון מדווח 0) ועוד כ-17 פיקסלים.
   (function () {
     try {
       var probe = document.createElement("div");
@@ -355,9 +355,16 @@
       if (!standalone || !ios) return;
       var h = Math.max(screen.width, screen.height);
       var base = inset || (h >= 852 ? 59 : h >= 812 ? 47 : 20);
-      document.documentElement.style.setProperty("--st", (base + (base >= 44 ? 30 : 0)) + "px");
+      document.documentElement.style.setProperty("--st", (base + (base >= 44 ? 17 : 0)) + "px");
     } catch (e) {}
   })();
+  // הסרגל העליון והעמוד לא נגללים: רק רשימת המנות (.plist) גוללת. חוסמים גרירה בשאר המסך (גם "קפיץ" של iOS).
+  document.addEventListener("touchmove", function (e) {
+    if (e.touches && e.touches.length > 1) return;
+    var t = e.target;
+    while (t && t !== document.body) { if (t.classList && t.classList.contains("plist")) return; t = t.parentNode; }
+    e.preventDefault();
+  }, {passive: false});
   // בלי זום בטעות: לא מגיבים לצביטה ב-iOS, ולחיצה כפולה לא מקרבת (touch-action ב-CSS)
   ["gesturestart", "gesturechange", "gestureend"].forEach(function (n) { document.addEventListener(n, function (e) { e.preventDefault(); }); });
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function () {});
