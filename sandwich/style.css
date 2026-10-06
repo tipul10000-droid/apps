@@ -188,3 +188,21 @@ main.home{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
 .panel .main{margin:6px 0 0;font-size:18px;padding:12px}
 .dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:#ff4d5a;box-shadow:0 0 0 2px rgba(255,77,90,.3);flex:none}
 .dot.on{background:#3ddc6e;box-shadow:0 0 0 2px rgba(61,220,110,.35)}
+
+/* ---- סיבוב 2: אזור בטוח למעלה (שורת הסטטוס), עמוד ראשי בלי גלילה ---- */
+.phead{height:calc(clamp(205px,30dvh,275px) + env(safe-area-inset-top,0px));padding-top:calc(10px + env(safe-area-inset-top,0px))}
+html:has(main.home),body:has(main.home){overflow:hidden;overscroll-behavior:none}
+main.home{--stage:clamp(112px,19.5dvh,170px);height:100vh;height:100dvh;min-height:0;overflow:hidden;
+  padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(10px + env(safe-area-inset-bottom,0px))}
+main.home .hero{margin:2px 0 8px}
+main.home .hero h1{font-size:clamp(24px,3.6dvh,30px);margin-bottom:3px}
+main.home .hero .sub{margin:0;font-size:clamp(15px,2.1dvh,17px)}
+main.home .who{margin-top:calc(var(--stage) * .28 + 6px)}
+main.home .person .stage{height:var(--stage)}
+main.home .person b{margin-top:5px;font-size:clamp(16px,2.3dvh,18px)}
+main.home .mom-card{height:calc(var(--stage) * .7);margin-top:calc(var(--stage) * .62 + 12px);padding:0 16px}
+main.home .mom-card .ch.full{height:calc(var(--stage) * 1.28);margin-inline-start:2px}
+main.home .credit{flex:none;margin-top:auto;padding-top:10px}
+/* שורת "נבנה על ידי": הטקסט במרכז, הצב לידו, והגרסה בדיוק מתחתיו */
+.credit .by{display:inline-block;position:relative}
+.credit .tzav{position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);display:block}

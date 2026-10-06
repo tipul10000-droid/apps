@@ -5,11 +5,11 @@
   var DISHES = [
     {n: "חומוס ומלפפון חמוץ", e: ["hummus", "pickle"]}, {n: "חומוס ופסטרמה", e: ["hummus", "pastrami"]}, {n: "חומוס וסלמי", e: ["hummus", "salami"]},
     {n: "גבינה לבנה", e: ["tub"]}, {n: "גבינת נפוליאון", e: ["napoleon"]}, {n: "חומוס", e: ["hummus"]},
-    {n: "חביתה", e: "🍳"}, {n: "ריבה תות", e: "🍓", old: "ריבה"}, {n: "שוקולד נוטלה", e: "🍫", old: "שוקולד"},
+    {n: "חביתה", e: "🍳"}, {n: "ריבת תות", e: "🍓", old: ["ריבה", "ריבה תות"]}, {n: "שוקולד נוטלה", e: "🍫", old: ["שוקולד"]},
     {n: "פיתה זעתר", e: "🫓"}, {n: "טוסט", e: "🍞"}, {n: "סלט ביצים", e: ["eggs"]},
     {n: "טונה", e: "🐟"}, {n: "קוטג'", e: ["cottage"]}];
   // בחירות ישנות ששמרו שם קודם של מנה
-  function canon(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name || DISHES[i].old === name) return DISHES[i].n; return name; }
+  function canon(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name || (DISHES[i].old || []).indexOf(name) >= 0) return DISHES[i].n; return name; }
 
   // אייקונים מצוירים לאוכל שאין לו אימוג'י מתאים
   var SVG = {
@@ -186,16 +186,17 @@
     show('<div class="hero"><h1>בוחרים סנדוויץ\' למחר בבוקר!</h1><p class="sub">לחצו על השם שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
       '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>' + CHARACTERS.mom.name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
-      '<footer class="credit"><div class="by">נבנה על ידי אבא אורן <span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + '</div></footer>');
+      '<footer class="credit"><div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + '</div></footer>');
     app.className = "home";
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
     });
   }
 
+  function verb(id) { return CHARACTERS[id].g === "f" ? "בחרה" : "בחר"; }
   function bindSwitch() {
     var sw = document.getElementById("switch");
-    if (sw) sw.onclick = function () { store("who", null); screenWho(); };
+    if (sw) sw.onclick = function () { screenWho(); };
   }
 
   // רמז לגלילה: אחרי שתי שניות בלי גלילה מופיע חץ שקוף, ונעלם ברגע שמתחילים לגלול
@@ -311,8 +312,8 @@
         document.getElementById("list").innerHTML = KIDS.map(function (k) {
           var d = by[k];
           return '<div class="row ' + (d ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
-            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא בחר/ה…</span>') + '</div>' +
-            '<span class="chip ' + (d ? "y" : "n") + '">' + (d ? "בחר/ה ✓" : "ממתין") + '</span></div>';
+            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' +
+            '<span class="chip ' + (d ? "y" : "n") + '">' + (d ? verb(k) + " ✓" : "ממתין") + '</span></div>';
         }).join("");
         if (all && !celebrated) { celebrated = true; burstFrom(status); }
       }).catch(function () { status.innerHTML = '<span class="tx">אין חיבור 📡</span>'; });
