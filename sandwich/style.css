@@ -177,3 +177,14 @@ main.home{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
 .phead .greet .pic{width:clamp(92px,28%,140px)}
 .phead .pill{font-size:13px;padding:6px 10px}
 .phead .ptop{flex-wrap:nowrap;gap:6px}
+
+/* חלון הסבר לתזכורות */
+.panel{position:absolute;left:14px;right:14px;z-index:30;max-width:452px;margin:0 auto;padding:14px 16px 14px;border-radius:20px;background:#190f45;
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.2),0 14px 34px rgba(0,0,0,.6);font-size:15px;line-height:1.4;animation:zfade .2s ease-out}
+.panel h3{margin:0 0 6px;font-size:18px;display:flex;align-items:center;gap:8px;padding-inline-end:34px}
+.panel p{margin:0 0 8px}.panel p.sm{font-size:13.5px;color:var(--muted);margin:8px 0 0}
+.panel ol{margin:0 0 4px;padding-inline-start:22px}.panel li{margin-bottom:5px}
+.panel .px{position:absolute;top:10px;left:10px;width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:16px;font-family:inherit}
+.panel .main{margin:6px 0 0;font-size:18px;padding:12px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:#ff4d5a;box-shadow:0 0 0 2px rgba(255,77,90,.3);flex:none}
+.dot.on{background:#3ddc6e;box-shadow:0 0 0 2px rgba(61,220,110,.35)}

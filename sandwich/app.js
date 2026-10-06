@@ -249,21 +249,42 @@
       scrollHint(app.querySelector(".plist"));
       var bell = document.getElementById("bell");
       if (bell) {
+        var panel = null;
+        function closePanel() { if (panel) { panel.remove(); panel = null; } }
+        function schedule() { return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
+        function panelBody(msg) {
+          if (bell.classList.contains("on")) return '<h3><i class="dot on"></i> התזכורות פעילות</h3><p>' + schedule() + '</p>';
+          if (msg) return '<h3><i class="dot"></i> תזכורות</h3><p>' + msg + '</p><p class="sm">' + schedule() + '</p>';
+          if (!pushSupported()) {
+            return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>' + schedule() + '</p>' + (isIOS()
+              ? '<ol><li>בספארי לוחצים על כפתור השיתוף (הריבוע עם החץ למעלה).</li><li>בוחרים "הוספה למסך הבית" ואז "הוספה".</li><li>פותחים את האפליקציה מהאייקון החדש במסך הבית.</li><li>בוחרים דמות, לוחצים שוב על "תזכורות", ומאשרים.</li></ol>'
+              : '<p class="sm">הדפדפן הזה לא תומך בתזכורות. אפשר לנסות בכרום או בספארי.</p>');
+          }
+          return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>' + schedule() + '</p><button class="main" id="enable" type="button">הפעלת תזכורות</button><p class="sm">הטלפון ישאל אם לאשר התראות. יש ללחוץ "אפשר".</p>';
+        }
+        function drawPanel(msg) {
+          if (!panel) {
+            panel = document.createElement("div"); panel.className = "panel";
+            var hb = app.querySelector(".phead").getBoundingClientRect();
+            panel.style.top = (hb.bottom + 8) + "px";
+            app.appendChild(panel);
+          }
+          panel.innerHTML = '<button class="px" type="button" aria-label="סגירה">✕</button>' + panelBody(msg);
+          panel.querySelector(".px").onclick = closePanel;
+          var en = panel.querySelector("#enable");
+          if (en) en.onclick = function () {
+            // הבקשה לאישור יוצאת ישר מהלחיצה
+            enablePush(child).then(function () {
+              bellOn(bell); drawPanel(); setTimeout(closePanel, 3200);
+            }).catch(function (e) {
+              drawPanel(e && e.message === "denied" ? "ההתראות חסומות. אפשר לאשר אותן בהגדרות הטלפון, בהתראות של האפליקציה, ואז ללחוץ שוב." : "לא הצלחנו להפעיל תזכורות. נסו שוב.");
+            });
+          };
+        }
         pushState().then(function (sub) {
           if (sub) { bellOn(bell); saveSub(child, sub).catch(function () {}); }
         }).catch(function () {});
-        bell.onclick = function () {
-          if (!pushSupported()) {
-            toast(isIOS() ? "כדי לקבל תזכורות: לחצו על כפתור השיתוף בספארי, בחרו 'הוספה למסך הבית', ופתחו את האפליקציה משם." : "הדפדפן הזה לא תומך בתזכורות.");
-            return;
-          }
-          enablePush(child).then(function () {
-            bellOn(bell);
-            toast("מעולה! תקבלו תזכורת ב-17:00 וב-19:00 אם עוד לא בחרתם.");
-          }).catch(function (e) {
-            toast(e && e.message === "denied" ? "התזכורות חסומות. אפשר לאשר אותן בהגדרות הטלפון." : "לא הצלחנו להפעיל תזכורות. נסו שוב.");
-          });
-        };
+        bell.onclick = function () { if (panel) closePanel(); else drawPanel(); };
       }
     }).catch(function () { show('<h1>אין חיבור 📡</h1><button class="main" id="retry">נסו שוב</button>'); document.getElementById("retry").onclick = route; });
   }
