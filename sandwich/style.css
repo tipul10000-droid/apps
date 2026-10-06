@@ -211,3 +211,14 @@ main.home .credit{flex:none;margin-top:auto;padding-top:10px}
 .htop{display:flex;justify-content:flex-end;min-height:34px}
 main.home .hero{margin:0 0 8px}
 .panel .main.off{background:rgba(255,255,255,.14);color:#fff;font-weight:600}
+
+/* סיבוב 4: פחות נמוך למעלה; תחתית העמוד הראשי: נבנה על ידי (ימין) ותזכורות (שמאל) */
+.phead{padding-top:calc(6px + var(--st,env(safe-area-inset-top,0px)))}
+main.home .hero{margin:0 0 8px}
+main.home .credit{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;text-align:right}
+main.home .credit .cr{text-align:right}
+.credit .by{display:inline-flex;align-items:center;gap:7px;position:static}
+.credit .tzav{position:static;transform:none;display:flex;order:2}
+.credit .tzav svg{width:34px;height:25px}
+.credit .ver{margin-top:2px;text-align:right}
+main.home .credit .pill.bell{flex:none;font-size:13.5px;padding:8px 12px}
