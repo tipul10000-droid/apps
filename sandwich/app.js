@@ -2,12 +2,28 @@
   var P = "sandwich_";
   var KIDS = ["lia", "daniela", "evyatar"];
   var DISHES = [
-    {n: "חומוס ומלפפון חמוץ", e: "🥒"}, {n: "חומוס ופסטרמה", e: "🥩"}, {n: "חומוס וסלמי", e: "🍖"},
-    {n: "גבינה לבנה", e: "🥣"}, {n: "גבינת נפוליאון", e: "🧀"}, {n: "חומוס", e: "🫘"},
+    {n: "חומוס ומלפפון חמוץ", e: "🥒"}, {n: "חומוס ופסטרמה", e: ["hummus", "pastrami"]}, {n: "חומוס וסלמי", e: ["hummus", "salami"]},
+    {n: "גבינה לבנה", e: "🥣"}, {n: "גבינת נפוליאון", e: "🧀"}, {n: "חומוס", e: ["hummus"]},
     {n: "חביתה", e: "🍳"}, {n: "ריבה", e: "🍓"}, {n: "שוקולד", e: "🍫"},
     {n: "פיתה זעתר", e: "🫓"}, {n: "טוסט", e: "🍞"}, {n: "סלט ביצים", e: "🥚"},
     {n: "טונה", e: "🐟"}, {n: "קוטג'", e: "🥛"}];
-  function emoji(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name) return DISHES[i].e; return "🥪"; }
+
+  // אייקונים מצוירים לאוכל שאין לו אימוג'י מתאים
+  var SVG = {
+    hummus: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M5 31h54c0 15-11 25-27 25S5 46 5 31z" fill="#f6f1e7" stroke="#c9bfa9" stroke-width="2"/><ellipse cx="32" cy="31" rx="27" ry="9" fill="#ecd196" stroke="#c9bfa9" stroke-width="2"/><ellipse cx="32" cy="31" rx="16" ry="4.6" fill="none" stroke="#c98a1b" stroke-width="2.4"/><ellipse cx="32" cy="31" rx="7" ry="2" fill="#dcae4e"/><circle cx="19" cy="28" r="3.4" fill="#d9ad62" stroke="#b5842f" stroke-width="1.2"/><circle cx="45" cy="29" r="3.4" fill="#d9ad62" stroke="#b5842f" stroke-width="1.2"/><circle cx="32" cy="25.5" r="3.4" fill="#d9ad62" stroke="#b5842f" stroke-width="1.2"/><circle cx="26" cy="35" r="1.1" fill="#c0392b"/><circle cx="38" cy="35.5" r="1.1" fill="#c0392b"/></svg>',
+    pastrami: '<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="34" rx="27" ry="20" fill="#7a2a1c" stroke="#3b1710" stroke-width="2"/><ellipse cx="32" cy="33" rx="22" ry="15.5" fill="#d0646d"/><path d="M14 30c8-6 20 4 36-4M13 38c9-5 22 5 38-3M20 44c7-3 17 2 25-2" fill="none" stroke="#f0a8ab" stroke-width="2.2" stroke-linecap="round"/><g fill="#24140f"><circle cx="10" cy="34" r="1.5"/><circle cx="16" cy="46" r="1.5"/><circle cx="28" cy="52" r="1.5"/><circle cx="42" cy="51" r="1.5"/><circle cx="53" cy="43" r="1.5"/><circle cx="55" cy="31" r="1.5"/><circle cx="46" cy="19" r="1.5"/><circle cx="30" cy="15" r="1.5"/><circle cx="17" cy="21" r="1.5"/></g></svg>',
+    salami: '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="38" cy="26" r="19" fill="#c0443f" stroke="#7a1a22" stroke-width="2" opacity=".75"/><circle cx="29" cy="35" r="22" fill="#b5303a" stroke="#7a1a22" stroke-width="2.4"/><g fill="#f6d9d0"><circle cx="21" cy="28" r="2.4"/><circle cx="33" cy="25" r="2"/><circle cx="38" cy="36" r="2.6"/><circle cx="26" cy="41" r="2.2"/><circle cx="17" cy="38" r="1.8"/><circle cx="31" cy="47" r="1.8"/><circle cx="42" cy="27" r="1.6"/><circle cx="24" cy="20" r="1.6"/></g></svg>'
+  };
+  function ico(e) {
+    if (typeof e === "string") return e;
+    return '<span class="pair">' + e.map(function (k) { return SVG[k]; }).join("") + '</span>';
+  }
+  var DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+  function dayLabel(isoStr) {
+    var d = new Date(isoStr + "T12:00:00");
+    return "יום " + DAYS[d.getDay()] + " · " + d.getDate() + "." + (d.getMonth() + 1);
+  }
+  function emoji(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name) return ico(DISHES[i].e); return "🥪"; }
   var cfg = window.SANDWICH_CONFIG || {};
   var demo = !(cfg.supabaseUrl && cfg.supabaseAnonKey);
   var app = document.getElementById("app");
@@ -60,7 +76,7 @@
   }
 
   // ---- מסכים ----
-  function show(html) { clearInterval(timer); app.innerHTML = html; window.scrollTo(0, 0); }
+  function show(html) { clearInterval(timer); app.className = ""; app.innerHTML = html; window.scrollTo(0, 0); }
   function colorOf(id) { return "--c:" + CHARACTERS[id].color; }
 
   // קונפטי קטן מנקודה במסך
@@ -82,9 +98,9 @@
   }
 
   function screenWho() {
-    show('<div class="hero"><h1>מי אתם?</h1><p class="sub">לחצו על הדמות שלכם</p></div><div class="who">' +
+    show('<div class="hero"><h1>בוחרים סנדוויץ\'</h1><p class="sub">בוחרים סנדוויץ\' למחר בבוקר!</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
-      '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>ליאורי</b><small>לראות מה כולם בחרו</small></span></button>');
+      '</div><p class="pickhint">לחצו על השם שלכם</p><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>ליאורי</b><small>לראות מה כולם בחרו</small></span></button>');
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
     });
@@ -105,11 +121,12 @@
       var cur = mine && mine.dish;
       var first = !at;
       show(topBar() + '<div class="greet" style="' + colorOf(child) + '"><div class="pic">' + drawCharacter(child) + '</div>' +
-        '<div class="bubble"><h1>היי ' + CHARACTERS[child].name + '!</h1><p>איזה סנדוויץ\' תרצו לקחת לבית הספר מחר בבוקר?</p></div></div>' +
-        (cur ? '<div class="ok' + (saved ? " pop" : "") + '" style="' + colorOf(child) + '"><span class="e">' + emoji(cur) + '</span><span>' + (saved ? "נשמר! " : "בחרתם: ") + '<b>' + esc(cur) + '</b> · אפשר לשנות</span></div>' : '') +
+        '<div class="bubble"><small>היי ' + CHARACTERS[child].name + '!</small><h1>בחירת סנדוויץ\' למחר</h1><p>' + dayLabel(t.iso) + '</p></div></div>' +
+        (cur ? '<div class="ok' + (saved ? " pop" : "") + '" style="' + colorOf(child) + '"><span class="e">' + emoji(cur) + '</span><span>' + (saved ? "נשמר! " : "בחרתם: ") + '<b>' + esc(cur) + '</b> · אפשר לשנות</span></div>' : '<div class="ok idle"><span>לחצו על מנה כדי לבחור</span></div>') +
         '<div class="grid" style="' + colorOf(child) + '">' + DISHES.map(function (d, i) {
-          return '<button class="dish' + (d.n === cur ? " sel" : "") + '" data-i="' + i + '"><span class="em">' + d.e + '</span>' + esc(d.n) + '</button>';
+          return '<button class="dish' + (d.n === cur ? " sel" : "") + '" data-i="' + i + '"><span class="em">' + ico(d.e) + '</span><span class="nm">' + esc(d.n) + '</span></button>';
         }).join("") + '</div>');
+      app.className = "pick";
       bindSwitch();
       if (saved && at) burst(at.x, Math.min(at.y, window.innerHeight - 40));
       Array.prototype.forEach.call(app.querySelectorAll(".dish"), function (b) {
