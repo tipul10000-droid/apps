@@ -41,22 +41,22 @@
       headers: authHeaders(),
       body: JSON.stringify(body)
     }).then(function (r) {
-      if (!r.ok) return r.text().then(function (t) { throw new Error(t.indexOf("bad code") >= 0 ? "bad code" : "שגיאה " + r.status); });
+      if (!r.ok) throw new Error("שגיאה " + r.status);
       return r.text().then(function (t) { return t ? JSON.parse(t) : null; });
     });
   }
-  function getAll(code, date) {
+  function getAll(date) {
     if (demo) return Promise.resolve(JSON.parse(store("demo_" + date) || "[]"));
-    return rpc("sandwich_get", {p_code: code, p_date: date});
+    return rpc("sandwich_get", {p_date: date});
   }
-  function setChoice(code, child, date, dish) {
+  function setChoice(child, date, dish) {
     if (demo) {
       var rows = JSON.parse(store("demo_" + date) || "[]").filter(function (r) { return r.child !== child; });
       rows.push({child: child, dish: dish});
       store("demo_" + date, JSON.stringify(rows));
       return Promise.resolve();
     }
-    return rpc("sandwich_set", {p_code: code, p_child: child, p_date: date, p_dish: dish});
+    return rpc("sandwich_set", {p_child: child, p_date: date, p_dish: dish});
   }
 
   // ---- מסכים ----
@@ -81,24 +81,6 @@
     }
   }
 
-  function screenCode(msg) {
-    show('<div class="hero"><div class="mascot">' + drawCharacter("mom") + '</div><h1>סנדוויץ\' לבית הספר</h1><p class="sub">הקלידו את הקוד המשפחתי</p></div>' +
-      '<input id="code" autocomplete="off" autocapitalize="off"><div class="err">' + (msg || "") + '</div>' +
-      '<button class="main" id="go">כניסה</button>');
-    var inp = document.getElementById("code");
-    function go() {
-      var c = inp.value.trim();
-      if (!c) return;
-      store("code", c);
-      getAll(c, target(false).iso).then(function () { screenWho(); }).catch(function (e) {
-        store("code", null);
-        screenCode(e.message === "bad code" ? "הקוד לא נכון" : "אין חיבור. נסו שוב");
-      });
-    }
-    document.getElementById("go").onclick = go;
-    inp.onkeydown = function (e) { if (e.key === "Enter") go(); };
-  }
-
   function screenWho() {
     show('<div class="hero"><h1>מי אתם?</h1><p class="sub">לחצו על הדמות שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
@@ -117,8 +99,8 @@
   }
 
   function screenPick(child, saved, at) {
-    var t = target(false), code = store("code");
-    getAll(code, t.iso).then(function (rows) {
+    var t = target(false);
+    getAll(t.iso).then(function (rows) {
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && mine.dish;
       var first = !at;
@@ -133,7 +115,7 @@
       Array.prototype.forEach.call(app.querySelectorAll(".dish"), function (b) {
         b.onclick = function (ev) {
           var pt = {x: ev.clientX || window.innerWidth / 2, y: ev.clientY || 200};
-          setChoice(code, child, t.iso, DISHES[b.dataset.i].n).then(function () { screenPick(child, true, pt); })
+          setChoice(child, t.iso, DISHES[b.dataset.i].n).then(function () { screenPick(child, true, pt); })
             .catch(function () { alert("לא הצלחנו לשמור. נסו שוב"); });
         };
       });
@@ -141,9 +123,9 @@
   }
 
   function screenMom() {
-    var t = target(true), code = store("code"), celebrated = false;
+    var t = target(true), celebrated = false;
     function render() {
-      getAll(code, t.iso).then(function (rows) {
+      getAll(t.iso).then(function (rows) {
         var by = {}; rows.forEach(function (r) { by[r.child] = r.dish; });
         var done = KIDS.filter(function (k) { return by[k]; }).length;
         var all = done === KIDS.length;
@@ -168,8 +150,7 @@
   }
 
   function route() {
-    var code = store("code"), who = store("who");
-    if (!code) return screenCode();
+    var who = store("who");
     if (!who || !CHARACTERS[who]) return screenWho();
     if (who === "mom") return screenMom();
     screenPick(who);
