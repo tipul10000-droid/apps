@@ -48,31 +48,6 @@ Deno.serve(async (req) => {
   const keys = await getKeys(sb);
   if (url.searchParams.get("action") === "pubkey") return json({ publicKey: keys.pub });
 
-  // בדיקה חד-פעמית: שולחת הודעת ניסיון לכל המכשירים הפעילים, רק בחלון של 5 דקות שנקבע ב-test_at, ופעם אחת בלבד לכל test_at.
-  if (url.searchParams.get("test") === "1") {
-    const { data: t } = await sb.from("sandwich_secrets").select("value").eq("name", "test_at").maybeSingle();
-    const at = t ? Date.parse(t.value) : NaN;
-    if (!(Date.now() >= at && Date.now() < at + 5 * 60e3)) return json({ skipped: "no test window" });
-    const n = israelNow();
-    const day = `${n.y}-${String(n.m).padStart(2, "0")}-${String(n.d).padStart(2, "0")}`;
-    const { error: dup } = await sb.from("sandwich_push_log").insert({ for_date: day, slot: 1000 + (Math.floor(at / 60000) % 100000) });
-    if (dup) return json({ skipped: "test already sent" });
-    const { data: all } = await sb.from("sandwich_push").select("*").eq("active", true);
-    webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
-    let ok = 0, bad = 0;
-    await Promise.allSettled((all || []).map(async (s: any) => {
-      try {
-        await webpush.sendNotification(
-          { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
-          JSON.stringify({ title: "🧪 בדיקת תזכורת", body: "ככה תיראה התזכורת. לחצו כדי לפתוח את האפליקציה", url: APP_URL, tag: "sandwich-test" }),
-          { TTL: 600 },
-        );
-        ok++;
-      } catch (_e) { bad++; }
-    }));
-    return json({ test: true, sent: ok, failed: bad });
-  }
-
   const dry = url.searchParams.get("dry") === "1";
   const now = israelNow();
   const slotParam = url.searchParams.get("slot");
@@ -104,8 +79,8 @@ Deno.serve(async (req) => {
   await Promise.allSettled(todo.map(async (s: any) => {
     const name = NAMES[s.child] || "";
     const payload = slot >= 19
-      ? { title: `⏰ ${name}, עוד לא בחרת סנדוויץ'`, body: `תזכורת אחרונה: בחירת סנדוויץ' ל${label}` }
-      : { title: `🥪 היי ${name}!`, body: `בחירת סנדוויץ' ל${label}` };
+      ? { title: `⏰ ${name}, עוד לא בחרת`, body: "תזכורת לבחור סנדוויץ' למחר בבוקר!" }
+      : { title: `🥪 היי ${name}!`, body: "תזכורת לבחור סנדוויץ' למחר בבוקר!" };
     try {
       await webpush.sendNotification(
         { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
