@@ -303,6 +303,12 @@
       dishes.forEach(function (b) {
         b.onclick = function () {
           var name = DISHES[b.dataset.i].n;
+          if (name === cur) {
+            // לחיצה על המנה שכבר נבחרה: מורידים את הבחירה (נשמר כמנה ריקה)
+            setChoice(child, t.iso, "").then(function () { cur = null; paint(false); })
+              .catch(function () { toast("לא הצלחנו לבטל. נסו שוב"); });
+            return;
+          }
           setChoice(child, t.iso, name).then(function () {
             cur = name; paint(true); burstFrom(status);
           }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
@@ -357,7 +363,7 @@
         document.getElementById("list").innerHTML = KIDS.map(function (k) {
           var d = by[k], last = parseInt(store("nudge_" + k) || "0", 10), recent = last && (Date.now() - last) < 10 * 60 * 1000;
           var chip = d ? '<span class="chip y">' + verb(k) + ' ✓</span>'
-            : (canNudge ? (recent ? '<span class="chip y soft">נשלחה ✓</span>' : '<button class="nudge" type="button" data-k="' + k + '">שלח תזכורת</button>')
+            : (canNudge ? (recent ? '<span class="chip y soft">תזכורת נשלחה ✓</span>' : '<button class="nudge" type="button" data-k="' + k + '">שלח תזכורת</button>')
               : '<span class="chip n">ממתין</span>');
           return '<div class="row ' + (d ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
             (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' + chip + '</div>';
@@ -381,7 +387,7 @@
   }
 
   // iOS, אפליקציה שנפתחת ממסך הבית: בראש המסך יש שורת שעה וגם אזור מעומעם מתחת לאיילנד (גבוה יותר מהשורה עצמה).
-  // לכן מורידים את התוכן: אזור בטוח (או לפי גודל המסך אם הטלפון מדווח 0) ועוד כ-17 פיקסלים.
+  // לכן מורידים את התוכן: אזור בטוח (או לפי גודל המסך אם הטלפון מדווח 0) ועוד כ-8 פיקסלים.
   (function () {
     try {
       var probe = document.createElement("div");
@@ -394,7 +400,7 @@
       if (!standalone || !ios) return;
       var h = Math.max(screen.width, screen.height);
       var base = inset || (h >= 852 ? 59 : h >= 812 ? 47 : 20);
-      document.documentElement.style.setProperty("--st", (base + (base >= 44 ? 17 : 0)) + "px");
+      document.documentElement.style.setProperty("--st", (base + (base >= 44 ? 8 : 0)) + "px");
     } catch (e) {}
   })();
   // הסרגל העליון והעמוד לא נגללים: רק רשימת המנות (.plist) גוללת. חוסמים גרירה בשאר המסך (גם "קפיץ" של iOS).

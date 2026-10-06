@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
     // היום הבא של הילדים: הבחירה נסגרת ב-04:00 (שעון ישראל)
     const b = israelNow(Date.now() - 4 * 3600e3);
     const iso = nextSchoolDay(b.y, b.m, b.d).toISOString().slice(0, 10);
-    const { data: chosen } = await sb.from("sandwich_choices").select("child").eq("for_date", iso).eq("child", child);
+    const { data: chosen } = await sb.from("sandwich_choices").select("child").eq("for_date", iso).eq("child", child).neq("dish", "");
     if (chosen && chosen.length) return json({ ok: true, result: "already_chosen" });
     const n = israelNow();
     const today = `${n.y}-${String(n.m).padStart(2, "0")}-${String(n.d).padStart(2, "0")}`;
@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
     if (error) return json({ skipped: "already sent", slot });
   }
 
-  const { data: chosen } = await sb.from("sandwich_choices").select("child").eq("for_date", iso);
+  const { data: chosen } = await sb.from("sandwich_choices").select("child").eq("for_date", iso).neq("dish", "");
   const done = new Set((chosen || []).map((r: any) => r.child));
   const { data: subs } = await sb.from("sandwich_push").select("*").eq("active", true);
   const todo = (subs || []).filter((s: any) => !done.has(s.child));
