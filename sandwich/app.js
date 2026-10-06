@@ -301,6 +301,20 @@
     }).catch(function () { show('<h1>אין חיבור 📡</h1><button class="main" id="retry">נסו שוב</button>'); document.getElementById("retry").onclick = route; });
   }
 
+  // אמא ליאורי שולחת תזכורת (התראת דחיפה) לילד שעוד לא בחר. השרת מגביל: פעם בכל 10 דקות לילד.
+  function sendNudge(k, btn, done) {
+    var n = CHARACTERS[k].name;
+    btn.disabled = true; btn.textContent = "שולח…";
+    fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=nudge&child=" + k, {
+      method: "POST", headers: {apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + (cfg.functionsKey || cfg.supabaseAnonKey)}
+    }).then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); }).then(function (j) {
+      if (j.result === "sent") { store("nudge_" + k, String(Date.now())); toast("נשלחה תזכורת ל" + n + " ✓"); }
+      else if (j.result === "too_soon") { store("nudge_" + k, String(Date.now())); toast("כבר נשלחה תזכורת ל" + n + " לפני רגע"); }
+      else if (j.result === "already_chosen") toast(n + " כבר " + verb(k) + "!");
+      else toast(n + " עוד לא " + (CHARACTERS[k].g === "f" ? "הפעילה" : "הפעיל") + " תזכורות במכשיר שלו, אז אין לאן לשלוח");
+    }).catch(function () { toast("לא הצלחנו לשלוח. נסו שוב"); }).then(done);
+  }
+
   function screenMom() {
     var t = target(true), celebrated = false;
     show('<header class="phead" style="' + colorOf("mom") + '"><div class="ptop"><button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
@@ -320,12 +334,19 @@
         status.className = "ok" + (all ? " all" : " idle");
         status.innerHTML = '<span class="tx">' + (all ? "כולם בחרו 🎉" : done + " מתוך " + KIDS.length + " בחרו") + '</span>';
         box.querySelector(".progress i").style.width = (done / KIDS.length * 100) + "%";
+        // כפתור "שלח תזכורת": רק כשליאורי רואה את אותו יום שהילדים בוחרים עליו עכשיו (אחרת אי אפשר כבר לבחור)
+        var canNudge = !demo && t.iso === target(false).iso;
         document.getElementById("list").innerHTML = KIDS.map(function (k) {
-          var d = by[k];
+          var d = by[k], last = parseInt(store("nudge_" + k) || "0", 10), recent = last && (Date.now() - last) < 10 * 60 * 1000;
+          var chip = d ? '<span class="chip y">' + verb(k) + ' ✓</span>'
+            : (canNudge ? (recent ? '<span class="chip y soft">נשלחה ✓</span>' : '<button class="nudge" type="button" data-k="' + k + '">שלח תזכורת</button>')
+              : '<span class="chip n">ממתין</span>');
           return '<div class="row ' + (d ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
-            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' +
-            '<span class="chip ' + (d ? "y" : "n") + '">' + (d ? verb(k) + " ✓" : "ממתין") + '</span></div>';
+            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' + chip + '</div>';
         }).join("");
+        Array.prototype.forEach.call(document.querySelectorAll("#list .nudge"), function (b) {
+          b.onclick = function () { sendNudge(b.dataset.k, b, render); };
+        });
         if (all && !celebrated) { celebrated = true; burstFrom(status); }
       }).catch(function () { status.innerHTML = '<span class="tx">אין חיבור 📡</span>'; });
     }

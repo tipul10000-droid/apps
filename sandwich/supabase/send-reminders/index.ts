@@ -7,13 +7,18 @@ const DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", 
 const NAMES: Record<string, string> = { lia: "ליקי", daniela: "דנדי", evyatar: "אביה" };
 const APP_URL = "https://tipul10000-droid.github.io/apps/sandwich/";
 
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+};
 const json = (o: unknown, status = 200) =>
-  new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json" } });
+  new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json", ...CORS } });
 
-function israelNow() {
+function israelNow(ms: number = Date.now()) {
   const p = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hour12: false,
-  }).formatToParts(new Date());
+  }).formatToParts(new Date(ms));
   const g = (t: string) => p.find((x) => x.type === t)!.value;
   return { y: +g("year"), m: +g("month"), d: +g("day"), hour: parseInt(g("hour")) % 24 };
 }
@@ -43,10 +48,45 @@ async function getKeys(sb: any) {
 }
 
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   const url = new URL(req.url);
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const keys = await getKeys(sb);
   if (url.searchParams.get("action") === "pubkey") return json({ publicKey: keys.pub });
+
+  // אמא ליאורי שולחת תזכורת לילד שעוד לא בחר. הגבלה: פעם אחת לכל ילד כל 10 דקות, ורק אם לא בחר.
+  if (url.searchParams.get("action") === "nudge") {
+    const child = url.searchParams.get("child") || "";
+    if (!NAMES[child]) return json({ ok: false, error: "bad child" }, 400);
+    // היום הבא של הילדים: הבחירה נסגרת ב-04:00 (שעון ישראל)
+    const b = israelNow(Date.now() - 4 * 3600e3);
+    const iso = nextSchoolDay(b.y, b.m, b.d).toISOString().slice(0, 10);
+    const { data: chosen } = await sb.from("sandwich_choices").select("child").eq("for_date", iso).eq("child", child);
+    if (chosen && chosen.length) return json({ ok: true, result: "already_chosen" });
+    const n = israelNow();
+    const today = `${n.y}-${String(n.m).padStart(2, "0")}-${String(n.d).padStart(2, "0")}`;
+    const idx = Object.keys(NAMES).indexOf(child) + 1;
+    const slot = 100000 * idx + (Math.floor(Date.now() / 600000) % 100000);
+    const { error: dup } = await sb.from("sandwich_push_log").insert({ for_date: today, slot });
+    if (dup) return json({ ok: true, result: "too_soon" });
+    const { data: devs } = await sb.from("sandwich_push").select("*").eq("child", child).eq("active", true);
+    if (!devs || !devs.length) return json({ ok: true, result: "no_device" });
+    webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
+    let sent = 0;
+    await Promise.allSettled(devs.map(async (s: any) => {
+      try {
+        await webpush.sendNotification(
+          { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+          JSON.stringify({ title: `🥪 היי ${NAMES[child]}!`, body: "אמא מזכירה לבחור סנדוויץ' למחר בבוקר!", url: APP_URL, tag: `sandwich-nudge-${iso}` }),
+          { TTL: 3600 },
+        );
+        sent++;
+      } catch (e: any) {
+        if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("sandwich_push").delete().eq("endpoint", s.endpoint);
+      }
+    }));
+    return json({ ok: true, result: sent ? "sent" : "no_device", sent });
+  }
 
   const dry = url.searchParams.get("dry") === "1";
   const now = israelNow();

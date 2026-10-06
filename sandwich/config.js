@@ -4,5 +4,7 @@ window.SANDWICH_CONFIG = {
   supabaseUrl: "https://emgtyfksnofzzlutngbf.supabase.co",
   supabaseAnonKey: "sb_publishable_Pa6-CuUavcT0rpD8ei_cxA_8oZ-Ykku",
   // מפתח ציבורי להתראות דחיפה (הפרטי נשמר רק בשרת)
+  // מפתח anon (JWT) ציבורי לקריאה לפונקציית התזכורות. מותר בקוד, אף פעם לא מפתח סודי.
+  functionsKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k",
   vapidPublicKey: "BMgNM5ZIsoQN20q-CmDyAySlQW4UgShOUqrizzG0e5ghaQH1ozP7rse7GamLtf4TOyxkTjSUKdA57mcq1koOQTk"
 };
