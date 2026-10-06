@@ -122,7 +122,7 @@
       return reg.pushManager.getSubscription().then(function (sub) {
         return sub || reg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: urlB64(cfg.vapidPublicKey)});
       });
-    }).then(function (sub) { return child ? saveSub(child, sub) : null; });
+    }).then(function (sub) { return child ? saveSub(child, sub) : null; }).then(function () { if (child) store("push_child", child); });
   }
   function bellOn(b) { b.textContent = "תזכורות - מופעל"; b.classList.remove("off"); b.classList.add("on"); }
   function bellOff(b) { b.textContent = "תזכורות - כבוי"; b.classList.remove("on"); b.classList.add("off"); }
@@ -134,14 +134,20 @@
     function closePanel() { if (panel) { panel.remove(); panel = null; } }
     function schedule() { return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
     function body(msg) {
-      if (bell.classList.contains("on")) return '<h3><i class="dot on"></i> התזכורות פעילות</h3><p>' + schedule() + '</p><button class="main off" id="off" type="button">כיבוי תזכורות</button>';
+      var owner = store("push_child"), k = kid();
+      if (bell.classList.contains("on")) {
+        return '<h3><i class="dot on"></i> התזכורות פעילות</h3><p>' + (owner && CHARACTERS[owner] ? 'במכשיר הזה התזכורות מגיעות ל<b>' + CHARACTERS[owner].name + '</b>. ' : '') + schedule() + '</p>' +
+          (k && owner && k !== owner ? '<button class="main" id="move" type="button">להעביר ל' + CHARACTERS[k].name + '</button>' : '') +
+          '<button class="main off" id="off" type="button">כיבוי תזכורות</button>';
+      }
       if (msg) return '<h3><i class="dot"></i> תזכורות</h3><p>' + msg + '</p><p class="sm">' + schedule() + '</p>';
       if (!pushSupported()) {
         return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>' + schedule() + '</p>' + (isIOS()
           ? '<ol><li>בספארי לוחצים על כפתור השיתוף (הריבוע עם החץ למעלה).</li><li>בוחרים "הוספה למסך הבית" ואז "הוספה".</li><li>פותחים את האפליקציה מהאייקון החדש במסך הבית.</li><li>לוחצים שוב על "תזכורות", ומאשרים.</li></ol>'
           : '<p class="sm">הדפדפן הזה לא תומך בתזכורות. אפשר לנסות בכרום או בספארי.</p>');
       }
-      return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>' + schedule() + '</p><button class="main" id="enable" type="button">הפעלת תזכורות</button><p class="sm">הטלפון ישאל אם לאשר התראות. יש ללחוץ "אפשר".</p>';
+      if (!k) return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>קודם לוחצים על הדמות שלכם, אחר כך חוזרים למסך הדמויות ומפעילים תזכורות. התזכורות יהיו קשורות לדמות שבחרתם.</p><p class="sm">' + schedule() + '</p>';
+      return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>' + schedule() + '</p><p>במכשיר הזה התזכורות יגיעו ל<b>' + CHARACTERS[k].name + '</b>.</p><button class="main" id="enable" type="button">הפעלת תזכורות</button><p class="sm">הטלפון ישאל אם לאשר התראות. יש ללחוץ "אפשר".</p>';
     }
     function draw(msg) {
       if (!panel) {
@@ -151,7 +157,12 @@
       }
       panel.innerHTML = '<button class="px" type="button" aria-label="סגירה">✕</button>' + body(msg);
       panel.querySelector(".px").onclick = closePanel;
-      var en = panel.querySelector("#enable"), off = panel.querySelector("#off");
+      var en = panel.querySelector("#enable"), off = panel.querySelector("#off"), mv = panel.querySelector("#move");
+      if (mv) mv.onclick = function () {
+        var k = kid();
+        pushState().then(function (sub) { return sub && k ? saveSub(k, sub).then(function () { store("push_child", k); }) : null; })
+          .then(function () { draw(); }).catch(function () { draw("לא הצלחנו להעביר. נסו שוב."); });
+      };
       if (en) en.onclick = function () {
         // הבקשה לאישור יוצאת ישר מהלחיצה
         enablePush(kid()).then(function () { bellOn(bell); draw(); setTimeout(closePanel, 3200); }).catch(function (e) {
@@ -162,13 +173,15 @@
         pushState().then(function (sub) {
           if (!sub) return null;
           return rpc("sandwich_push_off", {p_endpoint: sub.endpoint}).catch(function () {}).then(function () { return sub.unsubscribe(); });
-        }).then(function () { bellOff(bell); draw(); }).catch(function () { draw("לא הצלחנו לכבות. נסו שוב."); });
+        }).then(function () { store("push_child", null); bellOff(bell); draw(); }).catch(function () { draw("לא הצלחנו לכבות. נסו שוב."); });
       };
     }
     pushState().then(function (sub) {
       if (!sub) return;
+      var owner = store("push_child");
+      if (!owner && kid()) { owner = kid(); store("push_child", owner); }
       bellOn(bell);
-      var k = kid(); if (k) saveSub(k, sub).catch(function () {});
+      if (owner) saveSub(owner, sub).catch(function () {});
     }).catch(function () {});
     bell.onclick = function () { if (panel) closePanel(); else draw(); };
   }
@@ -296,8 +309,13 @@
         };
       });
       scrollHint(app.querySelector(".plist"));
-      // התזכורות שייכות למכשיר. המכשיר מקושר לילד שמשתמש בו עכשיו (כדי לא לשלוח תזכורת למי שכבר בחר).
-      pushState().then(function (sub) { if (sub) saveSub(child, sub).catch(function () {}); }).catch(function () {});
+      // התזכורות שייכות למכשיר ומקושרות לילד שהפעיל אותן כאן (push_child). גלישה בדמויות אחרות לא מזיזה אותן.
+      pushState().then(function (sub) {
+        if (!sub) return;
+        var owner = store("push_child");
+        if (!owner) { owner = child; store("push_child", owner); }
+        if (owner === child) saveSub(child, sub).catch(function () {});
+      }).catch(function () {});
     }).catch(function () { show('<h1>אין חיבור 📡</h1><button class="main" id="retry">נסו שוב</button>'); document.getElementById("retry").onclick = route; });
   }
 
