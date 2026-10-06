@@ -122,9 +122,56 @@
       return reg.pushManager.getSubscription().then(function (sub) {
         return sub || reg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: urlB64(cfg.vapidPublicKey)});
       });
-    }).then(function (sub) { return saveSub(child, sub); });
+    }).then(function (sub) { return child ? saveSub(child, sub) : null; });
   }
-  function bellOn(b) { b.textContent = "תזכורות"; b.classList.remove("off"); b.classList.add("on"); }
+  function bellOn(b) { b.classList.remove("off"); b.classList.add("on"); }
+  function bellOff(b) { b.classList.remove("on"); b.classList.add("off"); }
+  function setupBell() {
+    var bell = document.getElementById("bell");
+    if (!bell) return;
+    var panel = null;
+    function kid() { var w = store("who"); return KIDS.indexOf(w) >= 0 ? w : null; }
+    function closePanel() { if (panel) { panel.remove(); panel = null; } }
+    function schedule() { return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
+    function body(msg) {
+      if (bell.classList.contains("on")) return '<h3><i class="dot on"></i> התזכורות פעילות</h3><p>' + schedule() + '</p><button class="main off" id="off" type="button">כיבוי תזכורות</button>';
+      if (msg) return '<h3><i class="dot"></i> תזכורות</h3><p>' + msg + '</p><p class="sm">' + schedule() + '</p>';
+      if (!pushSupported()) {
+        return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>' + schedule() + '</p>' + (isIOS()
+          ? '<ol><li>בספארי לוחצים על כפתור השיתוף (הריבוע עם החץ למעלה).</li><li>בוחרים "הוספה למסך הבית" ואז "הוספה".</li><li>פותחים את האפליקציה מהאייקון החדש במסך הבית.</li><li>לוחצים שוב על "תזכורות", ומאשרים.</li></ol>'
+          : '<p class="sm">הדפדפן הזה לא תומך בתזכורות. אפשר לנסות בכרום או בספארי.</p>');
+      }
+      return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>' + schedule() + '</p><button class="main" id="enable" type="button">הפעלת תזכורות</button><p class="sm">הטלפון ישאל אם לאשר התראות. יש ללחוץ "אפשר".</p>';
+    }
+    function draw(msg) {
+      if (!panel) {
+        panel = document.createElement("div"); panel.className = "panel";
+        panel.style.top = (bell.getBoundingClientRect().bottom + 8) + "px";
+        app.appendChild(panel);
+      }
+      panel.innerHTML = '<button class="px" type="button" aria-label="סגירה">✕</button>' + body(msg);
+      panel.querySelector(".px").onclick = closePanel;
+      var en = panel.querySelector("#enable"), off = panel.querySelector("#off");
+      if (en) en.onclick = function () {
+        // הבקשה לאישור יוצאת ישר מהלחיצה
+        enablePush(kid()).then(function () { bellOn(bell); draw(); setTimeout(closePanel, 3200); }).catch(function (e) {
+          draw(e && e.message === "denied" ? "ההתראות חסומות. אפשר לאשר אותן בהגדרות הטלפון, בהתראות של האפליקציה, ואז ללחוץ שוב." : "לא הצלחנו להפעיל תזכורות. נסו שוב.");
+        });
+      };
+      if (off) off.onclick = function () {
+        pushState().then(function (sub) {
+          if (!sub) return null;
+          return rpc("sandwich_push_off", {p_endpoint: sub.endpoint}).catch(function () {}).then(function () { return sub.unsubscribe(); });
+        }).then(function () { bellOff(bell); draw(); }).catch(function () { draw("לא הצלחנו לכבות. נסו שוב."); });
+      };
+    }
+    pushState().then(function (sub) {
+      if (!sub) return;
+      bellOn(bell);
+      var k = kid(); if (k) saveSub(k, sub).catch(function () {});
+    }).catch(function () {});
+    bell.onclick = function () { if (panel) closePanel(); else draw(); };
+  }
   function toast(msg) {
     var t = document.getElementById("toast");
     if (!t) { t = document.createElement("div"); t.id = "toast"; document.body.appendChild(t); }
@@ -183,11 +230,12 @@
   var TURTLE = '<svg viewBox="0 8 68 50" aria-hidden="true"><ellipse cx="32" cy="55" rx="22" ry="3.2" fill="#000" opacity=".18"/><path d="M8 47l-5 3 6 .5z" fill="#7fc65a" stroke="#3f8f33" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="43" width="10" height="11" rx="5" fill="#8fd467" stroke="#3f8f33" stroke-width="2"/><rect x="40" y="43" width="10" height="11" rx="5" fill="#8fd467" stroke="#3f8f33" stroke-width="2"/><path d="M52 40c1-8 6-14 11-10 3 3 1 10-3 13-3 2-7 2-8-3z" fill="#8fd467" stroke="#3f8f33" stroke-width="2" stroke-linejoin="round"/><circle cx="59.2" cy="33.2" r="2" fill="#1d2b1a"/><circle cx="59.8" cy="32.6" r=".7" fill="#fff"/><path d="M57 38.5q2.5 1.6 4.6 0" fill="none" stroke="#1d2b1a" stroke-width="1.4" stroke-linecap="round"/><path d="M8 46C8 28 18 17 32 17s24 11 24 29z" fill="#58b447" stroke="#2f7a2a" stroke-width="2.4" stroke-linejoin="round"/><path d="M32 22l8 5v9l-8 5-8-5v-9z" fill="#7ad45f" stroke="#2f7a2a" stroke-width="1.8" stroke-linejoin="round"/><path d="M24 27l-10 3M24 36l-8 7M40 27l10 3M40 36l8 7M32 41v5M32 22v-4" fill="none" stroke="#2f7a2a" stroke-width="1.8" stroke-linecap="round"/><path d="M11 46h42" stroke="#2f7a2a" stroke-width="2.4" stroke-linecap="round"/></svg>';
 
   function screenWho() {
-    show('<div class="hero"><h1>בוחרים סנדוויץ\' למחר בבוקר!</h1><p class="sub">לחצו על השם שלכם</p></div><div class="who">' +
+    show('<div class="htop">' + (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות</button>') + '</div><div class="hero"><h1>בוחרים סנדוויץ\' למחר בבוקר!</h1><p class="sub">לחצו על השם שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
       '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>' + CHARACTERS.mom.name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
       '<footer class="credit"><div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + '</div></footer>');
     app.className = "home";
+    setupBell();
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
     });
@@ -220,7 +268,6 @@
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && canon(mine.dish);
       show('<header class="phead" style="' + colorOf(child) + '"><div class="ptop">' +
-        (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות</button>') +
         '<button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
         '<div class="greet">' + picBox(child) + '' +
         '<div class="bubble"><small>היי ' + CHARACTERS[child].name + '!</small><h1>בחירת סנדוויץ\' ' + forTxt + '</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"></div></div></div></header>' +
@@ -248,45 +295,8 @@
         };
       });
       scrollHint(app.querySelector(".plist"));
-      var bell = document.getElementById("bell");
-      if (bell) {
-        var panel = null;
-        function closePanel() { if (panel) { panel.remove(); panel = null; } }
-        function schedule() { return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
-        function panelBody(msg) {
-          if (bell.classList.contains("on")) return '<h3><i class="dot on"></i> התזכורות פעילות</h3><p>' + schedule() + '</p>';
-          if (msg) return '<h3><i class="dot"></i> תזכורות</h3><p>' + msg + '</p><p class="sm">' + schedule() + '</p>';
-          if (!pushSupported()) {
-            return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>' + schedule() + '</p>' + (isIOS()
-              ? '<ol><li>בספארי לוחצים על כפתור השיתוף (הריבוע עם החץ למעלה).</li><li>בוחרים "הוספה למסך הבית" ואז "הוספה".</li><li>פותחים את האפליקציה מהאייקון החדש במסך הבית.</li><li>בוחרים דמות, לוחצים שוב על "תזכורות", ומאשרים.</li></ol>'
-              : '<p class="sm">הדפדפן הזה לא תומך בתזכורות. אפשר לנסות בכרום או בספארי.</p>');
-          }
-          return '<h3><i class="dot"></i> איך מפעילים תזכורות</h3><p>' + schedule() + '</p><button class="main" id="enable" type="button">הפעלת תזכורות</button><p class="sm">הטלפון ישאל אם לאשר התראות. יש ללחוץ "אפשר".</p>';
-        }
-        function drawPanel(msg) {
-          if (!panel) {
-            panel = document.createElement("div"); panel.className = "panel";
-            var hb = app.querySelector(".phead").getBoundingClientRect();
-            panel.style.top = (hb.bottom + 8) + "px";
-            app.appendChild(panel);
-          }
-          panel.innerHTML = '<button class="px" type="button" aria-label="סגירה">✕</button>' + panelBody(msg);
-          panel.querySelector(".px").onclick = closePanel;
-          var en = panel.querySelector("#enable");
-          if (en) en.onclick = function () {
-            // הבקשה לאישור יוצאת ישר מהלחיצה
-            enablePush(child).then(function () {
-              bellOn(bell); drawPanel(); setTimeout(closePanel, 3200);
-            }).catch(function (e) {
-              drawPanel(e && e.message === "denied" ? "ההתראות חסומות. אפשר לאשר אותן בהגדרות הטלפון, בהתראות של האפליקציה, ואז ללחוץ שוב." : "לא הצלחנו להפעיל תזכורות. נסו שוב.");
-            });
-          };
-        }
-        pushState().then(function (sub) {
-          if (sub) { bellOn(bell); saveSub(child, sub).catch(function () {}); }
-        }).catch(function () {});
-        bell.onclick = function () { if (panel) closePanel(); else drawPanel(); };
-      }
+      // התזכורות שייכות למכשיר. המכשיר מקושר לילד שמשתמש בו עכשיו (כדי לא לשלוח תזכורת למי שכבר בחר).
+      pushState().then(function (sub) { if (sub) saveSub(child, sub).catch(function () {}); }).catch(function () {});
     }).catch(function () { show('<h1>אין חיבור 📡</h1><button class="main" id="retry">נסו שוב</button>'); document.getElementById("retry").onclick = route; });
   }
 
@@ -330,6 +340,22 @@
     screenPick(who);
   }
 
+  // iOS: כשהאפליקציה פתוחה ממסך הבית הטלפון לפעמים מדווח 0 על אזור שורת הסטטוס. אז מוסיפים ידנית לפי גודל המסך.
+  (function () {
+    try {
+      var probe = document.createElement("div");
+      probe.style.cssText = "position:fixed;top:0;left:0;visibility:hidden;padding-top:env(safe-area-inset-top,0px)";
+      document.body.appendChild(probe);
+      var inset = parseFloat(getComputedStyle(probe).paddingTop) || 0;
+      probe.remove();
+      var standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+      var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      if (!inset && standalone && ios) {
+        var h = Math.max(screen.width, screen.height);
+        document.documentElement.style.setProperty("--st", (h >= 852 ? 59 : h >= 812 ? 47 : 20) + "px");
+      }
+    } catch (e) {}
+  })();
   // בלי זום בטעות: לא מגיבים לצביטה ב-iOS, ולחיצה כפולה לא מקרבת (touch-action ב-CSS)
   ["gesturestart", "gesturechange", "gestureend"].forEach(function (n) { document.addEventListener(n, function (e) { e.preventDefault(); }); });
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function () {});

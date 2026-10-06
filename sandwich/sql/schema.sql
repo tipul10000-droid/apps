@@ -44,6 +44,7 @@ create table if not exists sandwich_push (
   child text not null check (child in ('lia','daniela','evyatar')),
   p256dh text not null,
   auth text not null,
+  active boolean not null default true,
   created_at timestamptz not null default now()
 );
 create table if not exists sandwich_push_log (
@@ -64,8 +65,16 @@ alter table sandwich_secrets enable row level security;
 create or replace function sandwich_push_save(p_child text, p_endpoint text, p_p256dh text, p_auth text)
 returns void
 language sql security definer set search_path = public as $$
-  insert into sandwich_push(endpoint, child, p256dh, auth)
-  values (left(p_endpoint, 1000), p_child, left(p_p256dh, 200), left(p_auth, 100))
-  on conflict (endpoint) do update set child = excluded.child, p256dh = excluded.p256dh, auth = excluded.auth;
+  insert into sandwich_push(endpoint, child, p256dh, auth, active)
+  values (left(p_endpoint, 1000), p_child, left(p_p256dh, 200), left(p_auth, 100), true)
+  on conflict (endpoint) do update set child = excluded.child, p256dh = excluded.p256dh, auth = excluded.auth, active = true;
 $$;
 grant execute on function sandwich_push_save(text, text, text, text) to anon;
+
+-- כיבוי תזכורות במכשיר (לא מוחק, רק מסמן כלא פעיל)
+create or replace function sandwich_push_off(p_endpoint text)
+returns void
+language sql security definer set search_path = public as $$
+  update sandwich_push set active = false where endpoint = left(p_endpoint, 1000);
+$$;
+grant execute on function sandwich_push_off(text) to anon;

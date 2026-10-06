@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
 
   const { data: chosen } = await sb.from("sandwich_choices").select("child").eq("for_date", iso);
   const done = new Set((chosen || []).map((r: any) => r.child));
-  const { data: subs } = await sb.from("sandwich_push").select("*");
+  const { data: subs } = await sb.from("sandwich_push").select("*").eq("active", true);
   const todo = (subs || []).filter((s: any) => !done.has(s.child));
   if (dry) return json({ dry: true, slot, target: iso, label, subscribers: (subs || []).length, wouldSend: todo.length });
 

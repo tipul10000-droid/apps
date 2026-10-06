@@ -144,7 +144,7 @@ main.pick{height:100vh;height:100dvh;display:flex;flex-direction:column;padding:
 .zoom:active{transform:scale(.9)}
 #zoom{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(6,4,20,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);animation:zfade .22s ease-out}
 #zoom .ch{height:88vh;height:88dvh;width:auto;max-width:94vw;object-fit:contain;filter:drop-shadow(0 0 28px color-mix(in srgb,var(--c) 55%,transparent));animation:zpop .32s cubic-bezier(.2,.8,.3,1.2)}
-#zoom .zx{position:absolute;top:calc(12px + env(safe-area-inset-top));left:14px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:20px;line-height:1;font-family:inherit}
+#zoom .zx{position:absolute;top:calc(12px + var(--st,env(safe-area-inset-top,0px)));left:14px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:20px;line-height:1;font-family:inherit}
 @keyframes zfade{from{opacity:0}to{opacity:1}}
 @keyframes zpop{from{transform:scale(.8);opacity:0}to{transform:none;opacity:1}}
 .scrollhint{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translate(-50%,8px);z-index:5;display:flex;align-items:center;gap:8px;white-space:nowrap;
@@ -190,10 +190,10 @@ main.home{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
 .dot.on{background:#3ddc6e;box-shadow:0 0 0 2px rgba(61,220,110,.35)}
 
 /* ---- סיבוב 2: אזור בטוח למעלה (שורת הסטטוס), עמוד ראשי בלי גלילה ---- */
-.phead{height:calc(clamp(205px,30dvh,275px) + env(safe-area-inset-top,0px));padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.phead{height:calc(clamp(205px,30dvh,275px) + var(--st,env(safe-area-inset-top,0px)));padding-top:calc(10px + var(--st,env(safe-area-inset-top,0px)))}
 html:has(main.home),body:has(main.home){overflow:hidden;overscroll-behavior:none}
 main.home{--stage:clamp(112px,19.5dvh,170px);height:100vh;height:100dvh;min-height:0;overflow:hidden;
-  padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(10px + env(safe-area-inset-bottom,0px))}
+  padding:calc(12px + var(--st,env(safe-area-inset-top,0px))) 16px calc(10px + env(safe-area-inset-bottom,0px))}
 main.home .hero{margin:2px 0 8px}
 main.home .hero h1{font-size:clamp(24px,3.6dvh,30px);margin-bottom:3px}
 main.home .hero .sub{margin:0;font-size:clamp(15px,2.1dvh,17px)}
@@ -206,3 +206,8 @@ main.home .credit{flex:none;margin-top:auto;padding-top:10px}
 /* שורת "נבנה על ידי": הטקסט במרכז, הצב לידו, והגרסה בדיוק מתחתיו */
 .credit .by{display:inline-block;position:relative}
 .credit .tzav{position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);display:block}
+
+/* כפתור תזכורות במסך הראשי */
+.htop{display:flex;justify-content:flex-end;min-height:34px}
+main.home .hero{margin:0 0 8px}
+.panel .main.off{background:rgba(255,255,255,.14);color:#fff;font-weight:600}
