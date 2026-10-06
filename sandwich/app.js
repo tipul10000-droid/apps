@@ -179,14 +179,14 @@
     burst(r.left + r.width / 2, r.top + r.height / 2);
   }
 
-  // "הצו של אורן": דף עם חותמת אדומה
-  var TZAV = '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 6h30l12 12v38q0 3-3 3H12q-3 0-3-3V9q0-3 3-3z" fill="#fff6dc" stroke="#cdbb86" stroke-width="2.2"/><path d="M42 6v12h12" fill="#eadcae" stroke="#cdbb86" stroke-width="2.2" stroke-linejoin="round"/><path d="M17 26h24M17 33h30M17 40h20" stroke="#b9a66c" stroke-width="2.6" stroke-linecap="round"/><circle cx="42" cy="47" r="12.5" fill="#d92b3a" stroke="#8f1521" stroke-width="2"/><text x="42" y="52.5" text-anchor="middle" font-size="15" font-weight="800" fill="#fff" font-family="Rubik,Arial,sans-serif">צו</text></svg>';
+  // הצב של אורן
+  var TURTLE = '<svg viewBox="0 8 68 50" aria-hidden="true"><ellipse cx="32" cy="55" rx="22" ry="3.2" fill="#000" opacity=".18"/><path d="M8 47l-5 3 6 .5z" fill="#7fc65a" stroke="#3f8f33" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="43" width="10" height="11" rx="5" fill="#8fd467" stroke="#3f8f33" stroke-width="2"/><rect x="40" y="43" width="10" height="11" rx="5" fill="#8fd467" stroke="#3f8f33" stroke-width="2"/><path d="M52 40c1-8 6-14 11-10 3 3 1 10-3 13-3 2-7 2-8-3z" fill="#8fd467" stroke="#3f8f33" stroke-width="2" stroke-linejoin="round"/><circle cx="59.2" cy="33.2" r="2" fill="#1d2b1a"/><circle cx="59.8" cy="32.6" r=".7" fill="#fff"/><path d="M57 38.5q2.5 1.6 4.6 0" fill="none" stroke="#1d2b1a" stroke-width="1.4" stroke-linecap="round"/><path d="M8 46C8 28 18 17 32 17s24 11 24 29z" fill="#58b447" stroke="#2f7a2a" stroke-width="2.4" stroke-linejoin="round"/><path d="M32 22l8 5v9l-8 5-8-5v-9z" fill="#7ad45f" stroke="#2f7a2a" stroke-width="1.8" stroke-linejoin="round"/><path d="M24 27l-10 3M24 36l-8 7M40 27l10 3M40 36l8 7M32 41v5M32 22v-4" fill="none" stroke="#2f7a2a" stroke-width="1.8" stroke-linecap="round"/><path d="M11 46h42" stroke="#2f7a2a" stroke-width="2.4" stroke-linecap="round"/></svg>';
 
   function screenWho() {
     show('<div class="hero"><h1>בוחרים סנדוויץ\' למחר בבוקר!</h1><p class="sub">לחצו על השם שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
       '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>' + CHARACTERS.mom.name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
-      '<footer class="credit"><div class="by">נבנה על ידי אבא אורן <span class="tzav">' + TZAV + '</span></div><div class="ver">גרסה ' + esc(VERSION) + '</div></footer>');
+      '<footer class="credit"><div class="by">נבנה על ידי אבא אורן <span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + '</div></footer>');
     app.className = "home";
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
