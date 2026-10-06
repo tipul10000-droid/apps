@@ -185,6 +185,42 @@
     }).catch(function () {});
     bell.onclick = function () { if (panel) closePanel(); else draw(); };
   }
+  // ---- התקנה למסך הבית ----
+  var deferredInstall = null;
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferredInstall = e; var b = document.getElementById("install"); if (b) b.hidden = false; });
+  function isInstalled() { return window.navigator.standalone === true || (window.matchMedia && matchMedia("(display-mode: standalone)").matches); }
+  var SHARE_ICO = '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:1.1em;height:1.1em;vertical-align:-.2em"><path d="M12 15V4M8 8l4-4 4 4M6 11H5v9h14v-9h-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function setupInstall() {
+    var btn = document.getElementById("install");
+    if (!btn) return;
+    btn.onclick = function () {
+      if (deferredInstall) {
+        deferredInstall.prompt();
+        deferredInstall.userChoice.then(function () { deferredInstall = null; btn.hidden = true; });
+        return;
+      }
+      var ov = document.createElement("div"); ov.className = "ins";
+      var safari = /safari\//i.test(navigator.userAgent) && !/crios|fxios|edgios|instagram|fban|fbav|line\//i.test(navigator.userAgent);
+      var html = '<div class="ins-box"><button class="px" type="button" aria-label="סגירה">✕</button><h3>מוסיפים למסך הבית</h3>';
+      if (isIOS() && !safari) {
+        html += '<p>הלינק נפתח בתוך אפליקציה אחרת (למשל וואטסאפ). צריך לפתוח אותו בספארי:</p><ol><li>לוחצים על "העתקת לינק".</li><li>פותחים את ספארי ומדביקים בשורת הכתובת.</li><li>חוזרים לכאן ללחוץ "התקנה".</li></ol><button class="main" id="cp" type="button">העתקת לינק</button>';
+      } else if (isIOS()) {
+        html += '<ol><li>לוחצים על כפתור השיתוף ' + SHARE_ICO + ' בתחתית המסך.</li><li>גוללים ובוחרים <b>"הוספה למסך הבית"</b>.</li><li>לוחצים <b>"הוספה"</b> למעלה.</li><li>פותחים את האפליקציה מהאייקון החדש.</li></ol><div class="ins-arrow" aria-hidden="true">⬇</div>';
+      } else {
+        html += '<ol><li>לוחצים על שלוש הנקודות בתפריט הדפדפן.</li><li>בוחרים "התקנת אפליקציה" או "הוספה למסך הבית".</li></ol>';
+      }
+      ov.innerHTML = html + '</div>';
+      function close() { ov.remove(); }
+      ov.onclick = function (e) { if (e.target === ov) close(); };
+      ov.querySelector(".px").onclick = close;
+      var cp = ov.querySelector("#cp");
+      if (cp) cp.onclick = function () {
+        var u = location.href.split("#")[0];
+        (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { cp.textContent = "הלינק הועתק ✓"; }, function () { cp.textContent = u; });
+      };
+      document.body.appendChild(ov);
+    };
+  }
   function toast(msg) {
     var t = document.getElementById("toast");
     if (!t) { t = document.createElement("div"); t.id = "toast"; document.body.appendChild(t); }
@@ -246,10 +282,12 @@
     show('<div class="hero"><h1>בוחרים סנדוויץ\' למחר בבוקר!</h1><p class="sub">לחצו על השם שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
       '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>' + CHARACTERS.mom.name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
+      (demo || isInstalled() ? "" : '<button class="install" id="install" type="button">' + SHARE_ICO + ' התקנה למסך הבית</button>') +
       '<footer class="credit"><div class="cr"><div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + '</div></div>' +
       (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות - כבוי</button>') + '</footer>');
     app.className = "home";
     setupBell();
+    setupInstall();
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
     });

@@ -233,3 +233,15 @@ main.home{padding-top:calc(6px + var(--st,env(safe-area-inset-top,0px)))}
 .row .nudge:active{transform:scale(.95)}
 .row .nudge:disabled{opacity:.6}
 .chip.soft{background:rgba(143,224,74,.22);color:#d9ffb8}
+
+/* התקנה למסך הבית */
+.install{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:8px 0 0;padding:11px 14px;min-height:44px;border:0;border-radius:16px;background:#ffd34d;color:#2b1a00;font-size:18px;font-weight:700;font-family:inherit}
+.install[hidden]{display:none}
+.ins{position:fixed;inset:0;z-index:60;background:rgba(10,5,35,.78);display:flex;align-items:flex-end;justify-content:center;padding:14px}
+.ins-box{position:relative;width:100%;max-width:452px;padding:18px 18px 14px;border-radius:22px;background:#190f45;color:#fff;font-size:17px;line-height:1.45}
+.ins-box h3{margin:0 0 10px;font-size:20px;padding-inline-end:36px}
+.ins-box ol{margin:0 0 6px;padding-inline-start:24px}.ins-box li{margin-bottom:8px}
+.ins-box .px{position:absolute;top:12px;left:12px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:16px}
+.ins-box .main{width:100%;margin-top:6px;font-size:18px;padding:12px;border:0;border-radius:14px;background:#ffd34d;color:#2b1a00;font-weight:700;font-family:inherit}
+.ins-arrow{text-align:center;font-size:30px;color:#ffd34d}
+@media (prefers-reduced-motion:no-preference){.ins-arrow{animation:insb 1s ease-in-out infinite}@keyframes insb{50%{transform:translateY(6px)}}}
