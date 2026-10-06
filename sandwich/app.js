@@ -1,8 +1,13 @@
 (function () {
   var P = "sandwich_";
   var KIDS = ["lia", "daniela", "evyatar"];
-  var DISHES = ["חומוס ומלפפון חמוץ", "חומוס ופסטרמה", "חומוס וסלמי", "גבינה לבנה", "גבינת נפוליאון", "חומוס",
-    "חביתה", "ריבה", "שוקולד", "פיתה זעתר", "טוסט", "סלט ביצים", "טונה", "קוטג"];
+  var DISHES = [
+    {n: "חומוס ומלפפון חמוץ", e: "🥒"}, {n: "חומוס ופסטרמה", e: "🥩"}, {n: "חומוס וסלמי", e: "🍖"},
+    {n: "גבינה לבנה", e: "🥣"}, {n: "גבינת נפוליאון", e: "🧀"}, {n: "חומוס", e: "🫘"},
+    {n: "חביתה", e: "🍳"}, {n: "ריבה", e: "🍓"}, {n: "שוקולד", e: "🍫"},
+    {n: "פיתה זעתר", e: "🫓"}, {n: "טוסט", e: "🍞"}, {n: "סלט ביצים", e: "🥚"},
+    {n: "טונה", e: "🐟"}, {n: "קוטג'", e: "🥛"}];
+  function emoji(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name) return DISHES[i].e; return "🥪"; }
   var cfg = window.SANDWICH_CONFIG || {};
   var demo = !(cfg.supabaseUrl && cfg.supabaseAnonKey);
   var app = document.getElementById("app");
@@ -49,10 +54,29 @@
   }
 
   // ---- מסכים ----
-  function show(html) { clearInterval(timer); app.innerHTML = html; }
+  function show(html) { clearInterval(timer); app.innerHTML = html; window.scrollTo(0, 0); }
+  function colorOf(id) { return "--c:" + CHARACTERS[id].color; }
+
+  // קונפטי קטן מנקודה במסך
+  function burst(x, y) {
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var set = ["⭐", "🥪", "✨", "🍅", "🥒", "🧀", "💖"];
+    for (var i = 0; i < 16; i++) {
+      var el = document.createElement("span");
+      el.className = "fx"; el.textContent = set[i % set.length];
+      el.style.left = x + "px"; el.style.top = y + "px";
+      document.body.appendChild(el);
+      var ang = Math.random() * Math.PI * 2, dist = 70 + Math.random() * 90;
+      var anim = el.animate([
+        {transform: "translate(-50%,-50%) scale(.4)", opacity: 1},
+        {transform: "translate(calc(-50% + " + Math.cos(ang) * dist + "px),calc(-50% + " + (Math.sin(ang) * dist - 30) + "px)) scale(1.2) rotate(" + (Math.random() * 360) + "deg)", opacity: 0}
+      ], {duration: 800 + Math.random() * 400, easing: "cubic-bezier(.2,.7,.3,1)"});
+      anim.onfinish = (function (e) { return function () { e.remove(); }; })(el);
+    }
+  }
 
   function screenCode(msg) {
-    show('<h1>ברוכים הבאים</h1><p class="sub">הקלידו את הקוד המשפחתי</p>' +
+    show('<div class="hero"><div class="mascot">' + drawCharacter("mom") + '</div><h1>סנדוויץ\' לבית הספר 🥪</h1><p class="sub">הקלידו את הקוד המשפחתי</p></div>' +
       '<input id="code" autocomplete="off" autocapitalize="off"><div class="err">' + (msg || "") + '</div>' +
       '<button class="main" id="go">כניסה</button>');
     var inp = document.getElementById("code");
@@ -60,7 +84,6 @@
       var c = inp.value.trim();
       if (!c) return;
       store("code", c);
-      // בדיקת קוד מול השרת
       getAll(c, target(false).iso).then(function () { screenWho(); }).catch(function (e) {
         store("code", null);
         screenCode(e.message === "bad code" ? "הקוד לא נכון" : "אין חיבור. נסו שוב");
@@ -71,58 +94,67 @@
   }
 
   function screenWho() {
-    var ids = KIDS.concat(["mom"]);
-    show('<h1>מי אתם?</h1><p class="sub">בחרו את הדמות שלכם</p><div class="grid">' +
-      ids.map(function (id) { return '<button class="card" data-id="' + id + '">' + drawCharacter(id) + CHARACTERS[id].name + '</button>'; }).join("") +
-      '</div>');
-    Array.prototype.forEach.call(app.querySelectorAll(".card"), function (b) {
+    show('<div class="hero"><h1>מי אתם? ✨</h1><p class="sub">לחצו על הדמות שלכם</p></div><div class="who">' +
+      KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
+      '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom", "face") + '<span><b>ליאורי</b><small>לראות מה כולם בחרו</small></span></button>');
+    Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
     });
   }
 
   function topBar() {
-    return '<div class="top"><span></span><button class="link" id="switch">לא אני? החלפה</button></div>';
+    return '<div class="top"><span><span class="lg">🥪</span> <span class="logo">סנדוויץ\'</span></span><button class="link" id="switch">לא אני? החלפה</button></div>';
   }
   function bindSwitch() {
     var s = document.getElementById("switch");
     if (s) s.onclick = function () { store("who", null); screenWho(); };
   }
 
-  function screenPick(child, saved) {
+  function screenPick(child, saved, at) {
     var t = target(false), code = store("code");
     getAll(code, t.iso).then(function (rows) {
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && mine.dish;
-      show(topBar() + '<h1>היי ' + CHARACTERS[child].name + '!</h1><p class="sub">איזה סנדוויץ\' תרצו לקחת לבית הספר מחר בבוקר?</p>' +
-        (saved ? '<div class="ok">נשמר ✔ אפשר לשנות</div>' : cur ? '<div class="ok">בחרתם: <b>' + esc(cur) + '</b></div>' : '') +
-        '<div class="grid">' + DISHES.map(function (d, i) {
-          return '<button class="card dish' + (d === cur ? " sel" : "") + '" data-i="' + i + '">' + esc(d) + '</button>';
+      var first = !at;
+      show(topBar() + '<div class="greet" style="' + colorOf(child) + '"><div class="pic">' + drawCharacter(child) + '</div>' +
+        '<div class="bubble"><h1>היי ' + CHARACTERS[child].name + '!</h1><p>איזה סנדוויץ\' תרצו לקחת לבית הספר מחר בבוקר?</p></div></div>' +
+        (cur ? '<div class="ok' + (saved ? " pop" : "") + '" style="' + colorOf(child) + '"><span class="e">' + emoji(cur) + '</span><span>' + (saved ? "נשמר! " : "בחרתם: ") + '<b>' + esc(cur) + '</b> · אפשר לשנות</span></div>' : '') +
+        '<div class="grid" style="' + colorOf(child) + '">' + DISHES.map(function (d, i) {
+          return '<button class="dish' + (d.n === cur ? " sel" : "") + '" data-i="' + i + '"><span class="em">' + d.e + '</span>' + esc(d.n) + '</button>';
         }).join("") + '</div>');
       bindSwitch();
+      if (saved && at) burst(at.x, Math.min(at.y, window.innerHeight - 40));
       Array.prototype.forEach.call(app.querySelectorAll(".dish"), function (b) {
-        b.onclick = function () {
-          setChoice(code, child, t.iso, DISHES[b.dataset.i]).then(function () { screenPick(child, true); window.scrollTo(0, 0); })
+        b.onclick = function (ev) {
+          var pt = {x: ev.clientX || window.innerWidth / 2, y: ev.clientY || 200};
+          setChoice(code, child, t.iso, DISHES[b.dataset.i].n).then(function () { screenPick(child, true, pt); })
             .catch(function () { alert("לא הצלחנו לשמור. נסו שוב"); });
         };
       });
-    }).catch(function () { show('<h1>אין חיבור</h1><button class="main" id="retry">נסו שוב</button>'); document.getElementById("retry").onclick = route; });
+    }).catch(function () { show('<h1>אין חיבור 📡</h1><button class="main" id="retry">נסו שוב</button>'); document.getElementById("retry").onclick = route; });
   }
 
   function screenMom() {
-    var t = target(true), code = store("code");
+    var t = target(true), code = store("code"), celebrated = false;
     function render() {
       getAll(code, t.iso).then(function (rows) {
         var by = {}; rows.forEach(function (r) { by[r.child] = r.dish; });
-        var left = KIDS.filter(function (k) { return !by[k]; }).length;
-        var html = topBar() + '<h1>הסנדוויץ\'ים ל' + t.label + ' בבוקר</h1><p class="sub">' + (left ? "עוד לא בחרו: " + left : "כולם בחרו 🎉") + '</p>' +
+        var done = KIDS.filter(function (k) { return by[k]; }).length;
+        var all = done === KIDS.length;
+        app.innerHTML = topBar() +
+          '<div class="mom-head" style="' + colorOf("mom") + '"><div class="pic">' + drawCharacter("mom") + '</div><div><h1>הסנדוויץ\'ים ל' + t.label + ' בבוקר</h1><p class="sub" style="margin:0">' + done + ' מתוך ' + KIDS.length + ' בחרו</p></div></div>' +
+          '<div class="progress"><i style="width:' + (done / KIDS.length * 100) + '%"></i></div>' +
+          (all ? '<div class="all">כולם בחרו 🎉</div>' : '') +
           KIDS.map(function (k) {
-            return '<div class="row ' + (by[k] ? "done" : "wait") + '">' + drawCharacter(k) + '<div><b>' + CHARACTERS[k].name + '</b>' +
-              (by[k] ? '<span class="d">' + esc(by[k]) + '</span>' : '<span class="none">עדיין לא בחר/ה</span>') + '</div></div>';
-          }).join("") + '<button class="main" id="refresh">רענון</button>';
-        app.innerHTML = html;
+            var d = by[k];
+            return '<div class="row ' + (d ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
+              (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא בחר/ה…</span>') + '</div>' +
+              '<span class="chip ' + (d ? "y" : "n") + '">' + (d ? "בחר/ה ✓" : "ממתין") + '</span></div>';
+          }).join("") + '<button class="main refresh" id="refresh">רענון 🔄</button>';
         bindSwitch();
         document.getElementById("refresh").onclick = render;
-      }).catch(function () { app.innerHTML = '<h1>אין חיבור</h1>'; });
+        if (all && !celebrated) { celebrated = true; burst(window.innerWidth / 2, 160); }
+      }).catch(function () { app.innerHTML = '<h1>אין חיבור 📡</h1>'; });
     }
     show("");
     render();

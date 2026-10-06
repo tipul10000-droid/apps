@@ -3,21 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#120d2b">
 <title>האפליקציות שלנו</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap">
 <style>
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:#fff8ef;color:#2b2b2b}
-  main{max-width:480px;margin:0 auto;padding:24px 16px}
-  h1{font-size:26px;margin:0 0 20px}
-  a.app{display:flex;align-items:center;gap:14px;background:#fff;border-radius:18px;padding:18px;margin-bottom:12px;text-decoration:none;color:inherit;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-  a.app span.i{font-size:34px}
-  a.app b{font-size:20px;display:block}
-  a.app small{color:#777}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;font-family:"Rubik",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#fff;background:radial-gradient(circle at 15% -5%,#4a2f9a 0,transparent 45%),radial-gradient(circle at 100% 30%,#8a2f7a66 0,transparent 40%),#120d2b;background-attachment:fixed}
+  main{max-width:480px;margin:0 auto;padding:28px 16px}
+  h1{font-size:30px;margin:0 0 4px;font-weight:800}
+  p{margin:0 0 22px;color:#b9b0e0}
+  a.app{display:flex;align-items:center;gap:14px;border-radius:24px;padding:16px;text-decoration:none;color:inherit;background:linear-gradient(120deg,#ff6fb555,#ffa04d33,#241a4d);box-shadow:0 0 0 2px #ff6fb5aa,0 8px 24px #ff6fb533}
+  a.app:active{transform:scale(.97)}
+  a.app .i{font-size:44px}
+  a.app b{font-size:21px;display:block}
+  a.app small{color:#d8d0f5;font-size:15px}
+  .faces{display:flex;margin-top:8px}
+  .faces img{width:34px;height:34px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #241a4d;margin-inline-end:-8px}
 </style>
 </head>
 <body>
 <main>
   <h1>האפליקציות שלנו</h1>
-  <a class="app" href="sandwich/"><span class="i">🥪</span><span><b>סנדוויץ' לבית הספר</b><small>מה לוקחים מחר בבוקר?</small></span></a>
+  <p>בחרו אפליקציה</p>
+  <a class="app" href="sandwich/"><span class="i">🥪</span><span><b>סנדוויץ' לבית הספר</b><small>מה לוקחים מחר בבוקר?</small>
+    <span class="faces"><img src="sandwich/characters/lia-face.webp" alt=""><img src="sandwich/characters/daniela-face.webp" alt=""><img src="sandwich/characters/evyatar-face.webp" alt=""></span></span></a>
 </main>
 </body>
 </html>
