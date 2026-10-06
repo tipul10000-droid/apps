@@ -36,17 +36,25 @@
 
   function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   // לימודים ראשון עד שישי, בלי שבת.
-  // ילדים: תמיד היום הבא (שישי וגם שבת מובילים לראשון).
+  // הבחירה נסגרת ב-04:00 בבוקר (מי שהולך לישון מאוחר עדיין בוחר ליום שלמחרת).
+  // ילדים: תמיד היום הבא, לפי "יום" שמתחלף ב-04:00 (שישי ושבת מובילים לראשון).
   // ליאורי: עד 12:00 רואה את היום (מה שמכינים עכשיו), מ-12:00 את היום הבא.
+  var CLOSE_HOUR = 4;
   function nextSchoolDay(d) {
     var n = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 12);
     if (n.getDay() === 6) n.setDate(n.getDate() + 1);
     return n;
   }
   function target(forMom) {
-    var now = new Date();
-    var d = (forMom && now.getHours() < 12 && now.getDay() !== 6) ? now : nextSchoolDay(now);
-    var days = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5);
+    var now = new Date(), base, d;
+    if (forMom) {
+      base = now;
+      d = (now.getHours() < 12 && now.getDay() !== 6) ? now : nextSchoolDay(now);
+    } else {
+      base = new Date(now.getTime() - CLOSE_HOUR * 36e5);
+      d = nextSchoolDay(base);
+    }
+    var days = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(base.getFullYear(), base.getMonth(), base.getDate())) / 864e5);
     return {iso: iso(d), label: days === 0 ? "היום" : days === 1 ? "מחר" : "יום " + DAYS[d.getDay()]};
   }
 

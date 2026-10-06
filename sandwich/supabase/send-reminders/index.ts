@@ -53,6 +53,9 @@ Deno.serve(async (req) => {
   const slotParam = url.searchParams.get("slot");
   const slot = dry && slotParam ? +slotParam : SLOTS.includes(now.hour) ? now.hour : null;
   if (slot === null) return json({ skipped: "not a reminder hour", hour: now.hour });
+  // בשישי בערב אין תזכורת. בשבת בערב יש (ליום ראשון).
+  const todayDow = new Date(Date.UTC(now.y, now.m - 1, now.d, 12)).getUTCDay();
+  if (todayDow === 5) return json({ skipped: "no reminder on Friday" });
 
   const target = nextSchoolDay(now.y, now.m, now.d);
   const iso = target.toISOString().slice(0, 10);
