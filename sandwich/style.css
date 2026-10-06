@@ -135,3 +135,25 @@ main.pick{height:100vh;height:100dvh;display:flex;flex-direction:column;padding:
 #toast.show{opacity:1;transform:none}
 
 #ver{position:fixed;bottom:3px;right:8px;z-index:1;font-size:10px;color:rgba(255,255,255,.28);pointer-events:none}
+
+/* סיבוב אחרון: אייקונים בודדים, שורת בחירה קבועה, הגדלה למסך מלא, רמז גלילה */
+.pair.one svg{width:1em;height:1em}
+.phead .ok{height:52px;min-height:52px;padding:4px 10px;align-items:center;overflow:hidden}
+.phead .ok .tx{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.2;font-weight:700;font-size:14.5px;flex:1;min-width:0}
+.phead .ok.all{background:rgba(143,224,74,.2);box-shadow:inset 0 0 0 1.5px #8fe04a}
+.zoom{position:absolute;right:6px;bottom:6px;width:32px;height:32px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(10,6,30,.62);box-shadow:0 0 0 1.5px rgba(255,255,255,.35);backdrop-filter:blur(3px);z-index:3}
+.zoom svg{width:19px;height:19px}
+.zoom:active{transform:scale(.9)}
+#zoom{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(6,4,20,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);animation:zfade .22s ease-out}
+#zoom .ch{height:88vh;height:88dvh;width:auto;max-width:94vw;object-fit:contain;filter:drop-shadow(0 0 28px color-mix(in srgb,var(--c) 55%,transparent));animation:zpop .32s cubic-bezier(.2,.8,.3,1.2)}
+#zoom .zx{position:absolute;top:calc(12px + env(safe-area-inset-top));left:14px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:20px;line-height:1;font-family:inherit}
+@keyframes zfade{from{opacity:0}to{opacity:1}}
+@keyframes zpop{from{transform:scale(.8);opacity:0}to{transform:none;opacity:1}}
+.scrollhint{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translate(-50%,8px);z-index:5;display:flex;align-items:center;gap:8px;white-space:nowrap;
+  padding:9px 16px;border-radius:99px;font-size:14px;font-weight:600;color:#fff;background:rgba(20,12,56,.62);box-shadow:0 0 0 1.5px rgba(255,255,255,.22);backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .35s,transform .35s}
+.scrollhint.show{opacity:.92;transform:translate(-50%,0)}
+.scrollhint .ar{font-size:22px;line-height:.6;display:inline-block;animation:nudge 1.1s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateY(-2px)}50%{transform:translateY(4px)}}
+#rows .progress{margin:0 0 14px}
+#rows .row:last-of-type{margin-bottom:12px}

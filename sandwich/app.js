@@ -2,28 +2,35 @@
   var P = "sandwich_";
   var KIDS = ["lia", "daniela", "evyatar"];
   var DISHES = [
-    {n: "חומוס ומלפפון חמוץ", e: "🥒"}, {n: "חומוס ופסטרמה", e: ["hummus", "pastrami"]}, {n: "חומוס וסלמי", e: ["hummus", "salami"]},
-    {n: "גבינה לבנה", e: "🥣"}, {n: "גבינת נפוליאון", e: "🧀"}, {n: "חומוס", e: ["hummus"]},
-    {n: "חביתה", e: "🍳"}, {n: "ריבה", e: "🍓"}, {n: "שוקולד", e: "🍫"},
-    {n: "פיתה זעתר", e: "🫓"}, {n: "טוסט", e: "🍞"}, {n: "סלט ביצים", e: "🥚"},
-    {n: "טונה", e: "🐟"}, {n: "קוטג'", e: "🥛"}];
+    {n: "חומוס ומלפפון חמוץ", e: ["hummus", "pickle"]}, {n: "חומוס ופסטרמה", e: ["hummus", "pastrami"]}, {n: "חומוס וסלמי", e: ["hummus", "salami"]},
+    {n: "גבינה לבנה", e: ["tub"]}, {n: "גבינת נפוליאון", e: ["napoleon"]}, {n: "חומוס", e: ["hummus"]},
+    {n: "חביתה", e: "🍳"}, {n: "ריבה תות", e: "🍓", old: "ריבה"}, {n: "שוקולד נוטלה", e: "🍫", old: "שוקולד"},
+    {n: "פיתה זעתר", e: "🫓"}, {n: "טוסט", e: "🍞"}, {n: "סלט ביצים", e: ["eggs"]},
+    {n: "טונה", e: "🐟"}, {n: "קוטג'", e: ["cottage"]}];
+  // בחירות ישנות ששמרו שם קודם של מנה
+  function canon(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name || DISHES[i].old === name) return DISHES[i].n; return name; }
 
   // אייקונים מצוירים לאוכל שאין לו אימוג'י מתאים
   var SVG = {
     hummus: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M5 31h54c0 15-11 25-27 25S5 46 5 31z" fill="#f6f1e7" stroke="#c9bfa9" stroke-width="2"/><ellipse cx="32" cy="31" rx="27" ry="9" fill="#ecd196" stroke="#c9bfa9" stroke-width="2"/><ellipse cx="32" cy="31" rx="16" ry="4.6" fill="none" stroke="#c98a1b" stroke-width="2.4"/><ellipse cx="32" cy="31" rx="7" ry="2" fill="#dcae4e"/><circle cx="19" cy="28" r="3.4" fill="#d9ad62" stroke="#b5842f" stroke-width="1.2"/><circle cx="45" cy="29" r="3.4" fill="#d9ad62" stroke="#b5842f" stroke-width="1.2"/><circle cx="32" cy="25.5" r="3.4" fill="#d9ad62" stroke="#b5842f" stroke-width="1.2"/><circle cx="26" cy="35" r="1.1" fill="#c0392b"/><circle cx="38" cy="35.5" r="1.1" fill="#c0392b"/></svg>',
     pastrami: '<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="34" rx="27" ry="20" fill="#7a2a1c" stroke="#3b1710" stroke-width="2"/><ellipse cx="32" cy="33" rx="22" ry="15.5" fill="#d0646d"/><path d="M14 30c8-6 20 4 36-4M13 38c9-5 22 5 38-3M20 44c7-3 17 2 25-2" fill="none" stroke="#f0a8ab" stroke-width="2.2" stroke-linecap="round"/><g fill="#24140f"><circle cx="10" cy="34" r="1.5"/><circle cx="16" cy="46" r="1.5"/><circle cx="28" cy="52" r="1.5"/><circle cx="42" cy="51" r="1.5"/><circle cx="53" cy="43" r="1.5"/><circle cx="55" cy="31" r="1.5"/><circle cx="46" cy="19" r="1.5"/><circle cx="30" cy="15" r="1.5"/><circle cx="17" cy="21" r="1.5"/></g></svg>',
-    salami: '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="38" cy="26" r="19" fill="#c0443f" stroke="#7a1a22" stroke-width="2" opacity=".75"/><circle cx="29" cy="35" r="22" fill="#b5303a" stroke="#7a1a22" stroke-width="2.4"/><g fill="#f6d9d0"><circle cx="21" cy="28" r="2.4"/><circle cx="33" cy="25" r="2"/><circle cx="38" cy="36" r="2.6"/><circle cx="26" cy="41" r="2.2"/><circle cx="17" cy="38" r="1.8"/><circle cx="31" cy="47" r="1.8"/><circle cx="42" cy="27" r="1.6"/><circle cx="24" cy="20" r="1.6"/></g></svg>'
+    salami: '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="38" cy="26" r="19" fill="#c0443f" stroke="#7a1a22" stroke-width="2" opacity=".75"/><circle cx="29" cy="35" r="22" fill="#b5303a" stroke="#7a1a22" stroke-width="2.4"/><g fill="#f6d9d0"><circle cx="21" cy="28" r="2.4"/><circle cx="33" cy="25" r="2"/><circle cx="38" cy="36" r="2.6"/><circle cx="26" cy="41" r="2.2"/><circle cx="17" cy="38" r="1.8"/><circle cx="31" cy="47" r="1.8"/><circle cx="42" cy="27" r="1.6"/><circle cx="24" cy="20" r="1.6"/></g></svg>',
+    pickle: '<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(-32 32 32)"><rect x="5" y="20" width="54" height="25" rx="12.5" fill="#7f9a2e" stroke="#46591a" stroke-width="2.4"/><path d="M15 28h28" stroke="#b4cc5a" stroke-width="2.6" stroke-linecap="round" opacity=".85"/><g fill="#46591a"><circle cx="17" cy="36" r="1.7"/><circle cx="27" cy="39" r="1.7"/><circle cx="37" cy="36" r="1.7"/><circle cx="47" cy="39" r="1.7"/><circle cx="23" cy="32" r="1.4"/><circle cx="42" cy="32" r="1.4"/><circle cx="32" cy="31" r="1.4"/></g></g></svg>',
+    napoleon: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 60c1-11 9-15 22-15s21 4 22 15z" fill="#2c4f9e" stroke="#1b3270" stroke-width="1.6"/><path d="M20 47l12 13M44 47L32 60" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><circle cx="32" cy="46" r="1.6" fill="#e5b73b"/><circle cx="32" cy="37" r="11.5" fill="#f7cba3" stroke="#c1906a" stroke-width="1.6"/><circle cx="27.8" cy="37" r="1.6" fill="#2a1d17"/><circle cx="36.2" cy="37" r="1.6" fill="#2a1d17"/><path d="M27.5 42.5q4.5 3.2 9 0" stroke="#a24a3a" stroke-width="1.7" fill="none" stroke-linecap="round"/><path d="M20.5 32.5q-2.6 6 .4 10M43.5 32.5q2.6 6-.4 10" stroke="#6a4528" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M2 29c5-13 18-19 30-13 12-6 25 0 30 13-9-5-19-5-30-2-11-3-21-3-30 2z" fill="#1c1c25" stroke="#000" stroke-width="1.4"/><path d="M7 28c8-4 17-4 25-1 8-3 17-3 25 1" fill="none" stroke="#e5b73b" stroke-width="2"/><circle cx="48" cy="21.5" r="3.8" fill="#e63946"/><circle cx="48" cy="21.5" r="2.3" fill="#fff"/><circle cx="48" cy="21.5" r="1" fill="#2c4f9e"/></svg>',
+    tub: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 26h44l-4 29q-.7 4-5 4H19q-4.3 0-5-4z" fill="#fbfbf6" stroke="#b9b9aa" stroke-width="2"/><rect x="37" y="-0" width="0" height="0"/><path d="M12 36h40l-1.2 8H13.2z" fill="#cfe8ff"/><path d="M26 40q3-5 6 0t6 0" stroke="#4aa3e8" stroke-width="2.2" fill="none" stroke-linecap="round"/><rect x="7" y="17" width="50" height="11" rx="4" fill="#4aa3e8" stroke="#2a7bbd" stroke-width="2"/><path d="M13 21h20" stroke="#9fd0f5" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    cottage: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M13 28h38l-4.2 28q-.6 3.6-4.4 3.6H21.6q-3.8 0-4.4-3.6z" fill="#fffef6" stroke="#c7c1a4" stroke-width="2"/><path d="M15 40h34l-1.2 9H16.2z" fill="#a5d86a"/><path d="M26 44.5h12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><g fill="#fffdf0" stroke="#d4cdb0" stroke-width="1.6"><circle cx="20" cy="26" r="6"/><circle cx="44" cy="26" r="6"/><circle cx="32" cy="22" r="8"/><circle cx="25.5" cy="21" r="5"/><circle cx="38.5" cy="20.5" r="5"/><circle cx="32" cy="27" r="6"/></g><ellipse cx="13" cy="28" rx="1.5" ry="1.5" fill="#c7c1a4"/></svg>',
+    eggs: '<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="18" cy="32" rx="13" ry="19" fill="#fffdf6" stroke="#d3cbb2" stroke-width="2"/><ellipse cx="18" cy="35" rx="7" ry="8.6" fill="#ffc72b" stroke="#e0a10f" stroke-width="1.6"/><ellipse cx="46" cy="32" rx="13" ry="19" fill="#fffdf6" stroke="#d3cbb2" stroke-width="2"/><ellipse cx="46" cy="35" rx="7" ry="8.6" fill="#ffc72b" stroke="#e0a10f" stroke-width="1.6"/><ellipse cx="15.5" cy="32" rx="2" ry="2.6" fill="#ffe27a"/><ellipse cx="43.5" cy="32" rx="2" ry="2.6" fill="#ffe27a"/></svg>'
   };
   function ico(e) {
     if (typeof e === "string") return e;
-    return '<span class="pair">' + e.map(function (k) { return SVG[k]; }).join("") + '</span>';
+    return '<span class="pair' + (e.length === 1 ? " one" : "") + '">' + e.map(function (k) { return SVG[k]; }).join("") + '</span>';
   }
   var DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
   function dayLabel(isoStr) {
     var d = new Date(isoStr + "T12:00:00");
     return "יום " + DAYS[d.getDay()] + " · " + d.getDate() + "." + (d.getMonth() + 1);
   }
-  function emoji(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name) return ico(DISHES[i].e); return "🥪"; }
+  function emoji(name) { name = canon(name); for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name) return ico(DISHES[i].e); return "🥪"; }
   var cfg = window.SANDWICH_CONFIG || {};
   var demo = !(cfg.supabaseUrl && cfg.supabaseAnonKey);
   var app = document.getElementById("app");
@@ -146,6 +153,23 @@
     }
   }
 
+  // ---- הגדלת דמות למסך מלא ----
+  var MAGNIFY = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.2" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M15 15l5.5 5.5" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg>';
+  function zoomBtn(id) { return '<button class="zoom" type="button" data-zoom="' + id + '" aria-label="הגדלת הדמות">' + MAGNIFY + '</button>'; }
+  function openZoom(id) {
+    var z = document.createElement("div");
+    z.id = "zoom"; z.style.cssText = "--c:" + CHARACTERS[id].color;
+    z.innerHTML = '<button class="zx" type="button" aria-label="סגירה">✕</button>' + drawCharacter(id);
+    function close() { z.remove(); document.removeEventListener("keydown", onKey); }
+    function onKey(e) { if (e.key === "Escape") close(); }
+    z.onclick = close; document.addEventListener("keydown", onKey);
+    document.body.appendChild(z);
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-zoom]");
+    if (b) { e.stopPropagation(); openZoom(b.dataset.zoom); }
+  });
+
   function burstFrom(el) {
     if (!el) return;
     var r = el.getBoundingClientRect();
@@ -161,12 +185,23 @@
     });
   }
 
-  function topBar() {
-    return '<div class="top"><span><span class="lg">🥪</span> <span class="logo">סנדוויץ\'</span></span><button class="link" id="switch">לא אני? החלפה</button></div>';
-  }
   function bindSwitch() {
-    var s = document.getElementById("switch");
-    if (s) s.onclick = function () { store("who", null); screenWho(); };
+    var sw = document.getElementById("switch");
+    if (sw) sw.onclick = function () { store("who", null); screenWho(); };
+  }
+
+  // רמז לגלילה: אחרי שתי שניות בלי גלילה מופיע חץ שקוף, ונעלם ברגע שמתחילים לגלול
+  function scrollHint(list) {
+    if (store("scrolled")) return;
+    var hint = document.createElement("div");
+    hint.className = "scrollhint"; hint.innerHTML = '<span class="ar">⌄</span> יש עוד אפשרויות, אפשר לגלול';
+    app.appendChild(hint);
+    var gone = false;
+    function hide() { if (gone) return; gone = true; clearTimeout(tm); hint.classList.remove("show"); setTimeout(function () { hint.remove(); }, 400); }
+    var tm = setTimeout(function () {
+      if (!gone && list.scrollHeight > list.clientHeight + 24 && list.scrollTop < 8) hint.classList.add("show");
+    }, 2000);
+    list.addEventListener("scroll", function () { if (list.scrollTop > 8) { store("scrolled", "1"); hide(); } }, {passive: true});
   }
 
   function screenPick(child) {
@@ -174,11 +209,11 @@
     var forTxt = t.label === "מחר" ? "למחר" : "ל" + t.label;
     getAll(t.iso).then(function (rows) {
       var mine = rows.filter(function (r) { return r.child === child; })[0];
-      var cur = mine && mine.dish;
+      var cur = mine && canon(mine.dish);
       show('<header class="phead" style="' + colorOf(child) + '"><div class="ptop">' +
         (demo ? "" : '<button class="pill" id="bell" type="button">🔔 תזכורות</button>') +
-        '<button class="pill" id="switch" type="button">חזרה לדמויות</button></div>' +
-        '<div class="greet"><div class="pic">' + drawCharacter(child) + '</div>' +
+        '<button class="pill" id="switch" type="button">חזרה למסך הדמויות</button></div>' +
+        '<div class="greet"><div class="pic">' + drawCharacter(child) + zoomBtn(child) + '</div>' +
         '<div class="bubble"><small>היי ' + CHARACTERS[child].name + '!</small><h1>בחירת סנדוויץ\' ' + forTxt + '</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"></div></div></div></header>' +
         '<div class="plist" style="' + colorOf(child) + '"><div class="grid">' + DISHES.map(function (d, i) {
           return '<button class="dish" data-i="' + i + '"><span class="em">' + ico(d.e) + '</span><span class="nm">' + esc(d.n) + '</span></button>';
@@ -191,8 +226,8 @@
         dishes.forEach(function (b) { b.classList.toggle("sel", DISHES[b.dataset.i].n === cur); });
         status.className = "ok" + (cur ? "" : " idle") + (saved ? " pop" : "");
         status.innerHTML = cur
-          ? '<span class="e">' + emoji(cur) + '</span><span>' + (saved ? "נשמר! כל הכבוד " : "בחרת: ") + '<b>' + esc(cur) + '</b></span>'
-          : '<span>לחצו על מנה כדי לבחור</span>';
+          ? '<span class="e">' + emoji(cur) + '</span><span class="tx">בחרת ' + esc(cur) + '!</span>'
+          : '<span class="tx">לחצו על מנה כדי לבחור</span>';
       }
       paint(false);
       dishes.forEach(function (b) {
@@ -203,6 +238,7 @@
           }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
         };
       });
+      scrollHint(app.querySelector(".plist"));
       var bell = document.getElementById("bell");
       if (bell) {
         pushState().then(function (sub) {
@@ -226,27 +262,33 @@
 
   function screenMom() {
     var t = target(true), celebrated = false;
+    show('<header class="phead" style="' + colorOf("mom") + '"><div class="ptop"><button class="pill" id="switch" type="button">חזרה למסך הדמויות</button></div>' +
+      '<div class="greet"><div class="pic">' + drawCharacter("mom") + zoomBtn("mom") + '</div>' +
+      '<div class="bubble"><h1>הסנדוויצ\'ים של ' + t.label + ' בבוקר</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"><span class="tx">טוענים…</span></div></div></div></header>' +
+      '<div class="plist" id="rows"></div>');
+    app.className = "pick";
+    bindSwitch();
+    var status = document.getElementById("status"), box = document.getElementById("rows");
+    // בונים את הרשימה והכפתור פעם אחת; בעדכון משנים רק את תוכן השורות (הדמות למעלה לא זזה)
+    box.innerHTML = '<div class="progress"><i style="width:0"></i></div><div id="list"></div><button class="main refresh" id="refresh" type="button">רענון</button>';
     function render() {
       getAll(t.iso).then(function (rows) {
-        var by = {}; rows.forEach(function (r) { by[r.child] = r.dish; });
+        var by = {}; rows.forEach(function (r) { by[r.child] = canon(r.dish); });
         var done = KIDS.filter(function (k) { return by[k]; }).length;
         var all = done === KIDS.length;
-        app.innerHTML = topBar() +
-          '<div class="mom-head" style="' + colorOf("mom") + '"><div class="pic">' + drawCharacter("mom") + '</div><div><h1>הסנדוויץ\'ים של ' + t.label + ' בבוקר</h1><p class="sub" style="margin:0">' + done + ' מתוך ' + KIDS.length + ' בחרו</p></div></div>' +
-          '<div class="progress"><i style="width:' + (done / KIDS.length * 100) + '%"></i></div>' +
-          (all ? '<div class="all">כולם בחרו 🎉</div>' : '') +
-          KIDS.map(function (k) {
-            var d = by[k];
-            return '<div class="row ' + (d ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
-              (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא בחר/ה…</span>') + '</div>' +
-              '<span class="chip ' + (d ? "y" : "n") + '">' + (d ? "בחר/ה ✓" : "ממתין") + '</span></div>';
-          }).join("") + '<button class="main refresh" id="refresh">רענון</button>';
-        bindSwitch();
-        document.getElementById("refresh").onclick = render;
-        if (all && !celebrated) { celebrated = true; burst(window.innerWidth / 2, 160); }
-      }).catch(function () { app.innerHTML = '<h1>אין חיבור 📡</h1>'; });
+        status.className = "ok" + (all ? " all" : " idle");
+        status.innerHTML = '<span class="tx">' + (all ? "כולם בחרו 🎉" : done + " מתוך " + KIDS.length + " בחרו") + '</span>';
+        box.querySelector(".progress i").style.width = (done / KIDS.length * 100) + "%";
+        document.getElementById("list").innerHTML = KIDS.map(function (k) {
+          var d = by[k];
+          return '<div class="row ' + (d ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
+            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא בחר/ה…</span>') + '</div>' +
+            '<span class="chip ' + (d ? "y" : "n") + '">' + (d ? "בחר/ה ✓" : "ממתין") + '</span></div>';
+        }).join("");
+        if (all && !celebrated) { celebrated = true; burstFrom(status); }
+      }).catch(function () { status.innerHTML = '<span class="tx">אין חיבור 📡</span>'; });
     }
-    show("");
+    document.getElementById("refresh").onclick = render;
     render();
     timer = setInterval(render, 20000);
   }
