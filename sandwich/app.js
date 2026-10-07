@@ -8,7 +8,7 @@
     {n: "חביתה", e: "🍳"}, {n: "ריבת תות", e: "🍓", old: ["ריבה", "ריבה תות"]}, {n: "שוקולד נוטלה", e: "🍫", old: ["שוקולד"]},
     {n: "פיתה זעתר", e: "🫓"}, {n: "טוסט", e: "🍞"}, {n: "סלט ביצים", e: ["eggs"]},
     {n: "טונה", e: "🐟"}, {n: "קוטג'", e: ["cottage"]},
-    {n: "לאבנה", e: ["labneh"], old: ["לבנה"]}, {n: "חמאה ומלח", e: ["butter"]}];
+    {n: "לאבנה", e: ["labneh"], old: ["לבנה"], isNew: true}, {n: "חמאה ומלח", e: ["butter"], isNew: true}];
   // בחירות ישנות ששמרו שם קודם של מנה
   function canon(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name || (DISHES[i].old || []).indexOf(name) >= 0) return DISHES[i].n; return name; }
 
@@ -326,9 +326,11 @@
         '<button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
         '<div class="greet">' + picBox(child) + '' +
         '<div class="bubble"><small>היי ' + CHARACTERS[child].name + '!</small><h1>בחירת סנדוויץ\' ' + forTxt + '</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"></div></div></div></header>' +
-        '<div class="plist" style="' + colorOf(child) + '"><div class="grid">' + DISHES.map(function (d, i) {
-          return '<button class="dish" data-i="' + i + '"><span class="em">' + ico(d.e) + '</span><span class="nm">' + esc(d.n) + '</span></button>';
-        }).join("") + '</div></div>');
+        '<div class="plist" style="' + colorOf(child) + '"><div class="grid">' + DISHES.map(function (d, i) { return {d: d, i: i}; })
+          .sort(function (a, b) { return (b.d.isNew ? 1 : 0) - (a.d.isNew ? 1 : 0) || a.i - b.i; })
+          .map(function (o) {
+            return '<button class="dish" data-i="' + o.i + '">' + (o.d.isNew ? '<span class="newtag"><b>חדש!</b></span>' : '') + '<span class="em">' + ico(o.d.e) + '</span><span class="nm">' + esc(o.d.n) + '</span></button>';
+          }).join("") + '</div></div>');
       app.className = "pick";
       bindSwitch();
       var status = document.getElementById("status");
