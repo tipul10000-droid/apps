@@ -78,3 +78,16 @@ language sql security definer set search_path = public as $$
   update sandwich_push set active = false where endpoint = left(p_endpoint, 1000);
 $$;
 grant execute on function sandwich_push_off(text) to anon;
+
+-- ===== זמינות מנות =====
+-- מנה שמסומנת כלא זמינה יורדת לתחתית הרשימה אצל הילדים. ליאורי מחזירה ידנית. אין שינוי אוטומטי.
+create table if not exists sandwich_unavailable (dish text primary key, since timestamptz not null default now());
+alter table sandwich_unavailable enable row level security;
+create or replace function sandwich_unavail_get() returns table(dish text)
+language sql security definer set search_path = public as $$ select u.dish from sandwich_unavailable u order by u.since $$;
+create or replace function sandwich_unavail_set(p_dish text, p_off boolean) returns void
+language sql security definer set search_path = public as $$
+  with ins as (insert into sandwich_unavailable(dish) select left(p_dish,100) where p_off on conflict (dish) do nothing returning 1)
+  delete from sandwich_unavailable where not p_off and dish = left(p_dish,100) $$;
+grant execute on function sandwich_unavail_get() to anon;
+grant execute on function sandwich_unavail_set(text, boolean) to anon;

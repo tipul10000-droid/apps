@@ -47,12 +47,46 @@ async function getKeys(sb: any) {
   return { pub: map.vapid_public, priv: map.vapid_private };
 }
 
+// ילדים שבחרו מנה שאזלה מקבלים התראה לבחור מחדש. onlyDish: מגביל למנה אחת (בזמן הסימון).
+async function replacementPush(sb: any, keys: { pub: string; priv: string }, iso: string, onlyDish?: string) {
+  const { data: off } = await sb.from("sandwich_unavailable").select("dish");
+  const gone = new Set((off || []).map((r: any) => r.dish));
+  const { data: rows } = await sb.from("sandwich_choices").select("child,dish").eq("for_date", iso).neq("dish", "");
+  const need = (rows || []).filter((r: any) => gone.has(r.dish) && (!onlyDish || r.dish === onlyDish));
+  if (!need.length) return { need: 0, sent: 0 };
+  const { data: subs } = await sb.from("sandwich_push").select("*").eq("active", true).in("child", need.map((r: any) => r.child));
+  webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
+  let sent = 0;
+  await Promise.allSettled((subs || []).map(async (s: any) => {
+    const dish = need.find((r: any) => r.child === s.child)!.dish;
+    try {
+      await webpush.sendNotification(
+        { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+        JSON.stringify({ title: `🥪 ${NAMES[s.child]}, ${dish} אזלה`, body: "צריך לבחור סנדוויץ' אחר למחר בבוקר", url: APP_URL, tag: `sandwich-gone-${iso}` }),
+        { TTL: 3600 },
+      );
+      sent++;
+    } catch (e: any) {
+      if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("sandwich_push").delete().eq("endpoint", s.endpoint);
+    }
+  }));
+  return { need: need.length, sent };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   const url = new URL(req.url);
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const keys = await getKeys(sb);
   if (url.searchParams.get("action") === "pubkey") return json({ publicKey: keys.pub });
+
+  // אמא ליאורי סימנה מנה כלא זמינה: מתריעים מיד לילדים שבחרו אותה
+  if (url.searchParams.get("action") === "dish_off") {
+    const dish = url.searchParams.get("dish") || "";
+    const b = israelNow(Date.now() - 4 * 3600e3);
+    const iso = nextSchoolDay(b.y, b.m, b.d).toISOString().slice(0, 10);
+    return json({ ok: true, ...(await replacementPush(sb, keys, iso, dish)) });
+  }
 
   // אמא ליאורי שולחת תזכורת לילד שעוד לא בחר. הגבלה: פעם אחת לכל ילד כל 10 דקות, ורק אם לא בחר.
   if (url.searchParams.get("action") === "nudge") {
@@ -92,9 +126,17 @@ Deno.serve(async (req) => {
   const now = israelNow();
   const slotParam = url.searchParams.get("slot");
   const slot = dry && slotParam ? +slotParam : SLOTS.includes(now.hour) ? now.hour : null;
-  if (slot === null) return json({ skipped: "not a reminder hour", hour: now.hour });
   // בשישי בערב אין תזכורת. בשבת בערב יש (ליום ראשון).
   const todayDow = new Date(Date.UTC(now.y, now.m - 1, now.d, 12)).getUTCDay();
+  // תזכורת חוזרת בכל שעה עגולה (16:00-23:00) לילד שבחר מנה שאזלה ועוד לא החליף
+  let gone: unknown = null;
+  if (!dry && todayDow !== 5 && now.hour >= 16 && now.hour <= 23) {
+    const t = nextSchoolDay(now.y, now.m, now.d).toISOString().slice(0, 10);
+    const today0 = `${now.y}-${String(now.m).padStart(2, "0")}-${String(now.d).padStart(2, "0")}`;
+    const { error: dupG } = await sb.from("sandwich_push_log").insert({ for_date: today0, slot: 300 + now.hour });
+    if (!dupG) gone = await replacementPush(sb, keys, t);
+  }
+  if (slot === null) return json({ skipped: "not a reminder hour", hour: now.hour, gone });
   if (todayDow === 5) return json({ skipped: "no reminder on Friday" });
 
   const target = nextSchoolDay(now.y, now.m, now.d);
@@ -135,5 +177,5 @@ Deno.serve(async (req) => {
       } else failed++;
     }
   }));
-  return json({ slot, target: iso, sent, removed, failed });
+  return json({ slot, target: iso, sent, removed, failed, gone });
 });

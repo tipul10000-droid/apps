@@ -100,6 +100,26 @@
     return rpc("sandwich_set", {p_child: child, p_date: date, p_dish: dish});
   }
 
+  // זמינות מנות: ליאורי מסמנת מה אזל. ברירת מחדל: הכול זמין. שום דבר לא משתנה לבד.
+  function getOff() {
+    if (demo) return Promise.resolve(JSON.parse(store("demo_off") || "[]"));
+    return rpc("sandwich_unavail_get", {}).then(function (rows) { return (rows || []).map(function (r) { return r.dish; }); });
+  }
+  function setOff(dish, off) {
+    if (demo) {
+      var cur = JSON.parse(store("demo_off") || "[]").filter(function (d) { return d !== dish; });
+      if (off) cur.push(dish);
+      store("demo_off", JSON.stringify(cur));
+      return Promise.resolve();
+    }
+    return rpc("sandwich_unavail_set", {p_dish: dish, p_off: off}).then(function () {
+      // מי שכבר בחר את המנה מקבל התראה לבחור מחדש (לא מחכים לתשובה)
+      if (off) fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=dish_off&dish=" + encodeURIComponent(dish), {
+        method: "POST", headers: {apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + (cfg.functionsKey || cfg.supabaseAnonKey)}
+      }).catch(function () {});
+    });
+  }
+
   // ---- תזכורות (Web Push) ----
   function pushSupported() { return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window; }
   function urlB64(b) {
@@ -319,26 +339,34 @@
   function screenPick(child) {
     var t = target(false);
     var forTxt = t.label === "מחר" ? "למחר" : "ל" + t.label;
-    getAll(t.iso).then(function (rows) {
+    Promise.all([getAll(t.iso), getOff().catch(function () { return []; })]).then(function (res) {
+      var rows = res[0], off = res[1];
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && canon(mine.dish);
+      var bad = cur && off.indexOf(cur) >= 0 ? cur : null;
+      function rank(d) { return off.indexOf(d.n) >= 0 ? 2 : d.isNew ? 0 : 1; }
       show('<header class="phead" style="' + colorOf(child) + '"><div class="ptop">' +
         '<button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
         '<div class="greet">' + picBox(child) + '' +
         '<div class="bubble"><small>היי ' + CHARACTERS[child].name + '!</small><h1>בחירת סנדוויץ\' ' + forTxt + '</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"></div></div></div></header>' +
         '<div class="plist" style="' + colorOf(child) + '"><div class="grid">' + DISHES.map(function (d, i) { return {d: d, i: i}; })
-          .sort(function (a, b) { return (b.d.isNew ? 1 : 0) - (a.d.isNew ? 1 : 0) || a.i - b.i; })
+          .sort(function (a, b) { return rank(a.d) - rank(b.d) || a.i - b.i; })
           .map(function (o) {
-            return '<button class="dish" data-i="' + o.i + '">' + (o.d.isNew ? '<span class="newtag"><b>חדש!</b></span>' : '') + '<span class="em">' + ico(o.d.e) + '</span><span class="nm">' + esc(o.d.n) + '</span></button>';
+            var no = off.indexOf(o.d.n) >= 0;
+            return '<button class="dish' + (no ? " off" : "") + '" data-i="' + o.i + '"' + (no ? " disabled" : "") + '>' + (no ? '<span class="offtag">לא זמין</span>' : o.d.isNew ? '<span class="newtag"><b>חדש!</b></span>' : '') + '<span class="em">' + ico(o.d.e) + '</span><span class="nm">' + esc(o.d.n) + '</span></button>';
           }).join("") + '</div></div>');
       app.className = "pick";
       bindSwitch();
       var status = document.getElementById("status");
+
       var dishes = Array.prototype.slice.call(app.querySelectorAll(".dish"));
       function paint(saved) {
-        dishes.forEach(function (b) { b.classList.toggle("sel", DISHES[b.dataset.i].n === cur); });
-        status.className = "ok" + (cur ? "" : " idle") + (saved ? " pop" : "");
-        status.innerHTML = cur
+        if (cur !== bad) bad = null;
+        dishes.forEach(function (b) { b.classList.toggle("sel", DISHES[b.dataset.i].n === cur && !bad); });
+        status.className = "ok" + (cur && !bad ? "" : " idle") + (bad ? " warn" : "") + (saved ? " pop" : "");
+        status.innerHTML = bad
+          ? '<span class="e">⚠️</span><span class="tx">' + esc(bad) + ' אזלה. ' + (CHARACTERS[child].g === "f" ? "בחרי" : "בחר") + ' מנה אחרת</span>'
+          : cur
           ? '<span class="e">' + emoji(cur) + '</span><span class="tx">בחרת ' + esc(cur) + '!</span>'
           : '<span class="tx">לחצו על מנה כדי לבחור</span>';
       }
@@ -392,11 +420,12 @@
     bindSwitch();
     var status = document.getElementById("status"), box = document.getElementById("rows");
     // בונים את הרשימה והכפתור פעם אחת; בעדכון משנים רק את תוכן השורות (הדמות למעלה לא זזה)
-    box.innerHTML = '<div class="progress"><i style="width:0"></i></div><div id="list"></div><button class="main refresh" id="refresh" type="button">רענון</button><p class="momnote">אפשר לשלוח תזכורת לילדים החל מ-12:00 בצהריים.</p>';
+    box.innerHTML = '<div class="progress"><i style="width:0"></i></div><div id="list"></div><button class="main refresh" id="refresh" type="button">רענון</button><button class="main sec" id="availBtn" type="button">מה יש בבית?</button><p class="momnote">אפשר לשלוח תזכורת לילדים החל מ-12:00 בצהריים.</p>';
     function render() {
-      getAll(t.iso).then(function (rows) {
+      Promise.all([getAll(t.iso), getOff().catch(function () { return []; })]).then(function (res) {
+        var rows = res[0], off = res[1];
         var by = {}; rows.forEach(function (r) { by[r.child] = canon(r.dish); });
-        var done = KIDS.filter(function (k) { return by[k]; }).length;
+        var done = KIDS.filter(function (k) { return by[k] && off.indexOf(by[k]) < 0; }).length;
         var all = done === KIDS.length;
         status.className = "ok" + (all ? " all" : " idle");
         status.innerHTML = '<span class="tx">' + (all ? "כולם בחרו 🎉" : done + " מתוך " + KIDS.length + " בחרו") + '</span>';
@@ -405,11 +434,12 @@
         var canNudge = !demo && t.iso === target(false).iso;
         document.getElementById("list").innerHTML = KIDS.map(function (k) {
           var d = by[k], last = parseInt(store("nudge_" + k) || "0", 10), recent = last && (Date.now() - last) < 10 * 60 * 1000;
-          var chip = d ? '<span class="chip y">' + verb(k) + ' ✓</span>'
+          var bad = d && off.indexOf(d) >= 0;
+          var chip = bad ? '<span class="chip bad">צריך להחליף</span>' : d ? '<span class="chip y">' + verb(k) + ' ✓</span>'
             : (canNudge ? (recent ? '<span class="chip y soft">תזכורת נשלחה ✓</span>' : '<button class="nudge" type="button" data-k="' + k + '">שלח תזכורת</button>')
               : '<span class="chip n">ממתין</span>');
-          return '<div class="row ' + (d ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
-            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + '</span>' : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' + chip + '</div>';
+          return '<div class="row ' + (d && !bad ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
+            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + (bad ? ' (אזלה)' : '') + '</span>' : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' + chip + '</div>';
         }).join("");
         Array.prototype.forEach.call(document.querySelectorAll("#list .nudge"), function (b) {
           b.onclick = function () { sendNudge(b.dataset.k, b, render); };
@@ -418,8 +448,39 @@
       }).catch(function () { status.innerHTML = '<span class="tx">אין חיבור 📡</span>'; });
     }
     document.getElementById("refresh").onclick = render;
+    document.getElementById("availBtn").onclick = screenAvail;
     render();
     timer = setInterval(render, 20000);
+  }
+
+  // ליאורי: מה זמין ומה לא. מה שלא זמין יורד לתחתית הרשימה של הילדים עד שהיא מחזירה.
+  function screenAvail() {
+    getOff().then(function (off) {
+      show('<header class="ahead"><button class="pill back" id="switch" type="button"><span>חזרה</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+        '<h1>מה יש בבית?</h1><p>מה שלא זמין יורד לתחתית הרשימה של הילדים. מחזירים כשיש שוב.</p></header><div class="plist alist" id="alist"></div>');
+      app.className = "pick";
+      document.getElementById("switch").onclick = screenMom;
+      var box = document.getElementById("alist");
+      function paint() {
+        box.innerHTML = DISHES.map(function (d, i) {
+          var no = off.indexOf(d.n) >= 0;
+          return '<div class="arow' + (no ? " no" : "") + '"><span class="em">' + ico(d.e) + '</span><span class="nm">' + esc(d.n) + '</span>' +
+            '<button class="sw" type="button" role="switch" aria-checked="' + (!no) + '" data-i="' + i + '">' + (no ? "לא זמין" : "זמין") + '</button></div>';
+        }).join("");
+        Array.prototype.forEach.call(box.querySelectorAll(".sw"), function (b) {
+          b.onclick = function () {
+            var n = DISHES[b.dataset.i].n, goOff = off.indexOf(n) < 0;
+            b.disabled = true;
+            setOff(n, goOff).then(function () {
+              off = goOff ? off.concat([n]) : off.filter(function (x) { return x !== n; });
+              paint();
+              if (goOff) toast(n + " סומנה כלא זמינה. מי שבחר אותה יקבל התראה");
+            }).catch(function () { b.disabled = false; toast("לא הצלחנו לשמור. נסו שוב"); });
+          };
+        });
+      }
+      paint();
+    }).catch(function () { toast("אין חיבור. נסו שוב"); });
   }
 
   function route() {

@@ -255,3 +255,17 @@ main.home{padding-top:calc(6px + var(--st,env(safe-area-inset-top,0px)))}
 .dish .newtag{position:absolute;top:0;left:0;width:66px;height:66px;overflow:hidden;border-radius:20px 0 0 0;pointer-events:none}
 .dish .newtag b{position:absolute;top:11px;left:-24px;width:90px;transform:rotate(-45deg);padding:3px 0;background:linear-gradient(#ff5a5f,#d62839);color:#fff;font-size:13px;line-height:1.1;font-weight:800;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.4)}
 .dish.sel .newtag{display:none}
+
+/* זמינות מנות */
+.dish.off{opacity:.5;filter:grayscale(.7);cursor:default}
+.dish.off .offtag{position:absolute;top:8px;left:8px;padding:2px 9px;border-radius:999px;background:#5b5470;color:#fff;font-size:12.5px;font-weight:700}
+.phead .ok.warn{background:rgba(255,90,95,.2);box-shadow:inset 0 0 0 1.5px #ff5a5f;color:#fff}
+.chip.bad{background:#ff5a5f;color:#fff;font-weight:800}
+.main.sec{margin-top:10px;background:rgba(255,255,255,.14);color:#fff;font-weight:600}
+.ahead{flex:none;padding:calc(10px + var(--st,env(safe-area-inset-top,0px))) 16px 12px;position:relative;z-index:2}
+.ahead h1{margin:12px 0 4px;font-size:24px}.ahead p{margin:0;color:var(--muted);font-size:15px}
+.alist{padding-top:6px}
+.arow{display:flex;align-items:center;gap:12px;min-height:56px;padding:6px 12px;margin-bottom:8px;border-radius:16px;background:rgba(255,255,255,.07)}
+.arow .em{font-size:30px;width:44px;display:flex;justify-content:center}.arow .nm{flex:1;font-size:17px;font-weight:600}
+.arow .sw{min-width:92px;min-height:44px;border:0;border-radius:999px;background:#2fbf5a;color:#06210f;font-size:16px;font-weight:800;font-family:inherit}
+.arow.no .nm{opacity:.6}.arow.no .sw{background:#ff5a5f;color:#fff}
