@@ -569,7 +569,7 @@
       if (!standalone || !ios) return;
       var h = Math.max(screen.width, screen.height);
       var base = inset || (h >= 852 ? 59 : h >= 812 ? 47 : 20);
-      document.documentElement.style.setProperty("--st", (base + (base >= 44 ? 8 : 0)) + "px");
+      document.documentElement.style.setProperty("--st", (base + (base >= 44 ? 11 : 0)) + "px");
     } catch (e) {}
   })();
   // הסרגל העליון והעמוד לא נגללים: רק רשימת המנות (.plist) גוללת. חוסמים גרירה בשאר המסך (גם "קפיץ" של iOS).
