@@ -15,6 +15,9 @@ const CORS = {
 const json = (o: unknown, status = 200) =>
   new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json", ...CORS } });
 
+// יומן אירועים לסטטיסטיקה (נכתב רק מהשרת)
+const logEv = async (sb: any, rows: any[]) => { if (rows.length) await sb.from("sandwich_events").insert(rows); };
+
 function israelNow(ms: number = Date.now()) {
   const p = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hour12: false,
@@ -57,6 +60,7 @@ async function replacementPush(sb: any, keys: { pub: string; priv: string }, iso
   const { data: subs } = await sb.from("sandwich_push").select("*").eq("active", true).in("child", need.map((r: any) => r.child));
   webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
   let sent = 0;
+  const ev: any[] = [];
   await Promise.allSettled((subs || []).map(async (s: any) => {
     const dish = need.find((r: any) => r.child === s.child)!.dish;
     try {
@@ -66,10 +70,12 @@ async function replacementPush(sb: any, keys: { pub: string; priv: string }, iso
         { TTL: 3600 },
       );
       sent++;
+      ev.push({ child: s.child, type: "replace_sent", dish, for_date: iso });
     } catch (e: any) {
       if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("sandwich_push").delete().eq("endpoint", s.endpoint);
     }
   }));
+  await logEv(sb, ev);
   return { need: need.length, sent };
 }
 
@@ -119,6 +125,7 @@ Deno.serve(async (req) => {
         if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("sandwich_push").delete().eq("endpoint", s.endpoint);
       }
     }));
+    if (sent) await logEv(sb, [{ child, type: "nudge_sent", for_date: iso }]);
     return json({ ok: true, result: sent ? "sent" : "no_device", sent });
   }
 
@@ -158,6 +165,7 @@ Deno.serve(async (req) => {
 
   webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
   let sent = 0, removed = 0, failed = 0;
+  const evs: any[] = [];
   await Promise.allSettled(todo.map(async (s: any) => {
     const name = NAMES[s.child] || "";
     const payload = slot >= 19
@@ -170,6 +178,7 @@ Deno.serve(async (req) => {
         { TTL: 3600 },
       );
       sent++;
+      evs.push({ child: s.child, type: "reminder_sent", for_date: iso, meta: { slot } });
     } catch (e: any) {
       if (e?.statusCode === 404 || e?.statusCode === 410) {
         await sb.from("sandwich_push").delete().eq("endpoint", s.endpoint);
@@ -177,5 +186,6 @@ Deno.serve(async (req) => {
       } else failed++;
     }
   }));
+  await logEv(sb, evs);
   return json({ slot, target: iso, sent, removed, failed, gone });
 });

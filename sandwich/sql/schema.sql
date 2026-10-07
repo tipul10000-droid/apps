@@ -91,3 +91,20 @@ language sql security definer set search_path = public as $$
   delete from sandwich_unavailable where not p_off and dish = left(p_dish,100) $$;
 grant execute on function sandwich_unavail_get() to anon;
 grant execute on function sandwich_unavail_set(text, boolean) to anon;
+
+-- ===== סטטיסטיקה והערות (גרסה 20261007j) =====
+-- יומן אירועים (רק מוסיפים): בחירה/החלפה/ביטול, תזכורות שנשלחו, זמינות, תזכורות פעילות/כבויות, פתיחת אפליקציה.
+-- הכתיבה מתבצעת מתוך הפונקציות בשרת (sandwich_set, sandwich_unavail_set, sandwich_push_*), מפונקציית התזכורות, ומ-sandwich_log (app_open בלבד).
+create table if not exists sandwich_events (
+  id bigint generated always as identity primary key,
+  at timestamptz not null default now(),
+  child text, type text not null, dish text, prev_dish text, for_date date, meta jsonb
+);
+alter table sandwich_events enable row level security;
+-- הערות קבועות לכל מנה לכל ילד
+create table if not exists sandwich_dish_notes (
+  child text not null check (child in ('lia','daniela','evyatar')), dish text not null, note text not null,
+  updated_at timestamptz not null default now(), primary key (child, dish)
+);
+alter table sandwich_dish_notes enable row level security;
+-- הפונקציות: sandwich_note_all(), sandwich_note_set(child, dish, note), sandwich_log(child, type, meta). הגדרות מלאות ב-Supabase.

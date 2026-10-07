@@ -120,6 +120,29 @@
     });
   }
 
+  // הערות קבועות לכל מנה (לכל ילד): נשמרות ומופיעות לאמא בכל פעם שהמנה נבחרת
+  function getNotes() {
+    if (demo) return Promise.resolve(JSON.parse(store("demo_notes") || "{}"));
+    return rpc("sandwich_note_all", {}).then(function (rows) {
+      var m = {}; (rows || []).forEach(function (r) { m[r.child + "|" + r.dish] = r.note; }); return m;
+    });
+  }
+  function setNote(child, dish, text) {
+    if (demo) {
+      var m = JSON.parse(store("demo_notes") || "{}");
+      if (text) m[child + "|" + dish] = text; else delete m[child + "|" + dish];
+      store("demo_notes", JSON.stringify(m));
+      return Promise.resolve();
+    }
+    return rpc("sandwich_note_set", {p_child: child, p_dish: dish, p_note: text});
+  }
+  // סטטיסטיקה: פתיחת האפליקציה (פעם אחת בכל טעינה). לא משפיע על המשתמש אם נכשל.
+  var opened = false;
+  function logOpen(who) {
+    if (demo || opened) return; opened = true;
+    rpc("sandwich_log", {p_child: who, p_type: "app_open", p_meta: {standalone: isInstalled()}}).catch(function () {});
+  }
+
   // ---- תזכורות (Web Push) ----
   function pushSupported() { return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window; }
   function urlB64(b) {
@@ -211,6 +234,10 @@
   // ---- מה חדש ----
   // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
   var RELEASES = [
+    {v: "20261007j", at: "7.10.2026 · 19:07", items: [
+      "אחרי שבוחרים מנה מופיע כפתור \"הערה\": אפשר לכתוב הערה למנה, למשל \"בלי הרבה מלפפון חמוץ\". ההערה נשמרת למנה הזאת ואפשר לערוך אותה מתי שרוצים.",
+      "אמא ליאורי רואה על הבחירה כפתור \"התקבלה הערה\" ולוחצת כדי לקרוא. בלי הערה, השורה נשארת נקייה."
+    ]},
     {v: "20261007g", at: "7.10.2026 · 13:35", items: [
       "הסבר מלא להוספת האפליקציה למסך הבית ולקבלת תזכורות: שלוש הנקודות ליד שורת הכתובת, שיתוף, גלילה למטה, הוספה למסך הבית, \"פתיחה כאפליקציית רשת\", ופתיחה מהאייקון.",
       "ההסבר מופיע בכפתור \"התקנה למסך הבית\" ובחלון התזכורות, כולל השלב האחרון: בחירת דמות והפעלת תזכורות בתוך האפליקציה.",
@@ -272,6 +299,29 @@
       '<li>פותחים את האפליקציה <b>מהאייקון במסך הבית</b>, לא מהלינק. רק כך אפשר לקבל תזכורות.</li>' +
       '<li>בתוך האפליקציה: בוחרים את הדמות שלכם, חוזרים למסך הדמויות, לוחצים "תזכורות" ואז "הפעלת תזכורות", ומאשרים כשהטלפון שואל.</li></ol>';
   }
+  // חלונית הערה: עריכה (ילד) או צפייה (אמא)
+  function openSheet(html, bind) {
+    var ov = document.createElement("div"); ov.className = "ins";
+    ov.innerHTML = '<div class="ins-box"><button class="px" type="button" aria-label="סגירה">✕</button>' + html + '</div>';
+    function close() { ov.remove(); }
+    ov.onclick = function (e) { if (e.target === ov) close(); };
+    ov.querySelector(".px").onclick = close;
+    document.body.appendChild(ov);
+    if (bind) bind(ov, close);
+  }
+  function editNote(child, dish, cur, done) {
+    openSheet('<h3>הערה ל' + esc(dish) + '</h3><textarea class="notearea" maxlength="160" rows="3" placeholder="לדוגמה: בלי הרבה מלפפון חמוץ">' + esc(cur || "") + '</textarea>' +
+      '<p class="sm">ההערה נשמרת למנה הזאת, ואמא תראה אותה בכל פעם שתבחרו אותה. אפשר לערוך מתי שרוצים.</p>' +
+      '<button class="main" id="nsave" type="button">שמירה</button>' + (cur ? '<button class="main sec" id="ndel" type="button">מחיקת הערה</button>' : ""), function (ov, close) {
+      var ta = ov.querySelector("textarea");
+      function save(txt) {
+        setNote(child, dish, txt).then(function () { close(); done(txt.trim()); }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
+      }
+      ov.querySelector("#nsave").onclick = function () { save(ta.value); };
+      var d = ov.querySelector("#ndel"); if (d) d.onclick = function () { save(""); };
+    });
+  }
+
   // ---- התקנה למסך הבית ----
   var deferredInstall = null;
   window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferredInstall = e; var b = document.getElementById("install"); if (b) b.hidden = false; });
@@ -404,8 +454,8 @@
   function screenPick(child) {
     var t = target(false);
     var forTxt = t.label === "מחר" ? "למחר" : "ל" + t.label;
-    Promise.all([getAll(t.iso), getOff().catch(function () { return []; })]).then(function (res) {
-      var rows = res[0], off = res[1];
+    Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; })]).then(function (res) {
+      var rows = res[0], off = res[1], notes = res[2];
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && canon(mine.dish);
       var bad = cur && off.indexOf(cur) >= 0 ? cur : null;
@@ -432,10 +482,15 @@
         status.innerHTML = bad
           ? '<span class="e">⚠️</span><span class="tx">' + esc(bad) + ' אזלה. ' + (CHARACTERS[child].g === "f" ? "בחרי" : "בחר") + ' מנה אחרת</span>'
           : cur
-          ? '<span class="e">' + emoji(cur) + '</span><span class="tx">בחרת ' + esc(cur) + '!</span>'
+          ? '<span class="e">' + emoji(cur) + '</span><span class="tx">בחרת ' + esc(cur) + '!</span><button class="notebtn' + (notes[child + "|" + cur] ? " has" : "") + '" type="button">' + (notes[child + "|" + cur] ? "📝 יש הערה" : "📝 הערה") + '</button>'
           : '<span class="tx">לחצו על מנה כדי לבחור</span>';
       }
       paint(false);
+      status.addEventListener("click", function (e) {
+        if (!e.target.closest || !e.target.closest(".notebtn") || !cur) return;
+        var dish = cur;
+        editNote(child, dish, notes[child + "|" + dish], function (txt) { if (txt) notes[child + "|" + dish] = txt; else delete notes[child + "|" + dish]; if (cur === dish) paint(false); toast(txt ? "ההערה נשמרה" : "ההערה נמחקה"); });
+      });
       dishes.forEach(function (b) {
         b.onclick = function () {
           var name = DISHES[b.dataset.i].n;
@@ -475,6 +530,12 @@
     }).catch(function () { toast("לא הצלחנו לשלוח. נסו שוב"); }).then(done);
   }
 
+  function noteChip(k, d, bad, notes) {
+    var n = notes[k + "|" + d];
+    if (!n || bad) return "";
+    var fresh = store("noteseen_" + k + "|" + d) !== n;
+    return '<button class="notechip' + (fresh ? " new" : "") + '" data-k="' + k + '" type="button">' + (fresh ? "📝 התקבלה הערה" : "📝 הערה") + '</button>';
+  }
   function screenMom() {
     var t = target(true), celebrated = false;
     show('<header class="phead" style="' + colorOf("mom") + '"><div class="ptop"><button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
@@ -487,8 +548,8 @@
     // בונים את הרשימה והכפתור פעם אחת; בעדכון משנים רק את תוכן השורות (הדמות למעלה לא זזה)
     box.innerHTML = '<div class="progress"><i style="width:0"></i></div><div id="list"></div><button class="main refresh" id="refresh" type="button">רענון</button><button class="main sec" id="availBtn" type="button">מה יש בבית?</button><p class="momnote">אפשר לשלוח תזכורת לילדים החל מ-12:00 בצהריים.</p>';
     function render() {
-      Promise.all([getAll(t.iso), getOff().catch(function () { return []; })]).then(function (res) {
-        var rows = res[0], off = res[1];
+      Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; })]).then(function (res) {
+        var rows = res[0], off = res[1], notes = res[2];
         var by = {}; rows.forEach(function (r) { by[r.child] = canon(r.dish); });
         var done = KIDS.filter(function (k) { return by[k] && off.indexOf(by[k]) < 0; }).length;
         var all = done === KIDS.length;
@@ -504,8 +565,16 @@
             : (canNudge ? (recent ? '<span class="chip y soft">תזכורת נשלחה ✓</span>' : '<button class="nudge" type="button" data-k="' + k + '">שלח תזכורת</button>')
               : '<span class="chip n">ממתין</span>');
           return '<div class="row ' + (d && !bad ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
-            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + (bad ? ' (אזלה)' : '') + '</span>' : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' + chip + '</div>';
+            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + (bad ? ' (אזלה)' : '') + '</span>' + noteChip(k, d, bad, notes) : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' + chip + '</div>';
         }).join("");
+        Array.prototype.forEach.call(document.querySelectorAll("#list .notechip"), function (b) {
+          b.onclick = function () {
+            var k = b.dataset.k, dish = by[k], note = notes[k + "|" + dish];
+            if (!note) return;
+            openSheet('<h3>הערה מ' + esc(CHARACTERS[k].name) + '</h3><p class="rv">' + esc(dish) + '</p><blockquote class="notetxt">' + esc(note) + '</blockquote>', function () {});
+            store("noteseen_" + k + "|" + dish, note); render();
+          };
+        });
         Array.prototype.forEach.call(document.querySelectorAll("#list .nudge"), function (b) {
           b.onclick = function () { sendNudge(b.dataset.k, b, render); };
         });
@@ -551,6 +620,7 @@
   function route() {
     var who = store("who");
     if (!who || !CHARACTERS[who]) return screenWho();
+    logOpen(who);
     if (who === "mom") return screenMom();
     screenPick(who);
   }
