@@ -576,7 +576,7 @@
   document.addEventListener("touchmove", function (e) {
     if (e.touches && e.touches.length > 1) return;
     var t = e.target;
-    while (t && t !== document.body) { if (t.classList && t.classList.contains("plist")) return; t = t.parentNode; }
+    while (t && t !== document.body) { if (t.classList && (t.classList.contains("plist") || t.classList.contains("ins-box"))) return; t = t.parentNode; }
     e.preventDefault();
   }, {passive: false});
   // בלי זום בטעות: לא מגיבים לצביטה ב-iOS, ולחיצה כפולה לא מקרבת (touch-action ב-CSS)
