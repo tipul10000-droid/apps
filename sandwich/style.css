@@ -247,3 +247,6 @@ main.home{padding-top:calc(6px + var(--st,env(safe-area-inset-top,0px)))}
 @media (prefers-reduced-motion:no-preference){.ins-arrow{animation:insb 1s ease-in-out infinite}@keyframes insb{50%{transform:translateY(6px)}}}
 
 .momnote{margin:10px 0 0;text-align:center;font-size:14px;color:var(--muted)}
+
+/* הסרט העליון בעמודי הבחירה והאמא: כולו 34px למעלה (הכפתור, הגרפיקה והתוחם התחתון), בלי לשנות שאר המידות */
+.phead{--sth:max(0px,calc(var(--st,env(safe-area-inset-top,0px)) - 34px));height:calc(clamp(205px,30dvh,275px) + var(--sth));padding-top:calc(6px + var(--sth))}
