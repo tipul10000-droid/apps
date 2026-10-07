@@ -8,7 +8,8 @@
     {n: "חביתה", e: "🍳"}, {n: "ריבת תות", e: "🍓", old: ["ריבה", "ריבה תות"]}, {n: "שוקולד נוטלה", e: "🍫", old: ["שוקולד"]},
     {n: "פיתה זעתר", e: "🫓"}, {n: "טוסט", e: "🍞"}, {n: "סלט ביצים", e: ["eggs"]},
     {n: "טונה", e: "🐟"}, {n: "קוטג'", e: ["cottage"]},
-    {n: "לאבנה", e: ["labneh"], old: ["לבנה"], isNew: true}, {n: "חמאה ומלח", e: ["butter"], isNew: true}];
+    {n: "לאבנה", e: ["labneh"], old: ["לבנה"]}, {n: "חמאה ומלח", e: ["butter"]},
+    {n: "פיצה", e: "🍕", isNew: true}, {n: "בורקס", e: ["burekas"], isNew: true}, {n: "גבינה עם פסטו", e: ["pesto"], isNew: true}, {n: "פסטה עם מלח", e: ["pasta", "salt"], isNew: true}];
   // בחירות ישנות ששמרו שם קודם של מנה
   function canon(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name || (DISHES[i].old || []).indexOf(name) >= 0) return DISHES[i].n; return name; }
 
@@ -22,6 +23,10 @@
     tub: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 26h44l-4 29q-.7 4-5 4H19q-4.3 0-5-4z" fill="#fbfbf6" stroke="#b9b9aa" stroke-width="2"/><rect x="37" y="-0" width="0" height="0"/><path d="M12 36h40l-1.2 8H13.2z" fill="#cfe8ff"/><path d="M26 40q3-5 6 0t6 0" stroke="#4aa3e8" stroke-width="2.2" fill="none" stroke-linecap="round"/><rect x="7" y="17" width="50" height="11" rx="4" fill="#4aa3e8" stroke="#2a7bbd" stroke-width="2"/><path d="M13 21h20" stroke="#9fd0f5" stroke-width="2.2" stroke-linecap="round"/></svg>',
     labneh: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M13 26h38l-3.4 29q-.6 4-4.6 4H21q-4 0-4.6-4z" fill="#fbfbf6" stroke="#b9b9aa" stroke-width="2"/><circle cx="25.5" cy="43" r="2.4" fill="#2b2b2b"/><circle cx="38.5" cy="43" r="2.4" fill="#2b2b2b"/><path d="M28 50q4 3 8 0" fill="none" stroke="#2b2b2b" stroke-width="2" stroke-linecap="round"/><path d="M6 46Q4 14 32 7Q60 14 58 46L52 44V27H12v17z" fill="#fff" stroke="#9a9a8c" stroke-width="2" stroke-linejoin="round"/><g stroke="#d6262d" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M10 22h12M42 22h12M9 32h6M49 32h6M8 41h4M52 41h4"/><path d="M20 12l-2 6M32 9v6M44 12l2 6" /></g><path d="M12 19Q32 5 52 19" fill="none" stroke="#222" stroke-width="5" stroke-linecap="round"/><path d="M13 19q19-12 38 0" fill="none" stroke="#555" stroke-width="1.2" stroke-linecap="round" opacity=".6"/></svg>',
     butter: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M3 34l14-9h27l5 9v17H3z" fill="#ffe27a" stroke="#c9a31f" stroke-width="2" stroke-linejoin="round"/><path d="M3 34h46M44 25l5 9" fill="none" stroke="#c9a31f" stroke-width="2"/><path d="M3 34l14-9h27l5 9z" fill="#fff0a8" stroke="#c9a31f" stroke-width="2" stroke-linejoin="round"/><path d="M8 43h20" stroke="#fff6c4" stroke-width="2.4" stroke-linecap="round"/><path d="M47 29q3-4 7 0" fill="none" stroke="#c9a31f" stroke-width="0"/><g transform="translate(47 17)"><rect x="1" y="12" width="14" height="31" rx="3.5" fill="#f4f8ff" stroke="#9db0c9" stroke-width="2"/><path d="M2 14q6-12 12 0z" fill="#cfd8e6" stroke="#9db0c9" stroke-width="2" stroke-linejoin="round"/><circle cx="6" cy="8.5" r="1" fill="#6b7a90"/><circle cx="10" cy="8.5" r="1" fill="#6b7a90"/><circle cx="8" cy="5.5" r="1" fill="#6b7a90"/><path d="M4 24h8M4 30h8" stroke="#7d93b3" stroke-width="2" stroke-linecap="round"/></g></svg>',
+    burekas: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M5 44C5 22 20 10 34 10c14 0 25 13 25 34z" fill="#e9a640" stroke="#a96a16" stroke-width="2.4" stroke-linejoin="round"/><path d="M5 44h54" stroke="#a96a16" stroke-width="3" stroke-linecap="round"/><path d="M8 48h48" stroke="#c98a2a" stroke-width="5" stroke-linecap="round" stroke-dasharray="3 4.5"/><path d="M16 38C20 24 30 18 38 20" fill="none" stroke="#f6cd7a" stroke-width="3" stroke-linecap="round"/><g fill="#fff3d0"><ellipse cx="30" cy="30" rx="2.2" ry="1.3"/><ellipse cx="42" cy="28" rx="2.2" ry="1.3"/><ellipse cx="36" cy="37" rx="2.2" ry="1.3"/><ellipse cx="24" cy="38" rx="2.2" ry="1.3"/><ellipse cx="46" cy="38" rx="2.2" ry="1.3"/></g></svg>',
+    pesto: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M4 46L22 14c3-5 9-5 12 0l26 32z" fill="#ffd34a" stroke="#c99a12" stroke-width="2.4" stroke-linejoin="round"/><path d="M4 46h56v8H4z" fill="#f2b92a" stroke="#c99a12" stroke-width="2.4" stroke-linejoin="round"/><g fill="#d79e1a"><circle cx="22" cy="40" r="3"/><circle cx="40" cy="42" r="2.4"/></g><path d="M20 30q5-8 10-2t10-2q5-4 6 4-4 8-10 4t-10 2q-6 4-6-6z" fill="#5aa83a" stroke="#2f7a22" stroke-width="2" stroke-linejoin="round"/><g fill="#2f7a22"><circle cx="28" cy="30" r="1.3"/><circle cx="38" cy="30" r="1.3"/></g></svg>',
+    pasta: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 32h52c0 15-11 26-26 26S6 47 6 32z" fill="#f6f1e7" stroke="#c9bfa9" stroke-width="2"/><path d="M12 30c4-14 14-18 20-14s14 2 20 14z" fill="#f7d97a" stroke="#d1a528" stroke-width="2" stroke-linejoin="round"/><path d="M16 29c3-7 9-10 14-8M26 29c2-6 8-9 14-7M38 29c3-5 8-6 12-4" fill="none" stroke="#e3b43c" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    salt: '<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="translate(14 4)"><rect x="2" y="16" width="32" height="42" rx="7" fill="#f4f8ff" stroke="#9db0c9" stroke-width="2.4"/><path d="M4 18Q18 -4 32 18z" fill="#cfd8e6" stroke="#9db0c9" stroke-width="2.4" stroke-linejoin="round"/><g fill="#6b7a90"><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="9" r="1.6"/><circle cx="26" cy="12" r="1.6"/><circle cx="19" cy="15" r="1.6"/></g><path d="M8 32h20M8 42h20" stroke="#7d93b3" stroke-width="3" stroke-linecap="round"/></g></svg>',
     cottage: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M13 28h38l-4.2 28q-.6 3.6-4.4 3.6H21.6q-3.8 0-4.4-3.6z" fill="#fffef6" stroke="#c7c1a4" stroke-width="2"/><path d="M15 40h34l-1.2 9H16.2z" fill="#a5d86a"/><path d="M26 44.5h12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><g fill="#fffdf0" stroke="#d4cdb0" stroke-width="1.6"><circle cx="20" cy="26" r="6"/><circle cx="44" cy="26" r="6"/><circle cx="32" cy="22" r="8"/><circle cx="25.5" cy="21" r="5"/><circle cx="38.5" cy="20.5" r="5"/><circle cx="32" cy="27" r="6"/></g><ellipse cx="13" cy="28" rx="1.5" ry="1.5" fill="#c7c1a4"/></svg>',
     eggs: '<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="18" cy="32" rx="13" ry="19" fill="#fffdf6" stroke="#d3cbb2" stroke-width="2"/><ellipse cx="18" cy="35" rx="7" ry="8.6" fill="#ffc72b" stroke="#e0a10f" stroke-width="1.6"/><ellipse cx="46" cy="32" rx="13" ry="19" fill="#fffdf6" stroke="#d3cbb2" stroke-width="2"/><ellipse cx="46" cy="35" rx="7" ry="8.6" fill="#ffc72b" stroke="#e0a10f" stroke-width="1.6"/><ellipse cx="15.5" cy="32" rx="2" ry="2.6" fill="#ffe27a"/><ellipse cx="43.5" cy="32" rx="2" ry="2.6" fill="#ffe27a"/></svg>'
   };
@@ -120,6 +125,11 @@
     });
   }
 
+  // מנות שחזרו לתפריט אחרי 4 ימים או יותר בלי להיות זמינות (מסומנות 3 ימים)
+  function getReturned() {
+    if (demo) return Promise.resolve([]);
+    return rpc("sandwich_returned_get", {}).then(function (rows) { return (rows || []).map(function (r) { return r.dish; }); });
+  }
   // הערות קבועות לכל מנה (לכל ילד): נשמרות ומופיעות לאמא בכל פעם שהמנה נבחרת
   function getNotes() {
     if (demo) return Promise.resolve(JSON.parse(store("demo_notes") || "{}"));
@@ -176,9 +186,9 @@
     var bell = document.getElementById("bell");
     if (!bell) return;
     var panel = null;
-    function kid() { var w = store("who"); return KIDS.indexOf(w) >= 0 ? w : null; }
+    function kid() { var w = store("who"); return KIDS.indexOf(w) >= 0 || w === "mom" ? w : null; }
     function closePanel() { if (panel) { panel.remove(); panel = null; } }
-    function schedule() { return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
+    function schedule() { if ((store("push_child") || kid()) === "mom") return "בימים ראשון עד חמישי ב-10:00 וב-12:00 תגיע תזכורת לעדכן מה זמין בבית, לקראת הבחירה של הילדים אחרי הלימודים."; return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
     function body(msg) {
       var owner = store("push_child"), k = kid();
       if (bell.classList.contains("on")) {
@@ -234,6 +244,11 @@
   // ---- מה חדש ----
   // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
   var RELEASES = [
+    {v: "20261007k", at: "7.10.2026 · 19:40", items: [
+      "ארבע מנות חדשות: פיצה, בורקס, גבינה עם פסטו ופסטה עם מלח.",
+      "סרט כחול \"חזר!\" על מנה שחזרה לתפריט אחרי ארבעה ימים או יותר בלי להיות זמינה. הוא מופיע שלושה ימים.",
+      "תזכורת לאמא ליאורי ב-10:00 וב-12:00 (ראשון עד חמישי) לעדכן מה זמין בבית לקראת הבחירה של הילדים. אם כבר עדכנה באותו יום, לא נשלחת. כדי לקבל אותה, אמא מפעילה תזכורות במכשיר שלה."
+    ]},
     {v: "20261007j", at: "7.10.2026 · 19:07", items: [
       "אחרי שבוחרים מנה מופיע כפתור \"הערה\": אפשר לכתוב הערה למנה, למשל \"בלי הרבה מלפפון חמוץ\". ההערה נשמרת למנה הזאת ואפשר לערוך אותה מתי שרוצים.",
       "אמא ליאורי רואה על הבחירה כפתור \"התקבלה הערה\" ולוחצת כדי לקרוא. בלי הערה, השורה נשארת נקייה."
@@ -454,12 +469,12 @@
   function screenPick(child) {
     var t = target(false);
     var forTxt = t.label === "מחר" ? "למחר" : "ל" + t.label;
-    Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; })]).then(function (res) {
-      var rows = res[0], off = res[1], notes = res[2];
+    Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; }), getReturned().catch(function () { return []; })]).then(function (res) {
+      var rows = res[0], off = res[1], notes = res[2], back = res[3];
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && canon(mine.dish);
       var bad = cur && off.indexOf(cur) >= 0 ? cur : null;
-      function rank(d) { return off.indexOf(d.n) >= 0 ? 2 : d.isNew ? 0 : 1; }
+      function rank(d) { return off.indexOf(d.n) >= 0 ? 3 : d.isNew ? 0 : back.indexOf(d.n) >= 0 ? 1 : 2; }
       show('<header class="phead" style="' + colorOf(child) + '"><div class="ptop">' +
         '<button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
         '<div class="greet">' + picBox(child) + '' +
@@ -468,7 +483,7 @@
           .sort(function (a, b) { return rank(a.d) - rank(b.d) || a.i - b.i; })
           .map(function (o) {
             var no = off.indexOf(o.d.n) >= 0;
-            return '<button class="dish' + (no ? " off" : "") + '" data-i="' + o.i + '"' + (no ? " disabled" : "") + '>' + (no ? '<span class="offtag">לא זמין</span>' : o.d.isNew ? '<span class="newtag"><b>חדש!</b></span>' : '') + '<span class="em">' + ico(o.d.e) + '</span><span class="nm">' + esc(o.d.n) + '</span></button>';
+            return '<button class="dish' + (no ? " off" : "") + '" data-i="' + o.i + '"' + (no ? " disabled" : "") + '>' + (no ? '<span class="offtag">לא זמין</span>' : o.d.isNew ? '<span class="newtag"><b>חדש!</b></span>' : back.indexOf(o.d.n) >= 0 ? '<span class="newtag back"><b>חזר!</b></span>' : '') + '<span class="em">' + ico(o.d.e) + '</span><span class="nm">' + esc(o.d.n) + '</span></button>';
           }).join("") + '</div></div>');
       app.className = "pick";
       bindSwitch();

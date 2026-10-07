@@ -3,6 +3,8 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 // שעות התזכורת (שעון ישראל). אפשר לשנות כאן.
 const SLOTS = [17, 19];
+// תזכורת לאמא ליאורי לעדכן מה זמין בבית (שעון ישראל, ראשון עד חמישי)
+const MOM_SLOTS = [10, 12];
 const DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 const NAMES: Record<string, string> = { lia: "ליקי", daniela: "דנדי", evyatar: "אביה" };
 const APP_URL = "https://tipul10000-droid.github.io/apps/sandwich/";
@@ -143,7 +145,37 @@ Deno.serve(async (req) => {
     const { error: dupG } = await sb.from("sandwich_push_log").insert({ for_date: today0, slot: 300 + now.hour });
     if (!dupG) gone = await replacementPush(sb, keys, t);
   }
-  if (slot === null) return json({ skipped: "not a reminder hour", hour: now.hour, gone });
+  // תזכורת לאמא ליאורי לעדכן מלאי (10:00 ו-12:00, ראשון עד חמישי). אם כבר עדכנה היום, לא שולחים.
+  let momRes: unknown = null;
+  if (!dry && MOM_SLOTS.includes(now.hour) && todayDow >= 0 && todayDow <= 4) {
+    const today1 = `${now.y}-${String(now.m).padStart(2, "0")}-${String(now.d).padStart(2, "0")}`;
+    const { error: dupM } = await sb.from("sandwich_push_log").insert({ for_date: today1, slot: 400 + now.hour });
+    if (!dupM) {
+      const since = new Date(Date.now() - (now.hour * 3600e3 + 120e3)).toISOString();
+      const { data: upd } = await sb.from("sandwich_events").select("id").in("type", ["avail_on", "avail_off"]).gte("at", since).limit(1);
+      if (upd && upd.length) momRes = { skipped: "already updated today" };
+      else {
+        const { data: devs } = await sb.from("sandwich_push").select("*").eq("child", "mom").eq("active", true);
+        webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
+        let ms = 0;
+        await Promise.allSettled((devs || []).map(async (s: any) => {
+          try {
+            await webpush.sendNotification(
+              { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+              JSON.stringify({ title: "🛒 אמא ליאורי, מה יש בבית?", body: "אפשר לעדכן מה זמין לקראת הבחירה של הילדים אחרי הלימודים", url: APP_URL, tag: `sandwich-mom-${today1}` }),
+              { TTL: 3600 },
+            );
+            ms++;
+          } catch (e: any) {
+            if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("sandwich_push").delete().eq("endpoint", s.endpoint);
+          }
+        }));
+        if (ms) await logEv(sb, [{ child: "mom", type: "mom_reminder_sent", meta: { hour: now.hour } }]);
+        momRes = { sent: ms };
+      }
+    }
+  }
+  if (slot === null) return json({ skipped: "not a reminder hour", hour: now.hour, gone, mom: momRes });
   if (todayDow === 5) return json({ skipped: "no reminder on Friday" });
 
   const target = nextSchoolDay(now.y, now.m, now.d);
@@ -160,7 +192,7 @@ Deno.serve(async (req) => {
   const { data: chosen } = await sb.from("sandwich_choices").select("child").eq("for_date", iso).neq("dish", "");
   const done = new Set((chosen || []).map((r: any) => r.child));
   const { data: subs } = await sb.from("sandwich_push").select("*").eq("active", true);
-  const todo = (subs || []).filter((s: any) => !done.has(s.child));
+  const todo = (subs || []).filter((s: any) => NAMES[s.child] && !done.has(s.child));
   if (dry) return json({ dry: true, slot, target: iso, label, subscribers: (subs || []).length, wouldSend: todo.length });
 
   webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
