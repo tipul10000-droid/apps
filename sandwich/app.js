@@ -208,6 +208,32 @@
     }).catch(function () {});
     bell.onclick = function () { if (panel) closePanel(); else draw(); };
   }
+  // ---- מה חדש ----
+  // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
+  var RELEASES = [
+    {v: "20261007f", at: "7.10.2026 · 13:32", items: [
+      "סרט אדום \"חדש!\" על מנות חדשות, והן מופיעות בראש הרשימה.",
+      "אמא ליאורי יכולה לסמן מה זמין בבית (הכפתור \"מה יש בבית?\"). מנה שאזלה יורדת לתחתית הרשימה עם תגית \"לא זמין\".",
+      "מי שבחר מנה שאזלה מקבל התראה לבחור מחדש, ואמא רואה \"צריך להחליף\".",
+      "כפתור i ליד הגרסה: חלון \"מה חדש\" עם פירוט השינויים."
+    ]},
+    {v: "20261007b", at: "7.10.2026 · 10:04", items: ["שתי מנות חדשות: לאבנה, וחמאה ומלח.", "הסרט העליון בעמודי הבחירה עלה למעלה."]},
+    {v: "20261006q", at: "6.10.2026 · 23:23", items: ["כפתור \"התקנה למסך הבית\" עם הסבר צעד אחר צעד."]}
+  ];
+  function openNotes() {
+    var ov = document.createElement("div"); ov.className = "ins";
+    var latest = RELEASES[0];
+    ov.innerHTML = '<div class="ins-box notes"><button class="px" type="button" aria-label="סגירה">✕</button><h3>מה חדש?</h3>' +
+      '<p class="rv">גרסה ' + esc(latest.v) + ' · ' + esc(latest.at) + '</p><ul>' + latest.items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' +
+      (RELEASES.length > 1 ? '<h4>גרסאות קודמות</h4>' + RELEASES.slice(1).map(function (r) {
+        return '<p class="rv">גרסה <bdi>' + esc(r.v) + '</bdi> · <bdi>' + esc(r.at) + '</bdi>' + '</p><ul>' + r.items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>';
+      }).join("") : "") + '</div>';
+    function close() { ov.remove(); }
+    ov.onclick = function (e) { if (e.target === ov) close(); };
+    ov.querySelector(".px").onclick = close;
+    document.body.appendChild(ov);
+  }
+
   // ---- התקנה למסך הבית ----
   var deferredInstall = null;
   window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferredInstall = e; var b = document.getElementById("install"); if (b) b.hidden = false; });
@@ -306,11 +332,12 @@
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
       '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>' + CHARACTERS.mom.name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
       (demo || isInstalled() ? "" : '<button class="install" id="install" type="button">' + SHARE_ICO + ' התקנה למסך הבית</button>') +
-      '<footer class="credit"><div class="cr"><div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + '</div></div>' +
+      '<footer class="credit"><div class="cr"><div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + ' <button class="info" id="info" type="button" aria-label="מה חדש בגרסה"><i>i</i><span>לחצו לפרטים</span></button></div></div>' +
       (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות - כבוי</button>') + '</footer>');
     app.className = "home";
     setupBell();
     setupInstall();
+    document.getElementById("info").onclick = openNotes;
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
     });
