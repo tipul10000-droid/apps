@@ -119,7 +119,8 @@
     }
     return rpc("sandwich_unavail_set", {p_dish: dish, p_off: off}).then(function () {
       // מי שכבר בחר את המנה מקבל התראה לבחור מחדש (לא מחכים לתשובה)
-      if (off) fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=dish_off&dish=" + encodeURIComponent(dish), {
+      // מנה שחזרה (אחרי 4 ימים ומעלה) מתריעה לכל הילדים; השרת בודק אם זה אכן חזרה
+      fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=" + (off ? "dish_off" : "dish_on") + "&dish=" + encodeURIComponent(dish), {
         method: "POST", headers: {apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + (cfg.functionsKey || cfg.supabaseAnonKey)}
       }).catch(function () {});
     });
@@ -244,6 +245,9 @@
   // ---- מה חדש ----
   // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
   var RELEASES = [
+    {v: "20261007l", at: "7.10.2026 · 19:46", items: [
+      "מנה שחזרה לתפריט (סרט \"חזר!\") או מנה חדשה: כל הילדים מקבלים התראה, כדי שיוכלו לבחור אותה או להחליף את הבחירה."
+    ]},
     {v: "20261007k", at: "7.10.2026 · 19:40", items: [
       "ארבע מנות חדשות: פיצה, בורקס, גבינה עם פסטו ופסטה עם מלח.",
       "סרט כחול \"חזר!\" על מנה שחזרה לתפריט אחרי ארבעה ימים או יותר בלי להיות זמינה. הוא מופיע שלושה ימים.",

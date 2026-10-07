@@ -81,6 +81,34 @@ async function replacementPush(sb: any, keys: { pub: string; priv: string }, iso
   return { need: need.length, sent };
 }
 
+// הודעה לכל הילדים (מנה חדשה / מנה שחזרה). מגבלה: פעם אחת בכל 10 דקות.
+async function broadcastKids(sb: any, keys: { pub: string; priv: string }, title: string, body: string, tag: string, evType: string, dish?: string) {
+  const n = israelNow();
+  const today = `${n.y}-${String(n.m).padStart(2, "0")}-${String(n.d).padStart(2, "0")}`;
+  const { error: dup } = await sb.from("sandwich_push_log").insert({ for_date: today, slot: 500000 + (Math.floor(Date.now() / 600000) % 100000) });
+  if (dup) return { ok: true, result: "too_soon" };
+  const { data: subs } = await sb.from("sandwich_push").select("*").eq("active", true);
+  const kids = (subs || []).filter((s: any) => NAMES[s.child]);
+  webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
+  const ev: any[] = [];
+  let sent = 0;
+  await Promise.allSettled(kids.map(async (s: any) => {
+    try {
+      await webpush.sendNotification(
+        { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+        JSON.stringify({ title, body, url: APP_URL, tag }),
+        { TTL: 3600 },
+      );
+      sent++;
+      ev.push({ child: s.child, type: evType, dish: dish || null });
+    } catch (e: any) {
+      if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("sandwich_push").delete().eq("endpoint", s.endpoint);
+    }
+  }));
+  await logEv(sb, ev);
+  return { ok: true, result: sent ? "sent" : "no_device", sent };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   const url = new URL(req.url);
@@ -94,6 +122,21 @@ Deno.serve(async (req) => {
     const b = israelNow(Date.now() - 4 * 3600e3);
     const iso = nextSchoolDay(b.y, b.m, b.d).toISOString().slice(0, 10);
     return json({ ok: true, ...(await replacementPush(sb, keys, iso, dish)) });
+  }
+
+  // מנה חזרה לתפריט אחרי 4 ימים ומעלה (סרט "חזר!"): מתריעים לכל הילדים
+  if (url.searchParams.get("action") === "dish_on") {
+    const dish = url.searchParams.get("dish") || "";
+    const { data: ret } = await sb.from("sandwich_returned").select("dish").eq("dish", dish).gte("back_at", new Date(Date.now() - 5 * 60e3).toISOString());
+    if (!ret || !ret.length) return json({ ok: true, result: "not_returned" });
+    return json(await broadcastKids(sb, keys, `🥪 ${dish} חזרה לתפריט!`, "אפשר לבחור אותה או להחליף את הבחירה", "sandwich-back", "dish_back_sent", dish));
+  }
+
+  // מנות חדשות בתפריט (נקרא ידנית אחרי שחרור גרסה): dishes=שם1,שם2
+  if (url.searchParams.get("action") === "new_dishes") {
+    const dishes = (url.searchParams.get("dishes") || "").split(",").map((x) => x.trim()).filter(Boolean).slice(0, 8);
+    if (!dishes.length) return json({ ok: false, error: "no dishes" }, 400);
+    return json(await broadcastKids(sb, keys, "🆕 מנות חדשות בתפריט!", `${dishes.join(", ")}. אפשר לבחור או להחליף את הבחירה`, "sandwich-new", "new_dishes_sent"));
   }
 
   // אמא ליאורי שולחת תזכורת לילד שעוד לא בחר. הגבלה: פעם אחת לכל ילד כל 10 דקות, ורק אם לא בחר.
