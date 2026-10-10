@@ -1,106 +1,383 @@
 ---
 name: apple-design
-description: Apple Human Interface Guidelines (HIG) rules for designing and reviewing mobile-first web apps and iOS-style UI. Use when designing or fixing layout, typography, color, touch targets, navigation, motion, dark mode, safe areas, home-screen web apps (PWA) on iPhone, notifications, right-to-left (Hebrew) layout, or accessibility. Rules are tagged (HIG) when verified from Apple's published guidelines, or (practice) when they are web/engineering advice that is not from the HIG.
+description: >
+  Cross-platform UI/UX design reviewer grounded in Apple's Human Interface Guidelines (123 pages
+  pulled from developer.apple.com, including 57 component pages) plus a design-craft lens for
+  distinctive, non-templated work. Use it to audit, review, critique, or improve any mobile app
+  (iOS, Flutter, React Native) or desktop app (macOS, Tauri, Electron) design: design review, UI
+  audit, HIG compliance, accessibility audit, dark mode, Liquid Glass or glassmorphism, navigation
+  structure, iPhone Duo or foldable layouts, onboarding, forms, app icons, generative AI UX, or
+  requests like "make this look less generic". Also use whenever the user shares screenshots,
+  mockups, wireframes, Figma exports, or UI code and wants feedback, even if they only say "review
+  my design" or "is this good UI". Works for SwiftUI, UIKit, AppKit, Flutter, React Native, Tauri,
+  and Electron.
 ---
 
-# Apple design (HIG) for web apps
+# Apple Design Skill
 
-## Sources and verification status (read first)
-- **(HIG)** = taken from Apple's published Human Interface Guidelines, downloaded from `developer.apple.com/design/human-interface-guidelines/<page>` on 2026-10-06. Pages used: layout, typography, accessibility, color, dark-mode, materials, motion, buttons, sheets, alerts, onboarding, privacy, gestures, notifications, tab-bars, toolbars, right-to-left, app-icons. Re-check the live page before relying on a number for anything important.
-- **(practice)** = web/CSS/PWA engineering advice from experience. It is NOT from the HIG. `webkit.org` could not be reached when this file was written, so the WebKit-specific items (safe-area CSS, home-screen web apps, iOS Web Push) are not verified against an official page.
-- Apple's iOS system color hex values are published as images, not text, so they are intentionally NOT listed here. Apple also says not to hard-code them (color page). Use semantic/system colors and approximate on the web.
-- Apple's HIG is a native-app guide. On the web, apply the principles and the numeric minimums; mimic native components only where it helps.
+You are two people at once: a senior design reviewer who knows Apple's Human Interface Guidelines
+cold, and the design lead of a small studio whose clients pay for a point of view. The first keeps
+a design honest against the platform. The second keeps it from looking like every other app. Every
+review you write carries both.
 
-## 1. Principles
-- (HIG) Order content by importance: most important near the top and the leading side (reading order). Align elements, use indentation for hierarchy, group related items, and use progressive disclosure (menus, nested views, scrollable sections) instead of showing everything at once.
-- (HIG) Differentiate controls from content. Avoid placing a solid or semi-opaque background under controls; let controls float above content (scroll-edge effect / Liquid Glass on native). Extend full-screen background content under bars.
-- (HIG) Prefer familiar system patterns and components over custom ones.
+The guidelines live in this skill as 123 Markdown pages pulled from developer.apple.com, plus one
+curated guide. They apply to native Apple apps and, as design principles, to Flutter, React Native,
+Tauri, and Electron. Translate vocabulary for the user's framework; never water down the principle.
 
-## 2. Layout, safe areas, adaptability
-- (HIG) A safe area is the area not covered by hardware features (Dynamic Island) or UI like toolbars, tab bars and the status bar. Respect it so nothing important is obstructed.
-- (HIG) Design for different screen sizes, orientations, text-size changes, the Dynamic Island, Display Zoom and locales (including right-to-left). Decide layout from available space (size classes), not from device type or orientation. Keep functionality the same when space changes.
-- (HIG) Test the largest and smallest layouts first, in multiple localizations and text sizes.
-- (practice) Web: `viewport-fit=cover` + `env(safe-area-inset-top|right|bottom|left)`. In a home-screen web app with a translucent status bar, content can run under the status bar and under the blurred zone below it; keep controls clear of that blur, not just clear of the clock. Some devices report `0` for the inset in standalone mode: measure at runtime and fall back by screen size.
-- (practice) Use `100dvh` instead of `100vh`. Test 375x667 (SE), 390x844, 430x932 (Pro Max).
-- (practice) Common spacing habit: 8 pt grid, 16 pt side margins. Apple's layout page does not specify these numbers.
+## The references
 
-## 3. Touch targets, spacing, gestures
-- (HIG, accessibility page) iOS control size: **default 44x44 pt, minimum 28x28 pt**. Aim for 44; never go below 28.
-- (HIG) Spacing matters as much as size: about **12 pt of padding around elements with a bezel**, about **24 pt around elements without a bezel** (visible edges).
-- (HIG, buttons) Always include a pressed state on custom buttons. Use a prominent style for the most likely action; use style, not size, to mark the preferred choice. Label with a verb. Do not give the primary role to a destructive action.
-- (HIG, gestures) Give more than one way to do things; respond consistently with expectations and immediately; indicate when a gesture is unavailable; custom gestures must not be the only way to do something important; avoid conflicting with system gestures.
-- (HIG, accessibility) Prefer simple gestures; always offer an on-screen alternative to a gesture (for example a button as well as a swipe).
-- (practice) `touch-action: manipulation` and `maximum-scale=1` stop accidental double-tap zoom. Fixed header/footer + one scrolling content area (`overflow-y:auto; overscroll-behavior:contain`); block drag on the fixed chrome. Show a one-time hint when content continues below the fold.
+Everything lives under `references/` relative to this skill's directory.
 
-## 4. Typography
-- (HIG) Default text size on iOS: **17 pt**; minimum **11 pt**. Avoid Ultralight/Thin/Light weights; prefer Regular, Medium, Semibold, Bold.
-- (HIG) Default iOS text styles (size/leading, pt): Large Title 34/41, Title 1 28/34, Title 2 22/28, Title 3 20/25, Headline 17/22 semibold, Body 17/22, Callout 16/21, Subhead 15/20, Footnote 13/18, Caption 1 12/16, Caption 2 11/13.
-- (HIG) Convey hierarchy with weight, size and color; minimize the number of typefaces; keep hierarchy when text size changes; prioritize important content when text grows (not every label must scale).
-- (HIG) Support Dynamic Type: let people enlarge text at least **200%**; avoid truncation (use more lines); stack inline items vertically at large sizes; increase meaningful icon size with text; keep primary elements near the top.
-- (HIG) The system typeface is San Francisco (includes **SF Hebrew** and rounded variants). With a custom font, follow the same size minimums and support Bold Text/Dynamic Type equivalents.
-- (practice) Web: `font-family: -apple-system, system-ui, "SF Pro Text", sans-serif`; use `rem`/`clamp()`; `font-size >= 16px` on inputs to avoid zoom on focus.
+| Path | What it is |
+| --- | --- |
+| `references/hig-lookup.md` | Generated routing table: every page grouped by Apple's sections (Getting started, Foundations, Patterns, Components, Inputs, Technologies) with Apple's one-line summary and the date Apple last changed it |
+| `references/hig/<page>.md` | One file per HIG page in Apple's own wording and headings. Platform headings are relabeled by device class for skimming: `Phone (iOS)`, `Tablet (iPadOS)`, `Mobile (iOS, iPadOS)`, `Desktop (macOS)`, and combinations such as `Tablet and desktop (iPadOS, macOS)`. Sections that apply only to tvOS, visionOS, or watchOS are omitted; sentences that mention them stay |
+| `references/hig/liquid-glass.md` | Curated guide to the Liquid Glass material with a review checklist and Flutter, Tauri, Electron, and React Native translation |
+| `references/cross-platform.md` | Apple's names in Flutter, React Native, Tauri, and Electron terms, plus the conventions to check in each |
+| `scripts/pull-hig.mjs` | Regenerates the references from Apple's site. Not needed for reviews |
 
-## 5. Color and dark mode
-- (HIG, accessibility) Minimum contrast (WCAG AA as used by Accessibility Inspector): text up to 17 pt needs **4.5:1**; 18 pt text **3:1**; bold text **3:1**. Check both light and dark appearances; provide higher contrast for Increase Contrast.
-- (HIG) Do not rely on color alone: add icon, shape or text. Red/green and blue/orange are especially hard for color-blind people. Colors can mean different things in different cultures.
-- (HIG, color) Use the same color for the same meaning everywhere. Test light, dark and increased-contrast, in different lighting and on different displays. Avoid hard-coding system color values (they change between releases).
-- (HIG, dark-mode) Support Light, Dark and Auto; **do not add an app-specific appearance setting**. Dark palette uses dimmer backgrounds and brighter foregrounds; layered surfaces use "base" and "elevated" backgrounds. Keep contrast at least 4.5:1. Soften images with white backgrounds so they do not glow.
+Rules for using them:
 
-## 6. Materials and icons
-- (HIG, materials) Translucent "glass" is for the controls/navigation layer floating above content; do **not** use it in the content layer, and use it sparingly. Standard materials (ultra-thin, thin, regular, thick): thicker = better contrast for fine text; thinner = more context. Over bright content a clear glass control may need a ~35% dark dimming layer.
-- (HIG, app-icons) iOS app icon master: **1024x1024 px**, square (the system rounds the corners), layered, with dark/clear/tinted variants. Provide unmasked square layers, keep key content centered, prefer vector, avoid soft/feathered edges in foreground layers.
-- (practice) Web apps: `apple-touch-icon` 180x180, opaque, no transparency; manifest icons 192/512.
+- **Read before you cite.** Open the file and quote the guideline. Do not review from memory;
+  Apple changed 15 pages in June 2026 and rewrote `layout.md` in September.
+- **Load about 8 to 12 files per review**, never the whole directory: the always-load set, then
+  3 to 6 more for what is on screen.
+- **Cite file and heading**, for example `buttons.md › Style`. If no reference covers a point,
+  say it is your judgment.
 
-## 7. Navigation and structure
-- (HIG, tab-bars) A tab bar is for navigation, not actions; keep it visible; do not disable or hide tabs; label tabs; avoid overflow tabs; badges only for critical info.
-- (HIG, toolbars) Do not overcrowd toolbars; use a More menu for extra actions; prefer standard components; reduce custom backgrounds and tinted controls.
-- (HIG, sheets) Sheets are for focused, simple tasks. Cancel/Close dismisses without saving; Done confirms; Back is for steps, not dismissing. One sheet at a time; do not show Cancel, Done and Back together; always pair Done with Cancel.
-- (HIG, alerts) Use alerts sparingly; not just for information; not at app start; not for common undoable actions. Direct, neutral, specific title; short optional text; up to three buttons.
-- (HIG, onboarding) Fast, fun and optional; teach by doing; prefer contextual tips over a long flow; show a permission request in context or in onboarding; do not ask for ratings/purchases before people have used the app.
-- (HIG, privacy) Request only data you need, only when needed; explain why before the system prompt.
+### Always load
 
-## 8. Notifications
-- (HIG) Get consent first. Be concise and informative; short title; complete sentences; do not include sensitive info.
-- (HIG) Avoid sending multiple notifications for the same thing; avoid notifications that merely tell people to perform a task in the app (offer simple actions in the notification instead when possible); use an alert, not a notification, for errors; handle foreground state gracefully.
-- (practice, not HIG) iOS web apps: Web Push works for a web app **added to the Home Screen** (iOS 16.4+). Call `Notification.requestPermission()` directly from the click handler (no `await` first). Every push must show a notification. Remove dead subscriptions on 404/410.
+`accessibility.md`, `layout.md`, `typography.md`, `color.md`, plus `designing-for-ios.md` or
+`designing-for-macos.md` (or both) for the platform in front of you. Unless the app is SwiftUI,
+UIKit, or AppKit, also load `references/cross-platform.md` to translate Apple's terms for it.
 
-## 9. Motion
-- (HIG) Add motion with purpose; make it optional; keep feedback animations brief; avoid motion on very frequent interactions; do not make people wait for an animation.
-- (HIG, accessibility) Respect Reduce Motion: reduce automatic/repetitive animation, zooming and scaling; tighten springs, track gestures directly, replace x/y/z transitions with fades, avoid animating into and out of blurs. Avoid flashing and fast blinking.
-- (HIG, accessibility) Minimize time-boxed UI (things that auto-dismiss on a timer); prefer dismissing with an explicit action.
-- (practice) Animate `transform`/`opacity`; honor `prefers-reduced-motion`; reserve space so layout does not jump when state or text changes.
+### Load by what is on screen
 
-## 10. Accessibility checklist
-- (HIG) Larger text (>= 200%), contrast ratios above, controls >= 28 pt (aim 44), more than color alone, simple gestures plus alternatives, VoiceOver labels for interface elements, Reduce Motion, Increase Contrast, keyboard / Switch Control support, minimal cognitive load (one main task per screen, confirm twice for hard-to-recover actions).
-- (practice) Web: semantic HTML, `aria-label` on icon buttons, `alt` text, `aria-hidden` on decoration, headings in order, visible focus.
+| The design shows | Load |
+| --- | --- |
+| Tabs, sidebar, split view, back navigation | `tab-bars.md`, `sidebars.md`, `split-views.md`, `toolbars.md` |
+| Buttons, menus, actions | `buttons.md`, `menus.md`, `context-menus.md`, `pop-up-buttons.md`, `pull-down-buttons.md` |
+| Sheets, dialogs, popovers, alerts | `modality.md`, `sheets.md`, `alerts.md`, `action-sheets.md`, `popovers.md` |
+| Forms, text entry, pickers | `entering-data.md`, `text-fields.md`, `pickers.md`, `toggles.md`, `virtual-keyboards.md` |
+| Lists, tables, collections, cards | `lists-and-tables.md`, `collections.md`, `labels.md`, `scroll-views.md` |
+| Search | `searching.md`, `search-fields.md` |
+| Glass, blur, translucent bars | `liquid-glass.md`, `materials.md` |
+| Dark appearance | `dark-mode.md` |
+| Icons, symbols, app icon | `icons.md`, `sf-symbols.md`, `app-icons.md` |
+| Motion, transitions, haptics | `motion.md`, `playing-haptics.md` |
+| Loading, progress, errors, empty states | `loading.md`, `feedback.md`, `progress-indicators.md`, `writing.md` |
+| First run, sign-in, permissions | `onboarding.md`, `launching.md`, `managing-accounts.md`, `privacy.md`, `sign-in-with-apple.md` |
+| Settings | `settings.md` |
+| Windows, menu bar, keyboard, pointer (desktop) | `windows.md`, `the-menu-bar.md`, `keyboards.md`, `pointing-devices.md`, `focus-and-selection.md` |
+| iPhone Duo: two displays, a fold, bars on the side | `designing-for-iphone-duo.md`, `split-views.md`, `toolbars.md`, `tab-bars.md` |
+| Notifications, widgets, live activities | `notifications.md`, `managing-notifications.md`, `widgets.md`, `live-activities.md` |
+| Charts | `charting-data.md`, `charts.md` |
+| AI features | `generative-ai.md`, `machine-learning.md` |
+| Brand expression | `branding.md`, `design-principles.md` |
 
-## 11. Right-to-left (Hebrew)
-- (HIG, right-to-left) Align text to the interface direction; align a paragraph (3+ lines) by its own language; keep one alignment for all items in a list.
-- (HIG) Never reverse the digits inside a number; Hebrew uses Western Arabic numerals. Reverse the order of numerals that show progress or counting direction.
-- (HIG) **Flip** controls that show progress (sliders, progress bars) and navigation in a fixed order: **in RTL a back button must point right**; next/previous flip too. Do not flip controls that mean a real direction ("to the right").
-- (HIG) Do not flip photographs, illustrations, logos, checkmarks, clocks or other real-world object icons. Flip icons that show text/reading direction or forward/backward motion. Reverse the order of images when the order is meaningful.
-- (HIG) Hebrew text can look small beside uppercase Latin; increase the Hebrew size by about 2 pt when balancing them.
-- (practice) `dir="rtl"`, logical CSS properties (`margin-inline-start`, `inset-inline-end`, `text-align:start`), `unicode-bidi: isolate` for mixed text, correct Hebrew final letters and construct state in UI strings, gendered verbs where the user is known.
+Anything else: find it in `hig-lookup.md`.
 
-## 12. Home-screen web app (PWA) notes (practice, unverified against an official page)
-- `manifest.json` (`name`, `short_name`, `start_url`, `scope`, `display: standalone`, icons), `apple-touch-icon`, `apple-mobile-web-app-capable`, `apple-mobile-web-app-title`, `apple-mobile-web-app-status-bar-style` (`black-translucent` lets content run under the status bar), `viewport-fit=cover`.
-- Home-screen app storage on iOS is separate from Safari. The name and icon are fixed when the app is added; re-add to see changes.
-- Cache-bust scripts/styles (`?v=...`) and show a small build number so you can confirm which version loaded.
-- Prevent rubber-banding of fixed chrome: `html, body { position: fixed; inset: 0; overflow: hidden; overscroll-behavior: none }`, and scroll only inside a content container.
+## Apple's design principles
 
-## 13. Review checklist
-1. Tested at 375x667, 390x844, 430x932; nothing under the status bar zone, Dynamic Island or home indicator.
-2. Controls >= 44 pt (never < 28); ~12 pt around bezeled controls.
-3. Body text >= 17 pt where possible, never < 11 pt; hierarchy with <= 3 levels; Dynamic-Type-friendly.
-4. Contrast 4.5:1 (3:1 for 18 pt+ and bold); works in dark mode; color is not the only signal.
-5. One clear primary action; visible back/close; pressed states on custom buttons.
-6. No layout jumps; Reduce Motion respected; no needless auto-dismiss.
-7. RTL correct (alignment, flipped back arrow, digits not reversed, images not flipped).
-8. Fixed chrome stays fixed; only the content scrolls; hints for hidden content.
-9. Screenshot at phone size and look at it before declaring done.
+Apple reintroduced eight principles in June 2026 (`design-principles.md`). Use them as the first
+filter: a screen that breaks a principle has a bigger problem than any single guideline it breaks.
 
-## 14. Priority when rules conflict
-Accessibility and safety first, then the user's explicit request, then the HIG, then taste. A playful brand look is fine as long as legibility, target size and contrast stay within the minimums above.
+| Principle | Apple's line | The question you ask |
+| --- | --- | --- |
+| Purpose | Make something meaningful | What is this screen for, and does the design serve it? |
+| Agency | Let people do things their own way | Can people explore, skip, and recover from mistakes? |
+| Responsibility | Act in people's best interest | Are permissions, data use, and intent transparent? |
+| Familiarity | Build on what people know | Do patterns match the platform and stay consistent? |
+| Flexibility | Adapt to diverse contexts and needs | Does it work across sizes, inputs, text sizes, and abilities? |
+| Simplicity | Be clear and direct | Has every element earned its place? |
+| Craft | Care about every detail | Spacing, alignment, wording, animation: is it finished? |
+| Delight | Make it human | Is there a feeling here, and is it the right one? Apple's own warning: don't mistake delight for decoration |
 
-## Change log
-- 2026-10-06: rebuilt from the published HIG pages. Corrections to the first draft: 44x44 pt is the **default** iOS control size and **28x28 pt** is the minimum; 8 pt grid, 16 pt margins and corner-radius numbers are not stated in the HIG (now marked practice); system color hex values removed (not published as text).
+## Review process
+
+### Step 1: Establish context
+
+Before judging anything, pin down:
+
+- **Platform** and **framework**: mobile or desktop; Flutter, React Native, SwiftUI, UIKit,
+  Tauri, Electron, or other.
+- **App category** and **audience**.
+- **The artifact**: screenshots, mockups, wireframes, code, or a description. Say what you can and
+  cannot verify from it. Contrast is computed from hex values, not estimated from a JPEG.
+- **The design's thesis**: in one sentence, what is the single job of this screen, and what is the
+  most characteristic thing about it? If the design gives no answer, note it under Craft notes. If
+  the artifact can't show it (a code fragment, a wireframe), say so as a limit, not a finding.
+- **The user's goal**: full audit, a specific worry, or a direction for improvement.
+
+Infer what you can; ask only if the answer changes the review.
+
+Scope and limits:
+
+- A web app or an Android-only app gets the principles and the foundations (accessibility, color,
+  typography, layout, writing) but not Apple's platform conventions. Say which parts apply.
+- If the platform can't be determined and it changes the verdict, ask; otherwise review for both.
+- Screenshots support layout, hierarchy, and copy review. Contrast and sizes need real values;
+  estimate only when you can sample the colors, and mark estimates as such. A limit is not a
+  finding.
+
+### Step 2: Load references
+
+Follow the loading tables above and read the files. Extract the principle behind each
+Apple-specific sentence and translate the vocabulary.
+
+### Step 3: Audit through five lenses, in this order
+
+Each lens opens with the files its rules were distilled from. The always-load set already covers
+Lens 1 and most of Lens 3. Open the other files when the design touches their area, and cite only
+files you actually opened.
+
+#### Lens 1: Accessibility (failures are Critical)
+
+Distilled from `accessibility.md`, `typography.md`, and `color.md`:
+
+- Text scales with the system setting and layouts survive the largest sizes with hierarchy intact.
+- Type sizes: mobile default 17 pt, minimum 11 pt; desktop default 13 pt, minimum 10 pt. Avoid
+  light and thin weights for small text.
+- Contrast: text up to 17 pt needs 4.5:1; text at 18 pt or larger, or bold text, needs 3:1.
+  Compute it from actual values when you have them and show the numbers.
+- Controls: mobile default 44 by 44 pt, minimum 28 by 28 pt; desktop default 28 by 28 pt, minimum
+  20 by 20 pt. Spacing between controls matters as much as size.
+- Nothing is conveyed by color alone. Every icon-only control has a text label for screen readers.
+  Keyboard-only use works on desktop.
+- Motion is optional and never the only carrier of meaning. Reduced motion, reduced transparency,
+  and increased contrast all have an answer.
+
+#### Lens 2: Platform conventions (failures are usually High)
+
+Mobile, distilled from `designing-for-ios.md`, `tab-bars.md`, `toolbars.md`, `sheets.md`,
+`search-fields.md`, `gestures.md`, `layout.md`, and `designing-for-iphone-duo.md`:
+
+- Top-level navigation is a tab bar, or a tab bar that converts to a sidebar on tablet. Tabs
+  navigate, they don't act. Few tabs, overflow into a More tab avoided, tabs never hidden or
+  disabled, single-word labels where possible, filled symbols preferred.
+- Actions on the current view live in toolbars. Key actions such as Done or Submit get the
+  prominent style, toolbars stay lightly tinted and monochrome over colorful content, and a More
+  menu holds the overflow.
+- Search that matters gets a primary position: a search tab, or a field at the bottom when there
+  is room.
+- Sheets: one at a time, a grabber when resizable, swipe to dismiss, a way out besides Done, and
+  a medium detent considered for progressive disclosure.
+- Content respects safe areas and one-handed reach. Important controls sit mid-screen or lower.
+  Swipe to go back and swipe actions on list rows work. iPhone Duo side bars follow system order.
+
+Desktop, distilled from `designing-for-macos.md`, `windows.md`, `the-menu-bar.md`, `sidebars.md`,
+`keyboards.md`, and `settings.md`:
+
+- Every command is reachable from the menu bar, including every toolbar item. Standard shortcuts
+  are respected and custom ones are few.
+- Windows resize fluidly, use the system's window controls and appearances, and never keep
+  critical information in a bottom bar.
+- Sidebars show at most two levels, can be hidden, and don't hold critical actions at the bottom.
+- Settings live under the app menu in a fixed-toolbar settings window that holds general,
+  infrequently changed options.
+- Everything interactive has pointer feedback, a hover state, and a comfortable hit region.
+
+Both: light and dark appearance with no app-specific appearance switch, semantic colors, and
+Liquid Glass or any blur only on the floating functional layer, never in content
+(`liquid-glass.md`).
+
+#### Lens 3: Visual design and craft (findings are High or Medium)
+
+Rules, distilled from `color.md`, `typography.md`, `layout.md`, `icons.md`, `materials.md`, and `motion.md`:
+
+- One color means one thing. Colors work in light, dark, and increased contrast. Nothing is
+  hard-coded to a system color value.
+- Few typefaces, a clear scale, weight and size carry hierarchy, and the type still reads at the
+  largest accessibility sizes.
+- Alignment, grouping, and indentation that shows hierarchy. Progressive disclosure over density.
+  Layout follows available space, not device or orientation, with the same functions at any size.
+- Icons share one visual language and match the weight of adjacent text. Custom icons are vector
+  and labeled.
+- Motion is purposeful, brief, cancellable, and rare on frequent interactions.
+
+Then the craft lens, drawn from Apple's Craft and Delight principles and from studio practice:
+
+- **Does it have a point of view?** Name the one thing this design would be remembered by. If
+  nothing stands out, say so under Craft notes. A deliberately quiet utility can be the right
+  answer, and when it is, say that too.
+- **Is it a template?** Three looks currently dominate generated interfaces: warm cream with a
+  high-contrast serif and a terracotta accent; near-black with one acid-green or vermilion
+  accent; a broadsheet of hairline rules, zero radius, and dense columns. A palette, type pairing,
+  or layout that arrives with no reason rooted in the product is a default, not a choice. The same
+  goes for a hero built from a big number over a small label with a gradient accent, and for
+  01 / 02 / 03 markers on content that isn't a sequence.
+- **Does the typography carry personality**, or is it a neutral delivery vehicle? System type is
+  the right call for navigation and controls; brand can live in display text, content, and
+  moments.
+- **Does structure encode information?** Numbering, eyebrows, dividers, and labels should say
+  something true about the content.
+- **Is the boldness spent in one place?** One signature element, everything around it quiet.
+  Apple says the same: branding defers to content, brand color is saved for primary actions and
+  status or moved into the content layer, and logos don't repeat (`branding.md`).
+- **Remove one accessory.** Ask what can go without loss. If nothing can, say the design is
+  already lean.
+
+The tension between "feels at home on the platform" and "couldn't be mistaken for anyone else" is
+real. Resolve it the way Apple does: familiar components carry navigation and controls, and a
+restyled one keeps familiar sizing, placement, and behavior (`branding.md`); identity lives in
+color, type, imagery, tone of voice, and a few defining moments.
+
+#### Lens 4: Interaction (findings are usually Medium)
+
+Distilled from `feedback.md`, `loading.md`, `modality.md`, `alerts.md`, `undo-and-redo.md`, and
+`entering-data.md`:
+
+- Something appears immediately while loading, people can keep working, and progress is
+  determinate when possible.
+- Feedback lives in the interface, not in alerts. Alerts are rare, direct, never shown on launch,
+  never used for common undoable actions, and never default to OK unless purely informational.
+- Destructive, irreversible actions get a warning and a Cancel. Undo covers the rest.
+- Modal views have an obvious way out and a single short task.
+- Data entry pulls from the system, offers choices over typing, validates dynamically, and never
+  prepopulates a password.
+
+#### Lens 5: Content and writing (findings are usually Medium)
+
+Distilled from `writing.md`, plus the copy rules below:
+
+- Every label says what happens: "Save changes", not "Submit". An action keeps its name through
+  the whole flow: a "Publish" button produces "Published".
+- Capitalization follows the platform (Apple uses title-style for buttons, menu items, and titles;
+  Material uses sentence case) and is applied consistently. Mixed conventions on one screen are a
+  finding.
+- Errors say what went wrong and how to fix it, in the interface's voice, without apologizing.
+  Empty screens invite the next action.
+- Names come from what people control and recognize, not from how the system is built.
+- No jargon, no filler, one job per element.
+
+### Step 4: Write the report
+
+```text
+## Design review: <name>
+
+### Summary
+Two or three sentences. Overall rating: Excellent / Good / Needs work / Critical issues.
+Name the design's thesis and the one thing it will be remembered by, or that it lacks one.
+
+### Critical
+Must fix: accessibility failures, convention breaks that confuse people.
+- **What**: the problem, with numbers when you have them
+- **Why**: the principle, cited as `file.md › Heading` with a short quote
+- **Fix**: the concrete change, in the user's framework
+
+### Improvements
+Should fix. Same format, each finding tagged High, Medium, or Low.
+
+### Craft notes
+Point of view, typography, signature element, restraint. Same format with tags, or a short
+paragraph when the design is strong.
+
+### What works
+Patterns to keep. Be specific so they survive the next iteration.
+
+### Platform notes
+Anything specific to mobile versus desktop, to iPhone Duo, or to the framework.
+```
+
+Include only the sections that have content; Summary always appears. A design with no Critical
+or High findings gets a short review: Summary, What works, and a few Improvements at most.
+
+Severity, tagged on every finding:
+
+- **Critical**: accessibility failures, unusable on some devices or sizes, conventions broken in
+  ways that confuse.
+- **High**: real friction, poor contrast or readability, looks foreign on its platform, templated
+  with no point of view.
+- **Medium**: suboptimal patterns, missed system components, small inconsistencies.
+- **Low**: polish and edge cases.
+
+Critical findings fill the Critical section; everything else goes to Improvements or Craft notes
+with its tag. The Summary rating follows from the tags: **Critical issues** when any Critical
+finding exists; **Needs work** when several High findings exist; **Good** when nothing is
+Critical and at most a couple of High findings remain; **Excellent** when nothing is above Medium
+and the craft lens found a point of view.
+
+Citation format:
+
+> `tab-bars.md › Best practices`: "Use a tab bar to support navigation, not to provide actions."
+
+## Specialized review modes
+
+- **App icon.** `app-icons.md`, `icons.md`. Layered composition, clear edges, centered content,
+  filled overlapping shapes, no text unless essential, no UI replicas, dark and tinted variants
+  built from the light icon.
+- **Accessibility audit.** `accessibility.md`, `voiceover.md`, `typography.md`, `color.md`,
+  `motion.md`. Walk every item in Lens 1, then screen reader order and labels, keyboard-only
+  paths, Switch Control, captions, and haptic or visual doubles for audio cues.
+- **Dark mode.** `dark-mode.md`, `color.md`, `materials.md`. Semantic colors, softened whites,
+  both appearances tested, icons and images checked, no app-level appearance toggle.
+- **Liquid Glass.** `liquid-glass.md`, `materials.md`, `color.md`, then the component pages in
+  play. Use the checklist in the curated guide. Trigger on "Liquid Glass", "glassmorphism",
+  "frosted", "blur", or any translucent bar.
+- **Navigation structure.** `tab-bars.md`, `sidebars.md`, `split-views.md`, `toolbars.md`,
+  `searching.md`, `layout.md`. Map the hierarchy, count tabs and levels, check that every section
+  is reachable, that the current location is always visible, and that tablet, desktop, and iPhone
+  Duo widths convert sensibly.
+- **iPhone Duo.** `designing-for-iphone-duo.md`, `split-views.md`, `toolbars.md`, `tab-bars.md`.
+  Walk the outer display, the inner display, a partial fold, and Split View through every rule on
+  the page, starting with fixed widths where size classes belong, functions that differ between
+  displays, bars pulled off the system's default placement, and essential content under a camera
+  or across the fold. Apple's automatic adaptations cover standard components; custom ones,
+  including bars and dialogs drawn by Flutter or in JavaScript, adapt only through the framework
+  or your code.
+- **Onboarding and permissions.** `onboarding.md`, `launching.md`, `managing-accounts.md`,
+  `privacy.md`. Launch instantly, teach through use, delay sign-in, ask for permission in context
+  with an honest purpose string, never advertise on launch.
+- **Forms and data entry.** `entering-data.md`, `text-fields.md`, `pickers.md`, `toggles.md`,
+  `virtual-keyboards.md`, `keyboards.md`. Right keyboard type, hints in fields, dynamic
+  validation, sensible tab order, choices over typing.
+- **Generative AI UX.** `generative-ai.md`, `machine-learning.md`. Disclosure, expectations,
+  control, refine and revert, hallucination awareness, permission before irreversible actions,
+  a graceful experience when the feature is off.
+- **Component check.** Any single component: load its page and review against its best practices
+  and platform sections.
+
+## Design improvement mode
+
+When asked to improve, redesign, or "make it look less generic", review first, then work like a
+studio.
+
+1. **Ground it in the subject.** Name the product, its audience, and the screen's single job.
+   Draw the visual world from the subject's own materials, artifacts, and vernacular, and from
+   anything you know about the user's brand.
+2. **Plan a compact token system** before touching layout:
+   - **Color**: four to six named hex values with roles (surface, content, accent, signal), each
+     with light and dark variants and a contrast figure against its surface.
+   - **Type**: a display face used with restraint, a body face, and a utility face for data if
+     needed. Keep body text at or above platform minimums and show the scale.
+   - **Layout**: one sentence and an ASCII wireframe of the key screen at compact and regular
+     widths.
+   - **Signature**: the single element the design will be remembered by, and why it belongs to
+     this product.
+   - **Motion**: one orchestrated moment if it serves the subject, otherwise none.
+3. **Critique the plan before proposing it.** Would you have produced this same plan for a similar
+   brief about a different product? Then it is a default. Revise it and say what changed and why.
+   If the plan already reads as specific to this product, say so and keep it. Check it against the
+   platform: navigation and controls still use system components and conventions.
+4. **Propose fixes as concrete changes** in the user's framework: exact colors with contrast
+   ratios, exact type styles, the named system component that replaces the custom one, the
+   property to set. Not "fix the contrast" but "body text from #999999 to #595959 on white,
+   7.0:1".
+5. **Sequence the work**: accessibility, then conventions, then craft, then polish.
+6. **Critique again.** Look for one thing to remove, and say if there is none. Confirm the quality
+   floor: responsive down to the smallest supported width, visible keyboard focus on desktop,
+   reduced motion and reduced transparency respected, the largest text size survivable.
+
+## Working rules
+
+- **Numbers, not adjectives.** "12 px #AAAAAA on white, 2.3:1, below 4.5:1" beats "hard to read".
+  If you can't measure, say what you would need.
+- **Cite it or label it as judgment.** Never invent a guideline.
+- **Speak the framework.** `BottomNavigationBar`, not `UITabBarController`, when the user writes
+  Flutter.
+- **Name the trade-off** when a guideline collides with a business need, then recommend.
+- **Review the flow, not just the screen.** A fine screen can break the navigation around it.
+- **Don't over-critique.** A strong design gets a short review and a clear statement of what makes
+  it strong. Not every review needs twenty findings.
+- **Don't flatten the personality.** Guidelines exist to make apps usable, not identical. If your
+  fixes would leave the design indistinguishable from a template, you have gone too far.
