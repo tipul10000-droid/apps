@@ -194,9 +194,9 @@
     var bell = document.getElementById("bell");
     if (!bell) return;
     var panel = null;
-    function kid() { var w = store("who"); return KIDS.indexOf(w) >= 0 || w === "mom" ? w : null; }
+    function kid() { var w = store("who"); return KIDS.indexOf(w) >= 0 || w === "mom" || w === "admin" ? w : null; }
     function closePanel() { if (panel) { panel.remove(); panel = null; } }
-    function schedule() { if ((store("push_child") || kid()) === "mom") return "בימים ראשון עד חמישי ב-10:00 וב-12:00 תגיע תזכורת לעדכן מה זמין בבית, לקראת הבחירה של הילדים אחרי הלימודים."; return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
+    function schedule() { if ((store("push_child") || kid()) === "admin") return "כל התראה שהילדים ואמא מקבלים תגיע גם אליך, עם 👁️ ושם מי קיבל."; if ((store("push_child") || kid()) === "mom") return "בימים ראשון עד חמישי ב-10:00 וב-12:00 תגיע תזכורת לעדכן מה זמין בבית, לקראת הבחירה של הילדים אחרי הלימודים."; return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
     function body(msg) {
       var owner = store("push_child"), k = kid();
       if (bell.classList.contains("on")) {
@@ -252,6 +252,7 @@
   // ---- מה חדש ----
   // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
   var RELEASES = [
+    {v: "20261016c", at: "16.10.2026 · 12:40", items: ["🔧 מצב מנהל (אורן): רואה מה כולם בחרו, סטטיסטיקה, ומקבל עותק של כל ההתראות של הילדים ושל אמא"]},
     {v: "20261016b", at: "16.10.2026 · 10:10", items: ["🏆 מסך סטטיסטיקה חדש (כפתור במסך הראשי): פודיום של מי בוחר הכי מהר, עוגת המנות, רצפים ומלך ההתלבטות, ומסך אישי לכל ילד", "⭐ מנה יומית: אחרי שבוחרים מנה, לוחצים על ☆ בפינה שלה והיא נבחרת אוטומטית כל יום, עד שמבטלים או מסמנים מנה אחרת"]},
     {v: "20261007l", at: "7.10.2026 · 19:46", items: ["התראה לילדים כשמנה חדשה נכנסת או מנה חוזרת לתפריט"]},
     {v: "20261007k", at: "7.10.2026 · 19:43", items: ["ארבע מנות חדשות: פיצה, בורקס, גבינה עם פסטו, פסטה עם מלח", "סרט \"חזר!\" על מנה שחזרה לתפריט", "תזכורת לאמא ליאורי ב-10:00 וב-12:00 לעדכן מה זמין"]},
@@ -299,6 +300,9 @@
     ov.querySelector("#allNotes").onclick = function () { close(); openNotes(); };
     document.body.appendChild(ov);
   }
+  function maybeNew() {
+    if (store("seen_rel") !== BIG) setTimeout(function () { if (!document.querySelector(".ins")) openNew(); }, 700);
+  }
   function openNotes() {
     var ov = document.createElement("div"); ov.className = "ins";
     ov.innerHTML = '<div class="ins-box notes"><button class="px" type="button" aria-label="סגירה">✕</button><h3>מה חדש?</h3>' + relHtml(RELEASES[0]) +
@@ -306,6 +310,10 @@
     function close() { ov.remove(); }
     ov.onclick = function (e) { if (e.target === ov) close(); };
     ov.querySelector(".px").onclick = close;
+    var box = ov.querySelector(".ins-box");
+    box.insertAdjacentHTML("beforeend", '<button class="plainbtn" id="rePop" type="button">🎉 להציג שוב את חלון "חדש באפליקציה"</button><button class="plainbtn" id="adminIn" type="button">🔧 כניסת מנהל</button>');
+    box.querySelector("#rePop").onclick = function () { close(); openNew(); };
+    box.querySelector("#adminIn").onclick = function () { close(); store("who", "admin"); store("seen_rel", null); route(); maybeNew(); };
     document.body.appendChild(ov);
   }
 
@@ -456,7 +464,7 @@
   function verb(id) { return CHARACTERS[id].g === "f" ? "בחרה" : "בחר"; }
   function bindSwitch() {
     var sw = document.getElementById("switch");
-    if (sw) sw.onclick = function () { screenWho(); };
+    if (sw) sw.onclick = function () { if (store("who") === "admin") screenAdmin(); else screenWho(); };
   }
 
   // רמז לגלילה: אחרי שתי שניות בלי גלילה מופיע חץ שקוף, ונעלם ברגע שמתחילים לגלול
@@ -764,9 +772,28 @@
     }).catch(function () { document.getElementById("sbody").innerHTML = '<p class="sempty">אין חיבור 📡</p>'; });
   }
 
+  // ---- מצב מנהל (אורן): רואה מה כולם בחרו, סטטיסטיקה, ומקבל עותק של כל ההתראות. לא נספר בסטטיסטיקה ולא בוחר מנה ----
+  function screenAdmin() {
+    show('<div class="hero"><h1>🔧 מצב מנהל</h1><p class="sub">הצצה לאפליקציה כמו שהיא אצל כולם</p></div>' +
+      '<div class="adm"><button class="main" id="aPeek" type="button">👀 מה כולם בחרו</button>' +
+      '<button class="main sec" id="aStats" type="button">🏆 סטטיסטיקה</button>' +
+      '<button class="main sec" id="aNew" type="button">🎉 חלון "חדש באפליקציה"</button>' +
+      '<button class="main sec" id="aOut" type="button">↩ יציאה ממצב מנהל</button></div>' +
+      '<footer class="credit"><div class="cr"><div class="ver">גרסה ' + esc(VERSION) + ' <button class="info" id="info" type="button" aria-label="מה חדש בגרסה"><i>i</i><span>לחצו לפרטים</span></button></div></div>' +
+      (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות - כבוי</button>') + '</footer>');
+    app.className = "home";
+    setupBell();
+    document.getElementById("info").onclick = openNotes;
+    document.getElementById("aPeek").onclick = screenMom;
+    document.getElementById("aStats").onclick = screenStats;
+    document.getElementById("aNew").onclick = openNew;
+    document.getElementById("aOut").onclick = function () { store("who", null); store("push_child", null); screenWho(); };
+  }
+
   function route() {
     var who = store("who");
     if (!who || !CHARACTERS[who]) return screenWho();
+    if (who === "admin") return screenAdmin();
     logOpen(who);
     if (who === "mom") return screenMom();
     screenPick(who);
@@ -801,5 +828,6 @@
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function () {});
   if (demo) document.getElementById("demo").hidden = false;
   route();
-  if (store("seen_rel") !== BIG) setTimeout(function () { if (!document.querySelector(".ins")) openNew(); }, 700);
+  if (/[?&]whatsnew=1/.test(location.search)) store("seen_rel", null);
+  maybeNew();
 })();

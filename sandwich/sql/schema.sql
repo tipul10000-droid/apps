@@ -41,7 +41,7 @@ grant execute on function sandwich_set(text, date, text) to anon;
 
 create table if not exists sandwich_push (
   endpoint text primary key,
-  child text not null check (child in ('lia','daniela','evyatar')),
+  child text not null check (child in ('lia','daniela','evyatar','mom','admin')),
   p256dh text not null,
   auth text not null,
   active boolean not null default true,
