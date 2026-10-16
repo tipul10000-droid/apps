@@ -4,7 +4,8 @@ window.CHARACTERS = {
   lia:     {g: "f", name: "ליקי",   color: "#8fe04a", color2: "#ffd43b"},
   daniela: {g: "f", name: "דנדי",   color: "#ff6fb5", color2: "#b57bff"},
   evyatar: {g: "m", name: "אביה",    color: "#4d9bff", color2: "#ff5a5a"},
-  mom:     {name: "אמא ליאורי", color: "#ffa04d", color2: "#ff5f6d"}
+  mom:     {name: "אמא ליאורי", color: "#ffa04d", color2: "#ff5f6d"},
+  admin:   {name: "מנהל", color: "#ffd34d", color2: "#ff9f1c"}
 };
 window.drawCharacter = function (id, kind) {
   var c = window.CHARACTERS[id];

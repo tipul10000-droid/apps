@@ -36,6 +36,33 @@ function nextSchoolDay(y: number, m: number, d: number) {
   return dt;
 }
 
+
+// מצב מנהל: כל התראה שנשלחת לילד או לאמא נשלחת גם כעותק למכשירי המנהל (child = "admin"), כדי לראות מה כולם מקבלים
+const WHO: Record<string, string> = { ...NAMES, mom: "אמא" };
+let EP: Record<string, string> = {};
+let ADMINS: any[] = [];
+let SB: any = null;
+async function loadAdmin(sb: any) {
+  SB = sb;
+  const { data } = await sb.from("sandwich_push").select("*").eq("active", true);
+  EP = {}; (data || []).forEach((r: any) => (EP[r.endpoint] = r.child));
+  ADMINS = (data || []).filter((r: any) => r.child === "admin");
+}
+async function sendPush(sub: any, payload: string, opts?: any) {
+  const res = await webpush.sendNotification(sub, payload, opts);
+  const who = EP[sub.endpoint];
+  if (who && WHO[who] && ADMINS.length) {
+    let p: any = {};
+    try { p = JSON.parse(payload); } catch (_) { /* ignore */ }
+    const copy = JSON.stringify({ ...p, title: `\u{1F441}\uFE0F ${WHO[who]}: ${p.title || ""}`, tag: `${p.tag || "sandwich"}-adm-${who}` });
+    await Promise.allSettled(ADMINS.map(async (a: any) => {
+      try { await webpush.sendNotification({ endpoint: a.endpoint, keys: { p256dh: a.p256dh, auth: a.auth } }, copy, opts); }
+      catch (e: any) { if (e?.statusCode === 404 || e?.statusCode === 410) await SB.from("sandwich_push").delete().eq("endpoint", a.endpoint); }
+    }));
+  }
+  return res;
+}
+
 // זוג מפתחות VAPID נוצר בשרת בפעם הראשונה ונשמר בטבלה נעולה. המפתח הפרטי לא יוצא מהשרת.
 async function getKeys(sb: any) {
   const { data } = await sb.from("sandwich_secrets").select("name,value").in("name", ["vapid_public", "vapid_private"]);
@@ -66,7 +93,7 @@ async function replacementPush(sb: any, keys: { pub: string; priv: string }, iso
   await Promise.allSettled((subs || []).map(async (s: any) => {
     const dish = need.find((r: any) => r.child === s.child)!.dish;
     try {
-      await webpush.sendNotification(
+      await sendPush(
         { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
         JSON.stringify({ title: `🥪 ${NAMES[s.child]}, ${dish} אזלה`, body: "צריך לבחור סנדוויץ' אחר למחר בבוקר", url: APP_URL, tag: `sandwich-gone-${iso}` }),
         { TTL: 3600 },
@@ -110,7 +137,7 @@ async function broadcastKids(sb: any, keys: { pub: string; priv: string }, title
   let sent = 0;
   await Promise.allSettled(kids.map(async (s: any) => {
     try {
-      await webpush.sendNotification(
+      await sendPush(
         { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
         JSON.stringify({ title, body, url: APP_URL, tag }),
         { TTL: 3600 },
@@ -130,6 +157,7 @@ Deno.serve(async (req) => {
   const url = new URL(req.url);
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const keys = await getKeys(sb);
+  await loadAdmin(sb);
   if (url.searchParams.get("action") === "pubkey") return json({ publicKey: keys.pub });
 
   // אמא ליאורי סימנה מנה כלא זמינה: מתריעים מיד לילדים שבחרו אותה
@@ -181,7 +209,7 @@ Deno.serve(async (req) => {
     let sent = 0;
     await Promise.allSettled(devs.map(async (s: any) => {
       try {
-        await webpush.sendNotification(
+        await sendPush(
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
           JSON.stringify({ title: `🥪 היי ${NAMES[child]}!`, body: "אמא מזכירה לבחור סנדוויץ' למחר בבוקר!", url: APP_URL, tag: `sandwich-nudge-${iso}` }),
           { TTL: 3600 },
@@ -227,7 +255,7 @@ Deno.serve(async (req) => {
         let ms = 0;
         await Promise.allSettled((devs || []).map(async (s: any) => {
           try {
-            await webpush.sendNotification(
+            await sendPush(
               { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
               JSON.stringify({ title: "🛒 אמא ליאורי, מה יש בבית?", body: "אפשר לעדכן מה זמין לקראת הבחירה של הילדים אחרי הלימודים", url: APP_URL, tag: `sandwich-mom-${today1}` }),
               { TTL: 3600 },
@@ -271,7 +299,7 @@ Deno.serve(async (req) => {
       ? { title: `⏰ ${name}, עוד לא בחרת`, body: "תזכורת לבחור סנדוויץ' למחר בבוקר!" }
       : { title: `🥪 היי ${name}!`, body: "תזכורת לבחור סנדוויץ' למחר בבוקר!" };
     try {
-      await webpush.sendNotification(
+      await sendPush(
         { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
         JSON.stringify({ ...payload, url: APP_URL, tag: `sandwich-${iso}` }),
         { TTL: 3600 },
