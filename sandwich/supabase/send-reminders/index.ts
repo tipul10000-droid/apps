@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
   // אמא ליאורי סימנה מנה כלא זמינה: מתריעים מיד לילדים שבחרו אותה
   if (url.searchParams.get("action") === "dish_off") {
     const dish = url.searchParams.get("dish") || "";
-    const b = israelNow(Date.now() - 4 * 3600e3);
+    const b = israelNow(Date.now() - 9 * 3600e3);
     const iso = nextSchoolDay(b.y, b.m, b.d).toISOString().slice(0, 10);
     return json({ ok: true, ...(await replacementPush(sb, keys, iso, dish)) });
   }
@@ -143,8 +143,8 @@ Deno.serve(async (req) => {
   if (url.searchParams.get("action") === "nudge") {
     const child = url.searchParams.get("child") || "";
     if (!NAMES[child]) return json({ ok: false, error: "bad child" }, 400);
-    // היום הבא של הילדים: הבחירה נסגרת ב-04:00 (שעון ישראל)
-    const b = israelNow(Date.now() - 4 * 3600e3);
+    // היום הבא של הילדים: היום מתחלף ב-09:00 (שעון ישראל)
+    const b = israelNow(Date.now() - 9 * 3600e3);
     const iso = nextSchoolDay(b.y, b.m, b.d).toISOString().slice(0, 10);
     const { data: chosen } = await sb.from("sandwich_choices").select("child").eq("for_date", iso).eq("child", child).neq("dish", "");
     if (chosen && chosen.length) return json({ ok: true, result: "already_chosen" });

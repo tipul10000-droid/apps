@@ -52,24 +52,18 @@
 
   function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   // לימודים ראשון עד שישי, בלי שבת.
-  // הבחירה נסגרת ב-04:00 בבוקר (מי שהולך לישון מאוחר עדיין בוחר ליום שלמחרת).
-  // ילדים: תמיד היום הבא, לפי "יום" שמתחלף ב-04:00 (שישי ושבת מובילים לראשון).
-  // ליאורי: עד 12:00 רואה את היום (מה שמכינים עכשיו), מ-12:00 את היום הבא.
-  var CLOSE_HOUR = 4;
+  // "יום" מתחלף ב-09:00 בבוקר, אותה שעה לכולם (ילדים וליאורי).
+  // לפני 09:00 עוד רואים את היום שמכינים עכשיו, מ-09:00 את היום הבא (שישי ושבת מובילים לראשון).
+  var CLOSE_HOUR = 9;
   function nextSchoolDay(d) {
     var n = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 12);
     if (n.getDay() === 6) n.setDate(n.getDate() + 1);
     return n;
   }
-  function target(forMom) {
-    var now = new Date(), base, d;
-    if (forMom) {
-      base = now;
-      d = (now.getHours() < 12 && now.getDay() !== 6) ? now : nextSchoolDay(now);
-    } else {
-      base = new Date(now.getTime() - CLOSE_HOUR * 36e5);
-      d = nextSchoolDay(base);
-    }
+  function target() {
+    var now = new Date();
+    var base = new Date(now.getTime() - CLOSE_HOUR * 36e5);
+    var d = nextSchoolDay(base);
     var days = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(base.getFullYear(), base.getMonth(), base.getDate())) / 864e5);
     return {iso: iso(d), label: days === 0 ? "היום" : days === 1 ? "מחר" : "יום " + DAYS[d.getDay()]};
   }
@@ -444,7 +438,7 @@
   }
 
   function screenPick(child) {
-    var t = target(false);
+    var t = target();
     var forTxt = t.label === "מחר" ? "למחר" : "ל" + t.label;
     Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; }), getReturned().catch(function () { return []; })]).then(function (res) {
       var rows = res[0], off = res[1], notes = res[2], back = res[3];
@@ -529,7 +523,7 @@
     return '<button class="notechip' + (fresh ? " new" : "") + '" data-k="' + k + '" type="button">' + (fresh ? "📝 התקבלה הערה" : "📝 הערה") + '</button>';
   }
   function screenMom() {
-    var t = target(true), celebrated = false;
+    var t = target(), celebrated = false;
     show('<header class="phead" style="' + colorOf("mom") + '"><div class="ptop"><button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
       '<div class="greet">' + picBox("mom") + '' +
       '<div class="bubble"><h1>הסנדוויצ\'ים של ' + t.label + ' בבוקר</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"><span class="tx">טוענים…</span></div></div></div></header>' +
@@ -538,7 +532,7 @@
     bindSwitch();
     var status = document.getElementById("status"), box = document.getElementById("rows");
     // בונים את הרשימה והכפתור פעם אחת; בעדכון משנים רק את תוכן השורות (הדמות למעלה לא זזה)
-    box.innerHTML = '<div class="progress"><i style="width:0"></i></div><div id="list"></div><button class="main refresh" id="refresh" type="button">רענון</button><button class="main sec" id="availBtn" type="button">מה יש בבית?</button><p class="momnote">אפשר לשלוח תזכורת לילדים החל מ-12:00 בצהריים.</p>';
+    box.innerHTML = '<div class="progress"><i style="width:0"></i></div><div id="list"></div><button class="main refresh" id="refresh" type="button">רענון</button><button class="main sec" id="availBtn" type="button">מה יש בבית?</button><p class="momnote">אפשר לשלוח תזכורת לילדים החל מ-09:00 בבוקר.</p>';
     function render() {
       Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; })]).then(function (res) {
         var rows = res[0], off = res[1], notes = res[2];
@@ -549,7 +543,7 @@
         status.innerHTML = '<span class="tx">' + (all ? "כולם בחרו 🎉" : done + " מתוך " + KIDS.length + " בחרו") + '</span>';
         box.querySelector(".progress i").style.width = (done / KIDS.length * 100) + "%";
         // כפתור "שלח תזכורת": רק כשליאורי רואה את אותו יום שהילדים בוחרים עליו עכשיו (אחרת אי אפשר כבר לבחור)
-        var canNudge = !demo && t.iso === target(false).iso;
+        var canNudge = !demo && t.iso === target().iso;
         document.getElementById("list").innerHTML = KIDS.map(function (k) {
           var d = by[k], last = parseInt(store("nudge_" + k) || "0", 10), recent = last && (Date.now() - last) < 10 * 60 * 1000;
           var bad = d && off.indexOf(d) >= 0;
