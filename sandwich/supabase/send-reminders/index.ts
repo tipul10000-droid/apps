@@ -81,6 +81,22 @@ async function replacementPush(sb: any, keys: { pub: string; priv: string }, iso
   return { need: need.length, sent };
 }
 
+// מנה יומית: ממלא בחירה ליום iso לילד שיש לו מנה יומית זמינה ועוד אין לו שורה ליום הזה (שורה ריקה = ביטול ידני, לא נוגעים)
+async function applyDaily(sb: any, iso: string) {
+  const { data: dl } = await sb.from("sandwich_daily").select("child,dish");
+  if (!dl || !dl.length) return { filled: 0 };
+  const { data: off } = await sb.from("sandwich_unavailable").select("dish");
+  const gone = new Set((off || []).map((r: any) => r.dish));
+  const { data: have } = await sb.from("sandwich_choices").select("child").eq("for_date", iso);
+  const has = new Set((have || []).map((r: any) => r.child));
+  const todo = dl.filter((r: any) => !has.has(r.child) && !gone.has(r.dish));
+  if (!todo.length) return { filled: 0 };
+  const { error } = await sb.from("sandwich_choices").upsert(todo.map((r: any) => ({ child: r.child, for_date: iso, dish: r.dish, updated_at: new Date().toISOString() })), { onConflict: "child,for_date", ignoreDuplicates: true });
+  if (error) return { filled: 0, error: error.message };
+  await logEv(sb, todo.map((r: any) => ({ child: r.child, type: "daily_auto", dish: r.dish, for_date: iso })));
+  return { filled: todo.length };
+}
+
 // הודעה לכל הילדים (מנה חדשה / מנה שחזרה). מגבלה: פעם אחת בכל 10 דקות.
 async function broadcastKids(sb: any, keys: { pub: string; priv: string }, title: string, body: string, tag: string, evType: string, dish?: string) {
   const n = israelNow();
@@ -176,6 +192,9 @@ Deno.serve(async (req) => {
 
   const dry = url.searchParams.get("dry") === "1";
   const now = israelNow();
+  // מנה יומית: מ-09:00 (תחילת היום) בוחרים אוטומטית לילדים שסימנו מנה יומית ועוד אין להם בחירה (גם לא ביטול ידני)
+  let daily: unknown = null;
+  if (!dry && now.hour >= 9) daily = await applyDaily(sb, nextSchoolDay(now.y, now.m, now.d).toISOString().slice(0, 10));
   const slotParam = url.searchParams.get("slot");
   const slot = dry && slotParam ? +slotParam : SLOTS.includes(now.hour) ? now.hour : null;
   // בשישי בערב אין תזכורת. בשבת בערב יש (ליום ראשון).
@@ -218,7 +237,7 @@ Deno.serve(async (req) => {
       }
     }
   }
-  if (slot === null) return json({ skipped: "not a reminder hour", hour: now.hour, gone, mom: momRes });
+  if (slot === null) return json({ skipped: "not a reminder hour", hour: now.hour, gone, mom: momRes, daily });
   if (todayDow === 5) return json({ skipped: "no reminder on Friday" });
 
   const target = nextSchoolDay(now.y, now.m, now.d);
@@ -262,5 +281,5 @@ Deno.serve(async (req) => {
     }
   }));
   await logEv(sb, evs);
-  return json({ slot, target: iso, sent, removed, failed, gone });
+  return json({ slot, target: iso, sent, removed, failed, gone, daily });
 });
