@@ -108,3 +108,13 @@ create table if not exists sandwich_dish_notes (
 );
 alter table sandwich_dish_notes enable row level security;
 -- הפונקציות: sandwich_note_all(), sandwich_note_set(child, dish, note), sandwich_log(child, type, meta). הגדרות מלאות ב-Supabase.
+
+-- ===== מנה יומית =====
+-- ילד מסמן מנה כ"מנה יומית": נבחרת לו אוטומטית כל יום (מ-09:00, ע"י פונקציית התזכורות) עד ביטול או החלפה.
+create table if not exists sandwich_daily (
+  child text primary key check (child in ('lia','daniela','evyatar')),
+  dish text not null,
+  updated_at timestamptz not null default now()
+);
+alter table sandwich_daily enable row level security;
+-- הפונקציות: sandwich_daily_get(), sandwich_daily_set(child, dish) ('' מבטל). הגדרות מלאות ב-Supabase.

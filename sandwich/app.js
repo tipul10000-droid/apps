@@ -120,6 +120,19 @@
     });
   }
 
+  // מנה יומית: נבחרת אוטומטית כל יום (בשרת, מ-09:00) עד ביטול או החלפה
+  function getDaily(child) {
+    if (demo) return Promise.resolve(store("demo_daily_" + child) || null);
+    return rpc("sandwich_daily_get", {}).then(function (rows) {
+      var m = (rows || []).filter(function (r) { return r.child === child; })[0];
+      return m ? canon(m.dish) : null;
+    });
+  }
+  function setDaily(child, dish) {
+    if (demo) { store("demo_daily_" + child, dish || null); return Promise.resolve(); }
+    return rpc("sandwich_daily_set", {p_child: child, p_dish: dish || ""});
+  }
+
   // מנות שחזרו לתפריט אחרי 4 ימים או יותר בלי להיות זמינות (מסומנות 3 ימים)
   function getReturned() {
     if (demo) return Promise.resolve([]);
@@ -239,6 +252,7 @@
   // ---- מה חדש ----
   // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
   var RELEASES = [
+    {v: "20261016a", at: "16.10.2026 · 08:30", items: ["מנה יומית: אחרי שבוחרים מנה, לוחצים על ☆ בפינה שלה והיא נבחרת אוטומטית כל יום, עד שמבטלים או מסמנים מנה אחרת", "היום מתחלף ב-09:00 לכולם"]},
     {v: "20261007l", at: "7.10.2026 · 19:46", items: ["התראה לילדים כשמנה חדשה נכנסת או מנה חוזרת לתפריט"]},
     {v: "20261007k", at: "7.10.2026 · 19:43", items: ["ארבע מנות חדשות: פיצה, בורקס, גבינה עם פסטו, פסטה עם מלח", "סרט \"חזר!\" על מנה שחזרה לתפריט", "תזכורת לאמא ליאורי ב-10:00 וב-12:00 לעדכן מה זמין"]},
     {v: "20261007j", at: "7.10.2026 · 19:07", items: ["הערה לכל מנה, ואמא רואה אותה"]},
@@ -440,8 +454,8 @@
   function screenPick(child) {
     var t = target();
     var forTxt = t.label === "מחר" ? "למחר" : "ל" + t.label;
-    Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; }), getReturned().catch(function () { return []; })]).then(function (res) {
-      var rows = res[0], off = res[1], notes = res[2], back = res[3];
+    Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; }), getReturned().catch(function () { return []; }), getDaily(child).catch(function () { return null; })]).then(function (res) {
+      var rows = res[0], off = res[1], notes = res[2], back = res[3], daily = res[4];
       var mine = rows.filter(function (r) { return r.child === child; })[0];
       var cur = mine && canon(mine.dish);
       var bad = cur && off.indexOf(cur) >= 0 ? cur : null;
@@ -454,7 +468,7 @@
           .sort(function (a, b) { return rank(a.d) - rank(b.d) || a.i - b.i; })
           .map(function (o) {
             var no = off.indexOf(o.d.n) >= 0;
-            return '<button class="dish' + (no ? " off" : "") + '" data-i="' + o.i + '"' + (no ? " disabled" : "") + '>' + (no ? '<span class="offtag">לא זמין</span>' : o.d.isNew ? '<span class="newtag"><b>חדש!</b></span>' : back.indexOf(o.d.n) >= 0 ? '<span class="newtag back"><b>חזר!</b></span>' : '') + '<span class="em">' + ico(o.d.e) + '</span><span class="nm">' + esc(o.d.n) + '</span></button>';
+            return '<button class="dish' + (no ? " off" : "") + (daily === o.d.n ? " daily" : "") + '" data-i="' + o.i + '"' + (no ? " disabled" : "") + '>' + (no ? '' : '<span class="dstar" role="button" aria-label="מנה יומית"></span>') + (no ? '<span class="offtag">לא זמין</span>' : o.d.isNew ? '<span class="newtag"><b>חדש!</b></span>' : back.indexOf(o.d.n) >= 0 ? '<span class="newtag back"><b>חזר!</b></span>' : '') + '<span class="em">' + ico(o.d.e) + '</span><span class="nm">' + esc(o.d.n) + '</span></button>';
           }).join("") + '</div></div>');
       app.className = "pick";
       bindSwitch();
@@ -463,7 +477,7 @@
       var dishes = Array.prototype.slice.call(app.querySelectorAll(".dish"));
       function paint(saved) {
         if (cur !== bad) bad = null;
-        dishes.forEach(function (b) { b.classList.toggle("sel", DISHES[b.dataset.i].n === cur && !bad); });
+        dishes.forEach(function (b) { b.classList.toggle("sel", DISHES[b.dataset.i].n === cur && !bad); b.classList.toggle("daily", DISHES[b.dataset.i].n === daily); });
         status.className = "ok" + (cur && !bad ? "" : " idle") + (bad ? " warn" : "") + (saved ? " pop" : "");
         status.innerHTML = bad
           ? '<span class="e">⚠️</span><span class="tx">' + esc(bad) + ' אזלה. ' + (CHARACTERS[child].g === "f" ? "בחרי" : "בחר") + ' מנה אחרת</span>'
@@ -478,8 +492,17 @@
         editNote(child, dish, notes[child + "|" + dish], function (txt) { if (txt) notes[child + "|" + dish] = txt; else delete notes[child + "|" + dish]; if (cur === dish) paint(false); toast(txt ? "ההערה נשמרה" : "ההערה נמחקה"); });
       });
       dishes.forEach(function (b) {
-        b.onclick = function () {
+        b.onclick = function (e) {
           var name = DISHES[b.dataset.i].n;
+          if (e.target.closest && e.target.closest(".dstar")) {
+            var on = daily !== name;
+            if (on && cur !== name) return;
+            setDaily(child, on ? name : "").then(function () {
+              daily = on ? name : null; paint(false);
+              toast(on ? "⭐ " + name + " תיבחר לך אוטומטית כל יום, עד שתבטל או תסמן מנה יומית אחרת" : "המנה היומית בוטלה");
+            }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
+            return;
+          }
           if (name === cur) {
             // לחיצה על המנה שכבר נבחרה: מורידים את הבחירה (נשמר כמנה ריקה)
             setChoice(child, t.iso, "").then(function () { cur = null; paint(false); })
@@ -488,6 +511,7 @@
           }
           setChoice(child, t.iso, name).then(function () {
             cur = name; paint(true); burstFrom(status);
+            if (!daily && (parseInt(store("dailyhint") || "0", 10) < 3)) { store("dailyhint", String(parseInt(store("dailyhint") || "0", 10) + 1)); toast("רוצים את המנה הזאת כל יום? לחצו על ☆ בפינה של המנה"); }
           }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
         };
       });
