@@ -252,7 +252,7 @@
   // ---- מה חדש ----
   // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
   var RELEASES = [
-    {v: "20261016a", at: "16.10.2026 · 08:30", items: ["מנה יומית: אחרי שבוחרים מנה, לוחצים על ☆ בפינה שלה והיא נבחרת אוטומטית כל יום, עד שמבטלים או מסמנים מנה אחרת", "היום מתחלף ב-09:00 לכולם"]},
+    {v: "20261016b", at: "16.10.2026 · 10:10", items: ["🏆 מסך סטטיסטיקה חדש (כפתור במסך הראשי): פודיום של מי בוחר הכי מהר, עוגת המנות, רצפים ומלך ההתלבטות, ומסך אישי לכל ילד", "⭐ מנה יומית: אחרי שבוחרים מנה, לוחצים על ☆ בפינה שלה והיא נבחרת אוטומטית כל יום, עד שמבטלים או מסמנים מנה אחרת"]},
     {v: "20261007l", at: "7.10.2026 · 19:46", items: ["התראה לילדים כשמנה חדשה נכנסת או מנה חוזרת לתפריט"]},
     {v: "20261007k", at: "7.10.2026 · 19:43", items: ["ארבע מנות חדשות: פיצה, בורקס, גבינה עם פסטו, פסטה עם מלח", "סרט \"חזר!\" על מנה שחזרה לתפריט", "תזכורת לאמא ליאורי ב-10:00 וב-12:00 לעדכן מה זמין"]},
     {v: "20261007j", at: "7.10.2026 · 19:07", items: ["הערה לכל מנה, ואמא רואה אותה"]},
@@ -278,6 +278,26 @@
   ];
   function relHtml(r) {
     return '<p class="rv">גרסה <bdi>' + esc(r.v) + '</bdi> · <bdi>' + esc(r.at) + '</bdi></p><ul>' + r.items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>';
+  }
+  // חלון "חדש באפליקציה": נפתח פעם אחת בכניסה הראשונה אחרי שחרור פיצ'רים גדולים, מדגיש מה חדש ומזמין לנסות
+  var BIG = "20261016b";
+  function openNew() {
+    var who = store("who"), kid = KIDS.indexOf(who) >= 0;
+    var ov = document.createElement("div"); ov.className = "ins";
+    ov.innerHTML = '<div class="ins-box notes newbox"><button class="px" type="button" aria-label="סגירה">✕</button><span class="nbadge">🎉 חדש באפליקציה!</span><h3>שני פיצ\'רים חדשים</h3>' +
+      '<div class="nfeat"><b>🏆 סטטיסטיקה</b><span>מי בוחר הכי מהר, איזו מנה הכי אהובה, רצפים ומסך אישי לכל ילד</span></div>' +
+      '<div class="nfeat"><b>⭐ מנה יומית</b><span>בוחרים מנה ולוחצים על ☆ בפינה שלה, והיא נבחרת לבד כל יום, עד שמבטלים או מחליפים</span></div>' +
+      '<button class="main" id="tryStats" type="button">🏆 לנסות את הסטטיסטיקה</button>' +
+      (kid ? '<button class="main sec2" id="tryDaily" type="button">⭐ לנסות מנה יומית</button>' : '') +
+      '<button class="plainbtn" id="allNotes" type="button">כל הגרסאות</button></div>';
+    function close() { store("seen_rel", BIG); ov.remove(); }
+    ov.onclick = function (e) { if (e.target === ov) close(); };
+    ov.querySelector(".px").onclick = close;
+    ov.querySelector("#tryStats").onclick = function () { close(); screenStats(); };
+    var td = ov.querySelector("#tryDaily");
+    if (td) td.onclick = function () { close(); toast("בחרו מנה ולחצו על ☆ בפינה שלה כדי שתיבחר כל יום"); };
+    ov.querySelector("#allNotes").onclick = function () { close(); openNotes(); };
+    document.body.appendChild(ov);
   }
   function openNotes() {
     var ov = document.createElement("div"); ov.className = "ins";
@@ -419,6 +439,7 @@
     show('<div class="hero"><h1>בוחרים סנדוויץ\' למחר בבוקר!</h1><p class="sub">לחצו על השם שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
       '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>' + CHARACTERS.mom.name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
+      '<button class="stats-btn" id="statsbtn" type="button"><span class="newtag"><b>חדש!</b></span>🏆 סטטיסטיקה</button>' +
       (demo || isInstalled() ? "" : '<button class="install" id="install" type="button">' + SHARE_ICO + ' התקנה למסך הבית (לתזכורות)</button>') +
       '<footer class="credit"><div class="cr"><div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + ' <button class="info" id="info" type="button" aria-label="מה חדש בגרסה"><i>i</i><span>לחצו לפרטים</span></button></div></div>' +
       (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות - כבוי</button>') + '</footer>');
@@ -426,6 +447,7 @@
     setupBell();
     setupInstall();
     document.getElementById("info").onclick = openNotes;
+    document.getElementById("statsbtn").onclick = screenStats;
     Array.prototype.forEach.call(app.querySelectorAll("[data-id]"), function (b) {
       b.onclick = function () { store("who", b.dataset.id); route(); };
     });
@@ -627,6 +649,121 @@
     }).catch(function () { toast("אין חיבור. נסו שוב"); });
   }
 
+  // ---- מסך סטטיסטיקה ----
+  // הנתונים מגיעים מפונקציה אחת בשרת (בלי מידע מזהה, רק קוד דמות, מנה ותאריך)
+  function getStats() {
+    if (demo) return Promise.resolve({choices: [], ev: [], opens: {}});
+    return rpc("sandwich_stats", {});
+  }
+  function secTxt(n) {
+    if (n === null || n === undefined) return "—";
+    if (n < 60) return n + " שניות";
+    return Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0") + " דק'";
+  }
+  function prevSchoolDay(isoStr) {
+    var d = new Date(isoStr + "T12:00:00"); d.setDate(d.getDate() - 1);
+    if (d.getDay() === 6) d.setDate(d.getDate() - 1);
+    return iso(d);
+  }
+  function statsOf(S, k) {
+    var mine = (S.choices || []).filter(function (r) { return r.c === k; });
+    var counts = {}, dates = {};
+    mine.forEach(function (r) { var n = canon(r.x); counts[n] = (counts[n] || 0) + 1; dates[r.d] = 1; });
+    var ds = Object.keys(dates).sort(), best = 0, run = 0, prev = null;
+    ds.forEach(function (d) { run = prev && prevSchoolDay(d) === prev ? run + 1 : 1; prev = d; if (run > best) best = run; });
+    var cur = 0, t = target().iso, last = ds[ds.length - 1];
+    if (last && (last === t || last === prevSchoolDay(t))) {
+      cur = 1; var x = last;
+      while (dates[prevSchoolDay(x)]) { cur++; x = prevSchoolDay(x); }
+    }
+    var fav = null; Object.keys(counts).forEach(function (n) { if (!fav || counts[n] > counts[fav]) fav = n; });
+    var ev = (S.ev || []).filter(function (r) { return r.c === k; })[0] || {};
+    return {k: k, days: ds.length, counts: counts, fav: fav, best: best, cur: cur, tried: Object.keys(counts).length,
+      changes: ev.changes || 0, avg: ev.n_s ? ev.avg_s : null, min: ev.n_s ? ev.min_s : null, n: ev.n_s || 0};
+  }
+  var PIE = ["#ffd34d", "#ff6fb5", "#4d9bff", "#8fe04a", "#ffa04d", "#b57bff", "#2fc4d8", "#ff5a5f"];
+  function screenStats() {
+    show('<header class="shead"><div class="ptop"><button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
+      '<h1>🏆 סטטיסטיקה</h1><nav class="tabs" id="tabs"></nav></header><div class="sbody" id="sbody"><p class="sempty">טוענים…</p></div>');
+    app.className = "stats";
+    bindSwitch();
+    var who = store("who"), pickKid = KIDS.indexOf(who) >= 0 ? who : "lia", pieKid = "all", tab = store("stab") || "pod";
+    getStats().then(function (S) {
+      var st = {}; KIDS.forEach(function (k) { st[k] = statsOf(S, k); });
+      var TABS = [["pod", "🏆 פודיום"], ["pie", "🥧 מנות"], ["str", "🔥 רצפים"], ["me", "⭐ אישי"]];
+      var tabsEl = document.getElementById("tabs"), body = document.getElementById("sbody");
+      function face(k) { return '<span class="sface" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '</span>'; }
+      function speed(a, b) { return (st[a].avg === null ? 1e9 : st[a].avg) - (st[b].avg === null ? 1e9 : st[b].avg); }
+      function podium() {
+        var r = KIDS.slice().sort(speed);
+        var order = [r[1], r[0], r[2]], cls = ["p2", "p1", "p3"], rank = {};
+        r.forEach(function (k, i) { rank[k] = i + 1; });
+        var total = KIDS.reduce(function (a, k) { return a + st[k].n; }, 0);
+        return '<h2>מי בוחר הכי מהר?</h2><p class="ssub">הזמן מפתיחת האפליקציה ועד הבחירה, בממוצע. כמה שיותר מהיר, יותר גבוה!</p>' +
+          '<div class="podium">' + order.map(function (k, i) {
+            var has = st[k].avg !== null;
+            return '<div class="pcol ' + cls[i] + '" style="' + colorOf(k) + '">' + (rank[k] === 1 && has ? '<span class="crown">👑</span>' : '') +
+              '<div class="pch">' + drawCharacter(k) + '</div><div class="pblock"><b>' + (has ? rank[k] : "?") + '</b></div>' +
+              '<div class="pname">' + CHARACTERS[k].name + '</div><div class="ptime">' + (has ? secTxt(st[k].avg) : "אין עדיין נתונים") + '</div></div>';
+          }).join("") + '</div>' +
+          '<div class="scards">' + KIDS.map(function (k) {
+            return '<div class="scard" style="' + colorOf(k) + '">' + face(k) + '<div><b>' + CHARACTERS[k].name + '</b><small>שיא אישי: ' + secTxt(st[k].min) + (st[k].n ? " · " + st[k].n + " בחירות נמדדו" : "") + '</small></div></div>';
+          }).join("") + '</div>' + (total < 6 ? '<p class="snote">עוד אוספים נתונים, הדירוג יתעדכן ככל שיבחרו יותר.</p>' : '');
+      }
+      function pie() {
+        var counts = {}, who = pieKid === "all" ? KIDS : [pieKid], tried = {};
+        who.forEach(function (k) { Object.keys(st[k].counts).forEach(function (n) { counts[n] = (counts[n] || 0) + st[k].counts[n]; tried[n] = 1; }); });
+        var names = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; }), tot = names.reduce(function (a, n) { return a + counts[n]; }, 0);
+        var rows = names.slice(0, 7).map(function (n) { return [n, counts[n]]; }), rest = names.slice(7).reduce(function (a, n) { return a + counts[n]; }, 0);
+        if (rest) rows.push(["אחרות", rest]);
+        var acc = 0, grad = rows.map(function (r, i) { var a = acc / tot * 100; acc += r[1]; return PIE[i % PIE.length] + " " + a + "% " + (acc / tot * 100) + "%"; }).join(",");
+        var untried = DISHES.filter(function (d) { return !tried[d.n]; });
+        return '<h2>המנות הכי נבחרות</h2><div class="chips">' + [["all", "כולם"]].concat(KIDS.map(function (k) { return [k, CHARACTERS[k].name]; })).map(function (o) {
+          return '<button type="button" class="chip' + (o[0] === pieKid ? " on" : "") + '" data-k="' + o[0] + '">' + o[1] + '</button>'; }).join("") + '</div>' +
+          (tot ? '<div class="piewrap"><div class="pie" style="background:conic-gradient(' + grad + ')"><i>' + tot + '<small>בחירות</small></i></div><ul class="legend">' +
+            rows.map(function (r, i) { return '<li><span class="dot" style="background:' + PIE[i % PIE.length] + '"></span><span class="ln">' + esc(r[0]) + '</span><b>' + r[1] + '</b></li>'; }).join("") + '</ul></div>' : '<p class="sempty">עוד אין בחירות</p>') +
+          (untried.length ? '<h3>' + (pieKid === "all" ? "מנות שעוד אף אחד לא ניסה" : "מנות שעוד לא ניסית") + '</h3><div class="untried">' + untried.map(function (d) { return '<span class="ut"><span class="uem">' + ico(d.e) + '</span>' + esc(d.n) + '</span>'; }).join("") + '</div>' : '<h3>ניסיתם את כל המנות! 🎉</h3>');
+      }
+      function streaks() {
+        var maxC = Math.max.apply(null, KIDS.map(function (k) { return st[k].changes; })), maxS = Math.max.apply(null, KIDS.map(function (k) { return st[k].cur; }));
+        return '<h2>רצפים 🔥</h2><p class="ssub">כמה ימי לימודים ברצף כל אחד בחר מנה.</p><div class="scards">' +
+          KIDS.map(function (k) {
+            return '<div class="scard" style="' + colorOf(k) + '">' + face(k) + '<div><b>' + CHARACTERS[k].name + (st[k].cur && st[k].cur === maxS ? " 🔥" : "") + '</b><small>עכשיו: ' + st[k].cur + ' ימים · שיא: ' + st[k].best + '</small></div><span class="big">' + st[k].cur + '</span></div>';
+          }).join("") + '</div>' +
+          '<h2>מלך ההתלבטות 🤔</h2><p class="ssub">כמה פעמים החליפו את הבחירה.</p><div class="bars">' +
+          KIDS.slice().sort(function (a, b) { return st[b].changes - st[a].changes; }).map(function (k) {
+            return '<div class="bar" style="' + colorOf(k) + '"><span class="bn">' + CHARACTERS[k].name + (maxC && st[k].changes === maxC ? " 👑" : "") + '</span><span class="bt"><i style="width:' + (maxC ? st[k].changes / maxC * 100 : 0) + '%"></i></span><b>' + st[k].changes + '</b></div>';
+          }).join("") + '</div>';
+      }
+      function me() {
+        var k = pickKid, d = st[k];
+        var line = d.fav ? "המנה האהובה עליי: " + d.fav + " (" + d.counts[d.fav] + " פעמים)" : "עוד לא בחרתי מספיק, בואו נתחיל!";
+        var badges = [], fastest = KIDS.slice().sort(speed)[0];
+        if (st[fastest].avg !== null && fastest === k) badges.push("⚡ הכי מהיר");
+        if (d.changes && d.changes === Math.max.apply(null, KIDS.map(function (x) { return st[x].changes; }))) badges.push("🤔 מלך ההתלבטות");
+        if (d.cur >= 3) badges.push("🔥 רצף של " + d.cur);
+        if ((d.counts["לאבנה"] || 0) >= 2) badges.push("🧈 גיבור הלאבנה");
+        if (d.cur && d.cur === d.best && d.best >= 2) badges.push("🏅 שובר שיאים");
+        return '<div class="chips">' + KIDS.map(function (x) { return '<button type="button" class="chip' + (x === k ? " on" : "") + '" data-k="' + x + '">' + CHARACTERS[x].name + '</button>'; }).join("") + '</div>' +
+          '<div class="mehead" style="' + colorOf(k) + '"><div class="mech">' + drawCharacter(k) + '</div><div class="mebub">' + esc(line) + '</div></div>' +
+          '<div class="mecards"><div class="mc"><b>' + d.days + '</b><small>ימים שבחרתי</small></div><div class="mc"><b>' + d.cur + '</b><small>רצף עכשיו</small></div><div class="mc"><b>' + secTxt(d.avg) + '</b><small>זמן בחירה ממוצע</small></div><div class="mc"><b>' + d.tried + '/' + DISHES.length + '</b><small>מנות שניסיתי</small></div></div>' +
+          (badges.length ? '<h3>התגים שלי</h3><div class="badges">' + badges.map(function (b) { return '<span class="badge">' + b + '</span>'; }).join("") + '</div>' : '');
+      }
+      function paint() {
+        tabsEl.innerHTML = TABS.map(function (t) { return '<button type="button" class="tab' + (t[0] === tab ? " on" : "") + '" data-t="' + t[0] + '">' + t[1] + '</button>'; }).join("");
+        body.innerHTML = tab === "pod" ? podium() : tab === "pie" ? pie() : tab === "str" ? streaks() : me();
+        body.scrollTop = 0;
+      }
+      tabsEl.onclick = function (e) { var b = e.target.closest && e.target.closest(".tab"); if (b) { tab = b.dataset.t; store("stab", tab); paint(); } };
+      body.onclick = function (e) {
+        var c = e.target.closest && e.target.closest(".chip"); if (!c) return;
+        if (tab === "pie") pieKid = c.dataset.k; else pickKid = c.dataset.k;
+        var y = body.scrollTop; paint(); body.scrollTop = y;
+      };
+      paint();
+    }).catch(function () { document.getElementById("sbody").innerHTML = '<p class="sempty">אין חיבור 📡</p>'; });
+  }
+
   function route() {
     var who = store("who");
     if (!who || !CHARACTERS[who]) return screenWho();
@@ -656,7 +793,7 @@
   document.addEventListener("touchmove", function (e) {
     if (e.touches && e.touches.length > 1) return;
     var t = e.target;
-    while (t && t !== document.body) { if (t.classList && (t.classList.contains("plist") || t.classList.contains("ins-box"))) return; t = t.parentNode; }
+    while (t && t !== document.body) { if (t.classList && (t.classList.contains("plist") || t.classList.contains("sbody") || t.classList.contains("ins-box"))) return; t = t.parentNode; }
     e.preventDefault();
   }, {passive: false});
   // בלי זום בטעות: לא מגיבים לצביטה ב-iOS, ולחיצה כפולה לא מקרבת (touch-action ב-CSS)
@@ -664,4 +801,5 @@
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function () {});
   if (demo) document.getElementById("demo").hidden = false;
   route();
+  if (store("seen_rel") !== BIG) setTimeout(function () { if (!document.querySelector(".ins")) openNew(); }, 700);
 })();

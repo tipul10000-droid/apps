@@ -118,3 +118,7 @@ create table if not exists sandwich_daily (
 );
 alter table sandwich_daily enable row level security;
 -- הפונקציות: sandwich_daily_get(), sandwich_daily_set(child, dish) ('' מבטל). הגדרות מלאות ב-Supabase.
+
+-- ===== מסך סטטיסטיקה =====
+-- sandwich_stats(): פונקציה אחת (security definer) שמחזירה json מסכם: בחירות לפי ילד/תאריך/מנה, זמני בחירה והחלפות מיומן האירועים, ומספר פתיחות.
+-- בלי מידע מזהה: רק קוד דמות, מנה ותאריך. מסננת שורות בדיקה עם תאריכים לא הגיוניים. הגדרה מלאה ב-Supabase.
