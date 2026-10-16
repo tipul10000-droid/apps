@@ -98,13 +98,13 @@ async function applyDaily(sb: any, iso: string) {
 }
 
 // הודעה לכל הילדים (מנה חדשה / מנה שחזרה). מגבלה: פעם אחת בכל 10 דקות.
-async function broadcastKids(sb: any, keys: { pub: string; priv: string }, title: string, body: string, tag: string, evType: string, dish?: string) {
+async function broadcastKids(sb: any, keys: { pub: string; priv: string }, title: string, body: string, tag: string, evType: string, dish?: string, everyone = false) {
   const n = israelNow();
   const today = `${n.y}-${String(n.m).padStart(2, "0")}-${String(n.d).padStart(2, "0")}`;
   const { error: dup } = await sb.from("sandwich_push_log").insert({ for_date: today, slot: 500000 + (Math.floor(Date.now() / 600000) % 100000) });
   if (dup) return { ok: true, result: "too_soon" };
   const { data: subs } = await sb.from("sandwich_push").select("*").eq("active", true);
-  const kids = (subs || []).filter((s: any) => NAMES[s.child]);
+  const kids = (subs || []).filter((s: any) => everyone || NAMES[s.child]);
   webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
   const ev: any[] = [];
   let sent = 0;
@@ -153,6 +153,11 @@ Deno.serve(async (req) => {
     const dishes = (url.searchParams.get("dishes") || "").split(",").map((x) => x.trim()).filter(Boolean).slice(0, 8);
     if (!dishes.length) return json({ ok: false, error: "no dishes" }, 400);
     return json(await broadcastKids(sb, keys, "🆕 מנות חדשות בתפריט!", `${dishes.join(", ")}. אפשר לבחור או להחליף את הבחירה`, "sandwich-new", "new_dishes_sent"));
+  }
+
+  // פיצ'רים חדשים באפליקציה (נקרא ידנית אחרי שחרור גרסה): הודעה לכולם, כולל אמא
+  if (url.searchParams.get("action") === "new_features") {
+    return json(await broadcastKids(sb, keys, "🎉 שני פיצ'רים חדשים!", "סטטיסטיקה ומנה יומית. נכנסים לנסות", "sandwich-features", "features_sent", undefined, true));
   }
 
   // אמא ליאורי שולחת תזכורת לילד שעוד לא בחר. הגבלה: פעם אחת לכל ילד כל 10 דקות, ורק אם לא בחר.
