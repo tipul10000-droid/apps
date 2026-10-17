@@ -1,0 +1,2175 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>אוצר מילים</title>
+<style>
+:root{--bg:#f4f6fb;--fg:#1b1f2a;--card:#fff;--bd:#d6dbe7;--ok:#2e9e5b;--no:#d64545;--ac:#3b5bdb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161c;--fg:#eceff5;--card:#1e222b;--bd:#343a48}}
+:root[data-theme="dark"]{--bg:#14161c;--fg:#eceff5;--card:#1e222b;--bd:#343a48}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px system-ui,Arial,sans-serif}
+main{max-width:560px;margin:0 auto;padding:14px}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0}
+.st{display:flex;justify-content:space-between;font-size:14px;margin:6px 0 14px;opacity:.85}
+.q{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:22px 16px;text-align:center}
+.w{font-size:34px;font-weight:700;direction:ltr;unicode-bidi:isolate}.h{font-size:14px;opacity:.7;margin-top:4px;direction:ltr}
+.o{display:block;width:100%;margin-top:10px;padding:14px;font:inherit;color:inherit;background:var(--card);border:2px solid var(--bd);border-radius:12px;cursor:pointer;text-align:center}
+.o:active{transform:scale(.99)}.o.ok{background:var(--ok);border-color:var(--ok);color:#fff}.o.no{background:var(--no);border-color:var(--no);color:#fff}
+.nx{display:none;margin-top:14px;padding:12px 28px;font:inherit;background:var(--ac);color:#fff;border:0;border-radius:10px;cursor:pointer}
+.ft{display:flex;gap:8px;margin-top:14px}.ft button{flex:1;padding:10px;font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:10px;cursor:pointer}
+#ls{display:none;margin-top:12px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 14px}
+#ls div{padding:6px 0;border-bottom:1px solid var(--bd)}#ls b{direction:ltr;unicode-bidi:isolate}
+.sk{display:flex;gap:8px;justify-content:center;font-size:14px;margin:-6px 0 10px}.sk span{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 12px}
+.sk .hot{border-color:#f08c00}
+.lv{display:flex;gap:6px;margin:0 0 12px}.lv button{flex:1;padding:7px 4px;font:inherit;font-size:14px;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:10px;cursor:pointer}
+.pd{width:1.15em;height:1.15em;vertical-align:-.2em}
+.sk button{font:inherit;font-size:14px;color:inherit;background:var(--card);border:1px solid var(--ac);border-radius:20px;padding:3px 12px;cursor:pointer}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;z-index:9;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px;overflow:auto}
+.ov.on{display:flex}#nm{z-index:10}.pn{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;width:100%;max-width:520px;box-sizing:border-box}
+.pn h2{margin:0 0 10px;font-size:20px}.pn input{width:100%;box-sizing:border-box;font:inherit;padding:12px;border:2px solid var(--bd);border-radius:10px;background:var(--bg);color:inherit}
+.pn .row{display:flex;gap:8px;margin-top:10px}.pn .row button{flex:1;padding:10px;font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:10px;cursor:pointer}
+.pn .row button.pri{background:var(--ac);border-color:var(--ac);color:#fff}.pn .note{font-size:13px;opacity:.7;margin-top:6px}
+.lr{display:flex;align-items:center;gap:8px;padding:8px 6px;border-bottom:1px solid var(--bd)}.lr.me{background:rgba(59,91,219,.14);border-radius:8px}
+.lr .rk{width:30px;text-align:center;font-weight:700}.lr .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lr .nu{display:flex;gap:10px;font-size:14px;opacity:.85}.lr .nu b{opacity:1}.lr .nu span{min-width:40px;text-align:center;opacity:.7}.lr .nu span.sel{opacity:1;font-weight:700}
+.lv small{display:block;font-size:12px;opacity:.75}
+.lv button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.cr{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#gob{width:72px;height:72px;flex:none;transform-origin:50% 100%}
+.bub{position:relative;flex:1;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:8px 12px;font-size:15px;min-height:22px}
+.bub:before{content:"";position:absolute;right:-7px;top:50%;margin-top:-6px;border:6px solid transparent;border-left-color:var(--bd);border-right:0}
+#gob.hop{animation:hop .5s}#gob.sad{animation:sad .7s}#gob.party{animation:party .9s}
+@keyframes hop{30%{transform:translateY(-12px) scaleY(1.08)}60%{transform:translateY(0) scaleY(.9)}}
+@keyframes sad{30%{transform:scaleY(.8) rotate(-6deg)}60%{transform:scaleY(.85) rotate(6deg)}}
+@keyframes party{20%{transform:translateY(-16px) rotate(-15deg)}50%{transform:translateY(-16px) rotate(15deg)}80%{transform:translateY(0) scale(1.1)}}
+@media(prefers-reduced-motion:reduce){#gob{animation:none!important}}
+</style></head><body><main>
+<div class="bar"><i id="pb"></i></div>
+<div class="st"><span id="s1"></span><span id="s2"></span></div>
+<div class="sk"><span id="sc"></span><span id="sb"></span><button id="lbb" style="display:none"><svg class="pd" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="12" width="6.5" height="10" rx="1.2" fill="#c3cad6" stroke="currentColor" stroke-width="1.3"/><rect x="8.8" y="5.5" width="6.5" height="16.5" rx="1.2" fill="#f5b301" stroke="currentColor" stroke-width="1.3"/><rect x="16" y="15" width="6.5" height="7" rx="1.2" fill="#cd7f32" stroke="currentColor" stroke-width="1.3"/><path d="M12 1.3l1 2 2.2.3-1.6 1.5.4 2.2-2-1.1-2 1.1.4-2.2L8.8 3.6 11 3.3z" fill="#f5b301" stroke="currentColor" stroke-width=".9" stroke-linejoin="round" transform="translate(0 -.4)"/></svg> דירוג</button></div>
+<div class="lv" id="bk"></div>
+<div class="lv" id="lv"><button data-l="1">קל</button><button data-l="2">בינוני</button><button data-l="3">קשה</button><button data-l="0">הכל מהכל</button></div>
+<div class="cr">
+<svg id="gob" viewBox="0 0 80 80" aria-hidden="true">
+ <path d="M38 6l-3-5M44 7l2-6M49 9l5-4" stroke="#5c7a1f" stroke-width="2" stroke-linecap="round" fill="none"/>
+ <path d="M14 70C4 66 5 48 10 36 13 22 24 9 40 8c17-1 28 12 31 27 4 13 6 30-6 35-9 4-14-2-25 0-10 2-16 3-26 0z" fill="#9bc53d" stroke="#5c7a1f" stroke-width="2"/>
+ <ellipse cx="20" cy="56" rx="7" ry="4" fill="#b5d65f" opacity=".7"/><circle cx="58" cy="26" r="2.5" fill="#7a9c2c"/><circle cx="60.5" cy="24" r="1" fill="#5c7a1f"/>
+ <circle cx="30" cy="34" r="11" fill="#fff" stroke="#5c7a1f" stroke-width="2"/><circle id="pl" cx="32" cy="36" r="5" fill="#1b1f2a"/><circle cx="34" cy="33" r="1.6" fill="#fff"/>
+ <circle cx="53" cy="37" r="6" fill="#fff" stroke="#5c7a1f" stroke-width="2"/><circle id="pr2" cx="52" cy="38" r="2.6" fill="#1b1f2a"/>
+ <path d="M47 29l11-2" stroke="#5c7a1f" stroke-width="2.5" stroke-linecap="round"/>
+ <path id="mo" d="M28 54q12 10 26-2" stroke="#3d2b1f" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+ <path d="M39 57l2 6 3-5z" fill="#fff" stroke="#3d2b1f" stroke-width="1"/>
+ <ellipse cx="24" cy="74" rx="7" ry="3" fill="#7a9c2c"/><ellipse cx="54" cy="74" rx="8" ry="3" fill="#7a9c2c"/>
+</svg>
+<div class="bub" id="bub"></div></div>
+<div class="q"><div class="w" id="w"></div><div class="h" id="h"></div><div id="os"></div><button class="nx" id="nx">הבא ←</button></div>
+<div class="ft"><button id="bl">מילים שטעיתי בהן</button><button id="br">איפוס</button></div>
+<div id="ls"></div>
+</main>
+<div class="ov" id="nm"><div class="pn"><h2>איך לקרוא לך? 👋</h2><input id="nmi" maxlength="20" autocomplete="off" placeholder="כינוי (בלי שם משפחה)"><div class="note">הכינוי יופיע בלוח הדירוג של כל מי שמשתמש באפליקציה. ההתקדמות שכבר צברת נשמרת ותופיע מיד.</div><div class="row"><button class="pri" id="nmo">שמור</button><button id="nmc">ביטול</button></div></div></div>
+<div class="ov" id="lbp"><div class="pn"><h2><svg class="pd" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="12" width="6.5" height="10" rx="1.2" fill="#c3cad6" stroke="currentColor" stroke-width="1.3"/><rect x="8.8" y="5.5" width="6.5" height="16.5" rx="1.2" fill="#f5b301" stroke="currentColor" stroke-width="1.3"/><rect x="16" y="15" width="6.5" height="7" rx="1.2" fill="#cd7f32" stroke="currentColor" stroke-width="1.3"/><path d="M12 1.3l1 2 2.2.3-1.6 1.5.4 2.2-2-1.1-2 1.1.4-2.2L8.8 3.6 11 3.3z" fill="#f5b301" stroke="currentColor" stroke-width=".9" stroke-linejoin="round" transform="translate(0 -.4)"/></svg> לוח דירוג</h2><div class="lv" id="lbs"><button data-s="learned">📚 נלמדו</button><button data-s="streak">🔥 רצף</button><button data-s="best">🏆 שיא</button></div><div id="lbl"></div><div class="row"><button id="lbr">רענון</button><button id="lbn">החלף כינוי</button><button id="lbx">סגור</button></div></div></div>
+<script>
+// שורה: אנגלית|רמז|סוג|תרגום|קושי(1-3). שורה "#N" פותחת בלוק N
+const RAW=`#2
+a little bit||x|קצת|1
+a pity||x|חבל|1
+a shame||x|בושה, חבל|1
+a variety of sth/sb||x|מגוון של|2
+abroad||adv|בחו"ל|1
+accent||n|מבטא|1
+accept|receive something|v|לקבל|1
+accident||n|תאונה|1
+accompany||v|ללוות|2
+according to||x|לפי|1
+ache||n|כאב|2
+achieve||v|להשיג|2
+across|on the other side|adv|מעבר, לצד השני|2
+activity|event, work|n|פעילות|1
+adequate||adj|הולם, מספק|3
+adjective||n|שם תואר|1
+adjust||v|להתאים, לכוונן|3
+admire||v|להעריץ|2
+admit|confess|v|להודות|2
+advantage||n|יתרון|2
+adventure||n|הרפתקה|1
+adverb||n|תואר הפועל|1
+advertise||v|לפרסם|2
+affect|influence|v|להשפיע על|2
+affect|cause emotion|v|לרגש, לגעת ברגשות|3
+afraid|worried|adj|מפחד|1
+afterwards||adv|לאחר מכן|2
+aim|intend, purpose|n|מטרה|2
+airport||n|שדה תעופה|1
+album||n|אלבום|1
+alive|alive now|adj|חי|1
+all the best||x|כל הטוב|1
+along|beside, next to|prep|לאורך|2
+aloud||adv|בקול רם|2
+alter||v|לשנות|3
+although||conj|אף על פי ש-|2
+amazing||adj|מדהים|1
+among|in the middle|prep|בין (יותר משניים)|2
+amount||n|כמות|2
+and|after verb|conj|ו-, וגם|1
+announce||v|להכריז|2
+anticipate||v|לצפות מראש|3
+anymore||adv|עוד (לא), יותר (לא)|2
+anyway|more importantly|adv|בכל מקרה|2
+apartment||n|דירה|1
+apology||n|התנצלות|2
+appointment||n|פגישה, תור|2
+approximately||adv|בערך, בקירוב|2
+Arab||n|ערבי|1
+area|space, region|n|אזור|1
+army||n|צבא|1
+around|nearby|prep|סביב, בסביבה|1
+around|approximately|adv|בערך|2
+arrival||n|הגעה|2
+article|report in journal|n|מאמר, כתבה|2
+as soon as||x|ברגע ש-|1
+as you know||x|כידוע לך|1
+ask|invite|v|להזמין|2
+at first||x|בהתחלה|1
+at present||x|כרגע, בהווה|2
+at the moment||x|ברגע זה|1
+attention||n|תשומת לב|1
+Attention!||exc|שימו לב!|1
+attitude||n|גישה, יחס|2
+audience||n|קהל|2
+author||n|סופר, מחבר|2
+available||adj|זמין|2
+awake||adj|ער|2
+away||adv|הלאה, רחוק|1
+back|at or near back of something|adj|אחורי|1
+backward||adv|אחורה|2
+bad||adj|רע|1
+baker||n|אופה|1
+balloon||n|בלון|1
+barbecue||n|מנגל|1
+baseball||n|בייסבול|1
+basket||n|סל|1
+battery||n|סוללה|1
+battle|war|n|קרב|2
+be able to do sth||x|להיות מסוגל ל-|1
+be crazy about sb/sth||x|להתלהב מאוד מ-|2
+be located in / near / on / etc.||x|להימצא ב-|2
+be made of||x|להיות עשוי מ-|2
+be responsible for sb/sth/doing sth||x|להיות אחראי ל-|2
+be supposed to do sth||x|להיות אמור ל-|2
+be unable to do sth||x|לא להיות מסוגל ל-|2
+be used to sb/sth/doing sth||x|להיות רגיל ל-|2
+be willing (to do sth)||x|להיות מוכן ל-|2
+be worth it|involve a justified effort|x|להיות שווה את המאמץ|2
+be wrong||x|לטעות|1
+bear||n|דוב|1
+beauty||n|יופי|1
+Bedouin||n|בדואי|1
+bedtime||n|שעת שינה|1
+behave||v|להתנהג|2
+behavior||n|התנהגות|2
+belief||n|אמונה|2
+belong to sb||x|להשתייך ל-|2
+below|less than|adv|מתחת|2
+beside|next to|prep|לצד|1
+best wishes||x|איחולים חמים|1
+Bible||n|התנ"ך, כתבי הקודש|1
+blanket||n|שמיכה|1
+blond||adj|בלונדיני|1
+blood||n|דם|1
+blow||v|לנשוף, לנשב|2
+body|corpse|n|גופה|3
+boil||v|להרתיח|2
+book||v|להזמין (מקום)|2
+boot||n|מגף|1
+border||n|גבול|2
+borrow||v|ללוות, לשאול|2
+boss||n|בוס, מנהל|1
+bowl||n|קערה|1
+boyfriend||n|חבר (בן זוג)|1
+brain||n|מוח|1
+branch|tree part|n|ענף|2
+brave||adj|אמיץ|1
+break|short rest, holiday|n|הפסקה, חופשה|2
+break down||x|להתקלקל, להתמוטט|3
+bridge||n|גשר|1
+bring back sth or bring sth back||x|להחזיר, להביא בחזרה|2
+broken||adj|שבור|1
+burn|damage by fire, cook too long|v|לשרוף, להישרף|2
+business|trading|n|עסקים, מסחר|2
+but|except|prep|חוץ מ-|3
+by|authorship|prep|על ידי, מאת|2
+by|before a time|prep|עד (מועד)|2
+by mistake||x|בטעות|1
+by the way||x|אגב|1
+café||n|בית קפה|1
+calendar||n|לוח שנה|1
+call|name|v|לקרוא (בשם), לכנות|2
+call back (sb) or call (sb) back||x|להתקשר בחזרה|1
+calm|sea/weather; person|adj|רגוע, שקט|2
+can||n|פחית, קופסת שימורים|2
+can afford||x|יכול להרשות לעצמו|2
+cancer||n|סרטן|1
+candle||n|נר|1
+can't stand sb/sth||x|לא סובל|2
+can't wait||x|מתרגש לקראת, לא יכול לחכות|2
+cap||n|כובע מצחייה|1
+capital|main city|n|בירה|1
+card||n|כרטיס, קלף|1
+care|attention|n|טיפול, תשומת לב|2
+care|love|v|אכפת לו, לדאוג ל-|2
+careless||adj|רשלני, לא זהיר|2
+carrot||n|גזר|1
+carry|hold|v|לשאת, לסחוב|1
+carry on||x|להמשיך|2
+carry out||x|לבצע|2
+case|situation|n|מקרה|2
+case|container|n|נרתיק, מארז|2
+cash|note/coins|n|מזומן|1
+castle||n|טירה|1
+catch|illness|v|להידבק ב-, לחלות ב-|2
+catch fire||x|להתלקח|2
+Catholic||n|קתולי|1
+ceiling||n|תקרה|2
+celebrate||v|לחגוג|1
+cent||n|סנט|1
+centimeter||n|סנטימטר|1
+century||n|מאה (שנים)|1
+certain|sure|adj|בטוח, ודאי|2
+champion||n|אלוף|1
+chance|possibility|n|סיכוי, הזדמנות|2
+change|clothes|v|להחליף (בגדים)|2
+change||n|שינוי, עודף|1
+channel|radio/TV|n|ערוץ|1
+character|in a story|n|דמות|1
+charge|money|v|לגבות תשלום|2
+chat||v|לשוחח, לצ'וטט|1
+check||v|לבדוק|1
+check-in (desk)||n|עמדת צ'ק-אין|1
+chef||n|שף|1
+childhood||n|ילדות|1
+chip||n|צ'יפס, שבב|2
+choice|person/thing|n|בחירה|1
+Christian||n|נוצרי|1
+church||n|כנסייה|1
+Circassian||n|צ'רקסי|1
+circus||n|קרקס|1
+clap||v|למחוא כפיים|1
+clear|certain|adj|ברור|2
+click||v|ללחוץ (בעכבר)|1
+close|friendly, relationship|adj|קרוב, מקורב|2
+closing time||x|שעת סגירה|1
+coach|bus, railway carriage|n|אוטובוס בין-עירוני, קרון|3
+code|secret writing|n|צופן, קוד|2
+coin||n|מטבע|1
+cold|illness|n|הצטננות|1
+comb||n|מסרק|2
+combine||v|לשלב, לחבר|2
+come down||x|לרדת|1
+comma||n|פסיק|2
+communication|share information|n|תקשורת|2
+compare||v|להשוות|2
+compete||v|להתחרות|2
+complete|total|adj|שלם, מוחלט|2
+concert||n|קונצרט, הופעה|1
+confident|ability|adj|בטוח בעצמו|2
+Congratulations!||exc|מזל טוב!|1
+connection|joining things, transport|n|חיבור, קשר|2
+contact||n|קשר, איש קשר|2
+contents||n|תוכן, תכולה|2
+context||n|הקשר|2
+continue||v|להמשיך|1
+contract||n|חוזה|2
+control||n|שליטה, פיקוח|2
+convince||v|לשכנע|2
+cooking||n|בישול|1
+copy|duplicate|n|עותק|1
+corn||n|תירס|1
+correct|grade academic work|v|לתקן, לבדוק (עבודה)|2
+cotton||n|כותנה|1
+cough||v|להשתעל|1
+could|past ability|v|יכול היה|1
+course|class|n|קורס|1
+cousin||n|בן דוד|1
+crazy|stupid|adj|מטורף, שוטה|2
+cream||n|שמנת, קרם|1
+create||v|ליצור|1
+credit|money|n|אשראי|2
+crisp||adj|פריך|3
+crossing|where people cross|n|מעבר חצייה|2
+cry||v|לבכות, לצעוק|1
+culture||n|תרבות|2
+cupboard||n|ארון (מטבח)|2
+curtain||n|וילון|1
+cut up sth or cut sth up||x|לחתוך לחתיכות|2
+daily||adj|יומי|1
+danger||n|סכנה|1
+date of birth||x|תאריך לידה|1
+deal||n|עסקה, הסכם|2
+death||n|מוות|1
+definitely||adv|בהחלט|2
+degree|temperature|n|מעלה|2
+delay||v|לעכב, לדחות|2
+demand||v|לדרוש|2
+dentist||n|רופא שיניים|1
+department store||n|בית כלבו|1
+dependent||adj|תלוי|2
+description||n|תיאור|2
+desert||n|מדבר|1
+dessert||n|קינוח|1
+destroy||v|להרוס|2
+develop|grow, change|v|להתפתח, לפתח|2
+diary||n|יומן|1
+dictation||n|הכתבה|2
+differently||adv|באופן שונה|2
+difficulty|problem|n|קושי|2
+dig||v|לחפור|2
+digital||adj|דיגיטלי|1
+diploma||n|תעודה, דיפלומה|2
+direct|show the way|v|להדריך, להכווין|3
+directions||n|הוראות הגעה, כיוונים|2
+director|film/play|n|במאי|2
+dirt||n|לכלוך, עפר|2
+disappear||v|להיעלם|2
+discount||n|הנחה|1
+discover||v|לגלות|2
+discuss||v|לדון ב-|2
+disease||n|מחלה|2
+dish|container|n|צלחת, כלי הגשה|2
+distance||n|מרחק|1
+do|avoiding repetition|aux|עושה (פועל עזר)|2
+doubt||n|ספק|2
+drawer||n|מגירה|2
+dream|in sleep|n|חלום|1
+drive|journey|n|נסיעה|2
+drop|fall|v|ליפול, להפיל|2
+drum||n|תוף|1
+Druze||n|דרוזי|1
+duck||n|ברווז|1
+due||adj|צפוי, אמור להגיע|3
+duty||n|חובה, תפקיד|2
+each other||x|זה את זה|1
+earn||v|להרוויח|2
+earring||n|עגיל|1
+Earth||n|כדור הארץ|1
+education||n|חינוך, השכלה|1
+effect||n|השפעה, תוצאה|2
+election||n|בחירות|2
+electricity||n|חשמל|1
+elevator||n|מעלית|1
+email||n|דואר אלקטרוני|1
+emoji||n|אמוג'י|1
+employ||v|להעסיק|2
+ending||n|סוף, סיום|1
+enemy||n|אויב|1
+energy|physical strength|n|מרץ, כוח|2
+energy|electricity, gas, etc.|n|אנרגיה|2
+enter|building, room|v|להיכנס|1
+envelope||n|מעטפה|1
+environment||n|סביבה|2
+equipment||n|ציוד|2
+error||n|טעות, שגיאה|2
+euro||n|אירו|1
+even|to emphasize something surprising|adv|אפילו|2
+event||n|אירוע|1
+everyday||adj|יומיומי|2
+exact||adj|מדויק|2
+examine|test|v|לבחון, לבדוק|2
+excited||adj|נרגש|1
+exercise|physical activity|n|פעילות גופנית, תרגיל|1
+exit||n|יציאה|1
+expect|believe that something will happen|v|לצפות|2
+expensive||adj|יקר|1
+experience|skill/knowledge gained through practice|n|ניסיון|2
+explanation||n|הסבר|2
+explore||v|לחקור, לגלות|2
+express|feelings|v|להביע|2
+extremely||adv|במידה קיצונית, מאוד|2
+face|turn towards|v|לפנות אל, להתמודד מול|3
+factory||n|מפעל|1
+fair|pale, light|adj|בהיר|2
+fair|reasonable|adj|הוגן|2
+fairly|in the right way|adv|בהגינות, ביושר|3
+fall|autumn|n|סתיו|1
+fall down||x|ליפול, להתמוטט|1
+false|not correct|adj|שגוי, כוזב|2
+familiar||adj|מוכר|2
+fan|supporter|n|אוהד|1
+fantastic||adj|פנטסטי, נהדר|1
+fashion||n|אופנה|1
+fear|bad feeling|n|פחד|1
+feather||n|נוצה|2
+feel|emotion|v|להרגיש|1
+fight|use force|v|להילחם, לריב|1
+fill in/out sth or fill sth in/out||x|למלא (טופס)|2
+fine|weather|adj|יפה, נאה|2
+fine|well, healthy|adj|בסדר, בריא|1
+first of all||x|ראשית כול|1
+fish||v|לדוג|1
+fishing||n|דיג|1
+fit|be correct size|v|להתאים (במידה)|2
+fix|repair|v|לתקן|1
+flag||n|דגל|1
+flat|level|adj|שטוח|1
+flight||n|טיסה|1
+flour||n|קמח|1
+fog||n|ערפל|2
+follow|obey|v|לציית, למלא אחר|2
+for sale||x|למכירה|1
+form|type|n|סוג, צורה|2
+forward||adv|קדימה|1
+frame|border|n|מסגרת|2
+free|no cost|adj|חינם|1
+free|not busy|adj|פנוי|1
+freedom||n|חופש|2
+fresh|new, food, drink|adj|טרי|1
+fresh|fresh air etc.|adj|צח, רענן|2
+fresh air||x|אוויר צח|1
+friendship||n|ידידות, חברות|1
+from|comparing|prep|מ-, בהשוואה ל-|2
+full stop||x|נקודה (בסוף משפט)|2
+fully||adv|במלואו, לגמרי|2
+fur||n|פרווה|2
+furniture||n|רהיטים|1
+gain|get|v|להשיג, לצבור|2
+gap|time|n|פער, הפסקה|2
+garbage||n|זבל|1
+gas|for cooking|n|גז|1
+gas/gasoline|fuel|n|בנזין|2
+gather||v|לאסוף, להתכנס|2
+general|common, usually|adj|כללי|2
+geography||n|גיאוגרפיה|1
+get back sth or get sth back||x|לקבל בחזרה|2
+get married||x|להתחתן|1
+get to know sb/sth||x|להכיר, ללמוד להכיר|2
+get together||x|להיפגש, להתכנס|2
+girlfriend||n|חברה (בת זוג)|1
+give back sth or give sth back||x|להחזיר|1
+glove||n|כפפה|1
+go abroad||x|לנסוע לחו"ל|1
+go back||x|לחזור|1
+god||n|אלוהים|1
+gold|metal|n|זהב|1
+gold|color|n|צבע זהב|1
+golden||adj|זהוב, מזהב|1
+good-looking||adj|נאה, יפה תואר|2
+government||n|ממשלה|2
+grammar||n|דקדוק|1
+great|famous, important|adj|דגול, חשוב|2
+great|excellent|adj|נהדר, מצוין|1
+grow up||x|לגדול, להתבגר|1
+guard||n|שומר|1
+guest|personal guest|n|אורח|1
+guest|in hotel|n|אורח במלון, נופש|2
+guide||n|מדריך|1
+guy||n|בחור, טיפוס|1
+gym||n|חדר כושר|1
+habit||n|הרגל|1
+hall|large room in building|n|אולם|2
+hand sth out or hand out sth||x|לחלק|2
+handbag||n|תיק יד|1
+hard|solid|adj|קשה (מוצק)|1
+hardly|almost not|adv|בקושי|2
+hardly ever||x|כמעט אף פעם|2
+hate||n|שנאה|1
+have (got) to do sth||x|חייב ל-|1
+have a question / idea / plan||x|יש לו שאלה / רעיון / תוכנית|1
+have a talk / meeting /appointment||x|לקיים שיחה / פגישה|2
+have/have got||x|יש ל-|1
+head|lead|v|לעמוד בראש, להוביל|3
+head back / down / towards, etc||x|לפנות חזרה / למטה / לכיוון|3
+headache||n|כאב ראש|1
+health|physically strong and well|n|בריאות|1
+healthy|good for one's health|adj|בריא|1
+hear from sb||x|לקבל ידיעה מ-|2
+hearing||n|שמיעה|2
+heart|emotion|n|לב (רגש)|1
+heart|shape|n|לב (צורה)|1
+heavily||adv|בכבדות, בחוזקה|2
+helpful||adj|מועיל, עוזר|1
+hero||n|גיבור|1
+herself||pron|עצמה|1
+hide||v|להסתתר, להסתיר|2
+high|more than usual, rank|adj|גבוה, רב|2
+highway||n|כביש מהיר|1
+himself||pron|עצמו|1
+history|the past; an academic subject|n|היסטוריה|1
+hobby||n|תחביב|1
+honey||n|דבש|1
+horrible||adj|נורא, מחריד|1
+housewife||n|עקרת בית|1
+How do you do?||x|נעים מאוד|2
+How/What about?||x|מה דעתך על?|1
+however|nevertheless|adv|אולם, עם זאת|2
+hug||v|לחבק|1
+human||adj|אנושי|1
+hundreds||n|מאות|1
+hunger||n|רעב|1
+hunting||n|ציד|1
+hurry||v|למהר|1
+hurt|cause physical pain|v|לפגוע, לכאוב|1
+idea|opinion, belief, thought|n|רעיון, דעה|1
+identify||v|לזהות|2
+if|might|conj|אם|1
+if|whenever|conj|בכל פעם ש-|2
+if you like||x|אם תרצה|1
+ignore||v|להתעלם|2
+ill||adj|חולה|1
+I'm afraid …||x|אני חושש ש-|2
+image|mental picture|n|תמונה, דימוי|2
+imagine|believe|v|לשער, להאמין|3
+imagine|not real|v|לדמיין|2
+immediate||adj|מיידי|2
+importance||n|חשיבות|2
+important|powerful|adj|חשוב, משפיע|2
+impossible||adj|בלתי אפשרי|1
+improve||v|לשפר, להשתפר|2
+in|during|prep|במהלך, ב-|1
+in|in a language|prep|ב- (שפה)|1
+in|in a profession|prep|ב- (תחום, מקצוע)|2
+in|in an age group|prep|בגיל, בקבוצת גיל|2
+in|wearing|prep|לבוש ב-|2
+in addition (to)||x|בנוסף ל-|2
+in case of sth||x|במקרה של|2
+in front||x|מלפנים, בקדמה|1
+in love||x|מאוהב|1
+in the end||x|בסוף, בסופו של דבר|1
+in time||x|בזמן, בעוד מועד|2
+in two/half||x|לשניים, לחצי|2
+included||adj|כלול|2
+increase||v|לגדול, להגדיל|2
+industry||n|תעשייה|2
+inform||v|ליידע, להודיע|2
+information technology||x|טכנולוגיית מידע|2
+ingredient||n|מרכיב|2
+inner|location|adj|פנימי|2
+insect||n|חרק|1
+inside|inner part|n|פנים, החלק הפנימי|2
+instrument||n|כלי, כלי נגינה|2
+insult||n|עלבון|2
+interest|attention, involvement|n|עניין|1
+international||adj|בינלאומי|2
+interval||n|מרווח, הפסקה|2
+introduce|meeting people|v|להציג, להכיר|2
+invent||v|להמציא|2
+involve||v|לערב, לכלול|3
+Islam||n|האסלאם|1
+it looks like/as if||x|נראה כאילו|1
+it/that depends||x|זה תלוי|1
+item|thing|n|פריט|2
+itself|emphasis|pron|עצמו, עצמה (דבר)|2
+jail||n|כלא|2
+jazz||n|ג'אז|1
+Jew||n|יהודי|1
+jewelry||n|תכשיטים|1
+job|task|n|משימה, עבודה|2
+join|connect|v|לחבר|2
+joke||n|בדיחה|1
+joy||n|שמחה|1
+Judaism||n|היהדות|1
+judge|court|n|שופט|1
+just|only/simply|adv|רק, פשוט|2
+just|emphasis|adv|בדיוק, ממש|2
+just a moment||x|רק רגע|1
+kick||n|בעיטה|1
+kilogram||n|קילוגרם|1
+kilometer||n|קילומטר|1
+kite||n|עפיפון|1
+know|recognize|v|להכיר, לזהות|2
+lack of sth||x|חוסר ב-|2
+lake||n|אגם|1
+lamp||n|מנורה|1
+land|ground|n|אדמה, יבשה|1
+land|arrive|v|לנחות|1
+laptop||n|מחשב נייד|1
+largely||adv|במידה רבה|2
+latest||adj|האחרון, החדש ביותר|2
+laugh at sb/sth||x|לצחוק על|1
+law|legal rule|n|חוק|1
+lawyer||n|עורך דין|1
+lead|show way|v|להוביל|2
+leaf||n|עלה|1
+leave|end relationship|v|לעזוב, להיפרד מ-|2
+leave|not use all of something|v|להשאיר|2
+leave out sb/sth or leave sb/sth out||x|להשמיט, להוציא מהכלל|2
+left|side|n|שמאל|1
+lemon||n|לימון|1
+lemonade||n|לימונדה|1
+lend||v|להשאיל|2
+let sb know (sth)||x|להודיע ל-|1
+level|standard|n|רמה|1
+level|amount|n|רמה, כמות|2
+library||n|ספרייה|1
+licence/license||n|רישיון|2
+lick||v|ללקק|2
+lift||v|להרים|1
+lift|ride|n|טרמפ, הסעה|2
+like|such as|prep|כמו, כגון|1
+limit||n|גבול, הגבלה|2
+line|of people|n|תור|1
+lion||n|אריה|1
+liter||n|ליטר|1
+local||adj|מקומי|1
+locate||v|לאתר, למקם|3
+lock||n|מנעול|1
+long|wordy|adj|ארוך, מייגע|2
+look around/round||x|להסתכל מסביב|1
+look like||x|להיראות כמו|1
+look nice/strange, etc.||x|להיראות נחמד / מוזר|1
+Look out!||exc|היזהר!|1
+look up sth or look sth up||x|לחפש (במילון)|2
+lose|weight, job|v|לאבד, לרדת (במשקל)|2
+loud||adj|רועש, חזק|1
+love|of somebody|n|אהבה|1
+love|interest|n|תשוקה, תחביב אהוב|2
+love / (with) love from / all my love/lots of love||x|באהבה (בסוף מכתב)|1
+luck|chance, fortune|n|מזל|1
+luck|success|n|הצלחה, מזל טוב|2
+lucky||adj|בר מזל|1
+luggage||n|מטען, כבודה|2
+machine||n|מכונה|1
+magic|special power|n|קסם|1
+magic|entertainment|n|להטוטים, קסמים|2
+mail||n|דואר|1
+main||adj|עיקרי|1
+mainly||adv|בעיקר|1
+make a face||x|לעשות פרצוף|2
+make sure (that)||x|לוודא ש-|1
+manage|succeed|v|להצליח, לצלוח|2
+map||n|מפה|1
+marry||v|להתחתן עם|1
+match|stick|n|גפרור|2
+maximum||n|מקסימום, מרבי|2
+measure|find size|v|למדוד|2
+medal||n|מדליה|1
+medicine|substance|n|תרופה|1
+medicine|treatment|n|רפואה|1
+medium||adj|בינוני|1
+meet|introduce|v|להכיר, להיפגש עם|1
+memory|event remembered|n|זיכרון (חוויה)|2
+midday||n|צהריים|1
+midnight||n|חצות|1
+military||adj|צבאי|2
+mind|thinking|n|מוח, תודעה|2
+minimum||adj|מינימלי|2
+mirror||n|מראה|1
+miss|not see/hear|v|לפספס|2
+modern||adj|מודרני|1
+moment|occasion|n|רגע, הזדמנות|1
+Moslem/Muslim||n|מוסלמי|1
+mosque||n|מסגד|1
+most|almost all|adj|רוב|1
+mostly||adv|ברובו, בדרך כלל|1
+mouse|computer|n|עכבר (מחשב)|1
+move|change of place|v|לזוז, להעביר|1
+move in/move out||x|להיכנס לדירה / לפנות דירה|2
+murder||n|רצח|2
+muscle||n|שריר|1
+musical||adj|מוזיקלי|1
+musician||n|מוזיקאי|1
+myself||pron|עצמי|1
+name|give name|v|לקרוא בשם, למנות|2
+nation||n|אומה, עם|2
+nationality||n|אזרחות, לאום|2
+natural||adj|טבעי|1
+near|distance|adj|קרוב|1
+nearby||adv|בקרבת מקום|1
+necessary||adj|הכרחי|2
+necklace||n|שרשרת|1
+neither||adv|גם לא, אף אחד מהשניים|2
+never mind||x|לא משנה|1
+normally||adv|בדרך כלל|1
+note|personal jottings|n|פתק, הערה|1
+nothing||pron|שום דבר|1
+notice|be aware|v|להבחין, לשים לב|2
+noticeboard||n|לוח מודעות|1
+noun||n|שם עצם|1
+object||n|חפץ, עצם|1
+obvious||adj|ברור, מובן מאליו|2
+of|show, comparing|prep|של, מ-|1
+of course||x|כמובן|1
+of course not||x|ברור שלא|1
+off|away from, down or away from a place of position|prep|מ-, הרחק מ-|2
+off|removed, distant|adv|כבוי, רחוק|2
+offer|propose|v|להציע|1
+officer|police, military|n|קצין, שוטר|2
+oh||exc|אה, או|1
+old|from the past|adj|ישן, מן העבר|1
+on business||x|בענייני עבודה|1
+on fire||x|בוער, עולה באש|1
+on foot||x|ברגל|1
+on offer||x|במבצע|1
+on time||x|בזמן, בדיוק בזמן|1
+one|particular person|pron|אחד, מי ש-|2
+one another||x|זה את זה|1
+one day||x|יום אחד|1
+open|container/parcel etc|v|לפתוח|1
+open|shop, doing business|adj|פתוח|1
+operate|machine|v|להפעיל|2
+opinion||n|דעה|1
+opportunity||n|הזדמנות|2
+option||n|אפשרות|1
+or something (like that)||x|או משהו כזה|1
+order|arrangement|n|סדר|1
+ordinary||adj|רגיל, שגרתי|2
+organization|group|n|ארגון|2
+organize|plan,arranging|v|לארגן|1
+original|first, not copied|adj|מקורי|2
+ourselves||pron|עצמנו|1
+out of order||x|מקולקל, לא תקין|2
+over|during a particular time|prep|במהלך, לאורך|2
+over|more than, exceeding|prep|מעל, יותר מ-|1
+owe||v|להיות חייב כסף|2
+p.m.||x|אחר הצהריים|1
+package||n|חבילה|1
+pain||n|כאב|1
+pajamas/pyjamas||n|פיג'מה|1
+palace||n|ארמון|1
+parcel||n|חבילה (דואר)|1
+part of sth||x|חלק מ-|1
+pass|go past something|v|לעבור על פני|1
+passenger||n|נוסע|1
+passport||n|דרכון|1
+path|track|n|שביל|1
+patient||n|מטופל, חולה|1
+pattern||n|דפוס, תבנית|2
+peace|quiet, calm|n|שלווה, שקט|1
+pear||n|אגס|1
+pension||n|פנסיה|2
+pepper|spice|n|פלפל (תבלין)|1
+performance|entertainment|n|הופעה, מופע|2
+period|length of time|n|תקופה|1
+personal|private|adj|אישי|1
+petrol||n|בנזין|1
+physical||adj|פיזי, גופני|1
+physics||n|פיזיקה|1
+piano||n|פסנתר|1
+pick up sb/sth or pick sb/sth up||x|להרים, לאסוף|1
+piece|single thing|n|חתיכה, פריט|1
+pillow||n|כרית|1
+play|compete|v|לשחק (במשחק תחרותי)|1
+playground||n|מגרש משחקים|1
+please||v|לשמח, לרצות|2
+pleased||adj|שמח, מרוצה|1
+pleasure||n|הנאה, עונג|1
+poem||n|שיר|1
+point||n|נקודה|1
+point|purpose, reason|n|תכלית, טעם|2
+polite||adj|מנומס|1
+poor|inferior, bad|adj|גרוע, ירוד|2
+popcorn||n|פופקורן|1
+position|location, place|n|מיקום, עמדה|2
+possibility||n|אפשרות|2
+post|letters and parcels|n|דואר|1
+potential||adj|פוטנציאלי|3
+powerful|having a strong effect on people|adj|עוצמתי, חזק|2
+preparation||n|הכנה|2
+press||v|ללחוץ|1
+prison||n|בית סוהר|1
+private|secret; not everyone|adj|פרטי|1
+produce|make, manufacture|v|לייצר|2
+professional|job|adj|מקצועי|2
+program|plan|n|תוכנית|1
+promise||v|להבטיח|1
+property|things owned|n|רכוש, נכס|2
+proposal||n|הצעה|2
+protect||v|להגן על|2
+proud||adj|גאה|1
+prove||v|להוכיח|2
+public|opposite of private|adj|ציבורי|1
+puppy||n|גור כלבים|1
+pure|not mixed; clean|adj|טהור, נקי|2
+purple||adj|סגול|1
+purpose|reason; function|n|מטרה, תכלית|2
+purse||n|ארנק, תיק יד|2
+push|press|v|לדחוף, ללחוץ|1
+put off sb or put sb off (sb/sth doing sth)||x|להרתיע, לגרום לאבד עניין|3
+put off sth/doing sth or put sth off||x|לדחות (למועד אחר)|2
+put on sth or put sth on (music/movie)||x|להפעיל, להדליק|2
+put on sth or put sth on (clothes)||x|ללבוש, להלביש|1
+put sb up||x|לארח (ללינה)|3
+put sth (down) in writing||x|לרשום, לכתוב|2
+put sth together or put together sth||x|להרכיב|2
+put up sth or put sth up||x|להקים, לתלות|2
+puzzle||n|חידה, פאזל|1
+quality|good or bad|n|איכות|1
+quantity||n|כמות|2
+question mark||n|סימן שאלה|1
+quietly||adv|בשקט|1
+quite||adv|די, למדי|1
+race|sports competition|n|מרוץ|1
+range|group of different things of same general type|n|מגוון, טווח|2
+rat||n|חולדה|1
+reach|arrive; attain|v|להגיע אל, להשיג|2
+reaction|bad effect|n|תגובה|2
+read out sth or read sth out||x|להקריא|2
+real|not false/fake|adj|אמיתי|1
+realize||v|להבין, להבין לפתע|2
+really|fact|adv|באמת, למעשה|1
+really|emphasizing|adv|ממש, מאוד|1
+reasonable|quite good, acceptable, logical, sensible|adj|סביר, הגיוני|2
+receive||v|לקבל|1
+recent||adj|אחרון, לאחרונה|2
+recognize|find familiar|v|לזהות, להכיר|2
+record|sounds, pictures|v|להקליט, לצלם|1
+reduce||v|להפחית, לצמצם|2
+refer to sb/sth||x|להתייחס ל-, להפנות ל-|3
+relations|social connections|n|יחסים, קשרים|2
+religion||n|דת|1
+remain|stay in place, state etc.|v|להישאר|2
+remove||v|להסיר|2
+repair||v|לתקן|1
+reply||v|להשיב, לענות|1
+resource||n|משאב|2
+responsible|have authority for|adj|אחראי|2
+rich|containing a lot|adj|עשיר (במשהו)|2
+right away / now / after||x|מיד, מייד|1
+ring|sound|v|לצלצל|1
+rock|hard substance|n|סלע|1
+rock|music|n|רוק|1
+role|actor's part in play, film etc.|n|תפקיד|2
+roll|turn over|v|להתגלגל, לגלגל|2
+round|circle/circular movement; to several places|adv|מסביב, סביב|2
+row|line|n|שורה|1
+safe|not dangerous|adj|בטוח|1
+salty||adj|מלוח|1
+sauce||n|רוטב|1
+sausage||n|נקניק, נקניקייה|1
+save|collect for the future|v|לחסוך|1
+scarf||n|צעיף|1
+scientific||adj|מדעי|2
+scissors||n|מספריים|1
+scooter/electric scooter||n|קורקינט|1
+score||v|להבקיע, לקבל ציון|2
+scream||v|לצרוח|1
+season||n|עונה|1
+secret||n|סוד|1
+secretary||n|מזכיר|1
+seem happy / a nice person, etc.||x|להיראות שמח / אדם נחמד|2
+select||v|לבחור|2
+selfie||n|סלפי|1
+sense|natural ability; physical feeling|n|חוש, תחושה|2
+separate|not joined; different|adj|נפרד|2
+serve|in restaurant, shop etc; dealing with a customer|v|לשרת, להגיש|2
+set|put something somwhere, get ready|v|להציב, להכין|2
+sex|gender|n|מין (זכר/נקבה)|2
+shadow||n|צל|1
+shake hands||x|ללחוץ ידיים|1
+shape||n|צורה|1
+share||v|לחלוק, לשתף|1
+sheet|for bed; piece of paper|n|סדין, דף|1
+shelf||n|מדף|1
+ship||n|ספינה|1
+shoot|weapon, gunfire|v|לירות|2
+shopping||n|קניות|1
+shout||v|לצעוק|1
+shut|closed|adj|סגור|1
+shy||adj|ביישן|1
+side|team, argument etc|n|צד, קבוצה|2
+sight|sense; view|n|ראייה, מראה|2
+silence||n|שתיקה, דממה|2
+silly||adj|טיפשי, מצחיק|1
+silver||n|כסף (מתכת)|1
+similar||adj|דומה|1
+simple|not ornate or complicated|adj|פשוט|1
+single|one, for one person|adj|יחיד, לאדם אחד|2
+sink||n|כיור|1
+sir||n|אדוני|1
+sitting room||x|סלון, חדר ישיבה|1
+situation||n|מצב|1
+skate||v|להחליק|1
+ski||n|סקי|1
+sleep||n|שינה|1
+slice||n|פרוסה|1
+slim||adj|רזה|1
+smart||adj|חכם|1
+smell||n|ריח|1
+smoke|consume tobacco|v|לעשן|1
+so|to such an extent|adv|כל כך|1
+so far||x|עד כה|1
+soccer||n|כדורגל|1
+soft|smooth and pleasant to the touch|adj|רך|1
+soft drink||x|משקה קל|1
+software||n|תוכנה|2
+soldier||n|חייל|1
+somehow||adv|איכשהו|2
+sort|type|n|סוג|1
+space|beyond Earth|n|חלל|1
+speech|ability to speak|n|דיבור, נאום|2
+spot|place|n|מקום, כתם|2
+staff||n|צוות, סגל|2
+stage|theater|n|במה|2
+standard|usual rather than special|adj|סטנדרטי, רגיל|2
+star|performer|n|כוכב|1
+state|say, express|v|לציין, להצהיר|3
+stay|continue; live temporarily|v|להישאר, לשהות|1
+steam||n|אדים, קיטור|2
+step|walk|v|לצעוד|2
+stomach||n|בטן, קיבה|1
+stomach ache||n|כאב בטן|1
+stone||n|אבן|1
+stop|prevent|v|למנוע|2
+stop|pause during journey|n|תחנה, עצירה|1
+story|report in a newspaper or on a news broadcast of somethat that has happened|n|כתבה, דיווח|2
+straight|immediately|adv|ישר, מיד|2
+strawberry||n|תות|1
+strength|strong|n|כוח, חוזק|2
+strongly|very much or in a very serious way|adv|בתוקף, בחוזקה|2
+study|room|n|חדר עבודה|2
+style|fashion|n|סגנון|1
+subject|area of study at school|n|מקצוע, נושא|1
+succeed||v|להצליח|2
+such a(n)||x|כזה, כל כך|2
+such as||x|כגון|1
+suggest|idea, advice|v|להציע|2
+suit|be appropriate|v|להתאים|2
+sunglasses||n|משקפי שמש|1
+suppose||v|לשער, להניח|2
+surely||adv|בוודאי, ללא ספק|2
+surprise||v|להפתיע|1
+swim||n|שחייה|1
+synagogue||n|בית כנסת|1
+take|go with someone; perform action|v|לקחת, ללוות|1
+take a break/rest, etc.||x|לקחת הפסקה|1
+take an exam||x|לגשת לבחינה|1
+take sb/sth seriously||x|להתייחס ברצינות|2
+take sth back or take back sth||x|להחזיר, לקחת בחזרה|2
+take sth out or take out sth||x|להוציא|1
+taste||n|טעם|1
+teaching||n|הוראה, לימוד|1
+team||n|קבוצה, צוות|1
+tear|crying|n|דמעה|1
+teaspoon||n|כפית|1
+technology||n|טכנולוגיה|1
+teenager||n|נער, נערה|1
+tell|tell a story, joke etc|v|לספר|1
+tell sb to do sth||x|להורות ל-, לומר ל- לעשות|1
+tend to do sth||x|נוטה ל-|2
+terrible|bad, unpleasant|adj|נורא|1
+terrible|very great, severe; very much|adj|חמור, עצום|2
+text|words, not pictures; piece of writing|n|טקסט|1
+thanks||n|תודה|1
+that|already mentioned|det|ה-...הזה|1
+that|defining relative clause|pron|ש- (כינוי קשר)|2
+that's all right||x|זה בסדר|1
+the air||x|האוויר|1
+the army||x|הצבא|1
+the best||x|הטוב ביותר|1
+the day after tomorrow||x|מחרתיים|1
+the day before yesterday||x|שלשום|1
+the dishes||x|הכלים (לשטוף)|1
+the first||x|הראשון|1
+the matter||x|העניין, הבעיה|1
+the most attractive / important/popular, etc.||x|הכי מושך / חשוב / פופולרי|1
+the same||x|אותו דבר, אותו|1
+the young||x|הצעירים|1
+theater||n|תיאטרון|1
+their|to avoid his/hers|det|שלהם, שלו או שלה|2
+themselves||pron|עצמם|1
+then|so that, result|adv|אז, אם כך|1
+therefore||x|לכן|2
+there's no doubt||x|אין ספק|2
+thick|opposite of thin|adj|עבה|1
+think of sth||x|לחשוב על|1
+think|use brain|v|לחשוב|1
+though|despite|adv|אף על פי כן, למרות זאת|2
+thought||n|מחשבה|1
+threat||n|איום|2
+throat||n|גרון|1
+thumb||n|אגודל|1
+thunder||n|רעם|1
+tidy up (sth) or tidy (sth) up||x|לסדר|2
+tie||v|לקשור|1
+tie||n|עניבה|1
+time|period; time available for something|n|זמן|1
+timetable||n|לוח זמנים, מערכת שעות|2
+tin|food container|n|פחית שימורים, קופסה|2
+tiny||adj|זעיר, קטנטן|2
+title||n|כותרת, שם|1
+to|until; telling time|prep|עד, לפני|2
+toast||n|טוסט|1
+today|present time|n|היום, ימינו|1
+toe||n|בוהן|1
+together|simultaneously; combined|adv|יחד|1
+tongue||n|לשון|1
+too bad||x|חבל, חבל מאוד|1
+toothache||n|כאב שיניים|1
+toothpaste||n|משחת שיניים|1
+top|best; most important|adj|מעולה, הטוב ביותר|2
+topic||n|נושא|1
+total|in sum, in all; very great, extreme or complete|adj|כולל, מוחלט|2
+touch|make physical contact; physical sense; quick contact|v|לגעת|1
+tour|look around somewhere|n|סיור|1
+toward||prep|לעבר, לקראת|2
+towel||n|מגבת|1
+tower||n|מגדל|1
+trade|commerce|n|מסחר|2
+traffic||n|תנועה, פקקים|1
+train|sport, teach, learn|v|להתאמן, לאמן|2
+tram||n|חשמלית|1
+traveler||n|מטייל, נוסע|1
+treat|deal with; behave towards somebody/something|v|להתייחס ל-, לטפל|2
+trouble|problem, difficulty|n|צרה, בעיה|2
+trousers||n|מכנסיים|1
+truck||n|משאית|1
+trust||n|אמון|1
+try|test, taste etc. to discover if it works or if you like it|v|לנסות|1
+try on sth or try sth on||x|למדוד (בגד)|1
+try/do one's best||x|לעשות כמיטב יכולתו|1
+tune||n|מנגינה|1
+turn|page|v|להפוך, לסובב|1
+turning|a corner where one road meets another|n|פנייה, צומת קטן|2
+ugly||adj|מכוער|1
+understanding|knowledge|n|הבנה|2
+uniform||n|מדים|1
+unit|part, component|n|יחידה|2
+unless||conj|אלא אם כן|2
+unnecessary||adj|מיותר|2
+unpleasant||adj|לא נעים|1
+until|continuing to happen|conj|עד ש-|1
+up the street/road, etc.||x|במעלה הרחוב|2
+use|function, purpose for which something is used|n|שימוש, תועלת|1
+used to do/be sth||x|נהג ל-, היה פעם|2
+usual||adj|רגיל, שכיח|1
+video||n|וידאו, סרטון|1
+virus|organism, disease; computing problem|n|וירוס|1
+visit|Internet|v|לבקר (באתר)|1
+voice||n|קול|1
+volume|sound|n|עוצמת קול, נפח|2
+vote||v|להצביע|1
+warm|friendly|adj|חם, לבבי|2
+warn||v|להזהיר|2
+watch out||x|היזהר!|1
+wave||v|לנופף|1
+we||pron|אנחנו|1
+website|Internet|n|אתר אינטרנט|1
+weekly||adv|פעם בשבוע|1
+weight||n|משקל|1
+well|completely, thoroughly, easily|adv|היטב, בהחלט|2
+well-made||x|עשוי היטב|2
+wet|not dry yet (describes paint, ink etc)|adj|רטוב|1
+What is sb/sth like?||x|איך הוא / היא / זה?|2
+wheel||n|גלגל|1
+whenever||adv|בכל פעם ש-|2
+whether||conj|אם, האם|2
+whether … or||x|אם … או|2
+which|referring to something|pron|איזה, ש- (כינוי קשר)|2
+whose||pron|של מי, אשר שלו|2
+Why don't you?/ Why not do sth?||x|למה שלא תעשה?|1
+Why not?||x|למה לא?|1
+widely||adv|באופן נרחב, רבות|2
+wild|untamed, violent, etc|adj|פראי, פרוע|2
+wild|animal; land|adj|בר, פראי|2
+window|computer|n|חלון (מחשב)|1
+wing|creature; aircraft|n|כנף|1
+wish||v|לאחל, לייחל|2
+wonder|speculate, question|v|לתהות|2
+wool||n|צמר|1
+work|function, operate|v|לפעול, לעבוד|1
+worried|be concerned|adj|מודאג|1
+worse||adj|גרוע יותר|1
+would love sth||x|היה אוהב מאוד|2
+would love to (do sth)||x|היה שמח מאוד ל-|2
+would prefer||x|היה מעדיף|2
+wow!||exc|וואו!|1
+wrap sth up or wrap up sth||x|לעטוף, לסכם|2
+wrong|problem; not moral|adj|שגוי, לא מוסרי|1
+you know||x|אתה יודע|1
+your big brother / sister||x|אחיך / אחותך הגדול/ה|1
+yourself||pron|עצמך|1
+yourselves||pron|עצמכם|1
+#1
+a good/great deal||x|הרבה, כמות גדולה|2
+a sense of humor||x|חוש הומור|1
+ability||n|יכולת|2
+absent||adj|נעדר|2
+absolutely||adv|בהחלט, לגמרי|2
+abstract||adj|מופשט|3
+academic||adj|אקדמי, לימודי|2
+accept|agree to, admit|v|לקבל, להסכים ל-|2
+accommodation||n|מקום לינה, אירוח|2
+accurate||adj|מדויק|2
+act|perform|v|לשחק, לפעול|2
+active|energetic, busy|adj|פעיל, אנרגטי|1
+actual|real, truth|adj|ממשי, אמיתי|2
+adapt||v|להסתגל, להתאים|3
+add|increase, include something extra|v|להוסיף|1
+adopt||v|לאמץ|2
+again and again||x|שוב ושוב|1
+against|touching|prep|נגד, נשען על|2
+agency||n|סוכנות|2
+agree|decide|v|להסכים|1
+ahead||adv|קדימה, לפנים|1
+aid|help, assistance|n|עזרה, סיוע|2
+aim|target|n|יעד, מטרה|2
+aircraft||n|כלי טיס|2
+alcohol||n|אלכוהול|1
+alike||adj|דומה, זהה|2
+all day long||x|כל היום|1
+allow||v|לאפשר, להרשות|1
+alphabetical||adj|אלפביתי|2
+alternative||n|חלופה|2
+ancient||adj|עתיק|2
+and so on||x|וכן הלאה|1
+angel||n|מלאך|1
+angry||adj|כועס|1
+ankle||n|קרסול|2
+anniversary||n|יום נישואין, יום השנה|2
+annual||adj|שנתי|2
+any|not feeling any better; any leftovers in the bin|adj|כלשהו, בכלל|2
+anyhow||adv|בכל זאת, בכל מקרה|2
+apart||adv|בנפרד, מרחק|2
+apart from||x|מלבד|2
+appear|be seen|v|להופיע, להיראות|2
+application|computer software|n|אפליקציה, יישום|1
+apply|request|v|להגיש בקשה|2
+appreciate||v|להעריך|2
+approach|come close|v|להתקרב|2
+approve||v|לאשר|2
+architect||n|אדריכל|2
+Are you kidding? / You're kidding!||x|אתה צוחק עליי?|1
+area|subject|n|תחום, נושא|2
+argue|disagree|v|להתווכח|2
+arrange||v|לארגן, לסדר|2
+arrest||v|לעצור, למעצר|2
+as|because|conj|מאחר ש-|2
+as if||x|כאילו|2
+as/so far as I know||x|למיטב ידיעתי|2
+as/so long as||x|כל עוד|2
+aspect||n|היבט|3
+assess||v|להעריך, לבחון|3
+assume||v|להניח, לשער|2
+at (long) last||x|סוף סוף|2
+at all||x|בכלל|1
+at his/its, etc. best||x|במיטבו|2
+at least||x|לפחות|1
+at once||x|מיד, בבת אחת|2
+at the same time||x|באותו זמן|1
+athlete||n|ספורטאי|1
+attach||v|לצרף, לחבר|2
+attack||n|התקפה|2
+attempt||n|ניסיון|2
+attend a church / college / school, etc.||x|ללכת לכנסייה / למכללה / לבית ספר|2
+attend||v|להשתתף, לנכוח|2
+attract||v|למשוך|2
+authority||n|סמכות, רשות|3
+avatar||n|אווטאר|1
+average|mean, medium|n|ממוצע|2
+avoid||v|להימנע מ-|2
+award||n|פרס|2
+aware||adj|מודע|2
+awful||adj|נורא, איום|1
+babysit||v|לשמור על ילדים|1
+balance|not falling|n|שיווי משקל|2
+bandage||n|תחבושת|2
+barber||n|ספר גברים|2
+base sth on sth||x|לבסס על|2
+base|bottom|n|בסיס, תחתית|2
+basic||adj|בסיסי|1
+basin||n|אגן, כיור|3
+basis||n|בסיס, יסוד|3
+battle|struggle|n|מאבק|2
+be dying for/to do sth||x|מת על, משתוקק ל-|2
+be expecting sb/sth||x|מצפה ל-|2
+be familiar with sth/sb||x|להכיר, להיות מוכר עם|2
+be friends (with sb)||x|להיות חברים עם|1
+be in doubt||x|להיות בספק|2
+be into sth||x|להתעניין מאוד ב-|2
+be known as sth||x|להיות מוכר בשם|2
+be short of sth||x|להיות חסר ב-|2
+be up to sb||x|להיות תלוי ב-|3
+be up to sth||x|לעשות משהו, להיות מסוגל ל-|3
+be welcome to do sth||x|מוזמן ל-|2
+be worth sth/doing sth||x|להיות שווה (לעשות)|2
+be/get/keep, etc. in touch||x|להיות בקשר|1
+bean||n|שעועית, פול|1
+bear||v|לשאת, לסבול|3
+beat|defeat|v|להביס, לנצח|2
+become available/rich/a writer, etc.||x|להיות / להפוך ל-|1
+bee||n|דבורה|1
+beef||n|בשר בקר|1
+before|in front of|prep|לפני, מול|2
+before/after dark||x|לפני / אחרי רדת החשכה|2
+belong||v|להשתייך|2
+belong to sth||x|להשתייך ל-|2
+belt||n|חגורה|1
+beneath||prep|מתחת ל-|3
+benefit||n|תועלת, יתרון|2
+beyond||prep|מעבר ל-|3
+bill|invoice, receipt|n|חשבון|1
+billion||n|מיליארד|1
+bin||n|פח|1
+binge-watch||x|לצפות בסדרה בשצף|2
+birth||n|לידה|1
+bite|food, injury|v|לנשוך|1
+blame||v|להאשים|2
+blank||adj|ריק, חלק|2
+blind||adj|עיוור|1
+block|piece|n|גוש, בלוק|2
+blog||n|בלוג|1
+blow your nose||x|לנקות את האף|2
+board|enter ship, train, aircraft etc.|v|לעלות על (כלי תחבורה)|2
+board|plank, surface|n|לוח|1
+bomb||n|פצצה|1
+bone||n|עצם|1
+bookcase||n|ארון ספרים|1
+bother||v|להפריע, לטרוח|2
+bottom|body part|n|ישבן|2
+break a record||x|לשבור שיא|1
+break/cut, etc. sth in half||x|לשבור / לחתוך לשניים|1
+breath||n|נשימה|1
+brief||adj|קצר|2
+bring (sb) happiness / luck / peace etc.||x|להביא (שמחה / מזל / שלום)|2
+broad||adj|רחב|2
+broadcast||v|לשדר|2
+brush||n|מברשת|1
+budget||n|תקציב|2
+builder||n|בנאי, קבלן|1
+burger||n|המבורגר|1
+burn|be on fire|v|לבעור|1
+business|company, organization|n|חברה, עסק|1
+butterfly||n|פרפר|1
+button||n|כפתור|1
+by|beside, near|prep|ליד|1
+by accident||x|במקרה, בטעות|1
+by hand||x|ביד|1
+by heart||x|בעל פה|2
+by oneself||x|לבד, בכוחות עצמו|1
+by/in contrast||x|לעומת זאת|2
+cabbage||n|כרוב|1
+cage||n|כלוב|1
+call for sb||x|לבוא לאסוף, לקרוא ל-|2
+camp||v|לחנות, לקמפ|1
+can|modal, surprise|v|יכול (פליאה)|3
+canal||n|תעלה|2
+cancel||v|לבטל|1
+candidate||n|מועמד|2
+can't/couldn't help doing sth||x|לא יכול שלא ל-|3
+capable||adj|מסוגל|2
+capable of sth/doing sth||x|מסוגל ל-|2
+captain||n|קפטן, רב־חובל|1
+care|worry|v|לדאוג|2
+career||n|קריירה|1
+carpet||n|שטיח|1
+carry|transport|v|להוביל, להעביר|1
+cartoon||n|סרט מצויר, קריקטורה|1
+case|court case|n|תיק משפטי|2
+cast||n|צוות שחקנים|2
+catch sb's attention, interest, etc.||x|למשוך תשומת לב|2
+catch up with sb||x|להדביק את הפער, להשיג|3
+category||n|קטגוריה|2
+cause||n|סיבה, גורם|2
+celebrity||n|סלבריטי|1
+central||adj|מרכזי|1
+certain|particular person, thing|adj|מסוים|2
+certainty||n|ודאות|2
+chain|linked metal|n|שרשרת|1
+challenge|difficulty|n|אתגר|2
+chance|luck|n|מזל, גורל|2
+change your mind / change one's mind||x|לשנות את דעתו|1
+change|convert money|v|להמיר, להחליף כסף|2
+chapter||n|פרק|1
+character|personality|n|אופי|2
+charity||n|צדקה, ארגון צדקה|2
+chart||n|תרשים|2
+cheek||n|לחי|1
+cheerful||adj|עליז|2
+chemistry||n|כימיה|1
+chest||n|חזה, תיבה|2
+chewing gum||n|מסטיק|1
+chief||adj|ראשי|2
+chin||n|סנטר|2
+choice|variety|n|מבחר|2
+circular||adj|עגול, מעגלי|2
+circumstance||n|נסיבה|3
+citizen||n|אזרח|2
+class|economic group|n|מעמד|2
+clear|without obstacles|adj|פנוי, ללא מכשולים|2
+client||n|לקוח|1
+climate||n|אקלים|2
+close|stop operating|v|לסגור|1
+coast||n|חוף|2
+code|set of rules|n|קוד, כללים|2
+colleague||n|עמית לעבודה|2
+collect|pick up from somwhere|v|לאסוף|1
+college||n|מכללה|1
+column|building|n|עמוד, טור|2
+combined||adj|משולב|2
+come out||x|לצאת, להתפרסם|2
+Come on!||x|יאללה!|1
+come true||x|להתגשם|2
+comedy||n|קומדיה|1
+comment||n|תגובה, הערה|1
+commit||v|להתחייב, לבצע|3
+commitment||n|מחויבות|3
+committee||n|ועדה|2
+common sense||x|שכל ישר|2
+common|usual, frequent|adj|נפוץ, שכיח|1
+communicate|be understood|v|לתקשר|2
+community||n|קהילה|2
+complain||v|להתלונן|2
+complete|fill in form|v|למלא|2
+complex||adj|מורכב|2
+concentrate|think hard|v|להתרכז|2
+concern|worry|n|דאגה|2
+conclusion|judgment|n|מסקנה|2
+conference||n|כנס, ועידה|2
+confidence|certainty|n|ביטחון עצמי|2
+confirm||v|לאשר, לוודא|2
+conflict||n|סכסוך, קונפליקט|2
+confusion||n|בלבול|2
+consciousness||n|תודעה, מודעות|3
+consider sb/sth (to be) sth||x|להחשיב כ-|2
+consider||v|לשקול, להתחשב|2
+consist of sth||x|להיות מורכב מ-|2
+constant||adj|קבוע, מתמיד|2
+construction||n|בנייה|2
+content||n|תוכן|2
+contrast||n|ניגוד|2
+contribute||v|לתרום|2
+convenient||adj|נוח|2
+convert||v|להמיר, להפוך|3
+cool||v|לקרר|1
+cottage||n|בקתה, בית כפרי|2
+could|modal suggestion|v|אפשר ל-, היה אפשר|2
+council||n|מועצה|2
+count|see how many|v|לספור|1
+county||n|מחוז|3
+couple||n|זוג|1
+course|part of a meal|n|מנה|2
+court||n|בית משפט, מגרש|2
+creature||n|יצור|2
+crew||n|צוות (בכלי תחבורה)|2
+crime||n|פשע|2
+crisis||n|משבר|2
+crowd||n|קהל, המון|2
+crown||n|כתר|1
+crucial||adj|קריטי, מכריע|3
+cruel||adj|אכזרי|2
+cucumber||n|מלפפון|1
+culture|arts|n|תרבות (אמנות)|2
+curious||adj|סקרן|2
+curly||adj|מתולתל|1
+currency||n|מטבע, כסף|2
+curriculum||n|תוכנית לימודים|3
+custom||n|מנהג|2
+cut|injury|n|חתך|1
+cut down sth or cut sth down||x|לקצץ, לכרות|2
+daily life||x|חיי היומיום|1
+damage||n|נזק|1
+damn||exc|לעזאזל|2
+dark|no light|adj|חשוך|1
+data||n|נתונים|1
+deal with sth||x|להתמודד עם|2
+Dear Madam||x|גברתי הנכבדה|1
+Dear Sir||x|אדוני הנכבד|1
+debate||n|דיון, ויכוח|2
+defend|protect|v|להגן|2
+define||v|להגדיר|2
+definite||adj|מוחלט, ברור|2
+degree|amount|n|מידה, דרגה|2
+delete||v|למחוק|1
+delicious||adj|טעים מאוד|1
+democracy||n|דמוקרטיה|2
+demonstrate|prove|v|להוכיח, להדגים|3
+deny|not true|v|להכחיש|2
+depend on/upon sb/sth||x|להיות תלוי ב-|2
+depression||n|דיכאון, שפל|2
+design|planning, plan|n|עיצוב, תכנון|2
+desire||n|רצון, תשוקה|3
+desktop||n|שולחן עבודה, מחשב נייח|1
+despite||prep|למרות|2
+detail||n|פרט|2
+detective||n|בלש|1
+device||n|מכשיר|2
+dialog/dialogue||n|דיאלוג, שיחה|2
+diet||n|דיאטה, תזונה|1
+direct|nothing between|adj|ישיר|2
+director|senior manager|n|מנהל בכיר|2
+disadvantage||n|חיסרון|2
+disagree||v|לא להסכים|1
+disappoint||v|לאכזב|2
+dish|food|n|מנה, תבשיל|1
+display||v|להציג|2
+district||n|אזור, מחוז|2
+dive||v|לצלול|1
+divide|separate|v|לחלק, להפריד|2
+do badly/well||x|להצליח / לא להצליח|1
+do your best||x|לעשות כמיטב יכולתך|1
+documentary||n|סרט תיעודי|2
+dolphin||n|דולפין|1
+domestic|household|adj|ביתי, מקומי|2
+dot||n|נקודה|1
+download||v|להוריד|1
+downtown||adv|במרכז העיר|2
+drag and drop||x|גרור ושחרר|1
+drama||n|דרמה|1
+dream|hope, ambition|n|חלום, שאיפה|2
+dressed||adj|לבוש|1
+driving license||x|רישיון נהיגה|1
+drug|narcotic|n|סם|2
+drug|medicine|n|תרופה|2
+due to||x|בגלל, עקב|2
+dust||n|אבק|1
+duty-free||adj|פטור ממכס|2
+eastern||adj|מזרחי|1
+economy||n|כלכלה|2
+edge||n|קצה, שפה|2
+effective||adj|יעיל|2
+either … or||x|או … או|2
+electric||adj|חשמלי|1
+electronic||adj|אלקטרוני|1
+elementary||adj|יסודי, בסיסי|2
+emergency||n|מצב חירום|2
+employment||n|תעסוקה|2
+encourage||v|לעודד|2
+end up||x|לסיים ב-, להגיע בסוף ל-|2
+endless||adj|אינסופי|2
+engineer||n|מהנדס|1
+enormous||adj|עצום|2
+ensure||v|להבטיח, לוודא|3
+entertain||v|לבדר|2
+entire||adj|שלם, כל|2
+environmentally friendly||x|ידידותי לסביבה|2
+equal||adj|שווה|2
+escape||v|לברוח|2
+essential||adj|חיוני|2
+establish||v|להקים, לבסס|3
+estimate||v|להעריך|3
+etc.||x|וכדומה|1
+even|emphasis|adv|אפילו, אף|2
+eventually||adv|בסופו של דבר|2
+ever since||x|מאז ש-|2
+every single||x|כל אחד ואחד|2
+evidence||n|ראיה, עדות|2
+examine|scrutinize|v|לבחון בקפידה|3
+exchange||n|החלפה, חילופי|2
+excitement||n|התרגשות|1
+excuse|reason, false reason|n|תירוץ, התנצלות|2
+exhibition||n|תערוכה|2
+expectation||n|ציפייה|2
+experience|past events in one's life|n|חוויה, ניסיון חיים|2
+experiment||n|ניסוי|2
+expert||n|מומחה|2
+expression|look|n|הבעה, ביטוי|2
+extent||n|מידה, היקף|3
+external||adj|חיצוני|2
+extra||adv|נוסף, תוספת|1
+face-to-face||x|פנים אל פנים|1
+facilities|amenities|n|מתקנים, שירותים|2
+facility|building, equipment, etc|n|מתקן, מוסד|2
+factor||n|גורם|2
+fail|not succeed|v|להיכשל|1
+fair|event|n|יריד|2
+faith|trust|n|אמונה, אמון|2
+fall|accident|n|נפילה|1
+fall|lower amount|v|לרדת, לפחות|2
+fall asleep||x|להירדם|1
+fault||n|אשמה, פגם|2
+favor||n|טובה|1
+fee||n|תשלום, דמי|2
+feel|have opinion|v|להרגיש, לחשוב|2
+feel at home||x|להרגיש בבית|1
+feel bad about sth/doing sth||x|להרגיש רע בקשר ל-|2
+feel like sth/doing sth||x|להתחשק לו|2
+feel like/as if||x|להרגיש כאילו|2
+feel sorry for||x|לרחם על|2
+female||adj|נקבה, נשי|1
+festival||n|פסטיבל, חג|1
+fever||n|חום (קדחת)|1
+few||det|מעטים|1
+fiction||n|ספרות בדיונית|2
+fight|strive|v|להיאבק|2
+figure|number|n|נתון, מספר|2
+file|computer|n|קובץ|1
+finally||adv|לבסוף, סוף סוף|1
+find sb/sth easy / boring/ funny, etc||x|למצוא קל / משעמם / מצחיק|2
+finish|last part|n|סוף, גמר|2
+fire|shoot|v|לירות|2
+fire station||x|תחנת כיבוי אש|1
+firefighter||n|כבאי|1
+flavor||n|טעם, נופך|2
+flow||v|לזרום|2
+follower||n|עוקב|2
+following||adj|הבא|2
+for|support|prep|בעד|2
+for days||x|במשך ימים|1
+for instance||x|למשל|1
+for sure||x|בוודאות|1
+for years||x|במשך שנים|1
+force|power|n|כוח|2
+foreign||adj|זר, חיצוני|1
+forever||adv|לתמיד|1
+forgive||v|לסלוח|2
+form|start, create|v|ליצור, להקים|2
+fortunately||adv|למרבה המזל|2
+frame|structure|n|שלד, מבנה|2
+freeze|turn to ice|v|להקפיא, לקפוא|2
+frequently||adv|לעיתים קרובות|2
+from|cause|prep|בגלל, כתוצאה מ-|2
+fry||v|לטגן|1
+fuel||n|דלק|1
+full-time||x|משרה מלאה|1
+funny||adj|מצחיק|1
+future||n|עתיד|1
+future||adj|עתידי|1
+gallery||n|גלריה|2
+garage|building|n|מוסך, חניה|1
+gay||adj|הומו|1
+general|not detailed|adj|כללי, לא מפורט|2
+gentle||adj|עדין|2
+get around (somewhere)||x|להסתובב, להתנייד|2
+get rid of sth||x|להיפטר מ-|2
+get/become used to sb/sth/doing sth||x|להתרגל ל-|2
+get/go to sleep||x|ללכת לישון|1
+give birth||x|ללדת|1
+give sb a call/ring||x|להתקשר ל-|1
+global||adj|עולמי|2
+go badly/well, etc||x|ללכת רע / טוב|1
+go down||x|לרדת|1
+go on||x|להמשיך, להתרחש|2
+go out||x|לצאת|1
+go up||x|לעלות|1
+go wrong||x|להשתבש|2
+goal|aim|n|מטרה, יעד|1
+Good for you!||x|כל הכבוד לך!|1
+goods||n|סחורות|2
+grade|score|n|ציון|1
+grant||v|להעניק|3
+green|environment|adj|ירוק, ידידותי לסביבה|2
+greet||v|לברך, לקבל בברכה|2
+grounds||n|שטח, מתחם, טעמים|3
+grow|increase|v|לגדול, לגדל|1
+guess||n|ניחוש|1
+guilty||adj|אשם|2
+haircut||n|תספורת|1
+hand in sth or hand sth in||x|להגיש, למסור|2
+handle||v|לטפל ב-, להתמודד עם|2
+handsome||adj|נאה, יפה תואר|1
+hang up||x|לנתק (שיחה), לתלות|2
+happiness||n|אושר|1
+have (got) on sth or have (got) sth on||x|ללבוש|2
+have no doubt||x|אין לו ספק|2
+have no idea||x|אין לו מושג|1
+have sth in common||x|שיש משותף|2
+headline||n|כותרת ראשית|2
+heat||n|חום|1
+help yourself (to sth)||x|תכבד את עצמך|1
+high|distance above ground|adv|גבוה|1
+high-tech/hi-tech||adj|היי־טק|1
+hire|employ|v|לשכור (עובד), להעסיק|2
+hire|rent|v|לשכור|2
+historical||adj|היסטורי|2
+hit|bestselling|n|להיט|2
+hold your breath||x|לעצור את הנשימה|2
+Holocaust / the Holocaust||n|השואה|1
+honest||adj|ישר|1
+honor|award, medal, pride|n|כבוד, גאווה|2
+hope to do sth||x|מקווה ל-|1
+hot|spicy|adj|חריף|1
+household||n|משק בית|2
+housework||n|עבודות בית|1
+human||n|אדם, בן אנוש|1
+humor||n|הומור|1
+hurt|emotion|v|לפגוע ברגשות|2
+I bet (you)||x|אני בטוח ש-, בטח|2
+I guess||x|אני מניח|1
+I suppose (so)||x|אני מניח (שכן)|1
+identity||n|זהות|2
+if|whether|conj|אם, האם|1
+if I were you||x|במקומך|1
+if only||x|הלוואי ש-|2
+if so||x|אם כך|1
+illegal||adj|לא חוקי|1
+imagination||n|דמיון|1
+in a way or in some / many ways||x|במובן מסוים|2
+in advance||x|מראש|2
+in common/have sth in common||x|במשותף|2
+in detail||x|בפירוט|2
+in fact/in actual fact||x|למעשה|2
+in general||x|בדרך כלל, באופן כללי|1
+in order (for sb/sth) to do sth||x|על מנת ש-|2
+in other words||x|במילים אחרות|1
+in particular||x|במיוחד|2
+in spite of sth||x|למרות|2
+income||n|הכנסה|2
+incorrect||adj|שגוי|1
+indeed||adv|אכן, באמת|2
+independence|free state, not helped|n|עצמאות|2
+individual||adj|אישי, יחיד|2
+influence||n|השפעה|2
+injure||v|לפצוע|2
+inner|feelings|adj|פנימי (רגשות)|2
+insist||v|להתעקש|2
+institution||n|מוסד|3
+intend||v|לכוון, לתכנן|2
+interested||adj|מעוניין|1
+internal||adj|פנימי|2
+interview||n|ראיון|1
+into|towards|prep|אל תוך|1
+introduction|of book|n|מבוא, הקדמה|2
+introduction|first meeting|n|הצגה, היכרות|2
+iron||n|ברזל, מגהץ|1
+It seems …||x|נראה ש-|1
+jar||n|צנצנת|1
+jet||n|מטוס סילון|2
+join|meet together|v|להצטרף|1
+judge|decide|v|לשפוט, לקבוע|2
+jungle||n|ג'ונגל|1
+(just) in case||x|ליתר ביטחון|2
+keep a/sth secret||x|לשמור בסוד|1
+keep in touch||x|להישאר בקשר|1
+key|answers|n|מפתח תשובות|2
+killed||adj|שנהרג|2
+kind||adj|אדיב, נחמד|1
+knock||v|לדפוק, להקיש|1
+Koran||n|הקוראן|2
+lab||n|מעבדה|1
+label|information, company|n|תווית, מותג|2
+labor||n|עבודה, לידה|2
+ladder||n|סולם|1
+lady||n|גברת|1
+last|continue|v|להימשך|2
+lately||adv|לאחרונה|2
+later|in the future|adv|מאוחר יותר|1
+later on||x|מאוחר יותר|1
+law|academic subject|n|משפטים|2
+lay sth down in/on, etc||x|להניח, להשכיב|2
+lay the table||x|לערוך שולחן|2
+lead|be winning|v|להוביל (בתחרות)|2
+league||n|ליגה|1
+lean (sth) against/on sth||x|להישען על|2
+leave|stay in same condition|v|להשאיר (במצב)|2
+legal||adj|חוקי|2
+leisure||n|פנאי|2
+length|distance|n|אורך|1
+let me/us||x|תן לי / לנו|1
+lie|say s'thing that is not true, to deceive|v|לשקר|1
+life|opposite of death|n|חיים|1
+lift|elevator|n|מעלית|1
+likes and dislikes||x|מה אוהבים ומה לא|2
+link||n|קישור|1
+lioness||n|לביאה|2
+literature||n|ספרות|2
+live|live radio or TV program|adj|בשידור חי|1
+loads of/a load of||x|המון, כמויות של|2
+loss||n|אובדן, הפסד|2
+low|sound, light|adj|חלש, נמוך (קול, אור)|2
+mad|mentally ill|adj|משוגע|2
+major|serious, important|adj|עיקרי, חמור|2
+majority||n|רוב|2
+make|cause|v|לגרום, להפוך|2
+make friends (with sb)||x|להתחבר עם, להכיר חברים|1
+make sb do sth||x|לגרום ל- לעשות|2
+make-up|cosmetics|n|איפור|1
+male||adj|זכר|1
+mall||n|קניון|1
+manage|organize, control|v|לנהל|2
+marathon||n|מרתון|1
+master||n|אדון, מומחה|2
+match|sport|n|משחק, מפגש|1
+material|cloth|n|בד, חומר|2
+mathematics||n|מתמטיקה|1
+matter|be important|v|להיות חשוב|2
+mean|not kind|adj|מרושע|2
+mean|intend|v|להתכוון|1
+meanwhile||adv|בינתיים|2
+metal||n|מתכת|1
+method||n|שיטה|2
+meter||n|מטר|1
+might||v|אולי, עלול|2
+mile||n|מייל|1
+mind|annoyed|v|להפריע ל-|2
+mind|be careful|v|להיזהר|2
+minister||n|שר|2
+minor||adj|קטן, משני|2
+miss|feel sad|v|להתגעגע|1
+miss a chance / opportunity||x|לפספס הזדמנות|2
+missing|lost, not included|adj|חסר, אבוד|2
+mix|combination of things|n|תערובת|2
+model|person|n|דוגמן|1
+model|design|n|דגם|2
+motor||n|מנוע|2
+myth||n|מיתוס|2
+near|close in time|adv|קרוב (בזמן)|1
+negative|opposite of positive|adj|שלילי|1
+neighborhood||n|שכונה|1
+network||n|רשת|2
+next|again|adv|אחר כך, בפעם הבאה|2
+no longer||x|כבר לא|1
+no way||x|בשום אופן|1
+nor||conj|וגם לא|2
+northern||adj|צפוני|1
+not even||x|אפילו לא|2
+not really||x|לא ממש|1
+novel||n|רומן|2
+now|length of time|conj|עכשיו ש-|2
+nowadays||adv|בימינו|1
+nowhere||adv|בשום מקום|1
+nuclear||adj|גרעיני|2
+obey||v|לציית|2
+occasion||n|אירוע, הזדמנות|2
+occur||v|להתרחש|2
+ocean||n|אוקיינוס|1
+odd|strange, unusal|adj|מוזר|2
+of|who/what, cause|prep|של, בגלל|2
+officer|position of authority|n|פקיד, קצין|2
+omelette/omelet||n|חביתה|1
+on purpose||x|בכוונה|1
+on the way to/from||x|בדרך אל / מ-|1
+once again/once more||x|שוב, פעם נוספת|1
+one|a single thing|det|אחד|1
+one|particular time|det|פעם, יום אחד|2
+one day / some day / one of these days||x|יום אחד, מתישהו|1
+onto/on to||x|אל, על|2
+open|not covered|adj|פתוח, חשוף|2
+opera||n|אופרה|1
+oppose||v|להתנגד ל-|2
+opposite|completely different|adj|הפוך, מנוגד|2
+or|warning|conj|אחרת, או ש-|2
+or not||x|או לא|1
+order|command|v|להורות, להזמין|2
+order|tidy|n|סדר, ניקיון|2
+original|novel, creative|adj|מקורי, יצירתי|2
+originally||adv|במקור|2
+ought to||x|צריך, כדאי ש-|2
+out|appear (sun, etc), extinguished (light/fire)|adv|בחוץ, כבוי|2
+out loud||x|בקול רם|1
+out of||x|מתוך, ללא|2
+out of work||x|מובטל|2
+outdoors||adv|בחוץ, באוויר הפתוח|1
+out-of-date/out of date||x|מיושן, לא עדכני|2
+oven||n|תנור|1
+over|finished|adv|נגמר|2
+over here/over there||x|כאן / שם|1
+own|possess|v|להחזיק, להיות בעלים של|2
+pan||n|מחבת, סיר|1
+pants||n|מכנסיים|1
+paragraph||n|פסקה|1
+park||v|לחנות|1
+parliament||n|פרלמנט, כנסת|2
+partner|person you do something with, relationship|n|שותף, בן זוג|1
+party|political group|n|מפלגה|1
+pass|give, transmit|v|להעביר|2
+pass by/over/through, etc||x|לעבור ליד / מעל / דרך|2
+password||n|סיסמה|1
+pay|salary|v|לשלם|1
+pay attention (to sth)||x|לשים לב ל-|1
+pepper|vegetable|n|פלפל (ירק)|1
+per||prep|ל-, לכל|2
+percent/per cent||n|אחוז|1
+perfectly|emphasis|adv|לגמרי, בצורה מושלמת|2
+perform|entertain|v|להופיע, לבצע|2
+period|full stop|n|נקודה|1
+permanent||adj|קבוע, לצמיתות|2
+permit||v|להתיר, לאשר|2
+persuade||v|לשכנע|2
+photocopy||n|צילום, העתק|1
+photographer||n|צלם|1
+phrase||n|ביטוי|1
+pie||n|פשטידה, עוגה|1
+pile||n|ערימה|2
+pipe||n|צינור|2
+place|somewhere|n|מקום|1
+plain|obvious, easily understood|adj|פשוט, ברור|2
+plan|drawing|n|תרשים, תוכנית|2
+play|drama, acting|n|הצגה|1
+play a joke/trick on sb||x|להתל ב-, להמתיח|2
+pleased to meet you||x|נעים להכיר|1
+plenty||pron|שפע, הרבה|2
+plural||n|רבים|1
+poet||n|משורר|1
+point|score in sport|n|נקודה (בספורט)|1
+politics||n|פוליטיקה|2
+poor|sympathy|adj|מסכן|2
+pop||n|פופ|1
+port||n|נמל|2
+positive|hopeful, encouraging|adj|חיובי|1
+possibly||adv|ייתכן, אולי|2
+post|Internet (website or social media)|v|לפרסם (ברשת)|1
+postpone||v|לדחות|2
+pot||n|סיר, עציץ|1
+power|authority, force|n|כוח, סמכות|2
+power|electricity, energy|n|חשמל, אנרגיה|2
+practical|relating to experience; what people do or how they do it|adj|מעשי|2
+presence||n|נוכחות|2
+pretty|quite|adv|די, למדי|1
+previous||adj|קודם|2
+prince||n|נסיך|1
+print||v|להדפיס|1
+process|procedure; series of changes that happen naturally|n|תהליך|2
+profit||n|רווח|2
+program|computer|n|תוכנה, תכנית מחשב|1
+progress|development and improvement of skills, knowledge, etc.|n|התקדמות|2
+pronounce||v|להגות, לבטא|2
+proper||adj|ראוי, נכון|2
+property|building|n|נכס, מבנה|2
+provide||v|לספק|2
+public|people|adj|הציבור|2
+publish||v|לפרסם, להוציא לאור|2
+quite a bit||x|די הרבה|1
+quite a few/a lot||x|די הרבה, לא מעט|1
+quite a while||x|זמן רב|1
+raise|increase|v|להעלות, להגדיל|2
+rare||adj|נדיר|2
+rate|amount, speed etc|n|קצב, שיעור|2
+rate|payment|n|תעריף|2
+rather|small amount|adv|די, יותר|2
+rather than||x|במקום, ולא|2
+real|emphasis, important|adj|אמיתי, ממשי|2
+reality||n|מציאות|2
+receipt||n|קבלה|1
+reception|desk at hotel, office etc.|n|דלפק קבלה|1
+recipe||n|מתכון|1
+record|best, biggest etc.|n|שיא|2
+recover|health|v|להחלים|2
+refuse||v|לסרב|2
+regular|repeatedly|adj|סדיר, קבוע|2
+relative|be a family member|n|קרוב משפחה|1
+relatively good / bad / cheap, etc.||x|יחסית טוב / רע / זול|2
+release|set free from prison|v|לשחרר|2
+remind sb of sth/sb||x|להזכיר ל- את|2
+report||n|דוח, דיווח|1
+represent||v|לייצג|2
+require||v|לדרוש|2
+respond||v|להגיב|2
+result in sth||x|לגרום ל-, להוביל ל-|2
+reward||n|פרס, גמול|2
+ride|car, train etc.|v|לנסוע, לרכוב|1
+right||exc|נכון!, בסדר!|1
+rise|move up, increase, get out of bed|v|לעלות, לקום|2
+roast||v|לצלות|1
+roll||n|גליל, לחמנייה|1
+root|of plant|n|שורש|1
+rose||n|ורד|1
+rough|not smooth|adj|מחוספס, גס|2
+route||n|מסלול|2
+royal||adj|מלכותי|2
+rubber|removes pencil|n|מחק|1
+safety||n|בטיחות|1
+sail||v|להפליג|1
+sale||n|מכירה, מבצע|1
+sand||n|חול|1
+save|make safe|v|להציל|2
+savings||n|חסכונות|2
+say|think or believe|v|לומר, לחשוב|2
+sb's fault||x|אשמתו של|1
+scene|view|n|תמונה, סצנה|2
+search||n|חיפוש|1
+second|in order|adv|שנית|1
+section||n|חלק, מדור|1
+security||n|ביטחון, אבטחה|2
+see|understand|v|להבין, לראות|1
+see to sth/sb||x|לטפל ב-|2
+seed||n|זרע|1
+seek||v|לחפש, לבקש|3
+seems like/as if/to||x|נראה כאילו|1
+self-service||x|שירות עצמי|1
+send sth back or send back sth||x|להחזיר, לשלוח בחזרה|1
+series||n|סדרה|1
+serious||adj|רציני, חמור|1
+session||n|מפגש, סשן|2
+set a date/time (for sth)||x|לקבוע תאריך / שעה|2
+set off/set out||x|לצאת לדרך|2
+set the table||x|לערוך שולחן|1
+sew||v|לתפור|1
+shake||v|לנער, לרעוד|1
+shall|modal future|v|האם נ-, אני אעשה|2
+sharp|able to cut|adj|חד|1
+shine||v|לזרוח, להבריק|2
+shock||n|הלם, זעזוע|2
+shoot|sport|v|לבעוט, לצלם|2
+shop||v|לקנות, לעשות קניות|1
+shop assistant||x|מוכר, איש מכירות|1
+shortly afterward; shortly after / before sth||x|זמן קצר אחרי / לפני|2
+show|demonstrate; explain|v|להראות, להסביר|1
+shower|brief rainfall|n|ממטרים, גשם קל|2
+sign|indication|n|סימן|1
+simply|emphasis|adv|פשוט, בהחלט|2
+since|because|conj|מאחר ש-|2
+single|not married|adj|רווק|1
+single parent||x|הורה יחיד|2
+singular||adj|יחיד (דקדוק)|1
+site||n|אתר, מקום|1
+skill||n|מיומנות|1
+skin|body, fruit|n|עור, קליפה|1
+so|mentioned earlier|adv|כך, כן|2
+so (that)||x|כדי ש-|2
+social media||x|רשתות חברתיות|1
+social networking||x|רשת חברתית, יצירת קשרים|2
+society|community; relating to society|n|חברה|2
+soft|gentle, not forceful, loud or easily noticed|adj|עדין, שקט|2
+solid|not liquid or gas; hard, without holes or spaces|adj|מוצק|2
+solve||v|לפתור|1
+somewhat||adv|במידה מסוימת|2
+sorry|saying no, used to show politeness when refusing something|adj|מצטער (בסירוב מנומס)|2
+soul||n|נשמה|2
+sound like/as if/as though||x|נשמע כמו|1
+sound(s) good / interesting/strange, etc.||x|נשמע טוב / מעניין / מוזר|1
+source||n|מקור|2
+southern||adj|דרומי|1
+spare||adj|רזרבי, פנוי|2
+sparkling water/wine||x|מים / יין מבעבעים|2
+speak|in public|v|לדבר, לנאום|1
+spice||n|תבלין|1
+stadium||n|אצטדיון|1
+stage|point in a series|n|שלב|2
+standard|quality|n|רמה, תקן|2
+state|condition|n|מצב|2
+state|country|n|מדינה|2
+station|radio, TV etc.|n|תחנה (רדיו, טלוויזיה)|2
+statue||n|פסל|1
+step|stage|n|שלב, צעד|1
+stick|attach|v|להדביק|2
+stir||v|לערבב|2
+store|keep|v|לאחסן|2
+stranger||n|זר|1
+strategy||n|אסטרטגיה|2
+stress|emphasize; importance|v|להדגיש|2
+stress|worry|n|לחץ, מתח|1
+strike|hit something|v|להכות, לפגוע|2
+strong|durable; noticeable|adj|חזק, בולט|1
+studio||n|סטודיו|1
+stuff||n|דברים, חומר|1
+stupid||adj|טיפש|1
+subject|grammar|n|נושא (דקדוק)|2
+success||n|הצלחה|1
+such|of that sort|det|כזה|2
+sudden||adj|פתאומי|2
+suffer||v|לסבול|2
+suitable||adj|מתאים|2
+sum|amount of money|n|סכום|2
+sunrise||n|זריחה|1
+sunset||n|שקיעה|1
+sunshine||n|שמש, אור שמש|1
+supply||v|לספק|2
+support|agree|v|לתמוך|2
+surround||v|להקיף|2
+swallow||v|לבלוע|2
+switch|change|v|להחליף, להעביר|2
+switch off sth or switch sth off / switch on sth or switch sth on||x|לכבות / להדליק|1
+sympathy||n|אהדה, השתתפות בצער|2
+system||n|מערכת|1
+tablespoon||n|כף|1
+tag|link to someone's profile from a photo or comment on Internet|n|תיוג|2
+take a deep breath||x|לקחת נשימה עמוקה|1
+take care of sb/sth||x|לטפל ב-|1
+take it/things easy||x|לא להילחץ, להרגיע|2
+take off||x|להמריא, להסיר|2
+take sth up or take up sth||x|להתחיל לעסוק ב-|3
+talent||n|כישרון|2
+talk|lecture to a group; discuss something to find out solution to a disagreement|n|הרצאה, שיחה|2
+target||n|יעד, מטרה|2
+task|a piece of work, especially something unpleasant or difficult|n|משימה|2
+tax||n|מס|1
+technical||adj|טכני|2
+technique||n|טכניקה|2
+telecommunications||n|תקשורת, טלקומוניקציה|3
+temperature|body|n|חום (גוף)|1
+temperature|heat|n|טמפרטורה|1
+temporary||adj|זמני|2
+tense||n|זמן (דקדוק)|2
+tent||n|אוהל|1
+term|expression/phrase|n|מונח|2
+terrific||adj|נהדר, מצוין|2
+test|trial, experiment|n|מבחן, ניסוי|1
+the|before superlatives|det|ה- (לפני הכי)|1
+the law||x|החוק|1
+the other day/week etc.||x|לפני כמה ימים / שבועות|2
+the press||x|העיתונות|2
+the public||x|הציבור|1
+the same thing||x|אותו דבר|1
+the sights||x|אתרי תיירות|2
+the West||x|המערב|1
+then|in addition|adv|בנוסף, אחר כך|2
+these days||x|בימינו|1
+they|person, used when you want to avoid saying 'he' or 'she'|pron|הם, הן|1
+things|your possessions; what is happening expecially in your life|n|דברים, חפצים|1
+things like that||x|דברים כאלה|1
+think|remember|v|לזכור|2
+thirst||n|צמא|1
+though|but|conj|אבל, אף ש-|2
+thread||n|חוט|2
+through|as a result of, because of|prep|בגלל, באמצעות|2
+time|occasion or the experience connected with it; historical period|n|פעם, תקופה|2
+tip|gratuity payment|n|טיפ|1
+tire/tyre||n|צמיג|1
+tissue||n|ממחטה, רקמה|1
+to|to show who received something; used to say who is treated in a particular way|prep|ל-, אל|1
+to be honest||x|ביושר, למען האמת|1
+to begin with||x|בתחילה, קודם כול|2
+tone||n|גוון, נימה|2
+tool||n|כלי|1
+total||n|סך הכול|2
+tour||v|לטייל, לסייר|1
+track|path|n|שביל, מסלול|2
+tradition||n|מסורת|2
+translate||v|לתרגם|1
+treat|medical care|v|לטפל (רפואית)|2
+trend||n|מגמה, טרנד|2
+trial|in court|n|משפט|2
+truth||n|אמת|1
+try out sth or try sth out||x|לנסות, לבדוק|2
+tunnel||n|מנהרה|1
+turkey||n|הודו, תרנגול הודו|1
+turn down sth or turn sth down||x|לדחות, להנמיך|2
+tweet||n|ציוץ|1
+type|write using a keyboard|v|להקליד|1
+typical||adj|טיפוסי|2
+under|less than|prep|פחות מ-|1
+underground||adj|תת־קרקעי|2
+underline|draw line|v|להדגיש בקו|1
+unfriendly||adj|לא ידידותי|1
+unimportant||adj|לא חשוב|1
+unkind||adj|לא אדיב, אכזרי|1
+up|increase|adv|למעלה, עלייה|1
+update|add information; make more modern; new information; new form|v|לעדכן|1
+upper||adj|עליון|2
+upset||adj|נסער, כועס|2
+upside down||x|הפוך, הפוך על הפוך|2
+up-to-date/up to date||x|עדכני|1
+use|reduce; when you use something|v|להשתמש, לצרוך|1
+useless||adj|חסר תועלת|1
+user-friendly||x|ידידותי למשתמש|1
+valley||n|עמק|1
+value|monetary value; importance, usefulness etc.|n|ערך|2
+various||adj|שונים, מגוונים|2
+vegetarian||n|צמחוני|1
+vehicle||n|רכב, כלי רכב|1
+victory||n|ניצחון|1
+violence||n|אלימות|2
+viral|to describe something that quickly becomes popular or well known on the Internet|adj|ויראלי|1
+virtual|computing|adj|וירטואלי|2
+vision|sight|n|ראייה, חזון|2
+volunteer||n|מתנדב|1
+walk sb home/to sth||x|ללוות הביתה / ל-|1
+wallet||n|ארנק|1
+waste|bad use; unwanted matter|n|בזבוז, פסולת|2
+weak||adj|חלש|1
+wedding||n|חתונה|1
+well-known||x|ידוע, מפורסם|1
+western|direction|adj|מערבי|1
+What about ...?||x|מה לגבי ...?|1
+What if …?||x|מה אם ...?|1
+What's up?||x|מה קורה?|1
+which|adding information|pron|אשר (הוספת מידע)|2
+who|referring to someone; adding information|pron|מי, אשר|1
+whoever||pron|מי ש-, כל מי ש-|2
+win|election; argument|v|לנצח|1
+wipe||v|לנגב|2
+wish sb luck||x|לאחל בהצלחה|1
+with the help of sth||x|בעזרת|1
+without delay||x|ללא דיחוי|2
+wonder|polite request|v|תוהה (בקשה מנומסת)|2
+wood|group of trees|n|חורשה, יער קטן|2
+work|place; relating to employment|n|עבודה, מקום עבודה|1
+work|artistic creation|n|יצירה|2
+would|used to say what might happen if something else happened|v|היה (תנאי)|2
+would rather||x|מעדיף ש-|2
+Would you mind ...?||x|האם תהיה מוכן ל...?|2
+wrap|cover|v|לעטוף|1
+write|create|v|לכתוב|1
+written||adj|כתוב|1
+yet|used to connect words/phrases/clauses when second part adds something surprising to first part|conj|ובכל זאת|2
+youth|young person; young people; time when people are young|n|נוער, נעורים|2
+zone||n|אזור|1`;
+let bk=1;const WM=new Map();
+for(const l of RAW.trim().split('\n')){if(l[0]==='#'){bk=+l.slice(1);continue}const[e,h,p,t,d]=l.split('|'),w={k:e+'|'+h,e,h,p,t,d:+d,b:bk},o=WM.get(w.k);
+ if(o)w.b=Math.min(o.b,w.b);WM.set(w.k,w)} // מילה כפולה: הנתונים מהמופע האחרון, הבלוק הנמוך מבין השניים
+const W=[...WM.values()],BS=[...new Set(W.map(w=>w.b))].sort((a,b)=>a-b);
+const K=Object.fromEntries(W.map(w=>[w.k,w]));
+// בלוק נבחר נשמר במפתח נפרד (vq1blk): 0=כל הבלוקים, אחרת רק מילים מהבלוק הזה
+let BK=0;try{const v=+localStorage.getItem('vq1blk');if(BS.includes(v))BK=v}catch(e){}
+const inB=k=>K[k]&&(!BK||K[k].b===BK);
+let S={n:0,L:[],P:{}},cur,opts,lock=false,ord=[],pm=null;
+try{const s=JSON.parse(localStorage.getItem('vq1'));if(s)S=s}catch(e){}
+const $=i=>document.getElementById(i);
+const save=()=>{try{localStorage.setItem('vq1',JSON.stringify(S))}catch(e){}};
+const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+// רצף נשמר במפתח נפרד כדי לא לגעת במבנה ההתקדמות הקיים (vq1)
+let R={c:0,b:0};try{const r=JSON.parse(localStorage.getItem('vq1streak'));if(r)R={c:+r.c||0,b:+r.b||0}}catch(e){}
+const saveR=()=>{try{localStorage.setItem('vq1streak',JSON.stringify(R))}catch(e){}};
+const pick=a=>a[Math.random()*a.length|0];
+function streak(){$('sc').textContent='🔥 רצף: '+R.c;$('sb').textContent='🏆 שיא: '+R.b;$('sc').className=R.c>=5?'hot':''}
+const MO={happy:'M28 54q12 10 26-2',sad:'M28 60q12-9 26 1',meh:'M30 57q6-2 10 1t12-1'};
+function gob(t,a,m){const g=$('gob');$('bub').textContent=t;$('mo').setAttribute('d',MO[m||'happy']);
+ g.classList.remove('hop','sad','party');void g.getBBox();if(a)g.classList.add(a)}
+const YAY=['יופי! 😄','בול! 👌','גאון! 🤓','ככה! 💪','מושלם! ✨','יאללה! 🙌','איזה מוח! 🧠'];
+const OOPS=['אופס 🫠 קורה לכולם','לא נורא, גם אני טועה כל הזמן 🙃','נחזור על זה, אל דאגה 🐸','אוי... עוד פעם ואתה תופס את זה 💚'];
+const MILE={3:'שלוש ברצף! 🔥',5:'חמש! אני מזיע מהתרגשות 🥵',10:'עשר ברצף!!! 🏆',15:'15! מי זה האלוף הזה? 😎',20:'20! אני משתחווה 👑',30:'30?! זה לא אנושי 🚀',50:'50!!! אגדה 🦄'};
+let base=R.c<R.b?R.b:-1; // השיא כפי שהיה בתחילת הרצף הנוכחי
+function onStreak(ok){if(ok){if(!R.c)base=R.b;R.c++;const nb=base>0&&R.c===base+1;if(R.c>R.b)R.b=R.c;saveR();streak();
+  if(MILE[R.c])gob(MILE[R.c],'party');else if(nb)gob('שיא חדש! 🎉','party');else gob(pick(YAY),'hop')}
+ else{const lost=R.c;R.c=0;saveR();streak();gob(lost>=3?'רצף של '+lost+' נגמר 😭 בוא נתחיל חדש!':pick(OOPS),'sad','sad')}}
+function stats(){const l=S.L.filter(inB).length,p=Object.keys(S.P).filter(inB).length,n=W.filter(w=>inB(w.k)).length;
+ $('pb').style.width=(100*l/n)+'%';$('s1').textContent='נלמדו: '+l+' / '+n;bkUI();if(typeof lbQueue==='function')lbQueue();$('s2').textContent='לחזרה: '+p;}
+function next(){lock=false;$('nx').style.display='none';
+ cur=null;if(pm){while(pm.length&&!S.P[pm[0].k])pm.shift();if(pm.length)cur=pm.shift();else pm=null}
+ let id=null,m=1e9;if(!cur)for(const k in S.P)if(inB(k)&&S.P[k][0]<=S.n&&S.P[k][0]<m){m=S.P[k][0];id=k}
+ if(cur){}else if(id)cur=K[id];else{while(ord.length&&(S.L.includes(ord[0].k)||S.P[ord[0].k]))ord.shift();cur=ord.shift();
+  if(!cur){const ks=Object.keys(S.P).filter(inB).sort((a,b)=>S.P[a][0]-S.P[b][0]);if(ks.length)cur=K[ks[0]]}}
+ stats();
+ if(!cur){$('w').textContent='כל הכבוד! 🎉';$('h').textContent=BK?'סיימת את כל המילים בבלוק '+BK:'סיימת את כל המילים';$('os').innerHTML='';return}
+ const pool=W.filter(w=>w.k!==cur.k&&w.t!==cur.t),ds=[];
+ for(const w of sh(pool.filter(w=>w.p===cur.p)).concat(sh(pool))){if(ds.length==3)break;if(!ds.some(x=>x.t===w.t))ds.push(w)}
+ opts=sh([cur,...ds]);$('w').textContent=cur.e;$('h').textContent=cur.h?'('+cur.h+')':'';
+ $('os').innerHTML='';opts.forEach((o,i)=>{const b=document.createElement('button');b.className='o';b.textContent=o.t;b.onclick=()=>ans(i);$('os').appendChild(b)});}
+function ans(i){if(lock||!cur)return;lock=true;const ok=opts[i].t===cur.t,k=cur.k,bs=$('os').children;S.n++;
+ if(ok){bs[i].classList.add('ok');
+  if(pm&&S.P[k]){delete S.P[k];S.L.push(k)}else if(S.P[k]){S.P[k].shift();if(!S.P[k].length){delete S.P[k];S.L.push(k)}}else S.L.push(k);
+  save();stats();onStreak(true);setTimeout(next,500)}
+ else{bs[i].classList.add('no');opts.forEach((o,j)=>{if(o.t===cur.t)bs[j].classList.add('ok')});
+  S.P[k]=[S.n+10,S.n+50];S.L=S.L.filter(x=>x!==k);save();stats();onStreak(false);$('nx').style.display='inline-block';$('nx').focus()}}
+// רמת קושי נשמרת במפתח נפרד (vq1lvl): 0=הכל מהכל, 1-3=קודם מילים ברמה שנבחרה, אחר כך הרמות הקרובות
+let LV=0;try{const v=+localStorage.getItem('vq1lvl');if(v>=0&&v<=3)LV=v}catch(e){}
+function lvUI(){for(const b of $('lv').children)b.className=+b.dataset.l===LV?'on':''}
+function start(){const L=new Set(S.L);ord=sh(W.filter(w=>inB(w.k)&&!L.has(w.k)&&!S.P[w.k]));if(LV)ord.sort((a,b)=>Math.abs(a.d-LV)-Math.abs(b.d-LV));pm=null;next()}
+$('lv').onclick=e=>{const l=e.target.dataset&&e.target.dataset.l;if(l==null||+l===LV)return;LV=+l;try{localStorage.setItem('vq1lvl',LV)}catch(e){}lvUI();
+ gob({1:'קל ונעים, בוא נתחמם 🙂',2:'בינוני! יאללה להזיע קצת 💪',3:'קשה?! אתה אמיץ 😱',0:'הכל מהכל! ערבוב מוחלט 🌀'}[LV],'hop');$('ls').style.display='none';start()};
+lvUI();
+function bkUI(){const L=new Set(S.L),c=b=>{const ws=W.filter(w=>!b||w.b===b);return ws.filter(w=>L.has(w.k)).length+'/'+ws.length};
+ $('bk').innerHTML=[...BS,0].map(b=>'<button data-b="'+b+'" class="'+(b===BK?'on':'')+'">'+(b?'בלוק '+b:'כל הבלוקים')+'<small>'+c(b)+'</small></button>').join('')}
+$('bk').onclick=e=>{const t=e.target.closest('button');if(!t||+t.dataset.b===BK)return;BK=+t.dataset.b;try{localStorage.setItem('vq1blk',BK)}catch(e){}
+ gob(BK?'רק בלוק '+BK+'! מתמקדים 🎯':'כל הבלוקים! הכל פתוח 🌍','hop');$('ls').style.display='none';start()};
+function practice(){const ks=Object.keys(S.P).filter(inB);if(!ks.length)return;pm=sh(ks.map(k=>K[k]));$('ls').style.display='none';scrollTo(0,0);next()}
+$('nx').onclick=next;
+document.onkeydown=e=>{if(e.target.tagName==='INPUT')return;if(e.key>='1'&&e.key<='4'&&opts&&opts[e.key-1])ans(e.key-1);else if((e.key==='Enter'||e.key===' ')&&lock&&$('nx').style.display!=='none'){e.preventDefault();next()}};
+$('bl').onclick=()=>{const b=$('ls'),ks=Object.keys(S.P).filter(inB);
+ b.innerHTML=(ks.length?'<button class="nx" id="pr" style="display:block;margin:8px auto">תרגל שוב את המילים האלה</button>':'')+(ks.length?ks.map(k=>'<div><b>'+K[k].e+'</b> — '+K[k].t+'</div>').join(''):'אין מילים כאלה כרגע 👍');if($('pr'))$('pr').onclick=practice;
+ b.style.display=b.style.display==='block'?'none':'block'};
+let rc=0;$('br').onclick=()=>{if(!rc){rc=1;$('br').textContent='בטוח? לחץ שוב למחיקה';setTimeout(()=>{rc=0;$('br').textContent='איפוס'},4000);return}
+ rc=0;$('br').textContent='איפוס';S={n:0,L:[],P:{}};save();R.c=0;saveR();streak();gob('דף חדש! יאללה מההתחלה 🌱','hop');$('ls').style.display='none';start()};
+// ===== לוח דירוג (Supabase). זהות נשמרת במפתח נפרד vq1lb {id,token,name}; vq1 ו-vq1streak לא משתנים =====
+const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
+const rnd=n=>{const a=new Uint8Array(n);crypto.getRandomValues(a);return[...a].map(x=>x.toString(16).padStart(2,'0')).join('')};
+const uuid=()=>{const h=rnd(16).split('');h[12]='4';h[16]='89ab'[parseInt(h[16],16)&3];const j=h.join('');return j.slice(0,8)+'-'+j.slice(8,12)+'-'+j.slice(12,16)+'-'+j.slice(16,20)+'-'+j.slice(20)};
+let ME=null;try{const m=JSON.parse(localStorage.getItem('vq1lb'));if(m&&m.id&&m.token)ME=m}catch(e){}
+const saveME=()=>{try{localStorage.setItem('vq1lb',JSON.stringify(ME))}catch(e){}};
+const sbCall=(fn,body,keep)=>fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',keepalive:!!keep,headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(body)}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
+const lbStats=()=>({p_learned:S.L.filter(k=>K[k]).length,p_streak:R.c,p_best:R.b});
+let lbLast='',lbT=null;
+function lbSend(keep){if(!ME||!ME.name)return Promise.resolve();const st=lbStats(),sig=ME.name+'|'+st.p_learned+'|'+st.p_streak+'|'+st.p_best;if(sig===lbLast)return Promise.resolve();
+ return sbCall('vocab_lb_upsert',{p_id:ME.id,p_token:ME.token,p_name:ME.name,...st},keep).then(ok=>{if(ok)lbLast=sig}).catch(()=>{})}
+function lbQueue(){if(!ME||!ME.name)return;clearTimeout(lbT);lbT=setTimeout(()=>lbSend(false),1500)}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){clearTimeout(lbT);lbSend(true)}});
+const cleanName=v=>v.replace(/[\u0000-\u001f\u007f]/g,'').replace(/\s+/g,' ').trim().slice(0,20);
+let nmCancel=false;
+function askName(canCancel){nmCancel=canCancel;$('nmc').style.display=canCancel?'':'none';$('nmi').value=ME&&ME.name||'';$('nm').classList.add('on');setTimeout(()=>$('nmi').focus(),50)}
+function saveName(){const n=cleanName($('nmi').value);if(!n){$('nmi').focus();return}if(!ME)ME={id:uuid(),token:rnd(24),name:n};else ME.name=n;saveME();$('nm').classList.remove('on');lbLast='';lbSend(false).then(()=>{if($('lbp').classList.contains('on'))lbLoad()})}
+$('nmo').onclick=saveName;$('nmi').onkeydown=e=>{if(e.key==='Enter')saveName()};$('nmc').onclick=()=>{if(nmCancel)$('nm').classList.remove('on')};
+let lbSort='learned',lbRows=[];
+function lbDraw(){for(const b of $('lbs').children)b.className=b.dataset.s===lbSort?'on':'';
+ const rows=lbRows.slice().sort((a,b)=>b[lbSort]-a[lbSort]||b.learned-a.learned||b.best-a.best||b.streak-a.streak),box=$('lbl');box.textContent='';
+ if(!rows.length){box.textContent='עוד אין משתתפים. תהיה הראשון! 🚀';return}
+ rows.forEach((r,i)=>{const d=document.createElement('div');d.className='lr'+(ME&&r.id===ME.id?' me':'');
+  const rk=document.createElement('div');rk.className='rk';rk.textContent=['🥇','🥈','🥉'][i]||i+1;
+  const nm=document.createElement('div');nm.className='nm';nm.textContent=(ME&&r.id===ME.id?'⭐ ':'')+r.name;
+  const nu=document.createElement('div');nu.className='nu';
+  for(const [k,ic] of [['learned','📚'],['streak','🔥'],['best','🏆']]){const s=document.createElement('span');s.textContent=ic+' '+r[k];if(k===lbSort)s.className='sel';nu.appendChild(s)}
+  d.append(rk,nm,nu);box.appendChild(d)})}
+function lbLoad(){$('lbl').textContent='טוען...';lbSend(false).then(()=>sbCall('vocab_lb_get',{})).then(r=>{lbRows=r;lbDraw()}).catch(()=>{$('lbl').textContent='לא הצלחתי להתחבר. בדוק חיבור לאינטרנט ונסה שוב.'})}
+$('lbb').onclick=()=>{$('lbp').classList.add('on');scrollTo(0,0);lbLoad()};
+$('lbx').onclick=()=>$('lbp').classList.remove('on');$('lbr').onclick=lbLoad;$('lbn').onclick=()=>askName(true);
+$('lbs').onclick=e=>{const t=e.target.dataset&&e.target.dataset.s;if(t){lbSort=t;lbDraw()}};
+$('lbb').style.display='';if(!ME||!ME.name)setTimeout(()=>askName(false),700);else lbQueue();
+streak();gob(R.c>=3?'רצף של '+R.c+'! לא לשבור אותו 🔥':pick(['היי! אני גוֹשי. בוא נלמד מילים 👋','חזרת! התגעגעתי 🥹','מוכן? אני מוכן 🤪']),'hop');
+start();
+</script></body></html>
