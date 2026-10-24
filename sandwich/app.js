@@ -99,6 +99,14 @@
     return rpc("sandwich_set", {p_child: child, p_date: date, p_dish: dish});
   }
 
+  // התראה מיידית לאמא ליאורי כשילד בוחר או משנה מנה (לא מחכים לתשובה)
+  function notifyMom(child, changed) {
+    if (demo) return;
+    fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=chose&child=" + child + (changed ? "&changed=1" : ""), {
+      method: "POST", headers: {apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + (cfg.functionsKey || cfg.supabaseAnonKey)}
+    }).catch(function () {});
+  }
+
   // זמינות מנות: ליאורי מסמנת מה אזל. ברירת מחדל: הכול זמין. שום דבר לא משתנה לבד.
   function getOff() {
     if (demo) return Promise.resolve(JSON.parse(store("demo_off") || "[]"));
@@ -252,6 +260,7 @@
   // ---- מה חדש ----
   // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
   var RELEASES = [
+    {v: "20261024a", at: "24.10.2026 · 21:10", items: ["אמא ליאורי מקבלת התראה ברגע שילד בוחר או משנה מנה"]},
     {v: "20261016c", at: "16.10.2026 · 12:40", items: ["🔧 מצב מנהל (אורן): רואה מה כולם בחרו, סטטיסטיקה, ומקבל עותק של כל ההתראות של הילדים ושל אמא"]},
     {v: "20261016b", at: "16.10.2026 · 10:10", items: ["🏆 מסך סטטיסטיקה חדש (כפתור במסך הראשי): פודיום של מי בוחר הכי מהר, עוגת המנות, רצפים ומלך ההתלבטות, ומסך אישי לכל ילד", "⭐ מנה יומית: אחרי שבוחרים מנה, לוחצים על ☆ בפינה שלה והיא נבחרת אוטומטית כל יום, עד שמבטלים או מסמנים מנה אחרת"]},
     {v: "20261007l", at: "7.10.2026 · 19:46", items: ["התראה לילדים כשמנה חדשה נכנסת או מנה חוזרת לתפריט"]},
@@ -539,7 +548,9 @@
               .catch(function () { toast("לא הצלחנו לבטל. נסו שוב"); });
             return;
           }
+          var wasChanged = !!cur;
           setChoice(child, t.iso, name).then(function () {
+            notifyMom(child, wasChanged);
             cur = name; paint(true); burstFrom(status);
             if (!daily && (parseInt(store("dailyhint") || "0", 10) < 3)) { store("dailyhint", String(parseInt(store("dailyhint") || "0", 10) + 1)); toast("רוצים את המנה הזאת כל יום? לחצו על ☆ בפינה של המנה"); }
           }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
