@@ -188,6 +188,44 @@ Deno.serve(async (req) => {
     return json(await broadcastKids(sb, keys, "🎉 שני פיצ'רים חדשים!", "סטטיסטיקה ומנה יומית. נכנסים לנסות", "sandwich-features", "features_sent", undefined, true));
   }
 
+  // ילד בחר או שינה מנה: התראה מיידית לאמא ליאורי. המנה נקראת מהמסד (לא מהבקשה), ואין התראה על ביטול.
+  if (url.searchParams.get("action") === "chose") {
+    const child = url.searchParams.get("child") || "";
+    if (!NAMES[child]) return json({ ok: false, error: "bad child" }, 400);
+    const b = israelNow(Date.now() - 9 * 3600e3);
+    const t = nextSchoolDay(b.y, b.m, b.d);
+    const iso = t.toISOString().slice(0, 10);
+    const { data: row } = await sb.from("sandwich_choices").select("dish").eq("for_date", iso).eq("child", child).maybeSingle();
+    const dish = row?.dish || "";
+    if (!dish) return json({ ok: true, result: "no_choice" });
+    const n = israelNow();
+    const today = `${n.y}-${String(n.m).padStart(2, "0")}-${String(n.d).padStart(2, "0")}`;
+    const idx = Object.keys(NAMES).indexOf(child) + 1;
+    const { error: dup } = await sb.from("sandwich_push_log").insert({ for_date: today, slot: 200000 + idx * 10000 + (Math.floor(Date.now() / 5000) % 10000) });
+    if (dup) return json({ ok: true, result: "too_soon" });
+    const { data: devs } = await sb.from("sandwich_push").select("*").eq("child", "mom").eq("active", true);
+    if (!devs || !devs.length) return json({ ok: true, result: "no_device" });
+    webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
+    const fem = child !== "evyatar";
+    const changed = url.searchParams.get("changed") === "1";
+    const verb = changed ? (fem ? "שינתה" : "שינה") : (fem ? "בחרה" : "בחר");
+    let sent = 0;
+    await Promise.allSettled(devs.map(async (s: any) => {
+      try {
+        await sendPush(
+          { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+          JSON.stringify({ title: `🥪 ${NAMES[child]} ${verb} סנדוויץ'`, body: `${dish} · יום ${DAYS[t.getUTCDay()]}`, url: APP_URL, tag: `sandwich-chose-${child}` }),
+          { TTL: 3600 },
+        );
+        sent++;
+      } catch (e: any) {
+        if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("sandwich_push").delete().eq("endpoint", s.endpoint);
+      }
+    }));
+    if (sent) await logEv(sb, [{ child, type: "choice_notify_sent", dish, for_date: iso }]);
+    return json({ ok: true, result: sent ? "sent" : "no_device", sent });
+  }
+
   // אמא ליאורי שולחת תזכורת לילד שעוד לא בחר. הגבלה: פעם אחת לכל ילד כל 10 דקות, ורק אם לא בחר.
   if (url.searchParams.get("action") === "nudge") {
     const child = url.searchParams.get("child") || "";
