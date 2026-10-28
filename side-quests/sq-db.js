@@ -1,5 +1,5 @@
 // מחליף את window.claude.use("db") כדי שהדף יעבוד מחוץ ל-Claude.
-// הנתונים ב-Supabase (פרויקט family-apps, טבלה sq_docs), דרך פונקציות sq_list / sq_put / sq_del.
+// הנתונים ב-Supabase (פרויקט family-apps, טבלה sq_docs), דרך פונקציות sq_list / sq_put (מחיקה רכה עם _deleted).
 // הגישה בעזרת מפתח אישי בכתובת (?k=...). המפתח לא נמצא בקוד.
 // מפתח Supabase כאן הוא הציבורי (publishable) בלבד.
 (function () {
@@ -54,7 +54,7 @@
   function refresh() {
     return rpc("sq_list").then(function (rows) {
       var next = {};
-      (rows || []).forEach(function (r) { next[r.collection + "/" + r.id] = r.data || {}; });
+      (rows || []).forEach(function (r) { if (!(r.data && r.data._deleted)) next[r.collection + "/" + r.id] = r.data || {}; });
       var j = JSON.stringify(next);
       loaded = true;
       if (j !== lastJson) { lastJson = j; docs = next; emit(); }
@@ -92,7 +92,8 @@
   function remove(coll, id) {
     delete docs[coll + "/" + id];
     lastJson = JSON.stringify(docs); emit();
-    return rpc("sq_del", { p_collection: coll, p_id: id })
+    // מחיקה רכה: המסמך מסומן _deleted ולא נמחק מהטבלה
+    return rpc("sq_put", { p_collection: coll, p_id: id, p_data: { _deleted: true }, p_merge: false })
       .catch(function (e) { refresh().catch(function () {}); throw e; });
   }
 
