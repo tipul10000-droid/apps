@@ -43,5 +43,6 @@
 ## אפליקציות side-quests ו-movies (אישיות, פרטיות)
 - דפים אישיים של המשתמש. לא מופיעים בדף הראשי בכוונה (הדף הראשי הוא של הילדים).
 - הנתונים לא בקוד ולא במאגר. הם ב-Supabase (`family-apps`), טבלה `sq_docs` (app, collection, id, data). כל האובייקטים עם הקידומת `sq_`. לא לגעת בטבלאות של אפליקציות אחרות.
-- הטבלאות סגורות ל-anon. גישה רק דרך `sq_list` / `sq_put` (אין פונקציית מחיקה: מחיקה היא סימון `_deleted: true`), שבודקות מפתח אישי מול `sq_secrets` (נשמר רק כ-hash). המפתח מגיע בלינק (`?k=`) ונשמר ב-localStorage במפתח `sq_key`. המפתח עצמו אף פעם לא נכנס למאגר.
+- הטבלאות סגורות ל-anon. גישה רק דרך `sq_open` (קריאה) ו-`sq_put` (כתיבה; אין פונקציית מחיקה: מחיקה היא סימון `_deleted: true`). שתיהן עוברות דרך `sq_auth`, שבודקת מול `sq_secrets` (hash עם salt) וסופרת ניסיונות ב-`sq_throttle`: 5 שגויים נועלים ל-30 דקות. `sq_list` הישנה חסומה בכוונה.
+- side-quests: קוד של 6 ספרות במסך כניסה (`window.SQ_PIN`), נשמר רק ב-sessionStorage (`sq_pin`), כלומר נשאל בכל פתיחה. movies: מפתח בלינק (`?k=`), נשמר ב-localStorage (`sq_key`). הקוד והמפתח אף פעם לא נכנסים למאגר.
 - `side-quests/sq-db.js` מחקה את `window.claude.use("db")` (collection/doc/set/update/delete/onSnapshot), כך שקוד הדפים זהה לגרסה שרצה בתוך Claude.
