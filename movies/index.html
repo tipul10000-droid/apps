@@ -36,6 +36,7 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 @media (max-width:560px){.banner.has-img::after{background:linear-gradient(270deg,rgba(10,8,6,.88) 0%,rgba(10,8,6,.6) 60%,rgba(10,8,6,.3) 100%)}}
+html,body{overflow-x:clip}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.4;direction:rtl}
 .wrap{max-width:640px;margin:0 auto;padding-block:16px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
 
@@ -64,27 +65,34 @@ body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1
 .add button[hidden]{display:none}
 
 ul{list-style:none;margin:0;padding:0}
-.row{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 10px;background:var(--card);position:relative;min-height:48px}
+.row{display:flex;flex-direction:column;gap:4px;padding:8px 12px 8px 10px;background:var(--card);position:relative;min-width:0}
+.l1{display:flex;align-items:flex-start;gap:6px;min-width:0}
+.l2{display:flex;align-items:center;gap:6px;min-width:0;padding-inline-start:52px}
+.nodrag .l2,#seen .l2{padding-inline-start:24px}
+.act{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 8px;font:inherit;font-size:13.5px;color:var(--ink);background:transparent;cursor:pointer;white-space:nowrap;min-height:30px}
+.act .chk{width:18px;height:18px}
+.act.on{border-color:var(--ok);color:var(--ok);font-weight:700}
+.act svg{width:16px;height:16px}
 .row+.row{border-top:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
-.handle{width:26px;height:36px;display:grid;place-items:center;color:var(--muted);cursor:grab;touch-action:none;border-radius:6px;flex:none;opacity:.55}
+.handle{width:26px;height:26px;display:grid;place-items:center;color:var(--muted);cursor:grab;touch-action:none;border-radius:6px;flex:none;opacity:.55}
 .row:hover .handle{opacity:1}
 .handle svg{width:12px;height:18px}
 .chk{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:2px solid var(--muted);border-radius:5px;flex:none;margin:0;cursor:pointer;display:grid;place-items:center;background:transparent}
 .chk:checked{background:var(--ok);border-color:var(--ok)}
 .chk:checked::after{content:"";width:6px;height:11px;border:solid var(--card);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
 .chk:focus-visible,.icon:focus-visible,.handle:focus-visible,.rate:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
-.num{width:22px;text-align:center;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
-.main{flex:1;min-width:0;display:flex;flex-direction:column}
-.t{font-weight:600;overflow-wrap:break-word}
-.t .yr{white-space:nowrap;font-weight:400;color:var(--muted);font-size:14px;margin-inline:6px;font-variant-numeric:tabular-nums}
-.meta{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.num{width:20px;padding-top:2px;text-align:center;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+.t{flex:1;min-width:0;font-weight:600;font-size:16.5px;line-height:1.3;overflow-wrap:anywhere;text-align:right}
+.t bdi{unicode-bidi:isolate}
+.yr{flex:none;white-space:nowrap;color:var(--muted);font-size:13.5px;font-variant-numeric:tabular-nums}
+.meta{flex:1;min-width:0;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rate{flex:none;display:inline-flex;align-items:center;gap:4px;text-decoration:none;font-weight:700;font-size:13.5px;color:#000;background:var(--imdb);border-radius:6px;padding:2px 7px;font-variant-numeric:tabular-nums;direction:ltr}
 .rate small{font-size:10px;font-weight:800;letter-spacing:.3px}
 .rate.none{background:transparent;color:var(--muted);border:1px dashed var(--line);font-weight:600}
 .icon{flex:none;width:32px;height:32px;border:0;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;display:grid;place-items:center;padding:0}
 .icon:hover{background:color-mix(in srgb,var(--line) 70%,transparent);color:var(--ink)}
 .icon svg{width:18px;height:18px}
-.dl.on{color:var(--ok)}
+.act.dl.on{color:var(--ok)}
 .del{opacity:0}
 .row:hover .del,.row:focus-within .del{opacity:1}
 @media (hover:none){.del{opacity:.55}}
@@ -97,9 +105,14 @@ ul{list-style:none;margin:0;padding:0}
 .seenhead{display:flex;align-items:center;gap:8px;width:100%;border:0;background:transparent;color:var(--muted);font:inherit;font-size:14px;padding:12px 16px 6px;cursor:pointer;text-align:start;border-top:1px solid var(--line);margin-top:6px}
 .seenhead .car{transition:transform .15s}
 .seenhead[aria-expanded="false"] .car{transform:rotate(90deg)}
-#seen .t{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--muted) 70%,transparent);color:var(--muted);font-weight:400}
+#seen .t{color:var(--muted)}
 #seen .handle{visibility:hidden}
 
+.tabs{display:flex;gap:4px;margin:8px 14px 0;background:color-mix(in srgb,var(--line) 70%,transparent);padding:4px;border-radius:11px}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:7px 8px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.tab b{font-variant-numeric:tabular-nums;font-weight:600;margin-inline-start:4px}
+.tab:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
 .tools{display:flex;flex-direction:column;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line)}
 .trow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .search{flex:1;min-width:140px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:15px;border-radius:9px;padding:6px 10px}
@@ -110,7 +123,7 @@ ul{list-style:none;margin:0;padding:0}
 .hint{font-size:12.5px;color:var(--muted)}
 .hint button{border:0;background:transparent;color:var(--amber);font:inherit;font-weight:700;cursor:pointer;padding:0}
 .nodrag .handle{display:none}
-@media (max-width:480px){.row{gap:6px;padding-inline:6px}.icon{width:28px}.num{width:18px}}
+@media (max-width:480px){.row{padding-inline:8px}.meta{display:none}.l2{padding-inline-start:0}.nodrag .l2,#seen .l2{padding-inline-start:0}}
 .empty{padding:28px 18px;text-align:center;color:var(--muted)}
 .empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:4px}
 .foot{font-size:13px;color:var(--muted);padding:0 4px;display:flex;flex-direction:column;gap:4px}
@@ -139,6 +152,10 @@ ul{list-style:none;margin:0;padding:0}
       <input id="addInput" type="text" placeholder="הוספת סרט (שם באנגלית, אפשר עם שנה)" aria-label="שם הסרט להוספה">
       <button type="submit" id="addBtn" hidden>הוסף</button>
     </form>
+    <div class="tabs" id="tabs" role="tablist">
+      <button type="button" class="tab" role="tab" data-tab="todo" aria-selected="true">לצפייה<b id="nTodo"></b></button>
+      <button type="button" class="tab" role="tab" data-tab="seen" aria-selected="false">כבר ראיתי<b id="nSeen"></b></button>
+    </div>
     <div class="tools" id="tools">
       <div class="trow">
         <input id="q" class="search" type="search" placeholder="חיפוש שם, שנה או מקור" aria-label="חיפוש">
@@ -163,12 +180,12 @@ ul{list-style:none;margin:0;padding:0}
     </div>
     <ul id="todo"></ul>
     <div id="emptyMsg" class="empty" hidden><b>אין עדיין סרטים ברשימה</b>שלח לי צילום מסך, לינק או המלצה בשיחה, ואוסיף אותם עם דירוג IMDb.</div>
-    <button class="seenhead" id="seenHead" aria-expanded="true" aria-controls="seen" hidden><span class="car">▾</span><span id="seenLabel">נצפו</span></button>
+    <div id="seenEmpty" class="empty" hidden><b>עוד לא סימנת סרטים שראית</b>לוחצים "ראיתי" ליד סרט ברשימה, והוא עובר לכאן.</div>
     <ul id="seen"></ul>
   </section>
 
   <div class="foot">
-    <span>☐ ראיתי · ⬇ הורדתי · ⠿ גרירה לשינוי סדר הצפייה. דירוג IMDb נכון ליום ההוספה.</span>
+    <span>ראיתי · הורדתי · ⠿ גרירה לשינוי סדר הצפייה. דירוג IMDb נכון ליום ההוספה.</span>
     <span>להוספת סרטים: לשלוח לClaude צילום מסך, רילס, לינק או שמות בשיחה של רשימת הצפייה.</span>
   </div>
 </div>
@@ -207,24 +224,29 @@ function applyView(list,isTodo){
   return out;
 }
 let db=null, col=null, movies=[], dragging=false, pendingRender=false, seenOpen=true;
-try{seenOpen=localStorage.getItem("seenOpen")!=="0"}catch(e){}
+let tab="todo"; try{tab=localStorage.getItem("sq_mv_tab")==="seen"?"seen":"todo"}catch(e){}
 
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function imdbUrl(m){return m.imdb_url||("https://www.imdb.com/find/?s=tt&q="+encodeURIComponent(m.title+(m.year?" "+m.year:"")))}
 
+function fmtD(iso){if(!iso)return"";const d=new Date(iso);return isNaN(d)?"":`${d.getDate()}.${d.getMonth()+1}.${String(d.getFullYear()).slice(2)}`}
 function rowHTML(m,i,seen){
   const r=(m.imdb_rating!=null&&m.imdb_rating!=="")
     ? `<a class="rate" href="${esc(imdbUrl(m))}" target="_blank" rel="noopener" title="IMDb"><small>IMDb</small>${Number(m.imdb_rating).toFixed(1)}</a>`
     : `<a class="rate none" href="${esc(imdbUrl(m))}" target="_blank" rel="noopener" title="עוד לא דורג">IMDb ?</a>`;
-  const meta=[m.note,m.source].filter(Boolean).map(esc).join(" · ");
+  const meta=[seen&&m.seen_at?`נצפה ${fmtD(m.seen_at)}`:"",m.note,m.source].filter(Boolean).map(esc).join(" · ");
   return `<li class="row" data-id="${esc(m.id)}">
-    <span class="handle" tabindex="${seen?-1:0}" role="button" aria-label="גרירה לשינוי מיקום (חצים למעלה/למטה)">${ICON.grip}</span>
-    <input type="checkbox" class="chk" ${seen?"checked":""} aria-label="ראיתי את ${esc(m.title)}">
-    ${seen?"":`<span class="num">${i+1}</span>`}
-    <div class="main"><span class="t">${esc(m.title)}${m.year?`<span class="yr">${esc(m.year)}</span>`:""}</span>${meta?`<span class="meta">${meta}</span>`:""}</div>
-    ${r}
-    <button type="button" class="icon dl ${m.downloaded?"on":""}" aria-pressed="${!!m.downloaded}" title="${m.downloaded?"הורד":"סמן כהורד"}" aria-label="הורדתי">${m.downloaded?ICON.dlOn:ICON.dl}</button>
-    <button type="button" class="icon del" title="מחיקה" aria-label="מחיקת ${esc(m.title)}">${ICON.x}</button>
+    <div class="l1">
+      ${seen?"":`<span class="handle" tabindex="0" role="button" aria-label="גרירה לשינוי מיקום (חצים למעלה/למטה)">${ICON.grip}</span><span class="num">${i+1}</span>`}
+      <span class="t"><bdi dir="ltr">${esc(m.title)}</bdi></span>
+    </div>
+    <div class="l2">
+      <label class="act${seen?" on":""}"><input type="checkbox" class="chk" ${seen?"checked":""} aria-label="ראיתי את ${esc(m.title)}">ראיתי</label>
+      ${r}${m.year?`<span class="yr">${esc(m.year)}</span>`:""}
+      <button type="button" class="act dl ${m.downloaded?"on":""}" aria-pressed="${!!m.downloaded}" aria-label="הורדתי">${m.downloaded?ICON.dlOn:ICON.dl}${m.downloaded?"הורד":"הורדתי"}</button>
+      <span class="meta">${meta}</span>
+      <button type="button" class="icon del" title="מחיקה" aria-label="מחיקת ${esc(m.title)}">${ICON.x}</button>
+    </div>
   </li>`;
 }
 
@@ -249,9 +271,14 @@ function render(){
   $("#sort").value=view.sort; if($("#q").value!==view.q)$("#q").value=view.q;
   document.querySelectorAll(".chip[data-f]").forEach(c=>c.setAttribute("aria-pressed",String(!!view.f[c.dataset.f])));
   $("#emptyMsg").hidden=movies.length>0; $("#tools").hidden=movies.length===0;
-  const sh=$("#seenHead"); sh.hidden=seen.length===0; sh.setAttribute("aria-expanded",String(seenOpen));
-  $("#seenLabel").textContent=`נצפו (${seen.length})`;
-  seenEl.hidden=!seenOpen;
+  const onSeen=tab==="seen";
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",String(t.dataset.tab===tab)));
+  $("#nTodo").textContent=todo.length; $("#nSeen").textContent=seen.length;
+  $("#tabs").hidden=movies.length===0;
+  todoEl.hidden=onSeen; seenEl.hidden=!onSeen;
+  $("#seenEmpty").hidden=!(onSeen&&movies.length&&!seen.length);
+  if(onSeen)hint.hidden=!filtersOn()||!seen.length;
+  if(onSeen&&!hint.hidden)hint.innerHTML=`מוצגים ${vs.length} מתוך ${seen.length} שראית. <button type="button" id="resetView">איפוס</button>`;
   const dl=todo.filter(m=>m.downloaded).length;
   const rated=movies.filter(m=>m.imdb_rating);
   const avg=rated.length?(rated.reduce((s,m)=>s+Number(m.imdb_rating),0)/rated.length).toFixed(1):"–";
@@ -295,7 +322,7 @@ document.addEventListener("change",e=>{
     toast(`סומן כנצפה: ${m.title}`,()=>write(id,{seen:false,seen_at:""}));
   }else write(id,{seen:false,seen_at:""});
 });
-$("#seenHead").addEventListener("click",()=>{seenOpen=!seenOpen;try{localStorage.setItem("seenOpen",seenOpen?"1":"0")}catch(e){}render()});
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{tab=t.dataset.tab;try{localStorage.setItem("sq_mv_tab",tab)}catch(e){}render();window.scrollTo({top:$("#tabs").getBoundingClientRect().top+scrollY-12})}));
 
 // sort & filter
 $("#q").addEventListener("input",e=>{view.q=e.target.value;saveView();render()});
