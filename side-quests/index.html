@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script>window.SQ_APP="sidequests";window.SQ_PIN=true;</script>
-<script src="sq-db.js?v=4"></script>
+<script src="sq-db.js?v=5"></script>
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,6 +62,11 @@ input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid v
 .brand h1 i{font-style:normal;color:var(--accent)}
 .brand p{margin:4px 0 0;color:var(--hero-muted);font-size:15px}
 .stats{display:flex;gap:8px;flex-wrap:wrap}
+.refr{margin-inline-start:auto;display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.1);color:var(--hero-ink);font-size:13.5px;min-height:32px}
+.refr .ic{display:inline-block;font-size:16px;line-height:1}
+.refr.spin .ic{animation:sqspin .8s linear infinite}
+@keyframes sqspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.refr.spin .ic{animation:none}}
 .stat{display:flex;align-items:baseline;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.1);font-size:14px;color:var(--hero-muted)}
 .stat b{font-family:var(--f-mono);font-size:16px;color:var(--hero-ink)}
 .stat.hot{background:var(--accent);color:#3A2400}.stat.hot b{color:#3A2400}
@@ -214,6 +219,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
   <div class="inner">
     <div class="top">
       <div class="stats" id="stats"></div>
+      <button class="refr" id="refr" type="button" aria-label="רענון"><span class="ic" aria-hidden="true">⟳</span><span id="refrTxt">רענון</span></button>
     </div>
     <form class="quick" id="quick"><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button id="qbtn" type="submit">הוסף</button></form>
   </div>
@@ -263,6 +269,8 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
   function addDays(iso,n){const d=new Date((iso||todayISO())+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
   function daysUntil(iso){if(!iso)return null;return Math.round((new Date(iso+"T12:00:00")-new Date(todayISO()+"T12:00:00"))/86400000);}
   function fmtDate(iso){if(!iso)return"";const [y,m,d]=iso.split("-");return `${+d}.${+m}`;}
+  function ago(ms){if(!ms)return"";const m=Math.floor((Date.now()-ms)/60000);if(m<1)return"עכשיו";if(m<60)return m===1?"לפני דקה":`לפני ${m} דקות`;const hr=Math.floor(m/60);if(hr<24)return hr===1?"לפני שעה":hr===2?"לפני שעתיים":`לפני ${hr} שעות`;const d=Math.floor(hr/24);if(d===1)return"אתמול";if(d===2)return"לפני יומיים";if(d<30)return`לפני ${d} ימים`;const mo=Math.floor(d/30);return mo===1?"לפני חודש":mo===2?"לפני חודשיים":`לפני ${mo} חודשים`;}
+  function lastHandled(t){let best=0;for(const v of [t.updated_at,...(Array.isArray(t.log)?t.log.map(e=>e&&e.at):[])]){const x=v?Date.parse(v):NaN;if(x>best)best=x;}return best;}
   function relDate(iso){const n=daysUntil(iso);if(n==null)return"";if(n===0)return"היום";if(n===1)return"מחר";if(n===-1)return"אתמול";if(n<0)return`באיחור ${-n} ימים`;if(n<=14)return`בעוד ${n} ימים`;return fmtDate(iso);}
   function safeUrl(u){try{const x=new URL(u);return x.protocol==="https:"||x.protocol==="http:"?x.href:null;}catch(e){return null;}}
   function linkType(l){if(l.type)return l.type;const u=l.url||"";if(/claude\.ai\/(chat|code\/project|code\/session|share|project)/.test(u)&&!/\/artifact\//.test(u))return"chat";if(/\/artifact\/|\.html|github\.io/.test(u))return"page";return"other";}
@@ -420,7 +428,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
     const linkInp=h("input",{id:"lnk-"+t.id,type:"url",placeholder:"הדבק קישור לשיחה או לדף","aria-label":"קישור חדש"});
     const dateInp=h("input",{id:"dt-"+t.id,type:"date",value:t.next_date||"","aria-label":"תאריך תזכורת",onchange:e=>patch(t,{next_date:e.target.value||""},"התאריך עודכן")});
     const addLink=()=>{const u=safeUrl(linkInp.value.trim());if(!u){toast("הקישור לא תקין");return;}const type=linkType({url:u});const label=type==="chat"?"שיחה":type==="page"?"דף":"קישור";patch(t,{links:[...linksOf(t),{label,url:u,type}]},"הקישור נוסף");};
-    const stRows=[["עומד",t.stand],["הצעד הבא",t.next_step],["תאריך",t.next_date?`${fmtDate(t.next_date)} (${relDate(t.next_date)})`:""]].filter(r=>r[1]);
+    const stRows=[["עומד",t.stand],["הצעד הבא",t.next_step],["תאריך",t.next_date?`${fmtDate(t.next_date)} (${relDate(t.next_date)})`:""],["טופל לאחרונה",ago(lastHandled(t))]].filter(r=>r[1]);
     const qs=questionsOf(t), offs=offersOf(t);
     return h("div",{class:"drawer"},
       stRows.length?h("div",{class:"st"},...stRows.flatMap(r=>[h("span",{class:"lbl"},r[0]),h("div",null,r[1])])):null,
@@ -523,6 +531,9 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
     try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",created_at:now,updated_at:now,log:[]});$("qtitle").value="";toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
+  function renderRefr(){$("refrTxt").textContent=window.SQ_LAST_REFRESH?"עודכן "+ago(window.SQ_LAST_REFRESH):"רענון";}
+  window.addEventListener("sq-refreshed",renderRefr);setInterval(renderRefr,20000);
+  $("refr").onclick=async()=>{if(!db||!db.refresh)return;const b=$("refr");b.classList.add("spin");try{await db.refresh();}catch(e){toast("הרענון נכשל");}setTimeout(()=>b.classList.remove("spin"),300);renderRefr();};
   renderStats();
   (async()=>{
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
