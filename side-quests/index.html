@@ -189,6 +189,13 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
 .opt{padding:6px 12px;border-radius:999px;font-size:14px}
 .opt.chat{border:0;padding:6px 4px;text-decoration:underline}
 .ai .ai-t{font-size:12.5px;color:var(--muted);font-weight:600}
+.inbox .ai .ai-t{font-size:17px;font-weight:800;color:var(--ink);line-height:1.3}
+.inbox .ai .ai-q{font-size:14px;font-weight:600;color:var(--muted)}
+.ai .opt{font-size:13px;padding:5px 11px;min-height:32px}
+.opt.pressed,.ib.pressed{background:var(--k-admin)!important;color:#fff!important;border-color:var(--k-admin)!important;transform:scale(.96);transition:transform .1s}
+.busy{pointer-events:none}.busy .opt:not(.pressed){opacity:.45}
+.toast.undo{display:flex;align-items:center;gap:12px;padding:6px 8px 6px 16px}
+.toast.undo button{border:0;border-radius:999px;background:var(--accent);color:#111;font-weight:800;font-size:14px;padding:6px 14px}
 details.more{border-top:1px dashed var(--line);padding-top:6px}
 details.more summary{cursor:pointer;color:var(--muted);font-size:13.5px;font-weight:700;list-style:none}
 details.more summary::-webkit-details-marker{display:none}
@@ -249,7 +256,9 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
   let db=null, topics=[], projects=[], filterKind="all", openId=null, canWrite=true;
   const $=id=>document.getElementById(id);
   function h(tag,attrs,...kids){const e=document.createElement(tag);if(attrs)for(const k in attrs){const v=attrs[k];if(v==null||v===false)continue;if(k==="class")e.className=v;else if(k==="html")e.innerHTML=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v===true?"":v);}for(const c of kids.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
-  function toast(t){const e=h("div",{class:"toast",role:"status"},t);document.body.append(e);setTimeout(()=>e.remove(),2000);}
+  function toast(t,undo){document.querySelectorAll(".toast").forEach(x=>x.remove());const e=h("div",{class:"toast"+(undo?" undo":""),role:"status"},h("span",null,t),undo?h("button",{type:"button",onclick:()=>{e.remove();undo();}},"בטל"):null);document.body.append(e);setTimeout(()=>e.remove(),undo?5000:2000);}
+  // a tapped button stays lit ~300ms before the card changes, so the tap is visible
+  function press(fn){return e=>{e.stopPropagation();const b=e.currentTarget;if(b.closest(".busy"))return;b.classList.add("pressed");const c=b.closest(".ai,.row,.later-menu");if(c)c.classList.add("busy");setTimeout(fn,300);};}
   function todayISO(){const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);}
   function addDays(iso,n){const d=new Date((iso||todayISO())+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
   function daysUntil(iso){if(!iso)return null;return Math.round((new Date(iso+"T12:00:00")-new Date(todayISO()+"T12:00:00"))/86400000);}
@@ -276,7 +285,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
   let laterFor=null;
   function remindLater(t,when,label){const z=when==="someday"?"someday":when.toISOString();laterFor=null;patch(t,{snooze_until:z,log:logPush(t,"תזכורת: "+label,new Date().toISOString())},when==="someday"?"עבר ל״אחר כך״":"אזכיר לך "+fmtWhen(z));}
   function laterBtn(t,key){return canWrite?h("button",{class:"opt later",type:"button",onclick:e=>{e.stopPropagation();laterFor=laterFor===key?null:key;renderAll();}},"⏰ אחר כך"):null;}
-  function laterMenu(t,key){if(laterFor!==key)return null;return h("div",{class:"later-menu"},laterOptions().map(([l,w])=>h("button",{class:"opt",type:"button",onclick:e=>{e.stopPropagation();remindLater(t,w,l);}},l)),t.snooze_until?h("button",{class:"opt",type:"button",onclick:e=>{e.stopPropagation();laterFor=null;patch(t,{snooze_until:""},"התזכורת בוטלה");}},"בטל תזכורת"):null);}
+  function laterMenu(t,key){if(laterFor!==key)return null;return h("div",{class:"later-menu"},laterOptions().map(([l,w])=>h("button",{class:"opt",type:"button",onclick:press(()=>remindLater(t,w,l))},l)),t.snooze_until?h("button",{class:"opt",type:"button",onclick:press(()=>{laterFor=null;patch(t,{snooze_until:""},"התזכורת בוטלה");})},"בטל תזכורת"):null);}
   function offersOf(t){return (Array.isArray(t.ai_offers)?t.ai_offers:[]).filter(o=>o&&o.text);}
   function questionsOf(t){return (Array.isArray(t.questions)?t.questions:[]).filter(q=>q&&q.q);}
   function openAsks(t){return offersOf(t).filter(o=>(o.state||"open")==="open").length+questionsOf(t).filter(q=>!q.answer).length;}
@@ -307,8 +316,8 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
       withTitle?h("div",{class:"ai-t",onclick:()=>{openId=t.id;view="open";renderAll();setTimeout(()=>{const r=document.querySelector('[data-id="'+t.id+'"]');r&&r.scrollIntoView({block:"center"});},0);}},t.title):null,
       h("div",{class:"ai-q"},"💡 "+o.text),
       st==="open"&&canWrite?h("div",{class:"opts"},
-        h("button",{class:"opt yes",type:"button",onclick:()=>decideOffer(t,o,"approved")},"כן, תעשה"),
-        h("button",{class:"opt",type:"button",onclick:()=>decideOffer(t,o,"declined")},"לא"),
+        h("button",{class:"opt yes",type:"button",onclick:press(()=>decideOffer(t,o,"approved"))},"כן, תעשה"),
+        h("button",{class:"opt",type:"button",onclick:press(()=>decideOffer(t,o,"declined"))},"לא"),
         laterBtn(t,"o:"+t.id+":"+o.id),
         chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"לשיחה"):null)
       :h("div",{class:"ans"},st==="approved"?h("b",null,"אישרת. מחכה לביצוע של Claude"):st==="done"?h("b",null,"בוצע ✓"+(o.result?" · "+o.result:"")):"נדחה"),
@@ -319,7 +328,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
       withTitle?h("div",{class:"ai-t",onclick:()=>{openId=t.id;view="open";renderAll();setTimeout(()=>{const r=document.querySelector('[data-id="'+t.id+'"]');r&&r.scrollIntoView({block:"center"});},0);}},t.title):null,
       h("div",{class:"ai-q"},"❓ "+q.q),
       q.answer?h("div",{class:"ans"},"ענית: ",h("b",null,q.answer),q.done?" · Claude טיפל":" · מחכה ל-Claude",canWrite&&!q.done?h("button",{class:"pill",type:"button",style:"margin-inline-start:8px",onclick:()=>undoQ(t,q)},"שינוי"):null)
-      :canWrite?h("div",{class:"opts"},...(Array.isArray(q.options)?q.options:[]).map(op=>h("button",{class:"opt",type:"button",onclick:()=>answerQ(t,q,op)},optLabel(op))),
+      :canWrite?h("div",{class:"opts"},...(Array.isArray(q.options)?q.options:[]).map(op=>h("button",{class:"opt",type:"button",onclick:press(()=>answerQ(t,q,op))},optLabel(op))),
         laterBtn(t,"q:"+t.id+":"+q.id),
         chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"אחר, לשיחה"):null):null,
       q.answer?null:laterMenu(t,"q:"+t.id+":"+q.id));
@@ -401,7 +410,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
         chat?iconBtn("chat",ICON.chat,"פתח את השיחה ב-Claude",null,safeUrl(chat.url)):iconBtn("chat off",ICON.chat,"אין עדיין קישור לשיחה",()=>{openId=t.id;renderList();setTimeout(()=>{const i=document.getElementById("lnk-"+t.id);i&&i.focus();},0);}),
         page?iconBtn("page",ICON.page,page.label||"פתח דף",null,safeUrl(page.url)):null,
         canWrite&&open?iconBtn("snz",ICON.snooze,"תזכיר לי אחר כך",()=>{laterFor=laterFor==="r:"+t.id?null:"r:"+t.id;renderList();}):null,
-        canWrite&&open?iconBtn("done",ICON.done,"בוצע",()=>markDone(t)):null));
+        canWrite&&open?iconBtn("done",ICON.done,"בוצע",press(()=>markDone(t))):null));
     if(laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.style.gridColumn="1/-1";m.style.margin="0 8px 8px";el.append(m);}
     if(openId===t.id)el.append(drawer(t));
     return el;
@@ -482,10 +491,14 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
   function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString()},"בוצע ✓  (נמצא ב״בוצעו״)");}
   function renderAll(){renderStats();renderInbox();renderViews();renderFilters();renderStrip();renderList();}
 
-  async function patch(t,fields,msg){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:""};try{await db.collection("topics").doc(t.id).update({...fields,updated_at:new Date().toISOString()});if(msg)toast(msg);}catch(e){fail(e);}}
+  async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:""};
+    const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
+    try{await db.collection("topics").doc(t.id).update({...fields,updated_at:new Date().toISOString()});
+      if(noUndo){if(msg)toast(msg);}else toast(msg||"נשמר",async()=>{try{await db.collection("topics").doc(t.id).update(prev);toast("בוטל");}catch(e){fail(e);}});
+    }catch(e){fail(e);}}
   function snooze(t,n){const base=n===1?todayISO():(t.next_date&&daysUntil(t.next_date)>0?t.next_date:todayISO());patch(t,{next_date:addDays(base,n)},n===1?"עד מחר":n===7?"נדחה בשבוע":"נדחה בחודש");}
-  async function del(t,btn){if(btn.dataset.armed!=="1"){btn.dataset.armed="1";btn.textContent="ללחוץ שוב";return;}try{await db.collection("topics").doc(t.id).delete();openId=null;toast("נמחק");}catch(e){fail(e);}}
-  function fail(e){if(e&&e.code==="invalid_argument"){canWrite=false;renderList();notice("הדף מוצג לקריאה בלבד.");}else toast("השמירה נכשלה, נסה שוב");}
+  async function del(t,btn){if(btn.dataset.armed!=="1"){btn.dataset.armed="1";btn.textContent="ללחוץ שוב";return;}const snap=JSON.parse(JSON.stringify(t));delete snap.id;try{await db.collection("topics").doc(t.id).delete();openId=null;toast("נמחק",async()=>{try{await db.collection("topics").doc(t.id).set(snap);toast("שוחזר");}catch(e){fail(e);}});}catch(e){fail(e);}}
+  function fail(e){if(e&&e.code==="invalid_argument"){canWrite=false;renderList();notice("הדף מוצג לקריאה בלבד.");}else{renderAll();toast("השמירה נכשלה, נסה שוב");}}
   function notice(t){const n=$("notice");n.textContent=t;n.hidden=false;}
 
   $("quick").addEventListener("submit",async e=>{
@@ -507,7 +520,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
       if(n){$("qtitle").value="";toast(n===1?"נוסף מהשיחה":`נוספו ${n} נושאים`);}
       return;
     }
-    try{await db.collection("topics").doc(newId()).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",created_at:now,updated_at:now,log:[]});$("qtitle").value="";toast("נוסף");}catch(err){fail(err);}
+    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",created_at:now,updated_at:now,log:[]});$("qtitle").value="";toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
   renderStats();
