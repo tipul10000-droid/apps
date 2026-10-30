@@ -56,26 +56,37 @@
   function emit() { if (!loaded) return; subs.forEach(function (s) { try { s.cb(snapFor(s)); } catch (e) { console.error(e); } }); }
 
   var lastJson = "";
+  // רענון אוטומטי רק כשיש קוד ואין נעילה. כל קריאה עם קוד שגוי או ריק נספרת כניסיון שגוי
+  // (5 כאלה נועלים את כולם ל-30 דקות). זה מה שנעל את אורן: לשונית פתוחה במסך הקוד שרעננה כל 30 שניות.
+  var lockTimer = null;
   function refresh() {
+    if (!key) { var e0 = new Error("no key"); e0.badKey = true; e0.noKey = true; if (PIN) pinScreen(""); return Promise.reject(e0); }
     return rpc("sq_open").then(function (res) {
       if (!res || res.status !== "ok") { var e = new Error(res && res.status === "locked" ? "locked" : "bad key"); e.badKey = true; e.locked = res && res.status === "locked"; throw e; }
       var rows = res.rows, next = {};
       (rows || []).forEach(function (r) { if (!(r.data && r.data._deleted)) next[r.collection + "/" + r.id] = r.data || {}; });
       var j = JSON.stringify(next);
       loaded = true;
+      if (PIN) { try { localStorage.setItem("sq_pin", key); sessionStorage.setItem("sq_pin", key); } catch (x) {} }
       window.SQ_LAST_REFRESH = Date.now();
       try { window.dispatchEvent(new Event("sq-refreshed")); } catch (x) {}
       if (j !== lastJson) { lastJson = j; docs = next; emit(); }
     }).catch(function (e) {
       subs.forEach(function (s) { if (s.err) try { s.err(e); } catch (x) {} });
-      if (e.badKey) askKey(e.locked);
+      if (e.badKey) {
+        if (e.locked) {
+          // נעול: לא מוחקים את הקוד השמור. מנסים שוב לבד כל 5 דקות (בזמן נעילה זה לא נספר כניסיון).
+          if (!lockTimer) lockTimer = setTimeout(function () { lockTimer = null; refresh().then(resolvePin).catch(function () {}); }, 300000);
+          askKey(true);
+        } else { var had = !!key; key = ""; askKey(false, had); }
+      }
       throw e;
     });
   }
 
-  function askKey(locked) {
+  function askKey(locked, wrong) {
     if (PIN && !locked) { try { localStorage.removeItem("sq_pin"); sessionStorage.removeItem("sq_pin"); } catch (e) {} }
-    if (PIN) return pinScreen(locked ? "יותר מדי ניסיונות. נסה שוב בעוד חצי שעה." : (key ? "קוד שגוי" : ""));
+    if (PIN) return pinScreen(locked ? "יותר מדי ניסיונות. נפתח לבד כשהנעילה תיגמר (עד חצי שעה)." : (wrong ? "קוד שגוי" : ""));
     if (document.getElementById("sq-key")) return;
     var box = document.createElement("div");
     box.id = "sq-key";
@@ -92,7 +103,7 @@
     };
   }
 
-  function okPut(v) { if (v === -1) { var e = new Error("bad key"); e.badKey = true; askKey(); throw e; } return v; }
+  function okPut(v) { if (v === -1) { var e = new Error("bad key"); e.badKey = true; throw e; } return v; }
 
   // מסך כניסה עם קוד. נפתח מעל הדף עד שהשרת מאשר את הקוד.
   var pinWaiters = [];
@@ -117,15 +128,16 @@
         var v = inp.value.trim();
         if (!/^[0-9]{6}$/.test(v)) { document.getElementById("sq-pin-msg").textContent = "6 ספרות"; return; }
         key = v; inp.value = "";
-        refresh().then(function () {
-          try { localStorage.setItem("sq_pin", v); sessionStorage.setItem("sq_pin", v); } catch (e) {}
-          box.remove();
-          var w = pinWaiters; pinWaiters = []; w.forEach(function (f) { f(db); });
-        }).catch(function () {});
+        refresh().then(resolvePin).catch(function () {});
       }
     }
     document.getElementById("sq-pin-msg").textContent = msg || "";
     setTimeout(function () { var i = document.getElementById("sq-pin-in"); if (i) i.focus(); }, 50);
+  }
+
+  function resolvePin() {
+    var b = document.getElementById("sq-pin"); if (b) b.remove();
+    var w = pinWaiters; pinWaiters = []; w.forEach(function (f) { f(db); });
   }
 
   function write(coll, id, data, merge) {
@@ -169,8 +181,8 @@
     doc: function (path) { var i = path.indexOf("/"); return docRef(path.slice(0, i), path.slice(i + 1)); }
   };
 
-  setInterval(function () { if (!document.hidden) refresh().catch(function () {}); }, 30000);
-  document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh().catch(function () {}); });
+  setInterval(function () { if (key && !lockTimer && !document.hidden) refresh().catch(function () {}); }, 30000);
+  document.addEventListener("visibilitychange", function () { if (key && !lockTimer && !document.hidden) refresh().catch(function () {}); });
 
   window.claude = {
     use: function (name) {
@@ -179,7 +191,7 @@
           return new Promise(function (res) {
             pinWaiters.push(res);
             if (!key) { pinScreen(""); return; }
-            refresh().then(function () { var w = pinWaiters; pinWaiters = []; w.forEach(function (f) { f(db); }); }).catch(function () {});
+            refresh().then(resolvePin).catch(function () {});
           });
         }
         if (!key) { askKey(); return Promise.resolve(null); }
