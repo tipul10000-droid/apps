@@ -1,6 +1,7 @@
 // מחליף את window.claude.use("db") כדי שהדף יעבוד מחוץ ל-Claude.
 // הנתונים ב-Supabase (פרויקט family-apps, טבלה sq_docs), דרך פונקציות sq_list / sq_put (מחיקה רכה עם _deleted).
-// הגישה: ב-Side Quests קוד של 6 ספרות במסך כניסה (window.SQ_PIN), נשמר רק לפתיחה הנוכחית.
+// הגישה: ב-Side Quests קוד של 6 ספרות במסך כניסה (window.SQ_PIN). אחרי קוד נכון המכשיר נזכר (localStorage), מכשיר חדש צריך קוד.
+// לבדיקות אוטומטיות: לעולם לא להקליד קודים במסך הכניסה. 5 שגיאות נועלות גם את אורן. בודקים מול db מדומה.
 // ברשימת הסרטים מפתח אישי בכתובת (?k=...). אף אחד מהם לא נמצא בקוד.
 // 5 ניסיונות שגויים נועלים ל-30 דקות (בשרת, sq_auth).
 // מפתח Supabase כאן הוא הציבורי (publishable) בלבד.
@@ -12,7 +13,7 @@
 
   var PIN = !!window.SQ_PIN;
   function getKey() {
-    if (PIN) { try { return sessionStorage.getItem("sq_pin") || ""; } catch (e) { return ""; } }
+    if (PIN) { try { return localStorage.getItem("sq_pin") || sessionStorage.getItem("sq_pin") || ""; } catch (e) { return ""; } }
     var k = new URLSearchParams(location.search).get("k");
     try { if (k) localStorage.setItem(LS, k); else k = localStorage.getItem(LS); } catch (e) {}
     return k || "";
@@ -73,6 +74,7 @@
   }
 
   function askKey(locked) {
+    if (PIN && !locked) { try { localStorage.removeItem("sq_pin"); sessionStorage.removeItem("sq_pin"); } catch (e) {} }
     if (PIN) return pinScreen(locked ? "יותר מדי ניסיונות. נסה שוב בעוד חצי שעה." : (key ? "קוד שגוי" : ""));
     if (document.getElementById("sq-key")) return;
     var box = document.createElement("div");
@@ -116,7 +118,7 @@
         if (!/^[0-9]{6}$/.test(v)) { document.getElementById("sq-pin-msg").textContent = "6 ספרות"; return; }
         key = v; inp.value = "";
         refresh().then(function () {
-          try { sessionStorage.setItem("sq_pin", v); } catch (e) {}
+          try { localStorage.setItem("sq_pin", v); sessionStorage.setItem("sq_pin", v); } catch (e) {}
           box.remove();
           var w = pinWaiters; pinWaiters = []; w.forEach(function (f) { f(db); });
         }).catch(function () {});
