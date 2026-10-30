@@ -350,7 +350,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
     });
     $("askSec").hidden=!cards.length;
     const shown=inboxAll?cards:cards.slice(0,4);
-    $("inbox").replaceChildren(...shown,cards.length>4?h("button",{class:"pill",type:"button",style:"align-self:center",onclick:()=>{inboxAll=!inboxAll;renderInbox();}},inboxAll?"פחות":`עוד ${cards.length-4} החלטות`):null);
+    $("inbox").replaceChildren(...shown,...(cards.length>4?[h("button",{class:"pill",type:"button",style:"align-self:center",onclick:()=>{inboxAll=!inboxAll;renderInbox();}},inboxAll?"פחות":`עוד ${cards.length-4} החלטות`)]:[]));
   }
   function renderStats(){
     const open=topics.filter(isOpen),hot=open.filter(isHot),me=open.filter(t=>t.status==="waiting_me");
