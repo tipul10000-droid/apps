@@ -152,6 +152,29 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
 .empty{border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--muted);text-align:center}
 .notice{background:var(--soon-soft);color:var(--soon);border-radius:10px;padding:10px 14px;font-size:14.5px}
 .toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:14px;z-index:30}
+/* AI assist: status lines, decisions inbox, offers and multiple-choice questions */
+.r-wait{font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-wait b{color:var(--ink);font-weight:600}
+.tag.ask{background:var(--accent);color:#3A2400}
+.tag.cl{background:var(--sunk);color:var(--k-research)}
+.st{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.st .lbl{font-size:12.5px;color:var(--muted);font-weight:700;white-space:nowrap}
+.st div{min-width:0}
+.ai{border:1px solid var(--line);border-inline-start:4px solid var(--accent);border-radius:10px;background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.ai .ai-h{font-size:12.5px;font-weight:700;color:var(--muted);display:flex;gap:6px;align-items:center}
+.ai .ai-q{font-weight:700;font-size:15px}
+.ai .ai-d{font-size:14px;color:var(--muted)}
+.ai .opts{display:flex;flex-direction:column;gap:6px}
+.opt{text-align:start;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 12px;font-size:14.5px;font-weight:600}
+.opt:hover{border-color:var(--ink)}
+.opt.yes{background:var(--k-admin);color:#fff;border-color:var(--k-admin)}
+.opt.chat{border-style:dashed;color:var(--muted);font-weight:600;text-decoration:none;display:block}
+.ai.answered{border-inline-start-color:var(--k-admin)}
+.ai .ans{font-size:14px}.ai .ans b{color:var(--k-admin)}
+.inbox{display:flex;flex-direction:column;gap:8px}
+.inbox .ai-t{font-size:12.5px;font-weight:700;color:var(--k-research);cursor:pointer}
+.files .lnk.file{border-style:dashed}
+@media (max-width:620px){.r-wait{white-space:normal}}
 @media (max-width:620px){.brand h1{font-size:34px}.r-line{flex-wrap:wrap;row-gap:2px}.r-title{white-space:normal;flex-basis:100%}.r-next{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.ib{width:34px}}
 </style>
 </head>
@@ -171,6 +194,10 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
 
 <main class="gut"><div class="inner">
   <div id="notice" class="notice" hidden></div>
+  <section aria-labelledby="hAsk" id="askSec" hidden>
+    <div class="sec-head"><h2 id="hAsk">מחכה להחלטה שלך</h2><span class="hint">הצעות ושאלות של Claude. כלום לא מתבצע בלי אישור שלך.</span></div>
+    <div class="inbox" id="inbox"></div>
+  </section>
   <section aria-labelledby="hAll">
     <div class="sec-head"><h2 id="hAll">המשימות</h2><span class="hint">לחיצה על שורה פותחת פרטים</span></div>
     <div class="views" id="views" role="tablist"></div>
@@ -198,7 +225,7 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
     claude:'<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>',
     snooze:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M5 4l3 2M19 4l-3 2"/></svg>'
   };
-  let view="open", shareId=null, shareMode="task";
+  let inboxAll=false, view="open", shareId=null, shareMode="task";
   let db=null, topics=[], projects=[], filterKind="all", openId=null, canWrite=true;
   const $=id=>document.getElementById(id);
   function h(tag,attrs,...kids){const e=document.createElement(tag);if(attrs)for(const k in attrs){const v=attrs[k];if(v==null||v===false)continue;if(k==="class")e.className=v;else if(k==="html")e.innerHTML=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v===true?"":v);}for(const c of kids.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
@@ -216,11 +243,62 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
   function newId(){return "t-"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
   function byDate(a,b){const x=daysUntil(a.next_date),y=daysUntil(b.next_date);return (x==null?9999:x)-(y==null?9999:y)||(a.priority==="high"?-1:0)-(b.priority==="high"?-1:0)||(b.updated_at||"").localeCompare(a.updated_at||"");}
 
+  // ai_offers: [{id,text,detail,state:open|approved|declined|done,at}]  questions: [{id,q,options:[],answer,answered_at,done}]
+  function offersOf(t){return (Array.isArray(t.ai_offers)?t.ai_offers:[]).filter(o=>o&&o.text);}
+  function questionsOf(t){return (Array.isArray(t.questions)?t.questions:[]).filter(q=>q&&q.q);}
+  function openAsks(t){return offersOf(t).filter(o=>(o.state||"open")==="open").length+questionsOf(t).filter(q=>!q.answer).length;}
+  function forClaude(t){return offersOf(t).filter(o=>o.state==="approved").length+questionsOf(t).filter(q=>q.answer&&!q.done).length;}
+  function chatOf(t){const c=linksOf(t).find(l=>linkType(l)==="chat");return c?safeUrl(c.url):null;}
+  function logPush(t,text,now){return [...(Array.isArray(t.log)?t.log:[]),{at:now,text}];}
+  function decideOffer(t,o,state){
+    const now=new Date().toISOString();
+    const offers=offersOf(t).map(x=>x.id===o.id?{...x,state,decided_at:now}:x);
+    patch(t,{ai_offers:offers,log:logPush(t,(state==="approved"?"אישרת: ":"דחית: ")+o.text,now)},state==="approved"?"אושר. Claude יבצע ויעדכן כאן":"נדחה");
+  }
+  function answerQ(t,q,ans){
+    const now=new Date().toISOString();
+    const qs=questionsOf(t).map(x=>x.id===q.id?{...x,answer:ans,answered_at:now}:x);
+    patch(t,{questions:qs,log:logPush(t,`ענית: ${q.q} → ${ans}`,now)},"התשובה נשמרה");
+  }
+  function undoQ(t,q){const qs=questionsOf(t).map(x=>x.id===q.id?{...x,answer:"",answered_at:""}:x);patch(t,{questions:qs},"אפשר לענות מחדש");}
+  function offerCard(t,o,withTitle){
+    const st=o.state||"open";
+    return h("div",{class:"ai"+(st!=="open"?" answered":"")},
+      withTitle?h("div",{class:"ai-t",onclick:()=>{openId=t.id;view="open";renderAll();setTimeout(()=>{const r=document.querySelector('[data-id="'+t.id+'"]');r&&r.scrollIntoView({block:"center"});},0);}},t.title):null,
+      h("div",{class:"ai-h"},"💡 הצעה של Claude"),
+      h("div",{class:"ai-q"},o.text),
+      o.detail?h("div",{class:"ai-d"},o.detail):null,
+      st==="open"&&canWrite?h("div",{class:"opts"},
+        h("button",{class:"opt yes",type:"button",onclick:()=>decideOffer(t,o,"approved")},"כן, תעשה את זה"),
+        h("button",{class:"opt",type:"button",onclick:()=>decideOffer(t,o,"declined")},"לא עכשיו"),
+        chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"רוצה לדבר על זה בשיחה"):null)
+      :h("div",{class:"ans"},st==="approved"?h("b",null,"אישרת. מחכה לביצוע של Claude"):st==="done"?h("b",null,"בוצע ✓"+(o.result?" · "+o.result:"")):"נדחה"));
+  }
+  function questionCard(t,q,withTitle){
+    return h("div",{class:"ai"+(q.answer?" answered":"")},
+      withTitle?h("div",{class:"ai-t",onclick:()=>{openId=t.id;view="open";renderAll();setTimeout(()=>{const r=document.querySelector('[data-id="'+t.id+'"]');r&&r.scrollIntoView({block:"center"});},0);}},t.title):null,
+      h("div",{class:"ai-h"},"❓ שאלה כדי להתקדם"),
+      h("div",{class:"ai-q"},q.q),
+      q.answer?h("div",{class:"ans"},"ענית: ",h("b",null,q.answer),q.done?" · Claude טיפל":" · מחכה ל-Claude",canWrite&&!q.done?h("button",{class:"pill",type:"button",style:"margin-inline-start:8px",onclick:()=>undoQ(t,q)},"שינוי"):null)
+      :canWrite?h("div",{class:"opts"},...(Array.isArray(q.options)?q.options:[]).map(op=>h("button",{class:"opt",type:"button",onclick:()=>answerQ(t,q,String(op))},String(op))),
+        chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"אף אחת מאלה, נדבר בשיחה"):null):null);
+  }
+  function renderInbox(){
+    const cards=[];
+    topics.filter(isOpen).sort(byDate).forEach(t=>{
+      questionsOf(t).filter(q=>!q.answer).forEach(q=>cards.push(questionCard(t,q,true)));
+      offersOf(t).filter(o=>(o.state||"open")==="open").forEach(o=>cards.push(offerCard(t,o,true)));
+    });
+    $("askSec").hidden=!cards.length;
+    const shown=inboxAll?cards:cards.slice(0,4);
+    $("inbox").replaceChildren(...shown,cards.length>4?h("button",{class:"pill",type:"button",style:"align-self:center",onclick:()=>{inboxAll=!inboxAll;renderInbox();}},inboxAll?"פחות":`עוד ${cards.length-4} החלטות`):null);
+  }
   function renderStats(){
     const open=topics.filter(isOpen),hot=open.filter(isHot),me=open.filter(t=>t.status==="waiting_me");
     $("stats").replaceChildren(
       h("span",{class:"stat"+(hot.length?" hot":"")},h("b",null,hot.length),"לטיפול עכשיו"),
       h("span",{class:"stat"},h("b",null,me.length),"מחכים לי"),
+      h("span",{class:"stat"+(topics.some(t=>isOpen(t)&&openAsks(t))?" hot":"")},h("b",null,topics.filter(isOpen).reduce((n,t)=>n+openAsks(t),0)),"החלטות"),
       h("span",{class:"stat"},h("b",null,open.length),"פתוחים"));
   }
   let addingFor=null;
@@ -264,14 +342,18 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
     const k=KINDS[t.kind]?t.kind:"research", n=daysUntil(t.next_date), open=isOpen(t);
     const links=linksOf(t), chat=links.find(l=>linkType(l)==="chat"), page=links.find(l=>linkType(l)==="page");
     const dcls=n==null?"":n<=0?" due":n<=3?" soon":"";
-    const el=h("div",{class:"row"+(open?"":" closed"),style:`--k:var(--k-${k})`},
+    const asks=openAsks(t), cl=forClaude(t);
+    const el=h("div",{class:"row"+(open?"":" closed"),style:`--k:var(--k-${k})`,"data-id":t.id},
       h("span",{class:"bar"}),
       h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":openId===t.id?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
         h("div",{class:"r-line"},
           t.project&&projById(t.project)?h("span",{class:"ptag"},picOf(projById(t.project),16),projById(t.project).name):null,
           h("span",{class:"r-title"},t.title||"(ללא כותרת)"),
           t.status==="waiting_me"?h("span",{class:"tag me"},"מחכה לי"):t.status==="waiting_other"?h("span",{class:"tag other"},"מחכה לאחרים"):null,
+          asks&&open?h("span",{class:"tag ask"},`${asks} להחלטה`):null,
+          cl&&open?h("span",{class:"tag cl"},"אצל Claude"):null,
           t.next_date&&open?h("span",{class:"date"+dcls},relDate(t.next_date)):null),
+        t.waiting_for&&open?h("div",{class:"r-wait"},h("b",null,t.status==="waiting_me"?"מחכה לך: ":"ממתין ל: "),t.waiting_for):null,
         t.next_step?h("div",{class:"r-next"},t.next_step):null),
       h("div",{class:"r-side"},
         chat?iconBtn("chat",ICON.chat,"פתח את השיחה ב-Claude",null,safeUrl(chat.url)):iconBtn("chat off",ICON.chat,"אין עדיין קישור לשיחה",()=>{openId=t.id;renderList();setTimeout(()=>{const i=document.getElementById("lnk-"+t.id);i&&i.focus();},0);}),
@@ -282,13 +364,20 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
     return el;
   }
   function drawer(t){
-    const log=Array.isArray(t.log)?[...t.log].reverse().slice(0,3):[];
+    const log=Array.isArray(t.log)?[...t.log].reverse().slice(0,4):[];
     const linkInp=h("input",{id:"lnk-"+t.id,type:"url",placeholder:"הדבק קישור לשיחה או לדף","aria-label":"קישור חדש"});
     const dateInp=h("input",{id:"dt-"+t.id,type:"date",value:t.next_date||"","aria-label":"תאריך תזכורת",onchange:e=>patch(t,{next_date:e.target.value||""},"התאריך עודכן")});
     const addLink=()=>{const u=safeUrl(linkInp.value.trim());if(!u){toast("הקישור לא תקין");return;}const type=linkType({url:u});const label=type==="chat"?"שיחה":type==="page"?"דף":"קישור";patch(t,{links:[...linksOf(t),{label,url:u,type}]},"הקישור נוסף");};
+    const stRows=[["איפה זה עומד",t.stand],[t.status==="waiting_me"?"מחכה לך":"ממתין ל",t.waiting_for],["הצעד הבא",t.next_step],["תאריך",t.next_date?`${fmtDate(t.next_date)} (${relDate(t.next_date)})`:""]].filter(r=>r[1]);
+    const qs=questionsOf(t), offs=offersOf(t);
     return h("div",{class:"drawer"},
+      stRows.length?h("div",{class:"st"},...stRows.flatMap(r=>[h("span",{class:"lbl"},r[0]),h("div",null,r[1])])):null,
       t.summary?h("p",null,t.summary):null,
-      linksOf(t).length?h("div",{class:"d-row"},linksOf(t).map(l=>h("a",{class:"lnk",href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
+      ...qs.filter(q=>!q.answer).map(q=>questionCard(t,q,false)),
+      ...offs.filter(o=>(o.state||"open")==="open").map(o=>offerCard(t,o,false)),
+      ...qs.filter(q=>q.answer).map(q=>questionCard(t,q,false)),
+      ...offs.filter(o=>(o.state||"open")!=="open").map(o=>offerCard(t,o,false)),
+      linksOf(t).length?h("div",{class:"d-row files"},linksOf(t).map(l=>h("a",{class:"lnk"+(linkType(l)==="file"?" file":""),href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
       log.length?h("div",{class:"src"},log.map(e=>`${fmtDate((e.at||"").slice(0,10))} · ${e.text||""}`).join("   |   ")):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"סטטוס"),...["active","waiting_me","waiting_other","paused"].map(s=>h("button",{class:"pill",type:"button","aria-pressed":t.status===s?"true":"false",onclick:()=>patch(t,{status:s})},STATUS[s]))):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"תזכורת"),dateInp,h("button",{class:"pill",type:"button",onclick:()=>snooze(t,1)},"מחר"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,7)},"+שבוע"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,30)},"+חודש"),t.next_date?h("button",{class:"pill",type:"button",onclick:()=>patch(t,{next_date:""},"התאריך הוסר")},"בלי תאריך"):null):null,
@@ -346,7 +435,7 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
     $("list").replaceChildren(...(g.length?g:[h("div",{class:"empty"},topics.length?"אין משימות בסינון הזה.":"עוד אין משימות. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-Side Quests״.")]));
   }
   function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString()},"בוצע ✓  (נמצא ב״בוצעו״)");}
-  function renderAll(){renderStats();renderViews();renderFilters();renderStrip();renderList();}
+  function renderAll(){renderStats();renderInbox();renderViews();renderFilters();renderStrip();renderList();}
 
   async function patch(t,fields,msg){if(!db)return;try{await db.collection("topics").doc(t.id).update({...fields,updated_at:new Date().toISOString()});if(msg)toast(msg);}catch(e){fail(e);}}
   function snooze(t,n){const base=n===1?todayISO():(t.next_date&&daysUntil(t.next_date)>0?t.next_date:todayISO());patch(t,{next_date:addDays(base,n)},n===1?"עד מחר":n===7?"נדחה בשבוע":"נדחה בחודש");}
