@@ -175,13 +175,28 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
 .inbox .ai-t{font-size:12.5px;font-weight:700;color:var(--k-research);cursor:pointer}
 .files .lnk.file{border-style:dashed}
 @media (max-width:620px){.r-wait{white-space:normal}}
+/* simple mode */
+[hidden]{display:none!important}
+.r-wait{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;white-space:normal!important}
+.mapband{height:clamp(96px,18vw,170px)}
+.ai{padding:10px 12px;gap:6px;border-inline-start-width:3px}
+.ai .opts{flex-direction:row;flex-wrap:wrap}
+.opt{padding:6px 12px;border-radius:999px;font-size:14px}
+.opt.chat{border:0;padding:6px 4px;text-decoration:underline}
+.ai .ai-t{font-size:12.5px;color:var(--muted);font-weight:600}
+details.more{border-top:1px dashed var(--line);padding-top:6px}
+details.more summary{cursor:pointer;color:var(--muted);font-size:13.5px;font-weight:700;list-style:none}
+details.more summary::-webkit-details-marker{display:none}
+details.more[open]>summary{margin-bottom:8px}
+details.more>div{display:flex;flex-direction:column;gap:10px}
+.st{grid-template-columns:auto 1fr;font-size:14.5px}
 @media (max-width:620px){.brand h1{font-size:34px}.r-line{flex-wrap:wrap;row-gap:2px}.r-title{white-space:normal;flex-basis:100%}.r-next{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.ib{width:34px}}
 </style>
 </head>
 <body>
 
 <div class="mapband" role="img" aria-label="מפת הרפתקאות עם שביל בין בית, רכב, טיסה, רומא, כסף, מחשב, סרטים ולוח שנה">
-  <div class="inner gut"><div class="brand"><h1>Side <i>Quests</i></h1><p>כל מה שפתוח אצלי: בית, משפחה, סידורים, בירורים ופרויקטים</p></div></div>
+  <div class="inner gut"><div class="brand"><h1>Side <i>Quests</i></h1></div></div>
 </div>
 <div class="hero gut">
   <div class="inner">
@@ -195,18 +210,18 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
 <main class="gut"><div class="inner">
   <div id="notice" class="notice" hidden></div>
   <section aria-labelledby="hAsk" id="askSec" hidden>
-    <div class="sec-head"><h2 id="hAsk">מחכה להחלטה שלך</h2><span class="hint">הצעות ושאלות של Claude. כלום לא מתבצע בלי אישור שלך.</span></div>
+    <div class="sec-head"><h2 id="hAsk">מחכה להחלטה שלך</h2></div>
     <div class="inbox" id="inbox"></div>
   </section>
   <section aria-labelledby="hAll">
-    <div class="sec-head"><h2 id="hAll">המשימות</h2><span class="hint">לחיצה על שורה פותחת פרטים</span></div>
+    <div class="sec-head"><h2 id="hAll">המשימות</h2></div>
     <div class="views" id="views" role="tablist"></div>
-    <div class="filters" id="filters"></div>
+    <div class="filters" id="filters" hidden></div>
     <div id="list"><div class="empty">טוען…</div></div>
     
   </section>
   <section aria-labelledby="hProj">
-    <div class="sec-head"><h2 id="hProj">הפרויקטים שלי</h2><span class="hint">פתיחת האפליקציה, או המשך העבודה ב-Claude</span></div>
+    <div class="sec-head"><h2 id="hProj">הפרויקטים שלי</h2></div>
     <div class="pgrid" id="strip"></div>
   </section>
 </div></main>
@@ -265,23 +280,20 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
     const st=o.state||"open";
     return h("div",{class:"ai"+(st!=="open"?" answered":"")},
       withTitle?h("div",{class:"ai-t",onclick:()=>{openId=t.id;view="open";renderAll();setTimeout(()=>{const r=document.querySelector('[data-id="'+t.id+'"]');r&&r.scrollIntoView({block:"center"});},0);}},t.title):null,
-      h("div",{class:"ai-h"},"💡 הצעה של Claude"),
-      h("div",{class:"ai-q"},o.text),
-      o.detail?h("div",{class:"ai-d"},o.detail):null,
+      h("div",{class:"ai-q"},"💡 "+o.text),
       st==="open"&&canWrite?h("div",{class:"opts"},
-        h("button",{class:"opt yes",type:"button",onclick:()=>decideOffer(t,o,"approved")},"כן, תעשה את זה"),
+        h("button",{class:"opt yes",type:"button",onclick:()=>decideOffer(t,o,"approved")},"כן, תעשה"),
         h("button",{class:"opt",type:"button",onclick:()=>decideOffer(t,o,"declined")},"לא עכשיו"),
-        chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"רוצה לדבר על זה בשיחה"):null)
+        chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"לשיחה"):null)
       :h("div",{class:"ans"},st==="approved"?h("b",null,"אישרת. מחכה לביצוע של Claude"):st==="done"?h("b",null,"בוצע ✓"+(o.result?" · "+o.result:"")):"נדחה"));
   }
   function questionCard(t,q,withTitle){
     return h("div",{class:"ai"+(q.answer?" answered":"")},
       withTitle?h("div",{class:"ai-t",onclick:()=>{openId=t.id;view="open";renderAll();setTimeout(()=>{const r=document.querySelector('[data-id="'+t.id+'"]');r&&r.scrollIntoView({block:"center"});},0);}},t.title):null,
-      h("div",{class:"ai-h"},"❓ שאלה כדי להתקדם"),
-      h("div",{class:"ai-q"},q.q),
+      h("div",{class:"ai-q"},"❓ "+q.q),
       q.answer?h("div",{class:"ans"},"ענית: ",h("b",null,q.answer),q.done?" · Claude טיפל":" · מחכה ל-Claude",canWrite&&!q.done?h("button",{class:"pill",type:"button",style:"margin-inline-start:8px",onclick:()=>undoQ(t,q)},"שינוי"):null)
       :canWrite?h("div",{class:"opts"},...(Array.isArray(q.options)?q.options:[]).map(op=>h("button",{class:"opt",type:"button",onclick:()=>answerQ(t,q,String(op))},String(op))),
-        chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"אף אחת מאלה, נדבר בשיחה"):null):null);
+        chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"אחר, לשיחה"):null):null);
   }
   function renderInbox(){
     const cards=[];
@@ -296,9 +308,8 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
   function renderStats(){
     const open=topics.filter(isOpen),hot=open.filter(isHot),me=open.filter(t=>t.status==="waiting_me");
     $("stats").replaceChildren(
-      h("span",{class:"stat"+(hot.length?" hot":"")},h("b",null,hot.length),"לטיפול עכשיו"),
-      h("span",{class:"stat"},h("b",null,me.length),"מחכים לי"),
       h("span",{class:"stat"+(topics.some(t=>isOpen(t)&&openAsks(t))?" hot":"")},h("b",null,topics.filter(isOpen).reduce((n,t)=>n+openAsks(t),0)),"החלטות"),
+      h("span",{class:"stat"},h("b",null,me.length),"מחכים לי"),
       h("span",{class:"stat"},h("b",null,open.length),"פתוחים"));
   }
   let addingFor=null;
@@ -351,14 +362,13 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
           h("span",{class:"r-title"},t.title||"(ללא כותרת)"),
           t.status==="waiting_me"?h("span",{class:"tag me"},"מחכה לי"):t.status==="waiting_other"?h("span",{class:"tag other"},"מחכה לאחרים"):null,
           asks&&open?h("span",{class:"tag ask"},`${asks} להחלטה`):null,
-          cl&&open?h("span",{class:"tag cl"},"אצל Claude"):null,
+          cl&&open?h("span",{class:"tag cl"},"Claude מטפל"):null,
           t.next_date&&open?h("span",{class:"date"+dcls},relDate(t.next_date)):null),
         t.waiting_for&&open?h("div",{class:"r-wait"},h("b",null,t.status==="waiting_me"?"מחכה לך: ":"ממתין ל: "),t.waiting_for):null,
-        t.next_step?h("div",{class:"r-next"},t.next_step):null),
+        !t.waiting_for&&t.next_step?h("div",{class:"r-next"},t.next_step):null),
       h("div",{class:"r-side"},
         chat?iconBtn("chat",ICON.chat,"פתח את השיחה ב-Claude",null,safeUrl(chat.url)):iconBtn("chat off",ICON.chat,"אין עדיין קישור לשיחה",()=>{openId=t.id;renderList();setTimeout(()=>{const i=document.getElementById("lnk-"+t.id);i&&i.focus();},0);}),
         page?iconBtn("page",ICON.page,page.label||"פתח דף",null,safeUrl(page.url)):null,
-        canWrite&&open?iconBtn("snz",ICON.snooze,"דחה בשבוע",()=>snooze(t,7)):null,
         canWrite&&open?iconBtn("done",ICON.done,"בוצע",()=>markDone(t)):null));
     if(openId===t.id)el.append(drawer(t));
     return el;
@@ -368,21 +378,22 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
     const linkInp=h("input",{id:"lnk-"+t.id,type:"url",placeholder:"הדבק קישור לשיחה או לדף","aria-label":"קישור חדש"});
     const dateInp=h("input",{id:"dt-"+t.id,type:"date",value:t.next_date||"","aria-label":"תאריך תזכורת",onchange:e=>patch(t,{next_date:e.target.value||""},"התאריך עודכן")});
     const addLink=()=>{const u=safeUrl(linkInp.value.trim());if(!u){toast("הקישור לא תקין");return;}const type=linkType({url:u});const label=type==="chat"?"שיחה":type==="page"?"דף":"קישור";patch(t,{links:[...linksOf(t),{label,url:u,type}]},"הקישור נוסף");};
-    const stRows=[["איפה זה עומד",t.stand],[t.status==="waiting_me"?"מחכה לך":"ממתין ל",t.waiting_for],["הצעד הבא",t.next_step],["תאריך",t.next_date?`${fmtDate(t.next_date)} (${relDate(t.next_date)})`:""]].filter(r=>r[1]);
+    const stRows=[["עומד",t.stand],["הצעד הבא",t.next_step],["תאריך",t.next_date?`${fmtDate(t.next_date)} (${relDate(t.next_date)})`:""]].filter(r=>r[1]);
     const qs=questionsOf(t), offs=offersOf(t);
     return h("div",{class:"drawer"},
       stRows.length?h("div",{class:"st"},...stRows.flatMap(r=>[h("span",{class:"lbl"},r[0]),h("div",null,r[1])])):null,
-      t.summary?h("p",null,t.summary):null,
       ...qs.filter(q=>!q.answer).map(q=>questionCard(t,q,false)),
       ...offs.filter(o=>(o.state||"open")==="open").map(o=>offerCard(t,o,false)),
+      linksOf(t).length?h("div",{class:"d-row files"},linksOf(t).map(l=>h("a",{class:"lnk"+(linkType(l)==="file"?" file":""),href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
+      h("details",{class:"more"},h("summary",null,"פרטים, היסטוריה ועריכה ▾"),h("div",null,
+      t.summary?h("p",null,t.summary):null,
       ...qs.filter(q=>q.answer).map(q=>questionCard(t,q,false)),
       ...offs.filter(o=>(o.state||"open")!=="open").map(o=>offerCard(t,o,false)),
-      linksOf(t).length?h("div",{class:"d-row files"},linksOf(t).map(l=>h("a",{class:"lnk"+(linkType(l)==="file"?" file":""),href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
       log.length?h("div",{class:"src"},log.map(e=>`${fmtDate((e.at||"").slice(0,10))} · ${e.text||""}`).join("   |   ")):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"סטטוס"),...["active","waiting_me","waiting_other","paused"].map(s=>h("button",{class:"pill",type:"button","aria-pressed":t.status===s?"true":"false",onclick:()=>patch(t,{status:s})},STATUS[s]))):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"תזכורת"),dateInp,h("button",{class:"pill",type:"button",onclick:()=>snooze(t,1)},"מחר"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,7)},"+שבוע"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,30)},"+חודש"),t.next_date?h("button",{class:"pill",type:"button",onclick:()=>patch(t,{next_date:""},"התאריך הוסר")},"בלי תאריך"):null):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"קישור"),linkInp,h("button",{class:"pill",type:"button",onclick:addLink},"הוסף")):null,
-      shareId===t.id?sharePanel(t):null,
+      shareId===t.id?sharePanel(t):null)),
       h("div",{class:"d-row",style:"justify-content:space-between"},h("span",{class:"src"},`${KINDS[t.kind]||""}${t.area?" · "+t.area:""} · ${t.source||""}`),
         h("span",{class:"d-row"},
           h("button",{class:"pill",type:"button","aria-pressed":shareId===t.id?"true":"false",onclick:()=>{shareId=shareId===t.id?null:t.id;shareMode="task";renderList();}},"שיתוף"),
