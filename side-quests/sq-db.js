@@ -62,6 +62,8 @@
       (rows || []).forEach(function (r) { if (!(r.data && r.data._deleted)) next[r.collection + "/" + r.id] = r.data || {}; });
       var j = JSON.stringify(next);
       loaded = true;
+      window.SQ_LAST_REFRESH = Date.now();
+      try { window.dispatchEvent(new Event("sq-refreshed")); } catch (x) {}
       if (j !== lastJson) { lastJson = j; docs = next; emit(); }
     }).catch(function (e) {
       subs.forEach(function (s) { if (s.err) try { s.err(e); } catch (x) {} });
@@ -161,6 +163,7 @@
         }
       };
     },
+    refresh: function () { return refresh(); },
     doc: function (path) { var i = path.indexOf("/"); return docRef(path.slice(0, i), path.slice(i + 1)); }
   };
 
