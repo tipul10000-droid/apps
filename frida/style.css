@@ -148,3 +148,17 @@ dialog h3 { margin: 0 0 12px; }
 
 /* פס בטא (CFG.beta) */
 .beta { position: sticky; top: 0; z-index: 10; background: repeating-linear-gradient(-45deg, #fff4c2, #fff4c2 10px, #ffeaa0 10px, #ffeaa0 20px); color: #6b4e00; text-align: center; font-size: 13px; font-weight: 700; padding: 5px 8px; border-bottom: 1px solid #f0d66b; }
+
+/* מה הלקוח רואה */
+.showbox summary { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; }
+.showbox summary::-webkit-details-marker { display: none; }
+.showbox summary::after { content: "▾"; color: var(--muted); }
+.showbox[open] summary { margin-bottom: 8px; }
+.showbox[open] summary::after { content: "▴"; }
+.chk { display: flex; align-items: flex-start; gap: 12px; padding: 10px 2px; border-top: 1px solid var(--line); cursor: pointer; }
+.chk input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--brand); flex: none; }
+.chk span { display: flex; flex-direction: column; }
+.chk small { color: var(--muted); font-size: 13px; }
+.chk.all { border-top: 0; }
+dialog.preview { width: min(440px, 96vw); max-height: 90vh; background: var(--bg); }
+dialog.preview .pv { pointer-events: auto; }

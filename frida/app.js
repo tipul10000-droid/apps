@@ -42,6 +42,29 @@
   function genderLabel(g) { return g === "f" ? "אישה" : g === "m" ? "גבר" : ""; }
   function profileLine(c) { return [genderLabel(c.gender), c.birth_date ? "גיל " + age(c.birth_date) : "", c.height_cm ? c.height_cm + ' ס"מ' : ""].filter(Boolean).join(" · "); }
   var betaBar = CFG.beta ? '<div class="beta">גרסת בטא · סביבת בדיקות</div>' : "";
+  // מה הלקוח רואה (פרידה מחליטה פר לקוח). חסר = כן.
+  var SHOW_KEYS = [
+    ["card", "כרטיסייה", "מפגשים שנוצלו ותוקף"],
+    ["last", "משקל אחרון", "והשינוי מהשקילה הקודמת"],
+    ["progress", "התקדמות כוללת", "ירידה מההתחלה, יעד, הישגים ורצף"],
+    ["chart", "גרף משקל", "המשקל לאורך זמן"],
+    ["history", "היסטוריית שקילות", "טבלה של כל השקילות"]
+  ];
+  var SHOW_ALL = { card: true, last: true, progress: true, chart: true, history: true };
+  function showOf(c) { var o = {}, src = (c && c.show) || {}; SHOW_KEYS.forEach(function (k) { o[k[0]] = src[k[0]] !== false; }); return o; }
+  function showCount(sh) { return SHOW_KEYS.filter(function (k) { return sh[k[0]]; }).length; }
+  // אותו סינון כמו בשרת (frida_my_data), לתצוגה המקדימה של המנהלת
+  function asClientSees(d, sh) {
+    var c = Object.assign({}, d.client);
+    if (!sh.progress) { c.start_weight = null; c.goal_weight = null; }
+    var visits = d.visits.slice();
+    if (!(sh.progress || sh.chart || sh.history)) {
+      var keep = visits.filter(function (v) { return v.weight != null; }).slice(-2).map(function (v) { return v.id; });
+      visits = visits.map(function (v) { return Object.assign({}, v, { weight: sh.last && keep.indexOf(v.id) >= 0 ? v.weight : null }); });
+    }
+    return { client: c, group: d.group, cards: sh.card ? d.cards : [], visits: visits, show: sh };
+  }
+
   function phoneFmt(p) { return p && p.length === 10 ? p.slice(0, 3) + "-" + p.slice(3, 6) + "-" + p.slice(6) : (p || ""); }
 
   var toastT;
@@ -198,39 +221,46 @@
   }
 
   // ---------- תצוגת התקדמות (משותפת ללקוח ולמנהלת) ----------
-  function progressHtml(data, forAdmin) {
+  function progressHtml(data, forAdmin, show) {
+    show = show || SHOW_ALL;
     var c = data.client, st = stats(c, data.visits), card = activeCard(data.cards);
-    var out = "";
+    var out = "", anyW = show.progress || show.chart || show.last;
     if (st.pts.length < 2) {
-      out += '<div class="card hero">' + (st.current != null ? '<div class="big">' + kg(st.current) + ' <small>ק"ג</small></div><div class="lbl">משקל התחלה</div>' : "") +
-        '<div class="sub" style="margin-top:6px">' + (forAdmin ? "ההתקדמות תופיע אחרי השקילה הבאה" : "ההתקדמות שלך תופיע כאן אחרי השקילה הבאה. בהצלחה!") + "</div></div>";
+      if (anyW) out += '<div class="card hero">' + (st.current != null ? '<div class="big">' + kg(st.current) + ' <small>ק"ג</small></div><div class="lbl">' + (show.progress ? "משקל התחלה" : "משקל אחרון") + "</div>" : "") +
+        (show.progress || show.chart ? '<div class="sub" style="margin-top:6px">' + (forAdmin ? "ההתקדמות תופיע אחרי השקילה הבאה" : "ההתקדמות שלך תופיע כאן אחרי השקילה הבאה. בהצלחה!") + "</div>" : "") + "</div>";
     } else {
       var lost = -st.total;
       var big = Math.abs(st.total) < 0.05 ? "0.0" : kg(Math.abs(st.total));
       var verb = lost > 0.05 ? (forAdmin ? "ירידה כוללת" : "ירדת עד עכשיו") : lost < -0.05 ? (forAdmin ? "עלייה כוללת" : "עלית מאז ההתחלה") : "יציבות מאז ההתחלה";
-      out += '<div class="card hero"><div class="big">' + big + ' <small>ק"ג</small></div><div class="lbl">' + verb + "</div>";
-      if (st.pts.length > 1) out += '<div class="sub" style="margin-top:4px">' + Math.abs(st.pct).toFixed(1) + "% ממשקל ההתחלה · מאז " + fmtD(st.pts[0].d) + "</div>";
-      out += "</div>";
+      if (show.progress) {
+        out += '<div class="card hero"><div class="big">' + big + ' <small>ק"ג</small></div><div class="lbl">' + verb + "</div>";
+        if (st.pts.length > 1) out += '<div class="sub" style="margin-top:4px">' + Math.abs(st.pct).toFixed(1) + "% ממשקל ההתחלה · מאז " + fmtD(st.pts[0].d) + "</div>";
+        out += "</div>";
+      }
 
-      out += '<div class="card"><h2>' + (forAdmin ? "משקל לאורך זמן" : "המשקל שלי לאורך זמן") + "</h2>" + chartSvg(st) + "</div>";
+      if (show.chart) out += '<div class="card"><h2>' + (forAdmin ? "משקל לאורך זמן" : "המשקל שלי לאורך זמן") + "</h2>" + chartSvg(st) + "</div>";
 
-      out += '<div class="tiles">';
-      out += tile(kg(st.current), 'משקל נוכחי (ק"ג)');
-      out += tile(st.lastChange == null ? "–" : signed(st.lastChange), "שינוי מהשקילה הקודמת");
-      out += tile(kg(st.start), "משקל התחלה");
-      out += tile(kg(st.min), "המשקל הנמוך ביותר");
-      if (st.perWeek != null) out += tile(signed(st.perWeek), 'קצב ממוצע לשבוע (ק"ג)');
-      out += tile(st.streak + (st.streak === 1 ? " שבוע" : " שבועות"), "רצף הגעה");
-      out += tile(String(st.visits), "מפגשים עד היום");
-      out += "</div>";
+      var tl = "";
+      if (show.last) {
+        tl += tile(kg(st.current), 'משקל נוכחי (ק"ג)');
+        tl += tile(st.lastChange == null ? "–" : signed(st.lastChange), "שינוי מהשקילה הקודמת");
+      }
+      if (show.progress) {
+        tl += tile(kg(st.start), "משקל התחלה");
+        tl += tile(kg(st.min), "המשקל הנמוך ביותר");
+        if (st.perWeek != null) tl += tile(signed(st.perWeek), 'קצב ממוצע לשבוע (ק"ג)');
+        tl += tile(st.streak + (st.streak === 1 ? " שבוע" : " שבועות"), "רצף הגעה");
+        tl += tile(String(st.visits), "מפגשים עד היום");
+      }
+      if (tl) out += '<div class="tiles">' + tl + "</div>";
 
-      if (st.goal != null) {
+      if (show.progress && st.goal != null) {
         out += '<div class="card"><div class="row between"><h2 style="margin:0">היעד: ' + kg(st.goal) + ' ק"ג</h2><span class="sub">' +
           (st.toGoal > 0 ? "נשארו " + kg(st.toGoal) + ' ק"ג' : "הגעת ליעד! 🎉") + "</span></div>" +
           (st.goalPct != null ? '<div class="bar" style="margin-top:12px"><i style="width:' + st.goalPct.toFixed(0) + '%"></i></div>' : "") + "</div>";
       }
 
-      var ms = milestones(st);
+      var ms = show.progress ? milestones(st) : [];
       if (ms.length) {
         out += '<div class="card"><h2>הישגים</h2><div class="badges">' + ms.map(function (m) {
           return '<span class="badge' + (m.on ? "" : " off") + '">' + (m.on ? "🏅 " : "") + h(m.t) + "</span>";
@@ -238,7 +268,8 @@
       }
     }
 
-    out += cardHtml(card, forAdmin);
+    if (show.card) out += cardHtml(card, forAdmin);
+    if (!out && !forAdmin) out = '<div class="card hero"><div class="lbl">נתראה במפגש הבא 💪</div><div class="sub" style="margin-top:6px">פרידה תעדכן אותך בהתקדמות שלך</div></div>';
     return out;
   }
   function tile(v, k) { return '<div class="tile"><div class="v' + (/^[\d.+\u2212\u2013-]+$/.test(v) ? " n" : "") + '">' + h(v) + '</div><div class="k">' + h(k) + "</div></div>"; }
@@ -342,7 +373,7 @@
       if (d.is_admin) { S.admin = true; lsSet(LS_ADMIN, "1"); location.hash = "#/today"; return; }
       var first = String(d.client.full_name).split(" ")[0];
       shell("שלום " + first, (d.group ? '<div class="sub" style="margin:-10px 0 14px">' + h(d.group.name) + " · " + h(groupLabel(d.group)) + "</div>" : "") +
-        progressHtml(d, false) + historyHtml(d, false), { right: logoutBtn });
+        progressHtml(d, false, d.show) + (!d.show || d.show.history ? historyHtml(d, false) : ""), { right: logoutBtn });
       bindChart(app);
     }).catch(failed);
   }
@@ -480,7 +511,7 @@
   }
   function clientItem(c) {
     var total = c.last_weight != null && c.start_weight != null ? num(c.last_weight) - num(c.start_weight) : null;
-    return '<a class="item" href="#/client/' + c.id + '"><span class="avatar">' + initials(c.full_name) + '</span><div class="grow"><div class="name">' + h(c.full_name) + "</div>" +
+    return '<a class="item" href="#/client/' + c.id + '"><span class="avatar">' + initials(c.full_name) + '</span><div class="grow"><div class="name">' + h(c.full_name) + (showCount(showOf(c)) < SHOW_KEYS.length ? ' <span class="tag warn" title="רואה מידע חלקי">👁 חלקי</span>' : "") + "</div>" +
       '<div class="meta">' + (c.last_weight != null ? kg(c.last_weight) + ' ק"ג ' : "") + deltaHtml(total) + (c.last_visit ? " · נשקלה " + fmtD(c.last_visit) : "") + "</div></div>" + cardTag(c.card) + "</a>";
   }
   function clientsTable(list) {
@@ -488,12 +519,44 @@
       list.map(function (c) {
         var total = c.last_weight != null && c.start_weight != null ? num(c.last_weight) - num(c.start_weight) : null;
         var g = groupById(c.group_id);
-        return '<tr class="click" data-href="#/client/' + c.id + '"><td>' + h(c.full_name) + "</td><td>" + h(g ? g.name : "–") + "</td><td>" + (genderLabel(c.gender) || "–") + '</td><td class="num">' + (c.birth_date ? age(c.birth_date) : "–") + '</td><td class="num">' + (c.height_cm || "–") + '</td><td class="num">' + kg(num(c.start_weight)) + '</td><td class="num">' + kg(num(c.last_weight)) +
+        return '<tr class="click" data-href="#/client/' + c.id + '"><td>' + h(c.full_name) + (showCount(showOf(c)) < SHOW_KEYS.length ? " 👁" : "") + "</td><td>" + h(g ? g.name : "–") + "</td><td>" + (genderLabel(c.gender) || "–") + '</td><td class="num">' + (c.birth_date ? age(c.birth_date) : "–") + '</td><td class="num">' + (c.height_cm || "–") + '</td><td class="num">' + kg(num(c.start_weight)) + '</td><td class="num">' + kg(num(c.last_weight)) +
           '</td><td class="num">' + deltaHtml(total) + "</td><td>" + (c.card ? (c.card.sessions_total - c.card.used) + "/" + c.card.sessions_total : "–") + "</td><td>" + (c.card ? fmtD(c.card.expires_at) : "–") + "</td><td>" + (c.last_visit ? fmtD(c.last_visit) : "–") + "</td></tr>";
       }).join("") + "</tbody></table></div>";
   }
 
   // מנהלת: כרטיס לקוח
+  function bindShow(c, d) {
+    var boxes = app.querySelectorAll("[data-show]"), all = app.querySelector("[data-show-all]"), tag = app.querySelector("[data-show-tag]");
+    function current() { var o = {}; boxes.forEach(function (b) { o[b.getAttribute("data-show")] = b.checked; }); return o; }
+    function paint() {
+      var n = showCount(current());
+      all.checked = n === SHOW_KEYS.length;
+      tag.className = "tag" + (n === SHOW_KEYS.length ? " good" : n ? " warn" : " bad");
+      tag.textContent = n === SHOW_KEYS.length ? "הכל" : n ? "חלקי" : "כלום";
+    }
+    function save() {
+      var o = current(), prev = c.show;
+      paint();
+      c.show = o;
+      adminApi("frida_admin_set_show", { p_client: c.id, p_show: o }).then(function () { toast("נשמר ✓"); S.ov = null; })
+        .catch(function (e) { c.show = prev; boxes.forEach(function (b) { b.checked = showOf(c)[b.getAttribute("data-show")]; }); paint(); toast(e.message); });
+    }
+    boxes.forEach(function (b) { b.addEventListener("change", save); });
+    all.addEventListener("change", function () { boxes.forEach(function (b) { b.checked = all.checked; }); save(); });
+    app.querySelector("[data-preview]").addEventListener("click", function () {
+      var sh = showOf(c), v = asClientSees(d, sh);
+      var dl = document.createElement("dialog");
+      dl.className = "preview";
+      dl.innerHTML = '<div class="row between" style="margin-bottom:10px"><h3 style="margin:0">ככה ' + (c.gender === "m" ? "הוא רואה" : "היא רואה") + '</h3><button class="btn plain" data-x aria-label="סגירה">✕</button></div>' +
+        '<div class="pv">' + progressHtml(v, false, sh) + (sh.history ? historyHtml(v, false) : "") + "</div>";
+      document.body.appendChild(dl);
+      dl.querySelector("[data-x]").addEventListener("click", function () { dl.close(); });
+      dl.addEventListener("close", function () { dl.remove(); });
+      dl.showModal();
+      bindChart(dl);
+    });
+  }
+
   function viewClient(id) {
     loading("כרטיס לקוח");
     Promise.all([adminApi("frida_admin_client", { p_client: id }), S.ov ? Promise.resolve(S.ov) : loadOverview()]).then(function (r) {
@@ -512,6 +575,15 @@
         '<div class="row" style="margin-top:14px"><a class="btn wa grow" style="text-align:center;text-decoration:none" target="_blank" rel="noopener" href="' + wa + '">שליחת לינק בוואטסאפ</a>' +
         '<a class="btn ghost" style="text-decoration:none" href="#/client-edit/' + c.id + '">עריכה</a></div></div>';
 
+      var sh = showOf(c), n = showCount(sh);
+      body += '<details class="card showbox"' + (n < SHOW_KEYS.length ? " open" : "") + '><summary><span class="grow"><b>מה ' + (c.gender === "m" ? "הוא רואה" : "היא רואה") + ' באפליקציה</b></span>' +
+        '<span class="tag' + (n === SHOW_KEYS.length ? " good" : n ? " warn" : " bad") + '" data-show-tag>' + (n === SHOW_KEYS.length ? "הכל" : n ? "חלקי" : "כלום") + "</span></summary>" +
+        '<label class="chk all"><input type="checkbox" data-show-all' + (n === SHOW_KEYS.length ? " checked" : "") + '><span><b>הכל</b></span></label>' +
+        SHOW_KEYS.map(function (k) {
+          return '<label class="chk"><input type="checkbox" data-show="' + k[0] + '"' + (sh[k[0]] ? " checked" : "") + '><span>' + k[1] + '<small>' + k[2] + "</small></span></label>";
+        }).join("") +
+        '<button class="btn ghost small block" style="margin-top:10px" data-preview>👁 תצוגה מקדימה: מה ' + (c.gender === "m" ? "הוא רואה" : "היא רואה") + "</button></details>";
+
       body += '<div class="row" style="margin-bottom:12px"><button class="btn ghost grow" data-add-w>+ שקילה</button><button class="btn ghost grow" data-add-card>+ כרטיסייה</button></div>';
       body += progressHtml(d, true);
 
@@ -526,6 +598,7 @@
       shell(c.full_name, body, { back: "#/clients" });
       bindChart(app);
 
+      bindShow(c, d);
       app.querySelector("[data-add-w]").addEventListener("click", function () { weighDialog(c); });
       app.querySelector("[data-add-card]").addEventListener("click", function () { cardDialog(c, null); });
       app.querySelectorAll("[data-edit-card]").forEach(function (b) { b.addEventListener("click", function () { cardDialog(c, d.cards.find(function (k) { return String(k.id) === b.getAttribute("data-edit-card"); })); }); });
