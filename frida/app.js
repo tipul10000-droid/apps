@@ -155,22 +155,22 @@
     function y(w) { return T + (hi - w) / (hi - lo) * (H - T - B); }
     var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="גרף משקל לאורך זמן">';
     for (var v = lo; v <= hi + 0.001; v += step) {
-      s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="#e4e0d8" stroke-width="1"/>';
-      s += '<text x="' + (L - 6) + '" y="' + (y(v) + 4) + '" font-size="11" fill="#7d8887" text-anchor="end" direction="ltr">' + v + "</text>";
+      s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="#e6e5ef" stroke-width="1"/>';
+      s += '<text x="' + (L - 6) + '" y="' + (y(v) + 4) + '" font-size="11" fill="#8a7e83" text-anchor="end" direction="ltr">' + v + "</text>";
     }
     if (st.goal != null) {
-      s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(st.goal) + '" y2="' + y(st.goal) + '" stroke="#9a6200" stroke-width="1.5" stroke-dasharray="5 4"/>';
-      s += '<text x="' + (W - R) + '" y="' + (y(st.goal) - 5) + '" font-size="11" fill="#9a6200" text-anchor="start">יעד ' + kg(st.goal) + "</text>";
+      s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(st.goal) + '" y2="' + y(st.goal) + '" stroke="#9aa514" stroke-width="1.5" stroke-dasharray="5 4"/>';
+      s += '<text x="' + (W - R) + '" y="' + (y(st.goal) - 5) + '" font-size="11" fill="#6f7710" text-anchor="start">יעד ' + kg(st.goal) + "</text>";
     }
     var line = pts.map(function (p) { return x(p).toFixed(1) + "," + y(p.w).toFixed(1); }).join(" ");
     var area = x(pts[0]).toFixed(1) + "," + (H - B) + " " + line + " " + x(pts[pts.length - 1]).toFixed(1) + "," + (H - B);
-    s += '<polygon points="' + area + '" fill="#2f7d6f" opacity=".08"/>';
-    s += '<polyline points="' + line + '" fill="none" stroke="#2f7d6f" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    s += '<polygon points="' + area + '" fill="#dcdff0" opacity=".55"/>';
+    s += '<polyline points="' + line + '" fill="none" stroke="#5e5257" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
     pts.forEach(function (p, i) {
-      s += '<circle cx="' + x(p) + '" cy="' + y(p.w) + '" r="4.5" fill="#2f7d6f" stroke="#fff" stroke-width="2" data-i="' + i + '"/>';
+      s += '<circle cx="' + x(p) + '" cy="' + y(p.w) + '" r="4.5" fill="#d93a4b" stroke="#fff" stroke-width="2" data-i="' + i + '"/>';
     });
-    s += '<text x="' + L + '" y="' + (H - 6) + '" font-size="11" fill="#7d8887" text-anchor="end">' + fmtD(pts[0].d) + "</text>";
-    s += '<text x="' + (W - R) + '" y="' + (H - 6) + '" font-size="11" fill="#7d8887" text-anchor="start">' + fmtD(pts[pts.length - 1].d) + "</text>";
+    s += '<text x="' + L + '" y="' + (H - 6) + '" font-size="11" fill="#8a7e83" text-anchor="end">' + fmtD(pts[0].d) + "</text>";
+    s += '<text x="' + (W - R) + '" y="' + (H - 6) + '" font-size="11" fill="#8a7e83" text-anchor="start">' + fmtD(pts[pts.length - 1].d) + "</text>";
     s += '<rect x="' + L + '" y="0" width="' + (W - L - R) + '" height="' + H + '" fill="transparent" class="hit"/>';
     return '<div class="chart" data-pts=\'' + h(JSON.stringify(pts.map(function (p) { return [x(p), y(p.w), p.d, p.w]; }))) + '\' data-w="' + W + '">' + s + '</svg><div class="tip"></div></div>';
   }
@@ -277,8 +277,8 @@
   function viewLogin() {
     app.innerHTML =
       '<form class="login" id="lf" autocomplete="on">' +
-      '<img class="logo" src="icon.svg" alt="">' +
-      "<h1>מעקב התקדמות</h1><p>הקבוצה של פרידה</p>" +
+      '<img class="logo" src="logo.png" alt="פרידה גבעון · תחושות בטן">' +
+      "<h1>מעקב ההתקדמות שלי</h1><p>כניסה עם הטלפון ו-3 הספרות האחרונות של ת״ז</p>" +
       '<label class="f"><span>מספר טלפון</span><input class="in" id="ph" type="tel" inputmode="numeric" autocomplete="username" placeholder="050-0000000" required></label>' +
       '<label class="f"><span>3 ספרות אחרונות של תעודת הזהות</span><input class="in pin" id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="current-password" required></label>' +
       '<div class="err" id="le"></div>' +
@@ -319,7 +319,7 @@
     }
     app.innerHTML = '<div class="wrap"><div class="topbar">' +
       (opts.back ? '<button class="back" data-back aria-label="חזרה">→</button>' : "") +
-      "<h1>" + h(title) + "</h1>" + (opts.right || "") + "</div>" + body + "</div>" + nav + (opts.fab || "");
+      (opts.back ? "" : '<img class="mark" src="mark.png" alt="">') + "<h1>" + h(title) + "</h1>" + (opts.right || "") + "</div>" + body + "</div>" + nav + (opts.fab || "");
     var b = app.querySelector("[data-back]");
     if (b) b.addEventListener("click", function () { history.length > 1 ? history.back() : (location.hash = opts.back); });
     var lo = app.querySelector("[data-logout]");
