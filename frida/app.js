@@ -630,7 +630,7 @@
   function weighDialog(c) {
     dialog("<h3>שקילה ל" + h(c.full_name) + "</h3>" +
       '<label class="f"><span>תאריך</span><input class="in" type="date" name="d" value="' + today() + '" required></label>' +
-      '<label class="f"><span>משקל (ק"ג)</span><input class="in" name="w" inputmode="decimal" required></label>' +
+      '<label class="f"><span>משקל (ק"ג)</span><input class="in" name="w" inputmode="decimal" required autofocus></label>' +
       '<label class="f"><span>הערה (לא חובה)</span><input class="in" name="n"></label>',
       function (fd, dl) {
         var w = Number(String(fd.w).replace(",", "."));
@@ -721,7 +721,7 @@
         var gs = ov.groups.filter(function (g) { return g.weekday === d; });
         if (!gs.length) continue;
         body += '<div class="section-title">יום ' + DAYS[d] + '</div><div class="list">' + gs.map(function (g) {
-          return '<a class="item" href="#/group/' + g.id + '"><span class="avatar">' + String(g.start_time).slice(0, 5) + '</span><div class="grow"><div class="name">' + h(g.name) + (g.active ? "" : ' <span class="tag bad">לא פעילה</span>') + "</div>" +
+          return '<a class="item" href="#/group/' + g.id + '"><span class="avatar time">' + String(g.start_time).slice(0, 5) + '</span><div class="grow"><div class="name">' + h(g.name) + (g.active ? "" : ' <span class="tag bad">לא פעילה</span>') + "</div>" +
             '<div class="meta">' + h(g.city) + (g.location ? " · " + h(g.location) : "") + "</div></div><span class=\"tag\">" + (count[g.id] || 0) + " לקוחות</span></a>";
         }).join("") + "</div>";
       }
