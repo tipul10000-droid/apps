@@ -30,6 +30,7 @@ create table if not exists frida_clients (
   birth_date   date,
   gender       text check (gender in ('f', 'm')),
   is_test      boolean not null default false,  -- נתוני בדיקה (יוסרו בהשקה)
+  show         jsonb not null default '{}',     -- מה הלקוח רואה: card/last/progress/chart/history (חסר = כן)
   opened_at    date not null default current_date,
   notes        text,
   is_admin     boolean not null default false,
@@ -78,6 +79,8 @@ create table if not exists frida_login_attempts (
   fails         int not null default 0,
   locked_until  timestamptz
 );
+
+alter table frida_clients add column if not exists show jsonb not null default '{}';
 
 alter table frida_groups         enable row level security;
 alter table frida_clients        enable row level security;
@@ -156,7 +159,7 @@ language sql stable security definer set search_path = '' as $$
       'id', c.id, 'full_name', c.full_name, 'phone', c.phone, 'group_id', c.group_id,
       'start_weight', c.start_weight, 'goal_weight', c.goal_weight, 'height_cm', c.height_cm,
       'birth_date', c.birth_date, 'gender', c.gender, 'is_test', c.is_test,
-      'opened_at', c.opened_at, 'notes', c.notes, 'active', c.active),
+      'opened_at', c.opened_at, 'notes', c.notes, 'active', c.active, 'show', c.show),
     'group', (select to_jsonb(g) - 'created_at' from public.frida_groups g where g.id = c.group_id),
     'cards', public.frida_cards_json(c.id),
     'visits', coalesce((select jsonb_agg(jsonb_build_object(
@@ -223,10 +226,42 @@ $$;
 -- הלקוח רואה רק את עצמו
 create or replace function frida_my_data(p_token text) returns jsonb
 language plpgsql stable security definer set search_path = '' as $$
-declare c public.frida_clients;
+declare
+  c public.frida_clients; d jsonb; sh jsonb;
+  s_card boolean; s_last boolean; s_prog boolean; s_chart boolean; s_hist boolean;
+  keep bigint[];
 begin
   c := public.frida_session_client(p_token);
-  return public.frida_client_json(c.id) || jsonb_build_object('is_admin', c.is_admin);
+  d := public.frida_client_json(c.id);
+  if c.is_admin then return d || jsonb_build_object('is_admin', true); end if;
+
+  -- פרידה מחליטה מה כל לקוח רואה. הסינון כאן בשרת, לא רק בתצוגה.
+  sh := coalesce(c.show, '{}');
+  s_card  := coalesce((sh->>'card')::boolean, true);
+  s_last  := coalesce((sh->>'last')::boolean, true);
+  s_prog  := coalesce((sh->>'progress')::boolean, true);
+  s_chart := coalesce((sh->>'chart')::boolean, true);
+  s_hist  := coalesce((sh->>'history')::boolean, true);
+
+  d := jsonb_set(d, '{client}', (d->'client') - 'notes' - 'is_test');
+  if not s_prog then
+    d := jsonb_set(d, '{client}', (d->'client') - 'start_weight' - 'goal_weight');
+  end if;
+  if not s_card then d := jsonb_set(d, '{cards}', '[]'); end if;
+  if not (s_prog or s_chart or s_hist) then
+    -- רק משקל אחרון: שתי השקילות האחרונות (לשינוי). אחרת בלי משקלים בכלל.
+    keep := case when s_last then array(select v.id from public.frida_visits v
+              where v.client_id = c.id and v.deleted_at is null and v.weight is not null
+              order by v.visit_date desc limit 2) else '{}' end;
+    d := jsonb_set(d, '{visits}', coalesce((select jsonb_agg(
+           case when (x->>'id')::bigint = any(keep) then x else jsonb_set(x, '{weight}', 'null') end
+           order by x->>'visit_date')
+         from jsonb_array_elements(d->'visits') x), '[]'));
+  end if;
+  d := jsonb_set(d, '{visits}', coalesce((select jsonb_agg(x - 'note' order by x->>'visit_date')
+         from jsonb_array_elements(d->'visits') x), '[]'));
+  return d || jsonb_build_object('is_admin', false, 'show', jsonb_build_object(
+    'card', s_card, 'last', s_last, 'progress', s_prog, 'chart', s_chart, 'history', s_hist));
 end $$;
 
 -- ===== API מנהלת =====
@@ -244,7 +279,7 @@ begin
         'id', c.id, 'full_name', c.full_name, 'phone', c.phone, 'group_id', c.group_id,
         'start_weight', c.start_weight, 'goal_weight', c.goal_weight, 'opened_at', c.opened_at,
         'active', c.active, 'birth_date', c.birth_date, 'gender', c.gender, 'height_cm', c.height_cm,
-        'is_test', c.is_test,
+        'is_test', c.is_test, 'show', c.show,
         'last_visit', lv.visit_date, 'last_weight', lw.weight, 'visits_count', vc.n,
         'card', (select jsonb_build_object('id', pc.id, 'sessions_total', pc.sessions_total,
                    'expires_at', pc.expires_at,
@@ -335,6 +370,19 @@ begin
     if pin <> '' then update public.frida_sessions set expires_at = now() where client_id = cid and expires_at > now(); end if;
   end if;
   return cid;
+end $$;
+
+-- מה הלקוח רואה (פר לקוח)
+create or replace function frida_admin_set_show(p_token text, p_client uuid, p_show jsonb) returns jsonb
+language plpgsql volatile security definer set search_path = '' as $$
+declare sh jsonb;
+begin
+  perform public.frida_require_admin(p_token);
+  select jsonb_object_agg(k, coalesce((p_show->>k)::boolean, true)) into sh
+  from unnest(array['card', 'last', 'progress', 'chart', 'history']) k;
+  update public.frida_clients set show = sh where id = p_client and not is_admin;
+  if not found then raise exception 'not_found' using errcode = 'P0002'; end if;
+  return sh;
 end $$;
 
 create or replace function frida_admin_save_group(p_token text, p jsonb) returns bigint
@@ -430,6 +478,7 @@ end $$;
 grant execute on function
   frida_login(text, text), frida_logout(text), frida_my_data(text),
   frida_admin_overview(text, date), frida_admin_client(text, uuid), frida_admin_save_client(text, jsonb),
+  frida_admin_set_show(text, uuid, jsonb),
   frida_admin_save_group(text, jsonb), frida_admin_save_card(text, jsonb), frida_admin_delete_card(text, bigint),
   frida_admin_save_visit(text, jsonb), frida_admin_delete_visit(text, bigint)
 to anon, authenticated;

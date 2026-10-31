@@ -30,7 +30,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 a { color: var(--brand); }
 .loading { padding: 80px 16px; text-align: center; color: var(--muted); }
 
-.wrap { max-width: 560px; margin: 0 auto; padding: 16px 16px 96px; }
+.wrap { max-width: 560px; margin: 0 auto; padding: 16px 16px 150px; }
 .topbar { display: flex; align-items: center; gap: 10px; margin: 4px 0 16px; }
 .topbar h1 { font-family: "Fredoka", "Heebo", sans-serif; font-size: 24px; margin: 0; flex: 1; font-weight: 700; }
 .topbar .mark { width: 30px; height: auto; }
@@ -148,3 +148,26 @@ dialog h3 { margin: 0 0 12px; }
 
 /* פס בטא (CFG.beta) */
 .beta { position: sticky; top: 0; z-index: 10; background: repeating-linear-gradient(-45deg, #fff4c2, #fff4c2 10px, #ffeaa0 10px, #ffeaa0 20px); color: #6b4e00; text-align: center; font-size: 13px; font-weight: 700; padding: 5px 8px; border-bottom: 1px solid #f0d66b; }
+
+/* מה הלקוח רואה */
+.showbox summary { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; }
+.showbox summary::-webkit-details-marker { display: none; }
+.showbox summary::after { content: "▾"; color: var(--muted); }
+.showbox[open] summary { margin-bottom: 8px; }
+.showbox[open] summary::after { content: "▴"; }
+.chk { display: flex; align-items: flex-start; gap: 12px; padding: 10px 2px; border-top: 1px solid var(--line); cursor: pointer; }
+.chk input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--brand); flex: none; }
+.chk span { display: flex; flex-direction: column; }
+.chk small { color: var(--muted); font-size: 13px; }
+.chk.all { border-top: 0; }
+dialog.preview { width: min(440px, 96vw); max-height: 90vh; background: var(--bg); }
+dialog.preview .pv { pointer-events: auto; }
+
+/* שדות תאריך: לא חורגים מהעמודה (גם באייפון) */
+.grid2 > * { min-width: 0; }
+input.in, select.in { min-width: 0; max-width: 100%; }
+input[type=date].in { -webkit-appearance: none; appearance: none; display: block; text-align: right; line-height: 1.2; }
+input[type=date].in::-webkit-date-and-time-value { text-align: right; }
+.err:empty { min-height: 0; margin: 0 0 8px; }
+.avatar.time { width: 52px; height: 52px; font-size: 14px; font-family: "Fredoka", "Heebo", sans-serif; font-weight: 600; }
+a.btn { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
