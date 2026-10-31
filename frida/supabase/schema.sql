@@ -14,6 +14,7 @@ create table if not exists frida_groups (
   city        text not null,
   location    text,
   active      boolean not null default true,
+  is_test     boolean not null default false,   -- נתוני בדיקה (יוסרו בהשקה)
   created_at  timestamptz not null default now()
 );
 
@@ -26,6 +27,9 @@ create table if not exists frida_clients (
   start_weight numeric(5,1),
   goal_weight  numeric(5,1),
   height_cm    smallint,
+  birth_date   date,
+  gender       text check (gender in ('f', 'm')),
+  is_test      boolean not null default false,  -- נתוני בדיקה (יוסרו בהשקה)
   opened_at    date not null default current_date,
   notes        text,
   is_admin     boolean not null default false,
@@ -151,6 +155,7 @@ language sql stable security definer set search_path = '' as $$
     'client', jsonb_build_object(
       'id', c.id, 'full_name', c.full_name, 'phone', c.phone, 'group_id', c.group_id,
       'start_weight', c.start_weight, 'goal_weight', c.goal_weight, 'height_cm', c.height_cm,
+      'birth_date', c.birth_date, 'gender', c.gender, 'is_test', c.is_test,
       'opened_at', c.opened_at, 'notes', c.notes, 'active', c.active),
     'group', (select to_jsonb(g) - 'created_at' from public.frida_groups g where g.id = c.group_id),
     'cards', public.frida_cards_json(c.id),
@@ -238,7 +243,8 @@ begin
       select jsonb_build_object(
         'id', c.id, 'full_name', c.full_name, 'phone', c.phone, 'group_id', c.group_id,
         'start_weight', c.start_weight, 'goal_weight', c.goal_weight, 'opened_at', c.opened_at,
-        'active', c.active,
+        'active', c.active, 'birth_date', c.birth_date, 'gender', c.gender, 'height_cm', c.height_cm,
+        'is_test', c.is_test,
         'last_visit', lv.visit_date, 'last_weight', lw.weight, 'visits_count', vc.n,
         'card', (select jsonb_build_object('id', pc.id, 'sessions_total', pc.sessions_total,
                    'expires_at', pc.expires_at,
@@ -278,7 +284,9 @@ declare
   pin text := regexp_replace(coalesce(p->>'pin', ''), '\D', '', 'g');
 begin
   perform public.frida_require_admin(p_token);
-  if length(ph) <> 10 or ph not like '05%' then
+  -- טלפון קיים שלא השתנה (למשל משתמש בדיקה) לא נבדק שוב
+  if (length(ph) <> 10 or ph not like '05%')
+     and not exists (select 1 from public.frida_clients where id = cid and phone = ph) then
     raise exception 'bad_phone' using errcode = '22023';
   end if;
   if pin <> '' and length(pin) <> 3 then
@@ -294,10 +302,11 @@ begin
   if cid is null then
     if pin = '' then raise exception 'bad_pin' using errcode = '22023'; end if;
     insert into public.frida_clients (full_name, phone, pin_hash, group_id, start_weight, goal_weight,
-                                height_cm, opened_at, notes)
+                                height_cm, birth_date, gender, opened_at, notes)
     values (trim(p->>'full_name'), ph, extensions.crypt(pin, extensions.gen_salt('bf')),
             nullif(p->>'group_id', '')::bigint, nullif(p->>'start_weight', '')::numeric,
             nullif(p->>'goal_weight', '')::numeric, nullif(p->>'height_cm', '')::smallint,
+            nullif(p->>'birth_date', '')::date, nullif(p->>'gender', ''),
             coalesce(nullif(p->>'opened_at', '')::date, current_date), nullif(p->>'notes', ''))
     returning id into cid;
 
@@ -316,6 +325,8 @@ begin
       start_weight = nullif(p->>'start_weight', '')::numeric,
       goal_weight = nullif(p->>'goal_weight', '')::numeric,
       height_cm = nullif(p->>'height_cm', '')::smallint,
+      birth_date = nullif(p->>'birth_date', '')::date,
+      gender = nullif(p->>'gender', ''),
       opened_at = coalesce(nullif(p->>'opened_at', '')::date, opened_at),
       notes = nullif(p->>'notes', ''),
       active = coalesce((p->>'active')::boolean, active)
