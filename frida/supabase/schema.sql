@@ -173,7 +173,8 @@ declare
   c public.frida_clients;
   tok text;
 begin
-  if length(ph) < 9 or length(pin) <> 3 then
+  -- לקוחות אמיתיים: טלפון 10 ספרות + 3 ספרות. משתמשי בדיקה זמניים: ספרה אחת.
+  if length(ph) < 1 or length(pin) not between 1 and 3 then
     raise exception 'bad_input' using errcode = '22023';
   end if;
 
