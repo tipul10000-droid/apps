@@ -38,6 +38,10 @@
   function initials(n) { var p = String(n || "").trim().split(/\s+/); return h((p[0] || "")[0] || "") + h(p.length > 1 ? (p[p.length - 1][0] || "") : ""); }
   function groupLabel(g) { return g ? "יום " + DAYS[g.weekday] + " " + String(g.start_time).slice(0, 5) + " · " + g.city : "בלי קבוצה"; }
   function groupById(id) { return S.ov && S.ov.groups.find(function (g) { return g.id === id; }); }
+  function age(b) { if (!b) return null; var d = parseD(b), t = new Date(), a = t.getFullYear() - d.getFullYear(); if (t.getMonth() < d.getMonth() || (t.getMonth() === d.getMonth() && t.getDate() < d.getDate())) a--; return a; }
+  function genderLabel(g) { return g === "f" ? "אישה" : g === "m" ? "גבר" : ""; }
+  function profileLine(c) { return [genderLabel(c.gender), c.birth_date ? "גיל " + age(c.birth_date) : "", c.height_cm ? c.height_cm + ' ס"מ' : ""].filter(Boolean).join(" · "); }
+  var betaBar = CFG.beta ? '<div class="beta">גרסת בטא · סביבת בדיקות</div>' : "";
   function phoneFmt(p) { return p && p.length === 10 ? p.slice(0, 3) + "-" + p.slice(3, 6) + "-" + p.slice(6) : (p || ""); }
 
   var toastT;
@@ -276,7 +280,7 @@
   // ---------- מסכים ----------
   function viewLogin() {
     app.innerHTML =
-      '<form class="login" id="lf" autocomplete="on">' +
+      betaBar + '<form class="login" id="lf" autocomplete="on">' +
       '<img class="logo" src="logo.png" alt="פרידה גבעון · תחושות בטן">' +
       "<h1>מעקב ההתקדמות שלי</h1><p>כניסה עם הטלפון ו-3 הספרות האחרונות של ת״ז</p>" +
       '<label class="f"><span>מספר טלפון</span><input class="in" id="ph" type="tel" inputmode="numeric" autocomplete="username" placeholder="050-0000000" required></label>' +
@@ -317,7 +321,7 @@
         navA("#/clients", "👥", "לקוחות", /^#\/client/.test(r)) +
         navA("#/groups", "📅", "קבוצות", /^#\/group/.test(r)) + "</nav>";
     }
-    app.innerHTML = '<div class="wrap"><div class="topbar">' +
+    app.innerHTML = betaBar + '<div class="wrap"><div class="topbar">' +
       (opts.back ? '<button class="back" data-back aria-label="חזרה">→</button>' : "") +
       (opts.back ? "" : '<img class="mark" src="mark.png" alt="">') + "<h1>" + h(title) + "</h1>" + (opts.right || "") + "</div>" + body + "</div>" + nav + (opts.fab || "");
     var b = app.querySelector("[data-back]");
@@ -480,11 +484,11 @@
       '<div class="meta">' + (c.last_weight != null ? kg(c.last_weight) + ' ק"ג ' : "") + deltaHtml(total) + (c.last_visit ? " · נשקלה " + fmtD(c.last_visit) : "") + "</div></div>" + cardTag(c.card) + "</a>";
   }
   function clientsTable(list) {
-    return '<div class="tablewrap"><table class="t"><thead><tr><th>שם</th><th>קבוצה</th><th class="num">התחלה</th><th class="num">אחרון</th><th class="num">שינוי</th><th>כרטיסייה</th><th>תוקף</th><th>שקילה אחרונה</th></tr></thead><tbody>' +
+    return '<div class="tablewrap"><table class="t"><thead><tr><th>שם</th><th>קבוצה</th><th>מין</th><th class="num">גיל</th><th class="num">גובה</th><th class="num">התחלה</th><th class="num">אחרון</th><th class="num">שינוי</th><th>כרטיסייה</th><th>תוקף</th><th>שקילה אחרונה</th></tr></thead><tbody>' +
       list.map(function (c) {
         var total = c.last_weight != null && c.start_weight != null ? num(c.last_weight) - num(c.start_weight) : null;
         var g = groupById(c.group_id);
-        return '<tr class="click" data-href="#/client/' + c.id + '"><td>' + h(c.full_name) + "</td><td>" + h(g ? g.name : "–") + '</td><td class="num">' + kg(num(c.start_weight)) + '</td><td class="num">' + kg(num(c.last_weight)) +
+        return '<tr class="click" data-href="#/client/' + c.id + '"><td>' + h(c.full_name) + "</td><td>" + h(g ? g.name : "–") + "</td><td>" + (genderLabel(c.gender) || "–") + '</td><td class="num">' + (c.birth_date ? age(c.birth_date) : "–") + '</td><td class="num">' + (c.height_cm || "–") + '</td><td class="num">' + kg(num(c.start_weight)) + '</td><td class="num">' + kg(num(c.last_weight)) +
           '</td><td class="num">' + deltaHtml(total) + "</td><td>" + (c.card ? (c.card.sessions_total - c.card.used) + "/" + c.card.sessions_total : "–") + "</td><td>" + (c.card ? fmtD(c.card.expires_at) : "–") + "</td><td>" + (c.last_visit ? fmtD(c.last_visit) : "–") + "</td></tr>";
       }).join("") + "</tbody></table></div>";
   }
@@ -502,6 +506,7 @@
       var body = '<div class="card"><div class="row"><span class="avatar" style="width:52px;height:52px;font-size:18px">' + initials(c.full_name) + '</span><div class="grow">' +
         '<div class="sub"><a href="tel:' + c.phone + '" dir="ltr">' + phoneFmt(c.phone) + "</a></div>" +
         '<div class="sub">' + h(g ? g.name + " · " + groupLabel(g) : "בלי קבוצה") + "</div>" +
+        (profileLine(c) ? '<div class="sub">' + h(profileLine(c)) + "</div>" : "") +
         '<div class="sub">כרטיס נפתח ב-' + fmtD(c.opened_at) + (c.active ? "" : ' · <span class="tag bad">לא פעיל</span>') + "</div></div></div>" +
         (c.notes ? '<div class="sub" style="margin-top:10px;white-space:pre-wrap">' + h(c.notes) + "</div>" : "") +
         '<div class="row" style="margin-top:14px"><a class="btn wa grow" style="text-align:center;text-decoration:none" target="_blank" rel="noopener" href="' + wa + '">שליחת לינק בוואטסאפ</a>' +
@@ -600,7 +605,9 @@
         '<div class="grid2"><label class="f"><span>משקל התחלתי (ק"ג)</span><input class="in" name="start_weight" inputmode="decimal" value="' + (c.start_weight != null ? kg(num(c.start_weight)) : "") + '"></label>' +
         '<label class="f"><span>תאריך פתיחת כרטיס</span><input class="in" type="date" name="opened_at" value="' + h(t) + '"></label></div>' +
         '<div class="grid2"><label class="f"><span>משקל יעד (לא חובה)</span><input class="in" name="goal_weight" inputmode="decimal" value="' + (c.goal_weight != null ? kg(num(c.goal_weight)) : "") + '"></label>' +
-        '<input type="hidden" name="height_cm" value="' + (c.height_cm || "") + '"></div>';
+        '<label class="f"><span>גובה בס"מ</span><input class="in" name="height_cm" inputmode="numeric" value="' + (c.height_cm || "") + '"></label></div>' +
+        '<div class="grid2"><label class="f"><span>תאריך לידה</span><input class="in" type="date" name="birth_date" value="' + h(c.birth_date || "") + '"></label>' +
+        '<label class="f"><span>מין</span><select class="in" name="gender"><option value="">–</option><option value="f"' + (c.gender === "f" ? " selected" : "") + '>אישה</option><option value="m"' + (c.gender === "m" ? " selected" : "") + ">גבר</option></select></label></div>";
       if (!id) {
         body += '<div class="section-title" style="margin-top:4px">כרטיסייה ראשונה</div>' +
           '<div class="grid2"><label class="f"><span>מספר מפגשים</span><input class="in" name="card_sessions" inputmode="numeric" value="10"></label>' +
