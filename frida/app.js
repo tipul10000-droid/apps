@@ -288,7 +288,7 @@
       e.preventDefault();
       var btn = document.getElementById("lb"), err = document.getElementById("le");
       var ph = document.getElementById("ph").value, pin = document.getElementById("pin").value;
-      if (pin.replace(/\D/g, "").length !== 3) { err.textContent = "צריך 3 ספרות"; return; }
+      var pl = pin.replace(/\D/g, "").length; if (pl < 1 || pl > 3) { err.textContent = "צריך 3 ספרות"; return; }
       btn.disabled = true; err.textContent = "";
       api("frida_login", { p_phone: ph, p_pin: pin }).then(function (r) {
         btn.disabled = false;
