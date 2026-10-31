@@ -105,7 +105,6 @@
     var days = daysBetween(first.d, last.d);
     st.weeks = days / 7;
     st.perWeek = days >= 7 ? st.total / st.weeks : null;
-    if (client.height_cm) st.bmi = last.w / Math.pow(client.height_cm / 100, 2);
     if (client.goal_weight != null) {
       var g = num(client.goal_weight);
       st.goal = g; st.toGoal = last.w - g;
@@ -218,7 +217,6 @@
       out += tile(kg(st.min), "המשקל הנמוך ביותר");
       if (st.perWeek != null) out += tile(signed(st.perWeek), 'קצב ממוצע לשבוע (ק"ג)');
       out += tile(st.streak + (st.streak === 1 ? " שבוע" : " שבועות"), "רצף הגעה");
-      if (st.bmi) out += tile(st.bmi.toFixed(1), "BMI");
       out += tile(String(st.visits), "מפגשים עד היום");
       out += "</div>";
 
@@ -602,7 +600,7 @@
         '<div class="grid2"><label class="f"><span>משקל התחלתי (ק"ג)</span><input class="in" name="start_weight" inputmode="decimal" value="' + (c.start_weight != null ? kg(num(c.start_weight)) : "") + '"></label>' +
         '<label class="f"><span>תאריך פתיחת כרטיס</span><input class="in" type="date" name="opened_at" value="' + h(t) + '"></label></div>' +
         '<div class="grid2"><label class="f"><span>משקל יעד (לא חובה)</span><input class="in" name="goal_weight" inputmode="decimal" value="' + (c.goal_weight != null ? kg(num(c.goal_weight)) : "") + '"></label>' +
-        '<label class="f"><span>גובה בס"מ (לא חובה)</span><input class="in" name="height_cm" inputmode="numeric" value="' + (c.height_cm || "") + '"></label></div>';
+        '<input type="hidden" name="height_cm" value="' + (c.height_cm || "") + '"></div>';
       if (!id) {
         body += '<div class="section-title" style="margin-top:4px">כרטיסייה ראשונה</div>' +
           '<div class="grid2"><label class="f"><span>מספר מפגשים</span><input class="in" name="card_sessions" inputmode="numeric" value="10"></label>' +
