@@ -265,6 +265,23 @@ body.fun-on .tasks-only{display:none!important}
 .fi-t span{font-size:13px;color:var(--muted)}
 .spot{flex:none;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;background:var(--spot);color:#06210F;font-size:13px;font-weight:800;text-decoration:none;min-height:32px}
 .spot svg{width:14px;height:14px;fill:currentColor}
+.fc-rounds{display:flex;flex-direction:column;gap:8px}
+.round{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:0 12px}
+.round>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;font-weight:700}
+.round>summary::-webkit-details-marker{display:none}
+.round>summary::after{content:"▾";color:var(--muted);transition:transform .15s}
+.round[open]>summary::after{transform:rotate(180deg)}
+.round .rt{flex:1;min-width:0}
+.round .rn{font-size:12.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.round .rlink{margin-bottom:8px;align-self:flex-start;display:inline-flex}
+.fi-acts{display:flex;align-items:center;gap:4px;flex:none}
+.vote{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:16px;line-height:1;display:inline-flex;align-items:center;justify-content:center;filter:grayscale(1);opacity:.6}
+.vote:hover{opacity:1}
+.vote.on{filter:none;opacity:1}
+.vote.on.up{background:color-mix(in srgb,var(--spot) 22%,transparent);border-color:var(--spot)}
+.vote.on.down{background:var(--due-soft);border-color:var(--due)}
+.fc-items li.voted-down .fi-t{opacity:.55}
+@media (max-width:520px){.spot{width:34px;height:34px;min-height:0;padding:0;justify-content:center;font-size:0;gap:0}.spot svg{width:15px;height:15px}}
 .fcard.fh{background:#0E0E12;border-color:#0E0E12;border-top-color:#F5A300;color:#F4F1EA}
 .fh-logo{display:block;padding:6px 2px}
 .fh-logo img{display:block;width:100%;max-width:340px;height:auto}
@@ -593,9 +610,43 @@ body.fun-on .tasks-only{display:none!important}
     return h("article",{class:"fcard",style:"--fc:"+(t.color||FC[i%FC.length]),"data-id":t.id},
       h("div",{class:"fc-top"},h("span",{class:"fc-ic","aria-hidden":"true"},t.icon||"✨"),h("div",{class:"fc-h"},h("h3",null,t.title||""),t.stand?h("p",null,t.stand):null)),
       pages.length?h("div",{class:"fc-links"},pages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
-      items.length?h("ul",{class:"fc-items"},items.map(x=>{const u=safeUrl(x.url||"");return h("li",null,h("div",{class:"fi-t"},h("b",null,x.label),x.sub?h("span",null,x.sub):null),u?h("a",{class:"spot",href:u,target:"_blank",rel:"noopener","aria-label":(x.cta||"פתח")+": "+x.label,html:ICON.play},x.cta||"פתח"):null);})):null,
+      items.length?itemGroups(t,items):null,
       ...qs.map(q=>questionCard(t,q,false)),...offs.map(o=>offerCard(t,o,false)),
       contBtn(t,"cont"));
+  }
+  // items grouped by round (item.group → t.item_groups[{id,title,url,url_label,open}]), each round folds; 👍/👎 per item saved as item.vote
+  function voteItem(t,idx,v){
+    const all=Array.isArray(t.items)?t.items:[];const it=all[idx];if(!it)return;
+    const nv=it.vote===v?"":v;
+    const items=all.map((x,i)=>i===idx?{...x,vote:nv}:x);
+    patch(t,{items,log:logPush(t,(nv==="up"?"👍 ":nv==="down"?"👎 ":"בוטל דירוג: ")+it.label,new Date().toISOString())},nv==="up"?"אהבת 👍":nv==="down"?"לא בשבילך 👎":"הדירוג בוטל");
+  }
+  function itemRow(t,x,idx){
+    const u=safeUrl(x.url||"");
+    const vb=(v,ic,lbl)=>canWrite?h("button",{class:"vote"+(x.vote===v?" on "+v:""),type:"button","aria-pressed":x.vote===v?"true":"false","aria-label":lbl+": "+x.label,onclick:e=>{e.stopPropagation();voteItem(t,idx,v);}},ic):null;
+    return h("li",{class:x.vote?"voted-"+x.vote:null},
+      h("div",{class:"fi-t"},h("b",null,x.label),x.sub?h("span",null,x.sub):null),
+      h("div",{class:"fi-acts"},vb("up","👍","אהבתי"),vb("down","👎","לא אהבתי"),
+        u?h("a",{class:"spot",href:u,target:"_blank",rel:"noopener","aria-label":(x.cta||"פתח")+": "+x.label,html:ICON.play},x.cta||"פתח"):null));
+  }
+  let funFold={};
+  function itemGroups(t,items){
+    const all=Array.isArray(t.items)?t.items:[];
+    const defs=Array.isArray(t.item_groups)?t.item_groups:[];
+    const ids=[...defs.map(g=>g.id),...[...new Set(items.map(x=>x.group||""))].filter(g=>!defs.some(d=>d.id===g))];
+    if(ids.length<=1&&!defs.length)return h("ul",{class:"fc-items"},items.map(x=>itemRow(t,x,all.indexOf(x))));
+    return h("div",{class:"fc-rounds"},ids.map((gid,gi)=>{
+      const g=defs.find(d=>d.id===gid)||{id:gid,title:gid||"עוד"};
+      const its=items.filter(x=>(x.group||"")===gid);if(!its.length&&!g.url)return null;
+      const key=t.id+":"+gid,open=key in funFold?funFold[key]:(g.open!=null?!!g.open:gi===0);
+      const ups=its.filter(x=>x.vote==="up").length,downs=its.filter(x=>x.vote==="down").length;
+      const d=h("details",{class:"round",open:open||null},
+        h("summary",null,h("span",{class:"rt"},g.title||gid),h("span",{class:"rn"},`${its.length} שירים`+(ups?` · 👍${ups}`:"")+(downs?` · 👎${downs}`:""))),
+        safeUrl(g.url||"")?h("a",{class:"fbtn ghost rlink",href:safeUrl(g.url),target:"_blank",rel:"noopener"},g.url_label||"פתח"):null,
+        h("ul",{class:"fc-items"},its.map(x=>itemRow(t,x,all.indexOf(x)))));
+      d.addEventListener("toggle",()=>{funFold[key]=d.open;});
+      return d;
+    }));
   }
   function fhCard(p){
     const app=safeUrl(p.app_url||""),cl=safeUrl(p.claude_url||"");
