@@ -781,6 +781,35 @@
       default: return viewToday();
     }
   }
+  // שדות תאריך ושעה: תצוגה אחידה בעברית (יום.חודש.שנה, 24 שעות) בכל טלפון.
+  // השדה המקורי נשאר שקוף מעל, כך שנגיעה פותחת את הבורר של הטלפון.
+  var ICO_DATE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>';
+  var ICO_TIME = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
+  function pickText(inp) {
+    var v = inp.value;
+    if (inp.type === "time") return v ? v.slice(0, 5) : "בחירת שעה";
+    if (!v) return "בחירת תאריך";
+    var d = parseD(v);
+    return d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear();
+  }
+  function enhancePickers(root) {
+    root.querySelectorAll('input.in[type=date], input.in[type=time]').forEach(function (inp) {
+      if (inp.parentNode.classList.contains("pick")) return;
+      var w = document.createElement("span");
+      w.className = "pick" + (inp.style.textAlign === "center" ? " center" : "") + (inp.classList.contains("grow") ? " grow" : "");
+      inp.parentNode.insertBefore(w, inp);
+      w.innerHTML = '<span class="pv"></span><span class="pi">' + (inp.type === "time" ? ICO_TIME : ICO_DATE) + "</span>";
+      w.appendChild(inp);
+      var pv = w.querySelector(".pv");
+      function upd() { pv.textContent = pickText(inp); pv.classList.toggle("ph", !inp.value); }
+      upd();
+      inp.addEventListener("input", upd);
+      inp.addEventListener("change", upd);
+      inp.addEventListener("click", function () { try { if (inp.showPicker) inp.showPicker(); } catch (e) {} });
+    });
+  }
+  new MutationObserver(function () { enhancePickers(document.body); }).observe(document.body, { childList: true, subtree: true });
+
   window.addEventListener("hashchange", render);
   render();
 })();

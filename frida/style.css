@@ -171,3 +171,25 @@ input[type=date].in::-webkit-date-and-time-value { text-align: right; }
 .err:empty { min-height: 0; margin: 0 0 8px; }
 .avatar.time { width: 52px; height: 52px; font-size: 14px; font-family: "Fredoka", "Heebo", sans-serif; font-weight: 600; }
 a.btn { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+
+/* שדה תאריך/שעה אחיד (enhancePickers) */
+.pick { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; min-height: 46px; padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.pick .pv { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; font-variant-numeric: tabular-nums; }
+.pick .pv.ph { color: var(--muted); }
+.pick .pi { display: flex; color: var(--muted); flex: none; }
+.pick.center .pv { text-align: center; }
+.pick input.in { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; margin: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; -webkit-appearance: none; appearance: none; }
+.pick:focus-within { outline: 2px solid var(--brand); border-color: transparent; }
+
+/* טפסים בשתי עמודות: השדות מיושרים גם כשהכותרת יורדת שורה */
+.grid2 { align-items: end; }
+
+/* טבלה רחבה: עמודת השם נשארת במקום בגלילה הצידה */
+table.t th:first-child, table.t td:first-child { position: sticky; right: 0; z-index: 1; background: var(--surface); box-shadow: -1px 0 0 var(--line); }
+table.t th:first-child { background: #fbfaf7; z-index: 2; }
+label.f > span.pick { display: flex; font-size: 16px; color: var(--ink); margin: 0; }
+/* גובה אחיד לכל השדות בשורה */
+input.in, select.in, .pick { height: 48px; min-height: 48px; }
+select.in { padding-top: 0; padding-bottom: 0; }
+/* אריח בודד בשורה האחרונה תופס את כל הרוחב */
+.tiles .tile:last-child:nth-child(odd) { grid-column: 1 / -1; }
