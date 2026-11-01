@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="2.8";window.SQ_BUILD_AT="2.11.2026 01:20";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="2.9";window.SQ_BUILD_AT="2.11.2026 01:18";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -419,7 +419,6 @@ body.q-fun .qbtn.q-fun .qn i{color:#33E1FF}
 .qb-fun .qb-in{padding-bottom:22px}
 .qbtn{justify-content:center}
 .qbtn .qn{flex:none}
-.qlogo{position:absolute;z-index:2;top:50%;left:calc(5% + min(30vw,130px) + 14px);transform:translateY(-50%);height:min(22vw,84px);width:auto;max-width:28%;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
 /* 2.7: new-task and refresh are small buttons on the banner */
 .ctxbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:3px;border-radius:12px;background:rgba(0,0,0,.18)}
 .ctxbar button{display:flex;align-items:center;justify-content:center;gap:4px;min-height:34px;padding:0 4px;border-radius:9px;font-size:13px;font-weight:700;color:var(--hero-muted);white-space:nowrap}
@@ -434,6 +433,13 @@ body.fun-on .ctxbar{display:none}
 .refr.tb{width:auto;min-height:0;margin:0;padding:0 10px;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.35)}
 .refr.tb .ic{font-size:15px}
 .quick[hidden]{display:none!important}
+/* 2.9: quest logo sits under the title, in place of the subtitle, so the banner art stays visible */
+.qlogo{display:block;margin-top:4px;flex:none}
+.qlogo[hidden]{display:none}
+.qb-army .qlogo{height:54px;width:auto;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.qb-work .qlogo{height:34px;width:auto;background:#fff;border-radius:8px;padding:4px 8px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+.qb-in:has(.qlogo:not([hidden])) p{display:none}
+.qb-army .qb-in,.qb-work .qb-in{justify-content:center;gap:2px}
 </style>
 </head>
 <body>
@@ -464,11 +470,11 @@ body.fun-on .ctxbar{display:none}
 </div>
 <div class="qband qb-army">
   <div class="ab-radar" aria-hidden="true"><i></i><i></i><i></i></div>
-  <img class="qlogo" id="logo-army" alt="" hidden><div class="qb-in gut"><span class="ab-tag" aria-hidden="true">MISSION BRIEFING</span><h2>ARMY <i>QUEST</i></h2><p>משימות של הצבא והמילואים.</p></div>
+  <div class="qb-in gut"><span class="ab-tag" aria-hidden="true">MISSION BRIEFING</span><h2>ARMY <i>QUEST</i></h2><img class="qlogo" id="logo-army" alt="9122" hidden><p>משימות של הצבא והמילואים.</p></div>
 </div>
 <div class="qband qb-work">
   <div class="wb-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 82 L22 64 L40 70 L60 38 L78 46 L98 12"/></svg></div>
-  <img class="qlogo" id="logo-work" alt="" hidden><div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
+  <div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><img class="qlogo" id="logo-work" alt="Elbit" hidden><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
 </div>
 <div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="refr tb" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span id="refrTxt">עדכון</span></button></div>
 <div class="hero gut">
