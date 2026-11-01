@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="2.5";window.SQ_BUILD_AT="1.11.2026 23:08";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="2.6";window.SQ_BUILD_AT="1.11.2026 23:10";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -419,6 +419,7 @@ body.q-fun .qbtn.q-fun .qn i{color:#33E1FF}
 .qb-fun .qb-in{padding-bottom:22px}
 .qbtn{justify-content:center}
 .qbtn .qn{flex:none}
+.qlogo{position:absolute;z-index:2;top:50%;left:calc(5% + min(30vw,130px) + 14px);transform:translateY(-50%);height:min(22vw,84px);width:auto;max-width:28%;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
 </style>
 </head>
 <body>
@@ -449,11 +450,11 @@ body.q-fun .qbtn.q-fun .qn i{color:#33E1FF}
 </div>
 <div class="qband qb-army">
   <div class="ab-radar" aria-hidden="true"><i></i><i></i><i></i></div>
-  <div class="qb-in gut"><span class="ab-tag" aria-hidden="true">MISSION BRIEFING</span><h2>ARMY <i>QUEST</i></h2><p>משימות של הצבא והמילואים.</p></div>
+  <img class="qlogo" id="logo-army" alt="" hidden><div class="qb-in gut"><span class="ab-tag" aria-hidden="true">MISSION BRIEFING</span><h2>ARMY <i>QUEST</i></h2><p>משימות של הצבא והמילואים.</p></div>
 </div>
 <div class="qband qb-work">
   <div class="wb-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 82 L22 64 L40 70 L60 38 L78 46 L98 12"/></svg></div>
-  <div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
+  <img class="qlogo" id="logo-work" alt="" hidden><div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
 </div>
 <div class="hero gut">
   <div class="inner">
@@ -907,6 +908,9 @@ body.q-fun .qbtn.q-fun .qn i{color:#33E1FF}
     if(!db){notice("חסר המפתח האישי. פתח את הלינק המלא עם המפתח (?k=...).");$("qbtn").disabled=true;$("list").replaceChildren();return;}
     try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"&&(await user.can("data.write"))===false){canWrite=false;$("qbtn").disabled=true;}}catch(e){}
     db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();},()=>notice("הקשר לנתונים נותק. רענן את הדף."));
+    // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
+    db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
+      for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStrip();renderList();renderFun();},()=>{});
   })();
 })();
