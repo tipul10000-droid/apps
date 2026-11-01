@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="2.6";window.SQ_BUILD_AT="1.11.2026 23:10";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="2.7";window.SQ_BUILD_AT="1.11.2026 23:24";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -279,7 +279,7 @@ body.fun-on .tasks-only{display:none!important}
 
 /* Quest switcher: four quests (Side, Fun, Army, Work). Each quest shows full-width buttons to the other three. */
 .qnav{display:flex;flex-direction:column;gap:7px}
-.qbtn{--qb:#FFFFFF;--qi:#111111;--qa:#FF7A00;width:100%;display:flex;align-items:center;gap:10px;min-height:46px;padding:8px 14px;border-radius:12px;background:var(--qb);color:var(--qi);border:2px solid var(--qa);font-family:var(--f-display);font-weight:800;font-size:17px;letter-spacing:.3px;text-align:start;box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.qbtn{--qb:#FFFFFF;--qi:#111111;--qa:#EE8C4F;width:100%;display:flex;align-items:center;gap:10px;min-height:46px;padding:8px 14px;border-radius:12px;background:var(--qb);color:var(--qi);border:2px solid var(--qa);font-family:var(--f-display);font-weight:800;font-size:17px;letter-spacing:.3px;text-align:start;box-shadow:0 2px 0 rgba(0,0,0,.18)}
 .qbtn:active{transform:translateY(1px);box-shadow:none}
 .qbtn .qe{font-size:20px;line-height:1;flex:none}
 .qbtn .qn{direction:ltr;flex:1;text-align:right}
@@ -354,13 +354,13 @@ body.q-fun .qb-fun,body.q-army .qb-army,body.q-work .qb-work{display:block}
 .qb-side{display:none}
 body.q-side .qb-side{display:block}
 .qb-side{color:#111;background:radial-gradient(circle,rgba(0,0,0,.07) 1px,transparent 1.5px) 0 0/16px 16px,linear-gradient(160deg,#FFFFFF,#F2F2F0)}
-.qb-side::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:#FF7A00;z-index:1}
+.qb-side::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:#EE8C4F;z-index:1}
 .sb-map{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .sb-coast{fill:none;stroke:rgba(0,0,0,.25);stroke-width:2;stroke-dasharray:3 4}
 .sb-hill{fill:none;stroke:#111;stroke-width:2;stroke-linejoin:round}
-.sb-route{fill:none;stroke:#FF7A00;stroke-width:3;stroke-linecap:round;stroke-dasharray:6 7;stroke-dashoffset:0;animation:sbroute 1.6s linear infinite}
+.sb-route{fill:none;stroke:#EE8C4F;stroke-width:3;stroke-linecap:round;stroke-dasharray:6 7;stroke-dashoffset:0;animation:sbroute 1.6s linear infinite}
 @keyframes sbroute{to{stroke-dashoffset:-26}}
-.sb-pin circle{fill:#FF7A00;stroke:#111;stroke-width:2}
+.sb-pin circle{fill:#EE8C4F;stroke:#111;stroke-width:2}
 .sb-pin{animation:sbpin 2.4s ease-in-out infinite}
 .sb-pin.p2{animation-delay:-.6s}.sb-pin.p3{animation-delay:-1.2s}.sb-pin.p4{animation-delay:-1.8s}
 @keyframes sbpin{0%,100%{opacity:.55}50%{opacity:1}}
@@ -370,13 +370,13 @@ body.q-side .qb-side{display:block}
 .sb-compass{position:absolute;z-index:1;left:4%;top:50%;margin-top:calc(min(18vw,70px)/-2);width:min(18vw,70px);aspect-ratio:1;border-radius:50%;border:2px solid #111;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .sb-compass i{position:absolute;left:50%;top:8%;width:0;height:84%;transform:translateX(-50%);animation:sbneedle 6s ease-in-out infinite}
 .sb-compass i::before,.sb-compass i::after{content:"";position:absolute;left:-5px;border-left:5px solid transparent;border-right:5px solid transparent}
-.sb-compass i::before{top:0;border-bottom:calc(min(18vw,70px)*.42) solid #FF7A00}
+.sb-compass i::before{top:0;border-bottom:calc(min(18vw,70px)*.42) solid #EE8C4F}
 .sb-compass i::after{bottom:0;border-top:calc(min(18vw,70px)*.42) solid #111}
 @keyframes sbneedle{0%,100%{transform:translateX(-50%) rotate(-14deg)}50%{transform:translateX(-50%) rotate(18deg)}}
 .qb-side h2{font-family:"Rubik",var(--f-display);font-weight:800;font-size:36px;line-height:.95;direction:ltr;color:#111;text-shadow:none}
-.qb-side h2 i{font-style:normal;color:#FF7A00}
+.qb-side h2 i{font-style:normal;color:#EE8C4F}
 .qb-side p{color:#333}
-.sb-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#FF7A00;direction:ltr}
+.sb-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#EE8C4F;direction:ltr}
 @media (prefers-reduced-motion:reduce){.sb-route,.sb-pin,.sb-x,.sb-compass i{animation:none}}
 .qband{height:150px}
 @media (min-width:700px){.qband{height:200px}}
@@ -398,7 +398,7 @@ body.q-side .qb-side{display:block}
 .top{display:none}
 /* per-quest color theme for the whole screen */
 body{--accent-ink:#3A2400;transition:background-color .25s}
-body.q-side{--hero:#111111;--hero-ink:#FFFFFF;--hero-muted:#BDBDBD;--accent:#FF7A00;--accent-ink:#1A0D00;--bg:#FAFAF8;--sunk:#EFEFEC;--line:#E0E0DC}
+body.q-side{--hero:#111111;--hero-ink:#FFFFFF;--hero-muted:#BDBDBD;--accent:#EE8C4F;--accent-ink:#1A0D00;--bg:#FAFAF8;--sunk:#EFEFEC;--line:#E0E0DC}
 body.q-fun{--hero:#1A0B33;--hero-ink:#F6EEFF;--hero-muted:#C9B8F0;--accent:#FF4F8B;--accent-ink:#fff;--bg:#F3EFF9;--sunk:#E7E0F2;--line:#D9D0EA}
 body.q-army{--hero:#2A3A1C;--hero-ink:#F1F4E6;--hero-muted:#BFCBA6;--accent:#C9B866;--accent-ink:#22260A;--bg:#EEF2E7;--sunk:#E0E7D5;--line:#CFD9C2}
 body.q-work{--hero:#0F2F55;--hero-ink:#EEF4FC;--hero-muted:#A8C4E6;--accent:#6CBDF7;--accent-ink:#06223F;--bg:#ECF2F9;--sunk:#DCE6F2;--line:#CAD8E8}
@@ -420,6 +420,13 @@ body.q-fun .qbtn.q-fun .qn i{color:#33E1FF}
 .qbtn{justify-content:center}
 .qbtn .qn{flex:none}
 .qlogo{position:absolute;z-index:2;top:50%;left:calc(5% + min(30vw,130px) + 14px);transform:translateY(-50%);height:min(22vw,84px);width:auto;max-width:28%;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
+/* 2.7: new-task and refresh are small buttons on the banner */
+.topbtns{position:absolute;z-index:6;top:calc(10px + env(safe-area-inset-top,0px));left:max(10px,env(safe-area-inset-left,0px));display:flex;gap:6px;direction:rtl}
+.tb{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:32px;border-radius:999px;font-weight:700;font-size:12.5px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.tb.tadd{width:32px;background:var(--accent);color:var(--accent-ink);font-size:22px;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.refr.tb{width:auto;min-height:0;margin:0;padding:0 10px;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.refr.tb .ic{font-size:15px}
+.quick[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -456,12 +463,12 @@ body.q-fun .qbtn.q-fun .qn i{color:#33E1FF}
   <div class="wb-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 82 L22 64 L40 70 L60 38 L78 46 L98 12"/></svg></div>
   <img class="qlogo" id="logo-work" alt="" hidden><div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
 </div>
+<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="refr tb" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span id="refrTxt">עדכון</span></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span id="refrTxt">עדכון</span></button>
-    <form class="quick" id="quick"><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button id="qbtn" type="submit">הוסף</button></form>
+    <form class="quick" id="quick" hidden><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button id="qbtn" type="submit">הוסף</button></form>
   </div>
 </div>
 
@@ -881,10 +888,13 @@ body.q-fun .qbtn.q-fun .qn i{color:#33E1FF}
       if(n){$("qtitle").value="";toast(n===1?"נוסף מהשיחה":`נוספו ${n} נושאים`);}
       return;
     }
-    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(quest==="army"||quest==="work"?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
+    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(quest==="army"||quest==="work"?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
-  function renderRefr(){$("refrTxt").textContent=window.SQ_LAST_REFRESH?"עדכון מלא · עודכן "+ago(window.SQ_LAST_REFRESH):"עדכון מלא";}
+  function renderRefr(){$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עדכון";}
+  function showAdd(on){$("quick").hidden=!on;$("addBtn").setAttribute("aria-expanded",on?"true":"false");$("addBtn").textContent=on?"×":"+";if(on){$("quick").scrollIntoView({block:"nearest"});setTimeout(()=>$("qtitle").focus(),50);}}
+  $("addBtn").onclick=()=>showAdd($("quick").hidden);
+  $("qtitle").addEventListener("keydown",e=>{if(e.key==="Escape")showAdd(false);});
   window.addEventListener("sq-refreshed",renderRefr);setInterval(renderRefr,20000);
   // the iPhone home-screen app keeps the old page in memory and the CDN caches it ~10 min.
   // When the app comes back to the screen (or on refresh), fetch the page fresh and reload if a newer build is up.
