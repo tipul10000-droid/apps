@@ -12,6 +12,12 @@
   var LS = "sq_key";
 
   var PIN = !!window.SQ_PIN;
+  // רשימת הסרטים: מפתח בלינק (?k=) או שמור. בלי מפתח, נכנסים עם אותו קוד של Side Quests (השרת מקבל אותו גם ל-movies).
+  if (!PIN && window.SQ_PIN_FALLBACK) {
+    var urlK = new URLSearchParams(location.search).get("k"), savedK = "";
+    try { savedK = localStorage.getItem(LS) || ""; } catch (e) {}
+    if (!urlK && !savedK) PIN = true;
+  }
   function getKey() {
     if (PIN) { try { return localStorage.getItem("sq_pin") || sessionStorage.getItem("sq_pin") || ""; } catch (e) { return ""; } }
     var k = new URLSearchParams(location.search).get("k");
