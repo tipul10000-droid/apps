@@ -10,6 +10,8 @@
   var ANON = "sb_publishable_Pa6-CuUavcT0rpD8ei_cxA_8oZ-Ykku";
   var APP = window.SQ_APP;
   var LS = "sq_key";
+  var EN = window.SQ_LANG === "en";
+  function T(he, en) { return EN ? en : he; }
 
   var PIN = !!window.SQ_PIN;
   // רשימת הסרטים: מפתח בלינק (?k=) או שמור. בלי מפתח, נכנסים עם אותו קוד של Side Quests (השרת מקבל אותו גם ל-movies).
@@ -92,14 +94,14 @@
 
   function askKey(locked, wrong) {
     if (PIN && !locked) { try { localStorage.removeItem("sq_pin"); sessionStorage.removeItem("sq_pin"); } catch (e) {} }
-    if (PIN) return pinScreen(locked ? "יותר מדי ניסיונות. נפתח לבד כשהנעילה תיגמר (עד חצי שעה)." : (wrong ? "קוד שגוי" : ""));
+    if (PIN) return pinScreen(locked ? T("יותר מדי ניסיונות. נפתח לבד כשהנעילה תיגמר (עד חצי שעה).", "Too many attempts. It unlocks by itself (up to 30 minutes).") : (wrong ? T("קוד שגוי", "Wrong code") : ""));
     if (document.getElementById("sq-key")) return;
     var box = document.createElement("div");
     box.id = "sq-key";
-    box.style.cssText = "position:fixed;inset:auto 12px 12px 12px;z-index:9999;background:#fff;color:#111;border-radius:14px;padding:14px;box-shadow:0 8px 30px rgba(0,0,0,.25);font:16px system-ui;direction:rtl";
-    box.innerHTML = '<div style="margin-bottom:8px">צריך את המפתח האישי כדי לראות את הנתונים.</div>' +
-      '<input id="sq-key-in" style="width:100%;box-sizing:border-box;padding:10px;font-size:16px;border:1px solid #ccc;border-radius:10px" placeholder="מפתח" dir="ltr">' +
-      '<button id="sq-key-go" style="margin-top:8px;padding:10px 16px;font-size:16px;border:0;border-radius:10px;background:#1d4ed8;color:#fff">שמירה</button>';
+    box.style.cssText = "position:fixed;inset:auto 12px 12px 12px;z-index:9999;background:#fff;color:#111;border-radius:14px;padding:14px;box-shadow:0 8px 30px rgba(0,0,0,.25);font:16px system-ui;direction:" + (EN ? "ltr" : "rtl");
+    box.innerHTML = '<div style="margin-bottom:8px">' + T("צריך את המפתח האישי כדי לראות את הנתונים.", "Your personal key is needed to see the data.") + '</div>' +
+      '<input id="sq-key-in" style="width:100%;box-sizing:border-box;padding:10px;font-size:16px;border:1px solid #ccc;border-radius:10px" placeholder="' + T("מפתח", "Key") + '" dir="ltr">' +
+      '<button id="sq-key-go" style="margin-top:8px;padding:10px 16px;font-size:16px;border:0;border-radius:10px;background:#1d4ed8;color:#fff">' + T("שמירה", "Save") + '</button>';
     document.body.appendChild(box);
     document.getElementById("sq-key-go").onclick = function () {
       var v = document.getElementById("sq-key-in").value.trim();
@@ -118,11 +120,11 @@
     if (!box) {
       box = document.createElement("div");
       box.id = "sq-pin";
-      box.style.cssText = "position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#123b31;direction:rtl;font-family:system-ui,-apple-system,sans-serif";
+      box.style.cssText = "position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#123b31;direction:" + (EN ? "ltr" : "rtl") + ";font-family:system-ui,-apple-system,sans-serif";
       box.innerHTML = '<form id="sq-pin-f" style="width:min(320px,90vw);text-align:center;color:#fff">' +
         '<svg viewBox="0 0 24 24" width="56" height="56" aria-hidden="true" style="margin-bottom:10px;fill:none;stroke:#f2a93b;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" fill="rgba(242,169,59,.15)"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.2" r="1.4" fill="#f2a93b" stroke="none"/><path d="M12 16.4v1.6"/></svg>' +
         '<div style="font-size:30px;font-weight:800;margin-bottom:6px">Side Quests</div>' +
-        '<div style="opacity:.8;margin-bottom:18px">הקלד את הקוד</div>' +
+        '<div style="opacity:.8;margin-bottom:18px">' + T("הקלד את הקוד", "Enter your code") + '</div>' +
         '<input id="sq-pin-in" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="current-password" dir="ltr" ' +
         'style="width:100%;box-sizing:border-box;padding:14px;font-size:28px;letter-spacing:12px;text-align:center;border:0;border-radius:14px">' +
         '<div id="sq-pin-msg" style="min-height:22px;margin-top:10px;color:#ffc46b"></div></form>';
@@ -132,7 +134,7 @@
       document.getElementById("sq-pin-f").onsubmit = function (ev) { ev.preventDefault(); submit(); };
       function submit() {
         var v = inp.value.trim();
-        if (!/^[0-9]{6}$/.test(v)) { document.getElementById("sq-pin-msg").textContent = "6 ספרות"; return; }
+        if (!/^[0-9]{6}$/.test(v)) { document.getElementById("sq-pin-msg").textContent = T("6 ספרות", "6 digits"); return; }
         key = v; inp.value = "";
         refresh().then(resolvePin).catch(function () {});
       }
