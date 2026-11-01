@@ -19,7 +19,7 @@
 ## משתני סביבה
 אין משתני סביבה ואין secrets במאגר. מפתח Supabase הציבורי (anon) נמצא בקוד (`*/config.js`, `study/index.html`) וזה מותר. מפתח סודי (service_role) לעולם לא נכנס למאגר. קודי גישה פרטיים (PIN של side-quests, מפתח movies) לא נמצאים במאגר.
 
-## study בקצרה (ל-ממשיך עבודה)
+## study בקצרה (למי שממשיך את העבודה)
 - קובץ אחד: `study/index.html`. הנתונים של כל משתמש ב-localStorage של הדפדפן (`vq1`, `vq1streak`, `vq1lvl`, `vq1blk`, `vq1lb`); אסור לשנות שמות או מבנה. פירוט מלא ב-`CLAUDE.md`.
 - לוח דירוג: הטבלה `vocab_lb_players` ופונקציות `vocab_lb_upsert` / `vocab_lb_get` (`study/supabase/leaderboard.sql`).
 - הכתובת הישנה (מאגר `english-vocab`) מפנה ל-`/apps/study/`.
