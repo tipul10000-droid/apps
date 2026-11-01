@@ -279,7 +279,7 @@ body.fun-on .tasks-only{display:none!important}
 
 /* Quest switcher: four quests (Side, Fun, Army, Work). Each quest shows full-width buttons to the other three. */
 .qnav{display:flex;flex-direction:column;gap:7px}
-.qbtn{--qb:#FFFFFF;--qi:#111111;--qa:#FF7A00;width:100%;display:flex;align-items:center;gap:10px;min-height:46px;padding:8px 14px;border-radius:12px;background:var(--qb);color:var(--qi);border:2px solid var(--qa);font-family:var(--f-display);font-weight:800;font-size:17px;letter-spacing:.3px;text-align:start;box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.qbtn{--qb:#FFFFFF;--qi:#111111;--qa:#EE8C4F;width:100%;display:flex;align-items:center;gap:10px;min-height:46px;padding:8px 14px;border-radius:12px;background:var(--qb);color:var(--qi);border:2px solid var(--qa);font-family:var(--f-display);font-weight:800;font-size:17px;letter-spacing:.3px;text-align:start;box-shadow:0 2px 0 rgba(0,0,0,.18)}
 .qbtn:active{transform:translateY(1px);box-shadow:none}
 .qbtn .qe{font-size:20px;line-height:1;flex:none}
 .qbtn .qn{direction:ltr;flex:1;text-align:right}
@@ -354,13 +354,13 @@ body.q-fun .qb-fun,body.q-army .qb-army,body.q-work .qb-work{display:block}
 .qb-side{display:none}
 body.q-side .qb-side{display:block}
 .qb-side{color:#111;background:radial-gradient(circle,rgba(0,0,0,.07) 1px,transparent 1.5px) 0 0/16px 16px,linear-gradient(160deg,#FFFFFF,#F2F2F0)}
-.qb-side::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:#FF7A00;z-index:1}
+.qb-side::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:#EE8C4F;z-index:1}
 .sb-map{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .sb-coast{fill:none;stroke:rgba(0,0,0,.25);stroke-width:2;stroke-dasharray:3 4}
 .sb-hill{fill:none;stroke:#111;stroke-width:2;stroke-linejoin:round}
-.sb-route{fill:none;stroke:#FF7A00;stroke-width:3;stroke-linecap:round;stroke-dasharray:6 7;stroke-dashoffset:0;animation:sbroute 1.6s linear infinite}
+.sb-route{fill:none;stroke:#EE8C4F;stroke-width:3;stroke-linecap:round;stroke-dasharray:6 7;stroke-dashoffset:0;animation:sbroute 1.6s linear infinite}
 @keyframes sbroute{to{stroke-dashoffset:-26}}
-.sb-pin circle{fill:#FF7A00;stroke:#111;stroke-width:2}
+.sb-pin circle{fill:#EE8C4F;stroke:#111;stroke-width:2}
 .sb-pin{animation:sbpin 2.4s ease-in-out infinite}
 .sb-pin.p2{animation-delay:-.6s}.sb-pin.p3{animation-delay:-1.2s}.sb-pin.p4{animation-delay:-1.8s}
 @keyframes sbpin{0%,100%{opacity:.55}50%{opacity:1}}
@@ -370,13 +370,13 @@ body.q-side .qb-side{display:block}
 .sb-compass{position:absolute;z-index:1;left:4%;top:50%;margin-top:calc(min(18vw,70px)/-2);width:min(18vw,70px);aspect-ratio:1;border-radius:50%;border:2px solid #111;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .sb-compass i{position:absolute;left:50%;top:8%;width:0;height:84%;transform:translateX(-50%);animation:sbneedle 6s ease-in-out infinite}
 .sb-compass i::before,.sb-compass i::after{content:"";position:absolute;left:-5px;border-left:5px solid transparent;border-right:5px solid transparent}
-.sb-compass i::before{top:0;border-bottom:calc(min(18vw,70px)*.42) solid #FF7A00}
+.sb-compass i::before{top:0;border-bottom:calc(min(18vw,70px)*.42) solid #EE8C4F}
 .sb-compass i::after{bottom:0;border-top:calc(min(18vw,70px)*.42) solid #111}
 @keyframes sbneedle{0%,100%{transform:translateX(-50%) rotate(-14deg)}50%{transform:translateX(-50%) rotate(18deg)}}
 .qb-side h2{font-family:"Rubik",var(--f-display);font-weight:800;font-size:36px;line-height:.95;direction:ltr;color:#111;text-shadow:none}
-.qb-side h2 i{font-style:normal;color:#FF7A00}
+.qb-side h2 i{font-style:normal;color:#EE8C4F}
 .qb-side p{color:#333}
-.sb-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#FF7A00;direction:ltr}
+.sb-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#EE8C4F;direction:ltr}
 @media (prefers-reduced-motion:reduce){.sb-route,.sb-pin,.sb-x,.sb-compass i{animation:none}}
 .qband{height:150px}
 @media (min-width:700px){.qband{height:200px}}
@@ -398,7 +398,7 @@ body.q-side .qb-side{display:block}
 .top{display:none}
 /* per-quest color theme for the whole screen */
 body{--accent-ink:#3A2400;transition:background-color .25s}
-body.q-side{--hero:#111111;--hero-ink:#FFFFFF;--hero-muted:#BDBDBD;--accent:#FF7A00;--accent-ink:#1A0D00;--bg:#FAFAF8;--sunk:#EFEFEC;--line:#E0E0DC}
+body.q-side{--hero:#111111;--hero-ink:#FFFFFF;--hero-muted:#BDBDBD;--accent:#EE8C4F;--accent-ink:#1A0D00;--bg:#FAFAF8;--sunk:#EFEFEC;--line:#E0E0DC}
 body.q-fun{--hero:#1A0B33;--hero-ink:#F6EEFF;--hero-muted:#C9B8F0;--accent:#FF4F8B;--accent-ink:#fff;--bg:#F3EFF9;--sunk:#E7E0F2;--line:#D9D0EA}
 body.q-army{--hero:#2A3A1C;--hero-ink:#F1F4E6;--hero-muted:#BFCBA6;--accent:#C9B866;--accent-ink:#22260A;--bg:#EEF2E7;--sunk:#E0E7D5;--line:#CFD9C2}
 body.q-work{--hero:#0F2F55;--hero-ink:#EEF4FC;--hero-muted:#A8C4E6;--accent:#6CBDF7;--accent-ink:#06223F;--bg:#ECF2F9;--sunk:#DCE6F2;--line:#CAD8E8}
