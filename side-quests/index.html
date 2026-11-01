@@ -15,7 +15,7 @@
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=Bungee&family=Press+Start+2P&display=swap">
 <style>
 /* Layout: colored hero band with quick-add, a strip of solid project tiles, then ONE grouped quest list of compact rows. */
 :root{
@@ -212,6 +212,65 @@ details.more[open]>summary{margin-bottom:8px}
 details.more>div{display:flex;flex-direction:column;gap:10px}
 .st{grid-template-columns:auto 1fr;font-size:14.5px}
 @media (max-width:620px){.brand h1{font-size:34px}.r-line{flex-wrap:wrap;row-gap:2px}.r-title{white-space:normal;flex-basis:100%}.r-next{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.ib{width:34px}}
+
+/* Fun Quest: a separate, playful area for hobbies (music, movies…), opened from the button in the hero */
+:root{--fz1:#FF7A59;--fz2:#E0458F;--fz3:#6C4CE0;--fz4:#1FA37A;--spot:#1DB954}
+.funbtn{display:inline-flex;align-items:center;gap:8px;padding:6px 16px 6px 12px;border-radius:12px;font-family:"Bungee",var(--f-display);font-size:15px;letter-spacing:.5px;color:#FFE66D;background:#1A0B33;border:2px solid #FF3D7F;box-shadow:0 0 0 1px #1A0B33,0 0 14px rgba(255,61,127,.55),inset 0 0 10px rgba(255,61,127,.25);min-height:38px;direction:ltr;text-shadow:0 0 8px rgba(255,230,109,.6)}
+.funbtn .spark{display:inline-block;font-size:17px;animation:sqwig 2.6s ease-in-out infinite}
+.funbtn[aria-pressed="true"]{color:#BFF8FF;border-color:#33E1FF;box-shadow:0 0 14px rgba(51,225,255,.5),inset 0 0 10px rgba(51,225,255,.2);text-shadow:0 0 8px rgba(51,225,255,.6)}
+@keyframes sqwig{0%,70%,100%{transform:none}80%{transform:rotate(-16deg) scale(1.15)}90%{transform:rotate(12deg)}}
+.funzone{display:none}
+body.fun-on .funzone{display:flex;flex-direction:column;gap:18px}
+body.fun-on .tasks-only{display:none!important}
+/* synthwave arcade banner: night sky, striped sun, neon grid floor, equalizer */
+.fz-head{position:relative;overflow:hidden;border-radius:18px;min-height:250px;padding:22px 20px 84px;color:#fff;isolation:isolate;
+  background:radial-gradient(1.5px 1.5px at 12% 18%,#fff,transparent),radial-gradient(1px 1px at 30% 8%,#fff,transparent),radial-gradient(1.5px 1.5px at 48% 26%,#fff,transparent),radial-gradient(1px 1px at 66% 12%,#fff,transparent),radial-gradient(1.5px 1.5px at 82% 30%,#fff,transparent),radial-gradient(1px 1px at 92% 10%,#fff,transparent),radial-gradient(1px 1px at 6% 40%,#fff,transparent),radial-gradient(1px 1px at 58% 40%,#fff,transparent),
+  linear-gradient(180deg,#0B0322 0%,#2A0A4E 52%,#7A1460 72%,#0B0322 72.2%)}
+.fz-sun{position:absolute;z-index:-1;left:14%;bottom:28%;width:150px;height:150px;border-radius:50%;
+  background:linear-gradient(180deg,#FFE66D 0%,#FF9A3D 45%,#FF3D7F 80%);
+  -webkit-mask:linear-gradient(180deg,#000 52%,transparent 52% 56%,#000 56% 64%,transparent 64% 69%,#000 69% 76%,transparent 76% 82%,#000 82% 88%,transparent 88% 94%,#000 94%);
+          mask:linear-gradient(180deg,#000 52%,transparent 52% 56%,#000 56% 64%,transparent 64% 69%,#000 69% 76%,transparent 76% 82%,#000 82% 88%,transparent 88% 94%,#000 94%);
+  filter:drop-shadow(0 0 24px rgba(255,61,127,.6))}
+.fz-floor{position:absolute;z-index:-1;left:-30%;right:-30%;bottom:0;height:28%;transform-origin:50% 0;transform:perspective(160px) rotateX(55deg);
+  background:repeating-linear-gradient(90deg,rgba(255,61,127,.85) 0 2px,transparent 2px 46px),repeating-linear-gradient(180deg,rgba(255,61,127,.85) 0 2px,transparent 2px 22px);
+  animation:fzrun 1.4s linear infinite}
+@keyframes fzrun{to{background-position:0 0,0 22px}}
+.fz-title{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:right}
+.fz-press{font-family:"Press Start 2P",var(--f-mono);font-size:9px;letter-spacing:1px;color:#33E1FF;direction:ltr;animation:fzblink 1.2s steps(2,start) infinite;text-shadow:0 0 6px #33E1FF}
+@keyframes fzblink{to{visibility:hidden}}
+.fz-head h2{font-family:"Bungee",var(--f-display);font-weight:400;font-size:46px;line-height:.95;direction:ltr;letter-spacing:1px;
+  background:linear-gradient(180deg,#FFF6B0 0%,#FFE66D 40%,#FF8A3D 62%,#FF3D7F 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 10px rgba(255,61,127,.55)) drop-shadow(0 3px 0 #3B0B5E)}
+.fz-head p{margin:4px 0 0;font-weight:700;font-size:14.5px;max-width:30ch;color:#E9D8FF;text-shadow:0 1px 4px #0B0322}
+.fz-eq{position:absolute;right:20px;bottom:16px;display:flex;align-items:flex-end;gap:4px;height:34px}
+.fz-eq i{width:6px;border-radius:2px;background:linear-gradient(180deg,#33E1FF,#7B5CFF);box-shadow:0 0 8px rgba(51,225,255,.6);animation:fzeq 1s ease-in-out infinite alternate;height:40%}
+.fz-eq i:nth-child(2){animation-delay:-.3s}.fz-eq i:nth-child(3){animation-delay:-.6s}.fz-eq i:nth-child(4){animation-delay:-.15s}.fz-eq i:nth-child(5){animation-delay:-.45s}.fz-eq i:nth-child(6){animation-delay:-.75s}
+@keyframes fzeq{0%{height:20%}100%{height:100%}}
+@media (max-width:620px){.fz-head h2{font-size:40px}.fz-sun{width:110px;height:110px;left:7%;bottom:30%}.fz-head p{max-width:20ch}}
+@media (prefers-reduced-motion:reduce){.funbtn .spark,.fz-floor,.fz-press,.fz-eq i{animation:none}}
+.fzgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:14px;align-items:start}
+.fcard{--fc:var(--fz2);background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--fc);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.fc-top{display:flex;gap:12px;align-items:center;min-width:0}
+.fc-ic{width:46px;height:46px;flex:none;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;background:color-mix(in srgb,var(--fc) 16%,transparent)}
+.fc-h{min-width:0}
+.fc-h h3{font-size:17px;font-weight:700}
+.fc-h p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.fc-links{display:flex;gap:8px;flex-wrap:wrap}
+.fbtn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;font-size:14px;font-weight:700;text-decoration:none;color:#fff;background:var(--fc);min-height:36px}
+.fbtn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.fc-items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.fc-items li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px dashed var(--line)}
+.fi-t{min-width:0;display:flex;flex-direction:column}
+.fi-t b{font-weight:700;font-size:15px}
+.fi-t span{font-size:13px;color:var(--muted)}
+.spot{flex:none;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;background:var(--spot);color:#06210F;font-size:13px;font-weight:800;text-decoration:none;min-height:32px}
+.spot svg{width:14px;height:14px;fill:currentColor}
+.fcard.fh{background:#0E0E12;border-color:#0E0E12;border-top-color:#F5A300;color:#F4F1EA}
+.fh-logo{display:block;padding:6px 2px}
+.fh-logo img{display:block;width:100%;max-width:340px;height:auto}
+.fh-tag{margin:0;font-size:14px;color:#C9C3B6}
+.fcard.fh .fbtn{background:#F5A300;color:#1B1200}
+.fcard.fh .fbtn.ghost{background:transparent;color:#F4F1EA;border-color:#3A3A44}
 </style>
 </head>
 <body>
@@ -222,27 +281,41 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
 <div class="hero gut">
   <div class="inner">
     <div class="top">
-      <div class="stats" id="stats"></div>
+      <div class="stats tasks-only" id="stats"></div>
+      <button class="funbtn" id="funbtn" type="button" aria-pressed="false"><span class="spark" aria-hidden="true">🕹️</span><span id="funTxt">Fun Quest</span></button>
       <button class="refr" id="refr" type="button" aria-label="רענון"><span class="ic" aria-hidden="true">⟳</span><span id="refrTxt">רענון</span></button>
     </div>
-    <form class="quick" id="quick"><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button id="qbtn" type="submit">הוסף</button></form>
+    <form class="quick tasks-only" id="quick"><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button id="qbtn" type="submit">הוסף</button></form>
   </div>
 </div>
 
 <main class="gut"><div class="inner">
   <div id="notice" class="notice" hidden></div>
-  <section aria-labelledby="hAsk" id="askSec" hidden>
+  <section class="funzone" id="funSec" aria-labelledby="hFun">
+    <div class="fz-head">
+      <div class="fz-sun" aria-hidden="true"></div>
+      <div class="fz-floor" aria-hidden="true"></div>
+      <div class="fz-title">
+        <span class="fz-press" aria-hidden="true">PRESS START</span>
+        <h2 id="hFun">FUN<br>QUEST</h2>
+        <p>מוזיקה, סרטים ותחביבים. בלי משימות, רק כיף.</p>
+      </div>
+      <div class="fz-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="fzgrid" id="funGrid"></div>
+  </section>
+  <section aria-labelledby="hAsk" id="askSec" class="tasks-only" hidden>
     <div class="sec-head"><h2 id="hAsk">מחכה להחלטה שלך</h2></div>
     <div class="inbox" id="inbox"></div>
   </section>
-  <section aria-labelledby="hAll">
+  <section aria-labelledby="hAll" class="tasks-only">
     <div class="sec-head"><h2 id="hAll">המשימות</h2></div>
     <div class="views" id="views" role="tablist"></div>
     <div class="filters" id="filters" hidden></div>
     <div id="list"><div class="empty">טוען…</div></div>
     
   </section>
-  <section aria-labelledby="hProj">
+  <section aria-labelledby="hProj" class="tasks-only">
     <div class="sec-head"><h2 id="hProj">הפרויקטים שלי</h2></div>
     <div class="pgrid" id="strip"></div>
   </section>
@@ -260,10 +333,11 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
     done:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
     app:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M10 9l5 3-5 3z"/></svg>',
     claude:'<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>',
+    play:'<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',
     snooze:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M5 4l3 2M19 4l-3 2"/></svg>'
   };
   let inboxAll=false, view="open", shareId=null, shareMode="task";
-  let db=null, topics=[], projects=[], filterKind="all", openId=null, canWrite=true;
+  let db=null, topics=[], funTopics=[], projects=[], filterKind="all", openId=null, canWrite=true;
   const $=id=>document.getElementById(id);
   function h(tag,attrs,...kids){const e=document.createElement(tag);if(attrs)for(const k in attrs){const v=attrs[k];if(v==null||v===false)continue;if(k==="class")e.className=v;else if(k==="html")e.innerHTML=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v===true?"":v);}for(const c of kids.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
   function toast(t,undo){document.querySelectorAll(".toast").forEach(x=>x.remove());const e=h("div",{class:"toast"+(undo?" undo":""),role:"status"},h("span",null,t),undo?h("button",{type:"button",onclick:()=>{e.remove();undo();}},"בטל"):null);document.body.append(e);setTimeout(()=>e.remove(),undo?5000:2000);}
@@ -505,7 +579,41 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
     $("list").replaceChildren(...(g.length?g:[h("div",{class:"empty"},topics.length?"אין משימות בסינון הזה.":"עוד אין משימות. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-Side Quests״.")]));
   }
   function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString()},"בוצע ✓  (נמצא ב״בוצעו״)");}
-  function renderAll(){renderStats();renderInbox();renderViews();renderFilters();renderStrip();renderList();}
+
+  // fun zone: topics marked fun / kind "fun" / tag "fun question" live here, not in the task list
+  function isFun(t){return !!t.fun||t.kind==="fun"||(Array.isArray(t.tags)&&t.tags.includes("fun question"));}
+  let funMode=location.hash==="#fun";
+  const FC=["var(--fz2)","var(--fz3)","var(--fz1)","var(--fz4)"];
+  function applyFun(){document.body.classList.toggle("fun-on",funMode);$("funbtn").setAttribute("aria-pressed",funMode?"true":"false");$("funTxt").textContent=funMode?"Side Quests":"Fun Quest";document.querySelector("#funbtn .spark").textContent=funMode?"🗺️":"🕹️";}
+  function setFun(on){funMode=on;try{history.replaceState(null,"",on?"#fun":location.pathname+location.search);}catch(e){}applyFun();window.scrollTo(0,0);}
+  function funCard(t,i){
+    const pages=linksOf(t).filter(l=>linkType(l)!=="chat");
+    const items=(Array.isArray(t.items)?t.items:[]).filter(x=>x&&x.label);
+    const qs=questionsOf(t).filter(q=>!q.answer), offs=offersOf(t).filter(o=>(o.state||"open")==="open");
+    return h("article",{class:"fcard",style:"--fc:"+(t.color||FC[i%FC.length]),"data-id":t.id},
+      h("div",{class:"fc-top"},h("span",{class:"fc-ic","aria-hidden":"true"},t.icon||"✨"),h("div",{class:"fc-h"},h("h3",null,t.title||""),t.stand?h("p",null,t.stand):null)),
+      pages.length?h("div",{class:"fc-links"},pages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
+      items.length?h("ul",{class:"fc-items"},items.map(x=>{const u=safeUrl(x.url||"");return h("li",null,h("div",{class:"fi-t"},h("b",null,x.label),x.sub?h("span",null,x.sub):null),u?h("a",{class:"spot",href:u,target:"_blank",rel:"noopener","aria-label":(x.cta||"פתח")+": "+x.label,html:ICON.play},x.cta||"פתח"):null);})):null,
+      ...qs.map(q=>questionCard(t,q,false)),...offs.map(o=>offerCard(t,o,false)),
+      contBtn(t,"cont"));
+  }
+  function fhCard(p){
+    const app=safeUrl(p.app_url||""),cl=safeUrl(p.claude_url||"");
+    return h("article",{class:"fcard fh"},
+      h("a",{class:"fh-logo",href:app||cl||"#",target:"_blank",rel:"noopener","aria-label":"פתח את Frame Horizon"},h("img",{src:"fh-logo.png",alt:"Frame Horizon",width:"560",height:"178"})),
+      h("p",{class:"fh-tag"},"ערבי סרטים שהופכים למסע"),
+      h("div",{class:"fc-links"},app?h("a",{class:"fbtn",href:app,target:"_blank",rel:"noopener"},"פתח את האפליקציה"):null,cl?h("a",{class:"fbtn ghost",href:cl,target:"_blank",rel:"noopener"},"פתח ב-Claude"):null));
+  }
+  function renderFun(){
+    const list=funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
+    const cards=list.map(funCard);
+    const fh=projById("frame-horizon");if(fh)cards.push(fhCard(fh));
+    $("funGrid").replaceChildren(...(cards.length?cards:[h("div",{class:"empty"},"עוד אין כאן כלום. בקש מ-Claude בשיחה להוסיף תחביב ל-Fun Quest.")]));
+  }
+  $("funbtn").addEventListener("click",()=>setFun(!funMode));
+  window.addEventListener("hashchange",()=>{funMode=location.hash==="#fun";applyFun();});
+  applyFun();
+  function renderAll(){renderStats();renderInbox();renderViews();renderFilters();renderStrip();renderList();renderFun();}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:""};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -547,8 +655,8 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
     if(!db){notice("חסר המפתח האישי. פתח את הלינק המלא עם המפתח (?k=...).");$("qbtn").disabled=true;$("list").replaceChildren();return;}
     try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"&&(await user.can("data.write"))===false){canWrite=false;$("qbtn").disabled=true;}}catch(e){}
-    db.collection("topics").onSnapshot(s=>{topics=s.docs.map(d=>({id:d.id,...d.data()}));renderAll();},()=>notice("הקשר לנתונים נותק. רענן את הדף."));
-    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStrip();renderList();},()=>{});
+    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>({id:d.id,...d.data()}));topics=all.filter(t=>!isFun(t));funTopics=all.filter(isFun);renderAll();},()=>notice("הקשר לנתונים נותק. רענן את הדף."));
+    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStrip();renderList();renderFun();},()=>{});
   })();
 })();
 </script>
