@@ -114,7 +114,8 @@ main .inner{display:flex;flex-direction:column;gap:26px}
 .share{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:10px;display:flex;flex-direction:column;gap:8px}
 .share textarea{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:96px;resize:vertical;width:100%}
 .pill.wa{background:#1F8F4E;color:#fff;border-color:#1F8F4E;text-decoration:none;font-weight:700}
-.pill.go{background:var(--k-admin);color:#fff;border-color:var(--k-admin);font-weight:700}
+.pill.go{background:transparent;color:var(--k-admin);border:1.5px solid var(--k-admin);font-weight:700}
+.pill.go:hover{background:var(--ok-soft)}
 .row.closed .r-title{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
 
 /* grouped list */
@@ -139,7 +140,8 @@ main .inner{display:flex;flex-direction:column;gap:26px}
 .ib:hover{background:var(--sunk);color:var(--ink)}
 .ib svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .ib.chat{color:var(--k-research)}.ib.page{color:var(--k-followup)}
-.ib.done:hover{color:var(--k-admin);background:var(--ok-soft)}
+.ib.done{color:var(--k-admin);border:1.5px solid var(--k-admin);width:32px;height:32px;margin-inline:2px}
+.ib.done:hover{background:var(--ok-soft)}
 .ib.off{opacity:.3}
 .drawer{grid-column:1/-1;border-top:1px solid var(--line);padding:10px 14px 12px;display:flex;flex-direction:column;gap:10px;font-size:14.5px;background:var(--bg)}
 .drawer p{margin:0;max-width:70ch;color:var(--ink)}
@@ -192,7 +194,9 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
 .ai{padding:10px 12px;gap:6px;border-inline-start-width:3px}
 .ai .opts{flex-direction:row;flex-wrap:wrap}
 .opt{padding:6px 12px;border-radius:999px;font-size:14px}
-.opt.chat{border:0;padding:6px 4px;text-decoration:underline}
+.opt.chat{border:1px solid var(--k-research);color:var(--k-research);background:transparent;padding:5px 11px;text-decoration:none;font-weight:700}
+.cont{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;border:1px solid var(--k-research);color:var(--k-research);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;text-decoration:none;min-height:34px}
+.cont svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.9}
 .ai .ai-t{font-size:12.5px;color:var(--muted);font-weight:600}
 .inbox .ai .ai-t{font-size:17px;font-weight:800;color:var(--ink);line-height:1.3}
 .inbox .ai .ai-q{font-size:14px;font-weight:600;color:var(--muted)}
@@ -294,11 +298,14 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
   function remindLater(t,when,label){const z=when==="someday"?"someday":when.toISOString();laterFor=null;patch(t,{snooze_until:z,log:logPush(t,"תזכורת: "+label,new Date().toISOString())},when==="someday"?"עבר ל״אחר כך״":"אזכיר לך "+fmtWhen(z));}
   function laterBtn(t,key){return canWrite?h("button",{class:"opt later",type:"button",onclick:e=>{e.stopPropagation();laterFor=laterFor===key?null:key;renderAll();}},"⏰ אחר כך"):null;}
   function laterMenu(t,key){if(laterFor!==key)return null;return h("div",{class:"later-menu"},laterOptions().map(([l,w])=>h("button",{class:"opt",type:"button",onclick:press(()=>remindLater(t,w,l))},l)),t.snooze_until?h("button",{class:"opt",type:"button",onclick:press(()=>{laterFor=null;patch(t,{snooze_until:""},"התזכורת בוטלה");})},"בטל תזכורת"):null);}
-  function offersOf(t){return (Array.isArray(t.ai_offers)?t.ai_offers:[]).filter(o=>o&&o.text);}
-  function questionsOf(t){return (Array.isArray(t.questions)?t.questions:[]).filter(q=>q&&q.q);}
+  function offersOf(t){return (Array.isArray(t.ai_offers)?t.ai_offers:[]).filter(o=>o&&o.text&&!o.superseded);}
+  function questionsOf(t){return (Array.isArray(t.questions)?t.questions:[]).filter(q=>q&&q.q&&!q.superseded);}
   function openAsks(t){return offersOf(t).filter(o=>(o.state||"open")==="open").length+questionsOf(t).filter(q=>!q.answer).length;}
   function forClaude(t){return offersOf(t).filter(o=>o.state==="approved").length+questionsOf(t).filter(q=>q.answer&&!q.done).length;}
   function chatOf(t){const c=linksOf(t).find(l=>linkType(l)==="chat");return c?safeUrl(c.url):null;}
+  const SQ_CHAT="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD";
+  function contUrl(t){const p=t.project&&projById(t.project);return chatOf(t)||(p&&safeUrl(p.claude_url||""))||SQ_CHAT;}
+  function contBtn(t,cls,label){const direct=!!chatOf(t);return h("a",{class:cls,href:contUrl(t),target:"_blank",rel:"noopener",html:cls==="cont"?ICON.chat:"",onclick:e=>{e.stopPropagation();if(!direct){const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("שם המשימה הועתק, הדבק בשיחה");}catch(x){}}}},label||"המשך בשיחה");}
   function logPush(t,text,now){return [...(Array.isArray(t.log)?t.log:[]),{at:now,text}];}
   function decideOffer(t,o,state){
     const now=new Date().toISOString();
@@ -327,7 +334,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
         h("button",{class:"opt yes",type:"button",onclick:press(()=>decideOffer(t,o,"approved"))},"כן, תעשה"),
         h("button",{class:"opt",type:"button",onclick:press(()=>decideOffer(t,o,"declined"))},"לא"),
         laterBtn(t,"o:"+t.id+":"+o.id),
-        chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"לשיחה"):null)
+        withTitle?contBtn(t,"opt chat","💬 המשך בשיחה"):null)
       :h("div",{class:"ans"},st==="approved"?h("b",null,"אישרת. מחכה לביצוע של Claude"):st==="done"?h("b",null,"בוצע ✓"+(o.result?" · "+o.result:"")):"נדחה"),
       st==="open"?laterMenu(t,"o:"+t.id+":"+o.id):null);
   }
@@ -338,7 +345,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
       q.answer?h("div",{class:"ans"},"ענית: ",h("b",null,q.answer),q.done?" · Claude טיפל":" · מחכה ל-Claude",canWrite&&!q.done?h("button",{class:"pill",type:"button",style:"margin-inline-start:8px",onclick:()=>undoQ(t,q)},"שינוי"):null)
       :canWrite?h("div",{class:"opts"},...(Array.isArray(q.options)?q.options:[]).map(op=>h("button",{class:"opt",type:"button",onclick:press(()=>answerQ(t,q,op))},optLabel(op))),
         laterBtn(t,"q:"+t.id+":"+q.id),
-        chatOf(t)?h("a",{class:"opt chat",href:chatOf(t),target:"_blank",rel:"noopener"},"אחר, לשיחה"):null):null,
+        withTitle?contBtn(t,"opt chat","💬 המשך בשיחה"):null):null,
       q.answer?null:laterMenu(t,"q:"+t.id+":"+q.id));
   }
   function renderInbox(){
@@ -418,7 +425,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
         chat?iconBtn("chat",ICON.chat,"פתח את השיחה ב-Claude",null,safeUrl(chat.url)):iconBtn("chat off",ICON.chat,"אין עדיין קישור לשיחה",()=>{openId=t.id;renderList();setTimeout(()=>{const i=document.getElementById("lnk-"+t.id);i&&i.focus();},0);}),
         page?iconBtn("page",ICON.page,page.label||"פתח דף",null,safeUrl(page.url)):null,
         canWrite&&open?iconBtn("snz",ICON.snooze,"תזכיר לי אחר כך",()=>{laterFor=laterFor==="r:"+t.id?null:"r:"+t.id;renderList();}):null,
-        canWrite&&open?iconBtn("done",ICON.done,"בוצע",press(()=>markDone(t))):null));
+        canWrite&&open?iconBtn("done",ICON.done,"סמן כבוצע",press(()=>markDone(t))):null));
     if(laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.style.gridColumn="1/-1";m.style.margin="0 8px 8px";el.append(m);}
     if(openId===t.id)el.append(drawer(t));
     return el;
@@ -428,13 +435,14 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
     const linkInp=h("input",{id:"lnk-"+t.id,type:"url",placeholder:"הדבק קישור לשיחה או לדף","aria-label":"קישור חדש"});
     const dateInp=h("input",{id:"dt-"+t.id,type:"date",value:t.next_date||"","aria-label":"תאריך תזכורת",onchange:e=>patch(t,{next_date:e.target.value||""},"התאריך עודכן")});
     const addLink=()=>{const u=safeUrl(linkInp.value.trim());if(!u){toast("הקישור לא תקין");return;}const type=linkType({url:u});const label=type==="chat"?"שיחה":type==="page"?"דף":"קישור";patch(t,{links:[...linksOf(t),{label,url:u,type}]},"הקישור נוסף");};
-    const stRows=[["עומד",t.stand],["הצעד הבא",t.next_step],["תאריך",t.next_date?`${fmtDate(t.next_date)} (${relDate(t.next_date)})`:""],["טופל לאחרונה",ago(lastHandled(t))]].filter(r=>r[1]);
+    const stRows=[["עומד",t.stand],["הצעד הבא",t.next_step],["תאריך",t.next_date?`${fmtDate(t.next_date)} (${relDate(t.next_date)})`:""],["טופל לאחרונה",ago(lastHandled(t))],["עדכון מפרויקט",t.sync&&t.sync.at?`${ago(Date.parse(t.sync.at))}${t.sync.from?" · "+t.sync.from:""}`:""]].filter(r=>r[1]);
     const qs=questionsOf(t), offs=offersOf(t);
     return h("div",{class:"drawer"},
       stRows.length?h("div",{class:"st"},...stRows.flatMap(r=>[h("span",{class:"lbl"},r[0]),h("div",null,r[1])])):null,
       ...qs.filter(q=>!q.answer).map(q=>questionCard(t,q,false)),
       ...offs.filter(o=>(o.state||"open")==="open").map(o=>offerCard(t,o,false)),
-      linksOf(t).length?h("div",{class:"d-row files"},linksOf(t).map(l=>h("a",{class:"lnk"+(linkType(l)==="file"?" file":""),href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
+      contBtn(t,"cont"),
+      linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).length?h("div",{class:"d-row files"},linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).map(l=>h("a",{class:"lnk"+(linkType(l)==="file"?" file":""),href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
       h("details",{class:"more"},h("summary",null,"פרטים, היסטוריה ועריכה ▾"),h("div",null,
       t.summary?h("p",null,t.summary):null,
       ...qs.filter(q=>q.answer).map(q=>questionCard(t,q,false)),
@@ -447,7 +455,7 @@ details.more>div{display:flex;flex-direction:column;gap:10px}
       h("div",{class:"d-row",style:"justify-content:space-between"},h("span",{class:"src"},`${KINDS[t.kind]||""}${t.area?" · "+t.area:""} · ${t.source||""}`),
         h("span",{class:"d-row"},
           h("button",{class:"pill",type:"button","aria-pressed":shareId===t.id?"true":"false",onclick:()=>{shareId=shareId===t.id?null:t.id;shareMode="task";renderList();}},"שיתוף"),
-          canWrite&&isOpen(t)?h("button",{class:"pill go",type:"button",onclick:()=>markDone(t)},"בוצע ✓"):null,
+          canWrite&&isOpen(t)?h("button",{class:"pill go",type:"button",onclick:()=>markDone(t)},"סמן כבוצע"):null,
           canWrite&&!isOpen(t)?h("button",{class:"pill",type:"button",onclick:()=>patch(t,{status:"active"},"הוחזר לפתוחות")},"החזר לפתוחות"):null,
           canWrite&&t.status!=="archived"?h("button",{class:"pill",type:"button",onclick:()=>{openId=null;patch(t,{status:"archived"},"הועבר לארכיון");}},"לארכיון"):null,
           canWrite?h("button",{class:"pill danger",type:"button",onclick:e=>del(t,e.currentTarget)},"מחיקה"):null)));
