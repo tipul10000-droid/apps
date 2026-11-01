@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="2026-11-01b";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="2.2";window.SQ_BUILD_AT="1.11.2026 17:40";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -312,6 +312,8 @@ body.q-army .mapband .brand h1,body.q-work .mapband .brand h1{color:#fff;text-sh
 body.q-army .mapband .brand h1 i{color:#E6D67E}
 body.q-work .mapband .brand h1 i{color:#9FD6FF}
 body:not(.q-side) .side-only{display:none!important}
+.ver{text-align:center;padding-block:0 calc(24px + env(safe-area-inset-bottom,0px))}
+.ver button{font-size:12.5px;color:var(--muted);font-family:var(--f-mono);padding:6px 10px}
 </style>
 </head>
 <body>
@@ -361,6 +363,7 @@ body:not(.q-side) .side-only{display:none!important}
     <div class="pgrid" id="strip"></div>
   </section>
 </div></main>
+<footer class="ver gut"><button type="button" id="ver" aria-label="גרסה. לחיצה בודקת אם יש גרסה חדשה"></button></footer>
 
 <script>
 (function(){
@@ -752,6 +755,8 @@ body:not(.q-side) .side-only{display:none!important}
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")checkUpdate();});
   window.addEventListener("pageshow",e=>{if(e.persisted)checkUpdate(true);});
   setTimeout(()=>checkUpdate(true),3000);
+  $("ver").textContent=`גרסה ${window.SQ_BUILD} · ${window.SQ_BUILD_AT}`;
+  $("ver").onclick=async()=>{$("ver").textContent="בודק גרסה חדשה…";await checkUpdate(true);setTimeout(()=>{$("ver").textContent=`גרסה ${window.SQ_BUILD} · ${window.SQ_BUILD_AT} (העדכנית)`;},600);};
   $("refr").onclick=async()=>{checkUpdate(true);if(!db||!db.refresh)return;const b=$("refr");b.classList.add("spin");try{await db.refresh();}catch(e){toast("הרענון נכשל");}setTimeout(()=>b.classList.remove("spin"),300);renderRefr();};
   renderStats();
   (async()=>{
