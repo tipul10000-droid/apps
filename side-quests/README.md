@@ -63,11 +63,16 @@ There are no environment variables and no build secrets. Settings live in the co
 
 ### Topic fields (`sidequests/topics`)
 
-title, kind (research|followup|admin|reminder|idea|project|fun), area, urgent, critical, critical_reason, critical_at, status (active|waiting_me|waiting_other|paused|done|promoted|archived), priority, quest (army|work|travel|ai; missing = side), fun (true = Fun Quest), stand, waiting_for, next_step, next_date (YYYY-MM-DD), snooze_until (ISO or "someday"), summary, links [{label,url,type: chat|page|file}], questions [{id,q,options,answer,answered_at,done,superseded}], ai_offers [{id,text,detail,state open|approved|declined|done,result,superseded}], log [{at,text}], sync {at,from,chat}, source, project, tags, icon, items, item_groups, fun_order, subs, promoted_to, created_at, updated_at, done_at.
+title, kind (research|followup|admin|reminder|idea|project|fun), area, urgent, critical, critical_reason, critical_at, status (active|waiting_me|waiting_other|paused|done|promoted|archived), priority, quest (army|work|travel|ai; missing = side), fun (true = Fun Quest), stand, waiting_for, next_step, next_date (YYYY-MM-DD), snooze_until (ISO or "someday"), summary, links [{label,url,type: chat|page|file}], questions [{id,q,options,answer,answered_at,done,superseded}], ai_offers [{id,text,detail,state open|approved|declined|done,result,superseded}], log [{at,text}], sync {at,from,chat}, source, project, dash (dashboard id), level (1-4, optional override), tags, icon, items, item_groups, fun_order, subs, promoted_to, created_at, updated_at, done_at.
 
 ### Project fields (`sidequests/projects`)
 
 name, icon, color, tagline, order, app_url, claude_url, links, stage.
+
+### Dashboard fields (`sidequests/dashboards`, v5.0)
+
+title, short (crumb label), icon, c1, c2 (tile gradient), quest (side|travel|ai|army|work), url (main page), links [{label,url}], kpis [{v,l}], note, as_of, live, source ("insurance" = numbers and suggestions computed from the insurance collection), project (level-4 parent), order, suggest [{text,sub,date,show_days}], sugg {key: added|dismissed}, archived, updated_at.
+Task levels: 1 no chat/mail, 2 chat or mail, 3 `dash` set, 4 `project` set. Max 4 tiles per quest; more, or idle 90 days with no open tasks, go to "עוד דשבורדים וארכיון".
 
 ### Insurance fields (`sidequests/insurance`)
 
