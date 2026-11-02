@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.4";window.SQ_BUILD_AT="2.11.2026 10:50";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.5";window.SQ_BUILD_AT="2.11.2026 11:46";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -539,6 +539,67 @@ body.fun-on .avail{display:none}
 .qb-work .qlogo{height:34px;width:auto;background:#fff;border-radius:8px;padding:4px 8px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
 .qb-in:has(.qlogo:not([hidden])) p{display:none}
 .qb-army .qb-in,.qb-work .qb-in{justify-content:center;gap:2px}
+/* ===== 3.5: cleaner quest buttons, buttons off the Dynamic Island, tighter spacing, voice input, simpler settings ===== */
+body{margin:0}
+/* quest buttons: one clean frame, no double ring, no arrow */
+.qbtn{border-width:1.5px}
+.qbtn[aria-current="true"]{border-width:2px;box-shadow:0 3px 10px rgba(0,0,0,.28)}
+.qbtn[aria-current="true"]::after{content:none;display:none}
+/* banner leaves room for the iPhone status bar / Dynamic Island */
+.qband{height:calc(132px + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px);box-sizing:border-box}
+@media (min-width:700px){.qband{height:calc(180px + env(safe-area-inset-top,0px))}}
+/* only + and settings stay on the banner, at its bottom-left corner */
+.topbtns{top:calc(env(safe-area-inset-top,0px) + 132px - 42px);left:max(10px,env(safe-area-inset-left,0px));gap:8px}
+@media (min-width:700px){.topbtns{top:calc(env(safe-area-inset-top,0px) + 180px - 42px)}}
+.tb.tadd,.tb.tset{width:34px;height:34px}
+/* banner art moves up and away from the corner buttons */
+.sb-compass{top:42%;width:min(15vw,58px);margin-top:calc(min(15vw,58px)/-2)}
+.sb-compass i::before{border-bottom-width:calc(min(15vw,58px)*.42)}.sb-compass i::after{border-top-width:calc(min(15vw,58px)*.42)}
+.ab-radar{top:44%;width:min(24vw,96px);left:6%}
+.wb-chart{bottom:36%;height:44%;width:min(26vw,110px)}
+.qb-fun .fz-eq{left:96px;bottom:12px}
+.qb-fun .fz-sun{bottom:36%}
+/* tighter, still airy */
+.hero{padding-block:10px 12px}
+.hero .inner{gap:10px}
+.qnav{gap:7px}
+.qbtn{min-height:44px}
+.stats .stat{min-height:48px;padding:5px 2px}
+main{padding-block:14px 48px}
+main .inner{gap:18px}
+.sec-head{margin-bottom:6px}
+.group{margin-bottom:12px}
+/* where-am-I and refresh share one row, half and half */
+.ctxrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.ctxrow .avail{display:contents}
+.ctxrow .avbtn{grid-column:1;grid-row:1;min-height:38px;padding:0 10px;gap:6px;font-size:13.5px}
+.ctxrow .avbtn .k{white-space:nowrap}
+.ctxrow .avmenu{grid-column:1/-1;grid-row:2;margin-top:0}
+.ctxrow .refr{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:38px;margin:0;padding:0 10px;border-radius:12px;background:rgba(0,0,0,.18);border:0;color:var(--hero-ink);font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden}
+.ctxrow .refr .ic{font-size:16px}
+.ctxrow .refr .rv{color:var(--hero-muted);font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.ctxrow .refr .rv:empty{display:none}
+.ctxrow .refr.spin .rk{display:none}
+body.fun-on .ctxrow{grid-template-columns:1fr}
+body.fun-on .ctxrow .refr{grid-column:1}
+/* new task line with a mic at its left end */
+.quick .qin{flex:1;min-width:0;position:relative;display:flex}
+.quick .qin input{flex:1;width:100%;padding-inline-end:46px}
+.quick .mic{position:absolute;top:50%;inset-inline-end:4px;transform:translateY(-50%);width:36px;height:36px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#3A3A3A;background:transparent;font-weight:400}
+.mic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.quick .mic.rec{background:#E5383B;color:#fff;animation:micpulse 1.2s ease-in-out infinite}
+@keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(229,56,59,.55)}50%{box-shadow:0 0 0 7px rgba(229,56,59,0)}}
+@media (prefers-reduced-motion:reduce){.mic.rec{animation:none}}
+/* settings: collapsible sections */
+.sqsec{margin-top:10px}
+.sqsec summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:12px;background:var(--sunk);font:800 15px var(--f-display,inherit)}
+.sqsec summary::-webkit-details-marker{display:none}
+.sqsec summary .t{flex:1}
+.sqsec summary .v{font:600 13.5px var(--f-body,inherit);color:var(--muted)}
+.sqsec summary::after{content:"▾";color:var(--muted);font-size:15px;line-height:1;transform:rotate(90deg);transition:transform .15s}
+.sqsec[open] summary::after{transform:none}
+.sqsec[open] summary{border-radius:12px 12px 0 0}
+.sqsec .sqcard{margin-top:0;border-radius:0 0 12px 12px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -575,13 +636,13 @@ body.fun-on .avail{display:none}
   <div class="wb-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 82 L22 64 L40 70 L60 38 L78 46 L98 12"/></svg></div>
   <div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><img class="qlogo" id="logo-work" alt="Elbit" hidden><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
 </div>
-<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="refr tb" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span id="refrTxt">עדכון</span></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="avail" id="avail"></div>
-    <form class="quick" id="quick" hidden><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button id="qbtn" type="submit">הוסף</button></form>
+    <div class="ctxrow"><div class="avail" id="avail"></div><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button></div>
+    <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
   </div>
 </div>
 
@@ -1104,7 +1165,7 @@ body.fun-on .avail{display:none}
   function notice(t){const n=$("notice");n.textContent=t;n.hidden=false;}
 
   $("quick").addEventListener("submit",async e=>{
-    e.preventDefault();const v=$("qtitle").value.trim();if(!v||!db)return;
+    e.preventDefault();micStop(true);const v=$("qtitle").value.trim();if(!v||!db)return;
     const now=new Date().toISOString();
     if(/^[\[{`]/.test(v)){ // a block pasted from a Claude chat
       let items;try{const j=JSON.parse(v.replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,""));items=[].concat(j.quest||j.bakane||j.topics||j);}catch(err){toast("לא הצלחתי לקרוא את הבלוק שהודבק");return;}
@@ -1126,10 +1187,29 @@ body.fun-on .avail{display:none}
     try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(quest==="army"||quest==="work"?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
-  function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עדכון";}
-  function showAdd(on){$("quick").hidden=!on;$("addBtn").setAttribute("aria-expanded",on?"true":"false");$("addBtn").textContent=on?"×":"+";if(on){$("quick").scrollIntoView({block:"nearest"});setTimeout(()=>$("qtitle").focus(),50);}}
+  function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"";}
+  function showAdd(on){if(!on)micStop(true);$("quick").hidden=!on;$("addBtn").setAttribute("aria-expanded",on?"true":"false");$("addBtn").textContent=on?"×":"+";if(on){$("quick").scrollIntoView({block:"nearest"});setTimeout(()=>$("qtitle").focus(),50);}}
   $("addBtn").onclick=()=>showAdd($("quick").hidden);
   $("qtitle").addEventListener("keydown",e=>{if(e.key==="Escape")showAdd(false);});
+  // 3.5: voice: tap the mic to record, tap again to stop; the words go into the line and become a new task (Web Speech API, Hebrew)
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  let rec=null,recBase="",recErr="",recCancel=false;
+  function micUI(on){const b=$("micBtn");b.classList.toggle("rec",on);b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?"עצור הקלטה":"הקלטה קולית");$("qtitle").placeholder=on?"מקשיב… לחץ שוב לסיום":(QUESTS[quest]&&QUESTS[quest].ph)||"משימה חדשה, בכמה מילים…";}
+  function micStop(cancel){if(!rec)return;recCancel=!!cancel;try{rec.stop();}catch(e){}}
+  function micStart(){
+    if(!SR){toast("ההקלטה לא נתמכת כאן. אפשר ללחוץ על המיקרופון במקלדת");$("qtitle").focus();return;}
+    const r=new SR();rec=r;recBase=$("qtitle").value.trim();recErr="";recCancel=false;
+    r.lang="he-IL";r.continuous=true;r.interimResults=true;
+    r.onresult=e=>{let t="";for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$("qtitle").value=[recBase,t.trim()].filter(Boolean).join(" ");};
+    r.onerror=e=>{recErr=e.error||"x";};
+    r.onend=()=>{if(rec!==r)return;rec=null;micUI(false);
+      if(recErr==="not-allowed"||recErr==="service-not-allowed"){toast("אין גישה למיקרופון. אפשר ללחוץ על המיקרופון במקלדת");return;}
+      const v=$("qtitle").value.trim();
+      if(recCancel)return;
+      if(v&&v!==recBase)$("quick").requestSubmit();else if(recErr&&recErr!=="aborted")toast(recErr==="no-speech"?"לא שמעתי כלום, נסה שוב":"ההקלטה נכשלה, נסה שוב");};
+    try{r.start();micUI(true);if(navigator.vibrate)navigator.vibrate(15);}catch(e){rec=null;micUI(false);toast("ההקלטה נכשלה, נסה שוב");}
+  }
+  $("micBtn").onclick=()=>{if(rec)micStop(false);else micStart();};
   window.addEventListener("sq-refreshed",renderRefr);setInterval(renderRefr,20000);
   // the iPhone home-screen app keeps the old page in memory and the CDN caches it ~10 min.
   // When the app comes back to the screen (or on refresh), fetch the page fresh and reload if a newer build is up.
@@ -1239,6 +1319,7 @@ body.fun-on .avail{display:none}
       h("div",{class:"bm"},(briefLast.by==="claude"?"נכתב ע״י Claude · ":"")+(briefLast.at?ago(Date.parse(briefLast.at)):"")));
   }
   function showBrief(){modal("briefM",h("h2",null,"☀️ בריף הבוקר",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),h("div",{class:"sqcard"},briefBlock()));}
+  const setOpen=new Set();
   function renderSettings(){if(document.getElementById("setM"))showSettings(true);}
   function showSettings(keep){
     const sc=document.querySelector("#setM .sqpanel"),top=sc?sc.scrollTop:0;
@@ -1248,17 +1329,22 @@ body.fun-on .avail{display:none}
     else if(pushOn){st="פעיל במכשיר הזה ("+devName()+")";cls="on";act=h("button",{class:"sqbtn ghost",type:"button",onclick:disablePush},"כבה");}
     else{st="כבוי במכשיר הזה";act=h("button",{class:"sqbtn",type:"button",onclick:e=>enablePush(e.currentTarget)},"🔔 הפעל התראות");}
     const times=["06:30","07:00","07:30","08:00","08:30","09:00"];
+    // 3.5: short sections, all closed; the summary line shows the current value
+    const sec=(k,title,val,...body)=>h("details",{class:"sqsec",open:setOpen.has(k)||null,ontoggle:e=>{e.currentTarget.open?setOpen.add(k):setOpen.delete(k);}},
+      h("summary",null,h("span",{class:"t"},title),h("span",{class:"v"},val)),h("div",{class:"sqcard"},...body));
     const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
-      h("h3",null,"🔔 התראות"),
-      h("div",{class:"sqcard"},h("div",{class:"sqrow"},h("div",{class:"sqstate "+cls},h("span",{class:"d"}),h("span",null,st)),h("span",{style:"flex:1"}),act||null),
-        isIOS&&!standalone()?h("div",{class:"sqhint"},"בספארי: שיתוף ← הוסף למסך הבית, ואז פותחים מהאייקון ולוחצים כאן."):null),
-      h("div",{class:"sqcard"},
-        h("div",{class:"sqrow"},h("div",{class:"lb"},"☀️ בריף בוקר",h("small",null,"מה דחוף, מה נוסף בלילה, ובמה להתחיל")),sw(notify.brief,v=>setNotify({brief:v}),"בריף בוקר")),
+      sec("push","🔔 התראות",pushOn?"פעיל":"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"sqstate "+cls},h("span",{class:"d"}),h("span",null,st)),h("span",{style:"flex:1"}),act||null),
+        isIOS&&!standalone()?h("div",{class:"sqhint"},"שיתוף ← הוסף למסך הבית, ואז מהאייקון."):null,
+        pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("test",e.currentTarget,"נשלחה התראת בדיקה")},"שלח בדיקה")):null),
+      sec("brief","☀️ בריף בוקר",notify.brief?notify.brief_time:"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל"),sw(notify.brief,v=>setNotify({brief:v}),"בריף בוקר")),
         notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"שעה"),h("select",{class:"sqsel","aria-label":"שעת הבריף",onchange:e=>setNotify({brief_time:e.target.value})},times.map(t=>h("option",{value:t,selected:t===notify.brief_time||null},t)))):null,
-        notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי הבריף",onchange:e=>setNotify({brief_days:e.target.value})},h("option",{value:"all",selected:notify.brief_days!=="sun-thu"||null},"כל יום"),h("option",{value:"sun-thu",selected:notify.brief_days==="sun-thu"||null},"ראשון עד חמישי"))):null,
-        h("div",{class:"sqrow"},h("div",{class:"lb"},"🚨 רק דברים קריטיים",h("small",null,"משהו שלא יכול לחכות לבריף. בשקט בין 22:00 ל-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות קריטיות"))),
-      pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("test",e.currentTarget,"נשלחה התראת בדיקה")},"שלח בדיקה"),h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("brief",e.currentTarget,"הבריף נשלח")},"שלח בריף עכשיו")):null,
-      h("h3",null,"☀️ הבריף האחרון"),h("div",{class:"sqcard"},briefBlock()));
+        notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי הבריף",onchange:e=>setNotify({brief_days:e.target.value})},h("option",{value:"all",selected:notify.brief_days!=="sun-thu"||null},"כל יום"),h("option",{value:"sun-thu",selected:notify.brief_days==="sun-thu"||null},"א׳ עד ה׳"))):null,
+        pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("brief",e.currentTarget,"הבריף נשלח")},"שלח בריף עכשיו")):null),
+      sec("crit","🚨 דחוף בלבד",notify.critical?"פעיל":"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות"))),
+      sec("last","📄 הבריף האחרון","",briefBlock()));
     if(keep){const p=m.querySelector(".sqpanel");if(p)p.scrollTop=top;}
   }
   function openTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
