@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.0";window.SQ_BUILD_AT="2.11.2026 14:46";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.1";window.SQ_BUILD_AT="2.11.2026 14:56";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -633,6 +633,22 @@ body.fun-on .ctxrow .refr{grid-column:1}
 .sqsec[open] summary::after{transform:none}
 .sqsec[open] summary{border-radius:12px 12px 0 0}
 .sqsec .sqcard{margin-top:0;border-radius:0 0 12px 12px;border-top:1px solid var(--line)}
+/* 4.1: search */
+.tb.tfind{width:34px;height:34px;padding:0;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.tb.tfind svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.tb.tfind.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.quick.find .qin input{padding-inline-end:14px}
+.quick.find input::-webkit-search-cancel-button{-webkit-appearance:none}
+.fres{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow:auto}
+.fres[hidden]{display:none}
+.fhit{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.95);color:#18221E}
+.fhit .fq{font-size:18px;flex:none}
+.fhit .ft{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.fhit .ft b{font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fhit .ft b small{font-weight:600;color:#6b6b6b;font-size:12.5px}
+.fhit .ft>small{font-size:12.5px;color:#5E6B64;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fhit .fqn{flex:none;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:#EDEDEA;color:#333;direction:ltr}
+.fnone{color:var(--hero-muted);font-size:13.5px;padding:4px 2px}
 </style>
 </head>
 <body>
@@ -669,12 +685,14 @@ body.fun-on .ctxrow .refr{grid-column:1}
   <div class="wb-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 82 L22 64 L40 70 L60 38 L78 46 L98 12"/></svg></div>
   <div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><img class="qlogo" id="logo-work" alt="Elbit" hidden><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
 </div>
-<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
     <div class="ctxrow"><div class="avail" id="avail"></div><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button></div>
+    <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
+    <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
   </div>
 </div>
@@ -1267,8 +1285,35 @@ body.fun-on .ctxrow .refr{grid-column:1}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
   function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"";}
-  function showAdd(on){if(!on)micStop(true);$("quick").hidden=!on;$("addBtn").setAttribute("aria-expanded",on?"true":"false");$("addBtn").textContent=on?"×":"+";if(on){$("quick").scrollIntoView({block:"nearest"});setTimeout(()=>$("qtitle").focus(),50);}}
+  function showAdd(on){if(!on)micStop(true);if(on)showFind(false);$("quick").hidden=!on;$("addBtn").setAttribute("aria-expanded",on?"true":"false");$("addBtn").textContent=on?"×":"+";if(on){$("quick").scrollIntoView({block:"nearest"});setTimeout(()=>$("qtitle").focus(),50);}}
   $("addBtn").onclick=()=>showAdd($("quick").hidden);
+  // 4.1: search across all quests (titles and every text field, Hebrew or English); a tap opens the task in its own quest
+  const norm=x=>String(x||"").toLowerCase().normalize("NFKD").replace(/[\u0591-\u05C7]/g,"").replace(/[׳״'"`]/g,"").replace(/\s+/g," ");
+  function textOf(v,out){if(v==null)return out;if(typeof v==="string")out.push(v);else if(Array.isArray(v))v.forEach(x=>textOf(x,out));else if(typeof v==="object")for(const k in v){if(k==="url"||k==="id"||k==="_deleted")continue;textOf(v[k],out);}return out;}
+  function showFind(on){$("find").hidden=!on;$("fres").hidden=!on||!$("fq").value.trim();$("findBtn").setAttribute("aria-expanded",on?"true":"false");$("findBtn").classList.toggle("on",on);
+    if(on){showAdd(false);setTimeout(()=>$("fq").focus(),50);}else{$("fq").value="";$("fres").replaceChildren();}}
+  function runFind(){
+    const q=norm($("fq").value).trim(),box=$("fres");
+    if(!q){box.hidden=true;box.replaceChildren();return;}
+    const words=q.split(" ");
+    const hits=[];
+    for(const t of allTopics){const title=norm(t.title),body=norm(textOf(t,[]).join(" "));
+      if(!words.every(w=>body.includes(w)))continue;
+      const score=(words.every(w=>title.includes(w))?2:0)+(OPEN.includes(t.status)?1:0);hits.push({t,score});}
+    hits.sort((a,b)=>b.score-a.score||String(b.t.updated_at||"").localeCompare(String(a.t.updated_at||"")));
+    const QE={side:"🗺️",fun:"🕹️",army:"🪖",work:"💼"};
+    const snip=t=>{const raw=[t.stand,t.waiting_for,t.next_step,t.summary].concat(textOf(t,[])).find(x=>typeof x==="string"&&x!==t.title&&words.some(w=>norm(x).includes(w)));return raw?String(raw).slice(0,90):"";};
+    box.hidden=false;
+    box.replaceChildren(...(hits.length?hits.slice(0,8).map(({t})=>{const q2=isFun(t)?"fun":questOf(t),closed=!OPEN.includes(t.status);
+      return h("button",{class:"fhit",type:"button",onclick:()=>{showFind(false);openTask(t.id);}},
+        h("span",{class:"fq","aria-hidden":"true"},QE[q2]),
+        h("span",{class:"ft"},h("b",null,t.title||"(בלי כותרת)",closed?h("small",null," · "+(STATUS[t.status]||"סגור")):null),snip(t)?h("small",null,snip(t)):null),
+        q2!==quest?h("span",{class:"fqn"},QUESTS[q2].a):null);}):[h("div",{class:"fnone"},"לא נמצא כלום")]),
+      ...(hits.length>8?[h("div",{class:"fnone"},`ועוד ${hits.length-8}. כדאי לדייק את החיפוש`)]:[]));
+  }
+  $("findBtn").onclick=()=>showFind($("find").hidden);
+  $("fq").addEventListener("input",runFind);
+  $("fq").addEventListener("keydown",e=>{if(e.key==="Escape")showFind(false);if(e.key==="Enter"){e.preventDefault();const b=document.querySelector("#fres .fhit");if(b)b.click();}});
   $("qtitle").addEventListener("keydown",e=>{if(e.key==="Escape")showAdd(false);});
   // 3.5: voice: tap the mic to record, tap again to stop; the words go into the line and become a new task (Web Speech API, Hebrew)
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -1430,7 +1475,8 @@ body.fun-on .ctxrow .refr{grid-column:1}
     if(keep){const p=m.querySelector(".sqpanel");if(p)p.scrollTop=top;}
   }
   function openTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
-    if(t.status==="done"||t.status==="archived"||t.status==="promoted")view="done";openId=id;renderAll();
+    if(t.status==="done"||t.status==="promoted")view="done";else if(t.status==="archived")view="archive";else view="open";
+    if(!ctxOk(t)){ctxNow="all";try{localStorage.setItem("sq_ctx","all");}catch(e){}}filterKind="all";openId=id;renderAll();
     setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
   let routed=false;
   function routeHash(){const hs=location.hash;
