@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.8";window.SQ_BUILD_AT="2.11.2026 20:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.9";window.SQ_BUILD_AT="2.11.2026 21:20";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1033,9 +1033,13 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     $("inbox").replaceChildren(...shown,...(cards.length>4?[h("button",{class:"pill",type:"button",style:"align-self:center",onclick:()=>{inboxAll=!inboxAll;renderInbox();}},inboxAll?"פחות":`עוד ${cards.length-4} החלטות`)]:[]));
   }
   function jumpTo(id){const e=$(id);if(e&&!e.hidden&&e.offsetParent)e.scrollIntoView({behavior:"smooth",block:"start"});else toast("אין כרגע מה להציג כאן");}
-  // seen counts per quest/counter (localStorage sq_seen): a counter whose number changed since you last opened it gets a red dot
+  // counters (from 4.9): a red "+N" = how many were added since your previous visit, per quest. No minus.
+  // sq_seen = the last numbers you saw (kept up to date while the page is on screen); base = snapshot of it taken when you came in.
+  // Tapping a counter clears its badge. Coming back to the app (visibilitychange) starts a new visit.
   let seen={};try{seen=JSON.parse(localStorage.getItem("sq_seen")||"{}")||{};}catch(e){}
+  let base={...seen};
   function saveSeen(){try{localStorage.setItem("sq_seen",JSON.stringify(seen));}catch(e){}}
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){base={...seen};renderStats();}});
   function statCounts(){
     if(quest==="fun"){const live=funTopics.filter(t=>t.status!=="archived"&&t.status!=="done");
       return {asks:live.reduce((n,t)=>n+openAsks(t),0),open:live.length,wait:0,later:0,done:funTopics.filter(t=>t.status==="done").length};}
@@ -1044,7 +1048,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
   }
   const STATS=[["asks","להחלטה שלי"],["open","פתוחות"],["wait","מחכות לאחרים"],["later","אחר כך"],["done","בוצעו"]];
   function goStat(k){
-    const v=statCounts()[k];seen[quest+":"+k]=v;saveSeen();renderStats();
+    const v=statCounts()[k];seen[quest+":"+k]=v;base[quest+":"+k]=v;saveSeen();renderStats();
     if(quest==="fun"){jumpTo("funGrid");return;}
     const want=k==="done"?"done":"open";
     if(view!==want){view=want;openId=null;renderViews();renderFilters();renderList();}
@@ -1053,9 +1057,9 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
   function jumpTo(id){const e=$(id);if(e&&!e.hidden&&e.offsetParent)e.scrollIntoView({behavior:"smooth",block:"start"});else toast("אין כרגע מה להציג כאן");}
   function renderStats(){
     if(!db){$("stats").replaceChildren(...STATS.map(([k,l])=>h("span",{class:"stat"},h("b",null,"–"),l)));return;}
-    const c=statCounts();let changed=false;
-    $("stats").replaceChildren(...STATS.map(([k,l])=>{const key=quest+":"+k,v=c[k];if(!(key in seen)){seen[key]=v;changed=true;}const diff=v-seen[key];
-      return h("button",{class:"stat"+(k==="asks"&&v?" hot":""),type:"button",onclick:()=>goStat(k),"aria-label":l+" "+v+(diff?" (השתנה)":"")},h("b",null,v),l,diff?h("span",{class:"dot","aria-hidden":"true"},diff>0?"+"+diff:diff):null);}));
+    const c=statCounts(),vis=document.visibilityState!=="hidden";let changed=false;
+    $("stats").replaceChildren(...STATS.map(([k,l])=>{const key=quest+":"+k,v=c[k];if(!(key in base))base[key]=v;if(vis&&seen[key]!==v){seen[key]=v;changed=true;}const add=v-base[key];
+      return h("button",{class:"stat"+(k==="asks"&&v?" hot":""),type:"button",onclick:()=>goStat(k),"aria-label":l+" "+v+(add>0?` (${add} חדשות)`:"")},h("b",null,v),l,add>0?h("span",{class:"dot","aria-hidden":"true",dir:"ltr"},"+"+add):null);}));
     if(changed)saveSeen();
   }
   let addingFor=null;
@@ -1736,7 +1740,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
       const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;renderTravel();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
-    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStrip();renderList();renderFun();},()=>{});
+    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderFun();},()=>{});
     initNotify();
   })();
 })();
