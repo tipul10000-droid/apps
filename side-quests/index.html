@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.1";window.SQ_BUILD_AT="2.11.2026 14:56";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.2";window.SQ_BUILD_AT="2.11.2026 16:05";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -89,6 +89,12 @@ main .inner{display:flex;flex-direction:column;gap:26px}
 .pbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .pc-more{display:flex;gap:6px;flex-wrap:wrap;font-size:13px}
 .pc-more a{color:var(--muted)}
+.pc.has-tasks{grid-column:1/-1}
+.pc.has-tasks .pc-acts{max-width:460px}
+.pc-tasks{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.pc-th{font-size:13px;font-weight:700;color:var(--muted);display:flex;gap:6px;align-items:center}
+.pc-th .n{font-family:var(--f-mono);background:var(--sunk);border-radius:999px;padding:0 7px;color:var(--ink)}
+.pc-tasks .ptag{display:none}
 .pc-add{display:flex;gap:6px}.pc-add input{flex:1;min-width:0;font-size:14px}
 .ptag{font-size:11.5px;font-weight:700;padding:0 7px;border-radius:999px;white-space:nowrap;flex:none;background:var(--sunk);color:var(--ink);display:inline-flex;gap:4px;align-items:center}
 
@@ -877,7 +883,7 @@ body.fun-on .ctxrow .refr{grid-column:1}
   function statCounts(){
     if(quest==="fun"){const live=funTopics.filter(t=>t.status!=="archived"&&t.status!=="done");
       return {asks:live.reduce((n,t)=>n+openAsks(t),0),open:live.length,wait:0,later:0,done:funTopics.filter(t=>t.status==="done").length};}
-    const open=topics.filter(isOpen);
+    const open=topics.filter(t=>isOpen(t)&&!isProjTask(t));
     return {asks:open.filter(t=>!snoozed(t)).reduce((n,t)=>n+openAsks(t),0),open:open.filter(t=>!snoozed(t)).length,wait:open.filter(t=>!snoozed(t)&&!returned(t)&&t.status==="waiting_other").length,later:open.filter(snoozed).length,done:topics.filter(t=>t.status==="done"||t.status==="promoted").length};
   }
   const STATS=[["asks","להחלטה שלי"],["open","פתוחות"],["wait","מחכות לאחרים"],["later","אחר כך"],["done","בוצעו"]];
@@ -898,23 +904,27 @@ body.fun-on .ctxrow .refr{grid-column:1}
   }
   let addingFor=null;
   function projById(id){return projects.find(p=>p.id===id);}
+  // project tasks (kind "project" linked to a known project) live inside their project card at the bottom, not in the main list
+  function isProjTask(t){return t.kind==="project"&&!!t.project&&!!projById(t.project);}
   function picOf(p,size){const st=size?`width:${size}px;height:${size}px;border-radius:${size/4}px;font-size:${size*.55}px`:"";const bg=`background:${p.color||"var(--hero)"};${st}`;const img=safeUrl(p.icon_url||"")||(String(p.icon_url||"").startsWith("data:image/")?p.icon_url:null);if(img)return h("span",{class:"pic",style:bg},h("img",{src:img,alt:""}));return h("span",{class:"pic",style:bg},p.icon||(p.name||"?").slice(0,1));}
   function renderStrip(){
     const s=$("strip");
     if(!projects.length){s.replaceChildren(h("div",{class:"empty"},"אין עדיין פרויקטים."));return;}
-    s.replaceChildren(...[...projects].sort((a,b)=>(a.order||0)-(b.order||0)).map(p=>{
+    const nOpen=p=>topics.filter(t=>isOpen(t)&&isProjTask(t)&&t.project===p.id).length;
+    s.replaceChildren(...[...projects].sort((a,b)=>(nOpen(b)?1:0)-(nOpen(a)?1:0)||(a.order||0)-(b.order||0)).map(p=>{
       const app=safeUrl(p.app_url||""),cl=safeUrl(p.claude_url||"");
-      const tasks=topics.filter(t=>isOpen(t)&&t.project===p.id);
+      const tasks=topics.filter(t=>isOpen(t)&&isProjTask(t)&&t.project===p.id).sort(byDate);
       const missingBtn=(field,label,svg)=>h("button",{class:"pbtn missing",type:"button",onclick:()=>{addingFor={id:p.id,field};renderStrip();setTimeout(()=>{const i=$("padd");i&&i.focus();},0);},html:svg},label);
       const more=(Array.isArray(p.links)?p.links:[]).filter(l=>l&&safeUrl(l.url));
-      const card=h("div",{class:"pc"},
+      const card=h("div",{class:"pc"+(tasks.length?" has-tasks":"")},
         h("div",{class:"pc-top"},picOf(p),h("div",{style:"min-width:0;display:flex;flex-direction:column;gap:2px"},h("h3",null,p.name||""),
           p.stage?h("div",{class:"stage"},h("b",null,"עכשיו: "),p.stage):p.tagline?h("div",{class:"stage"},p.tagline):null,
-          tasks.length?h("div",{class:"stage"},`${tasks.length} משימות פתוחות`):null)),
+          null)),
         h("div",{class:"pc-acts"},
           app?h("a",{class:"pbtn app",href:app,target:"_blank",rel:"noopener",html:ICON.app},"פתח אפליקציה"):(canWrite?missingBtn("app_url","קישור לאפליקציה",ICON.app):null),
           cl?h("a",{class:"pbtn",href:cl,target:"_blank",rel:"noopener",html:ICON.chat},"פתח ב-Claude"):(canWrite?missingBtn("claude_url","קישור ל-Claude",ICON.chat):null)),
-        more.length?h("div",{class:"pc-more"},more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך"))):null);
+        more.length?h("div",{class:"pc-more"},more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך"))):null,
+        tasks.length?h("div",{class:"pc-tasks"},h("div",{class:"pc-th"},"משימות פתוחות",h("span",{class:"n"},tasks.length)),tasks.map(row)):null);
       if(addingFor&&addingFor.id===p.id){
         const inp=h("input",{id:"padd",type:"url",placeholder:addingFor.field==="app_url"?"הדבק את כתובת האפליקציה":"הדבק קישור לפרויקט ב-Claude","aria-label":"קישור"});
         const save=async()=>{const u=safeUrl(inp.value.trim());if(!u){toast("הקישור לא תקין");return;}try{await db.collection("projects").doc(p.id).update({[addingFor.field]:u});addingFor=null;toast("הקישור נשמר");}catch(e){fail(e);}};
@@ -1034,7 +1044,8 @@ body.fun-on .ctxrow .refr{grid-column:1}
     const tab=(v,label)=>h("button",{class:"vtab",type:"button",role:"tab","aria-selected":view===v?"true":"false",onclick:()=>{view=v;openId=null;shareId=null;renderViews();renderFilters();renderList();}},label,h("span",{class:"n"},c[v]));
     $("views").replaceChildren(tab("open","פתוחות"),tab("done","בוצעו"),tab("archive","ארכיון"));
   }
-  function renderList(){
+  function renderList(){renderMain();renderStrip();}
+  function renderMain(){
     const kindOk=t=>(filterKind==="all"||t.kind===filterKind)&&ctxOk(t);
     if(view!=="open"){
       $("urgSec").hidden=true;
@@ -1043,7 +1054,7 @@ body.fun-on .ctxrow .refr{grid-column:1}
       return;
     }
     const allK=topics.filter(isOpen).filter(kindOk).sort(byDate);
-    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t));
+    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t)&&!isProjTask(t));
     $("urgSec").hidden=!urg.length;$("urgList").replaceChildren(...urg.map(row));
     const back=all.filter(returned), later=all.filter(snoozed), open=all.filter(t=>!returned(t)&&!snoozed(t));
     const hot=open.filter(isHot), rest=open.filter(t=>!isHot(t));
