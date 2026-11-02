@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#16433C">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <title>הביטוחים שלנו</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,6 +45,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .back{color:var(--hero-muted);text-decoration:none;font-size:14px;font-weight:700}
 .hero h1{font-size:26px;margin:10px 0 2px;display:flex;align-items:center;gap:10px}
 .hero .sub{color:var(--hero-muted);font-size:14px;margin:0}
+.chatbtn{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 2px;padding:14px 16px;border-radius:14px;background:var(--accent);color:#1F1606;text-decoration:none;font-family:var(--f-display);font-weight:800;font-size:18px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.chatbtn[hidden]{display:none}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
 .kpi{background:rgba(255,255,255,.07);border-radius:14px;padding:10px 12px;min-width:0}
 .kpi b{display:block;font-family:var(--f-mono);font-size:22px;font-weight:500;line-height:1.2;direction:ltr;text-align:right}
@@ -161,6 +164,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 <header class="hero"><div class="in">
   <div class="top"><a class="back" href="./">→ Side Quests</a><span class="back" id="upd"></span></div>
   <h1>🛡️ הביטוחים שלנו</h1>
+  <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span style="font-size:24px">💬</span><span>המשך בשיחה עם Claude<small>שינוי, עדכון, שאלה או בקשה</small></span></a>
   <p class="sub" id="sub">כל הפוליסות של המשפחה במקום אחד: מה יש, כמה עולה, מתי מתחדש, ואיפה יש בעיה.</p>
   <div class="kpis">
     <div class="kpi"><b id="k-month">…</b><span>לחודש (משוער)</span></div>
@@ -226,6 +230,8 @@ function render(){
   $("k-month").textContent=ils(m);$("k-year").textContent=ils(m*12);$("k-count").textContent=act.filter(p=>p.status!=="per_trip").length;$("k-alerts").textContent=flags.filter(f=>f.lvl!=="low").length;
   const meta=data.meta;
   if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
+  // הלינק לשיחה נשמר בנתונים (_meta.chat_url), לא בקוד.
+  const chat=safe(meta.chat_url);if(chat){$("chat").href=chat;$("chat").hidden=false;}
 
   let h="";
   // alerts
