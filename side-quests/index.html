@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.5";window.SQ_BUILD_AT="2.11.2026 16:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.6";window.SQ_BUILD_AT="2.11.2026 19:50";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -545,6 +545,10 @@ body.fun-on .avail{display:none}
 .tb.tset svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tdot{position:absolute;top:-2px;inset-inline-end:-2px;width:9px;height:9px;border-radius:50%;background:var(--due);border:1.5px solid #fff}
 .tdot[hidden]{display:none}
+/* 4.6: no scroll bleed: page behind a sheet is frozen, inner scroll areas keep their scroll */
+html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
+.sqmodal,.sqpanel,.fres{overscroll-behavior:contain}
+.quick input::placeholder{font-size:13px;opacity:.75}
 .sqmodal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
 .sqpanel{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:var(--surface,#fff);color:var(--ink,#111);border-radius:20px 20px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px rgba(0,0,0,.3);font-size:15px;line-height:1.45}
 .sqpanel h2{margin:0;font:800 19px var(--f-display,inherit);display:flex;align-items:center;gap:8px}
@@ -774,7 +778,7 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
     <div class="ctxrow"><div class="avail" id="avail"></div><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
-    <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
+    <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
   </div>
 </div>
 
@@ -1143,7 +1147,7 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
   // fun zone: topics marked fun / kind "fun" / tag "fun question" live here, not in the task list
   function isFun(t){return !!t.fun||t.kind==="fun"||(Array.isArray(t.tags)&&t.tags.includes("fun question"));}
   // quests: side (default), fun, army, work, travel, ai. A topic's quest is t.quest (one of TQ); fun topics are isFun(); everything else is side.
-  const QUESTS={side:{name:"Side Quests",a:"Side",b:"Quests",e:"🗺️",ph:"משימה חדשה, בכמה מילים…"},fun:{name:"Fun Quest",a:"Fun",b:"Quest",e:"🕹️",ph:"תחביב או רעיון ל-Fun Quest…"},army:{name:"Army Quest",a:"Army",b:"Quest",e:"🪖",ph:"משימה חדשה ל-Army Quest…"},work:{name:"Work Quest",a:"Work",b:"Quest",e:"💼",ph:"משימה חדשה ל-Work Quest…"},travel:{name:"Travel Quest",a:"Travel",b:"Quest",e:"✈️",ph:"טיול או נסיעה חדשה…"},ai:{name:"AI Projects",a:"AI",b:"Projects",e:"🤖",ph:"משימה חדשה לפרויקט…"}};
+  const QUESTS={side:{name:"Side Quests",a:"Side",b:"Quests",e:"🗺️",ph:"משימה (נסח בכמה מילים)"},fun:{name:"Fun Quest",a:"Fun",b:"Quest",e:"🕹️",ph:"רעיון (נסח בכמה מילים)"},army:{name:"Army Quest",a:"Army",b:"Quest",e:"🪖",ph:"משימה (נסח בכמה מילים)"},work:{name:"Work Quest",a:"Work",b:"Quest",e:"💼",ph:"משימה (נסח בכמה מילים)"},travel:{name:"Travel Quest",a:"Travel",b:"Quest",e:"✈️",ph:"טיול (נסח בכמה מילים)"},ai:{name:"AI Projects",a:"AI",b:"Projects",e:"🤖",ph:"משימה (נסח בכמה מילים)"}};
   const TQ=["army","work","travel","ai"]; // quests stored in t.quest; missing = side
   function questOf(t){return TQ.includes(t.quest)?t.quest:"side";}
   function questFromHash(){const q=location.hash.slice(1);return QUESTS[q]?q:"side";}
@@ -1407,7 +1411,7 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   // 3.8: iPhone Safari often never fires "end" after stop(), so the app finishes the recording itself (once), with a short grace period for the last words
   let rec=null,recBase="",recErr="",recCancel=false,recTimer=0;
-  function micUI(on,wait){const b=$("micBtn");b.classList.toggle("rec",on);b.classList.toggle("wait",!!wait);b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?"עצור הקלטה":"הקלטה קולית");$("qtitle").placeholder=wait?"מסיים…":on?"מקשיב… לחץ שוב לסיום":(QUESTS[quest]&&QUESTS[quest].ph)||"משימה חדשה, בכמה מילים…";}
+  function micUI(on,wait){const b=$("micBtn");b.classList.toggle("rec",on);b.classList.toggle("wait",!!wait);b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?"עצור הקלטה":"הקלטה קולית");$("qtitle").placeholder=wait?"מסיים…":on?"מקשיב… לחץ שוב לסיום":(QUESTS[quest]&&QUESTS[quest].ph)||"משימה (נסח בכמה מילים)";}
   function micFinish(r){if(!r||rec!==r)return;rec=null;clearTimeout(recTimer);micUI(false);try{r.onresult=r.onend=r.onerror=null;r.abort();}catch(e){}
     if(recErr==="not-allowed"||recErr==="service-not-allowed"){toast("אין גישה למיקרופון. אפשר ללחוץ על המיקרופון במקלדת");return;}
     if(recCancel)return;
@@ -1522,8 +1526,11 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
   }
   function setNotify(fields){notify={...notify,...fields};if(db&&canWrite)db.collection("settings").doc("notify").update({...fields,updated_at:new Date().toISOString()}).catch(()=>toast("השמירה נכשלה"));renderSettings();}
   function renderSetDot(){const d=$("setDot");if(d)d.hidden=pushOn||!pushSupported()||!standalone()||Notification.permission==="denied";}
-  function closeModal(){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(/^#(brief|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
-  function modal(id,...kids){closeModal();const m=h("div",{class:"sqmodal",id,onclick:e=>{if(e.target===m)closeModal();}},h("div",{class:"sqpanel",role:"dialog","aria-modal":"true"},...kids));document.body.append(m);return m;}
+  let lockY=null;
+  function lockScroll(){if(lockY!==null)return;lockY=window.scrollY;document.body.style.top=-lockY+"px";document.documentElement.classList.add("sqlock");}
+  function unlockScroll(){if(lockY===null)return;const y=lockY;lockY=null;document.documentElement.classList.remove("sqlock");document.body.style.top="";window.scrollTo(0,y);}
+  function closeModal(keep){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(keep!==true)unlockScroll();if(/^#(brief|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
+  function modal(id,...kids){closeModal(true);lockScroll();const m=h("div",{class:"sqmodal",id,onclick:e=>{if(e.target===m)closeModal();}},h("div",{class:"sqpanel",role:"dialog","aria-modal":"true"},...kids));document.body.append(m);return m;}
   function sw(on,fn,label){return h("input",{type:"checkbox",class:"sqsw",role:"switch",checked:on||null,"aria-label":label,onchange:e=>fn(e.target.checked)});}
   function briefBlock(){
     if(!briefLast||!briefLast.body)return h("div",{class:"sqhint"},"עוד לא נשלח בריף. הראשון יגיע מחר ב-"+notify.brief_time+".");
