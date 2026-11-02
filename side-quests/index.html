@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.7";window.SQ_BUILD_AT="2.11.2026 12:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.8";window.SQ_BUILD_AT="2.11.2026 13:27";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -617,6 +617,7 @@ body.fun-on .ctxrow .refr{grid-column:1}
 .quick .qin input{flex:1;width:100%;padding-inline-end:46px}
 .quick .mic{position:absolute;top:50%;inset-inline-end:4px;transform:translateY(-50%);width:36px;height:36px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#3A3A3A;background:transparent;font-weight:400}
 .mic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.quick .mic.rec.wait{background:#888;color:#fff;animation:none}
 .quick .mic.rec{background:#E5383B;color:#fff;animation:micpulse 1.2s ease-in-out infinite}
 @keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(229,56,59,.55)}50%{box-shadow:0 0 0 7px rgba(229,56,59,0)}}
 @media (prefers-reduced-motion:reduce){.mic.rec{animation:none}}
@@ -1266,23 +1267,26 @@ body.fun-on .ctxrow .refr{grid-column:1}
   $("qtitle").addEventListener("keydown",e=>{if(e.key==="Escape")showAdd(false);});
   // 3.5: voice: tap the mic to record, tap again to stop; the words go into the line and become a new task (Web Speech API, Hebrew)
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  let rec=null,recBase="",recErr="",recCancel=false;
-  function micUI(on){const b=$("micBtn");b.classList.toggle("rec",on);b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?"עצור הקלטה":"הקלטה קולית");$("qtitle").placeholder=on?"מקשיב… לחץ שוב לסיום":(QUESTS[quest]&&QUESTS[quest].ph)||"משימה חדשה, בכמה מילים…";}
-  function micStop(cancel){if(!rec)return;recCancel=!!cancel;try{rec.stop();}catch(e){}}
+  // 3.8: iPhone Safari often never fires "end" after stop(), so the app finishes the recording itself (once), with a short grace period for the last words
+  let rec=null,recBase="",recErr="",recCancel=false,recTimer=0;
+  function micUI(on,wait){const b=$("micBtn");b.classList.toggle("rec",on);b.classList.toggle("wait",!!wait);b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?"עצור הקלטה":"הקלטה קולית");$("qtitle").placeholder=wait?"מסיים…":on?"מקשיב… לחץ שוב לסיום":(QUESTS[quest]&&QUESTS[quest].ph)||"משימה חדשה, בכמה מילים…";}
+  function micFinish(r){if(!r||rec!==r)return;rec=null;clearTimeout(recTimer);micUI(false);try{r.onresult=r.onend=r.onerror=null;r.abort();}catch(e){}
+    if(recErr==="not-allowed"||recErr==="service-not-allowed"){toast("אין גישה למיקרופון. אפשר ללחוץ על המיקרופון במקלדת");return;}
+    if(recCancel)return;
+    const v=$("qtitle").value.trim();
+    if(v&&v!==recBase)$("quick").requestSubmit();else toast(recErr&&recErr!=="no-speech"&&recErr!=="aborted"?"ההקלטה נכשלה, נסה שוב":"לא שמעתי כלום, נסה שוב");}
+  function micStop(cancel){const r=rec;if(!r)return;recCancel=!!cancel;if(cancel){micFinish(r);return;}
+    micUI(true,true);try{r.stop();}catch(e){}clearTimeout(recTimer);recTimer=setTimeout(()=>micFinish(r),900);}
   function micStart(){
     if(!SR){toast("ההקלטה לא נתמכת כאן. אפשר ללחוץ על המיקרופון במקלדת");$("qtitle").focus();return;}
     const r=new SR();rec=r;recBase=$("qtitle").value.trim();recErr="";recCancel=false;
     r.lang="he-IL";r.continuous=true;r.interimResults=true;
-    r.onresult=e=>{let t="";for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$("qtitle").value=[recBase,t.trim()].filter(Boolean).join(" ");};
-    r.onerror=e=>{recErr=e.error||"x";};
-    r.onend=()=>{if(rec!==r)return;rec=null;micUI(false);
-      if(recErr==="not-allowed"||recErr==="service-not-allowed"){toast("אין גישה למיקרופון. אפשר ללחוץ על המיקרופון במקלדת");return;}
-      const v=$("qtitle").value.trim();
-      if(recCancel)return;
-      if(v&&v!==recBase)$("quick").requestSubmit();else if(recErr&&recErr!=="aborted")toast(recErr==="no-speech"?"לא שמעתי כלום, נסה שוב":"ההקלטה נכשלה, נסה שוב");};
+    r.onresult=e=>{if(rec!==r)return;let t="";for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$("qtitle").value=[recBase,t.trim()].filter(Boolean).join(" ");};
+    r.onerror=e=>{recErr=e.error||"x";if(recErr==="not-allowed"||recErr==="service-not-allowed")micFinish(r);};
+    r.onend=()=>micFinish(r);
     try{r.start();micUI(true);if(navigator.vibrate)navigator.vibrate(15);}catch(e){rec=null;micUI(false);toast("ההקלטה נכשלה, נסה שוב");}
   }
-  $("micBtn").onclick=()=>{if(rec)micStop(false);else micStart();};
+  $("micBtn").onclick=e=>{e.preventDefault();if(rec){if(!$("micBtn").classList.contains("wait"))micStop(false);}else micStart();};
   window.addEventListener("sq-refreshed",renderRefr);setInterval(renderRefr,20000);
   // the iPhone home-screen app keeps the old page in memory and the CDN caches it ~10 min.
   // When the app comes back to the screen (or on refresh), fetch the page fresh and reload if a newer build is up.
