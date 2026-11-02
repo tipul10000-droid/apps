@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.6";window.SQ_BUILD_AT="2.11.2026 12:15";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.7";window.SQ_BUILD_AT="2.11.2026 12:40";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -276,6 +276,36 @@ body.fun-on .tasks-only{display:none!important}
 .fh-tag{margin:0;font-size:14px;color:#C9C3B6}
 .fcard.fh .fbtn{background:#F5A300;color:#1B1200}
 .fcard.fh .fbtn.ghost{background:transparent;color:#F4F1EA;border-color:#3A3A44}
+/* Movies zone (topic.zone="movies" + zone="games" + Frame Horizon project): one cinema card, IMDb badge, 3 sub-areas */
+.fcard.mv{--fc:#F5C518;background:#0E0E12;border-color:#0E0E12;border-top-color:#F5C518;color:#F4F1EA;--line:#2C2C34;--muted:#A9A49A;--bg:#16161C;--surface:#1D1D24;--ink:#F4F1EA;gap:12px}
+.mv-head{display:flex;align-items:center;gap:12px}
+.imdb{flex:none;display:inline-flex;align-items:center;justify-content:center;background:#F5C518;color:#000;font-family:Impact,"Arial Black",var(--f-display);font-weight:900;font-size:17px;letter-spacing:-.5px;line-height:1;padding:6px 8px 5px;border-radius:5px;direction:ltr;text-decoration:none}
+.mv-head h3{font-size:17px;font-weight:700}
+.mv-head p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.mv-sec{border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.mv-sec>h4{margin:0;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.3px}
+.mv-sec>h4 .n{width:20px;height:20px;border-radius:50%;background:#F5C518;color:#000;display:inline-flex;align-items:center;justify-content:center;font-size:11.5px}
+.mv-sec .fh-logo{padding:0}
+.mv-sec .fh-logo img{max-width:240px}
+.mv-sec p{margin:0;font-size:14px;color:var(--muted)}
+.mv-sec b.t{font-size:15px}
+.fcard.mv .fbtn{background:#F5C518;color:#1B1200}
+.fcard.mv .fbtn.ghost{background:transparent;color:#F4F1EA;border-color:#3A3A44}
+.fcard.mv .cont,.fcard.mv .opt.chat{color:#F4F1EA;border-color:#3A3A44;background:transparent}
+.game{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 12px}
+.game>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 0}
+.game>summary::-webkit-details-marker{display:none}
+.game>summary::after{content:"▾";color:var(--muted);margin-inline-start:auto;transition:transform .15s}
+.game[open]>summary::after{transform:rotate(180deg)}
+.game .gi{flex:none;font-size:22px}
+.game .gt{min-width:0;display:flex;flex-direction:column}
+.game .gt b{font-size:15px;font-weight:700}
+.game .gt small{font-size:12.5px;color:var(--muted);font-weight:600}
+.game .gb{display:flex;flex-direction:column;gap:8px;padding-bottom:12px}
+.game .gnext{font-size:13.5px;color:var(--ink)}
+.game .gnext::before{content:"הצעד הבא: ";color:#F5C518;font-weight:700}
+.game.done .gt b{text-decoration:line-through;opacity:.7}
+.mv-empty{font-size:13px;color:var(--muted)}
 /* Spotify zone (topic.zone="spotify"): numbered sessions, archive of finished ones, next-session picker */
 .fcard.sp{--fc:#1DB954;background:#121212;border-color:#121212;border-top-color:#1DB954;color:#F2F2F2;--line:#2C2C2C;--muted:#A7A7A7;--bg:#1C1C1C;--surface:#232323;--ink:#F2F2F2}
 .sp-head{display:flex;align-items:center;gap:12px}
@@ -1145,10 +1175,52 @@ body.fun-on .ctxrow .refr{grid-column:1}
       arch.length?(()=>{const k=t.id+":arch",d=h("details",{class:"sp-arch",open:funFold[k]||null},h("summary",null,"📦 ארכיון · "+(arch.length===1?"סשן אחד":arch.length+" סשנים")),h("div",{class:"fc-rounds"},arch.map(s=>sessBlock(t,s,false))));d.addEventListener("toggle",()=>{funFold[k]=d.open;});return d;})():null,
       contBtn(t,"cont"));
   }
+  // Movies zone: topic zone "movies" (the external list), topics with zone "games" (one per game) and the Frame Horizon project,
+  // shown together as one cinema card with a small IMDb badge: 1 Frame Horizon, 2 the external list, 3 games.
+  function isMovieZone(t){return t.zone==="movies"||t.zone==="games";}
+  function gameRow(t){
+    const pages=linksOf(t).filter(l=>linkType(l)!=="chat");
+    const qs=questionsOf(t).filter(q=>!q.answer), offs=offersOf(t).filter(o=>(o.state||"open")==="open");
+    const key=t.id+":game",open=key in funFold?funFold[key]:false;
+    const d=h("details",{class:"game"+(t.status==="done"?" done":""),open:open||null,"data-id":t.id},
+      h("summary",null,h("span",{class:"gi","aria-hidden":"true"},t.icon||"🎮"),h("span",{class:"gt"},h("b",null,t.title||""),t.stand?h("small",null,t.stand):null)),
+      h("div",{class:"gb"},
+        t.next_step?h("div",{class:"gnext"},t.next_step):null,
+        pages.length?h("div",{class:"fc-links"},pages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
+        ...qs.map(q=>questionCard(t,q,false)),...offs.map(o=>offerCard(t,o,false)),
+        contBtn(t,"cont")));
+    d.addEventListener("toggle",()=>{funFold[key]=d.open;});
+    return d;
+  }
+  function moviesCard(list,fh){
+    const mv=list.find(t=>t.zone==="movies");
+    const games=list.filter(t=>t.zone==="games").sort((a,b)=>(a.status==="done")-(b.status==="done")||(a.fun_order||99)-(b.fun_order||99));
+    const sec=(n,title,...kids)=>h("section",{class:"mv-sec"},h("h4",null,h("span",{class:"n"},n),title),...kids);
+    const app=fh&&safeUrl(fh.app_url||""),cl=fh&&safeUrl(fh.claude_url||"");
+    const mvPages=mv?linksOf(mv).filter(l=>linkType(l)!=="chat"):[];
+    return h("article",{class:"fcard mv"},
+      h("div",{class:"mv-head"},h("a",{class:"imdb",href:"https://www.imdb.com/",target:"_blank",rel:"noopener","aria-label":"IMDb"},"IMDb"),
+        h("div",{class:"fc-h"},h("h3",null,"סרטים ומשחקים"),h("p",null,"מה לראות ובמה לשחק"))),
+      fh?sec(1,"FRAME HORIZON",
+        h("a",{class:"fh-logo",href:app||cl||"#",target:"_blank",rel:"noopener","aria-label":"פתח את Frame Horizon"},h("img",{src:"fh-logo.png",alt:"Frame Horizon",width:"560",height:"178"})),
+        h("p",null,"ערבי סרטים שהופכים למסע"),
+        h("div",{class:"fc-links"},app?h("a",{class:"fbtn",href:app,target:"_blank",rel:"noopener"},"פתח את האפליקציה"):null,cl?h("a",{class:"fbtn ghost",href:cl,target:"_blank",rel:"noopener"},"פתח ב-Claude"):null)):null,
+      mv?sec(2,"עוד סרטים לראות",
+        h("b",{class:"t"},"הרשימה שלי מחוץ ל-Frame Horizon"),mv.stand?h("p",null,mv.stand):null,
+        mvPages.length?h("div",{class:"fc-links"},mvPages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
+        ...questionsOf(mv).filter(q=>!q.answer).map(q=>questionCard(mv,q,false)),...offersOf(mv).filter(o=>(o.state||"open")==="open").map(o=>offerCard(mv,o,false))):null,
+      sec(3,"🎮 משחקים שרוצה לנסות",
+        games.length?h("div",{class:"fc-rounds"},games.map(gameRow)):h("div",{class:"mv-empty"},"עוד אין משחקים."),
+        h("div",{class:"mv-empty"},"משחק חדש? כתוב לי בשיחה ואוסיף אותו כאן.")));
+  }
   function renderFun(){
-    const list=funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
+    const live=funTopics.filter(t=>t.status!=="archived");
+    const list=live.filter(t=>t.status!=="done"&&!isMovieZone(t)).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
     const cards=list.map((t,i)=>t.zone==="spotify"?spotifyCard(t):funCard(t,i));
-    const fh=projById("frame-horizon");if(fh)cards.push(fhCard(fh));
+    // movies zone keeps finished games (shown struck through) so the list grows as a record
+    const mz=live.filter(t=>isMovieZone(t)&&(t.zone==="games"||t.status!=="done")),fh=projById("frame-horizon");
+    if(mz.length||fh){const mc=moviesCard(mz,fh),ord=Math.min(99,...mz.filter(t=>t.zone==="movies").map(t=>t.fun_order||99));
+      const at=list.findIndex(t=>(t.fun_order||99)>ord);cards.splice(at<0?cards.length:at,0,mc);}
     $("funGrid").replaceChildren(...(cards.length?cards:[h("div",{class:"empty"},"עוד אין כאן כלום. בקש מ-Claude בשיחה להוסיף תחביב ל-Fun Quest.")]));
   }
   window.addEventListener("hashchange",()=>{const q=questFromHash();if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
