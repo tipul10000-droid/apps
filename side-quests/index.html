@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.1";window.SQ_BUILD_AT="2.11.2026 10:30";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.2";window.SQ_BUILD_AT="2.11.2026 10:40";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -435,6 +435,16 @@ body.q-fun .qbtn.q-fun .qn i{color:#33E1FF}
 body.fun-on .avail{display:none}
 .ib.urg{font-size:19px;font-weight:900;color:var(--muted);opacity:.55;font-family:var(--f-body,inherit)}
 .ib.urg[aria-pressed="true"]{color:#fff;background:var(--due);opacity:1;border-radius:50%;width:30px;height:30px;margin-inline:2px}
+/* 3.2: fixed trio beside every task: done ✓ (green), urgent ! (red), jump to chat/email (blue). Same size, same place on every row. */
+.r-side .ib.done,.r-side .ib.urg,.r-side .ib.go,.r-side .ib.ph{width:32px;height:32px;border-radius:50%;margin-inline:2px;border:1.5px solid currentColor;opacity:1}
+.r-side .ib.urg{color:var(--due);font-size:18px}
+.r-side .ib.urg[aria-pressed="true"]{background:var(--due);color:#fff;border-color:var(--due)}
+.r-side .ib.go{color:var(--k-research)}
+.r-side .ib.go svg{width:17px;height:17px}
+.r-side .ib.go.off{opacity:.45;border-style:dashed}
+.r-side .ib.done.on{background:var(--k-admin);color:#fff;border-color:var(--k-admin)}
+.r-side .ib.ph{visibility:hidden}
+.r-side .ib.snz{width:28px;opacity:.6}
 .row.urgent{border-color:var(--due);box-shadow:0 0 0 1px var(--due)}
 .row.urgent .bar{background:var(--due)}
 .g-head.urg{color:var(--due)}
@@ -548,7 +558,8 @@ body.fun-on .avail{display:none}
     app:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M10 9l5 3-5 3z"/></svg>',
     claude:'<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>',
     play:'<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',
-    snooze:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M5 4l3 2M19 4l-3 2"/></svg>'
+    snooze:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M5 4l3 2M19 4l-3 2"/></svg>',
+    mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6l8.5 7 8.5-7"/></svg>'
   };
   // availability (topic field `context`: array of call|pc|house|out|mobile). "mobile" = doable on the phone (site/message), shows everywhere.
   // Empty = not classified, shows everywhere. Legacy keys from v2.8: home -> pc, phone -> mobile. Last choice in localStorage sq_ctx.
@@ -601,6 +612,27 @@ body.fun-on .avail{display:none}
   function forClaude(t){return offersOf(t).filter(o=>o.state==="approved").length+questionsOf(t).filter(q=>q.answer&&!q.done).length;}
   function chatOf(t){const c=linksOf(t).find(l=>linkType(l)==="chat");return c?safeUrl(c.url):null;}
   const SQ_CHAT="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD";
+  // Gmail links. Old form mail.google.com/mail/?authuser=X#all/thread-f:N opened Google's Workspace sign-in page on the iPhone
+  // (the home-screen app has no Google session) and the sign-in dropped the message address. Now: iPhone tries the Gmail app
+  // first (googlegmail:///cv=<hex thread id>), and the web fallback goes through Google's account chooser with the message as `continue`.
+  function isGmail(u){return /^https:\/\/mail\.google\.com\//.test(u||"");}
+  function gmailId(u){const m=(u||"").match(/#[a-z]+\/(?:thread-f:(\d+)|([0-9a-f]{16})(?![\w-]))/i);if(!m)return null;try{return m[1]?BigInt(m[1]).toString(16):m[2].toLowerCase();}catch(e){return null;}}
+  function gmailUser(u){try{const x=new URL(u);return x.searchParams.get("authuser")||(x.pathname.match(/\/mail\/u\/([^/]+)/)||[])[1]||"0";}catch(e){return "0";}}
+  function gmailWeb(u){const user=gmailUser(u),hash=(u.split("#")[1]||"inbox"),id=gmailId(u);
+    const target=`https://mail.google.com/mail/u/${encodeURIComponent(user).replace("%40","@")}/#${id?"all/"+id:hash}`;
+    return user.includes("@")?`https://accounts.google.com/AccountChooser?Email=${encodeURIComponent(user)}&continue=${encodeURIComponent(target)}`:target;}
+  const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  function openGmail(u){const web=gmailWeb(u),id=gmailId(u);
+    if(!IOS){window.open(web,"_blank","noopener");return;}
+    let left=false;const onHide=()=>{left=true;};document.addEventListener("visibilitychange",onHide,{once:true});
+    location.href=id?`googlegmail:///cv=${id}/accountId=1&create-new-tab`:"googlegmail:///";
+    setTimeout(()=>{document.removeEventListener("visibilitychange",onHide);if(!left&&!document.hidden)window.open(web,"_blank","noopener");},1500);}
+  document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a||!isGmail(a.href))return;e.preventDefault();e.stopPropagation();openGmail(a.href);},true);
+  function mailOf(t){const ls=linksOf(t).filter(l=>isGmail(l.url));const l=ls.find(l=>gmailId(l.url))||ls.find(l=>!/compose=|#drafts/.test(l.url));return l?safeUrl(l.url):null;}
+  function goBtn(t){const c=chatOf(t),m=!c&&mailOf(t);
+    if(c)return iconBtn("go",ICON.chat,"קפוץ לשיחה של המשימה",null,c);
+    if(m)return iconBtn("go",ICON.mail,"פתח את המייל של המשימה",null,m);
+    return h("a",{class:"ib go off",href:contUrl(t),target:"_blank",rel:"noopener",title:"אין עדיין שיחה משלה","aria-label":"אין עדיין שיחה משלה. שם המשימה יועתק",html:ICON.chat,onclick:e=>{e.stopPropagation();const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("אין שיחה משלה עדיין. שם המשימה הועתק, הדבק בשיחה");}catch(x){}}});}
   function contUrl(t){const p=t.project&&projById(t.project);return chatOf(t)||(p&&safeUrl(p.claude_url||""))||SQ_CHAT;}
   function contBtn(t,cls,label){const direct=!!chatOf(t);return h("a",{class:cls,href:contUrl(t),target:"_blank",rel:"noopener",html:cls==="cont"?ICON.chat:"",onclick:e=>{e.stopPropagation();if(!direct){const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("שם המשימה הועתק, הדבק בשיחה");}catch(x){}}}},label||"המשך בשיחה");}
   function logPush(t,text,now){return [...(Array.isArray(t.log)?t.log:[]),{at:now,text}];}
@@ -751,11 +783,10 @@ body.fun-on .avail{display:none}
         t.waiting_for&&open?h("div",{class:"r-wait"},h("b",null,t.status==="waiting_me"?"מחכה לך: ":"ממתין ל: "),t.waiting_for):null,
         !t.waiting_for&&t.next_step?h("div",{class:"r-next"},t.next_step):null),
       h("div",{class:"r-side"},
-        canWrite&&open?h("button",{class:"ib urg",type:"button","aria-pressed":t.urgent?"true":"false",title:t.urgent?"דחוף (לחיצה מורידה)":"סמן כדחוף","aria-label":t.urgent?"דחוף. לחיצה מורידה את הסימון":"סמן כדחוף",onclick:e=>{e.stopPropagation();setUrgent(t);}},"!"):null,
-        chat?iconBtn("chat",ICON.chat,"פתח את השיחה ב-Claude",null,safeUrl(chat.url)):iconBtn("chat off",ICON.chat,"אין עדיין קישור לשיחה",()=>{openId=t.id;renderList();setTimeout(()=>{const i=document.getElementById("lnk-"+t.id);i&&i.focus();},0);}),
-        page?iconBtn("page",ICON.page,page.label||"פתח דף",null,safeUrl(page.url)):null,
-        canWrite&&open?iconBtn("snz",ICON.snooze,"תזכיר לי אחר כך",()=>{laterFor=laterFor==="r:"+t.id?null:"r:"+t.id;renderList();}):null,
-        canWrite&&open?iconBtn("done",ICON.done,"סמן כבוצע",press(()=>markDone(t))):null));
+        open?(canWrite?iconBtn("done",ICON.done,"סמן כבוצע",press(()=>markDone(t))):h("span",{class:"ib ph","aria-hidden":"true"})):h("span",{class:"ib done on",title:"בוצע","aria-label":"בוצע",html:ICON.done}),
+        canWrite&&open?h("button",{class:"ib urg",type:"button","aria-pressed":t.urgent?"true":"false",title:t.urgent?"דחוף (לחיצה מורידה)":"סמן כדחוף","aria-label":t.urgent?"דחוף. לחיצה מורידה את הסימון":"סמן כדחוף",onclick:e=>{e.stopPropagation();setUrgent(t);}},"!"):h("span",{class:"ib ph","aria-hidden":"true"}),
+        goBtn(t),
+        canWrite&&open?iconBtn("snz",ICON.snooze,"תזכיר לי אחר כך",()=>{laterFor=laterFor==="r:"+t.id?null:"r:"+t.id;renderList();}):null));
     if(laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.style.gridColumn="1/-1";m.style.margin="0 8px 8px";el.append(m);}
     if(openId===t.id)el.append(drawer(t));
     return el;
