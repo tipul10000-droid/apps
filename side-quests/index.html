@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.3";window.SQ_BUILD_AT="2.11.2026 10:45";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.4";window.SQ_BUILD_AT="2.11.2026 10:50";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -501,6 +501,37 @@ body.fun-on .avail{display:none}
 .syncsheet li{margin:2px 0}
 .syncsheet .sh-sub{margin-top:6px;color:var(--muted,#666);font-size:12.5px}
 .syncsheet .sh-x{margin-inline-start:auto;font-size:18px;line-height:1;padding:2px 6px;color:var(--muted,#666)}
+/* 3.4: settings (gear) + notifications + morning brief */
+.tb.tset{width:32px;padding:0;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.35);position:relative}
+.tb.tset svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tdot{position:absolute;top:-2px;inset-inline-end:-2px;width:9px;height:9px;border-radius:50%;background:var(--due);border:1.5px solid #fff}
+.tdot[hidden]{display:none}
+.sqmodal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.sqpanel{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:var(--surface,#fff);color:var(--ink,#111);border-radius:20px 20px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px rgba(0,0,0,.3);font-size:15px;line-height:1.45}
+.sqpanel h2{margin:0;font:800 19px var(--f-display,inherit);display:flex;align-items:center;gap:8px}
+.sqpanel .px{margin-inline-start:auto;font-size:22px;line-height:1;padding:4px 8px;color:var(--muted)}
+.sqpanel h3{margin:16px 0 6px;font:800 15px var(--f-display,inherit);display:flex;align-items:center;gap:6px}
+.sqcard{background:var(--sunk,#eee);border-radius:14px;padding:10px 12px;margin-top:8px}
+.sqrow{display:flex;align-items:center;gap:10px;min-height:44px}
+.sqrow+.sqrow{border-top:1px solid var(--line)}
+.sqrow .lb{flex:1;min-width:0}.sqrow .lb small{display:block;color:var(--muted);font-size:12.5px}
+.sqsw{appearance:none;-webkit-appearance:none;width:46px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;cursor:pointer;transition:background .15s}
+.sqsw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:inset-inline-start .15s}
+.sqsw:checked{background:var(--k-admin)}.sqsw:checked::after{inset-inline-start:21px}
+.sqsel{font:inherit;font-size:15px;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.sqbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:0 14px;border-radius:12px;font-weight:700;font-size:15px;background:var(--k-research);color:#fff}
+.sqbtn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.sqbtn:disabled{opacity:.5}
+.sqbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sqstate{display:flex;align-items:center;gap:8px;font-weight:700}
+.sqstate .d{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none}
+.sqstate.on .d{background:var(--k-admin)}.sqstate.bad .d{background:var(--due)}
+.sqhint{color:var(--muted);font-size:13px;margin-top:6px}
+.brief ul{list-style:none;margin:8px 0 0;padding:0}
+.brief li{padding:7px 0;border-top:1px solid var(--line)}
+.brief li:first-child{border-top:0}
+.brief .bt{font-weight:800;font-size:16px}
+.brief .bm{color:var(--muted);font-size:12.5px;margin-top:6px}
 /* 2.9: quest logo sits under the title, in place of the subtitle, so the banner art stays visible */
 .qlogo{display:block;margin-top:4px;flex:none}
 .qlogo[hidden]{display:none}
@@ -544,7 +575,7 @@ body.fun-on .avail{display:none}
   <div class="wb-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 82 L22 64 L40 70 L60 38 L78 46 L98 12"/></svg></div>
   <div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><img class="qlogo" id="logo-work" alt="Elbit" hidden><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
 </div>
-<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="refr tb" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span id="refrTxt">עדכון</span></button></div>
+<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="refr tb" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span id="refrTxt">עדכון</span></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
@@ -1142,6 +1173,112 @@ body.fun-on .avail{display:none}
     const ch=diffT(before,snapT());
     const e=sheet(false,ch.length?`עודכן · ${ch.length===1?"שינוי אחד":ch.length+" שינויים"}`:"עודכן · אין שינויים חדשים",ch.slice(0,5),sweepLine());
     setTimeout(()=>e.remove(),ch.length?9000:5000);};
+
+  // ===== 3.4: settings + notifications (Web Push via Supabase function sq-push) + morning brief =====
+  const PUSH_FN="https://emgtyfksnofzzlutngbf.supabase.co/functions/v1/sq-push";
+  const VAPID="BG4jnuAYF7dwLbC_NQAdtdlaVWLk3TKpS0E221Y3J9KrhkspmnMokjUUQwt3gCnsID8dmwCCiCjCGM94qoDCPEQ";
+  const NDEF={brief:true,brief_time:"08:00",brief_days:"all",critical:true,quiet_from:22,quiet_to:7};
+  let notify={...NDEF},briefLast=null,pushOn=false,pushEp="";
+  const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  const standalone=()=>window.navigator.standalone===true||matchMedia("(display-mode: standalone)").matches;
+  const pushSupported=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+  function epId(ep){let h1=5381,h2=52711;for(let i=0;i<ep.length;i++){const c=ep.charCodeAt(i);h1=(h1*33)^c;h2=(h2*33)^c;}return "d-"+(h1>>>0).toString(36)+(h2>>>0).toString(36);}
+  function b64u(s){const p="=".repeat((4-s.length%4)%4);const b=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(b,c=>c.charCodeAt(0));}
+  function devName(){const u=navigator.userAgent;return /iPhone/.test(u)?"iPhone":/iPad|Macintosh/.test(u)&&navigator.maxTouchPoints>1?"iPad":/Android/.test(u)?"Android":/Windows/.test(u)?"Windows":/Mac/.test(u)?"Mac":"מכשיר";}
+  async function swReg(){if(!("serviceWorker" in navigator)||location.protocol!=="https:")return null;try{await navigator.serviceWorker.register("sw.js");return await navigator.serviceWorker.ready;}catch(e){return null;}}
+  async function saveSub(sub){const j=sub.toJSON();pushEp=j.endpoint;try{localStorage.setItem("sq_push_ep",j.endpoint);}catch(e){}
+    await db.collection("push_subs").doc(epId(j.endpoint)).set({endpoint:j.endpoint,keys:j.keys,device:devName(),ua:navigator.userAgent.slice(0,160),at:new Date().toISOString()});}
+  // on every start: if this device already allowed notifications, keep its subscription registered (Apple rotates them)
+  async function syncPush(){
+    if(!pushSupported()||Notification.permission!=="granted"){pushOn=false;renderSetDot();return;}
+    const reg=await swReg();if(!reg)return;
+    try{const sub=await reg.pushManager.getSubscription();
+      if(!sub){pushOn=false;renderSetDot();return;}
+      pushOn=true;pushEp=sub.endpoint;let saved="";try{saved=localStorage.getItem("sq_push_ep")||"";}catch(e){}
+      if(saved!==sub.endpoint&&db&&canWrite)await saveSub(sub);}catch(e){}
+    renderSetDot();
+  }
+  async function enablePush(btn){
+    if(!pushSupported()){toast(isIOS&&!standalone()?"פתח את Side Quests מהאייקון במסך הבית":"הדפדפן הזה לא תומך בהתראות");return;}
+    btn.disabled=true;btn.textContent="מפעיל…";
+    try{const perm=await Notification.requestPermission();
+      if(perm!=="granted"){toast("ההתראות חסומות. אפשר להפעיל בהגדרות הטלפון");return;}
+      const reg=await swReg();if(!reg)throw new Error("sw");
+      let sub=await reg.pushManager.getSubscription();
+      if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID)});
+      await saveSub(sub);pushOn=true;toast("ההתראות הופעלו 🔔");
+    }catch(e){toast("ההפעלה נכשלה, נסה שוב");}
+    finally{renderSettings();renderSetDot();}
+  }
+  async function disablePush(){
+    try{const reg=await swReg();const sub=reg&&await reg.pushManager.getSubscription();
+      if(sub){await db.collection("push_subs").doc(epId(sub.endpoint)).delete().catch(()=>{});await sub.unsubscribe();}
+      try{localStorage.removeItem("sq_push_ep");}catch(e){}pushOn=false;toast("ההתראות כובו במכשיר הזה");}catch(e){toast("לא הצלחתי לכבות, נסה שוב");}
+    renderSettings();renderSetDot();
+  }
+  async function pushCall(action,btn,okMsg){
+    if(!pushEp){toast("קודם צריך להפעיל התראות");return;}
+    const t=btn.textContent;btn.disabled=true;btn.textContent="שולח…";
+    try{const r=await fetch(PUSH_FN+"?action="+action,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({endpoint:pushEp})});
+      if(r.status===429)toast("רגע, נסה שוב בעוד כמה שניות");else if(r.status===404){try{localStorage.removeItem("sq_push_ep");}catch(e){}await syncPush();toast("המכשיר נרשם מחדש, נסה שוב");}
+      else if(!r.ok)throw 0;else toast(okMsg);}
+    catch(e){toast("השליחה נכשלה");}
+    finally{setTimeout(()=>{btn.disabled=false;btn.textContent=t;},1500);}
+  }
+  function setNotify(fields){notify={...notify,...fields};if(db&&canWrite)db.collection("settings").doc("notify").update({...fields,updated_at:new Date().toISOString()}).catch(()=>toast("השמירה נכשלה"));renderSettings();}
+  function renderSetDot(){const d=$("setDot");if(d)d.hidden=pushOn||!pushSupported()||!standalone()||Notification.permission==="denied";}
+  function closeModal(){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(/^#(brief|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
+  function modal(id,...kids){closeModal();const m=h("div",{class:"sqmodal",id,onclick:e=>{if(e.target===m)closeModal();}},h("div",{class:"sqpanel",role:"dialog","aria-modal":"true"},...kids));document.body.append(m);return m;}
+  function sw(on,fn,label){return h("input",{type:"checkbox",class:"sqsw",role:"switch",checked:on||null,"aria-label":label,onchange:e=>fn(e.target.checked)});}
+  function briefBlock(){
+    if(!briefLast||!briefLast.body)return h("div",{class:"sqhint"},"עוד לא נשלח בריף. הראשון יגיע מחר ב-"+notify.brief_time+".");
+    const lines=Array.isArray(briefLast.lines)&&briefLast.lines.length?briefLast.lines:String(briefLast.body).split("\n");
+    const pick=briefLast.pick&&allTopics.find(t=>t.id===briefLast.pick);
+    return h("div",{class:"brief"},h("div",{class:"bt"},briefLast.title||"בריף"),h("ul",null,lines.map(l=>h("li",null,l))),
+      pick?h("div",{class:"sqbtns"},h("button",{class:"sqbtn",type:"button",onclick:()=>{closeModal();openTask(pick.id);}},"▶️ פתח: "+String(pick.title||"").slice(0,30))):null,
+      h("div",{class:"bm"},(briefLast.by==="claude"?"נכתב ע״י Claude · ":"")+(briefLast.at?ago(Date.parse(briefLast.at)):"")));
+  }
+  function showBrief(){modal("briefM",h("h2",null,"☀️ בריף הבוקר",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),h("div",{class:"sqcard"},briefBlock()));}
+  function renderSettings(){if(document.getElementById("setM"))showSettings(true);}
+  function showSettings(keep){
+    const sc=document.querySelector("#setM .sqpanel"),top=sc?sc.scrollTop:0;
+    let st,cls="",act;
+    if(!pushSupported()){st=isIOS&&!standalone()?"באייפון ההתראות עובדות רק מהאייקון במסך הבית":"הדפדפן הזה לא תומך בהתראות";cls="bad";}
+    else if(Notification.permission==="denied"){st="ההתראות חסומות בהגדרות הטלפון";cls="bad";}
+    else if(pushOn){st="פעיל במכשיר הזה ("+devName()+")";cls="on";act=h("button",{class:"sqbtn ghost",type:"button",onclick:disablePush},"כבה");}
+    else{st="כבוי במכשיר הזה";act=h("button",{class:"sqbtn",type:"button",onclick:e=>enablePush(e.currentTarget)},"🔔 הפעל התראות");}
+    const times=["06:30","07:00","07:30","08:00","08:30","09:00"];
+    const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
+      h("h3",null,"🔔 התראות"),
+      h("div",{class:"sqcard"},h("div",{class:"sqrow"},h("div",{class:"sqstate "+cls},h("span",{class:"d"}),h("span",null,st)),h("span",{style:"flex:1"}),act||null),
+        isIOS&&!standalone()?h("div",{class:"sqhint"},"בספארי: שיתוף ← הוסף למסך הבית, ואז פותחים מהאייקון ולוחצים כאן."):null),
+      h("div",{class:"sqcard"},
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"☀️ בריף בוקר",h("small",null,"מה דחוף, מה נוסף בלילה, ובמה להתחיל")),sw(notify.brief,v=>setNotify({brief:v}),"בריף בוקר")),
+        notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"שעה"),h("select",{class:"sqsel","aria-label":"שעת הבריף",onchange:e=>setNotify({brief_time:e.target.value})},times.map(t=>h("option",{value:t,selected:t===notify.brief_time||null},t)))):null,
+        notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי הבריף",onchange:e=>setNotify({brief_days:e.target.value})},h("option",{value:"all",selected:notify.brief_days!=="sun-thu"||null},"כל יום"),h("option",{value:"sun-thu",selected:notify.brief_days==="sun-thu"||null},"ראשון עד חמישי"))):null,
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"🚨 רק דברים קריטיים",h("small",null,"משהו שלא יכול לחכות לבריף. בשקט בין 22:00 ל-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות קריטיות"))),
+      pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("test",e.currentTarget,"נשלחה התראת בדיקה")},"שלח בדיקה"),h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("brief",e.currentTarget,"הבריף נשלח")},"שלח בריף עכשיו")):null,
+      h("h3",null,"☀️ הבריף האחרון"),h("div",{class:"sqcard"},briefBlock()));
+    if(keep){const p=m.querySelector(".sqpanel");if(p)p.scrollTop=top;}
+  }
+  function openTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
+    if(t.status==="done"||t.status==="archived"||t.status==="promoted")view="done";openId=id;renderAll();
+    setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
+  let routed=false;
+  function routeHash(){const hs=location.hash;
+    if(hs==="#brief"){showBrief();return true;}if(hs==="#settings"){showSettings();return true;}
+    const m=hs.match(/^#t=(.+)$/);if(m&&allTopics.length){const id=decodeURIComponent(m[1]);try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}openTask(id);return true;}
+    return false;}
+  window.addEventListener("hashchange",routeHash);
+  if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.type==="sq-open"&&d.url){try{const u=new URL(d.url);if(u.hash&&u.hash!==location.hash)location.hash=u.hash;else routeHash();}catch(x){}}});
+  $("setBtn").onclick=()=>showSettings();
+  function initNotify(){
+    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last");
+      notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;
+      if(!routed&&allTopics.length){routed=true;routeHash();}else if(document.getElementById("briefM"))showBrief();else renderSettings();},()=>{});
+    db.collection("topics").onSnapshot(()=>{if(!routed&&allTopics.length){routed=true;routeHash();}},()=>{});
+    syncPush();
+  }
   renderStats();
   (async()=>{
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
@@ -1153,6 +1290,7 @@ body.fun-on .avail{display:none}
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStrip();renderList();renderFun();},()=>{});
+    initNotify();
   })();
 })();
 </script>
