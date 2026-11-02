@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.3";window.SQ_BUILD_AT="2.11.2026 16:30";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.4";window.SQ_BUILD_AT="2.11.2026 16:15";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -705,6 +705,9 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
 .qb-ai p{color:#D9D1C5}
 .ai-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#D97757;direction:ltr}
 @media (prefers-reduced-motion:reduce){.tb-cloud,.tb-route,.ai-clawd,.ai-clawd .ai-eye,.ai-cur{animation:none}}
+/* 4.4: project cards with a clearer frame; real app icons instead of emoji (icon_url) */
+.pc{border:2px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.pic.has-img{background:transparent!important;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 </style>
 </head>
 <body>
@@ -979,7 +982,7 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
   // project tasks (kind "project" linked to a known project) live inside their project card at the bottom, not in the main list
   function isProjTask(t){return t.kind==="project"&&!!t.project&&!!projById(t.project);}
   function inStrip(t){return quest==="ai"&&isProjTask(t);} // project tasks sit inside their project card, only in AI Projects
-  function picOf(p,size){const st=size?`width:${size}px;height:${size}px;border-radius:${size/4}px;font-size:${size*.55}px`:"";const bg=`background:${p.color||"var(--hero)"};${st}`;const img=safeUrl(p.icon_url||"")||(String(p.icon_url||"").startsWith("data:image/")?p.icon_url:null);if(img)return h("span",{class:"pic",style:bg},h("img",{src:img,alt:""}));return h("span",{class:"pic",style:bg},p.icon||(p.name||"?").slice(0,1));}
+  function picOf(p,size){const st=size?`width:${size}px;height:${size}px;border-radius:${size/4}px;font-size:${size*.55}px`:"";const bg=`background:${p.color||"var(--hero)"};${st}`;const img=safeUrl(p.icon_url||"")||(String(p.icon_url||"").startsWith("data:image/")?p.icon_url:null);if(img){const fb=p.icon||(p.name||"?").slice(0,1);return h("span",{class:"pic has-img",style:bg},h("img",{src:img,alt:"",onerror:e=>{const s=e.currentTarget.parentNode;s.classList.remove("has-img");s.textContent=fb;}}));}return h("span",{class:"pic",style:bg},p.icon||(p.name||"?").slice(0,1));}
   function renderStrip(){
     const s=$("strip");
     if(!projects.length){s.replaceChildren(h("div",{class:"empty"},"אין עדיין פרויקטים."));return;}
