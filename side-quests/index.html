@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.9";window.SQ_BUILD_AT="2.11.2026 14:39";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.0";window.SQ_BUILD_AT="2.11.2026 14:46";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -724,12 +724,15 @@ body.fun-on .ctxrow .refr{grid-column:1}
   };
   // availability (topic field `context`: array of call|pc|house|out|mobile). "mobile" = doable on the phone (site/message), shows everywhere.
   // Empty = not classified, shows everywhere. Legacy keys from v2.8: home -> pc, phone -> mobile. Last choice in localStorage sq_ctx.
-  const CTX={call:{e:"📞",l:"זמין לשיחות",full:"זמין לשיחות טלפון / ברכב",sub:"ברכב, אפשר לדבר"},pc:{e:"💻",l:"מול המחשב",full:"מול המחשב",sub:"עבודה במחשב"},house:{e:"🔧",l:"בבית",full:"בבית, משימות בית",sub:"להתקין, לתקן, לסדר"},out:{e:"🛒",l:"סידורים בחוץ",full:"סידורי חוץ",sub:"קניות וסידורים"}};
+  const CTX={call:{e:"📞",l:"זמין לשיחות",full:"זמין לשיחות טלפון / ברכב",sub:"ברכב, אפשר לדבר"},pc:{e:"💻",l:"מול המחשב",full:"מול המחשב",sub:"עבודה במחשב"},house:{e:"🔧",l:"בבית",full:"בבית, משימות בית",sub:"להתקין, לתקן, לסדר"},out:{e:"🛒",l:"סידורים בחוץ",full:"סידורי חוץ",sub:"קניות וסידורים"},office:{e:"🏢",l:"בעבודה",full:"בעבודה: רק קצר ומרחוק",sub:"קצר, מהנייד או בשיחה"},lior:{e:"👫",l:"עם ליאור",full:"עם ליאור",sub:"בירורים שעושים יחד"}};
   const TAGS={...CTX,mobile:{e:"📱",l:"בנייד",full:"אפשר מהנייד, מכל מקום"}};
   const CTX_OLD={home:"pc",phone:"mobile"};
   let ctxNow="all",ctxMenu=false;try{const v=localStorage.getItem("sq_ctx");const m=v==="home"?"pc":v==="phone"?"call":v;if(CTX[m])ctxNow=m;}catch(e){}
   function ctxOf(t){const out=[];for(let c of (Array.isArray(t.context)?t.context:[])){c=CTX_OLD[c]||c;if(TAGS[c]&&!out.includes(c))out.push(c);}return out;}
-  function ctxOk(t){if(ctxNow==="all")return true;const c=ctxOf(t);return !c.length||c.includes("mobile")||c.includes(ctxNow);}
+  function ctxOk(t){if(ctxNow==="all")return true;const c=ctxOf(t);
+    if(ctxNow==="office")return c.includes("office")||c.includes("mobile")||c.includes("call"); // at work: only short, remote things (iPhone or a call)
+    if(ctxNow==="lior")return c.includes("lior"); // with Lior: only things done together
+    return !c.length||c.includes("mobile")||c.includes(ctxNow);}
   function isUrgent(t){return !!t.urgent&&isOpen(t);}
   let inboxAll=false, view="open", shareId=null, shareMode="task";
   let db=null, topics=[], funTopics=[], projects=[], filterKind="all", openId=null, canWrite=true;
@@ -908,10 +911,10 @@ body.fun-on .ctxrow .refr{grid-column:1}
     const pick=k=>{ctxNow=k;ctxMenu=false;try{localStorage.setItem("sq_ctx",k);}catch(x){}openId=null;laterFor=null;renderCtx();renderInbox();renderList();};
     const opt=k=>h("button",{type:"button","aria-pressed":ctxNow===k?"true":"false",onclick:()=>pick(k)},h("span",null,CTX[k].e+" "+CTX[k].l),h("small",null,CTX[k].sub));
     $("avail").replaceChildren(
-      h("button",{class:"avbtn"+(ctxNow!=="all"?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false",onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},h("span",{class:"e","aria-hidden":"true"},cur.e),h("span",{class:"k"},"איפה אני:"),h("span",{class:"v"},cur.l),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
-      h("div",{class:"avmenu",hidden:!ctxMenu,role:"group","aria-label":"איפה אני עכשיו"},...Object.keys(CTX).map(opt),
+      h("button",{class:"avbtn"+(ctxNow!=="all"?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false",onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},h("span",{class:"e","aria-hidden":"true"},cur.e),ctxNow==="all"?h("span",{class:"k"},"מצב זמינות:"):null,h("span",{class:"v"},cur.l),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
+      h("div",{class:"avmenu",hidden:!ctxMenu,role:"group","aria-label":"מצב זמינות"},...Object.keys(CTX).map(opt),
         h("button",{class:"all",type:"button","aria-pressed":ctxNow==="all"?"true":"false",onclick:()=>pick("all")},"📍 הכול, בלי סינון"),
-        h("div",{class:"note"},"📱 משימות שאפשר לעשות מהנייד מופיעות בכל מקום.")));
+        h("div",{class:"note"},"📱 משימות מהנייד מופיעות בכל מצב, חוץ מ״עם ליאור״.")));
   }
   function setCtx(t,c){const cur=ctxOf(t),next=cur.includes(c)?cur.filter(x=>x!==c):[...cur,c];patch(t,{context:next},next.length?"מתאים ל: "+next.map(x=>TAGS[x].l).join(", "):"מתאים לכל מקום");}
   function setUrgent(t){const on=!t.urgent;if(openId===t.id&&!on)openId=null;patch(t,{urgent:on,urgent_by:on?"oren":"",urgent_at:on?new Date().toISOString():"",...(on&&snoozed(t)?{snooze_until:""}:{}),log:logPush(t,on?"סומן דחוף ❗":"הוסר סימון דחוף",new Date().toISOString())},on?"❗ סומן דחוף, עלה לראש הרשימה":"הוסר סימון דחוף");}
