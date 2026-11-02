@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.4";window.SQ_BUILD_AT="2.11.2026 16:15";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.5";window.SQ_BUILD_AT="2.11.2026 16:40";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1552,16 +1552,20 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
         h("div",{class:"sqrow"},h("div",{class:"sqstate "+cls},h("span",{class:"d"}),h("span",null,st)),h("span",{style:"flex:1"}),act||null),
         isIOS&&!standalone()?h("div",{class:"sqhint"},"שיתוף ← הוסף למסך הבית, ואז מהאייקון."):null,
         pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("test",e.currentTarget,"נשלחה התראת בדיקה")},"שלח בדיקה")):null),
-      sec("brief","☀️ בריף בוקר",notify.brief?notify.brief_time:"כבוי",
+      sec("abroad","✈️ מצב חו״ל",abroadOn()?(notify.abroad_until?"עד "+fmtDate(notify.abroad_until):"פעיל"):"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בלי בריף ובלי הפרעות. רק דבר קריטי חדש קופץ, בשקט בלילה לפי השעה שם")),sw(abroadOn(),v=>setNotify(v?{abroad:true,abroad_tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"",abroad_since:new Date().toISOString()}:{abroad:false,abroad_until:""}),"מצב חו״ל")),
+        abroadOn()?h("div",{class:"sqrow"},h("div",{class:"lb"},"עד",h("small",null,"ריק = עד שמכבים")),h("input",{type:"date",class:"sqsel","aria-label":"מצב חו״ל עד",value:notify.abroad_until||"",min:todayISO(),onchange:e=>setNotify({abroad_until:e.target.value})})):null),
+      sec("brief","☀️ בריף בוקר",abroadOn()?"מושהה בחו״ל":notify.brief?notify.brief_time:"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל"),sw(notify.brief,v=>setNotify({brief:v}),"בריף בוקר")),
         notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"שעה"),h("select",{class:"sqsel","aria-label":"שעת הבריף",onchange:e=>setNotify({brief_time:e.target.value})},times.map(t=>h("option",{value:t,selected:t===notify.brief_time||null},t)))):null,
-        notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי הבריף",onchange:e=>setNotify({brief_days:e.target.value})},h("option",{value:"all",selected:notify.brief_days!=="sun-thu"||null},"כל יום"),h("option",{value:"sun-thu",selected:notify.brief_days==="sun-thu"||null},"א׳ עד ה׳"))):null,
+        notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי הבריף",onchange:e=>setNotify({brief_days:e.target.value})},h("option",{value:"all",selected:!["sun-thu","sun-fri"].includes(notify.brief_days)||null},"כל יום"),h("option",{value:"sun-fri",selected:notify.brief_days==="sun-fri"||null},"א׳ עד ו׳"),h("option",{value:"sun-thu",selected:notify.brief_days==="sun-thu"||null},"א׳ עד ה׳"))):null,
         pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("brief",e.currentTarget,"הבריף נשלח")},"שלח בריף עכשיו")):null),
       sec("crit","🚨 דחוף בלבד",notify.critical?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות"))),
       sec("last","📄 הבריף האחרון","",briefBlock()));
     if(keep){const p=m.querySelector(".sqpanel");if(p)p.scrollTop=top;}
   }
+  function abroadOn(){return notify.abroad===true&&(!notify.abroad_until||notify.abroad_until>=todayISO());}
   function openTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
     if(t.status==="done"||t.status==="promoted")view="done";else if(t.status==="archived")view="archive";else view="open";
     if(!ctxOk(t)){ctxNow="all";try{localStorage.setItem("sq_ctx","all");}catch(e){}}filterKind="all";openId=id;renderAll();
