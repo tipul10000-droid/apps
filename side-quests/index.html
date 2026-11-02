@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.2";window.SQ_BUILD_AT="2.11.2026 21:26";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.3";window.SQ_BUILD_AT="2.11.2026 23:45";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1534,7 +1534,10 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     if(pend)next=h("div",{class:"sp-wait"},h("b",null,`⏳ סשן ${pend.session||nextN} בהכנה`),h("span",{class:"sp-taste"},"לפי: "+((pend.seeds||[]).join(", ")||pend.text)),
       canWrite?h("div",{class:"opts"},hub?h("a",{class:"sp-go",href:hub,target:"_blank",rel:"noopener",style:"text-decoration:none;display:inline-flex;align-items:center"},"⚡ בנה עכשיו"):contBtn(t,"opt chat","💬 לבנות עכשיו בשיחה"),h("button",{class:"opt",type:"button",onclick:press(()=>cancelSession(t,pend))},"בטל")):null);
     else if(seeds.length&&canWrite){
-      const body=[h("p",null,"בחר עד 3: שירים שאהבת או סגנון. הלחיצה פותחת את דף הטעם, ושם Claude בונה את הסשן תוך כדקה."),
+      const lastDone=Math.max(0,...arch.map(s=>+s.n||0)),stale=lastDone>(+t.seeds_for||0);
+      const body=[stale?h("div",{class:"sp-wait"},h("b",null,`🔄 סשן ${lastDone} דורג, וההצעות עוד מהסשן הקודם`),h("span",{class:"sp-taste"},"דף הטעם יסכם את הדירוג ויציע כיוונים חדשים."),hub?h("a",{class:"sp-go",href:hub,target:"_blank",rel:"noopener",style:"text-decoration:none;display:inline-flex;align-items:center;align-self:flex-start"},"⚡ עדכן הצעות"):null)
+          :t.taste_note?h("p",{class:"sp-taste"},"💡 "+t.taste_note):null,
+        h("p",null,"בחר עד 3: שירים שאהבת או סגנון. הלחיצה פותחת את דף הטעם, ושם Claude בונה את הסשן תוך כדקה."),
         songs.length?h("div",{class:"sp-sec"},"לפי שיר"):null,songs.length?h("div",{class:"sp-chips"},songs.map(chip)):null,
         styles.length?h("div",{class:"sp-sec"},"לפי סגנון"):null,styles.length?h("div",{class:"sp-chips"},styles.map(chip)):null,
         hub&&sel.length?h("a",{class:"sp-go",href:hub,target:"_blank",rel:"noopener",style:"text-decoration:none;display:inline-flex;align-items:center",onclick:()=>requestSession(t,nextN)},`⚡ צור סשן ${nextN}`)
