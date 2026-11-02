@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.2";window.SQ_BUILD_AT="2.11.2026 10:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.3";window.SQ_BUILD_AT="2.11.2026 10:45";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -276,6 +276,42 @@ body.fun-on .tasks-only{display:none!important}
 .fh-tag{margin:0;font-size:14px;color:#C9C3B6}
 .fcard.fh .fbtn{background:#F5A300;color:#1B1200}
 .fcard.fh .fbtn.ghost{background:transparent;color:#F4F1EA;border-color:#3A3A44}
+/* Spotify zone (topic.zone="spotify"): numbered sessions, archive of finished ones, next-session picker */
+.fcard.sp{--fc:#1DB954;background:#121212;border-color:#121212;border-top-color:#1DB954;color:#F2F2F2;--line:#2C2C2C;--muted:#A7A7A7;--bg:#1C1C1C;--surface:#232323;--ink:#F2F2F2}
+.sp-head{display:flex;align-items:center;gap:12px}
+.sp-logo{display:inline-flex;align-items:center;gap:8px;color:#1DB954;text-decoration:none;font-weight:800;font-size:22px;letter-spacing:-.5px;direction:ltr}
+.sp-logo svg{width:34px;height:34px;fill:#1DB954}
+.sp-head .fc-h{margin-inline-start:auto;text-align:left}
+.sp-head .fc-h p{font-size:13px}
+.sp-taste{font-size:13px;color:var(--muted);line-height:1.5}
+.sp-taste b{color:#1DB954;font-weight:700}
+.sp-sec{font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.3px;margin-top:2px}
+.sess>summary{gap:12px}
+.sess-n{flex:none;width:30px;height:30px;border-radius:50%;background:#1DB954;color:#06210F;font-weight:800;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.sess .rt small{display:block;font-size:12.5px;color:var(--muted);font-weight:600}
+.sess.done .sess-n{background:#3A3A3A;color:#DDD}
+.sp-arch{border:1px dashed var(--line);border-radius:12px;padding:0 12px}
+.sp-arch>summary{list-style:none;cursor:pointer;padding:11px 0;font-weight:700;display:flex;justify-content:space-between}
+.sp-arch>summary::-webkit-details-marker{display:none}
+.sp-arch>summary::after{content:"▾";color:var(--muted)}
+.sp-arch[open]>summary::after{transform:rotate(180deg)}
+.sp-arch .fc-rounds{padding-bottom:10px}
+.sp-next{border:1px solid #1DB954;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;background:color-mix(in srgb,#1DB954 8%,#121212)}
+.sp-next h4{margin:0;font-size:16px;font-weight:800}
+.sp-next p{margin:0;font-size:13px;color:var(--muted)}
+.sp-chips{display:flex;flex-wrap:wrap;gap:8px}
+.sp-chip{border:1px solid #3A3A3A;background:#1E1E1E;color:#F2F2F2;border-radius:999px;padding:7px 13px;font-size:14px;font-weight:600;min-height:36px;cursor:pointer;text-align:start}
+.sp-chip small{color:var(--muted);font-weight:500;margin-inline-start:4px}
+.sp-chip[aria-pressed="true"]{background:#1DB954;border-color:#1DB954;color:#06210F}
+.sp-chip[aria-pressed="true"] small{color:#0B3A1C}
+.sp-go{align-self:flex-start;border:0;border-radius:999px;background:#1DB954;color:#06210F;font-weight:800;font-size:15px;padding:10px 20px;min-height:42px;cursor:pointer}
+.sp-go:disabled{opacity:.4;cursor:default}
+.sp-wait{border:1px solid #1DB954;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.sp-wait b{font-size:15px}
+.sp-wait .opts{display:flex;gap:8px;flex-wrap:wrap}
+.fcard.sp .fbtn{background:#1DB954;color:#06210F}
+.fcard.sp .fbtn.ghost{background:transparent;color:#F2F2F2;border-color:#3A3A3A}
+.fcard.sp .cont,.fcard.sp .opt.chat{color:#F2F2F2;border-color:#3A3A3A;background:transparent}
 
 /* Quest switcher: four quests (Side, Fun, Army, Work). Each quest shows full-width buttons to the other three. */
 .qnav{display:flex;flex-direction:column;gap:7px}
@@ -947,9 +983,78 @@ body.fun-on .avail{display:none}
       h("p",{class:"fh-tag"},"ערבי סרטים שהופכים למסע"),
       h("div",{class:"fc-links"},app?h("a",{class:"fbtn",href:app,target:"_blank",rel:"noopener"},"פתח את האפליקציה"):null,cl?h("a",{class:"fbtn ghost",href:cl,target:"_blank",rel:"noopener"},"פתח ב-Claude"):null));
   }
+  // Spotify zone (topic.zone==="spotify"). Sessions = item_groups [{id,n,title,seed,url,url_label}] (newest first) + items with group=id.
+  // A session whose items are all voted 👍/👎 moves to the archive. Picker: t.next_seeds [{id,type:"song"|"style",label,sub}].
+  // Tapping "צור סשן N" appends an approved ai_offer {kind:"spotify_session",session:N,seeds:[labels]}; Claude builds it and marks it done.
+  const SPOT_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.52 17.34c-.24.36-.66.48-1.02.24-2.82-1.74-6.36-2.1-10.56-1.14-.42.12-.78-.18-.9-.54-.12-.42.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.3 1.02zm1.44-3.3c-.3.42-.84.6-1.26.3-3.24-1.98-8.16-2.58-11.94-1.38-.48.12-1.02-.12-1.14-.6-.12-.48.12-1.02.6-1.14C9.6 9.9 15 10.56 18.72 12.84c.36.18.54.78.24 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.3c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.72 1.62.54.3.72 1.02.42 1.56-.3.42-1.02.6-1.56.3z"/></svg>';
+  let spPick={};
+  function spSessions(t){
+    const all=Array.isArray(t.items)?t.items:[];
+    const defs=(Array.isArray(t.item_groups)?t.item_groups:[]).filter(g=>g&&g.id);
+    const ids=[...defs.map(g=>g.id),...[...new Set(all.filter(x=>x&&x.label).map(x=>x.group||""))].filter(g=>!defs.some(d=>d.id===g))];
+    const total=ids.length;
+    return ids.map((gid,i)=>{const g=defs.find(d=>d.id===gid)||{id:gid,title:""};const its=all.filter(x=>x&&x.label&&(x.group||"")===gid);
+      return {g,its,n:g.n||total-i,done:its.length>0&&its.every(x=>x.vote==="up"||x.vote==="down")};}).filter(s=>s.its.length);
+  }
+  function sessBlock(t,s,open){
+    const all=t.items;const ups=s.its.filter(x=>x.vote==="up").length,downs=s.its.filter(x=>x.vote==="down").length,left=s.its.length-ups-downs;
+    const key=t.id+":"+s.g.id,isOpen=key in funFold?funFold[key]:open;
+    const title=s.g.title&&!/^סבב|^סשן/.test(s.g.title)?s.g.title:(s.g.seed||(s.g.title||"").replace(/^(סבב|סשן)\s*\d+\s*·?\s*/,""));
+    const d=h("details",{class:"round sess"+(s.done?" done":""),open:isOpen||null},
+      h("summary",null,h("span",{class:"sess-n"},s.n),h("span",{class:"rt"},"סשן "+s.n,title?h("small",null,title):null),
+        h("span",{class:"rn"},left?`עוד ${left} לסמן`:`👍${ups} · 👎${downs}`)),
+      safeUrl(s.g.url||"")?h("a",{class:"fbtn ghost rlink",href:safeUrl(s.g.url),target:"_blank",rel:"noopener"},s.g.url_label||"פתח"):null,
+      h("ul",{class:"fc-items"},s.its.map(x=>itemRow(t,x,all.indexOf(x)))));
+    d.addEventListener("toggle",()=>{funFold[key]=d.open;});
+    return d;
+  }
+  function spPending(t){return (Array.isArray(t.ai_offers)?t.ai_offers:[]).find(o=>o&&o.kind==="spotify_session"&&!o.superseded&&(o.state==="approved"||o.state==="open"));}
+  function requestSession(t,n){
+    const seeds=(Array.isArray(t.next_seeds)?t.next_seeds:[]).filter(x=>spPick[t.id]&&spPick[t.id].includes(x.id));if(!seeds.length)return;
+    const now=new Date().toISOString(),labels=seeds.map(x=>x.label);
+    const offer={id:"s"+n+"-"+Date.now().toString(36),kind:"spotify_session",session:n,seeds:labels,text:`סשן ${n} לפי: ${labels.join(", ")}`,
+      detail:`לבנות סשן ${n}: 5 שירים חדשים (לא שהוצעו כבר) לפי ${labels.join(", ")}, ולמידה מהלייקים והדיסלייקים בסשנים הקודמים. להוסיף ל-items עם group "s${n}", להוסיף בראש item_groups {id:"s${n}",n:${n},title:"סשן ${n}",seed:"לפי ..."}, לרענן את next_seeds ולסמן את ההצעה done.`,
+      state:"approved",decided_at:now};
+    spPick[t.id]=[];
+    patch(t,{ai_offers:[...(Array.isArray(t.ai_offers)?t.ai_offers:[]),offer],status:"waiting_other",waiting_for:`Claude בונה סשן ${n}`,next_step:"",log:logPush(t,`ביקשת סשן ${n} לפי: ${labels.join(", ")}`,now)},`סשן ${n} בהכנה. Claude יבנה ויעדכן כאן`);
+  }
+  function cancelSession(t,o){const offers=(Array.isArray(t.ai_offers)?t.ai_offers:[]).map(x=>x===o||x.id===o.id?{...x,state:"declined",superseded:true}:x);
+    patch(t,{ai_offers:offers,status:"active",waiting_for:"",log:logPush(t,"בוטלה בקשת "+o.text,new Date().toISOString())},"הבקשה בוטלה");}
+  function spotifyCard(t){
+    const ss=spSessions(t),live=ss.filter(s=>!s.done),arch=ss.filter(s=>s.done);
+    const nextN=Math.max(0,...ss.map(s=>+s.n||0))+1;
+    const liked=[...new Set((Array.isArray(t.items)?t.items:[]).filter(x=>x&&x.vote==="up").map(x=>String(x.label).split(" · ")[0]))];
+    const pages=linksOf(t).filter(l=>linkType(l)!=="chat");
+    const pend=spPending(t);
+    const seeds=(Array.isArray(t.next_seeds)?t.next_seeds:[]).filter(x=>x&&x.id&&x.label);
+    const sel=spPick[t.id]||[];
+    const chip=x=>h("button",{class:"sp-chip",type:"button","aria-pressed":sel.includes(x.id)?"true":"false",onclick:()=>{const c=spPick[t.id]||[];spPick[t.id]=c.includes(x.id)?c.filter(y=>y!==x.id):[...c,x.id].slice(-3);renderFun();}},x.label,x.sub?h("small",null,x.sub):null);
+    const songs=seeds.filter(x=>x.type!=="style"),styles=seeds.filter(x=>x.type==="style");
+    let next=null;
+    if(pend)next=h("div",{class:"sp-wait"},h("b",null,`⏳ סשן ${pend.session||nextN} בהכנה`),h("span",{class:"sp-taste"},"לפי: "+((pend.seeds||[]).join(", ")||pend.text)),
+      canWrite?h("div",{class:"opts"},contBtn(t,"opt chat","💬 לבנות עכשיו בשיחה"),h("button",{class:"opt",type:"button",onclick:press(()=>cancelSession(t,pend))},"בטל")):null);
+    else if(seeds.length&&canWrite){
+      const body=[h("p",null,"בחר עד 3: שירים שאהבת או סגנון. הסשן ילמד גם מכל הלייקים."),
+        songs.length?h("div",{class:"sp-sec"},"לפי שיר"):null,songs.length?h("div",{class:"sp-chips"},songs.map(chip)):null,
+        styles.length?h("div",{class:"sp-sec"},"לפי סגנון"):null,styles.length?h("div",{class:"sp-chips"},styles.map(chip)):null,
+        h("button",{class:"sp-go",type:"button",disabled:sel.length?null:true,onclick:press(()=>requestSession(t,nextN))},`צור סשן ${nextN}`)];
+      const nk=t.id+":next";
+      next=live.length?(()=>{const d=h("details",{class:"sp-next",open:funFold[nk]||null},h("summary",{style:"cursor:pointer;list-style:none"},h("h4",{style:"display:inline"},`✨ רוצה כבר את סשן ${nextN}? ▾`)),...body);d.addEventListener("toggle",()=>{funFold[nk]=d.open;});return d;})()
+        :h("div",{class:"sp-next"},h("h4",null,`✨ הסשן הבא: סשן ${nextN}`),...body);
+    }
+    return h("article",{class:"fcard sp","data-id":t.id},
+      h("div",{class:"sp-head"},h("a",{class:"sp-logo",href:"https://open.spotify.com/",target:"_blank",rel:"noopener","aria-label":"Spotify",html:SPOT_SVG+"<span>Spotify</span>"}),
+        h("div",{class:"fc-h"},h("h3",null,t.title||"המוזיקה שלי"),t.stand?h("p",null,t.stand):null)),
+      liked.length?h("div",{class:"sp-taste"},"למדתי שאתה אוהב: ",h("b",null,liked.join(" · "))):null,
+      pages.length?h("div",{class:"fc-links"},pages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
+      live.length?h("div",{class:"fc-rounds"},live.map((s,i)=>sessBlock(t,s,i===0))):null,
+      next,
+      arch.length?(()=>{const k=t.id+":arch",d=h("details",{class:"sp-arch",open:funFold[k]||null},h("summary",null,"📦 ארכיון · "+(arch.length===1?"סשן אחד":arch.length+" סשנים")),h("div",{class:"fc-rounds"},arch.map(s=>sessBlock(t,s,false))));d.addEventListener("toggle",()=>{funFold[k]=d.open;});return d;})():null,
+      contBtn(t,"cont"));
+  }
   function renderFun(){
     const list=funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
-    const cards=list.map(funCard);
+    const cards=list.map((t,i)=>t.zone==="spotify"?spotifyCard(t):funCard(t,i));
     const fh=projById("frame-horizon");if(fh)cards.push(fhCard(fh));
     $("funGrid").replaceChildren(...(cards.length?cards:[h("div",{class:"empty"},"עוד אין כאן כלום. בקש מ-Claude בשיחה להוסיף תחביב ל-Fun Quest.")]));
   }
