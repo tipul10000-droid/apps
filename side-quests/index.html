@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.5";window.SQ_BUILD_AT="2.11.2026 11:46";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.6";window.SQ_BUILD_AT="2.11.2026 12:15";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1117,19 +1117,20 @@ body.fun-on .ctxrow .refr{grid-column:1}
     const nextN=Math.max(0,...ss.map(s=>+s.n||0))+1;
     const liked=[...new Set((Array.isArray(t.items)?t.items:[]).filter(x=>x&&x.vote==="up").map(x=>String(x.label).split(" · ")[0]))];
     const pages=linksOf(t).filter(l=>linkType(l)!=="chat");
-    const pend=spPending(t);
+    const pend=spPending(t),hub=safeUrl(t.hub_url||"");
     const seeds=(Array.isArray(t.next_seeds)?t.next_seeds:[]).filter(x=>x&&x.id&&x.label);
     const sel=spPick[t.id]||[];
     const chip=x=>h("button",{class:"sp-chip",type:"button","aria-pressed":sel.includes(x.id)?"true":"false",onclick:()=>{const c=spPick[t.id]||[];spPick[t.id]=c.includes(x.id)?c.filter(y=>y!==x.id):[...c,x.id].slice(-3);renderFun();}},x.label,x.sub?h("small",null,x.sub):null);
     const songs=seeds.filter(x=>x.type!=="style"),styles=seeds.filter(x=>x.type==="style");
     let next=null;
     if(pend)next=h("div",{class:"sp-wait"},h("b",null,`⏳ סשן ${pend.session||nextN} בהכנה`),h("span",{class:"sp-taste"},"לפי: "+((pend.seeds||[]).join(", ")||pend.text)),
-      canWrite?h("div",{class:"opts"},contBtn(t,"opt chat","💬 לבנות עכשיו בשיחה"),h("button",{class:"opt",type:"button",onclick:press(()=>cancelSession(t,pend))},"בטל")):null);
+      canWrite?h("div",{class:"opts"},hub?h("a",{class:"sp-go",href:hub,target:"_blank",rel:"noopener",style:"text-decoration:none;display:inline-flex;align-items:center"},"⚡ בנה עכשיו"):contBtn(t,"opt chat","💬 לבנות עכשיו בשיחה"),h("button",{class:"opt",type:"button",onclick:press(()=>cancelSession(t,pend))},"בטל")):null);
     else if(seeds.length&&canWrite){
-      const body=[h("p",null,"בחר עד 3: שירים שאהבת או סגנון. הסשן ילמד גם מכל הלייקים."),
+      const body=[h("p",null,"בחר עד 3: שירים שאהבת או סגנון. הלחיצה פותחת את דף הטעם, ושם Claude בונה את הסשן תוך כדקה."),
         songs.length?h("div",{class:"sp-sec"},"לפי שיר"):null,songs.length?h("div",{class:"sp-chips"},songs.map(chip)):null,
         styles.length?h("div",{class:"sp-sec"},"לפי סגנון"):null,styles.length?h("div",{class:"sp-chips"},styles.map(chip)):null,
-        h("button",{class:"sp-go",type:"button",disabled:sel.length?null:true,onclick:press(()=>requestSession(t,nextN))},`צור סשן ${nextN}`)];
+        hub&&sel.length?h("a",{class:"sp-go",href:hub,target:"_blank",rel:"noopener",style:"text-decoration:none;display:inline-flex;align-items:center",onclick:()=>requestSession(t,nextN)},`⚡ צור סשן ${nextN}`)
+          :h("button",{class:"sp-go",type:"button",disabled:sel.length?null:true,onclick:press(()=>requestSession(t,nextN))},`צור סשן ${nextN}`)];
       const nk=t.id+":next";
       next=live.length?(()=>{const d=h("details",{class:"sp-next",open:funFold[nk]||null},h("summary",{style:"cursor:pointer;list-style:none"},h("h4",{style:"display:inline"},`✨ רוצה כבר את סשן ${nextN}? ▾`)),...body);d.addEventListener("toggle",()=>{funFold[nk]=d.open;});return d;})()
         :h("div",{class:"sp-next"},h("h4",null,`✨ הסשן הבא: סשן ${nextN}`),...body);
