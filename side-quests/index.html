@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="2.9";window.SQ_BUILD_AT="2.11.2026 01:18";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.0";window.SQ_BUILD_AT="2.11.2026 08:05";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -433,6 +433,15 @@ body.fun-on .ctxbar{display:none}
 .refr.tb{width:auto;min-height:0;margin:0;padding:0 10px;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.35)}
 .refr.tb .ic{font-size:15px}
 .quick[hidden]{display:none!important}
+/* 3.0: sync sheet: shows what the refresh actually did */
+.syncsheet{position:fixed;z-index:60;inset-inline:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));max-width:480px;margin-inline:auto;background:var(--surface,#fff);color:var(--ink,#111);border:1.5px solid var(--accent);border-radius:16px;padding:12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.28);font-size:14px;line-height:1.45}
+.syncsheet .sh-h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}
+.syncsheet .sh-ic{display:inline-block;width:18px;text-align:center}
+.syncsheet.busy .sh-ic{animation:sqspin .8s linear infinite}
+.syncsheet ul{margin:6px 0 0;padding:0 18px 0 0}
+.syncsheet li{margin:2px 0}
+.syncsheet .sh-sub{margin-top:6px;color:var(--muted,#666);font-size:12.5px}
+.syncsheet .sh-x{margin-inline-start:auto;font-size:18px;line-height:1;padding:2px 6px;color:var(--muted,#666)}
 /* 2.9: quest logo sits under the title, in place of the subtitle, so the banner art stays visible */
 .qlogo{display:block;margin-top:4px;flex:none}
 .qlogo[hidden]{display:none}
@@ -918,7 +927,7 @@ body.fun-on .ctxbar{display:none}
     try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(quest==="army"||quest==="work"?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
-  function renderRefr(){$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עדכון";}
+  function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עדכון";}
   function showAdd(on){$("quick").hidden=!on;$("addBtn").setAttribute("aria-expanded",on?"true":"false");$("addBtn").textContent=on?"×":"+";if(on){$("quick").scrollIntoView({block:"nearest"});setTimeout(()=>$("qtitle").focus(),50);}}
   $("addBtn").onclick=()=>showAdd($("quick").hidden);
   $("qtitle").addEventListener("keydown",e=>{if(e.key==="Escape")showAdd(false);});
@@ -936,9 +945,35 @@ body.fun-on .ctxbar{display:none}
   setTimeout(()=>checkUpdate(true),3000);
   $("ver").textContent=`גרסה ${window.SQ_BUILD} · ${window.SQ_BUILD_AT}`;
   $("ver").onclick=async()=>{$("ver").textContent="בודק גרסה חדשה…";await checkUpdate(true);setTimeout(()=>{$("ver").textContent=`גרסה ${window.SQ_BUILD} · ${window.SQ_BUILD_AT} (העדכנית)`;},600);};
-  $("refr").onclick=async()=>{const b=$("refr");if(b.classList.contains("spin"))return;b.classList.add("spin");$("refrTxt").textContent="מעדכן הכול…";checkUpdate(true);
-    try{if(db&&db.refresh)await db.refresh();laterFor=null;renderAll();toast("הכול עודכן");}catch(e){toast("העדכון נכשל, נסה שוב");}
-    setTimeout(()=>b.classList.remove("spin"),300);renderRefr();};
+  // 3.0: the refresh button really syncs: pulls fresh data, asks the Claude run for a full scan
+  // (settings/sync_request), and shows exactly what changed. Stays at least ~2s so it is visible.
+  let syncState={};
+  function sheet(busy,title,items,sub){document.querySelectorAll(".syncsheet").forEach(x=>x.remove());
+    const e=h("div",{class:"syncsheet"+(busy?" busy":""),role:"status","aria-live":"polite"},
+      h("div",{class:"sh-h"},h("span",{class:"sh-ic","aria-hidden":"true"},busy?"⟳":"✓"),h("span",null,title),busy?null:h("button",{type:"button",class:"sh-x","aria-label":"סגור",onclick:()=>e.remove()},"×")),
+      items&&items.length?h("ul",null,...items.map(t=>h("li",null,t))):null,sub?h("div",{class:"sh-sub"},sub):null);
+    document.body.append(e);return e;}
+  const snapT=()=>new Map(allTopics.map(t=>[t.id,t]));
+  const STL={active:"פתוח",waiting_me:"מחכה לך",waiting_other:"מחכה לאחרים",paused:"מושהה",done:"בוצע",archived:"בארכיון",promoted:"הפך לפרויקט"};
+  function diffT(a,b){const out=[];for(const[id,t]of b){const o=a.get(id);const nm=String(t.title||id).slice(0,40);
+      if(!o){out.push(`חדש: ${nm}`);continue;}
+      if(o.status!==t.status)out.push(`${nm}: ${STL[t.status]||t.status}`);
+      else if(o.stand!==t.stand||o.waiting_for!==t.waiting_for||o.next_step!==t.next_step)out.push(`${nm}: עודכן`);}
+    return out;}
+  function sweepLine(){const r=syncState.req&&Date.parse(syncState.req.at),w=syncState.state&&Date.parse(syncState.state.last_sweep_at);
+    if(r&&(!w||r>w))return"סריקה מלאה (Gmail, Drive, GitHub, שיחות) תרוץ בריצה הקרובה";
+    return w?`סריקה מלאה אחרונה: ${ago(w)}`:"";}
+  $("refr").onclick=async()=>{const b=$("refr");if(b.classList.contains("spin"))return;b.classList.add("spin");$("refrTxt").textContent="מעדכן…";checkUpdate(true);
+    const before=snapT(),t0=Date.now();sheet(true,"מעדכן את הסטטוס האחרון…",null,"מושך נתונים טריים ומבקש סריקה מלאה");
+    let ok=true;
+    try{if(db&&canWrite)await db.collection("settings").doc("sync_request").set({at:new Date().toISOString(),from:"app"}).catch(()=>{});
+      if(db&&db.refresh)await db.refresh();}catch(e){ok=false;}
+    const wait=2000-(Date.now()-t0);if(wait>0)await new Promise(r=>setTimeout(r,wait));
+    laterFor=null;renderAll();b.classList.remove("spin");renderRefr();
+    if(!ok){sheet(false,"העדכון נכשל, נסה שוב");return;}
+    const ch=diffT(before,snapT());
+    const e=sheet(false,ch.length?`עודכן · ${ch.length===1?"שינוי אחד":ch.length+" שינויים"}`:"עודכן · אין שינויים חדשים",ch.slice(0,5),sweepLine());
+    setTimeout(()=>e.remove(),ch.length?9000:5000);};
   renderStats();
   (async()=>{
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
@@ -947,6 +982,7 @@ body.fun-on .ctxbar{display:none}
     db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();},()=>notice("הקשר לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
+      const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStrip();renderList();renderFun();},()=>{});
   })();
