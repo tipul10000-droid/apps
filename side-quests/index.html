@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.0";window.SQ_BUILD_AT="2.11.2026 08:05";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.1";window.SQ_BUILD_AT="2.11.2026 10:30";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -420,12 +420,25 @@ body.q-fun .qbtn.q-fun .qn i{color:#33E1FF}
 .qbtn{justify-content:center}
 .qbtn .qn{flex:none}
 /* 2.7: new-task and refresh are small buttons on the banner */
-.ctxbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:3px;border-radius:12px;background:rgba(0,0,0,.18)}
-.ctxbar button{display:flex;align-items:center;justify-content:center;gap:4px;min-height:34px;padding:0 4px;border-radius:9px;font-size:13px;font-weight:700;color:var(--hero-muted);white-space:nowrap}
-.ctxbar button .e{font-size:15px;line-height:1}
-.ctxbar button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink,#3A2400)}
-.ctxbar button:active{transform:scale(.96)}
-body.fun-on .ctxbar{display:none}
+.avail{position:relative}
+.avbtn{width:100%;display:flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border-radius:12px;background:rgba(0,0,0,.18);color:var(--hero-ink);font-size:14px;font-weight:700;text-align:start}
+.avbtn .e{font-size:17px;line-height:1}.avbtn .k{color:var(--hero-muted);font-weight:600}.avbtn .v{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.avbtn .car{color:var(--hero-muted);font-size:12px}
+.avbtn.on{background:var(--accent);color:var(--accent-ink)}.avbtn.on .k,.avbtn.on .car{color:inherit;opacity:.75}
+.avbtn:active{transform:scale(.98)}
+.avmenu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}
+.avmenu[hidden]{display:none}
+.avmenu button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;border-radius:11px;background:rgba(255,255,255,.1);color:var(--hero-ink);font-size:14px;font-weight:700;text-align:start;border:1.5px solid transparent}
+.avmenu button small{font-size:11.5px;font-weight:500;color:var(--hero-muted)}
+.avmenu button[aria-pressed="true"]{border-color:var(--accent);background:rgba(255,255,255,.18)}
+.avmenu button.all{grid-column:1/-1;flex-direction:row;align-items:center;gap:8px}
+.avmenu .note{grid-column:1/-1;font-size:11.5px;color:var(--hero-muted);padding:0 2px}
+body.fun-on .avail{display:none}
+.ib.urg{font-size:19px;font-weight:900;color:var(--muted);opacity:.55;font-family:var(--f-body,inherit)}
+.ib.urg[aria-pressed="true"]{color:#fff;background:var(--due);opacity:1;border-radius:50%;width:30px;height:30px;margin-inline:2px}
+.row.urgent{border-color:var(--due);box-shadow:0 0 0 1px var(--due)}
+.row.urgent .bar{background:var(--due)}
+.g-head.urg{color:var(--due)}
+#urgSec .sec-head h2{color:var(--due)}
 .r-ctx{font-size:12px;flex:none;letter-spacing:1px;opacity:.8}
 .topbtns{position:absolute;z-index:6;top:calc(10px + env(safe-area-inset-top,0px));left:max(10px,env(safe-area-inset-left,0px));display:flex;gap:6px;direction:rtl}
 .tb{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:32px;border-radius:999px;font-weight:700;font-size:12.5px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
@@ -490,7 +503,7 @@ body.fun-on .ctxbar{display:none}
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxbar" id="ctxbar" role="group" aria-label="איפה אני עכשיו"></div>
+    <div class="avail" id="avail"></div>
     <form class="quick" id="quick" hidden><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button id="qbtn" type="submit">הוסף</button></form>
   </div>
 </div>
@@ -499,6 +512,10 @@ body.fun-on .ctxbar{display:none}
   <div id="notice" class="notice" hidden></div>
   <section class="funzone" id="funSec" aria-label="Fun Quest">
     <div class="fzgrid" id="funGrid"></div>
+  </section>
+  <section aria-labelledby="hUrg" id="urgSec" class="tasks-only" hidden>
+    <div class="sec-head"><h2 id="hUrg">❗ דחוף</h2></div>
+    <div class="group" id="urgList"></div>
   </section>
   <section aria-labelledby="hAsk" id="askSec" class="tasks-only" hidden>
     <div class="sec-head"><h2 id="hAsk">מחכה להחלטה שלך</h2></div>
@@ -533,11 +550,15 @@ body.fun-on .ctxbar{display:none}
     play:'<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',
     snooze:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M5 4l3 2M19 4l-3 2"/></svg>'
   };
-  // where Oren is right now (topic field `context`: array of home|out|phone; empty = fits anywhere). Last choice kept in localStorage sq_ctx.
-  const CTX={home:{e:"🏠",l:"בבית",full:"בבית / מול המחשב"},out:{e:"🚶",l:"בחוץ",full:"בחוץ / בזמן סידורים"},phone:{e:"📱",l:"טלפון",full:"באייפון / טלפוני"}};
-  let ctxNow="all";try{const v=localStorage.getItem("sq_ctx");if(CTX[v])ctxNow=v;}catch(e){}
-  function ctxOf(t){return (Array.isArray(t.context)?t.context:[]).filter(c=>CTX[c]);}
-  function ctxOk(t){if(ctxNow==="all")return true;const c=ctxOf(t);return !c.length||c.includes(ctxNow);}
+  // availability (topic field `context`: array of call|pc|house|out|mobile). "mobile" = doable on the phone (site/message), shows everywhere.
+  // Empty = not classified, shows everywhere. Legacy keys from v2.8: home -> pc, phone -> mobile. Last choice in localStorage sq_ctx.
+  const CTX={call:{e:"📞",l:"זמין לשיחות",full:"זמין לשיחות טלפון / ברכב",sub:"ברכב, אפשר לדבר"},pc:{e:"💻",l:"מול המחשב",full:"מול המחשב",sub:"עבודה במחשב"},house:{e:"🔧",l:"בבית",full:"בבית, משימות בית",sub:"להתקין, לתקן, לסדר"},out:{e:"🛒",l:"סידורים בחוץ",full:"סידורי חוץ",sub:"קניות וסידורים"}};
+  const TAGS={...CTX,mobile:{e:"📱",l:"בנייד",full:"אפשר מהנייד, מכל מקום"}};
+  const CTX_OLD={home:"pc",phone:"mobile"};
+  let ctxNow="all",ctxMenu=false;try{const v=localStorage.getItem("sq_ctx");const m=v==="home"?"pc":v==="phone"?"call":v;if(CTX[m])ctxNow=m;}catch(e){}
+  function ctxOf(t){const out=[];for(let c of (Array.isArray(t.context)?t.context:[])){c=CTX_OLD[c]||c;if(TAGS[c]&&!out.includes(c))out.push(c);}return out;}
+  function ctxOk(t){if(ctxNow==="all")return true;const c=ctxOf(t);return !c.length||c.includes("mobile")||c.includes(ctxNow);}
+  function isUrgent(t){return !!t.urgent&&isOpen(t);}
   let inboxAll=false, view="open", shareId=null, shareMode="task";
   let db=null, topics=[], funTopics=[], projects=[], filterKind="all", openId=null, canWrite=true;
   const $=id=>document.getElementById(id);
@@ -626,7 +647,7 @@ body.fun-on .ctxbar{display:none}
   }
   function renderInbox(){
     const cards=[];
-    const order=[...topics.filter(t=>isOpen(t)&&returned(t)),...topics.filter(t=>isOpen(t)&&!returned(t)&&!snoozed(t)).sort(byDate)].filter(ctxOk);
+    const order=[...topics.filter(t=>isOpen(t)&&returned(t)),...topics.filter(t=>isOpen(t)&&!returned(t)&&!snoozed(t)).sort(byDate)].filter(ctxOk).sort((a,b)=>(isUrgent(b)?1:0)-(isUrgent(a)?1:0));
     order.forEach(t=>{
       questionsOf(t).filter(q=>!q.answer).forEach(q=>cards.push(questionCard(t,q,true)));
       offersOf(t).filter(o=>(o.state||"open")==="open").forEach(o=>cards.push(offerCard(t,o,true)));
@@ -690,10 +711,17 @@ body.fun-on .ctxbar{display:none}
     }));
   }
   function renderCtx(){
-    const b=(k,e,l)=>h("button",{type:"button","aria-pressed":ctxNow===k?"true":"false",title:k==="all"?"כל המשימות":CTX[k].full,onclick:()=>{ctxNow=k;try{localStorage.setItem("sq_ctx",k);}catch(x){}openId=null;laterFor=null;renderCtx();renderInbox();renderList();}},h("span",{class:"e","aria-hidden":"true"},e),l);
-    $("ctxbar").replaceChildren(b("all","📍","הכול"),...Object.keys(CTX).map(k=>b(k,CTX[k].e,CTX[k].l)));
+    const cur=ctxNow==="all"?{e:"📍",l:"הכול"}:CTX[ctxNow];
+    const pick=k=>{ctxNow=k;ctxMenu=false;try{localStorage.setItem("sq_ctx",k);}catch(x){}openId=null;laterFor=null;renderCtx();renderInbox();renderList();};
+    const opt=k=>h("button",{type:"button","aria-pressed":ctxNow===k?"true":"false",onclick:()=>pick(k)},h("span",null,CTX[k].e+" "+CTX[k].l),h("small",null,CTX[k].sub));
+    $("avail").replaceChildren(
+      h("button",{class:"avbtn"+(ctxNow!=="all"?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false",onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},h("span",{class:"e","aria-hidden":"true"},cur.e),h("span",{class:"k"},"איפה אני:"),h("span",{class:"v"},cur.l),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
+      h("div",{class:"avmenu",hidden:!ctxMenu,role:"group","aria-label":"איפה אני עכשיו"},...Object.keys(CTX).map(opt),
+        h("button",{class:"all",type:"button","aria-pressed":ctxNow==="all"?"true":"false",onclick:()=>pick("all")},"📍 הכול, בלי סינון"),
+        h("div",{class:"note"},"📱 משימות שאפשר לעשות מהנייד מופיעות בכל מקום.")));
   }
-  function setCtx(t,c){const cur=ctxOf(t),next=cur.includes(c)?cur.filter(x=>x!==c):[...cur,c];patch(t,{context:next},next.length?"מיקום: "+next.map(x=>CTX[x].l).join(", "):"מתאים לכל מקום");}
+  function setCtx(t,c){const cur=ctxOf(t),next=cur.includes(c)?cur.filter(x=>x!==c):[...cur,c];patch(t,{context:next},next.length?"מתאים ל: "+next.map(x=>TAGS[x].l).join(", "):"מתאים לכל מקום");}
+  function setUrgent(t){const on=!t.urgent;if(openId===t.id&&!on)openId=null;patch(t,{urgent:on,urgent_by:on?"oren":"",urgent_at:on?new Date().toISOString():"",...(on&&snoozed(t)?{snooze_until:""}:{}),log:logPush(t,on?"סומן דחוף ❗":"הוסר סימון דחוף",new Date().toISOString())},on?"❗ סומן דחוף, עלה לראש הרשימה":"הוסר סימון דחוף");}
   function renderFilters(){
     const counts={};topics.filter(isOpen).forEach(t=>counts[t.kind]=(counts[t.kind]||0)+1);
     $("filters").replaceChildren(h("button",{class:"fchip",type:"button","aria-pressed":filterKind==="all"?"true":"false",onclick:()=>{filterKind="all";renderFilters();renderList();}},"הכול"),
@@ -708,13 +736,13 @@ body.fun-on .ctxbar{display:none}
     const links=linksOf(t), chat=links.find(l=>linkType(l)==="chat"), page=links.find(l=>linkType(l)==="page");
     const dcls=n==null?"":n<=0?" due":n<=3?" soon":"";
     const asks=openAsks(t), cl=forClaude(t);
-    const el=h("div",{class:"row"+(open?"":" closed"),style:`--k:var(--k-${k})`,"data-id":t.id},
+    const el=h("div",{class:"row"+(open?"":" closed")+(isUrgent(t)?" urgent":""),style:`--k:var(--k-${k})`,"data-id":t.id},
       h("span",{class:"bar"}),
       h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":openId===t.id?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
         h("div",{class:"r-line"},
           t.project&&projById(t.project)?h("span",{class:"ptag"},picOf(projById(t.project),16),projById(t.project).name):null,
           h("span",{class:"r-title"},t.title||"(ללא כותרת)"),
-          ctxOf(t).length&&open?h("span",{class:"r-ctx",title:ctxOf(t).map(c=>CTX[c].full).join(", "),"aria-label":"מיקום: "+ctxOf(t).map(c=>CTX[c].full).join(", ")},ctxOf(t).map(c=>CTX[c].e).join("")):null,
+          ctxOf(t).length&&open?h("span",{class:"r-ctx",title:ctxOf(t).map(c=>TAGS[c].full).join(", "),"aria-label":"מתאים ל: "+ctxOf(t).map(c=>TAGS[c].full).join(", ")},ctxOf(t).map(c=>TAGS[c].e).join("")):null,
           t.status==="waiting_me"?h("span",{class:"tag me"},"מחכה לי"):t.status==="waiting_other"?h("span",{class:"tag other"},"מחכה לאחרים"):null,
           asks&&open?h("span",{class:"tag ask"},`${asks} להחלטה`):null,
           cl&&open?h("span",{class:"tag cl"},"Claude מטפל"):null,
@@ -723,6 +751,7 @@ body.fun-on .ctxbar{display:none}
         t.waiting_for&&open?h("div",{class:"r-wait"},h("b",null,t.status==="waiting_me"?"מחכה לך: ":"ממתין ל: "),t.waiting_for):null,
         !t.waiting_for&&t.next_step?h("div",{class:"r-next"},t.next_step):null),
       h("div",{class:"r-side"},
+        canWrite&&open?h("button",{class:"ib urg",type:"button","aria-pressed":t.urgent?"true":"false",title:t.urgent?"דחוף (לחיצה מורידה)":"סמן כדחוף","aria-label":t.urgent?"דחוף. לחיצה מורידה את הסימון":"סמן כדחוף",onclick:e=>{e.stopPropagation();setUrgent(t);}},"!"):null,
         chat?iconBtn("chat",ICON.chat,"פתח את השיחה ב-Claude",null,safeUrl(chat.url)):iconBtn("chat off",ICON.chat,"אין עדיין קישור לשיחה",()=>{openId=t.id;renderList();setTimeout(()=>{const i=document.getElementById("lnk-"+t.id);i&&i.focus();},0);}),
         page?iconBtn("page",ICON.page,page.label||"פתח דף",null,safeUrl(page.url)):null,
         canWrite&&open?iconBtn("snz",ICON.snooze,"תזכיר לי אחר כך",()=>{laterFor=laterFor==="r:"+t.id?null:"r:"+t.id;renderList();}):null,
@@ -743,7 +772,7 @@ body.fun-on .ctxbar{display:none}
       ...qs.filter(q=>!q.answer).map(q=>questionCard(t,q,false)),
       ...offs.filter(o=>(o.state||"open")==="open").map(o=>offerCard(t,o,false)),
       contBtn(t,"cont"),
-      canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"איפה"),...Object.keys(CTX).map(c=>h("button",{class:"pill",type:"button","aria-pressed":ctxOf(t).includes(c)?"true":"false",onclick:()=>setCtx(t,c)},CTX[c].e+" "+CTX[c].l))):null,
+      canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"מתי אפשר"),...Object.keys(TAGS).map(c=>h("button",{class:"pill",type:"button","aria-pressed":ctxOf(t).includes(c)?"true":"false",onclick:()=>setCtx(t,c)},TAGS[c].e+" "+TAGS[c].l))):null,
       linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).length?h("div",{class:"d-row files"},linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).map(l=>h("a",{class:"lnk"+(linkType(l)==="file"?" file":""),href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
       h("details",{class:"more"},h("summary",null,"פרטים, היסטוריה ועריכה ▾"),h("div",null,
       t.summary?h("p",null,t.summary):null,
@@ -795,16 +824,19 @@ body.fun-on .ctxbar{display:none}
   function renderList(){
     const kindOk=t=>(filterKind==="all"||t.kind===filterKind)&&ctxOk(t);
     if(view!=="open"){
+      $("urgSec").hidden=true;
       const items=topics.filter(t=>view==="done"?(t.status==="done"||t.status==="promoted"):t.status==="archived").filter(kindOk).sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||""));
       $("list").replaceChildren(items.length?h("div",{class:"group"},items.map(row)):h("div",{class:"empty"},view==="done"?"עוד לא סימנת משימות כבוצעו.":"הארכיון ריק."));
       return;
     }
-    const all=topics.filter(isOpen).filter(kindOk).sort(byDate);
+    const allK=topics.filter(isOpen).filter(kindOk).sort(byDate);
+    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t));
+    $("urgSec").hidden=!urg.length;$("urgList").replaceChildren(...urg.map(row));
     const back=all.filter(returned), later=all.filter(snoozed), open=all.filter(t=>!returned(t)&&!snoozed(t));
     const hot=open.filter(isHot), rest=open.filter(t=>!isHot(t));
     const moving=rest.filter(t=>t.status==="active"||t.status==="waiting_me"), waiting=rest.filter(t=>t.status==="waiting_other"), paused=rest.filter(t=>t.status==="paused");
     const g=[group("⏰ חזר אליך",back,true),group("לטיפול עכשיו",hot,true),group("בתנועה",moving),group("מחכה לאחרים",waiting,false,"wait"),group("בהקפאה",paused),group("אחר כך",later,false,"later")].filter(Boolean);
-    $("list").replaceChildren(...(g.length?g:[h("div",{class:"empty"},topics.length?ctxNow!=="all"?`אין משימות פתוחות ${CTX[ctxNow].full}.`:"אין משימות בסינון הזה.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-${QUESTS[quest].name}״.`)]));
+    $("list").replaceChildren(...(g.length?g:urg.length?[h("div",{class:"empty"},"כל המשימות כאן דחופות, הן למעלה.")]:[h("div",{class:"empty"},topics.length?ctxNow!=="all"?`אין משימות פתוחות למצב: ${CTX[ctxNow].full}.`:"אין משימות בסינון הזה.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-${QUESTS[quest].name}״.`)]));
   }
   function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString()},"בוצע ✓  (נמצא ב״בוצעו״)");}
 
@@ -914,7 +946,7 @@ body.fun-on .ctxbar{display:none}
         const ex=x.id&&allTopics.find(t=>t.id===x.id&&!isFun(t));
         const links=(Array.isArray(x.links)?x.links:[]).filter(l=>l&&safeUrl(l.url)).map(l=>({label:String(l.label||"קישור"),url:l.url,type:l.type||linkType(l)}));
         const clean={title:String(x.title).slice(0,200),summary:String(x.summary||""),next_step:String(x.next_step||""),next_date:/^\d{4}-\d{2}-\d{2}$/.test(x.next_date||"")?x.next_date:"",kind:KINDS[x.kind]?x.kind:"research",status:STATUS[x.status]?x.status:"active",priority:x.priority==="high"?"high":"normal",area:String(x.area||""),source:String(x.source||"הודבק משיחה"),updated_at:now};
-        if(Array.isArray(x.context))clean.context=x.context.filter(c=>CTX[c]);
+        if(Array.isArray(x.context))clean.context=x.context.map(c=>CTX_OLD[c]||c).filter(c=>TAGS[c]);if(x.urgent)clean.urgent=true;
         try{
           if(ex)await db.collection("topics").doc(ex.id).update({...clean,links:[...linksOf(ex),...links.filter(l=>!linksOf(ex).some(o=>o.url===l.url))],log:[...(Array.isArray(ex.log)?ex.log:[]),{at:now,text:String(x.log_note||"עודכן משיחה")}]});
           else await db.collection("topics").doc(newId()).set({...clean,...((x.quest==="army"||x.quest==="work")?{quest:x.quest}:(quest==="army"||quest==="work")?{quest}:{}),links,created_at:now,log:x.log_note?[{at:now,text:String(x.log_note)}]:[]});
