@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0f3b57">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,13 +10,15 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.7";window.SQ_BUILD_AT="2.11.2026 21:00";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.8";window.SQ_BUILD_AT="2.11.2026 20:40";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=Bungee&family=Press+Start+2P&family=Black+Ops+One&family=Orbitron:wght@700;900&display=swap">
 <style>
+/* no double-tap zoom anywhere (4.8) */
+html,body,*{touch-action:manipulation}
 /* Layout: colored hero band with quick-add, a strip of solid project tiles, then ONE grouped quest list of compact rows. */
 :root{
   --bg:#F2F4F1; --surface:#FFFFFF; --sunk:#E7EBE6; --ink:#18221E; --muted:#5E6B64; --line:#D6DDD7;
