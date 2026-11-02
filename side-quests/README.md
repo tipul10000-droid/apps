@@ -14,6 +14,7 @@ Rules for working on it: `../CLAUDE.md` (sections "side-quests ו-movies").
 | `sq-db.js` | Data layer. Mimics `window.claude.use("db")` (collection / doc / set / update / delete / onSnapshot) on top of Supabase RPCs. Also draws the code screen. |
 | `manifest.json`, `icon-*.png`, `apple-touch-icon.png` | Home-screen app (PWA) name and icons. |
 | `sw.js` | Service worker: shows push notifications, opens the app on tap. No caching. |
+| `insurance.html` | Family insurance dashboard (policies, costs, renewals, coverage map, tasks). Same PIN/data layer (`sq-db.js`); data in `sidequests/insurance` (one doc per policy + `_meta`), never in the repo. |
 | `fh-logo.png` | Frame Horizon logo for its Fun Quest card. |
 | `supabase/schema.sql` | Tables and RPC functions (no secrets). Enough to rebuild the backend. |
 
@@ -67,6 +68,11 @@ title, kind (research|followup|admin|reminder|idea|project|fun), area, urgent, c
 ### Project fields (`sidequests/projects`)
 
 name, icon, color, tagline, order, app_url, claude_url, links, stage.
+
+### Insurance fields (`sidequests/insurance`)
+
+Policy doc: title, cat (health|life|nursing|car|home|travel|hmo|pension|accident|other), insurer, policy_no, who [oren|lior|kids|family], asset, status (active|check|ended|per_trip|unknown), monthly, annual, freq_label, card, charge_day, start, renew (YYYY-MM-DD), renew_note, agent, coverage [], flags [{lvl high|mid|low, type dup|cost|gap|check|pay, text, save}], notes, charges, links [{label,url,kind policy|login|mail|agent}], source, confidence (confirmed|likely|guess), icon.
+`_meta` doc: updated, cost_note, sources, cov_cols, coverage [{risk, s:{oren,lior,kids,family: ok|partial|dup|gap|unknown|na}, note}], flags (the curated "needs attention" list, optional pid), tasks [{stage,text,sub,done}].
 
 ### Movie fields (`movies/movies`)
 

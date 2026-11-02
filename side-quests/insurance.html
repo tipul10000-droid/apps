@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#16433C">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<title>הביטוחים שלנו</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* דשבורד ביטוח משפחתי. הנתונים לא בקוד: הם ב-sq_docs (app=sidequests, collection=insurance), נקראים דרך sq-db.js עם הקוד של Side Quests. */
+:root{
+  --bg:#F2F4F1; --surface:#FFFFFF; --sunk:#E7EBE6; --ink:#18221E; --muted:#5E6B64; --line:#D6DDD7;
+  --hero:#16433C; --hero-ink:#F3F7F4; --hero-muted:#A9C7BE; --accent:#F2A93B;
+  --ok:#2E8B57; --ok-soft:#E1F1E7; --mid:#B86A10; --mid-soft:#FBEBD3; --bad:#C8414B; --bad-soft:#FBE3E4; --unk:#7C8A83; --unk-soft:#E9ECEA;
+  --c-health:#2C6BB5; --c-life:#7A52B3; --c-nursing:#245E73; --c-car:#D08419; --c-home:#2E8B57; --c-travel:#C8414B; --c-pension:#8C3B2E; --c-other:#5E6B64;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1513; --surface:#18201D; --sunk:#202A26; --ink:#E5ECE8; --muted:#97A69E; --line:#2B3732;
+  --hero:#123631; --hero-ink:#EEF5F1; --hero-muted:#8FB5AA; --accent:#F4B451;
+  --ok:#62C08A; --ok-soft:#183126; --mid:#EBA74A; --mid-soft:#3A2A14; --bad:#EE7A82; --bad-soft:#3B1E21; --unk:#97A69E; --unk-soft:#232C28;
+  --c-health:#6FA6E8; --c-life:#B293E6; --c-nursing:#7DC0D6; --c-car:#EBA74A; --c-home:#62C08A; --c-travel:#EE7A82; --c-pension:#D98C7E; --c-other:#97A69E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1513; --surface:#18201D; --sunk:#202A26; --ink:#E5ECE8; --muted:#97A69E; --line:#2B3732;
+  --hero:#123631; --hero-ink:#EEF5F1; --hero-muted:#8FB5AA; --accent:#F4B451;
+  --ok:#62C08A; --ok-soft:#183126; --mid:#EBA74A; --mid-soft:#3A2A14; --bad:#EE7A82; --bad-soft:#3B1E21; --unk:#97A69E; --unk-soft:#232C28;
+  --c-health:#6FA6E8; --c-life:#B293E6; --c-nursing:#7DC0D6; --c-car:#EBA74A; --c-home:#62C08A; --c-travel:#EE7A82; --c-pension:#D98C7E; --c-other:#97A69E; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+.num{font-family:var(--f-mono);direction:ltr;unicode-bidi:isolate}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 64px}
+
+/* hero */
+.hero{background:var(--hero);color:var(--hero-ink);padding:18px 16px 20px;padding-top:calc(18px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:980px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);text-decoration:none;font-size:14px;font-weight:700}
+.hero h1{font-size:26px;margin:10px 0 2px;display:flex;align-items:center;gap:10px}
+.hero .sub{color:var(--hero-muted);font-size:14px;margin:0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.kpi{background:rgba(255,255,255,.07);border-radius:14px;padding:10px 12px;min-width:0}
+.kpi b{display:block;font-family:var(--f-mono);font-size:22px;font-weight:500;line-height:1.2;direction:ltr;text-align:right}
+.kpi span{color:var(--hero-muted);font-size:13px}
+.kpi.warn b{color:var(--accent)}
+@media (max-width:600px){.kpis{grid-template-columns:repeat(2,1fr)}.kpi b{font-size:20px}}
+
+/* filters */
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 10px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 13px;font-size:14.5px;font-weight:700;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .n{font-family:var(--f-mono);font-weight:500;font-size:12.5px;opacity:.75;margin-inline-start:4px}
+
+section{margin-bottom:26px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.sh h2{font-size:19px}
+.sh .hint{color:var(--muted);font-size:13.5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px}
+
+/* alerts */
+.alerts{display:flex;flex-direction:column;gap:8px}
+.al{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:11px 13px;border-radius:14px;border:1px solid var(--line);background:var(--surface);text-align:start;width:100%}
+.al .dot{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.al.high .dot{background:var(--bad-soft)} .al.mid .dot{background:var(--mid-soft)} .al.low .dot{background:var(--unk-soft)}
+.al b{display:block;font-size:15px}
+.al small{color:var(--muted);font-size:13.5px}
+.al .save{font-size:12.5px;font-weight:700;color:var(--ok);background:var(--ok-soft);border-radius:8px;padding:2px 7px;max-width:96px;text-align:center;line-height:1.3}
+.more{border:1px dashed var(--line);background:transparent;border-radius:12px;padding:9px;font-weight:700;color:var(--muted)}
+
+/* two-up */
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+
+/* cost bars */
+.bars{padding:14px}
+.brow{display:grid;grid-template-columns:92px 1fr 70px;gap:10px;align-items:center;padding:5px 0;font-size:14.5px}
+.brow .track{height:14px;background:var(--sunk);border-radius:7px;overflow:hidden}
+.brow .fill{display:block;height:100%;border-radius:7px}
+.brow .v{font-family:var(--f-mono);font-size:13.5px;text-align:left;direction:ltr}
+.bnote{color:var(--muted);font-size:13px;margin-top:8px}
+
+/* renewals */
+.ren{padding:6px 14px}
+.rrow{display:grid;grid-template-columns:66px 1fr;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);align-items:center}
+.rrow:last-child{border-bottom:0}
+.rrow .d{font-family:var(--f-mono);font-size:13px;text-align:center;border-radius:8px;padding:4px 0;background:var(--sunk);direction:ltr}
+.rrow .d.soon{background:var(--mid-soft);color:var(--mid)}
+.rrow .d.past{background:var(--bad-soft);color:var(--bad)}
+.rrow b{font-size:14.5px;display:block}
+.rrow small{color:var(--muted);font-size:13px}
+
+/* coverage matrix */
+.mx{overflow-x:auto}
+table.cov{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
+.cov th,.cov td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
+.cov th{font-size:13px;color:var(--muted);font-weight:700;background:var(--surface);position:sticky;top:0}
+.cov td:first-child,.cov th:first-child{text-align:start;font-weight:700;position:sticky;right:0;background:var(--surface);z-index:1}
+.cov tr:last-child td{border-bottom:0}
+.st{display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:3px 6px;border-radius:999px;font-size:12.5px;font-weight:700;border:0;cursor:pointer}
+.st.ok{background:var(--ok-soft);color:var(--ok)} .st.partial{background:var(--mid-soft);color:var(--mid)} .st.gap{background:var(--bad-soft);color:var(--bad)} .st.unknown{background:var(--unk-soft);color:var(--unk)} .st.dup{background:var(--mid-soft);color:var(--mid)} .st.na{background:transparent;color:var(--muted);font-weight:500}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;padding:10px 12px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.legend .st{min-width:0;cursor:default}
+.covnote{padding:0 12px 12px;font-size:13.5px;color:var(--ink)}
+
+/* policies */
+.grp{margin-bottom:16px}
+.gh{display:flex;align-items:center;gap:8px;margin:0 2px 8px;font-family:var(--f-display);font-weight:700;font-size:16px}
+.gh .sw{width:10px;height:10px;border-radius:3px}
+.gh .s{margin-inline-start:auto;font-family:var(--f-mono);font-weight:500;font-size:13px;color:var(--muted);direction:ltr}
+.pol{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 13px;text-align:start;border:1px solid var(--line);border-radius:14px;background:var(--surface);margin-bottom:8px;border-inline-start:4px solid var(--cc,var(--line))}
+.pol .ic{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--sunk)}
+.pol .t{font-weight:700;font-size:15.5px;line-height:1.3}
+.pol .m{color:var(--muted);font-size:13px;display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:2px}
+.pol .p{text-align:left;direction:ltr}
+.pol .p b{font-family:var(--f-mono);font-weight:500;font-size:16px;display:block}
+.pol .p small{color:var(--muted);font-size:12px;direction:rtl;display:block;text-align:left}
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:700;border-radius:6px;padding:0 6px;line-height:20px}
+.tag.high{background:var(--bad-soft);color:var(--bad)} .tag.mid{background:var(--mid-soft);color:var(--mid)} .tag.low{background:var(--unk-soft);color:var(--unk)} .tag.okk{background:var(--ok-soft);color:var(--ok)}
+.who{display:inline-flex;gap:3px}
+.who i{font-style:normal;font-size:11.5px;font-weight:700;border-radius:5px;padding:0 5px;background:var(--sunk);color:var(--ink);line-height:19px}
+
+/* tasks */
+.tasks{display:flex;flex-direction:column;gap:6px}
+.task{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:10px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:14.5px}
+.task .stage{font-family:var(--f-mono);font-size:12px;border-radius:6px;padding:0 6px;background:var(--sunk);height:20px;line-height:20px;margin-top:1px}
+.task small{color:var(--muted);display:block;font-size:13px}
+.task.done{opacity:.55}.task.done b{text-decoration:line-through}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:40;display:none}
+.sheet{position:fixed;z-index:41;inset:auto 0 0 0;max-height:88vh;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));transform:translateY(102%);transition:transform .22s ease;max-width:720px;margin:0 auto}
+.open .scrim{display:block}.open .sheet{transform:none}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.sheet h3{font-size:20px;display:flex;align-items:center;gap:8px}
+.sheet .x{position:absolute;top:12px;left:12px;border:0;background:var(--sunk);border-radius:999px;width:34px;height:34px;font-size:18px}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:6px 12px;margin:14px 0;font-size:15px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600}
+.box{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:14.5px}
+.box h4{margin:0 0 6px;font-size:14px;color:var(--muted)}
+.box ul{margin:0;padding-inline-start:18px}.box li{margin:3px 0}
+.lnks{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.lnk{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-weight:700;font-size:14px;text-decoration:none;background:var(--bg)}
+.conf{font-size:12.5px;color:var(--muted);margin-top:12px}
+
+.empty{padding:28px;text-align:center;color:var(--muted)}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (prefers-reduced-motion:reduce){.sheet{transition:none}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="in">
+  <div class="top"><a class="back" href="./">→ Side Quests</a><span class="back" id="upd"></span></div>
+  <h1>🛡️ הביטוחים שלנו</h1>
+  <p class="sub" id="sub">כל הפוליסות של המשפחה במקום אחד: מה יש, כמה עולה, מתי מתחדש, ואיפה יש בעיה.</p>
+  <div class="kpis">
+    <div class="kpi"><b id="k-month">…</b><span>לחודש (משוער)</span></div>
+    <div class="kpi"><b id="k-year">…</b><span>לשנה</span></div>
+    <div class="kpi"><b id="k-count">…</b><span>פוליסות פעילות</span></div>
+    <div class="kpi warn"><b id="k-alerts">…</b><span>דורשות בדיקה</span></div>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <div class="bar"><div class="chips" id="who"></div><div class="chips" id="cats" style="margin-top:6px"></div></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+
+<div id="sheetwrap"><div class="scrim" id="scrim"></div><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const ils=n=>n==null||isNaN(n)?"?":"₪"+Math.round(n).toLocaleString("en-US");
+
+const CATS={health:{l:"בריאות",i:"🩺",c:"--c-health"},life:{l:"חיים ומשכנתא",i:"🕊️",c:"--c-life"},nursing:{l:"סיעודי",i:"🤝",c:"--c-nursing"},car:{l:"רכב",i:"🚗",c:"--c-car"},home:{l:"דירה",i:"🏠",c:"--c-home"},travel:{l:"נסיעות",i:"✈️",c:"--c-travel"},hmo:{l:"קופת חולים",i:"🏥",c:"--c-nursing"},pension:{l:"פנסיה וחיסכון",i:"📈",c:"--c-pension"},accident:{l:"תאונות",i:"🩹",c:"--c-other"},other:{l:"אחר",i:"📄",c:"--c-other"}};
+const WHO={all:"כולם",oren:"אורן",lior:"ליאור",kids:"ילדים",family:"משפחתי",cars:"רכבים",home:"דירה"};
+const WHO_TAG={oren:"אורן",lior:"ליאור",kids:"ילדים",family:"משפחה"};
+const STATUS={active:["פעיל","okk"],check:["לבדוק","mid"],ended:["הסתיים","low"],per_trip:["לפי נסיעה","low"],unknown:["לא ידוע","low"],cancel:["בביטול","mid"]};
+const COV={ok:"מכוסה",partial:"חלקי",gap:"חסר",unknown:"לא ידוע",dup:"כפל?",na:"—"};
+const LVL={high:"🔴",mid:"🟠",low:"⚪"};
+const TYPE_I={dup:"⧉",cost:"₪",gap:"⚠️",renew:"📅",check:"🔍",pay:"💳"};
+
+let showAll=false, fWho=localStorage.getItem("ins_who")||"all", fCat="all", data={pol:[],meta:{}};
+
+function monthly(p){if(p.status==="ended")return 0;if(p.monthly!=null)return +p.monthly;if(p.annual!=null)return +p.annual/12;return 0;}
+function matchWho(p){
+  if(fWho==="all")return true;
+  if(fWho==="cars")return p.cat==="car";
+  if(fWho==="home")return p.cat==="home";
+  const w=p.who||[];return w.includes(fWho)||(fWho!=="family"&&w.includes("family"));
+}
+function visible(){return data.pol.filter(p=>matchWho(p)&&(fCat==="all"||p.cat===fCat));}
+function daysTo(d){if(!d)return null;const t=new Date(d+"T00:00:00");return Math.round((t-new Date())/864e5);}
+function fmtD(d){if(!d)return "";const [y,m,dd]=d.split("-");return dd?`${+dd}.${+m}.${y.slice(2)}`:`${+m}.${y.slice(2)}`;}
+
+function chips(){
+  const all=data.pol.filter(p=>p.status!=="ended");
+  $("who").innerHTML=Object.keys(WHO).map(k=>{const n=k==="all"?all.length:all.filter(p=>{const s=fWho;fWho=k;const r=matchWho(p);fWho=s;return r;}).length;return `<button class="chip" data-w="${k}" aria-pressed="${fWho===k}">${WHO[k]}<span class="n">${n}</span></button>`;}).join("");
+  const cs=["all",...Object.keys(CATS).filter(c=>all.some(p=>p.cat===c))];
+  $("cats").innerHTML=cs.map(c=>`<button class="chip" data-c="${c}" aria-pressed="${fCat===c}">${c==="all"?"כל התחומים":CATS[c].i+" "+CATS[c].l}</button>`).join("");
+  $("who").querySelectorAll("button").forEach(b=>b.onclick=()=>{fWho=b.dataset.w;try{localStorage.setItem("ins_who",fWho)}catch(e){}render();});
+  $("cats").querySelectorAll("button").forEach(b=>b.onclick=()=>{fCat=b.dataset.c;render();});
+}
+
+function render(){
+  chips();
+  const V=visible(), act=V.filter(p=>p.status!=="ended");
+  const m=act.reduce((s,p)=>s+monthly(p),0);
+  // רשימת "דורש תשומת לב" מגיעה מ-_meta.flags (רשימה מנופה). ממצאים לכל פוליסה מוצגים בכרטיס שלה.
+  const flags=[];
+  (data.meta.flags||[]).forEach(f=>{if(fWho==="all"||!f.who||f.who.includes(fWho)){const p=f.pid&&data.pol.find(x=>x.id===f.pid);flags.push(p?{...f,p}:f);}});
+  const rank={high:0,mid:1,low:2};flags.sort((a,b)=>(rank[a.lvl]??3)-(rank[b.lvl]??3));
+  $("k-month").textContent=ils(m);$("k-year").textContent=ils(m*12);$("k-count").textContent=act.filter(p=>p.status!=="per_trip").length;$("k-alerts").textContent=flags.filter(f=>f.lvl!=="low").length;
+  const meta=data.meta;
+  if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
+
+  let h="";
+  // alerts
+  if(flags.length){
+    h+=`<section><div class="sh"><h2>דורש תשומת לב</h2><span class="hint">${flags.length} ממצאים</span></div><div class="alerts">`+
+      flags.slice(0,showAll?99:5).map((f,i)=>`<button class="al ${f.lvl||"low"}" ${f.p?`data-p="${esc(f.p.id)}"`:""}><span class="dot">${TYPE_I[f.type]||LVL[f.lvl]||"•"}</span><span><b>${esc(f.text)}</b><small>${esc(f.sub||(f.p?f.p.title:""))}</small></span>${f.save?`<span class="save">${esc(f.save)}</span>`:"<span></span>"}</button>`).join("")+(flags.length>5?`<button class="more" id="more">${showAll?"פחות":"עוד "+(flags.length-5)+" ממצאים"}</button>`:"")+`</div></section>`;
+  }
+  // costs + renewals
+  const byCat={};act.forEach(p=>{const v=monthly(p);if(v>0)byCat[p.cat]=(byCat[p.cat]||0)+v;});
+  const mx=Math.max(1,...Object.values(byCat));
+  const bars=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<div class="brow"><span>${CATS[c]?.i||""} ${CATS[c]?.l||c}</span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;background:var(${CATS[c]?.c||"--c-other"})"></span></span><span class="v">${ils(v)}</span></div>`).join("");
+  const ren=act.filter(p=>p.renew).map(p=>({p,d:daysTo(p.renew)})).sort((a,b)=>a.d-b.d).slice(0,7);
+  h+=`<section class="two"><div><div class="sh"><h2>לאן הולך הכסף</h2><span class="hint">ממוצע חודשי</span></div><div class="card bars">${bars||'<div class="empty">אין נתוני עלות</div>'}<div class="bnote">${esc(meta.cost_note||"")}</div></div></div>`+
+     `<div><div class="sh"><h2>חידושים ותפוגות</h2></div><div class="card ren">${ren.map(r=>`<div class="rrow" data-p="${esc(r.p.id)}" style="cursor:pointer"><span class="d ${r.d<0?"past":r.d<60?"soon":""}">${fmtD(r.p.renew)}</span><span><b>${esc(r.p.title)}</b><small>${esc(r.p.renew_note||"")}${r.d!=null?` · ${r.d<0?"עבר לפני "+(-r.d)+" ימים":"בעוד "+r.d+" ימים"}`:""}</small></span></div>`).join("")||'<div class="empty">אין תאריכים</div>'}</div></div></section>`;
+  // coverage matrix
+  const cov=meta.coverage||[];
+  if(cov.length){
+    const cols=(meta.cov_cols||["oren","lior","kids"]);
+    h+=`<section><div class="sh"><h2>מפת כיסוי</h2><span class="hint">כל אירוע משנה חיים: מכוסה?</span></div><div class="card"><div class="mx"><table class="cov"><thead><tr><th>סיכון</th>${cols.map(c=>`<th>${WHO_TAG[c]||c}</th>`).join("")}</tr></thead><tbody>`+
+      cov.map((r,ri)=>`<tr><td>${esc(r.risk)}</td>${cols.map(c=>{const s=(r.s||{})[c]||"unknown";return `<td><button class="st ${s}" data-cov="${ri}">${COV[s]||s}</button></td>`;}).join("")}</tr>`).join("")+
+      `</tbody></table></div><div class="covnote" id="covnote"></div><div class="legend">${["ok","partial","dup","gap","unknown"].map(s=>`<span class="st ${s}">${COV[s]}</span>`).join("")}<span>לחיצה על תא מסבירה</span></div></div></section>`;
+  }
+  // policies
+  const groups={};V.forEach(p=>{(groups[p.cat]=groups[p.cat]||[]).push(p);});
+  h+=`<section><div class="sh"><h2>הפוליסות</h2><span class="hint">לחיצה פותחת את כל הפרטים</span></div>`;
+  if(!V.length)h+=`<div class="card empty">אין פוליסות בסינון הזה</div>`;
+  Object.keys(CATS).filter(c=>groups[c]).forEach(c=>{
+    const g=groups[c].sort((a,b)=>(a.status==="ended")-(b.status==="ended")||monthly(b)-monthly(a)), sum=g.reduce((s,p)=>s+monthly(p),0);
+    h+=`<div class="grp"><div class="gh"><span class="sw" style="background:var(${CATS[c].c})"></span>${CATS[c].i} ${CATS[c].l}<span class="s">${sum?ils(sum)+"/mo":""}</span></div>`+
+      g.map(p=>{const st=STATUS[p.status]||STATUS.unknown, worst=(p.flags||[]).map(f=>f.lvl).sort((a,b)=>rank[a]-rank[b])[0];
+        return `<button class="pol" data-p="${esc(p.id)}" style="--cc:var(${CATS[c].c})"><span class="ic">${esc(p.icon||CATS[c].i)}</span><span><span class="t">${esc(p.title)}</span><span class="m"><span>${esc(p.insurer||"")}</span><span class="who">${(p.who||[]).map(w=>`<i>${WHO_TAG[w]||w}</i>`).join("")}</span>${p.status!=="active"?`<span class="tag ${st[1]}">${st[0]}</span>`:""}${worst?`<span class="tag ${worst}">${LVL[worst]} ${(p.flags||[]).length}</span>`:""}</span></span><span class="p"><b>${p.status==="per_trip"?ils(p.annual):monthly(p)?ils(monthly(p)):"?"}</b><small>${p.status==="per_trip"?"בשנה האחרונה":esc(p.freq_label||"לחודש")}</small></span></button>`;}).join("")+`</div>`;
+  });
+  h+=`</section>`;
+  // tasks
+  const tasks=meta.tasks||[];
+  if(tasks.length){
+    h+=`<section><div class="sh"><h2>המשימות</h2><span class="hint">שלב 1 איסוף · 2 חורים בכיסוי · 3 חיסכון</span></div><div class="tasks">`+
+      tasks.map(t=>`<div class="task ${t.done?"done":""}"><span class="stage">${esc(t.stage)}</span><span><b>${esc(t.text)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:""}</span></div>`).join("")+`</div></section>`;
+  }
+  $("app").innerHTML=h;
+  if($("more"))$("more").onclick=()=>{showAll=!showAll;render();};
+  $("app").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openPol(b.dataset.p));
+  $("app").querySelectorAll("[data-cov]").forEach(b=>b.onclick=()=>{const r=cov[+b.dataset.cov];$("covnote").innerHTML=`<b>${esc(r.risk)}:</b> ${esc(r.note||"")}`;});
+  $("foot").innerHTML=esc(meta.sources||"")+(meta.sources?"<br>":"")+"Side Quests · ביטוח · גרסה "+window.INS_BUILD;
+}
+
+function openPol(id){
+  const p=data.pol.find(x=>x.id===id);if(!p)return;
+  const c=CATS[p.cat]||CATS.other, st=STATUS[p.status]||STATUS.unknown, m=monthly(p);
+  const row=(k,v)=>v==null||v===""?"":`<dt>${k}</dt><dd>${v}</dd>`;
+  const links=(p.links||[]).filter(l=>safe(l.url));
+  $("sheet").innerHTML=`<div class="grab"></div><button class="x" id="sx" aria-label="סגירה">✕</button>
+  <h3><span>${esc(p.icon||c.i)}</span>${esc(p.title)}</h3>
+  <dl class="kv">
+    ${row("סטטוס",`<span class="tag ${st[1]}">${st[0]}</span>`)}
+    ${row("מבטחת",esc(p.insurer))}
+    ${row("מספר פוליסה",p.policy_no?`<span class="num">${esc(p.policy_no)}</span>`:"")}
+    ${row("מבוטחים",(p.who||[]).map(w=>WHO_TAG[w]||w).join(", "))}
+    ${row("נכס",esc(p.asset))}
+    ${row("עלות",p.status==="per_trip"?ils(p.annual)+" בשנה האחרונה":m?`<span class="num">${ils(m)}</span> לחודש · <span class="num">${ils(m*12)}</span> לשנה`:"לא ידוע")}
+    ${row("אופן תשלום",esc(p.freq_label||""))}
+    ${row("כרטיס",esc(p.card))}
+    ${row("יום חיוב",esc(p.charge_day))}
+    ${row("התחלה",esc(p.start))}
+    ${row("חידוש / תפוגה",p.renew?`${fmtD(p.renew)}${p.renew_note?" · "+esc(p.renew_note):""}`:esc(p.renew_note||""))}
+    ${row("סוכן",esc(p.agent))}
+  </dl>
+  ${(p.flags||[]).length?`<div class="box"><h4>ממצאים</h4><ul>${p.flags.map(f=>`<li>${LVL[f.lvl]||""} ${esc(f.text)}${f.save?` <b>(${esc(f.save)})</b>`:""}</li>`).join("")}</ul></div>`:""}
+  ${(p.coverage||[]).length?`<div class="box"><h4>מה מכוסה (לפי מה שידוע)</h4><ul>${p.coverage.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+  ${p.notes?`<div class="box"><h4>הערות</h4>${esc(p.notes)}</div>`:""}
+  ${p.charges?`<div class="box"><h4>חיובים שנמצאו באשראי</h4>${esc(p.charges)}</div>`:""}
+  ${links.length?`<div class="lnks">${links.map(l=>`<a class="lnk" href="${esc(safe(l.url))}" target="_blank" rel="noopener">${({policy:"📄",login:"🔑",mail:"✉️",agent:"☎️"})[l.kind]||"🔗"} ${esc(l.label)}</a>`).join("")}</div>`:""}
+  <div class="conf">מקור: ${esc(p.source||"")}${p.confidence?` · רמת ודאות: ${esc(({confirmed:"מאומת",likely:"סביר",guess:"השערה"})[p.confidence]||p.confidence)}`:""}</div>`;
+  document.getElementById("sheetwrap").className="open";
+  $("sx").onclick=close;$("sx").focus();
+}
+function close(){document.getElementById("sheetwrap").className="";}
+$("scrim").onclick=close;document.addEventListener("keydown",e=>{if(e.key==="Escape")close();});
+
+window.claude.use("db").then(db=>{
+  if(!db)return;
+  db.collection("insurance").onSnapshot(s=>{
+    const pol=[],meta={};
+    s.docs.forEach(d=>{const x=d.data();if(d.id==="_meta")Object.assign(meta,x);else if(x&&x.title)pol.push({id:d.id,...x});});
+    data={pol,meta};render();
+  },()=>{});
+});
+})();
+</script>
+</body>
+</html>
