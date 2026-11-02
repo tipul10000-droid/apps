@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.3";window.SQ_BUILD_AT="2.11.2026 23:45";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.4";window.SQ_BUILD_AT="3.11.2026 00:25";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -275,6 +275,9 @@ body.fun-on .tasks-only{display:none!important}
 .vote:hover{opacity:1}
 .vote.on{filter:none;opacity:1}
 .vote.on.up{background:color-mix(in srgb,var(--spot) 22%,transparent);border-color:var(--spot)}
+.vote.love{width:auto;white-space:nowrap;padding:0 8px;font-size:13px;letter-spacing:-3px}
+.vote.on.love{background:color-mix(in srgb,var(--spot) 45%,transparent);border-color:var(--spot);box-shadow:0 0 0 2px color-mix(in srgb,var(--spot) 35%,transparent)}
+.fc-items li.voted-love .fi-t b{color:var(--spot)}
 .vote.on.down{background:var(--due-soft);border-color:var(--due)}
 .fc-items li.voted-down .fi-t{opacity:.55}
 @media (max-width:520px){.spot{width:34px;height:34px;min-height:0;padding:0;justify-content:center;font-size:0;gap:0}.spot svg{width:15px;height:15px}}
@@ -1447,14 +1450,14 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     const all=Array.isArray(t.items)?t.items:[];const it=all[idx];if(!it)return;
     const nv=it.vote===v?"":v;
     const items=all.map((x,i)=>i===idx?{...x,vote:nv}:x);
-    patch(t,{items,log:logPush(t,(nv==="up"?"👍 ":nv==="down"?"👎 ":"בוטל דירוג: ")+it.label,new Date().toISOString())},nv==="up"?"אהבת 👍":nv==="down"?"לא בשבילך 👎":"הדירוג בוטל");
+    patch(t,{items,log:logPush(t,(nv==="love"?"👍👍 ":nv==="up"?"👍 ":nv==="down"?"👎 ":"בוטל דירוג: ")+it.label,new Date().toISOString())},nv==="love"?"אהבת מאוד 👍👍 (נחשב כפול)":nv==="up"?"אהבת 👍":nv==="down"?"לא בשבילך 👎":"הדירוג בוטל");
   }
   function itemRow(t,x,idx){
     const u=safeUrl(x.url||"");
     const vb=(v,ic,lbl)=>canWrite?h("button",{class:"vote"+(x.vote===v?" on "+v:""),type:"button","aria-pressed":x.vote===v?"true":"false","aria-label":lbl+": "+x.label,onclick:e=>{e.stopPropagation();voteItem(t,idx,v);}},ic):null;
     return h("li",{class:x.vote?"voted-"+x.vote:null},
       h("div",{class:"fi-t"},h("b",null,x.label),x.sub?h("span",null,x.sub):null),
-      h("div",{class:"fi-acts"},vb("up","👍","אהבתי"),vb("down","👎","לא אהבתי"),
+      h("div",{class:"fi-acts"},t.zone==="spotify"?vb("love","👍👍","אהבתי מאוד"):null,vb("up","👍","אהבתי"),vb("down","👎","לא אהבתי"),
         u?h("a",{class:"spot",href:u,target:"_blank",rel:"noopener","aria-label":(x.cta||"פתח")+": "+x.label,html:ICON.play},x.cta||"פתח"):null));
   }
   let funFold={};
@@ -1467,7 +1470,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
       const g=defs.find(d=>d.id===gid)||{id:gid,title:gid||"עוד"};
       const its=items.filter(x=>(x.group||"")===gid);if(!its.length&&!g.url)return null;
       const key=t.id+":"+gid,open=key in funFold?funFold[key]:(g.open!=null?!!g.open:gi===0);
-      const ups=its.filter(x=>x.vote==="up").length,downs=its.filter(x=>x.vote==="down").length;
+      const ups=its.filter(x=>x.vote==="up"||x.vote==="love").length,downs=its.filter(x=>x.vote==="down").length;
       const d=h("details",{class:"round",open:open||null},
         h("summary",null,h("span",{class:"rt"},g.title||gid),h("span",{class:"rn"},`${its.length} שירים`+(ups?` · 👍${ups}`:"")+(downs?` · 👎${downs}`:""))),
         safeUrl(g.url||"")?h("a",{class:"fbtn ghost rlink",href:safeUrl(g.url),target:"_blank",rel:"noopener"},g.url_label||"פתח"):null,
@@ -1494,15 +1497,15 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     const ids=[...defs.map(g=>g.id),...[...new Set(all.filter(x=>x&&x.label).map(x=>x.group||""))].filter(g=>!defs.some(d=>d.id===g))];
     const total=ids.length;
     return ids.map((gid,i)=>{const g=defs.find(d=>d.id===gid)||{id:gid,title:""};const its=all.filter(x=>x&&x.label&&(x.group||"")===gid);
-      return {g,its,n:g.n||total-i,done:its.length>0&&its.every(x=>x.vote==="up"||x.vote==="down")};}).filter(s=>s.its.length);
+      return {g,its,n:g.n||total-i,done:its.length>0&&its.every(x=>x.vote==="up"||x.vote==="love"||x.vote==="down")};}).filter(s=>s.its.length);
   }
   function sessBlock(t,s,open){
-    const all=t.items;const ups=s.its.filter(x=>x.vote==="up").length,downs=s.its.filter(x=>x.vote==="down").length,left=s.its.length-ups-downs;
+    const all=t.items;const loves=s.its.filter(x=>x.vote==="love").length,ups=s.its.filter(x=>x.vote==="up").length+loves,downs=s.its.filter(x=>x.vote==="down").length,left=s.its.length-ups-downs;
     const key=t.id+":"+s.g.id,isOpen=key in funFold?funFold[key]:open;
     const title=s.g.title&&!/^סבב|^סשן/.test(s.g.title)?s.g.title:(s.g.seed||(s.g.title||"").replace(/^(סבב|סשן)\s*\d+\s*·?\s*/,""));
     const d=h("details",{class:"round sess"+(s.done?" done":""),open:isOpen||null},
       h("summary",null,h("span",{class:"sess-n"},s.n),h("span",{class:"rt"},"סשן "+s.n,title?h("small",null,title):null),
-        h("span",{class:"rn"},left?`עוד ${left} לסמן`:`👍${ups} · 👎${downs}`)),
+        h("span",{class:"rn"},left?`עוד ${left} לסמן`:(loves?`👍👍${loves} · `:"")+`👍${ups-loves} · 👎${downs}`)),
       safeUrl(s.g.url||"")?h("a",{class:"fbtn ghost rlink",href:safeUrl(s.g.url),target:"_blank",rel:"noopener"},s.g.url_label||"פתח"):null,
       h("ul",{class:"fc-items"},s.its.map(x=>itemRow(t,x,all.indexOf(x)))));
     d.addEventListener("toggle",()=>{funFold[key]=d.open;});
@@ -1523,7 +1526,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
   function spotifyCard(t){
     const ss=spSessions(t),live=ss.filter(s=>!s.done),arch=ss.filter(s=>s.done);
     const nextN=Math.max(0,...ss.map(s=>+s.n||0))+1;
-    const liked=[...new Set((Array.isArray(t.items)?t.items:[]).filter(x=>x&&x.vote==="up").map(x=>String(x.label).split(" · ")[0]))];
+    const liked=[...new Set((Array.isArray(t.items)?t.items:[]).filter(x=>x&&(x.vote==="up"||x.vote==="love")).map(x=>String(x.label).split(" · ")[0]))];
     const pages=linksOf(t).filter(l=>linkType(l)!=="chat");
     const pend=spPending(t),hub=safeUrl(t.hub_url||"");
     const seeds=(Array.isArray(t.next_seeds)?t.next_seeds:[]).filter(x=>x&&x.id&&x.label);
