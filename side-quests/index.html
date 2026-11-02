@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.0";window.SQ_BUILD_AT="2.11.2026 21:50";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.1";window.SQ_BUILD_AT="2.11.2026 22:30";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -822,6 +822,48 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 /* 4.4: project cards with a clearer frame; real app icons instead of emoji (icon_url) */
 .pc{border:2px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
 .pic.has-img{background:transparent!important;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+/* 5.0: four task levels. 1 = simple (no chat icon, light dashed row), 2 = own chat/mail, 3 = belongs to a dashboard (crumb + folded in the dashboard card), 4 = belongs to a project. */
+.row.lv1{background:transparent;border-style:dashed}
+.row.lv1 .r-title{font-weight:600}
+.dcrumb{font-size:11.5px;font-weight:800;padding:0 8px;border-radius:999px;white-space:nowrap;flex:none;color:#fff;background:var(--dc,#555);display:inline-flex;gap:4px;align-items:center;border:0;cursor:pointer;line-height:20px}
+.dashzone{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.dashzone[hidden]{display:none}
+.dz-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dz-grid>.dz-tile:last-child:nth-child(odd){grid-column:1/-1;min-height:70px}
+.dz-tile{border:0;border-radius:14px;padding:10px 12px;color:#fff;min-height:88px;display:flex;flex-direction:column;justify-content:space-between;gap:6px;text-align:start;cursor:pointer;font:inherit;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 2px 8px rgba(0,0,0,.12);position:relative}
+.dz-tile[aria-expanded="true"]{outline:3px solid var(--c1);outline-offset:2px}
+.dz-tile .bd{align-self:flex-start;background:rgba(255,255,255,.24);border-radius:99px;padding:0 8px;font-size:11.5px;font-weight:800}
+.dz-tile .bd.hot{background:#fff;color:var(--c1)}
+.dz-tile b{font-size:15px;line-height:1.25;display:flex;gap:6px;align-items:center}
+.dz-tile span.s{font-size:12px;opacity:.92;line-height:1.3}
+.dz-tile.lite{background:transparent;color:var(--ink);border:1.5px solid var(--c1);box-shadow:none}
+.dz-card{border:1.5px solid var(--c1);border-radius:16px;overflow:hidden;background:var(--surface)}
+.dz-cv{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.dz-cv .ic{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+.dz-cv h3{margin:0;font-size:17px;line-height:1.25}
+.dz-cv p{margin:0;font-size:12.5px;opacity:.92}
+.dz-cv .x{margin-inline-start:auto;background:rgba(255,255,255,.2);border:0;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;flex:none}
+.dz-kpis{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:1px;background:var(--line)}
+.dz-kpi{background:var(--surface);padding:8px 6px;text-align:center;min-width:0}
+.dz-kpi b{font-size:17px;display:block;font-variant-numeric:tabular-nums;line-height:1.3}
+.dz-kpi span{font-size:11.5px;color:var(--muted)}
+.dz-go{display:block;text-align:center;margin:12px 12px 8px;padding:12px;border-radius:12px;background:var(--c1);color:#fff;font-weight:800;text-decoration:none;font-size:16px}
+.dz-links{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 10px;font-size:13px}
+.dz-links a{color:var(--c1);font-weight:700;text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:2px 10px}
+.dz-sec{padding:4px 12px 12px;display:flex;flex-direction:column;gap:6px}
+.dz-sec h4{margin:4px 0 0;font-size:13px;color:var(--muted);font-weight:700;display:flex;gap:6px;align-items:center}
+.dz-sec .empty{padding:10px;font-size:13.5px}
+.dz-sug{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:7px 10px;border-radius:10px;border:1.5px dashed var(--c1)}
+.dz-sug .t{flex:1;min-width:0}
+.dz-sug .t small{display:block;color:var(--muted);font-size:12px}
+.dz-sug button{border:0;background:var(--c1);color:#fff;font-weight:800;border-radius:99px;padding:4px 10px;font:inherit;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.dz-sug button.no{background:transparent;color:var(--muted);padding:4px 6px}
+.dz-more{border:1px dashed var(--line);border-radius:12px;padding:0 12px}
+.dz-more summary{cursor:pointer;padding:8px 0;font-size:13.5px;color:var(--muted);font-weight:700}
+.dz-more .dz-grid{padding-bottom:10px}
+.dz-old{display:flex;flex-direction:column;gap:4px;padding-bottom:10px;font-size:13px}
+.dz-old a{color:var(--muted)}
+.lvsel{font:inherit;font-size:14px;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
 </style>
 </head>
 <body>
@@ -905,6 +947,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     <div class="fzgrid" id="funGrid"></div>
   </section>
   <section class="tvzone" id="tvSec" aria-label="אזור הטיולים"></section>
+  <section class="dashzone tasks-only" id="dashSec" aria-labelledby="hDash" hidden></section>
   <section aria-labelledby="hUrg" id="urgSec" class="tasks-only" hidden>
     <div class="sec-head"><h2 id="hUrg">❗ דחוף</h2></div>
     <div class="group" id="urgList"></div>
@@ -1014,9 +1057,84 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     setTimeout(()=>{document.removeEventListener("visibilitychange",onHide);if(!left&&!document.hidden)window.open(web,"_blank","noopener");},1500);}
   document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a||!isGmail(a.href))return;e.preventDefault();e.stopPropagation();openGmail(a.href);},true);
   function mailOf(t){const ls=linksOf(t).filter(l=>isGmail(l.url));const l=ls.find(l=>gmailId(l.url))||ls.find(l=>!/compose=|#drafts/.test(l.url));return l?safeUrl(l.url):null;}
+  // ---- 5.0: levels and dashboards (collection "dashboards" in sq_docs) ----
+  let dashes=[], dashOpen=null, insDocs=[], inDashCard=false;
+  function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted);}
+  function levelOf(t){const L=+t.level;if(L>=1&&L<=4)return L;if(t.project&&projById(t.project))return 4;if(t.dash&&dashById(t.dash))return 3;if(chatOf(t)||mailOf(t))return 2;return 1;}
+  function levelRow(t){
+    const qd=dashes.filter(d=>!d._deleted&&!d.archived&&(d.quest||"side")===questOf(t)||d.id===t.dash);
+    const sel=(id,opts,cur,on)=>{const s=h("select",{class:"lvsel",id,"aria-label":id.startsWith("ds")?"דשבורד":"פרויקט",onchange:e=>on(e.target.value)},...opts.map(([v,l])=>{const o=h("option",{value:v},l);if(v===(cur||""))o.selected=true;return o;}));return s;};
+    return h("div",{class:"d-row"},h("span",{class:"lbl"},"שייך ל"),
+      sel("ds-"+t.id,[["","בלי דשבורד"],...qd.map(d=>[d.id,(d.icon||"📊")+" "+(d.title||d.id)])],t.dash,v=>patch(t,{dash:v},v?"חובר לדשבורד "+((dashById(v)||{}).title||""):"הוסר מהדשבורד")),
+      sel("pj-"+t.id,[["","בלי פרויקט"],...[...projects].sort((a,b)=>(a.order||0)-(b.order||0)).map(p=>[p.id,(p.icon||"")+" "+(p.name||p.id)])],t.project,v=>patch(t,{project:v},v?"שויך לפרויקט "+((projById(v)||{}).name||""):"הוסר מהפרויקט")));
+  }
+  function dashTasks(d){return allTopics.filter(t=>t.dash===d.id&&!t._deleted);}
+  function dashActivity(d){let best=Date.parse(d.updated_at||"")||0;for(const t of dashTasks(d)){const x=lastHandled(t);if(x>best)best=x;}return best;}
+  function sugKey(text){let h2=0;for(const ch of String(text))h2=(h2*31+ch.charCodeAt(0))|0;return "k"+(h2>>>0).toString(36);}
+  // live numbers for dashboards whose data lives in sq_docs (today: insurance)
+  function liveOf(d){
+    if(d.source==="insurance"&&insDocs.length){
+      const pol=insDocs.filter(x=>x.id!=="_meta"&&x.status!=="unknown"&&x.status!=="ended"&&x.status!=="cancelled");
+      const meta=insDocs.find(x=>x.id==="_meta")||{};const flags=(Array.isArray(meta.flags)?meta.flags:[]).filter(f=>f&&f.text);
+      const ren=pol.map(x=>x.renew).filter(r=>r&&daysUntil(r)>=0).sort();
+      const kpis=[{v:String(pol.length),l:"פוליסות"},{v:String(flags.filter(f=>f.lvl==="high").length),l:"דורשים טיפול"},ren[0]?{v:fmtDate(ren[0])+"."+ren[0].slice(2,4),l:"חידוש הבא"}:null].filter(Boolean);
+      const sugs=[...flags.filter(f=>f.lvl==="high").map(f=>({text:f.text,sub:f.save?"חיסכון: "+f.save:(f.sub||"")})),
+        ...pol.filter(x=>x.renew&&daysUntil(x.renew)>=0&&daysUntil(x.renew)<=60).map(x=>({text:"חידוש: "+(x.title||x.id),sub:relDate(x.renew),date:x.renew}))];
+      return {kpis,sugs,live:true};
+    }
+    return {kpis:Array.isArray(d.kpis)?d.kpis:[],sugs:[],live:!!d.live};
+  }
+  function dashSugs(d){const st=d.sugg||{};const lv=liveOf(d);
+    const own=(Array.isArray(d.suggest)?d.suggest:[]).filter(x=>x&&x.text&&(!x.date||daysUntil(x.date)<=(x.show_days||60)));
+    const taken=new Set(dashTasks(d).map(t=>norm(t.title)));
+    return [...lv.sugs,...own].map(x=>({...x,key:x.key||sugKey(x.text)})).filter(x=>!st[x.key]&&!taken.has(norm(x.text)));}
+  function openDash(id){const d=dashById(id);if(!d)return;const q=d.quest||"side";if(quest!==q)setQuest(q);dashOpen=id;renderDash();setTimeout(()=>{const e=$("dz-card");e&&e.scrollIntoView({behavior:"smooth",block:"start"});},60);}
+  async function addFromSug(d,x){if(!db)return;const now=new Date().toISOString(),nid=newId();
+    try{await db.collection("topics").doc(nid).set({title:String(x.text).slice(0,200),kind:"admin",status:"active",priority:"normal",area:"",next_step:x.sub&&!x.date?String(x.sub):"",next_date:x.date||"",summary:"",links:[],dash:d.id,...(TQ.includes(d.quest)?{quest:d.quest}:{}),source:"הוצע מהדשבורד "+(d.title||""),created_at:now,updated_at:now,log:[{at:now,text:"נוצר מהצעה של הדשבורד"}]});
+      await db.collection("dashboards").doc(d.id).update({sugg:{...(d.sugg||{}),[x.key]:"added"}});
+      toast("נוספה משימה",async()=>{try{await db.collection("topics").doc(nid).delete();await db.collection("dashboards").doc(d.id).update({sugg:{...(d.sugg||{})}});toast("בוטל");}catch(e){fail(e);}});}catch(e){fail(e);}}
+  async function dismissSug(d,x){try{await db.collection("dashboards").doc(d.id).update({sugg:{...(d.sugg||{}),[x.key]:"dismissed"}});toast("ההצעה הוסתרה",async()=>{try{await db.collection("dashboards").doc(d.id).update({sugg:{...(d.sugg||{})}});}catch(e){fail(e);}});}catch(e){fail(e);}}
+  function dashVars(d){return `--c1:${d.c1||"#444"};--c2:${d.c2||d.c1||"#777"}`;}
+  function dashTile(d,lite){const kids=dashTasks(d).filter(isOpen),lv=liveOf(d),k=lv.kpis[0];
+    const urgentN=kids.filter(t=>isUrgent(t)||isHot(t)).length;
+    return h("button",{class:"dz-tile"+(lite?" lite":""),type:"button",style:dashVars(d),"aria-expanded":dashOpen===d.id?"true":"false",onclick:()=>{dashOpen=dashOpen===d.id?null:d.id;renderDash();}},
+      h("span",{class:"bd"+(urgentN?" hot":"")},kids.length?`${kids.length} פתוחות`:"הכל סגור"),
+      h("b",null,h("span",{"aria-hidden":"true"},d.icon||"📊"),d.title||""),
+      h("span",{class:"s"},d.note||(k?`${k.v} ${k.l}`:"")));}
+  function dashCard(d){const lv=liveOf(d),url=safeUrl(d.url||""),all=dashTasks(d),kids=all.filter(isOpen).sort(byDate),closed=all.length-kids.length,sugs=dashSugs(d);
+    const links=(Array.isArray(d.links)?d.links:[]).filter(l=>l&&safeUrl(l.url));const proj=d.project&&projById(d.project);
+    const asOf=lv.live?"חי"+(d.updated_at?" · עודכן "+ago(Date.parse(d.updated_at)):""):(d.as_of?"תמונת מצב · נכון ל-"+d.as_of:"דף מידע");
+    inDashCard=true;const rows=kids.map(row);inDashCard=false;
+    return h("article",{class:"dz-card",id:"dz-card",style:dashVars(d)},
+      h("div",{class:"dz-cv"},h("span",{class:"ic","aria-hidden":"true"},d.icon||"📊"),h("div",{style:"min-width:0"},h("h3",null,d.title||""),h("p",null,asOf)),h("button",{class:"x",type:"button","aria-label":"סגור",onclick:()=>{dashOpen=null;renderDash();}},"✕")),
+      lv.kpis.length?h("div",{class:"dz-kpis"},lv.kpis.slice(0,3).map(k=>h("div",{class:"dz-kpi"},h("b",null,k.v),h("span",null,k.l)))):null,
+      url?h("a",{class:"dz-go",href:url,target:"_blank",rel:"noopener"},"פתח את הדשבורד ←"):null,
+      links.length||proj?h("div",{class:"dz-links"},links.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"קישור")),proj&&safeUrl(proj.app_url||"")?h("a",{href:safeUrl(proj.app_url),target:"_blank",rel:"noopener"},"פרויקט: "+(proj.name||"")):null):null,
+      h("div",{class:"dz-sec"},h("h4",null,"המשימות של הדשבורד",kids.length?h("span",{class:"n"},kids.length):null),
+        rows.length?h("div",{class:"group"},rows):h("div",{class:"empty"},"אין משימות פתוחות. הדשבורד נשאר כמקור מידע."),
+        closed?h("span",{class:"src"},`${closed} משימות סגורות`):null),
+      sugs.length?h("div",{class:"dz-sec"},h("h4",null,"💡 הדשבורד מציע"),sugs.slice(0,5).map(x=>h("div",{class:"dz-sug"},h("span",{class:"t"},x.text,x.sub?h("small",null,x.sub):null),
+        canWrite?h("button",{type:"button",onclick:()=>addFromSug(d,x)},"+ משימה"):null,canWrite?h("button",{class:"no",type:"button","aria-label":"הסתר הצעה",onclick:()=>dismissSug(d,x)},"✕"):null))):null);}
+  const DASH_MAX=4, DASH_IDLE=90;
+  function renderDash(){const sec=$("dashSec");if(!sec)return;
+    const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
+    if(!mine.length){sec.hidden=true;sec.replaceChildren();return;}
+    const idle=d=>!dashTasks(d).some(isOpen)&&dashActivity(d)&&(Date.now()-dashActivity(d))/86400000>DASH_IDLE;
+    const act=mine.filter(d=>!d.archived&&!idle(d)).sort((a,b)=>(dashTasks(b).some(isOpen)?1:0)-(dashTasks(a).some(isOpen)?1:0)||(a.order||99)-(b.order||99));
+    const top=act.slice(0,DASH_MAX),extra=[...act.slice(DASH_MAX),...mine.filter(d=>!d.archived&&idle(d))],old=mine.filter(d=>d.archived);
+    const cur=dashOpen&&mine.find(d=>d.id===dashOpen);
+    sec.hidden=false;
+    sec.replaceChildren(...[h("div",{class:"sec-head"},h("h2",{id:"hDash"},"הדשבורדים שלי")),
+      top.length?h("div",{class:"dz-grid"},top.map(d=>dashTile(d))):null,
+      cur?dashCard(cur):null,
+      extra.length||old.length?h("details",{class:"dz-more"},h("summary",null,`עוד דשבורדים וארכיון (${extra.length+old.length})`),
+        extra.length?h("div",{class:"dz-grid"},extra.map(d=>dashTile(d,true))):null,
+        old.length?h("div",{class:"dz-old"},old.map(d=>safeUrl(d.url||"")?h("a",{href:safeUrl(d.url),target:"_blank",rel:"noopener"},(d.icon||"📄")+" "+(d.title||"")+(d.note?" · "+d.note:"")):null)):null):null].filter(Boolean));
+  }
   function goBtn(t){const c=chatOf(t),m=!c&&mailOf(t);
     if(c)return iconBtn("go",ICON.chat,"קפוץ לשיחה של המשימה",null,c);
     if(m)return iconBtn("go",ICON.mail,"פתח את המייל של המשימה",null,m);
+    if(!(t.project&&projById(t.project)))return h("span",{class:"ib ph","aria-hidden":"true"}); // level 1: no chat icon at all
     return h("a",{class:"ib go off",href:contUrl(t),target:"_blank",rel:"noopener",title:"אין עדיין שיחה משלה","aria-label":"אין עדיין שיחה משלה. שם המשימה יועתק",html:ICON.chat,onclick:e=>{e.stopPropagation();const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("אין שיחה משלה עדיין. שם המשימה הועתק, הדבק בשיחה");}catch(x){}}});}
   function contUrl(t){const p=t.project&&projById(t.project);return chatOf(t)||(p&&safeUrl(p.claude_url||""))||SQ_CHAT;}
   function contBtn(t,cls,label){const direct=!!chatOf(t);return h("a",{class:cls,href:contUrl(t),target:"_blank",rel:"noopener",html:cls==="cont"?ICON.chat:"",onclick:e=>{e.stopPropagation();if(!direct){const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("שם המשימה הועתק, הדבק בשיחה");}catch(x){}}}},label||"המשך בשיחה");}
@@ -1126,6 +1244,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
           app?h("a",{class:"pbtn app",href:app,target:"_blank",rel:"noopener",html:ICON.app},"פתח אפליקציה"):(canWrite?missingBtn("app_url","קישור לאפליקציה",ICON.app):null),
           cl?h("a",{class:"pbtn",href:cl,target:"_blank",rel:"noopener",html:ICON.chat},"פתח ב-Claude"):(canWrite?missingBtn("claude_url","קישור ל-Claude",ICON.chat):null)),
         more.length?h("div",{class:"pc-more"},more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך"))):null,
+        dashes.some(d=>d.project===p.id&&!d._deleted&&!d.archived)?h("div",{class:"pc-more"},dashes.filter(d=>d.project===p.id&&!d._deleted&&!d.archived).map(d=>h("button",{class:"dcrumb",type:"button",style:`--dc:${d.c1||"#555"}`,onclick:()=>openDash(d.id)},(d.icon||"📊")+" "+(d.title||"")+" ›"))):null,
         tasks.length?h("div",{class:"pc-tasks"},h("div",{class:"pc-th"},"משימות פתוחות",h("span",{class:"n"},tasks.length)),tasks.map(row)):null);
       if(addingFor&&addingFor.id===p.id){
         const inp=h("input",{id:"padd",type:"url",placeholder:addingFor.field==="app_url"?"הדבק את כתובת האפליקציה":"הדבק קישור לפרויקט ב-Claude","aria-label":"קישור"});
@@ -1162,11 +1281,13 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     const links=linksOf(t), chat=links.find(l=>linkType(l)==="chat"), page=links.find(l=>linkType(l)==="page");
     const dcls=n==null?"":n<=0?" due":n<=3?" soon":"";
     const asks=openAsks(t), cl=forClaude(t);
-    const el=h("div",{class:"row"+(open?"":" closed")+(isUrgent(t)?" urgent":""),style:`--k:var(--k-${k})`,"data-id":t.id},
+    const lv=levelOf(t), dd=t.dash&&dashById(t.dash);
+    const el=h("div",{class:"row lv"+lv+(open?"":" closed")+(isUrgent(t)?" urgent":""),style:`--k:var(--k-${k})`,"data-id":t.id},
       h("span",{class:"bar"}),
       h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":openId===t.id?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
         h("div",{class:"r-line"},
           t.project&&projById(t.project)?h("span",{class:"ptag"},picOf(projById(t.project),16),projById(t.project).name):null,
+          dd&&!inDashCard?h("button",{class:"dcrumb",type:"button",style:`--dc:${dd.c1||"#555"}`,title:"פתח את הדשבורד","aria-label":"שייך לדשבורד "+(dd.title||""),onclick:e=>{e.stopPropagation();openDash(dd.id);}},(dd.icon||"📊")+" "+(dd.short||dd.title||"")+" ›"):null,
           h("span",{class:"r-title"},t.title||"(ללא כותרת)"),
           ctxOf(t).length&&open?h("span",{class:"r-ctx",title:ctxOf(t).map(c=>TAGS[c].full).join(", "),"aria-label":"מתאים ל: "+ctxOf(t).map(c=>TAGS[c].full).join(", ")},ctxOf(t).map(c=>TAGS[c].e).join("")):null,
           t.status==="waiting_me"?h("span",{class:"tag me"},"מחכה לי"):t.status==="waiting_other"?h("span",{class:"tag other"},"מחכה לאחרים"):null,
@@ -1196,7 +1317,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
       stRows.length?h("div",{class:"st"},...stRows.flatMap(r=>[h("span",{class:"lbl"},r[0]),h("div",null,r[1])])):null,
       ...qs.filter(q=>!q.answer).map(q=>questionCard(t,q,false)),
       ...offs.filter(o=>(o.state||"open")==="open").map(o=>offerCard(t,o,false)),
-      contBtn(t,"cont"),
+      contBtn(t,"cont",chatOf(t)?undefined:"פתח שיחה למשימה"),
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"מתי אפשר"),...Object.keys(TAGS).map(c=>h("button",{class:"pill",type:"button","aria-pressed":ctxOf(t).includes(c)?"true":"false",onclick:()=>setCtx(t,c)},TAGS[c].e+" "+TAGS[c].l))):null,
       linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).length?h("div",{class:"d-row files"},linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).map(l=>h("a",{class:"lnk"+(linkType(l)==="file"?" file":""),href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
       h("details",{class:"more"},h("summary",null,"פרטים, היסטוריה ועריכה ▾"),h("div",null,
@@ -1206,6 +1327,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
       log.length?h("div",{class:"src"},log.map(e=>`${fmtDate((e.at||"").slice(0,10))} · ${e.text||""}`).join("   |   ")):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"סטטוס"),...["active","waiting_me","waiting_other","paused"].map(s=>h("button",{class:"pill",type:"button","aria-pressed":t.status===s?"true":"false",onclick:()=>patch(t,{status:s})},STATUS[s]))):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"תזכורת"),dateInp,h("button",{class:"pill",type:"button",onclick:()=>snooze(t,1)},"מחר"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,7)},"+שבוע"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,30)},"+חודש"),t.next_date?h("button",{class:"pill",type:"button",onclick:()=>patch(t,{next_date:""},"התאריך הוסר")},"בלי תאריך"):null):null,
+      canWrite?levelRow(t):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"קישור"),linkInp,h("button",{class:"pill",type:"button",onclick:addLink},"הוסף")):null,
       shareId===t.id?sharePanel(t):null)),
       h("div",{class:"d-row",style:"justify-content:space-between"},h("span",{class:"src"},`${KINDS[t.kind]||""}${t.area?" · "+t.area:""} · ${t.source||""}`),
@@ -1246,7 +1368,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     const tab=(v,label)=>h("button",{class:"vtab",type:"button",role:"tab","aria-selected":view===v?"true":"false",onclick:()=>{view=v;openId=null;shareId=null;renderViews();renderFilters();renderList();}},label,h("span",{class:"n"},c[v]));
     $("views").replaceChildren(tab("open","פתוחות"),tab("done","בוצעו"),tab("archive","ארכיון"));
   }
-  function renderList(){renderMain();renderStrip();}
+  function renderList(){renderMain();renderStrip();renderDash();}
   function renderMain(){
     const kindOk=t=>(filterKind==="all"||t.kind===filterKind)&&ctxOk(t);
     if(view!=="open"){
@@ -1557,7 +1679,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
   }
   window.addEventListener("hashchange",()=>{const q=questFromHash();if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
   applyQuest();
-  function renderAll(){renderQnav();renderStats();renderCtx();renderInbox();renderViews();renderFilters();renderStrip();renderList();renderFun();renderTravel();}
+  function renderAll(){renderQnav();renderStats();renderCtx();renderInbox();renderViews();renderFilters();renderStrip();renderList();renderFun();renderTravel();renderDash();}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:""};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -1819,7 +1941,9 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
       const th=s.docs.find(x=>x.id==="travel_hub"),tr=s.docs.find(x=>x.id==="travel_report");travelHub=th?th.data():null;travelReport=tr?tr.data():null;renderTravel();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
-    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderFun();},()=>{});
+    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderFun();renderDash();},()=>{});
+    db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));renderList();renderDash();},()=>{});
+    db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
     initNotify();
   })();
 })();
