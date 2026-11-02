@@ -1454,7 +1454,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
   }
   function itemRow(t,x,idx){
     const u=safeUrl(x.url||"");
-    const vb=(v,ic,lbl)=>canWrite?h("button",{class:"vote"+(x.vote===v?" on "+v:""),type:"button","aria-pressed":x.vote===v?"true":"false","aria-label":lbl+": "+x.label,onclick:e=>{e.stopPropagation();voteItem(t,idx,v);}},ic):null;
+    const vb=(v,ic,lbl)=>canWrite?h("button",{class:"vote "+v+(x.vote===v?" on":""),type:"button","aria-pressed":x.vote===v?"true":"false","aria-label":lbl+": "+x.label,onclick:e=>{e.stopPropagation();voteItem(t,idx,v);}},ic):null;
     return h("li",{class:x.vote?"voted-"+x.vote:null},
       h("div",{class:"fi-t"},h("b",null,x.label),x.sub?h("span",null,x.sub):null),
       h("div",{class:"fi-acts"},t.zone==="spotify"?vb("love","👍👍","אהבתי מאוד"):null,vb("up","👍","אהבתי"),vb("down","👎","לא אהבתי"),
