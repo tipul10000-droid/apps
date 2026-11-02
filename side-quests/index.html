@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.2";window.SQ_BUILD_AT="2.11.2026 16:05";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="4.3";window.SQ_BUILD_AT="2.11.2026 16:30";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -363,6 +363,7 @@ body.fun-on .tasks-only{display:none!important}
 .qbtn.q-work{--qb:#1D5B9E;--qi:#F1F6FD;--qa:#8CCBFF}
 .qbtn.q-fun .qc,.qbtn.q-army .qc,.qbtn.q-work .qc{background:rgba(255,255,255,.16)}
 body:not(.q-side) .side-only{display:none!important}
+body:not(.q-ai) .ai-only{display:none!important}
 /* top banner: one per quest, same height; the ribbon under it (stats, refresh, quest buttons, quick add) is identical in every quest */
 body:not(.q-side) .mapband{display:none}
 .qband{display:none;position:relative;overflow:hidden;isolation:isolate}
@@ -655,6 +656,55 @@ body.fun-on .ctxrow .refr{grid-column:1}
 .fhit .ft>small{font-size:12.5px;color:#5E6B64;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fhit .fqn{flex:none;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:#EDEDEA;color:#333;direction:ltr}
 .fnone{color:var(--hero-muted);font-size:13.5px;padding:4px 2px}
+
+/* ===== 4.3: six quests (Travel, AI Projects added). Buttons 3 per row, 2 rows ===== */
+.qnav{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.qbtn{flex-direction:column;justify-content:center;gap:1px;min-height:50px;padding:5px 4px;border-radius:11px}
+.qbtn .qe{font-size:17px}
+.qbtn .qn,.qbtn.q-fun .qn{font-size:12.5px;max-width:100%;text-align:center}
+.qbtn.q-fun .qn{font-size:11.5px}
+.qbtn.q-travel{--qb:#0E6E78;--qi:#F2FBFA;--qa:#FFC857}
+.qbtn.q-ai{--qb:#262624;--qi:#F5F0E8;--qa:#D97757}
+.qbtn.q-travel .qc,.qbtn.q-ai .qc{background:rgba(255,255,255,.16)}
+body.q-travel .qb-travel,body.q-ai .qb-ai{display:block}
+body.q-travel{--hero:#0B4F57;--hero-ink:#F0FAF9;--hero-muted:#A9D3D2;--accent:#FFC857;--accent-ink:#3A2600;--bg:#EEF6F5;--sunk:#DDEDEB;--line:#C8DFDC}
+body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D97757;--accent-ink:#fff;--bg:#F5F2EC;--sunk:#E9E4DA;--line:#DAD3C6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body.q-travel{--bg:#0A1415;--surface:#122022;--sunk:#1A2C2E;--line:#28403F}
+:root:not([data-theme="light"]) body.q-ai{--bg:#141413;--surface:#1E1D1B;--sunk:#292826;--line:#3A3835}}
+/* travel: turquoise sky, sun, drifting clouds, a plane flying the route */
+.qb-travel{color:#F2FBFA;background:linear-gradient(175deg,#1AA3A8 0%,#0E7C86 55%,#0B4F57 100%)}
+.tb-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.tb-sun{fill:#FFC857;filter:drop-shadow(0 0 12px rgba(255,200,87,.7))}
+.tb-cloud{fill:rgba(255,255,255,.85)}
+.tb-cloud.c1{animation:tbcloud 14s linear infinite}
+.tb-cloud.c2{animation:tbcloud2 18s linear infinite;opacity:.7}
+@keyframes tbcloud{from{transform:translate(-40px,58px)}to{transform:translate(240px,58px)}}
+@keyframes tbcloud2{from{transform:translate(240px,44px)}to{transform:translate(-40px,44px)}}
+.tb-hills{fill:#0A434A;opacity:.75}
+.tb-route{fill:none;stroke:#FFE3A3;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:5 7;animation:sbroute 1.6s linear infinite}
+.tb-pin circle{fill:#FFC857;stroke:#0B4F57;stroke-width:2}
+.tb-plane path{fill:#fff;stroke:#0B4F57;stroke-width:1}
+.qb-travel h2{font-family:"Rubik",var(--f-display);font-weight:800;font-size:31px;line-height:.95;direction:ltr;color:#fff;text-shadow:0 2px 0 #0A434A}
+.qb-travel h2 i{font-style:normal;color:#FFC857}
+.qb-travel p{color:#E3F6F4;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.tv-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#FFE3A3;direction:ltr}
+/* AI projects: dark terminal with the Claude Code mascot in Claude orange */
+.qb-ai{color:#F5F0E8;background:radial-gradient(ellipse at 22% 45%,rgba(217,119,87,.28),transparent 62%),repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px),linear-gradient(160deg,#2B2A27,#151413 75%)}
+.ai-term{position:absolute;z-index:1;left:max(12px,4%);top:calc(env(safe-area-inset-top,0px) + 10px);width:min(28vw,104px);border-radius:10px;border:1.5px solid rgba(217,119,87,.7);background:#0F0E0D;box-shadow:0 0 18px rgba(217,119,87,.3);overflow:hidden;direction:ltr}
+.ai-bar{display:flex;gap:4px;padding:5px 7px;background:#23211F}
+.ai-bar i{width:6px;height:6px;border-radius:50%;background:#5A5550}.ai-bar i:first-child{background:#D97757}
+.ai-clawd{display:block;width:44%;margin:6px auto 2px;fill:#D97757;animation:aibob 1.8s ease-in-out infinite}
+.ai-clawd .ai-eye{fill:#0F0E0D;animation:aiblink 4s steps(1) infinite}
+@keyframes aibob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes aiblink{0%,92%,100%{opacity:1}94%{opacity:0}}
+.ai-line{font-family:var(--f-mono);font-size:10.5px;color:#F5F0E8;padding:0 8px 7px;white-space:nowrap}
+.ai-line b{color:#D97757}
+.ai-cur{display:inline-block;width:6px;height:11px;margin-left:3px;vertical-align:-2px;background:#D97757;animation:fzblink 1s steps(2,start) infinite}
+.qb-ai h2{font-family:"Rubik",var(--f-display);font-weight:800;font-size:30px;line-height:.95;direction:ltr;color:#F5F0E8;letter-spacing:.5px}
+.qb-ai h2 i{font-style:normal;color:#D97757}
+.qb-ai p{color:#D9D1C5}
+.ai-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#D97757;direction:ltr}
+@media (prefers-reduced-motion:reduce){.tb-cloud,.tb-route,.ai-clawd,.ai-clawd .ai-eye,.ai-cur{animation:none}}
 </style>
 </head>
 <body>
@@ -671,7 +721,7 @@ body.fun-on .ctxrow .refr{grid-column:1}
     <g class="sb-x" transform="translate(212 128)"><path d="M-7 -7 L7 7 M7 -7 L-7 7"/></g>
   </svg>
   <div class="sb-compass" aria-hidden="true"><i></i></div>
-  <div class="qb-in gut"><span class="sb-tag" aria-hidden="true">NEXT STOP</span><h2>SIDE <i>QUESTS</i></h2><p>העוזר האישי: בית, כסף, פרויקטים וטיולים.</p></div>
+  <div class="qb-in gut"><span class="sb-tag" aria-hidden="true">NEXT STOP</span><h2>SIDE <i>QUESTS</i></h2><p>העוזר האישי: בית, כסף, משפחה וסידורים.</p></div>
 </div>
 <div class="qband qb-fun fz-head">
   <div class="fz-sun" aria-hidden="true"></div>
@@ -690,6 +740,28 @@ body.fun-on .ctxrow .refr{grid-column:1}
 <div class="qband qb-work">
   <div class="wb-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 82 L22 64 L40 70 L60 38 L78 46 L98 12"/></svg></div>
   <div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><img class="qlogo" id="logo-work" alt="Elbit" hidden><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
+</div>
+<div class="qband qb-travel">
+  <svg class="tb-sky" viewBox="0 0 400 200" preserveAspectRatio="xMinYMid slice" aria-hidden="true">
+    <circle class="tb-sun" cx="168" cy="62" r="17"/>
+    <g class="tb-cloud c1"><ellipse cx="0" cy="0" rx="26" ry="9"/><ellipse cx="-10" cy="-6" rx="13" ry="10"/><ellipse cx="8" cy="-8" rx="11" ry="9"/></g>
+    <g class="tb-cloud c2"><ellipse cx="0" cy="0" rx="20" ry="7"/><ellipse cx="-6" cy="-5" rx="10" ry="8"/></g>
+    <path class="tb-hills" d="M-10 200 L-10 168 C30 150 60 160 90 146 S150 150 180 160 S240 150 260 165 L260 200 Z"/>
+    <path id="tbRoute" class="tb-route" d="M22 104 C34 52 110 36 186 92"/>
+    <g class="tb-pin" transform="translate(22 104)"><circle r="5"/></g>
+    <g class="tb-pin" transform="translate(186 92)"><circle r="5"/></g>
+    <g class="tb-plane"><path d="M-11 -1.6 L4 -1.6 L-3 -11 L1 -11 L10 -1.6 L14 -1.6 Q17 0 14 1.6 L10 1.6 L1 11 L-3 11 L4 1.6 L-11 1.6 L-14 6 L-16 6 L-14 0 L-16 -6 L-14 -6 Z"/>
+      <animateMotion dur="5s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .55 1"><mpath href="#tbRoute"/></animateMotion></g>
+  </svg>
+  <div class="qb-in gut"><span class="tv-tag" aria-hidden="true">NOW BOARDING ✈</span><h2>TRAVEL <i>QUEST</i></h2><p>טיולים בארץ ובחו״ל.</p></div>
+</div>
+<div class="qband qb-ai">
+  <div class="ai-term" aria-hidden="true">
+    <div class="ai-bar"><i></i><i></i><i></i></div>
+    <svg class="ai-clawd" viewBox="0 0 22 16" shape-rendering="crispEdges"><path d="M4 1h14v4h2v4h-2v4h-1v3h-2v-3h-1v3h-2v-3H10v3H8v-3H7v3H5v-3H4V9H2V5h2z"/><rect class="ai-eye" x="7" y="4" width="2" height="3"/><rect class="ai-eye" x="13" y="4" width="2" height="3"/></svg>
+    <div class="ai-line"><b>&gt;</b> claude<span class="ai-cur"></span></div>
+  </div>
+  <div class="qb-in gut"><span class="ai-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
 <div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
@@ -723,7 +795,7 @@ body.fun-on .ctxrow .refr{grid-column:1}
     <div id="list"><div class="empty">טוען…</div></div>
     
   </section>
-  <section aria-labelledby="hProj" class="tasks-only side-only">
+  <section aria-labelledby="hProj" class="tasks-only ai-only">
     <div class="sec-head"><h2 id="hProj">הפרויקטים שלי</h2></div>
     <div class="pgrid" id="strip"></div>
   </section>
@@ -883,7 +955,7 @@ body.fun-on .ctxrow .refr{grid-column:1}
   function statCounts(){
     if(quest==="fun"){const live=funTopics.filter(t=>t.status!=="archived"&&t.status!=="done");
       return {asks:live.reduce((n,t)=>n+openAsks(t),0),open:live.length,wait:0,later:0,done:funTopics.filter(t=>t.status==="done").length};}
-    const open=topics.filter(t=>isOpen(t)&&!isProjTask(t));
+    const open=topics.filter(t=>isOpen(t)&&!inStrip(t));
     return {asks:open.filter(t=>!snoozed(t)).reduce((n,t)=>n+openAsks(t),0),open:open.filter(t=>!snoozed(t)).length,wait:open.filter(t=>!snoozed(t)&&!returned(t)&&t.status==="waiting_other").length,later:open.filter(snoozed).length,done:topics.filter(t=>t.status==="done"||t.status==="promoted").length};
   }
   const STATS=[["asks","להחלטה שלי"],["open","פתוחות"],["wait","מחכות לאחרים"],["later","אחר כך"],["done","בוצעו"]];
@@ -906,6 +978,7 @@ body.fun-on .ctxrow .refr{grid-column:1}
   function projById(id){return projects.find(p=>p.id===id);}
   // project tasks (kind "project" linked to a known project) live inside their project card at the bottom, not in the main list
   function isProjTask(t){return t.kind==="project"&&!!t.project&&!!projById(t.project);}
+  function inStrip(t){return quest==="ai"&&isProjTask(t);} // project tasks sit inside their project card, only in AI Projects
   function picOf(p,size){const st=size?`width:${size}px;height:${size}px;border-radius:${size/4}px;font-size:${size*.55}px`:"";const bg=`background:${p.color||"var(--hero)"};${st}`;const img=safeUrl(p.icon_url||"")||(String(p.icon_url||"").startsWith("data:image/")?p.icon_url:null);if(img)return h("span",{class:"pic",style:bg},h("img",{src:img,alt:""}));return h("span",{class:"pic",style:bg},p.icon||(p.name||"?").slice(0,1));}
   function renderStrip(){
     const s=$("strip");
@@ -1054,7 +1127,7 @@ body.fun-on .ctxrow .refr{grid-column:1}
       return;
     }
     const allK=topics.filter(isOpen).filter(kindOk).sort(byDate);
-    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t)&&!isProjTask(t));
+    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t)&&!inStrip(t));
     $("urgSec").hidden=!urg.length;$("urgList").replaceChildren(...urg.map(row));
     const back=all.filter(returned), later=all.filter(snoozed), open=all.filter(t=>!returned(t)&&!snoozed(t));
     const hot=open.filter(isHot), rest=open.filter(t=>!isHot(t));
@@ -1066,9 +1139,10 @@ body.fun-on .ctxrow .refr{grid-column:1}
 
   // fun zone: topics marked fun / kind "fun" / tag "fun question" live here, not in the task list
   function isFun(t){return !!t.fun||t.kind==="fun"||(Array.isArray(t.tags)&&t.tags.includes("fun question"));}
-  // quests: side (default), fun, army, work. A topic's quest is t.quest ("army"/"work"); fun topics are isFun(); everything else is side.
-  const QUESTS={side:{name:"Side Quests",a:"Side",b:"Quests",e:"🗺️",ph:"משימה חדשה, בכמה מילים…"},fun:{name:"Fun Quest",a:"Fun",b:"Quest",e:"🕹️",ph:"תחביב או רעיון ל-Fun Quest…"},army:{name:"Army Quest",a:"Army",b:"Quest",e:"🪖",ph:"משימה חדשה ל-Army Quest…"},work:{name:"Work Quest",a:"Work",b:"Quest",e:"💼",ph:"משימה חדשה ל-Work Quest…"}};
-  function questOf(t){return t.quest==="army"||t.quest==="work"?t.quest:"side";}
+  // quests: side (default), fun, army, work, travel, ai. A topic's quest is t.quest (one of TQ); fun topics are isFun(); everything else is side.
+  const QUESTS={side:{name:"Side Quests",a:"Side",b:"Quests",e:"🗺️",ph:"משימה חדשה, בכמה מילים…"},fun:{name:"Fun Quest",a:"Fun",b:"Quest",e:"🕹️",ph:"תחביב או רעיון ל-Fun Quest…"},army:{name:"Army Quest",a:"Army",b:"Quest",e:"🪖",ph:"משימה חדשה ל-Army Quest…"},work:{name:"Work Quest",a:"Work",b:"Quest",e:"💼",ph:"משימה חדשה ל-Work Quest…"},travel:{name:"Travel Quest",a:"Travel",b:"Quest",e:"✈️",ph:"טיול או נסיעה חדשה…"},ai:{name:"AI Projects",a:"AI",b:"Projects",e:"🤖",ph:"משימה חדשה לפרויקט…"}};
+  const TQ=["army","work","travel","ai"]; // quests stored in t.quest; missing = side
+  function questOf(t){return TQ.includes(t.quest)?t.quest:"side";}
   function questFromHash(){const q=location.hash.slice(1);return QUESTS[q]?q:"side";}
   let quest=questFromHash(), allTopics=[];
   let funMode=quest==="fun";
@@ -1285,14 +1359,14 @@ body.fun-on .ctxrow .refr{grid-column:1}
         if(Array.isArray(x.context))clean.context=x.context.map(c=>CTX_OLD[c]||c).filter(c=>TAGS[c]);if(x.urgent)clean.urgent=true;
         try{
           if(ex)await db.collection("topics").doc(ex.id).update({...clean,links:[...linksOf(ex),...links.filter(l=>!linksOf(ex).some(o=>o.url===l.url))],log:[...(Array.isArray(ex.log)?ex.log:[]),{at:now,text:String(x.log_note||"עודכן משיחה")}]});
-          else await db.collection("topics").doc(newId()).set({...clean,...((x.quest==="army"||x.quest==="work")?{quest:x.quest}:(quest==="army"||quest==="work")?{quest}:{}),links,created_at:now,log:x.log_note?[{at:now,text:String(x.log_note)}]:[]});
+          else await db.collection("topics").doc(newId()).set({...clean,...(TQ.includes(x.quest)?{quest:x.quest}:TQ.includes(quest)?{quest}:{}),links,created_at:now,log:x.log_note?[{at:now,text:String(x.log_note)}]:[]});
           n++;
         }catch(err){fail(err);break;}
       }
       if(n){$("qtitle").value="";toast(n===1?"נוסף מהשיחה":`נוספו ${n} נושאים`);}
       return;
     }
-    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(quest==="army"||quest==="work"?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
+    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
   function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"";}

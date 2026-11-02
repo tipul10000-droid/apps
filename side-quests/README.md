@@ -62,7 +62,7 @@ There are no environment variables and no build secrets. Settings live in the co
 
 ### Topic fields (`sidequests/topics`)
 
-title, kind (research|followup|admin|reminder|idea|project|fun), area, urgent, critical, critical_reason, critical_at, status (active|waiting_me|waiting_other|paused|done|promoted|archived), priority, quest (army|work; missing = side), fun (true = Fun Quest), stand, waiting_for, next_step, next_date (YYYY-MM-DD), snooze_until (ISO or "someday"), summary, links [{label,url,type: chat|page|file}], questions [{id,q,options,answer,answered_at,done,superseded}], ai_offers [{id,text,detail,state open|approved|declined|done,result,superseded}], log [{at,text}], sync {at,from,chat}, source, project, tags, icon, items, item_groups, fun_order, subs, promoted_to, created_at, updated_at, done_at.
+title, kind (research|followup|admin|reminder|idea|project|fun), area, urgent, critical, critical_reason, critical_at, status (active|waiting_me|waiting_other|paused|done|promoted|archived), priority, quest (army|work|travel|ai; missing = side), fun (true = Fun Quest), stand, waiting_for, next_step, next_date (YYYY-MM-DD), snooze_until (ISO or "someday"), summary, links [{label,url,type: chat|page|file}], questions [{id,q,options,answer,answered_at,done,superseded}], ai_offers [{id,text,detail,state open|approved|declined|done,result,superseded}], log [{at,text}], sync {at,from,chat}, source, project, tags, icon, items, item_groups, fun_order, subs, promoted_to, created_at, updated_at, done_at.
 
 ### Project fields (`sidequests/projects`)
 
