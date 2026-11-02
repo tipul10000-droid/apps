@@ -22,9 +22,9 @@ const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SE
 });
 
 // ---------- time (Israel) ----------
-function il(ms = Date.now()) {
+function il(ms = Date.now(), tz = "Asia/Jerusalem") {
   const p = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit",
+    timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit",
     hour: "2-digit", minute: "2-digit", weekday: "short", hour12: false,
   }).formatToParts(new Date(ms));
   const g = (t: string) => p.find((x) => x.type === t)!.value;
@@ -138,8 +138,11 @@ async function briefNow(source: string, list?: any[]) {
 // ---------- critical ----------
 // critical = a topic with critical:true (set by a Claude run / project when it really can't wait),
 // or marked urgent by someone other than Oren. Oren's own taps never ping him. One push per topic per marking.
-async function criticalTick(p: any, t: ReturnType<typeof il>) {
-  if (!p.critical) return { critical: 0 };
+async function criticalTick(p: any, t0: ReturnType<typeof il>) {
+  if (!p.critical && !p.abroadOn) return { critical: 0 };
+  // abroad: quiet hours follow the phone's local time there
+  let t = t0;
+  if (p.abroadOn && p.abroad_tz) { try { t = il(Date.now(), p.abroad_tz); } catch (_) { t = t0; } }
   const quiet = p.quiet_from > p.quiet_to ? (t.hour >= p.quiet_from || t.hour < p.quiet_to) : (t.hour >= p.quiet_from && t.hour < p.quiet_to);
   if (quiet) return { critical: 0, quiet: true };
   const all = await listColl(APP, "topics");
@@ -164,8 +167,11 @@ async function tick() {
   const st = (await getDoc(SRV, "state", "brief")) || {};
   const [hh, mm] = String(p.brief_time || "08:00").split(":").map((x: string) => parseInt(x) || 0);
   const at = hh * 60 + mm;
-  const dayOk = p.brief_days !== "sun-thu" || !["Fri", "Sat"].includes(t.wd);
-  if (p.brief && dayOk && st.date !== t.date && t.mins >= at && t.mins < at + 180) {
+  const dayOk = p.brief_days === "sun-thu" ? !["Fri", "Sat"].includes(t.wd) : p.brief_days === "sun-fri" ? t.wd !== "Sat" : true;
+  // abroad mode (Oren, 2.11.2026): no brief at all, only new critical items, until abroad_until (inclusive)
+  p.abroadOn = p.abroad === true && (!p.abroad_until || t.date <= p.abroad_until);
+  out.abroad = p.abroadOn;
+  if (p.brief && !p.abroadOn && dayOk && st.date !== t.date && t.mins >= at && t.mins < at + 180) {
     await putDoc(SRV, "state", "brief", { date: t.date }); // claim first, so two ticks never double-send
     out.brief = await briefNow("schedule");
   }
