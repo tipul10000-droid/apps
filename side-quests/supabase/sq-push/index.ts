@@ -134,10 +134,15 @@ async function briefNow(source: string, list?: any[]) {
   let b: any = buildBrief(all);
   // a Claude-written brief (the 07:00 sweep writes settings/morning_brief for today) wins when present
   const ai = await getDoc(APP, "settings", "morning_brief");
-  if (ai && ai.date === today && ai.body) b = { ...b, title: String(ai.title || b.title).slice(0, 80), body: String(ai.body).slice(0, 400), lines: Array.isArray(ai.lines) && ai.lines.length ? ai.lines.map(String) : String(ai.body).split("\n"), by: "claude" };
+  // 5.9 format: {date, headline, critical[], news[], now[], work[], evening[], errands[]} (items {text,id?}); old format: {title, body, lines}
+  if (ai && ai.date === today && (ai.body || ai.headline)) {
+    const flat = ["critical", "news", "now", "work", "evening"].flatMap((k) => (Array.isArray(ai[k]) ? ai[k] : []).map((x: any) => String(x?.text || "")).filter(Boolean));
+    const body = ai.body ? String(ai.body) : flat.join("\n");
+    b = { ...b, title: String(ai.title || (ai.headline ? "☀️ בוקר טוב · " + ai.headline : b.title)).slice(0, 80), body: body.slice(0, 400), lines: Array.isArray(ai.lines) && ai.lines.length ? ai.lines.map(String) : body.split("\n"), headline: ai.headline || "", by: "claude" };
+  }
   // the notification is one line only; the full brief opens in the app (#brief), Oren 3.11.2026
-  const head = String(b.title || "").replace(/^☀️?\s*בוקר טוב\s*·\s*/, "").trim();
-  const n = await sendTo(list || (await subs()), { title: "☀️ הבריף של הבוקר מוכן", body: (head ? head + " · " : "") + "לחיצה פותחת את הבריף", tag: "sq-brief", url: APP_URL + "#brief" });
+  const head = String(b.headline || "").trim() || String(b.title || "").replace(/^☀️?\s*בוקר טוב\s*·\s*/, "").trim();
+  const n = await sendTo(list || (await subs()), { title: "☀️ בוקר טוב", body: head || "הבריף של הבוקר מוכן", tag: "sq-brief", url: APP_URL + "#brief" });
   await putDoc(APP, "settings", "brief_last", { at: new Date().toISOString(), date: today, title: b.title, body: b.body, lines: b.lines, pick: b.pick, by: b.by || "auto", source, sent: n });
   return { sent: n, ...b };
 }
