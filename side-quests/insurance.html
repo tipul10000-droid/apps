@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#16433C">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.2";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.3";</script>
 <script src="sq-db.js?v=9"></script>
 <title>הביטוחים שלנו</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -184,6 +184,8 @@ section{scroll-margin-top:130px}
 .empty{padding:28px;text-align:center;color:var(--muted)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (prefers-reduced-motion:reduce){.sheet{transition:none}}
+.docsbtn{display:block;text-align:center;margin-top:8px;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.35);color:#fff;text-decoration:none;font-weight:600;font-size:.95rem}
+.docsbtn[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -191,6 +193,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
   <div class="top"><a class="back" href="./">→ Side Quests</a><span class="back" id="upd"></span></div>
   <h1>🛡️ הביטוחים שלנו</h1>
   <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span style="font-size:24px">💬</span><span>המשך בשיחה עם Claude<small>שינוי, עדכון, שאלה או בקשה</small></span></a>
+  <a class="docsbtn" id="docs" target="_blank" rel="noopener" hidden>📁 כל המסמכים (Google Drive)</a>
   <p class="sub" id="sub">כל הפוליסות של המשפחה במקום אחד: מה יש, כמה עולה, מתי מתחדש, ואיפה יש בעיה.</p>
   <div class="stages" id="stages"></div>
   <p class="snote" id="snote"></p>
@@ -260,6 +263,7 @@ function render(){
   if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
   // הלינק לשיחה נשמר בנתונים (_meta.chat_url), לא בקוד.
   const chat=safe(meta.chat_url);if(chat){$("chat").href=chat;$("chat").hidden=false;}
+  const docs=safe(meta.docs_url);if(docs){$("docs").href=docs;$("docs").hidden=false;}
 
   // שלבים: התקדמות לפי המשימות ב-_meta.tasks
   const T=meta.tasks||[], cur=String(meta.stage||1);
@@ -355,7 +359,7 @@ function openPol(id){
   ${(p.coverage||[]).length?`<div class="box"><h4>מה מכוסה (לפי מה שידוע)</h4><ul>${p.coverage.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
   ${p.notes?`<div class="box"><h4>הערות</h4>${esc(p.notes)}</div>`:""}
   ${p.charges?`<div class="box"><h4>חיובים שנמצאו באשראי</h4>${esc(p.charges)}</div>`:""}
-  ${links.length?`<div class="lnks">${links.map(l=>`<a class="lnk" href="${esc(safe(l.url))}" target="_blank" rel="noopener">${({policy:"📄",login:"🔑",mail:"✉️",agent:"☎️"})[l.kind]||"🔗"} ${esc(l.label)}</a>`).join("")}</div>`:""}
+  ${links.length?`<div class="lnks">${links.map(l=>`<a class="lnk" href="${esc(safe(l.url))}" target="_blank" rel="noopener">${({policy:"📄",login:"🔑",mail:"✉️",agent:"☎️",folder:"📁"})[l.kind]||"🔗"} ${esc(l.label)}</a>`).join("")}</div>`:""}
   <div class="conf">מקור: ${esc(p.source||"")}${p.confidence?` · רמת ודאות: ${esc(({confirmed:"מאומת",likely:"סביר",guess:"השערה"})[p.confidence]||p.confidence)}`:""}</div>`;
   document.getElementById("sheetwrap").className="open";
   $("sx").onclick=close;$("sx").focus();
