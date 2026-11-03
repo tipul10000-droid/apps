@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.2";window.SQ_BUILD_AT="3.11.2026 10:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.3";window.SQ_BUILD_AT="4.11.2026 00:40";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1307,7 +1307,8 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
         rows.length?h("div",{class:"group"},rows):h("div",{class:"empty"},"אין משימות פתוחות. הדשבורד נשאר כמקור מידע."),
         closed?h("span",{class:"src"},`${closed} משימות סגורות`):null),
       sugs.length?h("div",{class:"dz-sec"},h("h4",null,"💡 הדשבורד מציע"),sugs.slice(0,5).map(x=>h("div",{class:"dz-sug"},h("span",{class:"t"},x.text,x.sub?h("small",null,x.sub):null),
-        canWrite?h("button",{type:"button",onclick:()=>addFromSug(d,x)},"+ משימה"):null,canWrite?h("button",{class:"no",type:"button","aria-label":"הסתר הצעה",onclick:()=>dismissSug(d,x)},"✕"):null))):null);}
+        canWrite?h("button",{type:"button",onclick:()=>addFromSug(d,x)},"+ משימה"):null,canWrite?h("button",{class:"no",type:"button","aria-label":"הסתר הצעה",onclick:()=>dismissSug(d,x)},"✕"):null))):null,
+      h("div",{class:"dz-sec"},secChat(secUrl("dash_"+d.id,d.chat,chatOf(allTopics.find(x=>x.id===d.id)||{}),proj&&proj.claude_url),"הדשבורד "+(d.title||""),"שיחה על הדשבורד")));}
   const DASH_MAX=4, DASH_IDLE=90;
   function renderDash(){const sec=$("dashSec");if(!sec)return;
     const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
@@ -1331,6 +1332,11 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     return h("a",{class:"ib go off",href:contUrl(t),target:"_blank",rel:"noopener",title:"אין עדיין שיחה למשימה הזו","aria-label":"אין עדיין שיחה למשימה הזו. שם המשימה יועתק",html:ICON.chat,onclick:e=>{e.stopPropagation();const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("אין עדיין שיחה למשימה הזו. שם המשימה הועתק, הדבק בשיחה");}catch(x){}}});}
   function contUrl(t){const p=t.project&&projById(t.project);return chatOf(t)||(p&&safeUrl(p.claude_url||""))||SQ_CHAT;}
   function contBtn(t,cls,label){const direct=!!chatOf(t);return h("a",{class:cls,href:contUrl(t),target:"_blank",rel:"noopener",html:cls==="cont"?ICON.chat:"",onclick:e=>{e.stopPropagation();if(!direct){const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("שם המשימה הועתק, הדבק בשיחה");}catch(x){}}}},label||"המשך בשיחה");}
+  // 6.3: one chat button for every managed section (movies, series, games, travel, dashboards...). Dedicated chat per section:
+  // settings/chats {movies, series, games, spotify, travel_il, travel_abroad, dash_<id>} wins, then a fallback from the data, then this project (title copied).
+  let secChats={};
+  function secUrl(key,...fb){return safeUrl(secChats[key]||"")||fb.map(x=>safeUrl(x||"")).find(Boolean)||null;}
+  function secChat(url,ctx,label){const u=safeUrl(url||"");return h("a",{class:"cont",href:u||SQ_CHAT,target:"_blank",rel:"noopener",html:ICON.chat,onclick:e=>{e.stopPropagation();if(!u){try{navigator.clipboard&&navigator.clipboard.writeText("לגבי Side Quests: "+ctx);toast("אין עדיין שיחה נפרדת. הנושא הועתק, הדבק בשיחה");}catch(x){}}}},label||"שיחה");}
   function logPush(t,text,now){return [...(Array.isArray(t.log)?t.log:[]),{at:now,text}];}
   function decideOffer(t,o,state){
     const now=new Date().toISOString();
@@ -1883,14 +1889,15 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       fh?sec(1,"FRAME HORIZON",
         h("a",{class:"fh-logo",href:app||cl||"#",target:"_blank",rel:"noopener","aria-label":"פתח את Frame Horizon"},h("img",{src:"fh-logo.png",alt:"Frame Horizon",width:"560",height:"178"})),
         h("p",null,"ערבי סרטים שהופכים למסע"),
-        h("div",{class:"fc-links"},app?h("a",{class:"fbtn",href:app,target:"_blank",rel:"noopener"},"פתח את האפליקציה"):null,cl?h("a",{class:"fbtn ghost",href:cl,target:"_blank",rel:"noopener"},"פתח ב-Claude"):null)):null,
+        h("div",{class:"fc-links"},app?h("a",{class:"fbtn",href:app,target:"_blank",rel:"noopener"},"פתח את האפליקציה"):null,null),secChat(secUrl("frame_horizon",cl),"Frame Horizon","שיחה על Frame Horizon")):null,
       mv?sec(2,"עוד סרטים לראות",
         h("b",{class:"t"},"הרשימה שלי מחוץ ל-Frame Horizon"),mv.stand?h("p",null,mv.stand):null,
         mvPages.length?h("div",{class:"fc-links"},mvPages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
-        ...questionsOf(mv).filter(q=>!q.answer).map(q=>questionCard(mv,q,false)),...offersOf(mv).filter(o=>(o.state||"open")==="open").map(o=>offerCard(mv,o,false))):null,
+        ...questionsOf(mv).filter(q=>!q.answer).map(q=>questionCard(mv,q,false)),...offersOf(mv).filter(o=>(o.state||"open")==="open").map(o=>offerCard(mv,o,false)),
+        secChat(secUrl("movies",chatOf(mv)),"רשימת הסרטים","הוסף סרט · שאל · תקן")):null,
       h("section",{class:"mv-sec tv-sec"},h("h4",null,h("span",{class:"n"},3),"📺 סדרות"),
         ...seriesHub(),
-        h("div",{class:"mv-empty"},"סדרה חדשה? כתוב לי בשיחה ואוסיף אותה כאן.")));
+        secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן")));
   }
   const STEAM_SVG='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#fff"/><circle cx="16" cy="16" r="13.2" fill="#1B2838"/><circle cx="20.6" cy="12.4" r="4.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="20.6" cy="12.4" r="2.2" fill="#fff"/><path d="M3 18.2 L10.6 21.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M11.2 21.6 L18 15.2" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="11.2" cy="21.6" r="3.1" fill="#1B2838" stroke="#fff" stroke-width="1.8"/></svg>';
   const PAD_SVG='<svg viewBox="0 0 54 38" aria-hidden="true"><path d="M14 6h26c6.5 0 10 4 11.5 11l2 10c1 5.5-3.5 9.5-8 7.5-2.5-1.1-4.5-4-6.5-6.5H15c-2 2.5-4 5.4-6.5 6.5-4.5 2-9-2-8-7.5l2-10C4 10 7.5 6 14 6z" fill="#2A475E" stroke="#66C0F4" stroke-width="1.5"/><rect x="11" y="13" width="3.4" height="11" rx="1" fill="#E6EEF5"/><rect x="7.2" y="16.8" width="11" height="3.4" rx="1" fill="#E6EEF5"/><circle cx="38" cy="14.5" r="2.3" fill="#66C0F4"/><circle cx="43" cy="18.5" r="2.3" fill="#F5C518"/><circle cx="33" cy="18.5" r="2.3" fill="#A4D007"/><circle cx="38" cy="22.5" r="2.3" fill="#E84D4D"/></svg>';
@@ -1900,7 +1907,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     return h("article",{class:"fcard gm"},
       h("div",{class:"gm-head"},steam,h("div",{class:"fc-h"},h("h3",null,"Gaming"),h("p",null,"משחקים שרוצה לנסות")),pad),
       games.length?h("div",{class:"fc-rounds"},games.map(gameRow)):h("div",{class:"mv-empty"},"עוד אין משחקים."),
-      h("div",{class:"mv-empty"},"משחק חדש? כתוב לי בשיחה ואוסיף אותו כאן."));
+      secChat(secUrl("games",...games.map(chatOf)),"המשחקים (Gaming)","הוסף משחק · שאל · תקן"));
   }
   function renderFun(){
     const live=funTopics.filter(t=>t.status!=="archived");
@@ -1959,8 +1966,9 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
         rows.length?h("ul",{class:"tv-hl"},rows):null,
         costs.length?h("div",{class:"tv-costs"},costs.map(x=>h("div",null,h("span",null,x[0]),h("b",null,x[1])))):null,
         u.next?h("div",{class:"tv-next"},u.next):null,
-        tvLinks(u.links),
-        t?h("button",{class:"tv-btn",type:"button",onclick:()=>openTask(t.id)},"פתח את המשימה"):null));
+        tvLinks((u.links||[]).filter(l=>!/claude\.ai\/code\//.test(l.url||""))),
+        h("div",{class:"tv-links"},t?h("button",{class:"tv-btn",type:"button",onclick:()=>openTask(t.id)},"פתח את המשימה"):null,
+          secChat(t?(chatOf(t)||contUrl(t)):(u.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:"").find(Boolean),"הטיול "+(u.title||""),"שיחה על הטיול"))));
     d.addEventListener("toggle",()=>{tripFold[key]=d.open;});
     return {el:d,concept};
   }
@@ -1998,14 +2006,16 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       repOk?h("details",{class:"tv-repd"},h("summary",null,"🖼️ הדוח האחרון"+(repAt?" · "+repAt:"")),h("img",{class:"tv-rep",src:rep,alt:"הדוח התקופתי"})):
         h("div",{class:"tv-rep-empty"},h("span",{"aria-hidden":"true"},"🖼️"),h("span",null,h("b",null,"הדוח התקופתי"),", התמונה האחרונה תופיע כאן.")),
       canWrite?h("label",{class:"tv-btn tv-up"},"📤 "+(repOk?"החלף תמונת דוח":"העלה תמונת דוח"),h("input",{type:"file",accept:"image/*",hidden:true,onchange:e=>uploadReport(e.target)})):null,
-      tvLinks(I.links)));
+      tvLinks((I.links||[]).filter(l=>!/claude\.ai\/code\//.test(l.url||""))),
+      secChat(secUrl("travel_il",...(I.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),chatOf(allTopics.find(x=>x.id==="family-trips")||{})),"טיולים בארץ","הוסף טיול · שאל · תקן")));
     // abroad
     const ap=A.app||{},apu=safeUrl(ap.url||"");
     kids.push(h("article",{class:"tv-card tv-ab"},
       h("div",{class:"tv-head"},h("span",{class:"tv-mark",style:"background:#0E6E78;font-size:24px","aria-hidden":"true"},"🌍"),h("div",null,h("h3",null,"טיולים בחו״ל"),h("p",null,"תכנון, היסטוריה ונתונים"))),
       apu?h("a",{class:"tv-app",href:apu,target:"_blank",rel:"noopener"},ap.icon?h("img",{src:ap.icon,alt:"",width:"44",height:"44"}):null,h("div",null,h("b",null,ap.name||""),ap.tag?h("span",null,ap.tag):null)):null,
       Array.isArray(A.highlights)&&A.highlights.length?h("ul",{class:"tv-hl"},A.highlights.map(x=>h("li",null,h("i",{"aria-hidden":"true"},x.icon||"•"),h("span",null,x.text)))):null,
-      tvLinks(A.links)));
+      tvLinks((A.links||[]).filter(l=>!/claude\.ai\/code\//.test(l.url||""))),
+      secChat(secUrl("travel_abroad",...(A.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),(projById("holiday-optimizer")||{}).claude_url),"טיולים בחו״ל","שיחה על טיולים בחו״ל")));
     sec.replaceChildren(...kids);
   }
   window.addEventListener("hashchange",()=>{const q=questFromHash();if(qHidden(q)){setMode("home","🏠 עברתי לבית כדי לפתוח את "+QUESTS[q].name);return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
@@ -2376,7 +2386,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
-      const th=s.docs.find(x=>x.id==="travel_hub"),tr=s.docs.find(x=>x.id==="travel_report");travelHub=th?th.data():null;travelReport=tr?tr.data():null;renderTravel();
+      const th=s.docs.find(x=>x.id==="travel_hub"),tr=s.docs.find(x=>x.id==="travel_report");travelHub=th?th.data():null;travelReport=tr?tr.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderFun();renderDash();},()=>{});
