@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0f3b57">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,13 +10,15 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="3.2";window.SQ_BUILD_AT="2.11.2026 10:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.7";window.SQ_BUILD_AT="3.11.2026 08:35";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=Bungee&family=Press+Start+2P&family=Black+Ops+One&family=Orbitron:wght@700;900&display=swap">
 <style>
+/* no double-tap zoom anywhere (4.8) */
+html,body,*{touch-action:manipulation}
 /* Layout: colored hero band with quick-add, a strip of solid project tiles, then ONE grouped quest list of compact rows. */
 :root{
   --bg:#F2F4F1; --surface:#FFFFFF; --sunk:#E7EBE6; --ink:#18221E; --muted:#5E6B64; --line:#D6DDD7;
@@ -89,6 +91,12 @@ main .inner{display:flex;flex-direction:column;gap:26px}
 .pbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .pc-more{display:flex;gap:6px;flex-wrap:wrap;font-size:13px}
 .pc-more a{color:var(--muted)}
+.pc.has-tasks{grid-column:1/-1}
+.pc.has-tasks .pc-acts{max-width:460px}
+.pc-tasks{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.pc-th{font-size:13px;font-weight:700;color:var(--muted);display:flex;gap:6px;align-items:center}
+.pc-th .n{font-family:var(--f-mono);background:var(--sunk);border-radius:999px;padding:0 7px;color:var(--ink)}
+.pc-tasks .ptag{display:none}
 .pc-add{display:flex;gap:6px}.pc-add input{flex:1;min-width:0;font-size:14px}
 .ptag{font-size:11.5px;font-weight:700;padding:0 7px;border-radius:999px;white-space:nowrap;flex:none;background:var(--sunk);color:var(--ink);display:inline-flex;gap:4px;align-items:center}
 
@@ -267,6 +275,9 @@ body.fun-on .tasks-only{display:none!important}
 .vote:hover{opacity:1}
 .vote.on{filter:none;opacity:1}
 .vote.on.up{background:color-mix(in srgb,var(--spot) 22%,transparent);border-color:var(--spot)}
+.vote.love{width:auto;white-space:nowrap;padding:0 8px;font-size:13px;letter-spacing:-3px}
+.vote.on.love{background:color-mix(in srgb,var(--spot) 45%,transparent);border-color:var(--spot);box-shadow:0 0 0 2px color-mix(in srgb,var(--spot) 35%,transparent)}
+.fc-items li.voted-love .fi-t b{color:var(--spot)}
 .vote.on.down{background:var(--due-soft);border-color:var(--due)}
 .fc-items li.voted-down .fi-t{opacity:.55}
 @media (max-width:520px){.spot{width:34px;height:34px;min-height:0;padding:0;justify-content:center;font-size:0;gap:0}.spot svg{width:15px;height:15px}}
@@ -276,6 +287,149 @@ body.fun-on .tasks-only{display:none!important}
 .fh-tag{margin:0;font-size:14px;color:#C9C3B6}
 .fcard.fh .fbtn{background:#F5A300;color:#1B1200}
 .fcard.fh .fbtn.ghost{background:transparent;color:#F4F1EA;border-color:#3A3A44}
+/* Movies zone (topic.zone="movies" + Frame Horizon project + series placeholder): one cinema card, IMDb badge, 3 sub-areas. Games: own card (5.1) */
+.fcard.mv{--fc:#F5C518;background:#0E0E12;border-color:#0E0E12;border-top-color:#F5C518;color:#F4F1EA;--line:#2C2C34;--muted:#A9A49A;--bg:#16161C;--surface:#1D1D24;--ink:#F4F1EA;gap:12px}
+.mv-head{display:flex;align-items:center;gap:12px}
+.imdb{flex:none;display:inline-flex;align-items:center;justify-content:center;background:#F5C518;color:#000;font-family:Impact,"Arial Black",var(--f-display);font-weight:900;font-size:17px;letter-spacing:-.5px;line-height:1;padding:6px 8px 5px;border-radius:5px;direction:ltr;text-decoration:none}
+.mv-head h3{font-size:17px;font-weight:700}
+.mv-head p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.mv-sec{border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.mv-sec>h4{margin:0;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.3px}
+.mv-sec>h4 .n{width:20px;height:20px;border-radius:50%;background:#F5C518;color:#000;display:inline-flex;align-items:center;justify-content:center;font-size:11.5px}
+.mv-sec .fh-logo{padding:0}
+.mv-sec .fh-logo img{max-width:240px}
+.mv-sec p{margin:0;font-size:14px;color:var(--muted)}
+.mv-sec b.t{font-size:15px}
+.fcard.mv .fbtn{background:#F5C518;color:#1B1200}
+.fcard.mv .fbtn.ghost{background:transparent;color:#F4F1EA;border-color:#3A3A44}
+.fcard.mv .cont,.fcard.mv .opt.chat{color:#F4F1EA;border-color:#3A3A44;background:transparent}
+.game{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 12px}
+.game>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 0}
+.game>summary::-webkit-details-marker{display:none}
+.game>summary::after{content:"▾";color:var(--muted);margin-inline-start:auto;transition:transform .15s}
+.game[open]>summary::after{transform:rotate(180deg)}
+.game .gi{flex:none;font-size:22px}
+.game .gt{min-width:0;display:flex;flex-direction:column}
+.game .gt b{font-size:15px;font-weight:700}
+.game .gt small{font-size:12.5px;color:var(--muted);font-weight:600}
+.game .gb{display:flex;flex-direction:column;gap:8px;padding-bottom:12px}
+.game .gnext{font-size:13.5px;color:var(--ink)}
+.game .gnext::before{content:"הצעד הבא: ";color:#F5C518;font-weight:700}
+.game.done .gt b{text-decoration:line-through;opacity:.7}
+.mv-empty{font-size:13px;color:var(--muted)}
+/* 5.1 Gaming card (topics zone="games"): its own framed Steam-style card. Series placeholder lives in the cinema card. */
+.fcard.gm{--fc:#66C0F4;background:linear-gradient(160deg,#1B2838 0%,#171A21 70%);border:2px solid #2A475E;border-top:4px solid #66C0F4;color:#E6EEF5;--line:#2A475E;--muted:#9FB3C8;--bg:#16202D;--surface:#1E2B3A;--ink:#E6EEF5;gap:12px;box-shadow:0 0 0 1px #0E141B inset,0 6px 18px rgba(0,0,0,.18);position:relative;overflow:hidden}
+.gm-head{display:flex;align-items:center;gap:12px}
+.steam{flex:none;display:inline-flex;align-items:center;gap:7px;color:#fff;text-decoration:none;font-weight:800;font-size:15px;letter-spacing:1.5px;direction:ltr;background:#0E141B;border:1px solid #2A475E;border-radius:999px;padding:5px 11px 5px 6px}
+.steam svg{width:24px;height:24px}
+.gm-head .fc-h{min-width:0}
+.gm-head .fc-h h3{font-size:18px;font-weight:800;letter-spacing:.5px}
+.gm-head .fc-h p{font-size:13px;color:var(--muted)}
+.gm-pad{flex:none;margin-inline-start:auto;width:54px;height:38px;opacity:.95}
+.fcard.gm .fbtn{background:#66C0F4;color:#0B1A26}
+.fcard.gm .fbtn.ghost{background:transparent;color:#E6EEF5;border-color:#2A475E}
+.fcard.gm .cont,.fcard.gm .opt.chat{color:#E6EEF5;border-color:#2A475E;background:transparent}
+.fcard.gm .game .gnext::before{color:#66C0F4}
+.game .gt{align-items:flex-start}
+.game .gt b bdi{font-family:var(--f-display);letter-spacing:.2px}
+.tv-sec .tv-ph{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tv-ph>div{border:1.5px dashed var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--muted)}
+.tv-ph>div b{font-size:14px;color:var(--ink)}
+/* 5.5: series rows (topics zone="series", series_state towatch|waiting|seen) inside the cinema card */
+.tv-grp{display:flex;flex-direction:column;gap:6px;min-width:0}
+.tv-gh{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--ink)}
+.tv-gh .tv-c{font-size:11.5px;font-weight:700;color:#000;background:#F5C518;border-radius:999px;padding:1px 7px}
+.tv-grp .mv-empty{border:1.5px dashed var(--line);border-radius:12px;padding:8px 10px}
+/* 5.6: series hub (collection "series"): tabs now / queue / achievements, TVmaze posters loaded in the browser */
+.sr-sum{font-size:13px;color:var(--muted)}
+.sr-sum b{color:var(--ink)}
+.sr-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.sr-tab{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:8px 4px;font:inherit;font-size:12.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-width:0}
+.sr-tab b{font-size:18px;line-height:1;font-family:var(--f-display)}
+.sr-tab[aria-pressed="true"]{background:#F5C518;color:#1B1200;border-color:#F5C518}
+.sr-h{margin:6px 0 0;font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px}
+.sr-h small{font-weight:600;color:var(--muted);font-size:12px}
+.sp{flex:none;width:44px;height:62px;border-radius:7px;background:#2C2C34 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#F5C518;direction:ltr;overflow:hidden;position:relative}
+.sp.has{color:transparent}
+.sp.big{width:62px;height:88px;font-size:16px}
+.sr-now{display:flex;gap:12px;border:1px solid #F5C518;border-radius:14px;background:var(--surface);padding:10px;min-width:0}
+.sr-now .bd{min-width:0;flex:1;display:flex;flex-direction:column;gap:6px}
+.sr-nm{font-size:15.5px;font-weight:800;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+.sr-nm bdi{font-family:var(--f-display)}
+.sr-sub{font-size:12.5px;color:var(--muted)}
+.sr-bar{display:flex;gap:3px}
+.sr-bar i{flex:1;height:7px;border-radius:3px;background:#3A3A44}
+.sr-bar i.d{background:#F5C518}
+.sr-bar i.c{background:linear-gradient(90deg,#3A3A44 50%,#F5C518 50%)}
+[dir=rtl] .sr-bar i.c,.sr-bar i.c{background:linear-gradient(270deg,#F5C518 50%,#3A3A44 50%)}
+.sr-acts{display:flex;flex-wrap:wrap;gap:6px}
+.sr-b{border:1px solid #3A3A44;background:transparent;color:var(--ink);border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.sr-b.p{background:#F5C518;color:#1B1200;border-color:#F5C518}
+.sr-row{display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0;min-width:0}
+.sr-row:last-child{border-bottom:0}
+.sr-row .bd{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}
+.sr-rk{flex:none;width:22px;height:22px;border-radius:50%;background:#F5C518;color:#000;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.sr-chips{display:flex;flex-wrap:wrap;gap:4px}
+.sr-c{font-size:11px;font-weight:700;border-radius:999px;padding:2px 7px;border:1px solid #3A3A44;color:var(--muted);white-space:nowrap}
+.sr-c.ok{border-color:#2E7D4F;color:#7BE0A4;background:rgba(46,125,79,.15)}
+.sr-c.rm{border-color:#8A6A12;color:#F5C518;background:rgba(245,197,24,.1)}
+.sr-c.no{border-style:dashed}
+.sr-c.new{background:#2E7D4F;color:#fff;border-color:#2E7D4F}
+.sr-c.q{border-color:#8B5CF6;color:#C4B5FD}
+.sr-mv{flex:none;display:flex;flex-direction:column;gap:3px}
+.sr-mv button{width:30px;height:24px;border-radius:7px;border:1px solid #3A3A44;background:transparent;color:var(--ink);font-size:12px;cursor:pointer;padding:0}
+.sr-mv button:disabled{opacity:.3}
+.sr-mv button.go{background:#F5C518;color:#1B1200;border-color:#F5C518;height:26px}
+.sr-q{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:#C4B5FD}
+.sr-q .sr-b{padding:3px 10px;font-size:12px}
+.sr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.sr-stats div{border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:11.5px;color:var(--muted)}
+.sr-stats b{display:block;font-size:22px;color:#F5C518;font-family:var(--f-display);line-height:1.1}
+.sr-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.sr-t{border:0;background:none;padding:0;font:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:0;position:relative}
+.sr-t .sp{width:100%;height:auto;aspect-ratio:2/3}
+.sr-t span{font-size:11px;line-height:1.2;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-t em{position:absolute;top:4px;inset-inline-start:4px;font-style:normal;font-size:11px;background:#0E0E12;border-radius:999px;padding:1px 5px}
+.sr-t.off .sp{filter:grayscale(1);opacity:.55}
+.sr-t[aria-pressed="true"] .sp{outline:2px solid #F5C518;outline-offset:1px}
+.sr-det{border:1px solid #F5C518;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.sr-det a{color:#F5C518}
+/* Spotify zone (topic.zone="spotify"): numbered sessions, archive of finished ones, next-session picker */
+.fcard.sp{--fc:#1DB954;background:#121212;border-color:#121212;border-top-color:#1DB954;color:#F2F2F2;--line:#2C2C2C;--muted:#A7A7A7;--bg:#1C1C1C;--surface:#232323;--ink:#F2F2F2}
+.sp-head{display:flex;align-items:center;gap:12px}
+.sp-logo{display:inline-flex;align-items:center;gap:8px;color:#1DB954;text-decoration:none;font-weight:800;font-size:22px;letter-spacing:-.5px;direction:ltr}
+.sp-logo svg{width:34px;height:34px;fill:#1DB954}
+.sp-head .fc-h{margin-inline-start:auto;text-align:left}
+.sp-head .fc-h p{font-size:13px}
+.sp-taste{font-size:13px;color:var(--muted);line-height:1.5}
+.sp-taste b{color:#1DB954;font-weight:700}
+.sp-sec{font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.3px;margin-top:2px}
+.sess>summary{gap:12px}
+.sess-n{flex:none;width:30px;height:30px;border-radius:50%;background:#1DB954;color:#06210F;font-weight:800;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.sess .rt small{display:block;font-size:12.5px;color:var(--muted);font-weight:600}
+.sess.done .sess-n{background:#3A3A3A;color:#DDD}
+.sp-arch{border:1px dashed var(--line);border-radius:12px;padding:0 12px}
+.sp-arch>summary{list-style:none;cursor:pointer;padding:11px 0;font-weight:700;display:flex;justify-content:space-between}
+.sp-arch>summary::-webkit-details-marker{display:none}
+.sp-arch>summary::after{content:"▾";color:var(--muted)}
+.sp-arch[open]>summary::after{transform:rotate(180deg)}
+.sp-arch .fc-rounds{padding-bottom:10px}
+.sp-next{border:1px solid #1DB954;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;background:color-mix(in srgb,#1DB954 8%,#121212)}
+.sp-next h4{margin:0;font-size:16px;font-weight:800}
+.sp-next p{margin:0;font-size:13px;color:var(--muted)}
+.sp-chips{display:flex;flex-wrap:wrap;gap:8px}
+.sp-chip{border:1px solid #3A3A3A;background:#1E1E1E;color:#F2F2F2;border-radius:999px;padding:7px 13px;font-size:14px;font-weight:600;min-height:36px;cursor:pointer;text-align:start}
+.sp-chip small{color:var(--muted);font-weight:500;margin-inline-start:4px}
+.sp-chip[aria-pressed="true"]{background:#1DB954;border-color:#1DB954;color:#06210F}
+.sp-chip[aria-pressed="true"] small{color:#0B3A1C}
+.sp-go{align-self:flex-start;border:0;border-radius:999px;background:#1DB954;color:#06210F;font-weight:800;font-size:15px;padding:10px 20px;min-height:42px;cursor:pointer}
+.sp-go:disabled{opacity:.4;cursor:default}
+.sp-wait{border:1px solid #1DB954;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.sp-wait b{font-size:15px}
+.sp-wait .opts{display:flex;gap:8px;flex-wrap:wrap}
+.fcard.sp .fbtn{background:#1DB954;color:#06210F}
+.fcard.sp .fbtn.ghost{background:transparent;color:#F2F2F2;border-color:#3A3A3A}
+.fcard.sp .cont,.fcard.sp .opt.chat{color:#F2F2F2;border-color:#3A3A3A;background:transparent}
 
 /* Quest switcher: four quests (Side, Fun, Army, Work). Each quest shows full-width buttons to the other three. */
 .qnav{display:flex;flex-direction:column;gap:7px}
@@ -291,6 +445,7 @@ body.fun-on .tasks-only{display:none!important}
 .qbtn.q-work{--qb:#1D5B9E;--qi:#F1F6FD;--qa:#8CCBFF}
 .qbtn.q-fun .qc,.qbtn.q-army .qc,.qbtn.q-work .qc{background:rgba(255,255,255,.16)}
 body:not(.q-side) .side-only{display:none!important}
+body:not(.q-ai) .ai-only{display:none!important}
 /* top banner: one per quest, same height; the ribbon under it (stats, refresh, quest buttons, quick add) is identical in every quest */
 body:not(.q-side) .mapband{display:none}
 .qband{display:none;position:relative;overflow:hidden;isolation:isolate}
@@ -444,7 +599,9 @@ body.fun-on .avail{display:none}
 .r-side .ib.go.off{opacity:.45;border-style:dashed}
 .r-side .ib.done.on{background:var(--k-admin);color:#fff;border-color:var(--k-admin)}
 .r-side .ib.ph{visibility:hidden}
-.r-side .ib.snz{width:28px;opacity:.6}
+.r-side .ib.snz{width:32px;height:32px;border-radius:50%;margin-inline:2px;border:1.5px solid currentColor;opacity:1;color:#E8821E}
+.r-side .ib.snz svg{width:18px;height:18px}
+.r-side .ib.snz.pressed,.r-side .ib.snz[aria-expanded="true"]{background:#E8821E;color:#fff;border-color:#E8821E}
 .row.urgent{border-color:var(--due);box-shadow:0 0 0 1px var(--due)}
 .row.urgent .bar{background:var(--due)}
 .g-head.urg{color:var(--due)}
@@ -465,6 +622,41 @@ body.fun-on .avail{display:none}
 .syncsheet li{margin:2px 0}
 .syncsheet .sh-sub{margin-top:6px;color:var(--muted,#666);font-size:12.5px}
 .syncsheet .sh-x{margin-inline-start:auto;font-size:18px;line-height:1;padding:2px 6px;color:var(--muted,#666)}
+/* 3.4: settings (gear) + notifications + morning brief */
+.tb.tset{width:32px;padding:0;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.35);position:relative}
+.tb.tset svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tdot{position:absolute;top:-2px;inset-inline-end:-2px;width:9px;height:9px;border-radius:50%;background:var(--due);border:1.5px solid #fff}
+.tdot[hidden]{display:none}
+/* 4.6: no scroll bleed: page behind a sheet is frozen, inner scroll areas keep their scroll */
+html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
+.sqmodal,.sqpanel,.fres{overscroll-behavior:contain}
+.quick input::placeholder{font-size:13px;opacity:.75}
+.sqmodal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.sqpanel{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:var(--surface,#fff);color:var(--ink,#111);border-radius:20px 20px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px rgba(0,0,0,.3);font-size:15px;line-height:1.45}
+.sqpanel h2{margin:0;font:800 19px var(--f-display,inherit);display:flex;align-items:center;gap:8px}
+.sqpanel .px{margin-inline-start:auto;font-size:22px;line-height:1;padding:4px 8px;color:var(--muted)}
+.sqpanel h3{margin:16px 0 6px;font:800 15px var(--f-display,inherit);display:flex;align-items:center;gap:6px}
+.sqcard{background:var(--sunk,#eee);border-radius:14px;padding:10px 12px;margin-top:8px}
+.sqrow{display:flex;align-items:center;gap:10px;min-height:44px}
+.sqrow+.sqrow{border-top:1px solid var(--line)}
+.sqrow .lb{flex:1;min-width:0}.sqrow .lb small{display:block;color:var(--muted);font-size:12.5px}
+.sqsw{appearance:none;-webkit-appearance:none;width:46px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;cursor:pointer;transition:background .15s}
+.sqsw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:inset-inline-start .15s}
+.sqsw:checked{background:var(--k-admin)}.sqsw:checked::after{inset-inline-start:21px}
+.sqsel{font:inherit;font-size:15px;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.sqbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:0 14px;border-radius:12px;font-weight:700;font-size:15px;background:var(--k-research);color:#fff}
+.sqbtn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.sqbtn:disabled{opacity:.5}
+.sqbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sqstate{display:flex;align-items:center;gap:8px;font-weight:700}
+.sqstate .d{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none}
+.sqstate.on .d{background:var(--k-admin)}.sqstate.bad .d{background:var(--due)}
+.sqhint{color:var(--muted);font-size:13px;margin-top:6px}
+.brief ul{list-style:none;margin:8px 0 0;padding:0}
+.brief li{padding:7px 0;border-top:1px solid var(--line)}
+.brief li:first-child{border-top:0}
+.brief .bt{font-weight:800;font-size:16px}
+.brief .bm{color:var(--muted);font-size:12.5px;margin-top:6px}
 /* 2.9: quest logo sits under the title, in place of the subtitle, so the banner art stays visible */
 .qlogo{display:block;margin-top:4px;flex:none}
 .qlogo[hidden]{display:none}
@@ -472,6 +664,286 @@ body.fun-on .avail{display:none}
 .qb-work .qlogo{height:34px;width:auto;background:#fff;border-radius:8px;padding:4px 8px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
 .qb-in:has(.qlogo:not([hidden])) p{display:none}
 .qb-army .qb-in,.qb-work .qb-in{justify-content:center;gap:2px}
+/* ===== 3.5: cleaner quest buttons, buttons off the Dynamic Island, tighter spacing, voice input, simpler settings ===== */
+body{margin:0}
+/* quest buttons: one clean frame, no double ring, no arrow */
+.qbtn{border-width:1.5px}
+.qbtn[aria-current="true"]{border-width:2px;box-shadow:0 3px 10px rgba(0,0,0,.28)}
+.qbtn[aria-current="true"]::after{content:none;display:none}
+/* banner leaves room for the iPhone status bar / Dynamic Island */
+.qband{height:calc(132px + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px);box-sizing:border-box}
+@media (min-width:700px){.qband{height:calc(180px + env(safe-area-inset-top,0px))}}
+/* only + and settings stay on the banner, at its bottom-left corner */
+.topbtns{top:calc(env(safe-area-inset-top,0px) + 132px - 42px);left:max(10px,env(safe-area-inset-left,0px));gap:8px}
+@media (min-width:700px){.topbtns{top:calc(env(safe-area-inset-top,0px) + 180px - 42px)}}
+.tb.tadd,.tb.tset{width:34px;height:34px}
+/* banner art moves up and away from the corner buttons */
+.sb-compass{top:42%;width:min(15vw,58px);margin-top:calc(min(15vw,58px)/-2)}
+.sb-compass i::before{border-bottom-width:calc(min(15vw,58px)*.42)}.sb-compass i::after{border-top-width:calc(min(15vw,58px)*.42)}
+.ab-radar{top:44%;width:min(24vw,96px);left:6%}
+.wb-chart{bottom:36%;height:44%;width:min(26vw,110px)}
+.qb-fun .fz-eq{left:96px;bottom:12px}
+.qb-fun .fz-sun{bottom:36%}
+/* tighter, still airy */
+.hero{padding-block:10px 12px}
+.hero .inner{gap:10px}
+.qnav{gap:7px}
+.qbtn{min-height:44px}
+.stats .stat{min-height:48px;padding:5px 2px}
+main{padding-block:14px 48px}
+main .inner{gap:18px}
+.sec-head{margin-bottom:6px}
+.group{margin-bottom:12px}
+/* where-am-I and refresh share one row, half and half */
+.ctxrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.ctxrow .avail{display:contents}
+.ctxrow .avbtn{grid-column:1;grid-row:1;min-height:38px;padding:0 10px;gap:6px;font-size:13.5px}
+.ctxrow .avbtn .k{white-space:nowrap}
+.ctxrow .avmenu{grid-column:1/-1;grid-row:2;margin-top:0}
+.ctxrow .refr{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:38px;margin:0;padding:0 10px;border-radius:12px;background:rgba(0,0,0,.18);border:0;color:var(--hero-ink);font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden}
+.ctxrow .refr .ic{font-size:16px}
+.ctxrow .refr .rv{color:var(--hero-muted);font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.ctxrow .refr .rv:empty{display:none}
+.ctxrow .refr.spin .rk{display:none}
+body.fun-on .ctxrow{grid-template-columns:1fr}
+body.fun-on .ctxrow .refr{grid-column:1}
+/* new task line with a mic at its left end */
+.quick .qin{flex:1;min-width:0;position:relative;display:flex}
+.quick .qin input{flex:1;width:100%;padding-inline-end:46px}
+.quick .mic{position:absolute;top:50%;inset-inline-end:4px;transform:translateY(-50%);width:36px;height:36px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#3A3A3A;background:transparent;font-weight:400}
+.mic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.quick .mic.rec.wait{background:#888;color:#fff;animation:none}
+.quick .mic.rec{background:#E5383B;color:#fff;animation:micpulse 1.2s ease-in-out infinite}
+@keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(229,56,59,.55)}50%{box-shadow:0 0 0 7px rgba(229,56,59,0)}}
+@media (prefers-reduced-motion:reduce){.mic.rec{animation:none}}
+/* settings: collapsible sections */
+.sqsec{margin-top:10px}
+.sqsec summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:12px;background:var(--sunk);font:800 15px var(--f-display,inherit)}
+.sqsec summary::-webkit-details-marker{display:none}
+.sqsec summary .t{flex:1}
+.sqsec summary .v{font:600 13.5px var(--f-body,inherit);color:var(--muted)}
+.sqsec summary::after{content:"▾";color:var(--muted);font-size:15px;line-height:1;transform:rotate(90deg);transition:transform .15s}
+.sqsec[open] summary::after{transform:none}
+.sqsec[open] summary{border-radius:12px 12px 0 0}
+.sqsec .sqcard{margin-top:0;border-radius:0 0 12px 12px;border-top:1px solid var(--line)}
+/* 4.1: search */
+.tb.tfind{width:34px;height:34px;padding:0;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.tb.tfind svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.tb.tfind.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.quick.find .qin input{padding-inline-end:14px}
+.quick.find input::-webkit-search-cancel-button{-webkit-appearance:none}
+.fres{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow:auto}
+.fres[hidden]{display:none}
+.fhit{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.95);color:#18221E}
+.fhit .fq{font-size:18px;flex:none}
+.fhit .ft{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.fhit .ft b{font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fhit .ft b small{font-weight:600;color:#6b6b6b;font-size:12.5px}
+.fhit .ft>small{font-size:12.5px;color:#5E6B64;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fhit .fqn{flex:none;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:#EDEDEA;color:#333;direction:ltr}
+.fnone{color:var(--hero-muted);font-size:13.5px;padding:4px 2px}
+
+/* ===== 4.3: six quests (Travel, AI Projects added). Buttons 3 per row, 2 rows ===== */
+.qnav{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.qbtn{flex-direction:column;justify-content:center;gap:1px;min-height:50px;padding:5px 4px;border-radius:11px}
+.qbtn .qe{font-size:17px}
+.qbtn .qn,.qbtn.q-fun .qn{font-size:12.5px;max-width:100%;text-align:center}
+.qbtn.q-fun .qn{font-size:11.5px}
+.qbtn.q-travel{--qb:#0E6E78;--qi:#F2FBFA;--qa:#FFC857}
+.qbtn.q-ai{--qb:#262624;--qi:#F5F0E8;--qa:#D97757}
+.qbtn.q-travel .qc,.qbtn.q-ai .qc{background:rgba(255,255,255,.16)}
+body.q-travel .qb-travel,body.q-ai .qb-ai{display:block}
+body.q-travel{--hero:#0B4F57;--hero-ink:#F0FAF9;--hero-muted:#A9D3D2;--accent:#FFC857;--accent-ink:#3A2600;--bg:#EEF6F5;--sunk:#DDEDEB;--line:#C8DFDC}
+body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D97757;--accent-ink:#fff;--bg:#F5F2EC;--sunk:#E9E4DA;--line:#DAD3C6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body.q-travel{--bg:#0A1415;--surface:#122022;--sunk:#1A2C2E;--line:#28403F}
+:root:not([data-theme="light"]) body.q-ai{--bg:#141413;--surface:#1E1D1B;--sunk:#292826;--line:#3A3835}}
+/* travel: turquoise sky, sun, drifting clouds, a plane flying the route */
+.qb-travel{color:#F2FBFA;background:linear-gradient(175deg,#1AA3A8 0%,#0E7C86 55%,#0B4F57 100%)}
+.tb-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.tb-sun{fill:#FFC857;filter:drop-shadow(0 0 12px rgba(255,200,87,.7))}
+.tb-cloud{fill:rgba(255,255,255,.85)}
+.tb-cloud.c1{animation:tbcloud 14s linear infinite}
+.tb-cloud.c2{animation:tbcloud2 18s linear infinite;opacity:.7}
+@keyframes tbcloud{from{transform:translate(-40px,58px)}to{transform:translate(240px,58px)}}
+@keyframes tbcloud2{from{transform:translate(240px,44px)}to{transform:translate(-40px,44px)}}
+.tb-hills{fill:#0A434A;opacity:.75}
+.tb-route{fill:none;stroke:#FFE3A3;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:5 7;animation:sbroute 1.6s linear infinite}
+.tb-pin circle{fill:#FFC857;stroke:#0B4F57;stroke-width:2}
+.tb-plane path{fill:#fff;stroke:#0B4F57;stroke-width:1}
+.qb-travel h2{font-family:"Rubik",var(--f-display);font-weight:800;font-size:31px;line-height:.95;direction:ltr;color:#fff;text-shadow:0 2px 0 #0A434A}
+.qb-travel h2 i{font-style:normal;color:#FFC857}
+.qb-travel p{color:#E3F6F4;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.tv-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#FFE3A3;direction:ltr}
+/* AI projects: dark terminal with the Claude Code mascot in Claude orange */
+.qb-ai{color:#F5F0E8;background:radial-gradient(ellipse at 22% 45%,rgba(217,119,87,.28),transparent 62%),repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px),linear-gradient(160deg,#2B2A27,#151413 75%)}
+.ai-term{position:absolute;z-index:1;left:max(12px,4%);top:calc(env(safe-area-inset-top,0px) + 10px);width:min(28vw,104px);border-radius:10px;border:1.5px solid rgba(217,119,87,.7);background:#0F0E0D;box-shadow:0 0 18px rgba(217,119,87,.3);overflow:hidden;direction:ltr}
+.ai-bar{display:flex;gap:4px;padding:5px 7px;background:#23211F}
+.ai-bar i{width:6px;height:6px;border-radius:50%;background:#5A5550}.ai-bar i:first-child{background:#D97757}
+.ai-clawd{display:block;width:44%;margin:6px auto 2px;fill:#D97757;animation:aibob 1.8s ease-in-out infinite}
+.ai-clawd .ai-eye{fill:#0F0E0D;animation:aiblink 4s steps(1) infinite}
+@keyframes aibob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes aiblink{0%,92%,100%{opacity:1}94%{opacity:0}}
+.ai-line{font-family:var(--f-mono);font-size:10.5px;color:#F5F0E8;padding:0 8px 7px;white-space:nowrap}
+.ai-line b{color:#D97757}
+.ai-cur{display:inline-block;width:6px;height:11px;margin-left:3px;vertical-align:-2px;background:#D97757;animation:fzblink 1s steps(2,start) infinite}
+.qb-ai h2{font-family:"Rubik",var(--f-display);font-weight:800;font-size:30px;line-height:.95;direction:ltr;color:#F5F0E8;letter-spacing:.5px}
+.qb-ai h2 i{font-style:normal;color:#D97757}
+.qb-ai p{color:#D9D1C5}
+.ai-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#D97757;direction:ltr}
+@media (prefers-reduced-motion:reduce){.tb-cloud,.tb-route,.ai-clawd,.ai-clawd .ai-eye,.ai-cur{animation:none}}
+/* 4.7: Travel Quest is a full travel zone (data in settings/travel_hub): upcoming trips, Israel (stats by region, report, links), abroad (Holiday Optimizer, 20 years, Excel). Tasks stay below. */
+.tvzone{display:none}
+body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:6px}
+.tv-sec-h{display:flex;align-items:center;gap:8px;margin:2px 2px -4px;font-size:12.5px;font-weight:800;letter-spacing:.4px;color:var(--muted)}
+.tv-trips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:10px}
+.tv-trip{border-radius:16px;color:#F2FBFA;background:linear-gradient(135deg,#0E7C86,#0B4F57);box-shadow:0 3px 12px rgba(11,79,87,.25);--line:rgba(255,255,255,.18)}
+.tv-trip>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.tv-trip>summary::-webkit-details-marker{display:none}
+.tv-th{display:flex;align-items:center;gap:12px}
+.tv-th::after{content:"▾";margin-inline-start:auto;color:#CDEDEA;transition:transform .15s}
+.tv-trip[open] .tv-th::after{transform:rotate(180deg)}
+.tv-cd{flex:none;width:62px;height:62px;border-radius:14px;background:rgba(255,255,255,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.tv-cd b{font-family:"Rubik",var(--f-display);font-size:24px;font-weight:800;color:#FFC857}
+.tv-cd small{font-size:11px;font-weight:700;margin-top:3px;color:#CDEDEA}
+.tv-cd.now b{font-size:15px}
+.tv-ti{min-width:0;display:flex;flex-direction:column;gap:2px}
+.tv-ti b{font-size:16.5px;font-weight:800}
+.tv-ti .tv-dt{font-size:13px;color:#CDEDEA;text-align:right}
+.tv-ti small{font-size:12.5px;color:#FFE3A3;font-weight:600}
+.tv-st{display:flex;flex-wrap:wrap;gap:6px}
+.tv-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+.tv-pill i{font-style:normal;display:inline-flex}
+.tv-pill b{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;font-size:11.5px}
+.tv-pill.done b{background:#3DDC84;color:#063D1E}
+.tv-pill.open b{background:#FFB020;color:#3A2600}
+.tv-pill.ask b{background:#FFFFFF;color:#0B4F57}
+.tv-pill.no{opacity:.6}.tv-pill.no b{background:transparent;color:#CDEDEA}
+.tv-pill.plan svg{width:16px;height:16px}
+.tv-pill.plan.p-full{background:#3DDC84;color:#063D1E;border-color:transparent}
+.tv-pill.plan.p-partial{background:rgba(255,200,87,.22);border-color:#FFC857;color:#FFE3A3}
+.tv-pill.concept{background:#F2FBFA;color:#0B4F57}
+.tv-pill.ghost{background:transparent;border-style:dashed}
+.tv-tb{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.tv-tb .tv-hl li{color:#E3F6F4}
+.tv-costs{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
+.tv-costs div{border-radius:10px;background:rgba(255,255,255,.1);padding:6px 10px;display:flex;flex-direction:column}
+.tv-costs span{font-size:11.5px;color:#CDEDEA;font-weight:700}
+.tv-costs b{font-size:15px}
+.tv-trip .tv-next{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);color:#F2FBFA}
+.tv-trip .tv-next::before{color:#FFC857}
+.tv-trip .tv-btn{color:#F2FBFA;background:transparent;border-color:rgba(255,255,255,.3);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.tv-trip .tv-btn.main{background:#FFC857;color:#3A2600}
+.tv-trip.concept{background:var(--surface);color:var(--ink);border:2px dashed color-mix(in srgb,#0E7C86 45%,var(--line));box-shadow:none}
+.tv-trip.concept .tv-cd{background:var(--sunk)}.tv-trip.concept .tv-cd b{color:#0E6E78}.tv-trip.concept .tv-cd small,.tv-trip.concept .tv-ti .tv-dt,.tv-trip.concept .tv-th::after{color:var(--muted)}
+.tv-trip.concept .tv-ti small{color:#B7791F}
+.tv-trip.concept .tv-pill.concept{background:#0E6E78;color:#fff}.tv-trip.concept .tv-pill.ghost{border-color:var(--line);color:var(--muted)}
+.tv-trip.concept .tv-tb .tv-hl li{color:var(--ink)}
+.tv-trip.concept .tv-costs div{background:var(--bg)}.tv-trip.concept .tv-costs span{color:var(--muted)}
+.tv-trip.concept .tv-next{background:var(--bg);border-color:var(--line);color:var(--ink)}.tv-trip.concept .tv-next::before{color:#0E6E78}
+.tv-trip.concept .tv-btn{color:var(--ink);border-color:var(--line)}.tv-trip.concept .tv-btn.main{background:#0E6E78;color:#fff}
+.tv-card{border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0;border:1px solid var(--line);background:var(--surface)}
+.tv-head{display:flex;align-items:center;gap:12px}
+.tv-head h3{margin:0;font-size:18px;font-weight:800}
+.tv-head p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.tv-il{--tg:#2F6B3A;background:linear-gradient(180deg,color-mix(in srgb,#5FA052 12%,var(--surface)),var(--surface) 140px);border-top:4px solid var(--tg)}
+.tv-mark{flex:none;width:46px;height:46px;border-radius:12px;background:#8A7A63;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12)}
+.tv-mark svg{width:30px;height:30px}
+.tv-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tv-kpi{border-radius:12px;background:var(--bg);border:1px solid var(--line);padding:8px 6px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.tv-kpi b{font-family:"Rubik",var(--f-display);font-size:22px;font-weight:800;color:var(--tg,#0E6E78);line-height:1}
+.tv-kpi span{font-size:11.5px;color:var(--muted);font-weight:700}
+.tv-regs{display:flex;flex-direction:column;gap:5px;margin:0;padding:0;list-style:none}
+.tv-reg{display:grid;grid-template-columns:22px minmax(0,8.5em) 1fr auto;align-items:center;gap:8px;font-size:13.5px}
+.tv-reg i{font-style:normal;text-align:center}
+.tv-reg .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.tv-bar{height:9px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.tv-bar u{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#8BC34A,#2F6B3A)}
+.tv-reg .n{font-weight:800;font-variant-numeric:tabular-nums;min-width:4.6em;text-align:left;font-size:12.5px;color:var(--muted)}
+.tv-reg .n b{color:var(--ink);font-size:14px}
+.tv-sub{margin:0;font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.3px}
+.tv-new{display:flex;flex-wrap:wrap;gap:6px}
+.tv-new span{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:color-mix(in srgb,#8BC34A 18%,transparent);border:1px solid color-mix(in srgb,#2F6B3A 30%,transparent);font-size:13px;font-weight:600}
+.tv-new small{color:var(--muted);font-weight:600}
+.tv-next{font-size:13.5px;padding:8px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line)}
+.tv-next::before{content:"הצעד הבא: ";font-weight:800;color:var(--tg,#0E6E78)}
+.tv-links{display:flex;flex-wrap:wrap;gap:7px}
+.tv-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;font-size:13.5px;font-weight:700;text-decoration:none;min-height:36px;color:var(--ink);border:1px solid var(--line);background:var(--surface)}
+.tv-btn.main{color:#fff;background:var(--tg,#0E6E78);border-color:transparent}
+.tv-btn.pending{border-style:dashed;color:var(--muted);background:transparent;cursor:default}
+.tv-btn.pending small{font-weight:600;font-size:11.5px}
+.tv-rep{display:block;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.tv-rep img{display:block;width:100%;height:auto}
+.tv-rep-empty{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1.5px dashed var(--line);font-size:13px;color:var(--muted)}
+.tv-rep-empty b{color:var(--ink)}
+.tv-repd{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:0 12px}
+.tv-repd>summary{list-style:none;cursor:pointer;padding:10px 0;font-weight:700;font-size:14px}
+.tv-repd>summary::-webkit-details-marker{display:none}
+.tv-repd img{display:block;width:100%;height:auto;border-radius:10px;margin-bottom:12px}
+.tv-up{align-self:flex-start;cursor:pointer;font-size:13px}
+.tv-ab{--tg:#0E6E78;border-top:4px solid #0E6E78;background:linear-gradient(180deg,color-mix(in srgb,#1AA3A8 10%,var(--surface)),var(--surface) 140px)}
+.tv-app{display:flex;align-items:center;gap:12px;padding:10px;border-radius:14px;background:var(--bg);border:1px solid var(--line);text-decoration:none;color:inherit}
+.tv-app img{width:44px;height:44px;border-radius:11px;flex:none;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.tv-app b{display:block;font-size:15.5px;direction:ltr;text-align:right}
+.tv-app span{font-size:12.5px;color:var(--muted)}
+.tv-app::after{content:"↗";margin-inline-start:auto;color:var(--muted);font-weight:800}
+.tv-hl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.tv-hl li{display:flex;gap:8px;font-size:13.5px;line-height:1.35}
+.tv-hl li i{font-style:normal;flex:none}
+.tv-tasks-h{margin-top:4px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tv-bar u{background:linear-gradient(90deg,#9CCC65,#5FA052)}}
+/* banner: Israel side, hills with greenery and the Israel National Trail mark on a rock */
+.tb-green{fill:#2F7A4A}
+.tb-green.d{fill:#245F3A}
+.tb-tree{fill:#1F5A35}
+.tb-trunk{fill:#5B4532}
+.tb-rock{fill:#B9A98E;stroke:#7E6F58;stroke-width:1}
+.tb-flower{fill:#FFD54F}
+.tb-flower.r{fill:#F28B82}
+/* 4.4: project cards with a clearer frame; real app icons instead of emoji (icon_url) */
+.pc{border:2px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.pic.has-img{background:transparent!important;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+/* 5.0: four task levels. 1 = simple (no chat icon, light dashed row), 2 = own chat/mail, 3 = belongs to a dashboard (crumb + folded in the dashboard card), 4 = belongs to a project. */
+.row.lv1{background:transparent;border-style:dashed}
+.row.lv1 .r-title{font-weight:600}
+.dcrumb{font-size:11.5px;font-weight:800;padding:0 8px;border-radius:999px;white-space:nowrap;flex:none;color:#fff;background:var(--dc,#555);display:inline-flex;gap:4px;align-items:center;border:0;cursor:pointer;line-height:20px}
+.dashzone{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.dashzone[hidden]{display:none}
+.dz-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dz-grid>.dz-tile:last-child:nth-child(odd){grid-column:1/-1;min-height:70px}
+.dz-tile{border:0;border-radius:14px;padding:10px 12px;color:#fff;min-height:88px;display:flex;flex-direction:column;justify-content:space-between;gap:6px;text-align:start;cursor:pointer;font:inherit;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 2px 8px rgba(0,0,0,.12);position:relative}
+.dz-tile[aria-expanded="true"]{outline:3px solid var(--c1);outline-offset:2px}
+.dz-tile .bd{align-self:flex-start;background:rgba(255,255,255,.24);border-radius:99px;padding:0 8px;font-size:11.5px;font-weight:800}
+.dz-tile .bd.hot{background:#fff;color:var(--c1)}
+.dz-tile b{font-size:15px;line-height:1.25;display:flex;gap:6px;align-items:center}
+.dz-tile span.s{font-size:12px;opacity:.92;line-height:1.3}
+.dz-tile.lite{background:transparent;color:var(--ink);border:1.5px solid var(--c1);box-shadow:none}
+.dz-card{border:1.5px solid var(--c1);border-radius:16px;overflow:hidden;background:var(--surface)}
+.dz-cv{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.dz-cv .ic{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+.dz-cv h3{margin:0;font-size:17px;line-height:1.25}
+.dz-cv p{margin:0;font-size:12.5px;opacity:.92}
+.dz-cv .x{margin-inline-start:auto;background:rgba(255,255,255,.2);border:0;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;flex:none}
+.dz-kpis{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:1px;background:var(--line)}
+.dz-kpi{background:var(--surface);padding:8px 6px;text-align:center;min-width:0}
+.dz-kpi b{font-size:17px;display:block;font-variant-numeric:tabular-nums;line-height:1.3}
+.dz-kpi span{font-size:11.5px;color:var(--muted)}
+.dz-go{display:block;text-align:center;margin:12px 12px 8px;padding:12px;border-radius:12px;background:var(--c1);color:#fff;font-weight:800;text-decoration:none;font-size:16px}
+.dz-links{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 10px;font-size:13px}
+.dz-links a{color:var(--c1);font-weight:700;text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:2px 10px}
+.dz-sec{padding:4px 12px 12px;display:flex;flex-direction:column;gap:6px}
+.dz-sec h4{margin:4px 0 0;font-size:13px;color:var(--muted);font-weight:700;display:flex;gap:6px;align-items:center}
+.dz-sec .empty{padding:10px;font-size:13.5px}
+.dz-sug{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:7px 10px;border-radius:10px;border:1.5px dashed var(--c1)}
+.dz-sug .t{flex:1;min-width:0}
+.dz-sug .t small{display:block;color:var(--muted);font-size:12px}
+.dz-sug button{border:0;background:var(--c1);color:#fff;font-weight:800;border-radius:99px;padding:4px 10px;font:inherit;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.dz-sug button.no{background:transparent;color:var(--muted);padding:4px 6px}
+.dz-more{border:1px dashed var(--line);border-radius:12px;padding:0 12px}
+.dz-more summary{cursor:pointer;padding:8px 0;font-size:13.5px;color:var(--muted);font-weight:700}
+.dz-more .dz-grid{padding-bottom:10px}
+.dz-old{display:flex;flex-direction:column;gap:4px;padding-bottom:10px;font-size:13px}
+.dz-old a{color:var(--muted)}
+.lvsel{font:inherit;font-size:14px;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
 </style>
 </head>
 <body>
@@ -488,7 +960,7 @@ body.fun-on .avail{display:none}
     <g class="sb-x" transform="translate(212 128)"><path d="M-7 -7 L7 7 M7 -7 L-7 7"/></g>
   </svg>
   <div class="sb-compass" aria-hidden="true"><i></i></div>
-  <div class="qb-in gut"><span class="sb-tag" aria-hidden="true">NEXT STOP</span><h2>SIDE <i>QUESTS</i></h2><p>העוזר האישי: בית, כסף, פרויקטים וטיולים.</p></div>
+  <div class="qb-in gut"><span class="sb-tag" aria-hidden="true">NEXT STOP</span><h2>SIDE <i>QUESTS</i></h2><p>העוזר האישי: בית, כסף, משפחה וסידורים.</p></div>
 </div>
 <div class="qband qb-fun fz-head">
   <div class="fz-sun" aria-hidden="true"></div>
@@ -508,13 +980,44 @@ body.fun-on .avail{display:none}
   <div class="wb-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 82 L22 64 L40 70 L60 38 L78 46 L98 12"/></svg></div>
   <div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><img class="qlogo" id="logo-work" alt="Elbit" hidden><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
 </div>
-<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="refr tb" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span id="refrTxt">עדכון</span></button></div>
+<div class="qband qb-travel">
+  <svg class="tb-sky" viewBox="0 0 400 200" preserveAspectRatio="xMinYMid slice" aria-hidden="true">
+    <circle class="tb-sun" cx="168" cy="62" r="17"/>
+    <g class="tb-cloud c1"><ellipse cx="0" cy="0" rx="26" ry="9"/><ellipse cx="-10" cy="-6" rx="13" ry="10"/><ellipse cx="8" cy="-8" rx="11" ry="9"/></g>
+    <g class="tb-cloud c2"><ellipse cx="0" cy="0" rx="20" ry="7"/><ellipse cx="-6" cy="-5" rx="10" ry="8"/></g>
+    <path class="tb-hills" d="M-10 200 L-10 168 C30 150 60 160 90 146 S150 150 180 160 S240 150 260 165 L260 200 Z"/>
+    <path class="tb-green d" d="M-10 200 L-10 150 C20 136 50 142 78 132 S130 140 160 150 S220 146 250 156 L250 200 Z"/>
+    <path class="tb-green" d="M-10 200 L-10 160 C25 150 60 156 95 150 S160 158 200 162 S240 160 262 166 L262 200 Z"/>
+    <g class="tb-tree"><path d="M40 146 C36 132 38 118 42 108 C46 118 48 132 44 146 Z"/><path d="M52 148 C49 138 50 128 53 121 C56 128 57 138 55 148 Z"/><path d="M242 158 C238 146 240 134 244 126 C248 134 250 146 246 158 Z"/></g>
+    <g transform="translate(150 132)"><circle class="tb-tree" cx="0" cy="0" r="9"/><circle class="tb-tree" cx="8" cy="3" r="7"/><rect class="tb-trunk" x="2" y="6" width="2.5" height="10"/></g>
+    <g transform="translate(204 150) scale(1.25)"><path class="tb-rock" d="M-16 14 L-14 -4 Q-10 -12 0 -13 Q12 -12 15 -3 L17 14 Z"/>
+      <rect x="-8" y="-8" width="4" height="13" rx="1" fill="#F08A24"/><rect x="-2" y="-8.5" width="4" height="13.5" rx="1" fill="#2F6FD6"/><rect x="4" y="-8" width="4" height="13" rx="1" fill="#fff"/></g>
+    <circle class="tb-flower" cx="72" cy="160" r="2.2"/><circle class="tb-flower r" cx="184" cy="164" r="2.2"/><circle class="tb-flower" cx="226" cy="162" r="1.8"/><circle class="tb-flower r" cx="64" cy="164" r="1.8"/>
+    <path id="tbRoute" class="tb-route" d="M22 104 C34 52 110 36 186 92"/>
+    <g class="tb-pin" transform="translate(22 104)"><circle r="5"/></g>
+    <g class="tb-pin" transform="translate(186 92)"><circle r="5"/></g>
+    <g class="tb-plane"><path d="M-11 -1.6 L4 -1.6 L-3 -11 L1 -11 L10 -1.6 L14 -1.6 Q17 0 14 1.6 L10 1.6 L1 11 L-3 11 L4 1.6 L-11 1.6 L-14 6 L-16 6 L-14 0 L-16 -6 L-14 -6 Z"/>
+      <animateMotion dur="5s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .55 1"><mpath href="#tbRoute"/></animateMotion></g>
+  </svg>
+  <div class="qb-in gut"><span class="tv-tag" aria-hidden="true">NOW BOARDING ✈</span><h2>TRAVEL <i>QUEST</i></h2><p>טיולים בארץ ובחו״ל.</p></div>
+</div>
+<div class="qband qb-ai">
+  <div class="ai-term" aria-hidden="true">
+    <div class="ai-bar"><i></i><i></i><i></i></div>
+    <svg class="ai-clawd" viewBox="0 0 22 16" shape-rendering="crispEdges"><path d="M4 1h14v4h2v4h-2v4h-1v3h-2v-3h-1v3h-2v-3H10v3H8v-3H7v3H5v-3H4V9H2V5h2z"/><rect class="ai-eye" x="7" y="4" width="2" height="3"/><rect class="ai-eye" x="13" y="4" width="2" height="3"/></svg>
+    <div class="ai-line"><b>&gt;</b> claude<span class="ai-cur"></span></div>
+  </div>
+  <div class="qb-in gut"><span class="ai-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
+</div>
+<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="avail" id="avail"></div>
-    <form class="quick" id="quick" hidden><input id="qtitle" type="text" placeholder="משימה חדשה, בכמה מילים…" aria-label="נושא חדש" autocomplete="off"><button id="qbtn" type="submit">הוסף</button></form>
+    <div class="ctxrow"><div class="avail" id="avail"></div><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button></div>
+    <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
+    <div class="fres" id="fres" hidden></div>
+    <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
   </div>
 </div>
 
@@ -523,6 +1026,8 @@ body.fun-on .avail{display:none}
   <section class="funzone" id="funSec" aria-label="Fun Quest">
     <div class="fzgrid" id="funGrid"></div>
   </section>
+  <section class="tvzone" id="tvSec" aria-label="אזור הטיולים"></section>
+  <section class="dashzone tasks-only" id="dashSec" aria-labelledby="hDash" hidden></section>
   <section aria-labelledby="hUrg" id="urgSec" class="tasks-only" hidden>
     <div class="sec-head"><h2 id="hUrg">❗ דחוף</h2></div>
     <div class="group" id="urgList"></div>
@@ -538,7 +1043,7 @@ body.fun-on .avail{display:none}
     <div id="list"><div class="empty">טוען…</div></div>
     
   </section>
-  <section aria-labelledby="hProj" class="tasks-only side-only">
+  <section aria-labelledby="hProj" class="tasks-only ai-only">
     <div class="sec-head"><h2 id="hProj">הפרויקטים שלי</h2></div>
     <div class="pgrid" id="strip"></div>
   </section>
@@ -563,12 +1068,15 @@ body.fun-on .avail{display:none}
   };
   // availability (topic field `context`: array of call|pc|house|out|mobile). "mobile" = doable on the phone (site/message), shows everywhere.
   // Empty = not classified, shows everywhere. Legacy keys from v2.8: home -> pc, phone -> mobile. Last choice in localStorage sq_ctx.
-  const CTX={call:{e:"📞",l:"זמין לשיחות",full:"זמין לשיחות טלפון / ברכב",sub:"ברכב, אפשר לדבר"},pc:{e:"💻",l:"מול המחשב",full:"מול המחשב",sub:"עבודה במחשב"},house:{e:"🔧",l:"בבית",full:"בבית, משימות בית",sub:"להתקין, לתקן, לסדר"},out:{e:"🛒",l:"סידורים בחוץ",full:"סידורי חוץ",sub:"קניות וסידורים"}};
+  const CTX={call:{e:"📞",l:"זמין לשיחות",full:"זמין לשיחות טלפון / ברכב",sub:"ברכב, אפשר לדבר"},pc:{e:"💻",l:"מול המחשב",full:"מול המחשב",sub:"עבודה במחשב"},house:{e:"🔧",l:"בבית",full:"בבית, משימות בית",sub:"להתקין, לתקן, לסדר"},out:{e:"🛒",l:"סידורים בחוץ",full:"סידורי חוץ",sub:"קניות וסידורים"},office:{e:"🏢",l:"בעבודה",full:"בעבודה: רק קצר ומרחוק",sub:"קצר, מהנייד או בשיחה"},lior:{e:"👫",l:"עם ליאור",full:"עם ליאור",sub:"בירורים שעושים יחד"}};
   const TAGS={...CTX,mobile:{e:"📱",l:"בנייד",full:"אפשר מהנייד, מכל מקום"}};
   const CTX_OLD={home:"pc",phone:"mobile"};
   let ctxNow="all",ctxMenu=false;try{const v=localStorage.getItem("sq_ctx");const m=v==="home"?"pc":v==="phone"?"call":v;if(CTX[m])ctxNow=m;}catch(e){}
   function ctxOf(t){const out=[];for(let c of (Array.isArray(t.context)?t.context:[])){c=CTX_OLD[c]||c;if(TAGS[c]&&!out.includes(c))out.push(c);}return out;}
-  function ctxOk(t){if(ctxNow==="all")return true;const c=ctxOf(t);return !c.length||c.includes("mobile")||c.includes(ctxNow);}
+  function ctxOk(t){if(ctxNow==="all")return true;const c=ctxOf(t);
+    if(ctxNow==="office")return c.includes("office")||c.includes("mobile")||c.includes("call"); // at work: only short, remote things (iPhone or a call)
+    if(ctxNow==="lior")return c.includes("lior"); // with Lior: only things done together
+    return !c.length||c.includes("mobile")||c.includes(ctxNow);}
   function isUrgent(t){return !!t.urgent&&isOpen(t);}
   let inboxAll=false, view="open", shareId=null, shareMode="task";
   let db=null, topics=[], funTopics=[], projects=[], filterKind="all", openId=null, canWrite=true;
@@ -629,9 +1137,84 @@ body.fun-on .avail{display:none}
     setTimeout(()=>{document.removeEventListener("visibilitychange",onHide);if(!left&&!document.hidden)window.open(web,"_blank","noopener");},1500);}
   document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a||!isGmail(a.href))return;e.preventDefault();e.stopPropagation();openGmail(a.href);},true);
   function mailOf(t){const ls=linksOf(t).filter(l=>isGmail(l.url));const l=ls.find(l=>gmailId(l.url))||ls.find(l=>!/compose=|#drafts/.test(l.url));return l?safeUrl(l.url):null;}
+  // ---- 5.0: levels and dashboards (collection "dashboards" in sq_docs) ----
+  let dashes=[], dashOpen=null, insDocs=[], inDashCard=false;
+  function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted);}
+  function levelOf(t){const L=+t.level;if(L>=1&&L<=4)return L;if(t.project&&projById(t.project))return 4;if(t.dash&&dashById(t.dash))return 3;if(chatOf(t)||mailOf(t))return 2;return 1;}
+  function levelRow(t){
+    const qd=dashes.filter(d=>!d._deleted&&!d.archived&&(d.quest||"side")===questOf(t)||d.id===t.dash);
+    const sel=(id,opts,cur,on)=>{const s=h("select",{class:"lvsel",id,"aria-label":id.startsWith("ds")?"דשבורד":"פרויקט",onchange:e=>on(e.target.value)},...opts.map(([v,l])=>{const o=h("option",{value:v},l);if(v===(cur||""))o.selected=true;return o;}));return s;};
+    return h("div",{class:"d-row"},h("span",{class:"lbl"},"שייך ל"),
+      sel("ds-"+t.id,[["","בלי דשבורד"],...qd.map(d=>[d.id,(d.icon||"📊")+" "+(d.title||d.id)])],t.dash,v=>patch(t,{dash:v},v?"חובר לדשבורד "+((dashById(v)||{}).title||""):"הוסר מהדשבורד")),
+      sel("pj-"+t.id,[["","בלי פרויקט"],...[...projects].sort((a,b)=>(a.order||0)-(b.order||0)).map(p=>[p.id,(p.icon||"")+" "+(p.name||p.id)])],t.project,v=>patch(t,{project:v},v?"שויך לפרויקט "+((projById(v)||{}).name||""):"הוסר מהפרויקט")));
+  }
+  function dashTasks(d){return allTopics.filter(t=>t.dash===d.id&&!t._deleted);}
+  function dashActivity(d){let best=Date.parse(d.updated_at||"")||0;for(const t of dashTasks(d)){const x=lastHandled(t);if(x>best)best=x;}return best;}
+  function sugKey(text){let h2=0;for(const ch of String(text))h2=(h2*31+ch.charCodeAt(0))|0;return "k"+(h2>>>0).toString(36);}
+  // live numbers for dashboards whose data lives in sq_docs (today: insurance)
+  function liveOf(d){
+    if(d.source==="insurance"&&insDocs.length){
+      const pol=insDocs.filter(x=>x.id!=="_meta"&&x.status!=="unknown"&&x.status!=="ended"&&x.status!=="cancelled");
+      const meta=insDocs.find(x=>x.id==="_meta")||{};const flags=(Array.isArray(meta.flags)?meta.flags:[]).filter(f=>f&&f.text);
+      const ren=pol.map(x=>x.renew).filter(r=>r&&daysUntil(r)>=0).sort();
+      const kpis=[{v:String(pol.length),l:"פוליסות"},{v:String(flags.filter(f=>f.lvl==="high").length),l:"דורשים טיפול"},ren[0]?{v:fmtDate(ren[0])+"."+ren[0].slice(2,4),l:"חידוש הבא"}:null].filter(Boolean);
+      const sugs=[...flags.filter(f=>f.lvl==="high").map(f=>({text:f.text,sub:f.save?"חיסכון: "+f.save:(f.sub||"")})),
+        ...pol.filter(x=>x.renew&&daysUntil(x.renew)>=0&&daysUntil(x.renew)<=60).map(x=>({text:"חידוש: "+(x.title||x.id),sub:relDate(x.renew),date:x.renew}))];
+      return {kpis,sugs,live:true};
+    }
+    return {kpis:Array.isArray(d.kpis)?d.kpis:[],sugs:[],live:!!d.live};
+  }
+  function dashSugs(d){const st=d.sugg||{};const lv=liveOf(d);
+    const own=(Array.isArray(d.suggest)?d.suggest:[]).filter(x=>x&&x.text&&(!x.date||daysUntil(x.date)<=(x.show_days||60)));
+    const taken=new Set(dashTasks(d).map(t=>norm(t.title)));
+    return [...lv.sugs,...own].map(x=>({...x,key:x.key||sugKey(x.text)})).filter(x=>!st[x.key]&&!taken.has(norm(x.text)));}
+  function openDash(id){const d=dashById(id);if(!d)return;const q=d.quest||"side";if(quest!==q)setQuest(q);dashOpen=id;renderDash();setTimeout(()=>{const e=$("dz-card");e&&e.scrollIntoView({behavior:"smooth",block:"start"});},60);}
+  async function addFromSug(d,x){if(!db)return;const now=new Date().toISOString(),nid=newId();
+    try{await db.collection("topics").doc(nid).set({title:String(x.text).slice(0,200),kind:"admin",status:"active",priority:"normal",area:"",next_step:x.sub&&!x.date?String(x.sub):"",next_date:x.date||"",summary:"",links:[],dash:d.id,...(TQ.includes(d.quest)?{quest:d.quest}:{}),source:"הוצע מהדשבורד "+(d.title||""),created_at:now,updated_at:now,log:[{at:now,text:"נוצר מהצעה של הדשבורד"}]});
+      await db.collection("dashboards").doc(d.id).update({sugg:{...(d.sugg||{}),[x.key]:"added"}});
+      toast("נוספה משימה",async()=>{try{await db.collection("topics").doc(nid).delete();await db.collection("dashboards").doc(d.id).update({sugg:{...(d.sugg||{})}});toast("בוטל");}catch(e){fail(e);}});}catch(e){fail(e);}}
+  async function dismissSug(d,x){try{await db.collection("dashboards").doc(d.id).update({sugg:{...(d.sugg||{}),[x.key]:"dismissed"}});toast("ההצעה הוסתרה",async()=>{try{await db.collection("dashboards").doc(d.id).update({sugg:{...(d.sugg||{})}});}catch(e){fail(e);}});}catch(e){fail(e);}}
+  function dashVars(d){return `--c1:${d.c1||"#444"};--c2:${d.c2||d.c1||"#777"}`;}
+  function dashTile(d,lite){const kids=dashTasks(d).filter(isOpen),lv=liveOf(d),k=lv.kpis[0];
+    const urgentN=kids.filter(t=>isUrgent(t)||isHot(t)).length;
+    return h("button",{class:"dz-tile"+(lite?" lite":""),type:"button",style:dashVars(d),"aria-expanded":dashOpen===d.id?"true":"false",onclick:()=>{dashOpen=dashOpen===d.id?null:d.id;renderDash();}},
+      h("span",{class:"bd"+(urgentN?" hot":"")},kids.length?`${kids.length} פתוחות`:"הכל סגור"),
+      h("b",null,h("span",{"aria-hidden":"true"},d.icon||"📊"),d.title||""),
+      h("span",{class:"s"},d.note||(k?`${k.v} ${k.l}`:"")));}
+  function dashCard(d){const lv=liveOf(d),url=safeUrl(d.url||""),all=dashTasks(d),kids=all.filter(isOpen).sort(byDate),closed=all.length-kids.length,sugs=dashSugs(d);
+    const links=(Array.isArray(d.links)?d.links:[]).filter(l=>l&&safeUrl(l.url));const proj=d.project&&projById(d.project);
+    const asOf=lv.live?"חי"+(d.updated_at?" · עודכן "+ago(Date.parse(d.updated_at)):""):(d.as_of?"תמונת מצב · נכון ל-"+d.as_of:"דף מידע");
+    inDashCard=true;const rows=kids.map(row);inDashCard=false;
+    return h("article",{class:"dz-card",id:"dz-card",style:dashVars(d)},
+      h("div",{class:"dz-cv"},h("span",{class:"ic","aria-hidden":"true"},d.icon||"📊"),h("div",{style:"min-width:0"},h("h3",null,d.title||""),h("p",null,asOf)),h("button",{class:"x",type:"button","aria-label":"סגור",onclick:()=>{dashOpen=null;renderDash();}},"✕")),
+      lv.kpis.length?h("div",{class:"dz-kpis"},lv.kpis.slice(0,3).map(k=>h("div",{class:"dz-kpi"},h("b",null,k.v),h("span",null,k.l)))):null,
+      url?h("a",{class:"dz-go",href:url,target:"_blank",rel:"noopener"},"פתח את הדשבורד ←"):null,
+      links.length||proj?h("div",{class:"dz-links"},links.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"קישור")),proj&&safeUrl(proj.app_url||"")?h("a",{href:safeUrl(proj.app_url),target:"_blank",rel:"noopener"},"פרויקט: "+(proj.name||"")):null):null,
+      h("div",{class:"dz-sec"},h("h4",null,"המשימות של הדשבורד",kids.length?h("span",{class:"n"},kids.length):null),
+        rows.length?h("div",{class:"group"},rows):h("div",{class:"empty"},"אין משימות פתוחות. הדשבורד נשאר כמקור מידע."),
+        closed?h("span",{class:"src"},`${closed} משימות סגורות`):null),
+      sugs.length?h("div",{class:"dz-sec"},h("h4",null,"💡 הדשבורד מציע"),sugs.slice(0,5).map(x=>h("div",{class:"dz-sug"},h("span",{class:"t"},x.text,x.sub?h("small",null,x.sub):null),
+        canWrite?h("button",{type:"button",onclick:()=>addFromSug(d,x)},"+ משימה"):null,canWrite?h("button",{class:"no",type:"button","aria-label":"הסתר הצעה",onclick:()=>dismissSug(d,x)},"✕"):null))):null);}
+  const DASH_MAX=4, DASH_IDLE=90;
+  function renderDash(){const sec=$("dashSec");if(!sec)return;
+    const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
+    if(!mine.length){sec.hidden=true;sec.replaceChildren();return;}
+    const idle=d=>!dashTasks(d).some(isOpen)&&dashActivity(d)&&(Date.now()-dashActivity(d))/86400000>DASH_IDLE;
+    const act=mine.filter(d=>!d.archived&&!idle(d)).sort((a,b)=>(dashTasks(b).some(isOpen)?1:0)-(dashTasks(a).some(isOpen)?1:0)||(a.order||99)-(b.order||99));
+    const top=act.slice(0,DASH_MAX),extra=[...act.slice(DASH_MAX),...mine.filter(d=>!d.archived&&idle(d))],old=mine.filter(d=>d.archived);
+    const cur=dashOpen&&mine.find(d=>d.id===dashOpen);
+    sec.hidden=false;
+    sec.replaceChildren(...[h("div",{class:"sec-head"},h("h2",{id:"hDash"},"הדשבורדים שלי")),
+      top.length?h("div",{class:"dz-grid"},top.map(d=>dashTile(d))):null,
+      cur?dashCard(cur):null,
+      extra.length||old.length?h("details",{class:"dz-more"},h("summary",null,`עוד דשבורדים וארכיון (${extra.length+old.length})`),
+        extra.length?h("div",{class:"dz-grid"},extra.map(d=>dashTile(d,true))):null,
+        old.length?h("div",{class:"dz-old"},old.map(d=>safeUrl(d.url||"")?h("a",{href:safeUrl(d.url),target:"_blank",rel:"noopener"},(d.icon||"📄")+" "+(d.title||"")+(d.note?" · "+d.note:"")):null)):null):null].filter(Boolean));
+  }
   function goBtn(t){const c=chatOf(t),m=!c&&mailOf(t);
     if(c)return iconBtn("go",ICON.chat,"קפוץ לשיחה של המשימה",null,c);
     if(m)return iconBtn("go",ICON.mail,"פתח את המייל של המשימה",null,m);
+    if(!(t.project&&projById(t.project)))return h("span",{class:"ib ph","aria-hidden":"true"}); // level 1: no chat icon at all
     return h("a",{class:"ib go off",href:contUrl(t),target:"_blank",rel:"noopener",title:"אין עדיין שיחה למשימה הזו","aria-label":"אין עדיין שיחה למשימה הזו. שם המשימה יועתק",html:ICON.chat,onclick:e=>{e.stopPropagation();const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("אין עדיין שיחה למשימה הזו. שם המשימה הועתק, הדבק בשיחה");}catch(x){}}});}
   function contUrl(t){const p=t.project&&projById(t.project);return chatOf(t)||(p&&safeUrl(p.claude_url||""))||SQ_CHAT;}
   function contBtn(t,cls,label){const direct=!!chatOf(t);return h("a",{class:cls,href:contUrl(t),target:"_blank",rel:"noopener",html:cls==="cont"?ICON.chat:"",onclick:e=>{e.stopPropagation();if(!direct){const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("שם המשימה הועתק, הדבק בשיחה");}catch(x){}}}},label||"המשך בשיחה");}
@@ -689,18 +1272,22 @@ body.fun-on .avail{display:none}
     $("inbox").replaceChildren(...shown,...(cards.length>4?[h("button",{class:"pill",type:"button",style:"align-self:center",onclick:()=>{inboxAll=!inboxAll;renderInbox();}},inboxAll?"פחות":`עוד ${cards.length-4} החלטות`)]:[]));
   }
   function jumpTo(id){const e=$(id);if(e&&!e.hidden&&e.offsetParent)e.scrollIntoView({behavior:"smooth",block:"start"});else toast("אין כרגע מה להציג כאן");}
-  // seen counts per quest/counter (localStorage sq_seen): a counter whose number changed since you last opened it gets a red dot
+  // counters (from 4.9): a red "+N" = how many were added since your previous visit, per quest. No minus.
+  // sq_seen = the last numbers you saw (kept up to date while the page is on screen); base = snapshot of it taken when you came in.
+  // Tapping a counter clears its badge. Coming back to the app (visibilitychange) starts a new visit.
   let seen={};try{seen=JSON.parse(localStorage.getItem("sq_seen")||"{}")||{};}catch(e){}
+  let base={...seen};
   function saveSeen(){try{localStorage.setItem("sq_seen",JSON.stringify(seen));}catch(e){}}
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){base={...seen};renderStats();}});
   function statCounts(){
     if(quest==="fun"){const live=funTopics.filter(t=>t.status!=="archived"&&t.status!=="done");
       return {asks:live.reduce((n,t)=>n+openAsks(t),0),open:live.length,wait:0,later:0,done:funTopics.filter(t=>t.status==="done").length};}
-    const open=topics.filter(isOpen);
+    const open=topics.filter(t=>isOpen(t)&&!inStrip(t));
     return {asks:open.filter(t=>!snoozed(t)).reduce((n,t)=>n+openAsks(t),0),open:open.filter(t=>!snoozed(t)).length,wait:open.filter(t=>!snoozed(t)&&!returned(t)&&t.status==="waiting_other").length,later:open.filter(snoozed).length,done:topics.filter(t=>t.status==="done"||t.status==="promoted").length};
   }
   const STATS=[["asks","להחלטה שלי"],["open","פתוחות"],["wait","מחכות לאחרים"],["later","אחר כך"],["done","בוצעו"]];
   function goStat(k){
-    const v=statCounts()[k];seen[quest+":"+k]=v;saveSeen();renderStats();
+    const v=statCounts()[k];seen[quest+":"+k]=v;base[quest+":"+k]=v;saveSeen();renderStats();
     if(quest==="fun"){jumpTo("funGrid");return;}
     const want=k==="done"?"done":"open";
     if(view!==want){view=want;openId=null;renderViews();renderFilters();renderList();}
@@ -709,30 +1296,36 @@ body.fun-on .avail{display:none}
   function jumpTo(id){const e=$(id);if(e&&!e.hidden&&e.offsetParent)e.scrollIntoView({behavior:"smooth",block:"start"});else toast("אין כרגע מה להציג כאן");}
   function renderStats(){
     if(!db){$("stats").replaceChildren(...STATS.map(([k,l])=>h("span",{class:"stat"},h("b",null,"–"),l)));return;}
-    const c=statCounts();let changed=false;
-    $("stats").replaceChildren(...STATS.map(([k,l])=>{const key=quest+":"+k,v=c[k];if(!(key in seen)){seen[key]=v;changed=true;}const diff=v-seen[key];
-      return h("button",{class:"stat"+(k==="asks"&&v?" hot":""),type:"button",onclick:()=>goStat(k),"aria-label":l+" "+v+(diff?" (השתנה)":"")},h("b",null,v),l,diff?h("span",{class:"dot","aria-hidden":"true"},diff>0?"+"+diff:diff):null);}));
+    const c=statCounts(),vis=document.visibilityState!=="hidden";let changed=false;
+    $("stats").replaceChildren(...STATS.map(([k,l])=>{const key=quest+":"+k,v=c[k];if(!(key in base))base[key]=v;if(vis&&seen[key]!==v){seen[key]=v;changed=true;}const add=v-base[key];
+      return h("button",{class:"stat"+(k==="asks"&&v?" hot":""),type:"button",onclick:()=>goStat(k),"aria-label":l+" "+v+(add>0?` (${add} חדשות)`:"")},h("b",null,v),l,add>0?h("span",{class:"dot","aria-hidden":"true",dir:"ltr"},"+"+add):null);}));
     if(changed)saveSeen();
   }
   let addingFor=null;
   function projById(id){return projects.find(p=>p.id===id);}
-  function picOf(p,size){const st=size?`width:${size}px;height:${size}px;border-radius:${size/4}px;font-size:${size*.55}px`:"";const bg=`background:${p.color||"var(--hero)"};${st}`;const img=safeUrl(p.icon_url||"")||(String(p.icon_url||"").startsWith("data:image/")?p.icon_url:null);if(img)return h("span",{class:"pic",style:bg},h("img",{src:img,alt:""}));return h("span",{class:"pic",style:bg},p.icon||(p.name||"?").slice(0,1));}
+  // project tasks (kind "project" linked to a known project) live inside their project card at the bottom, not in the main list
+  function isProjTask(t){return t.kind==="project"&&!!t.project&&!!projById(t.project);}
+  function inStrip(t){return quest==="ai"&&isProjTask(t);} // project tasks sit inside their project card, only in AI Projects
+  function picOf(p,size){const st=size?`width:${size}px;height:${size}px;border-radius:${size/4}px;font-size:${size*.55}px`:"";const bg=`background:${p.color||"var(--hero)"};${st}`;const img=safeUrl(p.icon_url||"")||(String(p.icon_url||"").startsWith("data:image/")?p.icon_url:null);if(img){const fb=p.icon||(p.name||"?").slice(0,1);return h("span",{class:"pic has-img",style:bg},h("img",{src:img,alt:"",onerror:e=>{const s=e.currentTarget.parentNode;s.classList.remove("has-img");s.textContent=fb;}}));}return h("span",{class:"pic",style:bg},p.icon||(p.name||"?").slice(0,1));}
   function renderStrip(){
     const s=$("strip");
     if(!projects.length){s.replaceChildren(h("div",{class:"empty"},"אין עדיין פרויקטים."));return;}
-    s.replaceChildren(...[...projects].sort((a,b)=>(a.order||0)-(b.order||0)).map(p=>{
+    const nOpen=p=>topics.filter(t=>isOpen(t)&&isProjTask(t)&&t.project===p.id).length;
+    s.replaceChildren(...[...projects].sort((a,b)=>(nOpen(b)?1:0)-(nOpen(a)?1:0)||(a.order||0)-(b.order||0)).map(p=>{
       const app=safeUrl(p.app_url||""),cl=safeUrl(p.claude_url||"");
-      const tasks=topics.filter(t=>isOpen(t)&&t.project===p.id);
+      const tasks=topics.filter(t=>isOpen(t)&&isProjTask(t)&&t.project===p.id).sort(byDate);
       const missingBtn=(field,label,svg)=>h("button",{class:"pbtn missing",type:"button",onclick:()=>{addingFor={id:p.id,field};renderStrip();setTimeout(()=>{const i=$("padd");i&&i.focus();},0);},html:svg},label);
       const more=(Array.isArray(p.links)?p.links:[]).filter(l=>l&&safeUrl(l.url));
-      const card=h("div",{class:"pc"},
+      const card=h("div",{class:"pc"+(tasks.length?" has-tasks":"")},
         h("div",{class:"pc-top"},picOf(p),h("div",{style:"min-width:0;display:flex;flex-direction:column;gap:2px"},h("h3",null,p.name||""),
           p.stage?h("div",{class:"stage"},h("b",null,"עכשיו: "),p.stage):p.tagline?h("div",{class:"stage"},p.tagline):null,
-          tasks.length?h("div",{class:"stage"},`${tasks.length} משימות פתוחות`):null)),
+          null)),
         h("div",{class:"pc-acts"},
           app?h("a",{class:"pbtn app",href:app,target:"_blank",rel:"noopener",html:ICON.app},"פתח אפליקציה"):(canWrite?missingBtn("app_url","קישור לאפליקציה",ICON.app):null),
           cl?h("a",{class:"pbtn",href:cl,target:"_blank",rel:"noopener",html:ICON.chat},"פתח ב-Claude"):(canWrite?missingBtn("claude_url","קישור ל-Claude",ICON.chat):null)),
-        more.length?h("div",{class:"pc-more"},more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך"))):null);
+        more.length?h("div",{class:"pc-more"},more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך"))):null,
+        dashes.some(d=>d.project===p.id&&!d._deleted&&!d.archived)?h("div",{class:"pc-more"},dashes.filter(d=>d.project===p.id&&!d._deleted&&!d.archived).map(d=>h("button",{class:"dcrumb",type:"button",style:`--dc:${d.c1||"#555"}`,onclick:()=>openDash(d.id)},(d.icon||"📊")+" "+(d.title||"")+" ›"))):null,
+        tasks.length?h("div",{class:"pc-tasks"},h("div",{class:"pc-th"},"משימות פתוחות",h("span",{class:"n"},tasks.length)),tasks.map(row)):null);
       if(addingFor&&addingFor.id===p.id){
         const inp=h("input",{id:"padd",type:"url",placeholder:addingFor.field==="app_url"?"הדבק את כתובת האפליקציה":"הדבק קישור לפרויקט ב-Claude","aria-label":"קישור"});
         const save=async()=>{const u=safeUrl(inp.value.trim());if(!u){toast("הקישור לא תקין");return;}try{await db.collection("projects").doc(p.id).update({[addingFor.field]:u});addingFor=null;toast("הקישור נשמר");}catch(e){fail(e);}};
@@ -747,10 +1340,10 @@ body.fun-on .avail{display:none}
     const pick=k=>{ctxNow=k;ctxMenu=false;try{localStorage.setItem("sq_ctx",k);}catch(x){}openId=null;laterFor=null;renderCtx();renderInbox();renderList();};
     const opt=k=>h("button",{type:"button","aria-pressed":ctxNow===k?"true":"false",onclick:()=>pick(k)},h("span",null,CTX[k].e+" "+CTX[k].l),h("small",null,CTX[k].sub));
     $("avail").replaceChildren(
-      h("button",{class:"avbtn"+(ctxNow!=="all"?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false",onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},h("span",{class:"e","aria-hidden":"true"},cur.e),h("span",{class:"k"},"איפה אני:"),h("span",{class:"v"},cur.l),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
-      h("div",{class:"avmenu",hidden:!ctxMenu,role:"group","aria-label":"איפה אני עכשיו"},...Object.keys(CTX).map(opt),
+      h("button",{class:"avbtn"+(ctxNow!=="all"?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false",onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},h("span",{class:"e","aria-hidden":"true"},cur.e),ctxNow==="all"?h("span",{class:"k"},"מצב זמינות:"):null,h("span",{class:"v"},cur.l),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
+      h("div",{class:"avmenu",hidden:!ctxMenu,role:"group","aria-label":"מצב זמינות"},...Object.keys(CTX).map(opt),
         h("button",{class:"all",type:"button","aria-pressed":ctxNow==="all"?"true":"false",onclick:()=>pick("all")},"📍 הכול, בלי סינון"),
-        h("div",{class:"note"},"📱 משימות שאפשר לעשות מהנייד מופיעות בכל מקום.")));
+        h("div",{class:"note"},"📱 משימות מהנייד מופיעות בכל מצב, חוץ מ״עם ליאור״.")));
   }
   function setCtx(t,c){const cur=ctxOf(t),next=cur.includes(c)?cur.filter(x=>x!==c):[...cur,c];patch(t,{context:next},next.length?"מתאים ל: "+next.map(x=>TAGS[x].l).join(", "):"מתאים לכל מקום");}
   function setUrgent(t){const on=!t.urgent;if(openId===t.id&&!on)openId=null;patch(t,{urgent:on,urgent_by:on?"oren":"",urgent_at:on?new Date().toISOString():"",...(on&&snoozed(t)?{snooze_until:""}:{}),log:logPush(t,on?"סומן דחוף ❗":"הוסר סימון דחוף",new Date().toISOString())},on?"❗ סומן דחוף, עלה לראש הרשימה":"הוסר סימון דחוף");}
@@ -768,11 +1361,13 @@ body.fun-on .avail{display:none}
     const links=linksOf(t), chat=links.find(l=>linkType(l)==="chat"), page=links.find(l=>linkType(l)==="page");
     const dcls=n==null?"":n<=0?" due":n<=3?" soon":"";
     const asks=openAsks(t), cl=forClaude(t);
-    const el=h("div",{class:"row"+(open?"":" closed")+(isUrgent(t)?" urgent":""),style:`--k:var(--k-${k})`,"data-id":t.id},
+    const lv=levelOf(t), dd=t.dash&&dashById(t.dash);
+    const el=h("div",{class:"row lv"+lv+(open?"":" closed")+(isUrgent(t)?" urgent":""),style:`--k:var(--k-${k})`,"data-id":t.id},
       h("span",{class:"bar"}),
       h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":openId===t.id?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
         h("div",{class:"r-line"},
           t.project&&projById(t.project)?h("span",{class:"ptag"},picOf(projById(t.project),16),projById(t.project).name):null,
+          dd&&!inDashCard?h("button",{class:"dcrumb",type:"button",style:`--dc:${dd.c1||"#555"}`,title:"פתח את הדשבורד","aria-label":"שייך לדשבורד "+(dd.title||""),onclick:e=>{e.stopPropagation();openDash(dd.id);}},(dd.icon||"📊")+" "+(dd.short||dd.title||"")+" ›"):null,
           h("span",{class:"r-title"},t.title||"(ללא כותרת)"),
           ctxOf(t).length&&open?h("span",{class:"r-ctx",title:ctxOf(t).map(c=>TAGS[c].full).join(", "),"aria-label":"מתאים ל: "+ctxOf(t).map(c=>TAGS[c].full).join(", ")},ctxOf(t).map(c=>TAGS[c].e).join("")):null,
           t.status==="waiting_me"?h("span",{class:"tag me"},"מחכה לי"):t.status==="waiting_other"?h("span",{class:"tag other"},"מחכה לאחרים"):null,
@@ -802,7 +1397,7 @@ body.fun-on .avail{display:none}
       stRows.length?h("div",{class:"st"},...stRows.flatMap(r=>[h("span",{class:"lbl"},r[0]),h("div",null,r[1])])):null,
       ...qs.filter(q=>!q.answer).map(q=>questionCard(t,q,false)),
       ...offs.filter(o=>(o.state||"open")==="open").map(o=>offerCard(t,o,false)),
-      contBtn(t,"cont"),
+      contBtn(t,"cont",chatOf(t)?undefined:"פתח שיחה למשימה"),
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"מתי אפשר"),...Object.keys(TAGS).map(c=>h("button",{class:"pill",type:"button","aria-pressed":ctxOf(t).includes(c)?"true":"false",onclick:()=>setCtx(t,c)},TAGS[c].e+" "+TAGS[c].l))):null,
       linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).length?h("div",{class:"d-row files"},linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).map(l=>h("a",{class:"lnk"+(linkType(l)==="file"?" file":""),href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
       h("details",{class:"more"},h("summary",null,"פרטים, היסטוריה ועריכה ▾"),h("div",null,
@@ -812,6 +1407,7 @@ body.fun-on .avail{display:none}
       log.length?h("div",{class:"src"},log.map(e=>`${fmtDate((e.at||"").slice(0,10))} · ${e.text||""}`).join("   |   ")):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"סטטוס"),...["active","waiting_me","waiting_other","paused"].map(s=>h("button",{class:"pill",type:"button","aria-pressed":t.status===s?"true":"false",onclick:()=>patch(t,{status:s})},STATUS[s]))):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"תזכורת"),dateInp,h("button",{class:"pill",type:"button",onclick:()=>snooze(t,1)},"מחר"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,7)},"+שבוע"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,30)},"+חודש"),t.next_date?h("button",{class:"pill",type:"button",onclick:()=>patch(t,{next_date:""},"התאריך הוסר")},"בלי תאריך"):null):null,
+      canWrite?levelRow(t):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"קישור"),linkInp,h("button",{class:"pill",type:"button",onclick:addLink},"הוסף")):null,
       shareId===t.id?sharePanel(t):null)),
       h("div",{class:"d-row",style:"justify-content:space-between"},h("span",{class:"src"},`${KINDS[t.kind]||""}${t.area?" · "+t.area:""} · ${t.source||""}`),
@@ -852,7 +1448,8 @@ body.fun-on .avail{display:none}
     const tab=(v,label)=>h("button",{class:"vtab",type:"button",role:"tab","aria-selected":view===v?"true":"false",onclick:()=>{view=v;openId=null;shareId=null;renderViews();renderFilters();renderList();}},label,h("span",{class:"n"},c[v]));
     $("views").replaceChildren(tab("open","פתוחות"),tab("done","בוצעו"),tab("archive","ארכיון"));
   }
-  function renderList(){
+  function renderList(){renderMain();renderStrip();renderDash();}
+  function renderMain(){
     const kindOk=t=>(filterKind==="all"||t.kind===filterKind)&&ctxOk(t);
     if(view!=="open"){
       $("urgSec").hidden=true;
@@ -861,7 +1458,7 @@ body.fun-on .avail{display:none}
       return;
     }
     const allK=topics.filter(isOpen).filter(kindOk).sort(byDate);
-    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t));
+    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t)&&!inStrip(t));
     $("urgSec").hidden=!urg.length;$("urgList").replaceChildren(...urg.map(row));
     const back=all.filter(returned), later=all.filter(snoozed), open=all.filter(t=>!returned(t)&&!snoozed(t));
     const hot=open.filter(isHot), rest=open.filter(t=>!isHot(t));
@@ -873,9 +1470,10 @@ body.fun-on .avail{display:none}
 
   // fun zone: topics marked fun / kind "fun" / tag "fun question" live here, not in the task list
   function isFun(t){return !!t.fun||t.kind==="fun"||(Array.isArray(t.tags)&&t.tags.includes("fun question"));}
-  // quests: side (default), fun, army, work. A topic's quest is t.quest ("army"/"work"); fun topics are isFun(); everything else is side.
-  const QUESTS={side:{name:"Side Quests",a:"Side",b:"Quests",e:"🗺️",ph:"משימה חדשה, בכמה מילים…"},fun:{name:"Fun Quest",a:"Fun",b:"Quest",e:"🕹️",ph:"תחביב או רעיון ל-Fun Quest…"},army:{name:"Army Quest",a:"Army",b:"Quest",e:"🪖",ph:"משימה חדשה ל-Army Quest…"},work:{name:"Work Quest",a:"Work",b:"Quest",e:"💼",ph:"משימה חדשה ל-Work Quest…"}};
-  function questOf(t){return t.quest==="army"||t.quest==="work"?t.quest:"side";}
+  // quests: side (default), fun, army, work, travel, ai. A topic's quest is t.quest (one of TQ); fun topics are isFun(); everything else is side.
+  const QUESTS={side:{name:"Side Quests",a:"Side",b:"Quests",e:"🗺️",ph:"משימה (נסח בכמה מילים)"},fun:{name:"Fun Quest",a:"Fun",b:"Quest",e:"🕹️",ph:"רעיון (נסח בכמה מילים)"},army:{name:"Army Quest",a:"Army",b:"Quest",e:"🪖",ph:"משימה (נסח בכמה מילים)"},work:{name:"Work Quest",a:"Work",b:"Quest",e:"💼",ph:"משימה (נסח בכמה מילים)"},travel:{name:"Travel Quest",a:"Travel",b:"Quest",e:"✈️",ph:"טיול (נסח בכמה מילים)"},ai:{name:"AI Projects",a:"AI",b:"Projects",e:"🤖",ph:"משימה (נסח בכמה מילים)"}};
+  const TQ=["army","work","travel","ai"]; // quests stored in t.quest; missing = side
+  function questOf(t){return TQ.includes(t.quest)?t.quest:"side";}
   function questFromHash(){const q=location.hash.slice(1);return QUESTS[q]?q:"side";}
   let quest=questFromHash(), allTopics=[];
   let funMode=quest==="fun";
@@ -911,14 +1509,14 @@ body.fun-on .avail{display:none}
     const all=Array.isArray(t.items)?t.items:[];const it=all[idx];if(!it)return;
     const nv=it.vote===v?"":v;
     const items=all.map((x,i)=>i===idx?{...x,vote:nv}:x);
-    patch(t,{items,log:logPush(t,(nv==="up"?"👍 ":nv==="down"?"👎 ":"ביטלת דירוג: ")+it.label,new Date().toISOString())},nv==="up"?"אהבת 👍":nv==="down"?"לא בשבילך 👎":"הדירוג בוטל");
+    patch(t,{items,log:logPush(t,(nv==="love"?"👍👍 ":nv==="up"?"👍 ":nv==="down"?"👎 ":"ביטלת דירוג: ")+it.label,new Date().toISOString())},nv==="love"?"אהבת מאוד 👍👍 (נחשב כפול)":nv==="up"?"אהבת 👍":nv==="down"?"לא בשבילך 👎":"הדירוג בוטל");
   }
   function itemRow(t,x,idx){
     const u=safeUrl(x.url||"");
-    const vb=(v,ic,lbl)=>canWrite?h("button",{class:"vote"+(x.vote===v?" on "+v:""),type:"button","aria-pressed":x.vote===v?"true":"false","aria-label":lbl+": "+x.label,onclick:e=>{e.stopPropagation();voteItem(t,idx,v);}},ic):null;
+    const vb=(v,ic,lbl)=>canWrite?h("button",{class:"vote "+v+(x.vote===v?" on":""),type:"button","aria-pressed":x.vote===v?"true":"false","aria-label":lbl+": "+x.label,onclick:e=>{e.stopPropagation();voteItem(t,idx,v);}},ic):null;
     return h("li",{class:x.vote?"voted-"+x.vote:null},
       h("div",{class:"fi-t"},h("b",null,x.label),x.sub?h("span",null,x.sub):null),
-      h("div",{class:"fi-acts"},vb("up","👍","אהבתי"),vb("down","👎","לא אהבתי"),
+      h("div",{class:"fi-acts"},t.zone==="spotify"?vb("love","👍👍","אהבתי מאוד"):null,vb("up","👍","אהבתי"),vb("down","👎","לא אהבתי"),
         u?h("a",{class:"spot",href:u,target:"_blank",rel:"noopener","aria-label":(x.cta||"פתח")+": "+x.label,html:ICON.play},x.cta||"פתח"):null));
   }
   let funFold={};
@@ -931,7 +1529,7 @@ body.fun-on .avail{display:none}
       const g=defs.find(d=>d.id===gid)||{id:gid,title:gid||"עוד"};
       const its=items.filter(x=>(x.group||"")===gid);if(!its.length&&!g.url)return null;
       const key=t.id+":"+gid,open=key in funFold?funFold[key]:(g.open!=null?!!g.open:gi===0);
-      const ups=its.filter(x=>x.vote==="up").length,downs=its.filter(x=>x.vote==="down").length;
+      const ups=its.filter(x=>x.vote==="up"||x.vote==="love").length,downs=its.filter(x=>x.vote==="down").length;
       const d=h("details",{class:"round",open:open||null},
         h("summary",null,h("span",{class:"rt"},g.title||gid),h("span",{class:"rn"},`${its.length} שירים`+(ups?` · 👍${ups}`:"")+(downs?` · 👎${downs}`:""))),
         safeUrl(g.url||"")?h("a",{class:"fbtn ghost rlink",href:safeUrl(g.url),target:"_blank",rel:"noopener"},g.url_label||"פתח"):null,
@@ -947,15 +1545,339 @@ body.fun-on .avail{display:none}
       h("p",{class:"fh-tag"},"ערבי סרטים שהופכים למסע"),
       h("div",{class:"fc-links"},app?h("a",{class:"fbtn",href:app,target:"_blank",rel:"noopener"},"פתח את האפליקציה"):null,cl?h("a",{class:"fbtn ghost",href:cl,target:"_blank",rel:"noopener"},"פתח ב-Claude"):null));
   }
+  // Spotify zone (topic.zone==="spotify"). Sessions = item_groups [{id,n,title,seed,url,url_label}] (newest first) + items with group=id.
+  // A session whose items are all voted 👍/👎 moves to the archive. Picker: t.next_seeds [{id,type:"song"|"style",label,sub}].
+  // Tapping "צור סשן N" appends an approved ai_offer {kind:"spotify_session",session:N,seeds:[labels]}; Claude builds it and marks it done.
+  const SPOT_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.52 17.34c-.24.36-.66.48-1.02.24-2.82-1.74-6.36-2.1-10.56-1.14-.42.12-.78-.18-.9-.54-.12-.42.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.3 1.02zm1.44-3.3c-.3.42-.84.6-1.26.3-3.24-1.98-8.16-2.58-11.94-1.38-.48.12-1.02-.12-1.14-.6-.12-.48.12-1.02.6-1.14C9.6 9.9 15 10.56 18.72 12.84c.36.18.54.78.24 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.3c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.72 1.62.54.3.72 1.02.42 1.56-.3.42-1.02.6-1.56.3z"/></svg>';
+  let spPick={};
+  function spSessions(t){
+    const all=Array.isArray(t.items)?t.items:[];
+    const defs=(Array.isArray(t.item_groups)?t.item_groups:[]).filter(g=>g&&g.id);
+    const ids=[...defs.map(g=>g.id),...[...new Set(all.filter(x=>x&&x.label).map(x=>x.group||""))].filter(g=>!defs.some(d=>d.id===g))];
+    const total=ids.length;
+    return ids.map((gid,i)=>{const g=defs.find(d=>d.id===gid)||{id:gid,title:""};const its=all.filter(x=>x&&x.label&&(x.group||"")===gid);
+      return {g,its,n:g.n||total-i,done:its.length>0&&its.every(x=>x.vote==="up"||x.vote==="love"||x.vote==="down")};}).filter(s=>s.its.length);
+  }
+  function sessBlock(t,s,open){
+    const all=t.items;const loves=s.its.filter(x=>x.vote==="love").length,ups=s.its.filter(x=>x.vote==="up").length+loves,downs=s.its.filter(x=>x.vote==="down").length,left=s.its.length-ups-downs;
+    const key=t.id+":"+s.g.id,isOpen=key in funFold?funFold[key]:open;
+    const title=s.g.title&&!/^סבב|^סשן/.test(s.g.title)?s.g.title:(s.g.seed||(s.g.title||"").replace(/^(סבב|סשן)\s*\d+\s*·?\s*/,""));
+    const d=h("details",{class:"round sess"+(s.done?" done":""),open:isOpen||null},
+      h("summary",null,h("span",{class:"sess-n"},s.n),h("span",{class:"rt"},"סשן "+s.n,title?h("small",null,title):null),
+        h("span",{class:"rn"},left?`עוד ${left} לסמן`:(loves?`👍👍${loves} · `:"")+`👍${ups-loves} · 👎${downs}`)),
+      safeUrl(s.g.url||"")?h("a",{class:"fbtn ghost rlink",href:safeUrl(s.g.url),target:"_blank",rel:"noopener"},s.g.url_label||"פתח"):null,
+      h("ul",{class:"fc-items"},s.its.map(x=>itemRow(t,x,all.indexOf(x)))));
+    d.addEventListener("toggle",()=>{funFold[key]=d.open;});
+    return d;
+  }
+  function spPending(t){return (Array.isArray(t.ai_offers)?t.ai_offers:[]).find(o=>o&&o.kind==="spotify_session"&&!o.superseded&&(o.state==="approved"||o.state==="open"));}
+  function requestSession(t,n){
+    const seeds=(Array.isArray(t.next_seeds)?t.next_seeds:[]).filter(x=>spPick[t.id]&&spPick[t.id].includes(x.id));if(!seeds.length)return;
+    const now=new Date().toISOString(),labels=seeds.map(x=>x.label);
+    const offer={id:"s"+n+"-"+Date.now().toString(36),kind:"spotify_session",session:n,seeds:labels,text:`סשן ${n} לפי: ${labels.join(", ")}`,
+      detail:`לבנות סשן ${n}: 5 שירים חדשים (לא שהוצעו כבר) לפי ${labels.join(", ")}, ולמידה מהלייקים והדיסלייקים בסשנים הקודמים. להוסיף ל-items עם group "s${n}", להוסיף בראש item_groups {id:"s${n}",n:${n},title:"סשן ${n}",seed:"לפי ..."}, לרענן את next_seeds ולסמן את ההצעה done.`,
+      state:"approved",decided_at:now};
+    spPick[t.id]=[];
+    patch(t,{ai_offers:[...(Array.isArray(t.ai_offers)?t.ai_offers:[]),offer],status:"waiting_other",waiting_for:`Claude בונה סשן ${n}`,next_step:"",log:logPush(t,`ביקשת סשן ${n} לפי: ${labels.join(", ")}`,now)},`סשן ${n} בהכנה. Claude יבנה ויעדכן כאן`);
+  }
+  function cancelSession(t,o){const offers=(Array.isArray(t.ai_offers)?t.ai_offers:[]).map(x=>x===o||x.id===o.id?{...x,state:"declined",superseded:true}:x);
+    patch(t,{ai_offers:offers,status:"active",waiting_for:"",log:logPush(t,"בוטלה בקשת "+o.text,new Date().toISOString())},"הבקשה בוטלה");}
+  function spotifyCard(t){
+    const ss=spSessions(t),live=ss.filter(s=>!s.done),arch=ss.filter(s=>s.done);
+    const nextN=Math.max(0,...ss.map(s=>+s.n||0))+1;
+    const liked=[...new Set((Array.isArray(t.items)?t.items:[]).filter(x=>x&&(x.vote==="up"||x.vote==="love")).map(x=>String(x.label).split(" · ")[0]))];
+    const pages=linksOf(t).filter(l=>linkType(l)!=="chat");
+    const pend=spPending(t),hub=safeUrl(t.hub_url||"");
+    const seeds=(Array.isArray(t.next_seeds)?t.next_seeds:[]).filter(x=>x&&x.id&&x.label);
+    const sel=spPick[t.id]||[];
+    const chip=x=>h("button",{class:"sp-chip",type:"button","aria-pressed":sel.includes(x.id)?"true":"false",onclick:()=>{const c=spPick[t.id]||[];spPick[t.id]=c.includes(x.id)?c.filter(y=>y!==x.id):[...c,x.id].slice(-3);renderFun();}},x.label,x.sub?h("small",null,x.sub):null);
+    const songs=seeds.filter(x=>x.type!=="style"),styles=seeds.filter(x=>x.type==="style");
+    let next=null;
+    if(pend)next=h("div",{class:"sp-wait"},h("b",null,`⏳ סשן ${pend.session||nextN} בהכנה`),h("span",{class:"sp-taste"},"לפי: "+((pend.seeds||[]).join(", ")||pend.text)),
+      canWrite?h("div",{class:"opts"},hub?h("a",{class:"sp-go",href:hub,target:"_blank",rel:"noopener",style:"text-decoration:none;display:inline-flex;align-items:center"},"⚡ בנה עכשיו"):contBtn(t,"opt chat","💬 לבנות עכשיו בשיחה"),h("button",{class:"opt",type:"button",onclick:press(()=>cancelSession(t,pend))},"בטל")):null);
+    else if(seeds.length&&canWrite){
+      const lastDone=Math.max(0,...arch.map(s=>+s.n||0)),stale=lastDone>(+t.seeds_for||0);
+      const body=[stale?h("div",{class:"sp-wait"},h("b",null,`🔄 סשן ${lastDone} דורג, וההצעות עוד מהסשן הקודם`),h("span",{class:"sp-taste"},"דף הטעם יסכם את הדירוג ויציע כיוונים חדשים."),hub?h("a",{class:"sp-go",href:hub,target:"_blank",rel:"noopener",style:"text-decoration:none;display:inline-flex;align-items:center;align-self:flex-start"},"⚡ עדכן הצעות"):null)
+          :t.taste_note?h("p",{class:"sp-taste"},"💡 "+t.taste_note):null,
+        h("p",null,"בחר עד 3: שירים שאהבת או סגנון. הלחיצה פותחת את דף הטעם, ושם Claude בונה את הסשן תוך כדקה."),
+        songs.length?h("div",{class:"sp-sec"},"לפי שיר"):null,songs.length?h("div",{class:"sp-chips"},songs.map(chip)):null,
+        styles.length?h("div",{class:"sp-sec"},"לפי סגנון"):null,styles.length?h("div",{class:"sp-chips"},styles.map(chip)):null,
+        hub&&sel.length?h("a",{class:"sp-go",href:hub,target:"_blank",rel:"noopener",style:"text-decoration:none;display:inline-flex;align-items:center",onclick:()=>requestSession(t,nextN)},`⚡ צור סשן ${nextN}`)
+          :h("button",{class:"sp-go",type:"button",disabled:sel.length?null:true,onclick:press(()=>requestSession(t,nextN))},`צור סשן ${nextN}`)];
+      const nk=t.id+":next";
+      next=live.length?(()=>{const d=h("details",{class:"sp-next",open:funFold[nk]||null},h("summary",{style:"cursor:pointer;list-style:none"},h("h4",{style:"display:inline"},`✨ רוצה כבר את סשן ${nextN}? ▾`)),...body);d.addEventListener("toggle",()=>{funFold[nk]=d.open;});return d;})()
+        :h("div",{class:"sp-next"},h("h4",null,`✨ הסשן הבא: סשן ${nextN}`),...body);
+    }
+    return h("article",{class:"fcard sp","data-id":t.id},
+      h("div",{class:"sp-head"},h("a",{class:"sp-logo",href:"https://open.spotify.com/",target:"_blank",rel:"noopener","aria-label":"Spotify",html:SPOT_SVG+"<span>Spotify</span>"}),
+        h("div",{class:"fc-h"},h("h3",null,t.title||"המוזיקה שלי"),t.stand?h("p",null,t.stand):null)),
+      liked.length?h("div",{class:"sp-taste"},"למדתי שאתה אוהב: ",h("b",null,liked.join(" · "))):null,
+      pages.length?h("div",{class:"fc-links"},pages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
+      live.length?h("div",{class:"fc-rounds"},live.map((s,i)=>sessBlock(t,s,i===0))):null,
+      next,
+      arch.length?(()=>{const k=t.id+":arch",d=h("details",{class:"sp-arch",open:funFold[k]||null},h("summary",null,"📦 ארכיון · "+(arch.length===1?"סשן אחד":arch.length+" סשנים")),h("div",{class:"fc-rounds"},arch.map(s=>sessBlock(t,s,false))));d.addEventListener("toggle",()=>{funFold[k]=d.open;});return d;})():null,
+      contBtn(t,"cont"));
+  }
+  // Movies zone: topic zone "movies" (the external list), topics with zone "games" (one per game) and the Frame Horizon project,
+  // shown together as one cinema card with a small IMDb badge: 1 Frame Horizon, 2 the external list, 3 games.
+  function isMovieZone(t){return t.zone==="movies"||t.zone==="games"||t.zone==="series";}
+  function gameRow(t){
+    const pages=linksOf(t).filter(l=>linkType(l)!=="chat");
+    const qs=questionsOf(t).filter(q=>!q.answer), offs=offersOf(t).filter(o=>(o.state||"open")==="open");
+    const key=t.id+":game",open=key in funFold?funFold[key]:false;
+    const d=h("details",{class:"game"+(t.status==="done"?" done":""),open:open||null,"data-id":t.id},
+      h("summary",null,h("span",{class:"gi","aria-hidden":"true"},t.icon||"🎮"),h("span",{class:"gt"},h("b",null,t.name?h("bdi",{dir:"ltr"},t.name):(t.title||"")),t.name&&t.title?h("small",null,t.title):null,t.stand?h("small",null,t.stand):null)),
+      h("div",{class:"gb"},
+        t.next_step?h("div",{class:"gnext"},t.next_step):null,
+        pages.length?h("div",{class:"fc-links"},pages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
+        ...qs.map(q=>questionCard(t,q,false)),...offs.map(o=>offerCard(t,o,false)),
+        contBtn(t,"cont")));
+    d.addEventListener("toggle",()=>{funFold[key]=d.open;});
+    return d;
+  }
+  // 5.6: Series hub. Collection "series": {name, status now|waiting|queue|done|dropped, show running|ended|canceled, seasons, season,
+  // order, at (where I am), he (what it is), fresh (new season out), maybe, binge, next {label, kind official|rumor, checked}, extras [{t,kind,seen}], check, imdb, tvq}
+  let seriesAll=[],serSel=null,serTab="now";
+  try{serTab=localStorage.getItem("sq_sertab")||"now";}catch(e){}
+  const TVM_KEY="sq_tvm2";let tvm={};try{tvm=JSON.parse(localStorage.getItem(TVM_KEY)||"{}");}catch(e){}
+  let tvmQ=[],tvmBusy=false;
+  function tvmNeed(s){const c=tvm[s.id];return !c||Date.now()-(c.at||0)>3*864e5;}
+  function tvmPump(){if(tvmBusy||!tvmQ.length)return;tvmBusy=true;const s=tvmQ.shift();
+    fetch("https://api.tvmaze.com/singlesearch/shows?embed=nextepisode&q="+encodeURIComponent(s.tvq||s.name)).then(r=>r.ok?r.json():null).then(j=>{
+      const ne=j&&j._embedded&&j._embedded.nextepisode;
+      tvm[s.id]={at:Date.now(),img:j&&j.image?(j.image.medium||"").replace(/^http:/,"https:"):"",ne:ne&&ne.airdate?{d:ne.airdate,s:ne.season,e:ne.number}:null,st:j&&j.status||""};
+      try{localStorage.setItem(TVM_KEY,JSON.stringify(tvm));}catch(e){}
+      document.querySelectorAll('[data-sid="'+s.id+'"]').forEach(paintPoster);
+      if(ne&&s.status==="waiting")renderFun();
+    }).catch(()=>{}).finally(()=>{tvmBusy=false;setTimeout(tvmPump,450);});}
+  function paintPoster(el){const c=tvm[el.dataset.sid];if(c&&c.img){el.style.backgroundImage="url('"+c.img+"')";el.classList.add("has");}}
+  function poster(s,big){const ini=String(s.name||"?").replace(/^The /,"").split(/[\s:]+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+    const el=h("span",{class:"sp"+(big?" big":""),"data-sid":s.id,"aria-hidden":"true"},ini);paintPoster(el);
+    if(tvmNeed(s)&&!tvmQ.includes(s))tvmQ.push(s);return el;}
+  function serName(s){return h("div",{class:"sr-nm"},h("bdi",{dir:"ltr"},s.name));}
+  function seasonBar(s){const n=Math.min(+s.seasons||0,14);if(!n)return null;const cur=+s.season||0;
+    return h("div",{class:"sr-bar","aria-label":cur?("עונה "+cur+" מתוך "+n):(n+" עונות")},Array.from({length:n},(_,i)=>h("i",{class:i+1<cur?"d":i+1===cur?"c":null})));}
+  const SHOW={running:["עדיין רצה","ok"],ended:["הסתיימה",""],canceled:["בוטלה",""]};
+  function fmtD(iso){const p=String(iso).split("-");return p.length===3?(+p[2])+"."+(+p[1])+"."+p[0]:iso;}
+  async function serPatch(s,f,msg){if(!db||!canWrite)return;const prev={};Object.keys(f).forEach(k=>prev[k]=s[k]===undefined?null:s[k]);
+    try{await db.collection("series").doc(s.id).update({...f,updated_at:new Date().toISOString()});toast(msg||"נשמר",async()=>{try{await db.collection("series").doc(s.id).update(prev);toast("בוטל");}catch(e){fail(e);}});}catch(e){fail(e);}}
+  function byOrder(a,b){return (a.order||999)-(b.order||999)||String(a.name).localeCompare(String(b.name));}
+  function nowCard(s){
+    const n=+s.seasons||0,cur=+s.season||0;
+    return h("div",{class:"sr-now"},poster(s,true),h("div",{class:"bd"},serName(s),
+      h("div",{class:"sr-sub"},cur&&n?("עונה "+cur+" מתוך "+n):n?(n+" עונות"):""),seasonBar(s),
+      s.at?h("div",{class:"sr-sub"},s.at):null,
+      h("div",{class:"sr-acts"},
+        cur&&n&&cur<n?h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{season:cur+1,at:""},"עברת לעונה "+(cur+1))},"עונה "+(cur+1)+" ›"):null,
+        h("button",{class:"sr-b p",type:"button",onclick:()=>serPatch(s,{status:"done",done_at:new Date().toISOString().slice(0,10)},"🏆 נכנס להישגים")},"✓ סיימתי"),
+        h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{status:"queue",order:0},"חזר לראש הרשימה")},"להמשך"))));
+  }
+  function nextChip(s){const c=tvm[s.id];
+    if(c&&c.ne&&c.ne.d>=new Date().toISOString().slice(0,10))return h("span",{class:"sr-c ok"},"📅 עונה "+c.ne.s+" פרק "+c.ne.e+": "+fmtD(c.ne.d)+" · רשמי");
+    const x=s.next;if(!x||!x.label)return h("span",{class:"sr-c no"},"אין עדיין תאריך");
+    return h("span",{class:"sr-c "+(x.kind==="official"?"ok":"rm")},(x.kind==="official"?"📅 רשמי: ":"💬 שמועה: ")+x.label);}
+  function waitRow(s){return h("div",{class:"sr-row"},poster(s),h("div",{class:"bd"},serName(s),
+    h("div",{class:"sr-chips"},nextChip(s)),
+    h("div",{class:"sr-sub"},(s.seasons?"ראית "+s.seasons+" עונות":"")+(s.next&&s.next.checked?" · נבדק "+fmtD(s.next.checked):"")),
+    s.assumed?h("div",{class:"sr-q"},"ראית את כל העונות?",h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{assumed:false},"מאושר")},"כן"),h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{status:"queue",assumed:false,order:999},"עבר להשלים")},"לא")):null));}
+  function queueRow(s,i,arr){
+    const n=+s.seasons||0,cur=+s.season||0,started=!/לא התחלתי/.test(s.at||"");
+    const swap=async d=>{const o=arr[i+d];if(!o||!db)return;const a=s.order||i+1,b=o.order||i+1+d;try{await db.collection("series").doc(s.id).update({order:b===a?b+d:b});await db.collection("series").doc(o.id).update({order:a});}catch(e){fail(e);}};
+    return h("div",{class:"sr-row"},h("span",{class:"sr-rk"},String(i+1)),poster(s),
+      h("div",{class:"bd"},serName(s),
+        s.at||s.he?h("div",{class:"sr-sub"},[s.at,s.he].filter(Boolean).join(" · ")):null,
+        h("div",{class:"sr-chips"},
+          s.fresh?h("span",{class:"sr-c new"},"🆕 "+s.fresh):null,
+          SHOW[s.show]?h("span",{class:"sr-c "+SHOW[s.show][1]},SHOW[s.show][0]):null,
+          n?h("span",{class:"sr-c"},cur&&started?("עונה "+cur+"/"+n):(n+" עונות")):null,
+          !started?h("span",{class:"sr-c no"},"חדשה בשבילי"):null,
+          s.binge?h("span",{class:"sr-c"},"בינג' ארוך"):null)),
+      h("div",{class:"sr-mv"},h("button",{type:"button",class:"go","aria-label":"להתחיל עכשיו",title:"להתחיל עכשיו",onclick:()=>{const mx=Math.max(0,...seriesAll.filter(x=>x.status==="now").map(x=>x.order||0));serPatch(s,{status:"now",order:mx+1,season:cur||1},"▶️ עבר ל\"רואה עכשיו\"");}},"▶"),h("button",{type:"button","aria-label":"למעלה",disabled:i===0||null,onclick:()=>swap(-1)},"▲"),h("button",{type:"button","aria-label":"למטה",disabled:i===arr.length-1||null,onclick:()=>swap(1)},"▼")));
+  }
+  function serDetail(s){const ex=Array.isArray(s.extras)?s.extras:[];
+    const im=s.imdb?"https://www.imdb.com/title/"+s.imdb+"/":"https://www.imdb.com/find/?q="+encodeURIComponent(s.tvq||s.name);
+    return h("div",{class:"sr-det"},serName(s),
+      s.check?h("div",null,"❓ "+s.check):null,s.he?h("div",{class:"sr-sub"},s.he):null,s.at?h("div",{class:"sr-sub"},s.at):null,
+      s.seasons?h("div",{class:"sr-sub"},s.seasons+" עונות"+(s.status==="done"?" · ראית הכל":"")):null,
+      ...ex.map(x=>h("div",null,(x.kind==="film"?"🎬 ":"➕ ")+x.t+(x.seen===true?" · ראית ✓":x.seen===false?" · לא ראית":" · לא סימנת"))),
+      h("div",{class:"sr-acts"},h("a",{class:"sr-b",href:im,target:"_blank",rel:"noopener"},"IMDb"),
+        s.check?h("button",{class:"sr-b p",type:"button",onclick:()=>serPatch(s,{check:""},"סומן שראית")},"ראיתי הכל"):null,
+        s.status==="dropped"?h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{status:"queue",order:999},"עבר להשלים")},"בכל זאת להשלים"):null));}
+  function serTile(s){const on=serSel===s.id;
+    return h("button",{class:"sr-t"+(s.status==="dropped"?" off":""),type:"button","aria-pressed":on?"true":"false",onclick:()=>{serSel=on?null:s.id;renderFun();}},
+      poster(s),h("span",null,s.name),s.check?h("em",null,"❓"):(Array.isArray(s.extras)&&s.extras.some(x=>x.seen===true))?h("em",null,"🎬"):null);}
+  function seriesHub(){
+    const all=seriesAll.filter(s=>!s._deleted),of=st=>all.filter(s=>s.status===st).sort(byOrder);
+    const now=of("now"),wait=of("waiting"),q=of("queue"),done=of("done"),drop=of("dropped");
+    const qMain=q.filter(s=>!s.maybe),qMaybe=q.filter(s=>s.maybe);
+    if(!all.length)return [h("div",{class:"mv-empty"},"עוד אין סדרות.")];
+    const tab=(id,ic,lbl,n)=>h("button",{class:"sr-tab",type:"button","aria-pressed":serTab===id?"true":"false",onclick:()=>{serTab=id;serSel=null;try{localStorage.setItem("sq_sertab",id);}catch(e){}renderFun();}},h("b",null,String(n)),ic+" "+lbl);
+    const out=[h("div",{class:"sr-tabs"},tab("now","▶️","עכשיו",now.length+wait.length),tab("queue","📋","להשלים",q.length),tab("done","🏆","הישגים",done.length))];
+    if(serTab==="queue"){
+      out.push(h("div",{class:"sr-sum"},"הסדר הוא סדר העדיפות: ▲▼ לשנות, ▶ להתחיל לראות."),h("div",null,qMain.map((s,i,a)=>queueRow(s,i,a))));
+      if(qMaybe.length)out.push(h("div",{class:"sr-h"},"🤔 אולי",h("small",null,"רק אם יתברר שזה טוב")),h("div",null,qMaybe.map((s,i,a)=>queueRow(s,i,a))));
+    }else if(serTab==="done"){
+      const seasons=done.reduce((n,s)=>n+(+s.seasons||0),0),films=done.reduce((n,s)=>n+(Array.isArray(s.extras)?s.extras.filter(x=>x.seen===true).length:0),0);
+      out.push(h("div",{class:"sr-stats"},h("div",null,h("b",null,String(done.length)),"סדרות עד הסוף"),h("div",null,h("b",null,String(seasons)),"עונות"),h("div",null,h("b",null,String(films)),"סרטי המשך")));
+      const sel=all.find(s=>s.id===serSel);
+      out.push(h("div",{class:"sr-grid"},done.map(serTile)));
+      if(sel&&sel.status==="done")out.push(serDetail(sel));
+      if(drop.length){out.push(h("div",{class:"sr-h"},"◐ ראיתי חלק ועזבתי",h("small",null,String(drop.length))),h("div",{class:"sr-grid"},drop.map(serTile)));
+        if(sel&&sel.status==="dropped")out.push(serDetail(sel));}
+    }else{
+      out.push(h("div",{class:"sr-h"},"▶️ רואה עכשיו"),...(now.length?now.map(nowCard):[h("div",{class:"mv-empty"},"שום דבר. בחר מ\"להשלים\".")]));
+      if(qMain[0])out.push(h("div",{class:"sr-sub"},"הבא בתור: ",h("bdi",{dir:"ltr"},qMain[0].name)));
+      if(wait.length)out.push(h("div",{class:"sr-h"},"📅 מחכה לעונה חדשה",h("small",null,"ראית הכל, הסדרה עוד רצה")),h("div",null,wait.map(waitRow)));
+    }
+    setTimeout(tvmPump,50);
+    return out;
+  }
+  // 5.5 (legacy): series = topics zone "series"; series_state towatch (default) | waiting (for a new season) | seen
+  function seriesGroups(series){
+    const of=st=>series.filter(t=>(t.series_state||"towatch")===st).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
+    const grp=(lbl,arr)=>h("div",{class:"tv-grp"},h("div",{class:"tv-gh"},lbl,arr.length?h("span",{class:"tv-c"},String(arr.length)):null),
+      arr.length?h("div",{class:"fc-rounds"},arr.map(gameRow)):h("div",{class:"mv-empty"},"עוד אין"));
+    return [grp("🍿 רוצה לראות",of("towatch")),grp("⏳ מחכה לעונה חדשה",of("waiting")),grp("✅ ראיתי",of("seen"))];
+  }
+  function moviesCard(list,fh){
+    const mv=list.find(t=>t.zone==="movies");
+    const sec=(n,title,...kids)=>h("section",{class:"mv-sec"},h("h4",null,h("span",{class:"n"},n),title),...kids);
+    const app=fh&&safeUrl(fh.app_url||""),cl=fh&&safeUrl(fh.claude_url||"");
+    const mvPages=mv?linksOf(mv).filter(l=>linkType(l)!=="chat"):[];
+    return h("article",{class:"fcard mv"},
+      h("div",{class:"mv-head"},h("a",{class:"imdb",href:"https://www.imdb.com/",target:"_blank",rel:"noopener","aria-label":"IMDb"},"IMDb"),
+        h("div",{class:"fc-h"},h("h3",null,"סרטים וסדרות"),h("p",null,"מה לראות"))),
+      fh?sec(1,"FRAME HORIZON",
+        h("a",{class:"fh-logo",href:app||cl||"#",target:"_blank",rel:"noopener","aria-label":"פתח את Frame Horizon"},h("img",{src:"fh-logo.png",alt:"Frame Horizon",width:"560",height:"178"})),
+        h("p",null,"ערבי סרטים שהופכים למסע"),
+        h("div",{class:"fc-links"},app?h("a",{class:"fbtn",href:app,target:"_blank",rel:"noopener"},"פתח את האפליקציה"):null,cl?h("a",{class:"fbtn ghost",href:cl,target:"_blank",rel:"noopener"},"פתח ב-Claude"):null)):null,
+      mv?sec(2,"עוד סרטים לראות",
+        h("b",{class:"t"},"הרשימה שלי מחוץ ל-Frame Horizon"),mv.stand?h("p",null,mv.stand):null,
+        mvPages.length?h("div",{class:"fc-links"},mvPages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
+        ...questionsOf(mv).filter(q=>!q.answer).map(q=>questionCard(mv,q,false)),...offersOf(mv).filter(o=>(o.state||"open")==="open").map(o=>offerCard(mv,o,false))):null,
+      h("section",{class:"mv-sec tv-sec"},h("h4",null,h("span",{class:"n"},3),"📺 סדרות"),
+        ...seriesHub(),
+        h("div",{class:"mv-empty"},"סדרה חדשה? כתוב לי בשיחה ואוסיף אותה כאן.")));
+  }
+  const STEAM_SVG='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#fff"/><circle cx="16" cy="16" r="13.2" fill="#1B2838"/><circle cx="20.6" cy="12.4" r="4.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="20.6" cy="12.4" r="2.2" fill="#fff"/><path d="M3 18.2 L10.6 21.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M11.2 21.6 L18 15.2" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="11.2" cy="21.6" r="3.1" fill="#1B2838" stroke="#fff" stroke-width="1.8"/></svg>';
+  const PAD_SVG='<svg viewBox="0 0 54 38" aria-hidden="true"><path d="M14 6h26c6.5 0 10 4 11.5 11l2 10c1 5.5-3.5 9.5-8 7.5-2.5-1.1-4.5-4-6.5-6.5H15c-2 2.5-4 5.4-6.5 6.5-4.5 2-9-2-8-7.5l2-10C4 10 7.5 6 14 6z" fill="#2A475E" stroke="#66C0F4" stroke-width="1.5"/><rect x="11" y="13" width="3.4" height="11" rx="1" fill="#E6EEF5"/><rect x="7.2" y="16.8" width="11" height="3.4" rx="1" fill="#E6EEF5"/><circle cx="38" cy="14.5" r="2.3" fill="#66C0F4"/><circle cx="43" cy="18.5" r="2.3" fill="#F5C518"/><circle cx="33" cy="18.5" r="2.3" fill="#A4D007"/><circle cx="38" cy="22.5" r="2.3" fill="#E84D4D"/></svg>';
+  function gamesCard(games){
+    const steam=h("a",{class:"steam",href:"https://store.steampowered.com/",target:"_blank",rel:"noopener","aria-label":"Steam"});steam.innerHTML=STEAM_SVG+"STEAM";
+    const pad=h("span",{class:"gm-pad"});pad.innerHTML=PAD_SVG;
+    return h("article",{class:"fcard gm"},
+      h("div",{class:"gm-head"},steam,h("div",{class:"fc-h"},h("h3",null,"Gaming"),h("p",null,"משחקים שרוצה לנסות")),pad),
+      games.length?h("div",{class:"fc-rounds"},games.map(gameRow)):h("div",{class:"mv-empty"},"עוד אין משחקים."),
+      h("div",{class:"mv-empty"},"משחק חדש? כתוב לי בשיחה ואוסיף אותו כאן."));
+  }
   function renderFun(){
-    const list=funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
-    const cards=list.map(funCard);
-    const fh=projById("frame-horizon");if(fh)cards.push(fhCard(fh));
+    const live=funTopics.filter(t=>t.status!=="archived");
+    const list=live.filter(t=>t.status!=="done"&&!isMovieZone(t)).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
+    const cards=list.map((t,i)=>t.zone==="spotify"?spotifyCard(t):funCard(t,i));
+    // movies zone keeps finished games (shown struck through) so the list grows as a record
+    const mz=live.filter(t=>isMovieZone(t)&&(t.zone==="games"||t.zone==="series"||t.status!=="done")),fh=projById("frame-horizon");
+    if(mz.length||fh){const mc=moviesCard(mz,fh),ord=Math.min(99,...mz.filter(t=>t.zone==="movies").map(t=>t.fun_order||99));
+      const at=list.findIndex(t=>(t.fun_order||99)>ord);cards.splice(at<0?cards.length:at,0,mc);}
+    const games=mz.filter(t=>t.zone==="games").sort((a,b)=>(a.status==="done")-(b.status==="done")||(a.fun_order||99)-(b.fun_order||99));
+    if(games.length){const ci=cards.findIndex(c=>c.classList&&c.classList.contains("mv"));cards.splice(ci<0?cards.length:ci+1,0,gamesCard(games));}
     $("funGrid").replaceChildren(...(cards.length?cards:[h("div",{class:"empty"},"עוד אין כאן כלום. בקש מ-Claude בשיחה להוסיף תחביב ל-Fun Quest.")]));
+  }
+
+  // 4.7 Travel zone: data lives in the private doc settings/travel_hub (never in this public repo).
+  // {upcoming:[{topic,title,flag,from,to,note}], israel:{visits,places,per_year,since,as_of,regions:[{name,n,icon}],recent:[{name,date}],next,report_img,report_at,links:[{label,url,main,pending}]},
+  //  abroad:{app:{name,url,icon,tag},highlights:[{icon,text}],links:[...]}}. A link with no url and a `pending` note shows as a dashed placeholder.
+  let travelHub=null;
+  const TRAIL_SVG='<svg viewBox="0 0 30 30" aria-hidden="true"><path d="M4 5 Q6 4 9 5 L9.5 25 Q7 26 4.5 25 Z" fill="#F08A24"/><path d="M11.5 4.6 Q14.5 4 18 4.8 L18.4 25.2 Q15 26 11.8 25.3 Z" fill="#2F6FD6"/><path d="M20.5 5 Q23 4.2 26 5 L25.6 25 Q23 25.8 20.8 25 Z" fill="#fff"/></svg>';
+  function tvLinks(list){
+    const ls=(Array.isArray(list)?list:[]).filter(l=>l&&l.label);if(!ls.length)return null;
+    return h("div",{class:"tv-links"},ls.map(l=>{const u=safeUrl(l.url||"");
+      return u?h("a",{class:"tv-btn"+(l.main?" main":""),href:u,target:"_blank",rel:"noopener"},l.label)
+        :h("span",{class:"tv-btn pending",title:l.pending||""},l.label,h("small",null,"· בקרוב"));}));
+  }
+  function tvRange(a,b){if(!a)return"";const [ya,ma,da]=a.split("-").map(Number);if(!b)return `${da}.${ma}.${String(ya).slice(2)}`;const [yb,mb,db2]=b.split("-").map(Number);
+    return ma===mb&&ya===yb?`${da}–${db2}.${mb}.${String(yb).slice(2)}`:`${da}.${ma}–${db2}.${mb}.${String(yb).slice(2)}`;}
+  // trips: stage "concept" (talks/research, no flights) or "booked" (flights booked = on the calendar).
+  // booked trips: book {flight,hotel,car}: {s:"done"|"open"|"no"|"ask", note}, plan "none"|"partial"|"full"
+  // (a topic question id "q_plan" answered with "מלא" overrides plan to full), costs {paid,expected,budget} (text), links [].
+  const BK={flight:{e:"✈️",l:"טיסה"},hotel:{e:"🏨",l:"מלון"},car:{e:"🚗",l:"רכב"}};
+  const BKS={done:{m:"✓",l:"הוזמן"},open:{m:"!",l:"פתוח"},no:{m:"–",l:"לא צריך"},ask:{m:"?",l:"לברר"}};
+  const PLAN={none:{l:"עוד לא התחיל",f:0},partial:{l:"תכנון חלקי",f:.5},full:{l:"תכנון מלא",f:1}};
+  let tripFold={};
+  function planOf(u,t){const q=t&&questionsOf(t).find(x=>x.id==="q_plan"&&x.answer);if(q)return /מלא|סיימתי/.test(q.answer)?"full":"partial";return PLAN[u.plan]?u.plan:"none";}
+  function planIcon(k){const f=PLAN[k].f;return `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>${f?`<rect x="4" y="${3+18*(1-f)}" width="16" height="${18*f}" rx="${f===1?3:0}" fill="currentColor" opacity=".9"/>`:""}<path d="M8 8h8M8 12h8M8 16h5" stroke="${f?"#fff":"currentColor"}" stroke-width="1.8" stroke-linecap="round"/></svg>`;}
+  function tripCard(u){
+    const n=daysUntil(u.from),e=daysUntil(u.to||u.from);if(e!=null&&e<0)return null;
+    const concept=u.stage!=="booked",now=n!=null&&n<=0;
+    const t=u.topic&&allTopics.find(x=>x.id===u.topic);
+    const cd=now?h("div",{class:"tv-cd now"},h("b",null,"עכשיו"),h("small",null,"בטיול")):
+      h("div",{class:"tv-cd"},h("b",null,String(n)),h("small",null,n===1?"יום":"ימים"));
+    const head=h("div",{class:"tv-th"},cd,h("div",{class:"tv-ti"},h("b",null,(u.flag?u.flag+" ":"")+(u.title||(t&&t.title)||"")),h("span",{dir:"ltr",class:"tv-dt"},tvRange(u.from,u.to)),u.note?h("small",null,u.note):null));
+    let status;
+    if(concept)status=h("div",{class:"tv-st"},h("span",{class:"tv-pill concept"},"💭 קונספט בלבד"),h("span",{class:"tv-pill ghost"},"בבירור, בלי טיסות"));
+    else{const bk=u.book||{},pk=planOf(u,t);
+      status=h("div",{class:"tv-st"},...Object.keys(BK).map(k=>{const st=BKS[(bk[k]||{}).s]?(bk[k]||{}).s:"ask";return h("span",{class:"tv-pill "+st,title:BK[k].l+": "+BKS[st].l},h("i",{"aria-hidden":"true"},BK[k].e),BK[k].l,h("b",null,BKS[st].m));}),
+        h("span",{class:"tv-pill plan p-"+pk,title:PLAN[pk].l},h("i",{html:planIcon(pk)}),PLAN[pk].l));}
+    const c=u.costs||{},bk=u.book||{};
+    const rows=Object.keys(BK).filter(k=>bk[k]&&bk[k].note).map(k=>h("li",null,h("i",{"aria-hidden":"true"},BK[k].e),h("span",null,bk[k].note)));
+    const costs=[["שולם",c.paid],["צפוי",c.expected],["תקציב",c.budget]].filter(x=>x[1]);
+    const key=u.topic||u.title,open=!!tripFold[key];
+    const d=h("details",{class:"tv-trip"+(concept?" concept":""),open:open||null},
+      h("summary",null,head,status),
+      h("div",{class:"tv-tb"},
+        rows.length?h("ul",{class:"tv-hl"},rows):null,
+        costs.length?h("div",{class:"tv-costs"},costs.map(x=>h("div",null,h("span",null,x[0]),h("b",null,x[1])))):null,
+        u.next?h("div",{class:"tv-next"},u.next):null,
+        tvLinks(u.links),
+        t?h("button",{class:"tv-btn",type:"button",onclick:()=>openTask(t.id)},"פתח את המשימה"):null));
+    d.addEventListener("toggle",()=>{tripFold[key]=d.open;});
+    return {el:d,concept};
+  }
+  // the periodic report image: shrunk in the browser (WebP, 480px wide) and kept in its own private doc settings/travel_report {img, at}
+  let travelReport=null;
+  function uploadReport(inp){const f=inp.files&&inp.files[0];if(!f||!db)return;const r=new FileReader();
+    r.onload=()=>{const im=new Image();im.onload=async()=>{const w=Math.min(480,im.width),hh=Math.round(im.height*w/im.width),c=document.createElement("canvas");c.width=w;c.height=hh;c.getContext("2d").drawImage(im,0,0,w,hh);
+      let u=c.toDataURL("image/webp",.5);if(!u.startsWith("data:image/webp"))u=c.toDataURL("image/jpeg",.65);
+      const d=new Date(),at=`${d.getDate()}.${d.getMonth()+1}.${d.getFullYear()}`;
+      try{await db.collection("settings").doc("travel_report").set({img:u,at,updated_at:d.toISOString()});toast("הדוח נשמר ✓");}catch(x){toast("השמירה נכשלה, נסה שוב");}};im.src=r.result;};
+    r.readAsDataURL(f);inp.value="";}
+  function renderTravel(){
+    const sec=$("tvSec");if(!sec)return;
+    if(quest!=="travel"||!travelHub){sec.replaceChildren();return;}
+    const H=travelHub,I=H.israel||{},A=H.abroad||{},kids=[];
+    const trips=(Array.isArray(H.upcoming)?H.upcoming:[]).slice().sort((a,b)=>(a.from||"").localeCompare(b.from||"")).map(tripCard).filter(Boolean);
+    const onCal=trips.filter(x=>!x.concept),ideas=trips.filter(x=>x.concept);
+    if(onCal.length)kids.push(h("div",{class:"tv-sec-h"},"✈️ בלוח: טיסות הוזמנו"),h("div",{class:"tv-trips"},onCal.map(x=>x.el)));
+    if(ideas.length)kids.push(h("div",{class:"tv-sec-h"},"💭 בקונספט: עוד בלי טיסות"),h("div",{class:"tv-trips"},ideas.map(x=>x.el)));
+    // Israel
+    const regs=(Array.isArray(I.regions)?I.regions:[]).filter(r=>r&&r.name);const max=Math.max(1,...regs.map(r=>+r.n||0));
+    const rep=String((travelReport&&travelReport.img)||I.report_img||""),repAt=(travelReport&&travelReport.at)||I.report_at||"";const repOk=rep.startsWith("data:image/")||!!safeUrl(rep);
+    kids.push(h("article",{class:"tv-card tv-il"},
+      h("div",{class:"tv-head"},h("span",{class:"tv-mark",html:TRAIL_SVG,title:"שביל ישראל"}),h("div",null,h("h3",null,"טיולים בארץ"),h("p",null,`מאז ${I.since||"12/2017"}`+(I.as_of?` · נכון ל-${I.as_of}`:"")))),
+      h("div",{class:"tv-kpis"},
+        h("div",{class:"tv-kpi"},h("b",null,I.visits!=null?String(I.visits):"—"),h("span",null,"טיולים")),
+        h("div",{class:"tv-kpi"},h("b",null,I.places!=null?String(I.places):"—"),h("span",null,"מקומות")),
+        h("div",{class:"tv-kpi"},h("b",null,I.per_year!=null?String(I.per_year):"—"),h("span",null,"בשנה"))),
+      regs.length?h("p",{class:"tv-sub"},"לפי אזורים"):null,
+      regs.length?h("ul",{class:"tv-regs"},regs.map(r=>h("li",{class:"tv-reg"},h("i",{"aria-hidden":"true"},r.icon||"📍"),h("span",{class:"nm"},r.name),
+        h("span",{class:"tv-bar"},h("u",{style:`width:${Math.round((+r.n||0)/max*100)}%`})),h("span",{class:"n",html:`<b>${+r.n||0}</b> טיולים`})))):null,
+      Array.isArray(I.recent)&&I.recent.length?h("p",{class:"tv-sub"},"חדשים לאחרונה"):null,
+      Array.isArray(I.recent)&&I.recent.length?h("div",{class:"tv-new"},I.recent.map(x=>h("span",null,"🌿 "+x.name,x.date?h("small",null,x.date):null))):null,
+      I.next?h("div",{class:"tv-next"},I.next):null,
+      repOk?h("details",{class:"tv-repd"},h("summary",null,"🖼️ הדוח האחרון"+(repAt?" · "+repAt:"")),h("img",{class:"tv-rep",src:rep,alt:"הדוח התקופתי"})):
+        h("div",{class:"tv-rep-empty"},h("span",{"aria-hidden":"true"},"🖼️"),h("span",null,h("b",null,"הדוח התקופתי"),", התמונה האחרונה תופיע כאן.")),
+      canWrite?h("label",{class:"tv-btn tv-up"},"📤 "+(repOk?"החלף תמונת דוח":"העלה תמונת דוח"),h("input",{type:"file",accept:"image/*",hidden:true,onchange:e=>uploadReport(e.target)})):null,
+      tvLinks(I.links)));
+    // abroad
+    const ap=A.app||{},apu=safeUrl(ap.url||"");
+    kids.push(h("article",{class:"tv-card tv-ab"},
+      h("div",{class:"tv-head"},h("span",{class:"tv-mark",style:"background:#0E6E78;font-size:24px","aria-hidden":"true"},"🌍"),h("div",null,h("h3",null,"טיולים בחו״ל"),h("p",null,"תכנון, היסטוריה ונתונים"))),
+      apu?h("a",{class:"tv-app",href:apu,target:"_blank",rel:"noopener"},ap.icon?h("img",{src:ap.icon,alt:"",width:"44",height:"44"}):null,h("div",null,h("b",null,ap.name||""),ap.tag?h("span",null,ap.tag):null)):null,
+      Array.isArray(A.highlights)&&A.highlights.length?h("ul",{class:"tv-hl"},A.highlights.map(x=>h("li",null,h("i",{"aria-hidden":"true"},x.icon||"•"),h("span",null,x.text)))):null,
+      tvLinks(A.links)));
+    sec.replaceChildren(...kids);
   }
   window.addEventListener("hashchange",()=>{const q=questFromHash();if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
   applyQuest();
-  function renderAll(){renderQnav();renderStats();renderCtx();renderInbox();renderViews();renderFilters();renderStrip();renderList();renderFun();}
+  function renderAll(){renderQnav();renderStats();renderCtx();renderInbox();renderViews();renderFilters();renderStrip();renderList();renderFun();renderTravel();renderDash();}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:""};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -968,7 +1890,7 @@ body.fun-on .avail{display:none}
   function notice(t){const n=$("notice");n.textContent=t;n.hidden=false;}
 
   $("quick").addEventListener("submit",async e=>{
-    e.preventDefault();const v=$("qtitle").value.trim();if(!v||!db)return;
+    e.preventDefault();micStop(true);const v=$("qtitle").value.trim();if(!v||!db)return;
     const now=new Date().toISOString();
     if(/^[\[{`]/.test(v)){ // a block pasted from a Claude chat
       let items;try{const j=JSON.parse(v.replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,""));items=[].concat(j.quest||j.bakane||j.topics||j);}catch(err){toast("לא הצלחתי לקרוא את הטקסט שהודבק");return;}
@@ -980,20 +1902,69 @@ body.fun-on .avail{display:none}
         if(Array.isArray(x.context))clean.context=x.context.map(c=>CTX_OLD[c]||c).filter(c=>TAGS[c]);if(x.urgent)clean.urgent=true;
         try{
           if(ex)await db.collection("topics").doc(ex.id).update({...clean,links:[...linksOf(ex),...links.filter(l=>!linksOf(ex).some(o=>o.url===l.url))],log:[...(Array.isArray(ex.log)?ex.log:[]),{at:now,text:String(x.log_note||"עודכן משיחה")}]});
-          else await db.collection("topics").doc(newId()).set({...clean,...((x.quest==="army"||x.quest==="work")?{quest:x.quest}:(quest==="army"||quest==="work")?{quest}:{}),links,created_at:now,log:x.log_note?[{at:now,text:String(x.log_note)}]:[]});
+          else await db.collection("topics").doc(newId()).set({...clean,...(TQ.includes(x.quest)?{quest:x.quest}:TQ.includes(quest)?{quest}:{}),links,created_at:now,log:x.log_note?[{at:now,text:String(x.log_note)}]:[]});
           n++;
         }catch(err){fail(err);break;}
       }
       if(n){$("qtitle").value="";toast(n===1?"נוסף מהשיחה":`נוספו ${n} נושאים`);}
       return;
     }
-    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(quest==="army"||quest==="work"?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
+    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
-  function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עדכון";}
-  function showAdd(on){$("quick").hidden=!on;$("addBtn").setAttribute("aria-expanded",on?"true":"false");$("addBtn").textContent=on?"×":"+";if(on){$("quick").scrollIntoView({block:"nearest"});setTimeout(()=>$("qtitle").focus(),50);}}
+  function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"";}
+  function showAdd(on){if(!on)micStop(true);if(on)showFind(false);$("quick").hidden=!on;$("addBtn").setAttribute("aria-expanded",on?"true":"false");$("addBtn").textContent=on?"×":"+";if(on){$("quick").scrollIntoView({block:"nearest"});setTimeout(()=>$("qtitle").focus(),50);}}
   $("addBtn").onclick=()=>showAdd($("quick").hidden);
+  // 4.1: search across all quests (titles and every text field, Hebrew or English); a tap opens the task in its own quest
+  const norm=x=>String(x||"").toLowerCase().normalize("NFKD").replace(/[\u0591-\u05C7]/g,"").replace(/[׳״'"`]/g,"").replace(/\s+/g," ");
+  function textOf(v,out){if(v==null)return out;if(typeof v==="string")out.push(v);else if(Array.isArray(v))v.forEach(x=>textOf(x,out));else if(typeof v==="object")for(const k in v){if(k==="url"||k==="id"||k==="_deleted")continue;textOf(v[k],out);}return out;}
+  function showFind(on){$("find").hidden=!on;$("fres").hidden=!on||!$("fq").value.trim();$("findBtn").setAttribute("aria-expanded",on?"true":"false");$("findBtn").classList.toggle("on",on);
+    if(on){showAdd(false);setTimeout(()=>$("fq").focus(),50);}else{$("fq").value="";$("fres").replaceChildren();}}
+  function runFind(){
+    const q=norm($("fq").value).trim(),box=$("fres");
+    if(!q){box.hidden=true;box.replaceChildren();return;}
+    const words=q.split(" ");
+    const hits=[];
+    for(const t of allTopics){const title=norm(t.title),body=norm(textOf(t,[]).join(" "));
+      if(!words.every(w=>body.includes(w)))continue;
+      const score=(words.every(w=>title.includes(w))?2:0)+(OPEN.includes(t.status)?1:0);hits.push({t,score});}
+    hits.sort((a,b)=>b.score-a.score||String(b.t.updated_at||"").localeCompare(String(a.t.updated_at||"")));
+    const QE={side:"🗺️",fun:"🕹️",army:"🪖",work:"💼"};
+    const snip=t=>{const raw=[t.stand,t.waiting_for,t.next_step,t.summary].concat(textOf(t,[])).find(x=>typeof x==="string"&&x!==t.title&&words.some(w=>norm(x).includes(w)));return raw?String(raw).slice(0,90):"";};
+    box.hidden=false;
+    box.replaceChildren(...(hits.length?hits.slice(0,8).map(({t})=>{const q2=isFun(t)?"fun":questOf(t),closed=!OPEN.includes(t.status);
+      return h("button",{class:"fhit",type:"button",onclick:()=>{showFind(false);openTask(t.id);}},
+        h("span",{class:"fq","aria-hidden":"true"},QE[q2]),
+        h("span",{class:"ft"},h("b",null,t.title||"(בלי כותרת)",closed?h("small",null," · "+(STATUS[t.status]||"סגור")):null),snip(t)?h("small",null,snip(t)):null),
+        q2!==quest?h("span",{class:"fqn"},QUESTS[q2].a):null);}):[h("div",{class:"fnone"},"לא נמצא כלום")]),
+      ...(hits.length>8?[h("div",{class:"fnone"},`ועוד ${hits.length-8}. כדאי לדייק את החיפוש`)]:[]));
+  }
+  $("findBtn").onclick=()=>showFind($("find").hidden);
+  $("fq").addEventListener("input",runFind);
+  $("fq").addEventListener("keydown",e=>{if(e.key==="Escape")showFind(false);if(e.key==="Enter"){e.preventDefault();const b=document.querySelector("#fres .fhit");if(b)b.click();}});
   $("qtitle").addEventListener("keydown",e=>{if(e.key==="Escape")showAdd(false);});
+  // 3.5: voice: tap the mic to record, tap again to stop; the words go into the line and become a new task (Web Speech API, Hebrew)
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  // 3.8: iPhone Safari often never fires "end" after stop(), so the app finishes the recording itself (once), with a short grace period for the last words
+  let rec=null,recBase="",recErr="",recCancel=false,recTimer=0;
+  function micUI(on,wait){const b=$("micBtn");b.classList.toggle("rec",on);b.classList.toggle("wait",!!wait);b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?"עצור הקלטה":"הקלטה קולית");$("qtitle").placeholder=wait?"מסיים…":on?"מקשיב… לחץ שוב לסיום":(QUESTS[quest]&&QUESTS[quest].ph)||"משימה (נסח בכמה מילים)";}
+  function micFinish(r){if(!r||rec!==r)return;rec=null;clearTimeout(recTimer);micUI(false);try{r.onresult=r.onend=r.onerror=null;r.abort();}catch(e){}
+    if(recErr==="not-allowed"||recErr==="service-not-allowed"){toast("אין גישה למיקרופון. אפשר ללחוץ על המיקרופון במקלדת");return;}
+    if(recCancel)return;
+    const v=$("qtitle").value.trim();
+    if(v&&v!==recBase)$("quick").requestSubmit();else toast(recErr&&recErr!=="no-speech"&&recErr!=="aborted"?"ההקלטה נכשלה, נסה שוב":"לא שמעתי כלום, נסה שוב");}
+  function micStop(cancel){const r=rec;if(!r)return;recCancel=!!cancel;if(cancel){micFinish(r);return;}
+    micUI(true,true);try{r.stop();}catch(e){}clearTimeout(recTimer);recTimer=setTimeout(()=>micFinish(r),900);}
+  function micStart(){
+    if(!SR){toast("ההקלטה לא נתמכת כאן. אפשר ללחוץ על המיקרופון במקלדת");$("qtitle").focus();return;}
+    const r=new SR();rec=r;recBase=$("qtitle").value.trim();recErr="";recCancel=false;
+    r.lang="he-IL";r.continuous=true;r.interimResults=true;
+    r.onresult=e=>{if(rec!==r)return;let t="";for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$("qtitle").value=[recBase,t.trim()].filter(Boolean).join(" ");};
+    r.onerror=e=>{recErr=e.error||"x";if(recErr==="not-allowed"||recErr==="service-not-allowed")micFinish(r);};
+    r.onend=()=>micFinish(r);
+    try{r.start();micUI(true);if(navigator.vibrate)navigator.vibrate(15);}catch(e){rec=null;micUI(false);toast("ההקלטה נכשלה, נסה שוב");}
+  }
+  $("micBtn").onclick=e=>{e.preventDefault();if(rec){if(!$("micBtn").classList.contains("wait"))micStop(false);}else micStart();};
   window.addEventListener("sq-refreshed",renderRefr);setInterval(renderRefr,20000);
   // the iPhone home-screen app keeps the old page in memory and the CDN caches it ~10 min.
   // When the app comes back to the screen (or on refresh), fetch the page fresh and reload if a newer build is up.
@@ -1037,6 +2008,126 @@ body.fun-on .avail{display:none}
     const ch=diffT(before,snapT());
     const e=sheet(false,ch.length?`עודכן · ${ch.length===1?"שינוי אחד":ch.length+" שינויים"}`:"עודכן · אין שינויים חדשים",ch.slice(0,5),sweepLine());
     setTimeout(()=>e.remove(),ch.length?9000:5000);};
+
+  // ===== 3.4: settings + notifications (Web Push via Supabase function sq-push) + morning brief =====
+  const PUSH_FN="https://emgtyfksnofzzlutngbf.supabase.co/functions/v1/sq-push";
+  const VAPID="BG4jnuAYF7dwLbC_NQAdtdlaVWLk3TKpS0E221Y3J9KrhkspmnMokjUUQwt3gCnsID8dmwCCiCjCGM94qoDCPEQ";
+  const NDEF={brief:true,brief_time:"08:00",brief_days:"all",critical:true,quiet_from:22,quiet_to:7};
+  let notify={...NDEF},briefLast=null,pushOn=false,pushEp="";
+  const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  const standalone=()=>window.navigator.standalone===true||matchMedia("(display-mode: standalone)").matches;
+  const pushSupported=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+  function epId(ep){let h1=5381,h2=52711;for(let i=0;i<ep.length;i++){const c=ep.charCodeAt(i);h1=(h1*33)^c;h2=(h2*33)^c;}return "d-"+(h1>>>0).toString(36)+(h2>>>0).toString(36);}
+  function b64u(s){const p="=".repeat((4-s.length%4)%4);const b=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(b,c=>c.charCodeAt(0));}
+  function devName(){const u=navigator.userAgent;return /iPhone/.test(u)?"iPhone":/iPad|Macintosh/.test(u)&&navigator.maxTouchPoints>1?"iPad":/Android/.test(u)?"Android":/Windows/.test(u)?"Windows":/Mac/.test(u)?"Mac":"מכשיר";}
+  async function swReg(){if(!("serviceWorker" in navigator)||location.protocol!=="https:")return null;try{await navigator.serviceWorker.register("sw.js");return await navigator.serviceWorker.ready;}catch(e){return null;}}
+  async function saveSub(sub){const j=sub.toJSON();pushEp=j.endpoint;try{localStorage.setItem("sq_push_ep",j.endpoint);}catch(e){}
+    await db.collection("push_subs").doc(epId(j.endpoint)).set({endpoint:j.endpoint,keys:j.keys,device:devName(),ua:navigator.userAgent.slice(0,160),at:new Date().toISOString()});}
+  // on every start: if this device already allowed notifications, keep its subscription registered (Apple rotates them)
+  async function syncPush(){
+    if(!pushSupported()||Notification.permission!=="granted"){pushOn=false;renderSetDot();return;}
+    const reg=await swReg();if(!reg)return;
+    try{const sub=await reg.pushManager.getSubscription();
+      if(!sub){pushOn=false;renderSetDot();return;}
+      pushOn=true;pushEp=sub.endpoint;let saved="";try{saved=localStorage.getItem("sq_push_ep")||"";}catch(e){}
+      if(saved!==sub.endpoint&&db&&canWrite)await saveSub(sub);}catch(e){}
+    renderSetDot();
+  }
+  async function enablePush(btn){
+    if(!pushSupported()){toast(isIOS&&!standalone()?"פתח את Side Quests מהאייקון במסך הבית":"הדפדפן הזה לא תומך בהתראות");return;}
+    btn.disabled=true;btn.textContent="מפעיל…";
+    try{const perm=await Notification.requestPermission();
+      if(perm!=="granted"){toast("ההתראות חסומות. אפשר להפעיל בהגדרות הטלפון");return;}
+      const reg=await swReg();if(!reg)throw new Error("sw");
+      let sub=await reg.pushManager.getSubscription();
+      if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID)});
+      await saveSub(sub);pushOn=true;toast("ההתראות הופעלו 🔔");
+    }catch(e){toast("ההפעלה נכשלה, נסה שוב");}
+    finally{renderSettings();renderSetDot();}
+  }
+  async function disablePush(){
+    try{const reg=await swReg();const sub=reg&&await reg.pushManager.getSubscription();
+      if(sub){await db.collection("push_subs").doc(epId(sub.endpoint)).delete().catch(()=>{});await sub.unsubscribe();}
+      try{localStorage.removeItem("sq_push_ep");}catch(e){}pushOn=false;toast("ההתראות כובו במכשיר הזה");}catch(e){toast("לא הצלחתי לכבות, נסה שוב");}
+    renderSettings();renderSetDot();
+  }
+  async function pushCall(action,btn,okMsg){
+    if(!pushEp){toast("קודם צריך להפעיל התראות");return;}
+    const t=btn.textContent;btn.disabled=true;btn.textContent="שולח…";
+    try{const r=await fetch(PUSH_FN+"?action="+action,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({endpoint:pushEp})});
+      if(r.status===429)toast("רגע, נסה שוב בעוד כמה שניות");else if(r.status===404){try{localStorage.removeItem("sq_push_ep");}catch(e){}await syncPush();toast("המכשיר נרשם מחדש, נסה שוב");}
+      else if(!r.ok)throw 0;else toast(okMsg);}
+    catch(e){toast("השליחה נכשלה");}
+    finally{setTimeout(()=>{btn.disabled=false;btn.textContent=t;},1500);}
+  }
+  function setNotify(fields){notify={...notify,...fields};if(db&&canWrite)db.collection("settings").doc("notify").update({...fields,updated_at:new Date().toISOString()}).catch(()=>toast("השמירה נכשלה"));renderSettings();}
+  function renderSetDot(){const d=$("setDot");if(d)d.hidden=pushOn||!pushSupported()||!standalone()||Notification.permission==="denied";}
+  let lockY=null;
+  function lockScroll(){if(lockY!==null)return;lockY=window.scrollY;document.body.style.top=-lockY+"px";document.documentElement.classList.add("sqlock");}
+  function unlockScroll(){if(lockY===null)return;const y=lockY;lockY=null;document.documentElement.classList.remove("sqlock");document.body.style.top="";window.scrollTo(0,y);}
+  function closeModal(keep){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(keep!==true)unlockScroll();if(/^#(brief|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
+  function modal(id,...kids){closeModal(true);lockScroll();const m=h("div",{class:"sqmodal",id,onclick:e=>{if(e.target===m)closeModal();}},h("div",{class:"sqpanel",role:"dialog","aria-modal":"true"},...kids));document.body.append(m);return m;}
+  function sw(on,fn,label){return h("input",{type:"checkbox",class:"sqsw",role:"switch",checked:on||null,"aria-label":label,onchange:e=>fn(e.target.checked)});}
+  function briefBlock(){
+    if(!briefLast||!briefLast.body)return h("div",{class:"sqhint"},"עוד לא נשלח בריף. הראשון יגיע מחר ב-"+notify.brief_time+".");
+    const lines=Array.isArray(briefLast.lines)&&briefLast.lines.length?briefLast.lines:String(briefLast.body).split("\n");
+    const pick=briefLast.pick&&allTopics.find(t=>t.id===briefLast.pick);
+    return h("div",{class:"brief"},h("div",{class:"bt"},briefLast.title||"בריף"),h("ul",null,lines.map(l=>h("li",null,l))),
+      pick?h("div",{class:"sqbtns"},h("button",{class:"sqbtn",type:"button",onclick:()=>{closeModal();openTask(pick.id);}},"▶️ פתח: "+String(pick.title||"").slice(0,30))):null,
+      h("div",{class:"bm"},(briefLast.by==="claude"?"נכתב ע״י Claude · ":"")+(briefLast.at?ago(Date.parse(briefLast.at)):"")));
+  }
+  function showBrief(){modal("briefM",h("h2",null,"☀️ בריף הבוקר",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),h("div",{class:"sqcard"},briefBlock()));}
+  const setOpen=new Set();
+  function renderSettings(){if(document.getElementById("setM"))showSettings(true);}
+  function showSettings(keep){
+    const sc=document.querySelector("#setM .sqpanel"),top=sc?sc.scrollTop:0;
+    let st,cls="",act;
+    if(!pushSupported()){st=isIOS&&!standalone()?"באייפון ההתראות עובדות רק מהאייקון במסך הבית":"הדפדפן הזה לא תומך בהתראות";cls="bad";}
+    else if(Notification.permission==="denied"){st="ההתראות חסומות בהגדרות הטלפון";cls="bad";}
+    else if(pushOn){st="פעיל במכשיר הזה ("+devName()+")";cls="on";act=h("button",{class:"sqbtn ghost",type:"button",onclick:disablePush},"כבה");}
+    else{st="כבוי במכשיר הזה";act=h("button",{class:"sqbtn",type:"button",onclick:e=>enablePush(e.currentTarget)},"🔔 הפעל התראות");}
+    const times=["06:30","07:00","07:30","08:00","08:30","09:00"];
+    // 3.5: short sections, all closed; the summary line shows the current value
+    const sec=(k,title,val,...body)=>h("details",{class:"sqsec",open:setOpen.has(k)||null,ontoggle:e=>{e.currentTarget.open?setOpen.add(k):setOpen.delete(k);}},
+      h("summary",null,h("span",{class:"t"},title),h("span",{class:"v"},val)),h("div",{class:"sqcard"},...body));
+    const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
+      sec("push","🔔 התראות",pushOn?"פעיל":"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"sqstate "+cls},h("span",{class:"d"}),h("span",null,st)),h("span",{style:"flex:1"}),act||null),
+        isIOS&&!standalone()?h("div",{class:"sqhint"},"שיתוף ← הוסף למסך הבית, ואז מהאייקון."):null,
+        pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("test",e.currentTarget,"נשלחה התראת בדיקה")},"שלח בדיקה")):null),
+      sec("abroad","✈️ מצב חו״ל",abroadOn()?(notify.abroad_until?"עד "+fmtDate(notify.abroad_until):"פעיל"):"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בלי בריף ובלי הפרעות. רק דבר קריטי חדש קופץ, בשקט בלילה לפי השעה שם")),sw(abroadOn(),v=>setNotify(v?{abroad:true,abroad_tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"",abroad_since:new Date().toISOString()}:{abroad:false,abroad_until:""}),"מצב חו״ל")),
+        abroadOn()?h("div",{class:"sqrow"},h("div",{class:"lb"},"עד",h("small",null,"ריק = עד שמכבים")),h("input",{type:"date",class:"sqsel","aria-label":"מצב חו״ל עד",value:notify.abroad_until||"",min:todayISO(),onchange:e=>setNotify({abroad_until:e.target.value})})):null),
+      sec("brief","☀️ בריף בוקר",abroadOn()?"מושהה בחו״ל":notify.brief?notify.brief_time:"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל"),sw(notify.brief,v=>setNotify({brief:v}),"בריף בוקר")),
+        notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"שעה"),h("select",{class:"sqsel","aria-label":"שעת הבריף",onchange:e=>setNotify({brief_time:e.target.value})},times.map(t=>h("option",{value:t,selected:t===notify.brief_time||null},t)))):null,
+        notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי הבריף",onchange:e=>setNotify({brief_days:e.target.value})},h("option",{value:"all",selected:!["sun-thu","sun-fri"].includes(notify.brief_days)||null},"כל יום"),h("option",{value:"sun-fri",selected:notify.brief_days==="sun-fri"||null},"א׳ עד ו׳"),h("option",{value:"sun-thu",selected:notify.brief_days==="sun-thu"||null},"א׳ עד ה׳"))):null,
+        pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("brief",e.currentTarget,"הבריף נשלח")},"שלח בריף עכשיו")):null),
+      sec("crit","🚨 דחוף בלבד",notify.critical?"פעיל":"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות"))),
+      sec("last","📄 הבריף האחרון","",briefBlock()));
+    if(keep){const p=m.querySelector(".sqpanel");if(p)p.scrollTop=top;}
+  }
+  function abroadOn(){return notify.abroad===true&&(!notify.abroad_until||notify.abroad_until>=todayISO());}
+  function openTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
+    if(t.status==="done"||t.status==="promoted")view="done";else if(t.status==="archived")view="archive";else view="open";
+    if(!ctxOk(t)){ctxNow="all";try{localStorage.setItem("sq_ctx","all");}catch(e){}}filterKind="all";openId=id;renderAll();
+    setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
+  let routed=false;
+  function routeHash(){const hs=location.hash;
+    if(hs==="#brief"){showBrief();return true;}if(hs==="#settings"){showSettings();return true;}
+    const m=hs.match(/^#t=(.+)$/);if(m&&allTopics.length){const id=decodeURIComponent(m[1]);try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}openTask(id);return true;}
+    return false;}
+  window.addEventListener("hashchange",routeHash);
+  if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.type==="sq-open"&&d.url){try{const u=new URL(d.url);if(u.hash&&u.hash!==location.hash)location.hash=u.hash;else routeHash();}catch(x){}}});
+  $("setBtn").onclick=()=>showSettings();
+  function initNotify(){
+    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last");
+      notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;
+      if(!routed&&allTopics.length){routed=true;routeHash();}else if(document.getElementById("briefM"))showBrief();else renderSettings();},()=>{});
+    db.collection("topics").onSnapshot(()=>{if(!routed&&allTopics.length){routed=true;routeHash();}},()=>{});
+    syncPush();
+  }
   renderStats();
   (async()=>{
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
@@ -1046,8 +2137,13 @@ body.fun-on .avail{display:none}
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
+      const th=s.docs.find(x=>x.id==="travel_hub"),tr=s.docs.find(x=>x.id==="travel_report");travelHub=th?th.data():null;travelReport=tr?tr.data():null;renderTravel();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
-    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStrip();renderList();renderFun();},()=>{});
+    db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
+    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderFun();renderDash();},()=>{});
+    db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));renderList();renderDash();},()=>{});
+    db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
+    initNotify();
   })();
 })();
 </script>

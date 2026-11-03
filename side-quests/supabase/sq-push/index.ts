@@ -1,0 +1,204 @@
+// Side Quests push: morning brief + critical-only alerts to Oren's devices (Web Push, VAPID).
+// Called every 5 minutes by pg_cron (job "sq-push", action=tick) and by the app (key / test / brief).
+// Data: sq_docs. Subscriptions in sidequests/push_subs (written by the app through sq_put, so only
+// someone with the code can add a device). Server state + VAPID keys in app "sq_push_srv", which
+// sq_open can never read (that app has no code in sq_secrets). The private key never leaves the server.
+import webpush from "npm:web-push@3.6.7";
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+const APP = "sidequests";
+const SRV = "sq_push_srv";
+const APP_URL = "https://tipul10000-droid.github.io/apps/side-quests/";
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+};
+const json = (o: unknown, status = 200) =>
+  new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json", ...CORS } });
+
+const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
+  auth: { persistSession: false },
+});
+
+// ---------- time (Israel) ----------
+function il(ms = Date.now(), tz = "Asia/Jerusalem") {
+  const p = new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", weekday: "short", hour12: false,
+  }).formatToParts(new Date(ms));
+  const g = (t: string) => p.find((x) => x.type === t)!.value;
+  const hour = parseInt(g("hour")) % 24, minute = parseInt(g("minute"));
+  return { date: `${g("year")}-${g("month")}-${g("day")}`, hour, minute, mins: hour * 60 + minute, wd: g("weekday") };
+}
+const dayDiff = (a: string, b: string) => Math.round((Date.parse(a + "T12:00:00Z") - Date.parse(b + "T12:00:00Z")) / 86400000);
+
+// ---------- storage ----------
+async function getDoc(app: string, coll: string, id: string) {
+  const { data } = await sb.from("sq_docs").select("data").eq("app", app).eq("collection", coll).eq("id", id).maybeSingle();
+  return (data?.data as any) || null;
+}
+async function putDoc(app: string, coll: string, id: string, patch: any) {
+  const cur = (await getDoc(app, coll, id)) || {};
+  const { error } = await sb.from("sq_docs").upsert({ app, collection: coll, id, data: { ...cur, ...patch }, updated_at: new Date().toISOString() }, { onConflict: "app,collection,id" });
+  if (error) throw error;
+}
+async function listColl(app: string, coll: string) {
+  const { data } = await sb.from("sq_docs").select("id,data").eq("app", app).eq("collection", coll);
+  return (data || []).filter((r: any) => !(r.data && r.data._deleted)).map((r: any) => ({ id: r.id, ...(r.data || {}) }));
+}
+
+async function keys() {
+  let k = await getDoc(SRV, "secrets", "vapid");
+  if (!k?.pub || !k?.priv) {
+    const g = webpush.generateVAPIDKeys();
+    k = { pub: g.publicKey, priv: g.privateKey };
+    await putDoc(SRV, "secrets", "vapid", k);
+  }
+  webpush.setVapidDetails("mailto:noreply@sidequests.invalid", k.pub, k.priv);
+  return k;
+}
+
+async function subs() {
+  return (await listColl(APP, "push_subs")).filter((s: any) => s.endpoint && s.keys?.p256dh && s.keys?.auth);
+}
+async function sendTo(list: any[], msg: { title: string; body: string; tag?: string; url?: string }) {
+  await keys();
+  let ok = 0;
+  await Promise.allSettled(list.map(async (s: any) => {
+    try {
+      await webpush.sendNotification({ endpoint: s.endpoint, keys: s.keys }, JSON.stringify(msg), { TTL: 6 * 3600, urgency: "high" });
+      ok++;
+    } catch (e: any) {
+      if (e?.statusCode === 404 || e?.statusCode === 410) await putDoc(APP, "push_subs", s.id, { _deleted: true, gone_at: new Date().toISOString() });
+    }
+  }));
+  return ok;
+}
+
+// ---------- prefs ----------
+const DEF = { brief: true, brief_time: "08:00", brief_days: "all", critical: true, quiet_from: 22, quiet_to: 7 };
+async function prefs() { return { ...DEF, ...((await getDoc(APP, "settings", "notify")) || {}) }; }
+
+// ---------- brief ----------
+const OPEN = ["active", "waiting_me", "waiting_other"];
+const short = (s: any, n = 38) => { s = String(s || "").trim(); return s.length > n ? s.slice(0, n - 1) + "…" : s; };
+function isTask(t: any) { return !t.fun && t.kind !== "fun" && !(Array.isArray(t.tags) && t.tags.includes("fun question")); }
+function snoozed(t: any, now: number) { const s = t.snooze_until; if (!s) return false; if (s === "someday") return true; const x = Date.parse(s); return x > now; }
+function openQ(t: any) { return (Array.isArray(t.questions) ? t.questions : []).filter((q: any) => q && !q.answer && !q.done && !q.superseded); }
+
+function buildBrief(all: any[]) {
+  const now = Date.now(), today = il(now).date;
+  const tasks = all.filter((t) => isTask(t) && OPEN.includes(t.status || "active"));
+  const live = tasks.filter((t) => !snoozed(t, now));
+  const due = (t: any) => (t.next_date ? dayDiff(t.next_date, today) : null);
+  const urgent = live.filter((t) => t.urgent || t.critical);
+  const late = live.filter((t) => !urgent.includes(t) && due(t) != null && due(t)! <= 0);
+  const mine = live.filter((t) => t.status === "waiting_me" || openQ(t).length);
+  // overnight: since 20:00 yesterday (Israel) ~ last 12h
+  const since = now - 12 * 3600 * 1000;
+  const touched = (t: any) => {
+    let best = 0;
+    for (const v of [t.updated_at, t.sync?.at, ...(Array.isArray(t.log) ? t.log.map((e: any) => e?.at) : [])]) { const x = v ? Date.parse(v) : NaN; if (x > best) best = x; }
+    return best;
+  };
+  const added = all.filter((t) => isTask(t) && t.created_at && Date.parse(t.created_at) > since);
+  const done = all.filter((t) => isTask(t) && t.status === "done" && t.done_at && Date.parse(t.done_at) > since);
+  const upd = tasks.filter((t) => touched(t) > since && !added.includes(t));
+  const score = (t: any) => (t.urgent || t.critical ? 0 : 100) + (due(t) == null ? 50 : Math.max(-20, Math.min(40, due(t)!))) + (t.priority === "high" ? 0 : 20) + (t.status === "waiting_me" ? 0 : 10);
+  const pick = [...live].filter((t) => t.status !== "waiting_other").sort((a, b) => score(a) - score(b))[0];
+
+  const lines: string[] = [];
+  if (urgent.length) lines.push(`❗ דחוף: ${urgent.slice(0, 2).map((t) => short(t.title, 30)).join(" · ")}`);
+  if (late.length) lines.push(`📅 להיום: ${late.slice(0, 2).map((t) => short(t.title, 30)).join(" · ")}${late.length > 2 ? ` ועוד ${late.length - 2}` : ""}`);
+  if (mine.length) lines.push(`🟠 מחכות להחלטה שלך: ${mine.length}`);
+  const night: string[] = [];
+  if (added.length) night.push(added.length === 1 ? `נוספה "${short(added[0].title, 26)}"` : `נוספו ${added.length}`);
+  if (upd.length) night.push(`עודכנו ${upd.length}`);
+  if (done.length) night.push(`נסגרו ${done.length}`);
+  if (night.length) lines.push(`🌙 בלילה: ${night.join(", ")}`);
+  if (pick) lines.push(`▶️ להתחיל בדרך: ${short(pick.title, 40)}${pick.waiting_for ? ` (${short(pick.waiting_for, 30)})` : ""}`);
+  if (!lines.length) lines.push("שקט היום. אין משהו שמחכה לך ☕");
+  const title = urgent.length ? `☀️ בוקר טוב · ${urgent.length === 1 ? "דבר דחוף אחד" : urgent.length + " דחופים"}` : `☀️ בוקר טוב · ${live.length} משימות פתוחות`;
+  return { title, body: lines.join("\n"), lines, pick: pick?.id || "" };
+}
+
+async function briefNow(source: string, list?: any[]) {
+  const today = il().date;
+  const all = await listColl(APP, "topics");
+  let b: any = buildBrief(all);
+  // a Claude-written brief (the 07:00 sweep writes settings/morning_brief for today) wins when present
+  const ai = await getDoc(APP, "settings", "morning_brief");
+  if (ai && ai.date === today && ai.body) b = { ...b, title: String(ai.title || b.title).slice(0, 80), body: String(ai.body).slice(0, 400), lines: Array.isArray(ai.lines) && ai.lines.length ? ai.lines.map(String) : String(ai.body).split("\n"), by: "claude" };
+  const n = await sendTo(list || (await subs()), { title: b.title, body: b.body, tag: "sq-brief", url: APP_URL + "#brief" });
+  await putDoc(APP, "settings", "brief_last", { at: new Date().toISOString(), date: today, title: b.title, body: b.body, lines: b.lines, pick: b.pick, by: b.by || "auto", source, sent: n });
+  return { sent: n, ...b };
+}
+
+// ---------- critical ----------
+// critical = a topic with critical:true (set by a Claude run / project when it really can't wait),
+// or marked urgent by someone other than Oren. Oren's own taps never ping him. One push per topic per marking.
+async function criticalTick(p: any, t0: ReturnType<typeof il>) {
+  if (!p.critical && !p.abroadOn) return { critical: 0 };
+  // abroad: quiet hours follow the phone's local time there
+  let t = t0;
+  if (p.abroadOn && p.abroad_tz) { try { t = il(Date.now(), p.abroad_tz); } catch (_) { t = t0; } }
+  const quiet = p.quiet_from > p.quiet_to ? (t.hour >= p.quiet_from || t.hour < p.quiet_to) : (t.hour >= p.quiet_from && t.hour < p.quiet_to);
+  if (quiet) return { critical: 0, quiet: true };
+  const all = await listColl(APP, "topics");
+  const st = (await getDoc(SRV, "state", "critical")) || {};
+  const seen: Record<string, string> = st.seen || {};
+  const hits = all.filter((x: any) => isTask(x) && OPEN.includes(x.status || "active") && !snoozed(x, Date.now()) &&
+    (x.critical === true || (x.urgent && x.urgent_by && x.urgent_by !== "oren")));
+  const fresh = hits.filter((x: any) => { const mark = String(x.critical_at || x.urgent_at || x.updated_at || "1"); return seen[x.id] !== mark; });
+  if (!fresh.length) return { critical: 0 };
+  const list = await subs();
+  for (const x of fresh.slice(0, 3)) {
+    await sendTo(list, { title: `🚨 ${short(x.title, 50)}`, body: short(x.critical_reason || x.waiting_for || x.next_step || x.stand || "צריך את תשומת הלב שלך", 160), tag: "sq-crit-" + x.id, url: APP_URL + "#t=" + encodeURIComponent(x.id) });
+  }
+  for (const x of fresh) seen[x.id] = String(x.critical_at || x.urgent_at || x.updated_at || "1");
+  await putDoc(SRV, "state", "critical", { seen });
+  return { critical: fresh.length };
+}
+
+async function tick() {
+  const p = await prefs(), t = il();
+  const out: any = { at: t };
+  const st = (await getDoc(SRV, "state", "brief")) || {};
+  const [hh, mm] = String(p.brief_time || "08:00").split(":").map((x: string) => parseInt(x) || 0);
+  const at = hh * 60 + mm;
+  const dayOk = p.brief_days === "sun-thu" ? !["Fri", "Sat"].includes(t.wd) : p.brief_days === "sun-fri" ? t.wd !== "Sat" : true;
+  // abroad mode (Oren, 2.11.2026): no brief at all, only new critical items, until abroad_until (inclusive)
+  p.abroadOn = p.abroad === true && (!p.abroad_until || t.date <= p.abroad_until);
+  out.abroad = p.abroadOn;
+  if (p.brief && !p.abroadOn && dayOk && st.date !== t.date && t.mins >= at && t.mins < at + 180) {
+    await putDoc(SRV, "state", "brief", { date: t.date }); // claim first, so two ticks never double-send
+    out.brief = await briefNow("schedule");
+  }
+  out.crit = await criticalTick(p, t);
+  return out;
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+  try {
+    const u = new URL(req.url);
+    const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
+    const action = u.searchParams.get("action") || body.action || "tick";
+    if (action === "key") return json({ key: (await keys()).pub });
+    if (action === "tick") return json(await tick());
+    // test / brief: only to a device that is already registered (registering needs the code)
+    if (action === "test" || action === "brief") {
+      const mine = (await subs()).filter((s: any) => s.endpoint === body.endpoint);
+      if (!mine.length) return json({ error: "device not registered" }, 404);
+      const st = (await getDoc(SRV, "state", "manual")) || {};
+      if (st.at && Date.now() - Date.parse(st.at) < 20000) return json({ error: "too soon" }, 429);
+      await putDoc(SRV, "state", "manual", { at: new Date().toISOString() });
+      if (action === "test") return json({ sent: await sendTo(mine, { title: "🔔 Side Quests", body: "ההתראות עובדות. בריף בבוקר, ופה רק על דברים קריטיים.", tag: "sq-test", url: APP_URL }) });
+      return json(await briefNow("manual", mine));
+    }
+    return json({ error: "unknown action" }, 400);
+  } catch (e: any) {
+    return json({ error: String(e?.message || e) }, 500);
+  }
+});
