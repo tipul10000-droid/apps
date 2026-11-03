@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.0";window.SQ_BUILD_AT="3.11.2026 09:25";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.1";window.SQ_BUILD_AT="3.11.2026 09:50";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -667,6 +667,7 @@ body:not(.q-side) .tb.tsun{display:none}
 .bpop .sqpanel{width:100%;max-width:380px;max-height:80vh;border-radius:22px;padding:0;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.45);animation:bpin .25s ease-out}
 @keyframes bpin{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 .bp-top{position:relative;padding:14px 16px 12px;background:linear-gradient(150deg,#FFD98A 0%,#F6A24A 60%,#EC7F3E 100%);color:#2A1500}
+.bp-top.eve{background:linear-gradient(150deg,#8E7CF0 0%,#E0739A 55%,#F2A15A 100%);color:#1E0F2E}
 .bp-h{display:flex;align-items:center;gap:8px}
 .bp-h b{font:800 18px var(--f-display,inherit)}
 .bp-h small{font-size:12.5px;font-weight:700;opacity:.75;margin-inline-start:auto}
@@ -2156,8 +2157,8 @@ body.focus .ctxrow .refr .rv{display:none}
   // ===== 3.4: settings + notifications (Web Push via Supabase function sq-push) + morning brief =====
   const PUSH_FN="https://emgtyfksnofzzlutngbf.supabase.co/functions/v1/sq-push";
   const VAPID="BG4jnuAYF7dwLbC_NQAdtdlaVWLk3TKpS0E221Y3J9KrhkspmnMokjUUQwt3gCnsID8dmwCCiCjCGM94qoDCPEQ";
-  const NDEF={brief:true,brief_time:"08:00",brief_days:"all",critical:true,quiet_from:22,quiet_to:7};
-  let notify={...NDEF},briefLast=null,pushOn=false,pushEp="";
+  const NDEF={brief:true,brief_time:"08:00",brief_days:"all",eve:true,eve_time:"18:00",eve_days:"sun-thu",critical:true,quiet_from:22,quiet_to:7};
+  let notify={...NDEF},briefLast=null,eveLast=null,pushOn=false,pushEp="";
   const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
   const standalone=()=>window.navigator.standalone===true||matchMedia("(display-mode: standalone)").matches;
   const pushSupported=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
@@ -2219,12 +2220,26 @@ body.focus .ctxrow .refr .rv{display:none}
   // Source: settings/morning_brief written by Claude at 07:38 {date, headline, news[], critical[], now[], work[], evening[], errands[]}
   // each item {text, id?}. If missing, a smaller automatic version is built from the data.
   const HE_DAYS=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
-  let morningBrief=null,errandsOn=false;
-  function briefSeenToday(){try{return localStorage.getItem("sq_brief_seen")===todayISO();}catch(e){return false;}}
-  function markBriefSeen(){try{localStorage.setItem("sq_brief_seen",todayISO());}catch(e){}renderSunDot();}
-  function renderSunDot(){const d=$("sunDot");if(d)d.hidden=briefSeenToday()||!((morningBrief&&morningBrief.date===todayISO())||(briefLast&&briefLast.date===todayISO()));}
-  function bScore(t){const n=daysUntil(t.next_date);return (isUrgent(t)||t.critical?0:100)+(n==null?50:Math.max(-20,Math.min(40,n)))+(t.priority==="high"?0:20)+(t.status==="waiting_me"?0:10);}
+  // 6.0 (Oren 3.11): an evening brief too (default 18:00, on the way home). The two short windows of the day
+  // (to work and back) are for small tasks: calls, reminders, buying/fixing something on the way. Heavy things wait for the evening.
+  // Small tasks he adds himself (born in a moment) should also close fast: they go first in these windows.
+  let morningBrief=null,eveBrief=null,errandsOn=false,briefMd="morning";
+  const hm=s=>{const [a,b]=String(s||"").split(":").map(x=>parseInt(x)||0);return a*60+b;};
+  function briefMode(){const d=new Date(),m=d.getHours()*60+d.getMinutes();return m>=Math.min(hm(notify.eve_time||"18:00")-90,15*60)?"eve":"morning";}
+  const seenKey=md=>md==="eve"?"sq_eve_seen":"sq_brief_seen";
+  function briefSeenToday(md){try{return localStorage.getItem(seenKey(md||briefMode()))===todayISO();}catch(e){return false;}}
+  function markBriefSeen(md){try{localStorage.setItem(seenKey(md||briefMd),todayISO());}catch(e){}renderSunDot();}
+  function renderSunDot(){const d=$("sunDot");if(!d)return;const md=briefMode(),t=todayISO();
+    d.hidden=briefSeenToday(md)||!(md==="eve"?((eveBrief&&eveBrief.date===t)||(eveLast&&eveLast.date===t)):((morningBrief&&morningBrief.date===t)||(briefLast&&briefLast.date===t)));
+    const b=$("sunBtn");if(b)b.setAttribute("aria-label",md==="eve"?"בריף הערב":"בריף הבוקר");}
   const MANUAL=/נוסף ידנית/;
+  const ERRAND=/^(לקנות|לקחת|להחליף|לסדר|לעבור|לאסוף|להביא|לתקן|לשכפל|להחזיר|למסור|להוציא|לצלם)/;
+  const PHONE=/^(להזכיר|לשלוח הודעה|להתקשר|לשאול|לבקש|לשלם|לקבוע|לענות|לאשר)/;
+  const bQuick=t=>MANUAL.test(t.source||"")&&!ctxOf(t).includes("pc")&&String(t.next_step||"").length<60;
+  const isErrand=t=>ctxOf(t).includes("out")||ERRAND.test(String(t.title||"").trim());
+  const isPhone=t=>{const c=ctxOf(t);return c.includes("call")||c.includes("lior")||c.includes("mobile")||PHONE.test(String(t.title||"").trim());};
+  function bScore(t){const n=daysUntil(t.next_date),age=(Date.now()-Date.parse(t.created_at||0))/864e5;
+    return (isUrgent(t)||t.critical?0:100)+(n==null?50:Math.max(-20,Math.min(40,n)))+(t.priority==="high"?0:20)+(t.status==="waiting_me"?0:10)-(bQuick(t)&&age<14?70:0);}
   function autoBrief(){
     const now=new Date(),y=new Date(now);y.setDate(y.getDate()-1);y.setHours(20,0,0,0);const since=y.getTime();
     const wk=now.getDay()<=4;
@@ -2235,26 +2250,48 @@ body.focus .ctxrow .refr .rv{display:none}
     const news=allTopics.filter(t=>!isFun(t)&&((t.sync&&t.sync.at&&Date.parse(t.sync.at)>=since)||(t.created_at&&Date.parse(t.created_at)>=since&&!MANUAL.test(t.source||""))))
       .slice(0,3).map(t=>({id:t.id,text:t.title||"",sub:t.stand||""}));
     const used=new Set([...critical,...news].map(x=>x.id));
-    const pick=(f,n)=>{const r=live.filter(t=>!used.has(t.id)&&t.status!=="waiting_other"&&f(ctxOf(t))).sort((a,b)=>bScore(a)-bScore(b)).slice(0,n);r.forEach(t=>used.add(t.id));return r.map(it);};
-    const nowL=pick(c=>c.includes("call")||c.includes("lior")||c.includes("mobile"),3);
+    const pick=(f,n)=>{const r=live.filter(t=>!used.has(t.id)&&t.status!=="waiting_other"&&f(ctxOf(t),t)).sort((a,b)=>bScore(a)-bScore(b)).slice(0,n);r.forEach(t=>used.add(t.id));return r.map(it);};
+    const nowL=pick((c,t)=>isPhone(t)&&!isErrand(t),3);
     const work=wk?pick(c=>c.includes("office"),2):[];
-    const evening=pick(c=>c.includes("out"),1);
-    const errands=pick(c=>c.includes("out")||c.includes("house"),4);
+    const evening=wk?pick((c,t)=>isErrand(t),2):[];
+    const errands=pick((c,t)=>isErrand(t)||c.includes("house")||bQuick(t),now.getDay()===5?6:4);
     return {auto:true,headline:critical.length?critical[0].text:news.length?"יש עדכונים מהלילה":"בוקר רגיל, הנה מה שמתאים עכשיו",news,critical,now:nowL,work,evening,errands};
   }
-  function curBrief(){const m=morningBrief&&morningBrief.date===todayISO()&&(morningBrief.now||morningBrief.news||morningBrief.critical)?morningBrief:null;return m||autoBrief();}
-  function bpDone(t){markDone(t);setTimeout(()=>{if($("briefM"))showBrief();},350);}
+  // evening: what came in during the day, errands for the way home, one call/reminder for the drive, and what can wait for tonight
+  function autoEve(){
+    const now=new Date(),s=new Date(now);s.setHours(8,0,0,0);const since=s.getTime();
+    const live=allTopics.filter(t=>!isFun(t)&&isOpen(t)&&t.status!=="paused"&&!snoozed(t));
+    const it=t=>({id:t.id,text:t.title||"",sub:t.next_step||t.waiting_for||""});
+    const critical=live.filter(t=>t.critical||(t.urgent&&t.urgent_by&&t.urgent_by!=="oren")).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
+    const news=allTopics.filter(t=>!isFun(t)&&((t.sync&&t.sync.at&&Date.parse(t.sync.at)>=since)||(t.created_at&&Date.parse(t.created_at)>=since&&!MANUAL.test(t.source||""))))
+      .slice(0,3).map(t=>({id:t.id,text:t.title||"",sub:t.stand||""}));
+    const used=new Set([...critical,...news].map(x=>x.id));
+    const pick=(f,n)=>{const r=live.filter(t=>!used.has(t.id)&&t.status!=="waiting_other"&&f(ctxOf(t),t)).sort((a,b)=>bScore(a)-bScore(b)).slice(0,n);r.forEach(t=>used.add(t.id));return r.map(it);};
+    const way=pick((c,t)=>isErrand(t),3);
+    const call=[{text:"לשאול את ליאור אם לקנות משהו בדרך",e:"💬"},...pick((c,t)=>isPhone(t)&&!isErrand(t),1)];
+    const night=pick(c=>c.includes("pc")||c.includes("house"),2);
+    return {auto:true,headline:way.length?"בדרך הביתה: "+way.slice(0,2).map(x=>x.text).join(" · "):"לשאול את ליאור אם צריך משהו מהדרך",critical,news,way,call,night};
+  }
+  function curBrief(md){const t=todayISO();
+    if(md==="eve"){const e=eveBrief&&eveBrief.date===t&&(eveBrief.way||eveBrief.news||eveBrief.call)?eveBrief:null;return e||autoEve();}
+    const m=morningBrief&&morningBrief.date===t&&(morningBrief.now||morningBrief.news||morningBrief.critical)?morningBrief:null;return m||autoBrief();}
+  function bpDone(t){markDone(t);setTimeout(()=>{if($("briefM"))showBrief(briefMd);},350);}
   function bpRow(x,emoji){const t=x.id&&allTopics.find(z=>z.id===x.id);
     return h("div",{class:"bp-row"},h("span",{class:"e","aria-hidden":"true"},x.e||emoji),
       h("button",{class:"x",type:"button",onclick:()=>{if(t){markBriefSeen();closeModal();openTask(t.id);}}},String(x.text||""),x.sub?h("small",null,String(x.sub)):null),
       t&&isOpen(t)&&canWrite?h("button",{class:"ok",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:()=>bpDone(t)},"✓"):null);}
   function bpSec(title,items,emoji,cls){const a=(Array.isArray(items)?items:[]).filter(x=>x&&x.text);if(!a.length)return null;
     return h("div",{class:"bp-sec"+(cls?" "+cls:"")},h("h4",null,title),a.map(x=>bpRow(x,emoji)));}
-  function closeBrief(){markBriefSeen();closeModal();}
+  function closeBrief(){markBriefSeen(briefMd);closeModal();}
   // first open of the day, in the morning, on the Side Quests main screen: the brief greets him once
-  function autoBriefOnOpen(){const hr=new Date().getHours();if(quest!=="side"||briefSeenToday()||hr<5||hr>=12||location.hash)return;setTimeout(()=>{if(!document.querySelector(".sqmodal"))showBrief();},500);}
-  function showBrief(){
-    const b=curBrief(),now=new Date(),wk=now.getDay()<=4;
+  function autoBriefOnOpen(){const hr=new Date().getHours(),md=briefMode();if(quest!=="side"||briefSeenToday(md)||location.hash)return;
+    if(md==="morning"?(hr<5||hr>=12):(hr>=22||!notify.eve))return;
+    setTimeout(()=>{if(!document.querySelector(".sqmodal"))showBrief(md);},500);}
+  function showBrief(md){
+    md=md==="eve"||md==="morning"?md:briefMode();briefMd=md;
+    if(md==="eve")return showEve();
+    const b=curBrief("morning"),now=new Date(),wk=now.getDay()<=4,fri=now.getDay()===5;
+    if(fri&&!errandsOn)errandsOn=true;
     const m=modal("briefM",
       h("div",{class:"bp-top"},h("div",{class:"bp-h"},h("b",null,"☀️ בוקר טוב"),h("small",null,`${HE_DAYS[now.getDay()]} ${now.getDate()}.${now.getMonth()+1}`),h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeBrief},"×")),
         b.headline?h("div",{class:"bp-head"},String(b.headline)):null),
@@ -2264,12 +2301,26 @@ body.focus .ctxrow .refr .rv{display:none}
       bpSec(wk?"☕ עכשיו ובנסיעה":"☕ הבוקר",b.now,"📞"),
       wk?bpSec("🏢 בהפסקה בעבודה",b.work,"⚡"):null,
       bpSec(wk?"🚗 בדרך חזרה":"🛒 בחוץ",b.evening,"🛒"),
-      errandsOn?bpSec("🛒 בוקר סידורים",b.errands,"🛒"):null,
+      errandsOn?bpSec(fri?"🛒 שישי: סידורים עד הצהריים":"🛒 בוקר סידורים",b.errands,"🛒"):null,
       !(b.critical||[]).length&&!(b.news||[]).length&&!(b.now||[]).length?h("div",{class:"bp-empty"},"אין שום דבר חדש או דחוף. בוקר שקט ☕"):null,
       h("div",{class:"bp-btns"},
         !errandsOn&&(b.errands||[]).length?h("button",{class:"alt",type:"button",onclick:()=>{errandsOn=true;showBrief();}},"🛒 יש לי בוקר סידורים"):null,
         h("button",{class:"main",type:"button",onclick:closeBrief},"הבנתי ☕"))));
-    m.classList.add("bpop");markBriefSeen();
+    m.classList.add("bpop");markBriefSeen("morning");
+  }
+  function showEve(){
+    const b=curBrief("eve"),now=new Date();
+    const m=modal("briefM",
+      h("div",{class:"bp-top eve"},h("div",{class:"bp-h"},h("b",null,"🌆 ערב טוב"),h("small",null,`${HE_DAYS[now.getDay()]} ${now.getDate()}.${now.getMonth()+1}`),h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeBrief},"×")),
+        b.headline?h("div",{class:"bp-head"},String(b.headline)):null),
+      h("div",{class:"bp-in"},
+      bpSec("🚨 קריטי",b.critical,"🚨","bp-crit"),
+      bpSec("🆕 מה נכנס היום",b.news,"•"),
+      bpSec("🚗 בדרך הביתה",b.way,"🛒"),
+      bpSec("📞 בנסיעה",b.call,"📞"),
+      bpSec("🌙 הערב, כשיש זמן",b.night,"🌙"),
+      h("div",{class:"bp-btns"},h("button",{class:"main",type:"button",onclick:closeBrief},"יאללה הביתה 🚗"))));
+    m.classList.add("bpop");markBriefSeen("eve");
   }
   const setOpen=new Set();
   function renderSettings(){if(document.getElementById("setM"))showSettings(true);}
@@ -2297,9 +2348,14 @@ body.focus .ctxrow .refr .rv{display:none}
         notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"שעה"),h("select",{class:"sqsel","aria-label":"שעת הבריף",onchange:e=>setNotify({brief_time:e.target.value})},times.map(t=>h("option",{value:t,selected:t===notify.brief_time||null},t)))):null,
         notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי הבריף",onchange:e=>setNotify({brief_days:e.target.value})},h("option",{value:"all",selected:!["sun-thu","sun-fri"].includes(notify.brief_days)||null},"כל יום"),h("option",{value:"sun-fri",selected:notify.brief_days==="sun-fri"||null},"א׳ עד ו׳"),h("option",{value:"sun-thu",selected:notify.brief_days==="sun-thu"||null},"א׳ עד ה׳"))):null,
         pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("brief",e.currentTarget,"הבריף נשלח")},"שלח בריף עכשיו")):null),
+      sec("eve","🌆 בריף ערב",abroadOn()?"מושהה בחו״ל":notify.eve?notify.eve_time:"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בדרך הביתה: סידורים קטנים, שיחה, ומה מחכה לערב")),sw(notify.eve,v=>setNotify({eve:v}),"בריף ערב")),
+        notify.eve?h("div",{class:"sqrow"},h("div",{class:"lb"},"שעה"),h("select",{class:"sqsel","aria-label":"שעת בריף הערב",onchange:e=>setNotify({eve_time:e.target.value})},["16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30"].map(t=>h("option",{value:t,selected:t===notify.eve_time||null},t)))):null,
+        notify.eve?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי בריף הערב",onchange:e=>setNotify({eve_days:e.target.value})},h("option",{value:"all",selected:!["sun-thu","sun-fri"].includes(notify.eve_days)||null},"כל יום"),h("option",{value:"sun-fri",selected:notify.eve_days==="sun-fri"||null},"א׳ עד ו׳"),h("option",{value:"sun-thu",selected:notify.eve_days==="sun-thu"||null},"א׳ עד ה׳"))):null,
+        pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("eve",e.currentTarget,"בריף הערב נשלח")},"שלח בריף ערב עכשיו")):null),
       sec("crit","🚨 דחוף בלבד",notify.critical?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות")))
-      ,h("div",{class:"sqhint"},"הבריף עצמו: כפתור ☀️ למעלה במסך הראשי."));
+      ,h("div",{class:"sqhint"},"הבריפים עצמם: כפתור ☀️ למעלה במסך הראשי (בבוקר בוקר, אחרי הצהריים ערב)."));
     if(keep){const p=m.querySelector(".sqpanel");if(p)p.scrollTop=top;}
   }
   function abroadOn(){return notify.abroad===true&&(!notify.abroad_until||notify.abroad_until>=todayISO());}
@@ -2309,7 +2365,7 @@ body.focus .ctxrow .refr .rv{display:none}
     setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
   let routed=false;
   function routeHash(){const hs=location.hash;
-    if(hs==="#brief"){showBrief();return true;}if(hs==="#settings"){showSettings();return true;}
+    if(hs==="#brief"){showBrief("morning");return true;}if(hs==="#eve"){showBrief("eve");return true;}if(hs==="#settings"){showSettings();return true;}
     const m=hs.match(/^#t=(.+)$/);if(m&&allTopics.length){const id=decodeURIComponent(m[1]);try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}openTask(id);return true;}
     return false;}
   window.addEventListener("hashchange",routeHash);
@@ -2317,9 +2373,9 @@ body.focus .ctxrow .refr .rv{display:none}
   $("setBtn").onclick=()=>showSettings();
   $("sunBtn").onclick=()=>showBrief();
   function initNotify(){
-    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief");morningBrief=mb?mb.data():null;
+    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last");morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
       notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;refreshMode();
-      if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}else if($("briefM"))showBrief();else renderSettings();renderSunDot();},()=>{});
+      if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}else if($("briefM"))showBrief(briefMd);else renderSettings();renderSunDot();},()=>{});
     db.collection("topics").onSnapshot(()=>{if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}},()=>{});
     syncPush();
   }

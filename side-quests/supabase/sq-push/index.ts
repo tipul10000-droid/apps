@@ -1,4 +1,4 @@
-// Side Quests push: morning brief + critical-only alerts to Oren's devices (Web Push, VAPID).
+// Side Quests push: morning brief + evening brief + critical-only alerts to Oren's devices (Web Push, VAPID).
 // Called every 5 minutes by pg_cron (job "sq-push", action=tick) and by the app (key / test / brief).
 // Data: sq_docs. Subscriptions in sidequests/push_subs (written by the app through sq_put, so only
 // someone with the code can add a device). Server state + VAPID keys in app "sq_push_srv", which
@@ -82,7 +82,7 @@ async function sendTo(list: any[], msg: { title: string; body: string; tag?: str
 }
 
 // ---------- prefs ----------
-const DEF = { brief: true, brief_time: "08:00", brief_days: "all", critical: true, quiet_from: 22, quiet_to: 7 };
+const DEF = { brief: true, brief_time: "08:00", brief_days: "all", eve: true, eve_time: "18:00", eve_days: "sun-thu", critical: true, quiet_from: 22, quiet_to: 7 };
 async function prefs() { return { ...DEF, ...((await getDoc(APP, "settings", "notify")) || {}) }; }
 
 // ---------- brief ----------
@@ -147,6 +147,26 @@ async function briefNow(source: string, list?: any[]) {
   return { sent: n, ...b };
 }
 
+// ---------- evening brief (Oren 3.11.2026): on the way home. Small errands he added himself, a call, ask Lior ----------
+const ERRAND = /^(לקנות|לקחת|להחליף|לסדר|לעבור|לאסוף|להביא|לתקן|לשכפל|להחזיר|למסור|להוציא|לצלם)/;
+async function eveNow(source: string, list?: any[]) {
+  const today = il().date, now = Date.now();
+  let head = "";
+  const ai = await getDoc(APP, "settings", "evening_brief");
+  if (ai && ai.date === today && ai.headline) head = String(ai.headline);
+  if (!head) {
+    const all = await listColl(APP, "topics");
+    const way = all.filter((t: any) => isTask(t) && OPEN.includes(t.status || "active") && t.status !== "waiting_other" && !snoozed(t, now) &&
+      ((Array.isArray(t.context) && t.context.includes("out")) || ERRAND.test(String(t.title || "").trim())))
+      .sort((a: any, b: any) => Date.parse(b.created_at || 0) - Date.parse(a.created_at || 0));
+    head = way.length ? "בדרך הביתה: " + way.slice(0, 2).map((t: any) => short(t.title, 26)).join(" · ") : "לשאול את ליאור אם צריך משהו מהדרך";
+  }
+  const n = await sendTo(list || (await subs()), { title: "🌆 ערב טוב", body: head, tag: "sq-eve", url: APP_URL + "#eve" });
+  await putDoc(APP, "settings", "eve_last", { at: new Date().toISOString(), date: today, headline: head, by: ai && ai.date === today ? "claude" : "auto", source, sent: n });
+  return { sent: n, headline: head };
+}
+const dayOkFor = (days: string, wd: string) => days === "sun-thu" ? !["Fri", "Sat"].includes(wd) : days === "sun-fri" ? wd !== "Sat" : true;
+
 // ---------- critical ----------
 // critical = a topic with critical:true (set by a Claude run / project when it really can't wait),
 // or marked urgent by someone other than Oren. Oren's own taps never ping him. One push per topic per marking.
@@ -187,6 +207,14 @@ async function tick() {
     await putDoc(SRV, "state", "brief", { date: t.date }); // claim first, so two ticks never double-send
     out.brief = await briefNow("schedule");
   }
+  // evening brief, same once-a-day claim (window: 120 minutes)
+  const se = (await getDoc(SRV, "state", "eve")) || {};
+  const [eh, em] = String(p.eve_time || "18:00").split(":").map((x: string) => parseInt(x) || 0);
+  const ea = eh * 60 + em;
+  if (p.eve && !p.abroadOn && dayOkFor(p.eve_days, t.wd) && se.date !== t.date && t.mins >= ea && t.mins < ea + 120) {
+    await putDoc(SRV, "state", "eve", { date: t.date });
+    out.eve = await eveNow("schedule");
+  }
   out.crit = await criticalTick(p, t);
   return out;
 }
@@ -200,13 +228,14 @@ Deno.serve(async (req) => {
     if (action === "key") return json({ key: (await keys()).pub });
     if (action === "tick") return json(await tick());
     // test / brief: only to a device that is already registered (registering needs the code)
-    if (action === "test" || action === "brief") {
+    if (action === "test" || action === "brief" || action === "eve") {
       const mine = (await subs()).filter((s: any) => s.endpoint === body.endpoint);
       if (!mine.length) return json({ error: "device not registered" }, 404);
       const st = (await getDoc(SRV, "state", "manual")) || {};
       if (st.at && Date.now() - Date.parse(st.at) < 20000) return json({ error: "too soon" }, 429);
       await putDoc(SRV, "state", "manual", { at: new Date().toISOString() });
       if (action === "test") return json({ sent: await sendTo(mine, { title: "🔔 Side Quests", body: "ההתראות עובדות. בריף בבוקר, ופה רק על דברים קריטיים.", tag: "sq-test", url: APP_URL }) });
+      if (action === "eve") return json(await eveNow("manual", mine));
       return json(await briefNow("manual", mine));
     }
     return json({ error: "unknown action" }, 400);
