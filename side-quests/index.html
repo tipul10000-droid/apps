@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.1";window.SQ_BUILD_AT="3.11.2026 09:50";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.2";window.SQ_BUILD_AT="3.11.2026 10:40";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -976,7 +976,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 .lvsel{font:inherit;font-size:14px;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
 
 /* ===== 6.0: modes + calmer rows (Apple Reminders style) ===== */
-.row{grid-template-columns:44px 1fr;border-radius:14px;border:0;box-shadow:0 1px 0 var(--line);background:var(--surface)}
+.row{grid-template-columns:44px 1fr;border-radius:14px;border:1px solid var(--line);box-shadow:none;background:var(--surface)}
 .row .bar{display:none}
 .ck{align-self:start;margin:11px 10px 0 0;width:24px;height:24px;border-radius:50%;border:2px solid var(--muted);background:transparent;padding:0;opacity:.7;display:inline-flex;align-items:center;justify-content:center;flex:none}
 .ck::after{content:"";position:absolute}
@@ -993,7 +993,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 .r-sub{display:flex;align-items:center;gap:6px;min-width:0;font-size:13.5px;color:var(--muted)}
 .r-sub .r-next{flex:1;min-width:0;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;display:block!important;font-size:13.5px}
 .r-sub .tag,.r-sub .date{flex:none}
-.row.is-open{box-shadow:0 0 0 1.5px var(--k-admin)}
+.row.is-open{border-color:var(--k-admin)}
 .row.lv1 .r-body{border:0}
 .acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:54px;padding:6px 2px;border-radius:12px;background:var(--sunk);color:var(--ink);font-size:12.5px;font-weight:600;text-decoration:none;border:0}
@@ -1007,20 +1007,16 @@ details.group.fold>summary{list-style:none;cursor:pointer;opacity:.8}
 details.group.fold>summary::-webkit-details-marker{display:none}
 details.group.fold>summary::after{content:"▾";margin-inline-start:6px;font-size:11px}
 details.group.fold[open]>summary::after{content:"▴"}
-details.group.fold{display:flex;flex-direction:column;gap:8px}
-details.group.fold:not([open]){gap:0}
+details.group.fold{display:block}
+details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .avmenu .note.hd{display:flex;justify-content:space-between;font-weight:700;color:var(--hero-ink);font-size:12.5px;margin-top:4px}
 .avmenu .note.hd span{font-weight:500;color:var(--hero-muted)}
-.fullb{display:none}
-/* focus modes (work / work+army / abroad): no quest buttons, no counters, no dashboards, no fun */
-body.focus .qnav,body.focus .stats,body.focus #dashSec,body.focus #funSec,body.focus .ai-only,body.focus #filters,body.focus .tb.tsun{display:none!important}
-body.focus:not(.m-abroad) #tvSec{display:none!important}
-body.focus .qbanner,body.focus .qb{max-height:none}
-body.focus .ctxrow{grid-template-columns:minmax(0,1fr) auto auto}
-body.focus .ctxrow .refr{grid-column:auto}
-body.focus .fullb:not([hidden]){display:flex;align-items:center;justify-content:center;min-height:38px;padding:0 12px;border-radius:12px;background:rgba(255,255,255,.14);color:var(--hero-ink);font-size:13.5px;font-weight:700;white-space:nowrap;border:1px solid rgba(255,255,255,.25)}
-body.focus .ctxrow .refr .rv{display:none}
-.row.lv1{background:transparent;box-shadow:none;border:1.5px dashed var(--line)}
+.row.lv1{background:transparent;border:1px dashed var(--line)}
+.row.urgent{border-color:var(--due);box-shadow:none}
+.qnav[data-n="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.qnav[data-n="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.avmenu.m3{grid-template-columns:1fr}
+.avmenu.m3 button{flex-direction:row;align-items:baseline;gap:8px}
 /* calmer top: quest buttons as slim chips, counters smaller */
 .qbtn{flex-direction:row;min-height:36px;padding:4px 6px;gap:5px;border-radius:10px}
 .qbtn .qe{font-size:14px}
@@ -1097,7 +1093,7 @@ body.focus .ctxrow .refr .rv{display:none}
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxrow"><div class="avail" id="avail"></div><button class="fullb" id="fullBtn" type="button" hidden>תצוגה מלאה</button><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button></div>
+    <div class="ctxrow"><div class="avail" id="avail"></div><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
@@ -1154,46 +1150,43 @@ body.focus .ctxrow .refr .rv{display:none}
   const CTX={call:{e:"📞",l:"זמין לשיחות",full:"זמין לשיחות טלפון / ברכב",sub:"ברכב, אפשר לדבר"},pc:{e:"💻",l:"מול המחשב",full:"מול המחשב",sub:"עבודה במחשב"},house:{e:"🔧",l:"בבית",full:"בבית, משימות בית",sub:"להתקין, לתקן, לסדר"},out:{e:"🛒",l:"סידורים בחוץ",full:"סידורי חוץ",sub:"קניות וסידורים"},office:{e:"🏢",l:"בעבודה",full:"בעבודה: רק קצר ומרחוק",sub:"קצר, מהנייד או בשיחה"},lior:{e:"👫",l:"עם ליאור",full:"עם ליאור",sub:"בירורים שעושים יחד"}};
   const TAGS={...CTX,mobile:{e:"📱",l:"בנייד",full:"אפשר מהנייד, מכל מקום"}};
   const CTX_OLD={home:"pc",phone:"mobile"};
-  let ctxNow="all",ctxMenu=false;try{const v=localStorage.getItem("sq_ctx");const m=v==="home"?"pc":v==="phone"?"call":v;if(CTX[m]&&m!=="office")ctxNow=m;}catch(e){}
+  let ctxNow="all",ctxMenu=false; // 6.2: no separate availability filter any more; the mode + time of day decide (one choice, Oren 3.11)
   function ctxOf(t){const out=[];for(let c of (Array.isArray(t.context)?t.context:[])){c=CTX_OLD[c]||c;if(TAGS[c]&&!out.includes(c))out.push(c);}return out;}
-  // 6.0 modes (Oren 3.11): home = the full app; work = auto Sun-Thu 08:30-17:00: Work + Army + up to 5 tiny personal tasks, no Fun;
-  // warmy = reserve day (Army first, then Work); abroad = Travel + urgent only (same switch as settings/notify abroad).
-  // Manual choice in localStorage sq_mode {m, auto}: it holds until the automatic mode changes (e.g. "full view" at work lasts until 17:00).
-  const MODES={home:{e:"🏠",l:"בית",sub:"ערב וסופ״ש: הכול, גם משימות כבדות"},commute:{e:"🚗",l:"בדרך",sub:"לעבודה ובחזרה: קצרות, שיחות, סידורים"},friday:{e:"☕",l:"שישי סידורים",sub:"08:00-12:00: סידורים ומשימות קצרות"},work:{e:"💼",l:"עבודה",sub:"עבודה, צבא ומשימונות"},warmy:{e:"🪖",l:"עבודה + צבא",sub:"יום מילואים, צבא קודם"},abroad:{e:"✈️",l:"חו״ל",sub:"טיולים ודחוף בלבד"}};
-  const MQ={work:"work",warmy:"army",abroad:"travel"}, MCORE={work:["work","army"],warmy:["army","work"],abroad:["travel"]};
+  // 6.2 modes (Oren 3.11, second round): ONE choice, three modes. The app stays the same app; a mode only hides quests and re-orders tasks.
+  // home = all 6 quests. work (auto Sun-Thu 08:30-18:30) = Side, Army, Work only. abroad (settings/notify abroad) = everything but Work and Army.
+  // Side Quests is always the main quest. Inside it the list adapts by mode and time of day (phase): quick things on top, heavy things folded.
+  // Manual choice in localStorage sq_mode {m, auto, day}: holds until the automatic mode changes, never past today.
+  const MODES={home:{e:"🏠",l:"בית",sub:"כל 6 הקווסטים"},work:{e:"💼",l:"עבודה",sub:"רק סייד, צבא ועבודה. קצרות למעלה"},abroad:{e:"✈️",l:"חו״ל",sub:"בלי עבודה וצבא. מה שאפשר מהנייד למעלה"}};
+  const MHIDE={home:[],work:["fun","travel","ai"],abroad:["work","army"]};
   function ilNow(){const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Jerusalem",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const g=k=>(p.find(x=>x.type===k)||{}).value;return {d:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(g("weekday")),m:(+g("hour")%24)*60+(+g("minute"))};}
-  // Oren's day (3.11): Sun-Thu 07:00-08:30 on the way to work, 08:30-17:00 work, 17:00-19:00 on the way home; Fri 08:00-12:00 errands; else home (heavy tasks)
-  function isWorkTime(){const n=ilNow();return n.d>=0&&n.d<=4&&n.m>=510&&n.m<1020;}
-  function autoMode(){let ab=false;try{ab=abroadOn();}catch(e){}if(ab)return "abroad";const n=ilNow();
-    if(n.d>=0&&n.d<=4){if(n.m>=510&&n.m<1020)return "work";if(n.m>=420&&n.m<510||n.m>=1020&&n.m<1140)return "commute";}
-    if(n.d===5&&n.m>=480&&n.m<720)return "friday";return "home";}
+  function isWorkTime(){const n=ilNow();return n.d>=0&&n.d<=4&&n.m>=510&&n.m<1110;}
+  function autoMode(){let ab=false;try{ab=abroadOn();}catch(e){}return ab?"abroad":isWorkTime()?"work":"home";}
+  // time of day inside a mode: on the way (Sun-Thu 07:00-08:30, 18:30-19:30), Friday errands (08:00-12:00), else evening/weekend
+  function phase(){const n=ilNow();if(n.d>=0&&n.d<=4&&(n.m>=420&&n.m<510||n.m>=1110&&n.m<1170))return "commute";if(n.d===5&&n.m>=480&&n.m<720)return "friday";return "free";}
   const ilDate=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date());
-  const MODE_END={work:"עד 17:00",commute:"",friday:"עד 12:00"};
+  const MODE_END={work:"עד 18:30"};
   let modeOv=null;try{modeOv=JSON.parse(localStorage.getItem("sq_mode")||"null");}catch(e){}
-  // a manual choice lasts until the automatic mode changes, and never past today
-  function curMode(){const a=autoMode();if(modeOv&&(modeOv.auto!==a||modeOv.day!==ilDate()))modeOv=null;return modeOv&&MODES[modeOv.m]?modeOv.m:a;}
+  function curMode(){const a=autoMode();if(modeOv&&(modeOv.auto!==a||modeOv.day!==ilDate()||!MODES[modeOv.m]))modeOv=null;return modeOv?modeOv.m:a;}
   let mode=curMode();
-  const focusOn=()=>!!MCORE[mode];
-  // quick tasks: added on the spot from the app (or tagged for the road/phone), simple, not waiting on others. Born fast, closed fast: they go on top.
+  const qHidden=q=>MHIDE[mode].includes(q);
+  // quick tasks: added on the spot from the app, or simple and doable from where I am now. Born fast, closed fast: they go on top.
   const QUICK_SRC=/נוסף ידנית/;
-  function isQuick(t){if(!isOpen(t)||snoozed(t)||t.status==="paused"||t.status==="waiting_other")return false;const c=ctxOf(t);
-    if(mode==="commute"&&c.includes("call"))return true; // in the car: calls of any size
+  function isQuick(t){if(!isOpen(t)||snoozed(t)||t.status==="paused"||t.status==="waiting_other")return false;const c=ctxOf(t),ph=phase();
+    if(isUrgent(t)&&mode!=="home")return true;
+    if(ph==="commute"&&mode!=="work"&&c.includes("call"))return true; // in the car: calls of any size
     if(levelOf(t)>1)return false;
-    if(QUICK_SRC.test(t.source||""))return !c.includes("pc")&&!c.includes("house");
-    return c.includes("out")||c.includes("call")||c.includes("mobile")||(mode==="commute"||mode==="friday")&&c.includes("lior");}
-  function isCore(t){return focusOn()&&MCORE[mode].includes(questOf(t));}
-  // a tiny personal task = something Oren can push between meetings: phone / call / at-work tagged, or a simple level-1 task with no tag
-  function isTiny(t){if(!isOpen(t)||snoozed(t)||t.status==="paused"||t.status==="waiting_other")return false;if(isUrgent(t))return true;
-    const c=ctxOf(t);if(c.includes("office")||c.includes("mobile")||c.includes("call"))return true;return !c.length&&levelOf(t)===1;}
-  function focusTopics(){const base=allTopics.filter(t=>!isFun(t)),core=base.filter(isCore),rest=base.filter(t=>!isCore(t));
-    if(mode==="abroad")return [...core,...rest.filter(t=>isUrgent(t)&&!snoozed(t))];
-    const tiny=rest.filter(isTiny).sort((a,b)=>(isUrgent(b)-isUrgent(a))||(returned(b)-returned(a))||(isQuick(b)-isQuick(a))||byDate(a,b)||(b.created_at||"").localeCompare(a.created_at||"")).slice(0,mode==="warmy"?3:5);
-    return [...core,...tiny];}
+    const heavy=c.includes("pc")||c.includes("house");
+    if(mode==="work")return !heavy&&!c.includes("out")&&!c.includes("lior")&&(QUICK_SRC.test(t.source||"")||c.includes("mobile")||c.includes("call")||c.includes("office")||!c.length);
+    if(mode==="abroad")return c.includes("mobile")||c.includes("call");
+    if(QUICK_SRC.test(t.source||""))return !heavy;
+    return c.includes("out")||c.includes("call")||c.includes("mobile")||(ph!=="free")&&c.includes("lior");}
+  // things that can't be done where I am now: fold them away (Side only)
+  function isLater(t){if(quest!=="side"||isUrgent(t)||isQuick(t)||t.status==="waiting_other"||t.status==="paused")return false;if(mode==="work"||mode==="abroad")return true;return false;}
   function setMode(m,why){const a=autoMode();modeOv=m===a?null:{m,auto:a,day:ilDate()};try{modeOv?localStorage.setItem("sq_mode",JSON.stringify(modeOv)):localStorage.removeItem("sq_mode");}catch(e){}ctxMenu=false;refreshMode(true);if(why)toast(why);}
-  function refreshMode(force){const m=curMode();if(!force&&m===mode)return;mode=m;openId=null;laterFor=null;filterKind="all";view="open";quest=focusOn()?MQ[mode]:questFromHash();applyQuest();if(db)renderAll();window.scrollTo(0,0);}
+  function refreshMode(force){const m=curMode();if(!force&&m===mode)return;mode=m;openId=null;laterFor=null;filterKind="all";view="open";if(qHidden(quest))quest="side";applyQuest();if(db)renderAll();}
   setInterval(()=>refreshMode(),60000);
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshMode();});
-  function ctxOk(t){if(focusOn()||ctxNow==="all")return true;const c=ctxOf(t);
+  function ctxOk(t){if(ctxNow==="all")return true;const c=ctxOf(t);
     if(ctxNow==="office")return c.includes("office")||c.includes("mobile")||c.includes("call"); // at work: only short, remote things (iPhone or a call)
     if(ctxNow==="lior")return c.includes("lior"); // with Lior: only things done together
     return !c.length||c.includes("mobile")||c.includes(ctxNow);}
@@ -1382,13 +1375,13 @@ body.focus .ctxrow .refr .rv{display:none}
   }
   function renderInbox(){
     const cards=[];
-    const order=[...topics.filter(t=>isOpen(t)&&returned(t)),...topics.filter(t=>isOpen(t)&&!returned(t)&&!snoozed(t)).sort(byDate)].filter(ctxOk).filter(t=>!focusOn()||isCore(t)).sort((a,b)=>(isUrgent(b)?1:0)-(isUrgent(a)?1:0));
+    const order=[...topics.filter(t=>isOpen(t)&&returned(t)),...topics.filter(t=>isOpen(t)&&!returned(t)&&!snoozed(t)).sort(byDate)].filter(ctxOk).sort((a,b)=>(isUrgent(b)?1:0)-(isUrgent(a)?1:0));
     order.forEach(t=>{
       questionsOf(t).filter(q=>!q.answer).forEach(q=>cards.push(questionCard(t,q,true)));
       offersOf(t).filter(o=>(o.state||"open")==="open").forEach(o=>cards.push(offerCard(t,o,true)));
     });
     $("askSec").hidden=!cards.length;
-    const cap=focusOn()?2:3, shown=inboxAll?cards:cards.slice(0,cap);
+    const cap=mode==="home"?3:2, shown=inboxAll?cards:cards.slice(0,cap);
     $("inbox").replaceChildren(...shown,...(cards.length>cap?[h("button",{class:"pill",type:"button",style:"align-self:center",onclick:()=>{inboxAll=!inboxAll;renderInbox();}},inboxAll?"פחות":`עוד ${cards.length-cap} החלטות`)]:[]));
   }
   function jumpTo(id){const e=$(id);if(e&&!e.hidden&&e.offsetParent)e.scrollIntoView({behavior:"smooth",block:"start"});else toast("אין כרגע מה להציג כאן");}
@@ -1456,25 +1449,19 @@ body.focus .ctxrow .refr .rv{display:none}
     }));
   }
   function renderCtx(){
-    const M=MODES[mode], cx=ctxNow!=="all"&&!focusOn()?CTX[ctxNow]:null, auto=!modeOv;
-    const pick=k=>{ctxNow=k;ctxMenu=false;try{localStorage.setItem("sq_ctx",k);}catch(x){}openId=null;laterFor=null;renderCtx();renderInbox();renderList();};
+    const M=MODES[mode], auto=!modeOv, ph=phase();
     const pickMode=m=>{let ab=false;try{ab=abroadOn();}catch(e){}
-      if(m==="abroad"&&!ab){setNotify({abroad:true,abroad_tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"",abroad_since:new Date().toISOString()});modeOv=null;try{localStorage.removeItem("sq_mode");}catch(e){}ctxMenu=false;setTimeout(()=>toast("✈️ מצב חו״ל: בלי בריף, רק דבר קריטי"),0);return;}
+      if(m==="abroad"&&!ab){setNotify({abroad:true,abroad_tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"",abroad_since:new Date().toISOString()});modeOv=null;try{localStorage.removeItem("sq_mode");}catch(e){}ctxMenu=false;setTimeout(()=>toast("✈️ מצב חו״ל: בלי עבודה וצבא, בלי בריף, רק קריטי"),0);return;}
       if(m!=="abroad"&&ab){notify={...notify,abroad:false,abroad_until:""};setNotify({abroad:false,abroad_until:""});}
-      setMode(m,MODES[m].e+" מצב "+MODES[m].l+(m===autoMode()?" (אוטומטי)":""));};
+      setMode(m,MODES[m].e+" "+MODES[m].l+(m===autoMode()?" (אוטומטי)":" עד המעבר הבא"));};
     const mOpt=k=>h("button",{type:"button","aria-pressed":mode===k?"true":"false",onclick:()=>pickMode(k)},h("span",null,MODES[k].e+" "+MODES[k].l),h("small",null,MODES[k].sub));
-    const opt=k=>h("button",{type:"button","aria-pressed":ctxNow===k?"true":"false",onclick:()=>pick(k)},h("span",null,CTX[k].e+" "+CTX[k].l),h("small",null,CTX[k].sub));
-    const until=auto&&MODE_END[mode]?MODE_END[mode]:auto&&mode==="abroad"&&notify.abroad_until?"עד "+fmtDate(notify.abroad_until):"";
+    const hint=mode==="work"?(auto?"עד 18:30":""):mode==="abroad"?(notify.abroad_until?"עד "+fmtDate(notify.abroad_until):""):ph==="commute"?"בדרך":ph==="friday"?"בוקר סידורים":"";
     $("avail").replaceChildren(
-      h("button",{class:"avbtn"+(focusOn()||cx?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false","aria-label":"מצב: "+M.l+(cx?", "+cx.l:""),onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},
-        h("span",{class:"e","aria-hidden":"true"},cx?cx.e:M.e),h("span",{class:"v"},cx?M.l+" · "+cx.l:M.l+(until?" · "+until:"")),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
-      h("div",{class:"avmenu",hidden:!ctxMenu,role:"group","aria-label":"מצב"},
-        h("div",{class:"note hd"},"איפה אני",h("span",null,auto?"אוטומטי":"ידני")),
+      h("button",{class:"avbtn"+(mode!=="home"?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false","aria-label":"מצב: "+M.l,onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},
+        h("span",{class:"e","aria-hidden":"true"},M.e),h("span",{class:"v"},M.l+(hint?" · "+hint:"")),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
+      h("div",{class:"avmenu m3",hidden:!ctxMenu,role:"group","aria-label":"מצב"},
         ...Object.keys(MODES).map(mOpt),
-        h("div",{class:"note"},"עובר לבד: א׳-ה׳ 07:00 בדרך, 08:30 עבודה, 17:00 בדרך, 19:00 בית. שישי 08:00-12:00 סידורים. בחירה ידנית נשארת עד המעבר הבא."),
-        ...(focusOn()?[]:[h("div",{class:"note hd"},"במה אני זמין עכשיו"),...["call","pc","house","out","lior"].map(opt),
-          h("button",{class:"all",type:"button","aria-pressed":ctxNow==="all"?"true":"false",onclick:()=>pick("all")},"📍 הכול, בלי סינון")])));
-    $("fullBtn").hidden=!focusOn();
+        h("div",{class:"note"},(auto?"אוטומטי. ":"ידני, עד המעבר הבא. ")+"א׳-ה׳ 08:30-18:30 עבודה, אחרת בית. בדרך ובשישי בבוקר הקצרות והסידורים עולים למעלה.")));
   }
   function setCtx(t,c){const cur=ctxOf(t),next=cur.includes(c)?cur.filter(x=>x!==c):[...cur,c];patch(t,{context:next},next.length?"מתאים ל: "+next.map(x=>TAGS[x].l).join(", "):"מתאים לכל מקום");}
   function setUrgent(t){const on=!t.urgent;if(openId===t.id&&!on)openId=null;patch(t,{urgent:on,urgent_by:on?"oren":"",urgent_at:on?new Date().toISOString():"",...(on&&snoozed(t)?{snooze_until:""}:{}),log:logPush(t,on?"סומן דחוף ❗":"הוסר סימון דחוף",new Date().toISOString())},on?"❗ סומן דחוף, עלה לראש הרשימה":"הוסר סימון דחוף");}
@@ -1491,7 +1478,7 @@ body.focus .ctxrow .refr .rv{display:none}
     const k=KINDS[t.kind]?t.kind:"research", n=daysUntil(t.next_date), open=isOpen(t);
     const dcls=n==null?"":n<=0?" due":n<=3?" soon":"";
     const asks=openAsks(t), lv=levelOf(t);
-    const qe=focusOn()&&!isCore(t)?(QUESTS[questOf(t)]||{}).e:null;
+    const qe=null;
     // one chip only, by what matters most: snoozed > waiting for your decision > date
     const chip=!open?null:snoozed(t)?h("span",{class:"tag zz"},"⏰ "+fmtWhen(t.snooze_until)):asks?h("span",{class:"tag ask"},asks===1?"להחלטה":`${asks} להחלטה`):t.next_date?h("span",{class:"date"+dcls},relDate(t.next_date)):null;
     const sub=!open?null:t.waiting_for?(t.status==="waiting_me"?"מחכה לך: ":"ממתין ל: ")+t.waiting_for:t.next_step||"";
@@ -1579,7 +1566,7 @@ body.focus .ctxrow .refr .rv{display:none}
   function group(title,items,hot,gid,fold){if(!items.length)return null;
     if(!fold)return h("div",{class:"group",id:gid?"g-"+gid:null},h("div",{class:"g-head"+(hot?" hot":"")},title,h("span",{class:"n"},items.length)),items.map(row));
     const key=quest+":"+(gid||title),isOpenG=folded[key]===true||items.some(t=>t.id===openId);
-    const d=h("details",{class:"group fold",id:gid?"g-"+gid:null,open:isOpenG?"":null},h("summary",{class:"g-head"},title,h("span",{class:"n"},items.length)),items.map(row));
+    const d=h("details",{class:"group fold",id:gid?"g-"+gid:null,open:isOpenG?"":null},h("summary",{class:"g-head"},title,h("span",{class:"n"},items.length)),h("div",{class:"g-body"},items.map(row)));
     d.addEventListener("toggle",()=>{folded[key]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
   function renderViews(){
     const c={open:topics.filter(isOpen).length,done:topics.filter(t=>t.status==="done"||t.status==="promoted").length,archive:topics.filter(t=>t.status==="archived").length};
@@ -1599,15 +1586,16 @@ body.focus .ctxrow .refr .rv{display:none}
     const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t)&&!inStrip(t));
     $("urgSec").hidden=!urg.length;$("urgList").replaceChildren(...urg.map(row));
     const back=all.filter(returned), later=all.filter(snoozed), open=all.filter(t=>!returned(t)&&!snoozed(t));
-    const quickL=focusOn()?[]:open.filter(isQuick).sort((a,b)=>(b.created_at||"").localeCompare(a.created_at||""));
-    const hot=open.filter(isHot), rest=open.filter(t=>!isHot(t));
+    const ph=phase(), quickL=open.filter(isQuick).sort((a,b)=>(isUrgent(b)-isUrgent(a))||(b.created_at||"").localeCompare(a.created_at||""));
+    const laterHere=open.filter(t=>!quickL.includes(t)&&isLater(t));
+    const left=open.filter(t=>!quickL.includes(t)&&!laterHere.includes(t));
+    const hot=left.filter(isHot), rest=left.filter(t=>!isHot(t));
     const moving=rest.filter(t=>t.status==="active"||t.status==="waiting_me"), waiting=rest.filter(t=>t.status==="waiting_other"), paused=rest.filter(t=>t.status==="paused");
-    const QG={work:"💼 עבודה",army:"🪖 צבא",travel:"✈️ טיולים"};
-    const g=(focusOn()?[group("⏰ חזר אליך",back,true),...MCORE[mode].map(q=>group(QG[q],open.filter(t=>questOf(t)===q&&t.status!=="waiting_other"&&t.status!=="paused"),false,"q-"+q)),
-        mode!=="abroad"?group("⚡ משימונות קטנות",open.filter(t=>!isCore(t)),false,"tiny"):null,
-        group("מחכה לאחרים",open.filter(t=>isCore(t)&&t.status==="waiting_other"),false,"wait",true),group("אחר כך",later,false,"later",true)]
-      :[group("⏰ חזר אליך",back,true),group(mode==="commute"?"⚡ בדרך: קצרות, שיחות וסידורים":mode==="friday"?"⚡ סידורים וקצרות לבוקר":"⚡ משימות קצרות",quickL,true,"quick"),group("לטיפול עכשיו",hot.filter(t=>!quickL.includes(t)),true),group("בתנועה",moving.filter(t=>!quickL.includes(t))),group("מחכה לאחרים",waiting,false,"wait",true),group("בהקפאה",paused,false,"paused",true),group("אחר כך",later,false,"later",true)]).filter(Boolean);
-    $("list").replaceChildren(...(g.length?g:urg.length?[h("div",{class:"empty"},"כל המשימות כאן דחופות, הן למעלה.")]:[h("div",{class:"empty"},focusOn()?"אין כרגע משהו קטן לדחוף. אפשר לחזור לעבודה 🙂":topics.length?ctxNow!=="all"?`אין משימות פתוחות למצב: ${CTX[ctxNow].full}.`:"אין משימות בסינון הזה.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-${QUESTS[quest].name}״.`)]));
+    const qTitle=mode==="work"?"⚡ קצרות, אפשר בין לבין":mode==="abroad"?"⚡ אפשר מהנייד":ph==="commute"?"⚡ בדרך: קצרות, שיחות וסידורים":ph==="friday"?"⚡ סידורים וקצרות לבוקר":"⚡ משימות קצרות";
+    const g=[group("⏰ חזר אליך",back,true),group(qTitle,quickL,true,"quick"),group("לטיפול עכשיו",hot,true),group("בתנועה",moving),
+      group(mode==="work"?"🏠 לבית ולערב":"🏠 כשאחזור",laterHere,false,"home",true),
+      group("מחכה לאחרים",waiting,false,"wait",true),group("בהקפאה",paused,false,"paused",true),group("אחר כך",later,false,"later",true)].filter(Boolean);
+    $("list").replaceChildren(...(g.length?g:urg.length?[h("div",{class:"empty"},"כל המשימות כאן דחופות, הן למעלה.")]:[h("div",{class:"empty"},topics.length?ctxNow!=="all"?`אין משימות פתוחות למצב: ${CTX[ctxNow].full}.`:"אין משימות בסינון הזה.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-${QUESTS[quest].name}״.`)]));
   }
   function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString()},"בוצע ✓ (עבר ל״בוצעו״)");}
 
@@ -1618,19 +1606,20 @@ body.focus .ctxrow .refr .rv{display:none}
   const TQ=["army","work","travel","ai"]; // quests stored in t.quest; missing = side
   function questOf(t){return TQ.includes(t.quest)?t.quest:"side";}
   function questFromHash(){const q=location.hash.slice(1);return QUESTS[q]?q:"side";}
-  let quest=questFromHash(), allTopics=[];if(focusOn())quest=MQ[mode];
+  let quest=questFromHash(), allTopics=[];if(qHidden(quest))quest="side";
   let funMode=quest==="fun";
-  function splitTopics(){const tq=quest==="fun"?"side":quest;topics=focusOn()?focusTopics():allTopics.filter(t=>!isFun(t)&&questOf(t)===tq);funTopics=allTopics.filter(isFun);}
+  function splitTopics(){const tq=quest==="fun"?"side":quest;topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq);funTopics=allTopics.filter(isFun);}
   function renderQnav(){
     const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)).length;
-    $("qnav").replaceChildren(...Object.keys(QUESTS).map(q=>{const Q=QUESTS[q];return h("button",{class:"qbtn q-"+q,type:"button","data-q":q,"aria-current":q===quest?"true":"false",onclick:()=>setQuest(q)},h("span",{class:"qe","aria-hidden":"true"},Q.e),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
+    const vis=Object.keys(QUESTS).filter(q=>!qHidden(q));$("qnav").dataset.n=vis.length;
+    $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q];return h("button",{class:"qbtn q-"+q,type:"button","data-q":q,"aria-current":q===quest?"true":"false",onclick:()=>setQuest(q)},h("span",{class:"qe","aria-hidden":"true"},Q.e),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }
   function applyQuest(){
     funMode=quest==="fun";
     for(const q in QUESTS)document.body.classList.toggle("q-"+q,q===quest);
-    for(const k in MODES)document.body.classList.toggle("m-"+k,k===mode);document.body.classList.toggle("focus",focusOn());
+    for(const k in MODES)document.body.classList.toggle("m-"+k,k===mode);
     document.body.classList.toggle("fun-on",funMode);
-    const Q=QUESTS[quest];document.title=focusOn()?"Side Quests · "+MODES[mode].l:Q.name;
+    const Q=QUESTS[quest];document.title=Q.name;
     if(Q.ph)$("qtitle").placeholder=Q.ph;
     splitTopics();renderQnav();
   }
@@ -2019,7 +2008,7 @@ body.focus .ctxrow .refr .rv{display:none}
       tvLinks(A.links)));
     sec.replaceChildren(...kids);
   }
-  window.addEventListener("hashchange",()=>{const q=questFromHash();if(focusOn()){if(location.hash&&QUESTS[location.hash.slice(1)])setMode("home","תצוגה מלאה");return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
+  window.addEventListener("hashchange",()=>{const q=questFromHash();if(qHidden(q)){setMode("home","🏠 עברתי לבית כדי לפתוח את "+QUESTS[q].name);return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
   applyQuest();
   function renderAll(){renderQnav();renderStats();renderCtx();renderInbox();renderViews();renderFilters();renderStrip();renderList();renderFun();renderTravel();renderDash();}
 
@@ -2053,7 +2042,7 @@ body.focus .ctxrow .refr .rv{display:none}
       if(n){$("qtitle").value="";toast(n===1?"נוסף מהשיחה":`נוספו ${n} נושאים`);}
       return;
     }
-    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(focusOn()?{}:TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
+    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
   function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"";}
@@ -2141,7 +2130,6 @@ body.focus .ctxrow .refr .rv{display:none}
   function sweepLine(){const r=syncState.req&&Date.parse(syncState.req.at),w=syncState.state&&Date.parse(syncState.state.last_sweep_at);
     if(r&&(!w||r>w))return"סריקה מלאה (Gmail, Drive, GitHub, שיחות) תרוץ בריצה הקרובה";
     return w?`סריקה מלאה אחרונה: ${ago(w)}`:"";}
-  $("fullBtn").onclick=()=>setMode("home","🏠 תצוגה מלאה"+(isWorkTime()?" עד 17:00":""));
   $("refr").onclick=async()=>{const b=$("refr");if(b.classList.contains("spin"))return;b.classList.add("spin");$("refrTxt").textContent="מעדכן…";checkUpdate(true);
     const before=snapT(),t0=Date.now();sheet(true,"מעדכן את הסטטוס האחרון…",null,"מושך נתונים טריים ומבקש סריקה מלאה");
     let ok=true;
@@ -2359,7 +2347,7 @@ body.focus .ctxrow .refr .rv{display:none}
     if(keep){const p=m.querySelector(".sqpanel");if(p)p.scrollTop=top;}
   }
   function abroadOn(){return notify.abroad===true&&(!notify.abroad_until||notify.abroad_until>=todayISO());}
-  function openTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;if(focusOn()&&(isFun(t)||!topics.includes(t)))setMode("home");const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
+  function openTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;{const q0=isFun(t)?"fun":questOf(t);if(qHidden(q0))setMode("home","🏠 עברתי לבית כדי לפתוח את המשימה");}const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
     if(t.status==="done"||t.status==="promoted")view="done";else if(t.status==="archived")view="archive";else view="open";
     if(!ctxOk(t)){ctxNow="all";try{localStorage.setItem("sq_ctx","all");}catch(e){}}filterKind="all";openId=id;renderAll();
     setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
@@ -2391,7 +2379,7 @@ body.focus .ctxrow .refr .rv{display:none}
       const th=s.docs.find(x=>x.id==="travel_hub"),tr=s.docs.find(x=>x.id==="travel_report");travelHub=th?th.data():null;travelReport=tr?tr.data():null;renderTravel();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
-    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));if(focusOn())splitTopics();renderStats();renderStrip();renderList();renderFun();renderDash();},()=>{});
+    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderFun();renderDash();},()=>{});
     db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));renderList();renderDash();},()=>{});
     db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
     initNotify();
