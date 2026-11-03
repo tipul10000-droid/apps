@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.7";window.SQ_BUILD_AT="3.11.2026 08:35";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.8";window.SQ_BUILD_AT="3.11.2026 08:55";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -657,6 +657,47 @@ html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 .brief li:first-child{border-top:0}
 .brief .bt{font-weight:800;font-size:16px}
 .brief .bm{color:var(--muted);font-size:12.5px;margin-top:6px}
+/* 5.8: morning brief, full screen (opened from the 08:00 notification or the sun button; Side Quests only) */
+.tb.tsun{width:34px;height:34px;padding:0;position:relative;background:#F6B53C;color:#3B2200;border:1px solid rgba(255,255,255,.5);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.tb.tsun svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.tb.tsun circle{fill:currentColor}
+body:not(.q-side) .tb.tsun{display:none}
+.bfull{position:fixed;inset:0;z-index:90;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg,#FAFAF8);color:var(--ink,#111);animation:bfin .28s ease-out}
+@keyframes bfin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.bf-top{position:relative;padding:calc(env(safe-area-inset-top,0px) + 18px) 18px 22px;background:linear-gradient(160deg,#FFD27A 0%,#F6A24A 55%,#E9773B 100%);color:#2A1500;overflow:hidden}
+.bf-top::before{content:"";position:absolute;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,#FFF4C9 0%,rgba(255,244,201,.0) 70%);top:-60px;left:-40px}
+.bf-top .bf-x{position:absolute;top:calc(env(safe-area-inset-top,0px) + 10px);left:12px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.45);font-size:20px;line-height:36px;text-align:center;color:#2A1500}
+.bf-day{position:relative;font-size:13.5px;font-weight:700;opacity:.8}
+.bf-hi{position:relative;margin:4px 0 0;font:800 26px/1.15 var(--f-display,inherit)}
+.bf-head{position:relative;margin-top:6px;font-size:16px;font-weight:700}
+.bf-chips{position:relative;display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.bf-chips span{background:rgba(255,255,255,.55);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700}
+.bf-body{max-width:560px;margin:0 auto;padding:6px 14px calc(110px + env(safe-area-inset-bottom,0px))}
+.bf-sec{margin-top:18px}
+.bf-sec h3{margin:0 0 8px;font:800 16px var(--f-display,inherit);display:flex;align-items:center;gap:6px}
+.bf-sec h3 small{font:600 12.5px var(--f-body,inherit);color:var(--muted)}
+.bf-note{background:var(--surface,#fff);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:15px;line-height:1.5}
+.bf-note p{margin:0}.bf-note p+p{margin-top:6px}
+.bf-item{display:flex;align-items:center;gap:10px;background:var(--surface,#fff);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:6px}
+.bf-item.u{border-color:var(--due);box-shadow:inset 3px 0 0 var(--due)}
+.bf-item .bi-t{flex:1;min-width:0}
+.bf-item b{display:block;font-size:15px;line-height:1.3}
+.bf-item small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bf-item .tag{display:inline-block;font-size:11px;font-weight:800;border-radius:6px;padding:1px 6px;margin-inline-end:6px;background:var(--sunk);color:var(--ink)}
+.bf-item .tag.new{background:#DDF3E4;color:#17603A}.bf-item .tag.done{background:#E3E8F4;color:#2C4A8A}
+.bf-act{display:flex;gap:6px;flex:none}
+.bf-act button{width:34px;height:34px;border-radius:50%;border:1.5px solid currentColor;font-size:15px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.bf-act .ok{color:var(--k-admin,#2E8B57)}.bf-act .go{color:var(--k-research,#2C6BB5)}
+.bf-more{font-size:13px;color:var(--muted);margin-top:6px}
+.bf-start{display:grid;gap:8px}
+.bf-pick{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:var(--surface,#fff);border:2px solid #F6A24A;border-radius:16px;padding:12px 14px}
+.bf-pick .n{width:28px;height:28px;border-radius:50%;background:#F6A24A;color:#2A1500;font-weight:900;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.bf-pick b{display:block;font-size:15.5px}.bf-pick small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.bf-pick:active{transform:scale(.98)}
+.bf-foot{position:fixed;inset-inline:0;bottom:0;z-index:91;display:flex;gap:8px;padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg,#FAFAF8) 70%,rgba(250,250,248,0));max-width:560px;margin:0 auto}
+.bf-foot button{flex:1;min-height:48px;border-radius:14px;font-weight:800;font-size:16px}
+.bf-foot .main{background:#E9773B;color:#fff}.bf-foot .later{flex:0 0 auto;padding:0 16px;background:var(--sunk);color:var(--ink)}
+.bf-empty{color:var(--muted);font-size:14px;padding:6px 2px}
 /* 2.9: quest logo sits under the title, in place of the subtitle, so the banner art stays visible */
 .qlogo{display:block;margin-top:4px;flex:none}
 .qlogo[hidden]{display:none}
@@ -1009,7 +1050,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
   </div>
   <div class="qb-in gut"><span class="ai-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
-<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tb tsun" id="sunBtn" type="button" aria-label="בריף הבוקר"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
@@ -2068,15 +2109,67 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
   function closeModal(keep){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(keep!==true)unlockScroll();if(/^#(brief|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
   function modal(id,...kids){closeModal(true);lockScroll();const m=h("div",{class:"sqmodal",id,onclick:e=>{if(e.target===m)closeModal();}},h("div",{class:"sqpanel",role:"dialog","aria-modal":"true"},...kids));document.body.append(m);return m;}
   function sw(on,fn,label){return h("input",{type:"checkbox",class:"sqsw",role:"switch",checked:on||null,"aria-label":label,onchange:e=>fn(e.target.checked)});}
-  function briefBlock(){
-    if(!briefLast||!briefLast.body)return h("div",{class:"sqhint"},"עוד לא נשלח בריף. הראשון יגיע מחר ב-"+notify.brief_time+".");
-    const lines=Array.isArray(briefLast.lines)&&briefLast.lines.length?briefLast.lines:String(briefLast.body).split("\n");
-    const pick=briefLast.pick&&allTopics.find(t=>t.id===briefLast.pick);
-    return h("div",{class:"brief"},h("div",{class:"bt"},briefLast.title||"בריף"),h("ul",null,lines.map(l=>h("li",null,l))),
-      pick?h("div",{class:"sqbtns"},h("button",{class:"sqbtn",type:"button",onclick:()=>{closeModal();openTask(pick.id);}},"▶️ פתח: "+String(pick.title||"").slice(0,30))):null,
-      h("div",{class:"bm"},(briefLast.by==="claude"?"נכתב ע״י Claude · ":"")+(briefLast.at?ago(Date.parse(briefLast.at)):"")));
+  // ===== 5.8: the morning brief is its own full screen. The 08:00 notification is one line; tapping it opens this.
+  // Live: urgent / overnight / yesterday / waiting for you / what to start, computed from the data right now.
+  // Claude's written summary for today (settings/brief_last, from morning_brief) sits on top when present.
+  const HE_DAYS=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
+  function briefSeenToday(){try{return localStorage.getItem("sq_brief_seen")===todayISO();}catch(e){return false;}}
+  function markBriefSeen(){try{localStorage.setItem("sq_brief_seen",todayISO());}catch(e){}renderSunDot();}
+  function renderSunDot(){const d=$("sunDot");if(d)d.hidden=briefSeenToday()||!(briefLast&&briefLast.date===todayISO());}
+  function tTimes(t){const ev=[];if(t.created_at)ev.push({at:Date.parse(t.created_at),k:"new",text:"נוספה"});if(t.done_at&&t.status==="done")ev.push({at:Date.parse(t.done_at),k:"done",text:"נסגרה"});
+    for(const e of (Array.isArray(t.log)?t.log:[]))if(e&&e.at)ev.push({at:Date.parse(e.at),k:"upd",text:String(e.text||"עודכנה")});
+    if(t.sync&&t.sync.at)ev.push({at:Date.parse(t.sync.at),k:"upd",text:"עודכנה"+(t.sync.from?" ("+t.sync.from+")":"")});return ev.filter(e=>e.at);}
+  function changedIn(from,to){const out=[];for(const t of allTopics){if(isFun(t))continue;const ev=tTimes(t).filter(e=>e.at>=from&&e.at<to).sort((a,b)=>b.at-a.at);if(!ev.length)continue;
+      const k=ev.some(e=>e.k==="done")?"done":ev.some(e=>e.k==="new")?"new":"upd";const last=ev.find(e=>e.k===k)||ev[0];out.push({t,k,text:k==="upd"?last.text:"",at:ev[0].at});}
+    return out.sort((a,b)=>({new:0,done:1,upd:2}[a.k]-{new:0,done:1,upd:2}[b.k])||b.at-a.at);}
+  function bScore(t){const n=daysUntil(t.next_date);return (isUrgent(t)||t.critical?0:100)+(n==null?50:Math.max(-20,Math.min(40,n)))+(t.priority==="high"?0:20)+(t.status==="waiting_me"?0:10);}
+  function briefData(){
+    const now=new Date(),y=new Date(now);y.setDate(y.getDate()-1);
+    const at=(d,h)=>{const x=new Date(d);x.setHours(h,0,0,0);return x.getTime();};
+    const nightFrom=at(y,20),dayFrom=at(y,8);
+    const live=allTopics.filter(t=>!isFun(t)&&isOpen(t)&&t.status!=="paused"&&!snoozed(t));
+    const urgent=live.filter(t=>isUrgent(t)||t.critical||(daysUntil(t.next_date)!=null&&daysUntil(t.next_date)<=0)).sort((a,b)=>bScore(a)-bScore(b));
+    const mine=live.filter(t=>t.status==="waiting_me"||questionsOf(t).some(q=>!q.answer&&!q.done)).sort((a,b)=>bScore(a)-bScore(b));
+    const start=live.filter(t=>t.status!=="waiting_other").sort((a,b)=>bScore(a)-bScore(b));
+    const pickId=briefLast&&briefLast.date===todayISO()?briefLast.pick:"";
+    const p0=pickId&&start.find(t=>t.id===pickId);const picks=[...(p0?[p0]:[]),...start.filter(t=>t!==p0)].slice(0,3);
+    return {urgent,mine,picks,night:changedIn(nightFrom,Date.now()+60000),yday:changedIn(dayFrom,nightFrom),open:live.length};
   }
-  function showBrief(){modal("briefM",h("h2",null,"☀️ בריף הבוקר",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),h("div",{class:"sqcard"},briefBlock()));}
+  function bfDone(t){markDone(t);setTimeout(()=>{if($("briefFull"))showBrief(true);},350);}
+  function bfOpen(t){closeBrief();openTask(t.id);}
+  function bItem(t,sub,cls,tag){return h("div",{class:"bf-item"+(cls?" "+cls:"")},
+    h("div",{class:"bi-t"},h("b",null,tag?h("span",{class:"tag "+tag.k},tag.l):null,t.title||""),sub?h("small",null,sub):null),
+    h("div",{class:"bf-act"},isOpen(t)&&canWrite?h("button",{class:"ok",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:()=>bfDone(t)},"✓"):null,
+      h("button",{class:"go",type:"button","aria-label":"פתח: "+(t.title||""),onclick:()=>bfOpen(t)},"‹")));}
+  function bList(items,max,fn){const shown=items.slice(0,max).map(fn);if(items.length>max)shown.push(h("div",{class:"bf-more"},`ועוד ${items.length-max}`));return shown;}
+  function closeBrief(){const b=$("briefFull");if(b)b.remove();document.querySelectorAll(".bf-foot").forEach(x=>x.remove());markBriefSeen();unlockScroll();
+    if(location.hash==="#brief")try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
+  function showBrief(keep){
+    const old=$("briefFull"),top=old?old.scrollTop:0;if(old)old.remove();document.querySelectorAll(".bf-foot").forEach(x=>x.remove());
+    closeModal(true);lockScroll();
+    const d=briefData(),now=new Date();
+    const today=briefLast&&briefLast.date===todayISO()&&briefLast.body?briefLast:null;
+    const lines=today?(Array.isArray(today.lines)&&today.lines.length?today.lines:String(today.body).split("\n")):[];
+    const head=today&&today.title?String(today.title).replace(/^☀️\s*בוקר טוב\s*·\s*/,""):(d.urgent.length?"יש דברים דחופים היום":"יום רגוע, הנה התמונה");
+    const hr=now.getHours(),hi=hr<12?"בוקר טוב, אורן":hr<17?"צהריים טובים, אורן":"ערב טוב, אורן";
+    const why=t=>t.critical_reason||(daysUntil(t.next_date)!=null&&daysUntil(t.next_date)<=0?relDate(t.next_date)+(t.next_step?" · "+t.next_step:""):"")||t.waiting_for||t.next_step||t.stand||"";
+    const chg=x=>bItem(x.t,x.text?String(x.text).replace(/^[^:]{0,24}:\s*/,""):(x.t.stand||""),"",x.k==="new"?{k:"new",l:"חדש"}:x.k==="done"?{k:"done",l:"נסגר"}:null);
+    const el=h("div",{class:"bfull",id:"briefFull",role:"dialog","aria-modal":"true","aria-label":"בריף הבוקר"},
+      h("div",{class:"bf-top"},h("button",{class:"bf-x",type:"button","aria-label":"סגור",onclick:closeBrief},"×"),
+        h("div",{class:"bf-day"},`יום ${HE_DAYS[now.getDay()]} · ${now.getDate()}.${now.getMonth()+1}`),
+        h("h2",{class:"bf-hi"},"☀️ "+hi),h("div",{class:"bf-head"},head),
+        h("div",{class:"bf-chips"},h("span",null,`❗ ${d.urgent.length} דחופות`),h("span",null,`🟠 ${d.mine.length} מחכות לך`),h("span",null,`🌙 ${d.night.length} שינויים בלילה`))),
+      h("div",{class:"bf-body"},
+        lines.length?h("section",{class:"bf-sec"},h("h3",null,"📝 בקצרה",h("small",null,today.by==="claude"?"Claude":"")),h("div",{class:"bf-note"},lines.map(l=>h("p",null,l)))):null,
+        h("section",{class:"bf-sec"},h("h3",null,"❗ דחוף עכשיו"),...(d.urgent.length?bList(d.urgent,5,t=>bItem(t,why(t),"u")):[h("div",{class:"bf-empty"},"אין שום דבר דחוף. 👌")])),
+        h("section",{class:"bf-sec"},h("h3",null,"🌙 מה השתנה בלילה",h("small",null,"מאז 20:00 אתמול")),...(d.night.length?bList(d.night,6,chg):[h("div",{class:"bf-empty"},"שקט בלילה, לא השתנה כלום.")])),
+        d.yday.length?h("section",{class:"bf-sec"},h("h3",null,"📅 אתמול במהלך היום"),...bList(d.yday,4,chg)):null,
+        d.mine.length?h("section",{class:"bf-sec"},h("h3",null,"🟠 מחכה להחלטה שלך",h("small",null,d.mine.length+" משימות")),...bList(d.mine,3,t=>bItem(t,t.waiting_for||t.next_step||""))):null,
+        h("section",{class:"bf-sec"},h("h3",null,"▶️ במה תרצה להתחיל?"),
+          d.picks.length?h("div",{class:"bf-start"},d.picks.map((t,i)=>h("button",{class:"bf-pick",type:"button",onclick:()=>bfOpen(t)},h("span",{class:"n"},String(i+1)),h("span",{style:"flex:1;min-width:0"},h("b",null,t.title||""),h("small",null,t.next_step||t.waiting_for||t.stand||""))))):h("div",{class:"bf-empty"},"אין משימות פתוחות. יום חופשי ☕"))));
+    const foot=h("div",{class:"bf-foot"},h("button",{class:"later",type:"button",onclick:closeBrief},"לא עכשיו"),h("button",{class:"main",type:"button",onclick:()=>{if(d.picks[0])bfOpen(d.picks[0]);else closeBrief();}},d.picks[0]?"▶️ מתחיל עם הראשונה":"הבנתי"));
+    document.body.append(el,foot);if(keep)el.scrollTop=top;markBriefSeen();
+  }
   const setOpen=new Set();
   function renderSettings(){if(document.getElementById("setM"))showSettings(true);}
   function showSettings(keep){
@@ -2104,8 +2197,8 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
         notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי הבריף",onchange:e=>setNotify({brief_days:e.target.value})},h("option",{value:"all",selected:!["sun-thu","sun-fri"].includes(notify.brief_days)||null},"כל יום"),h("option",{value:"sun-fri",selected:notify.brief_days==="sun-fri"||null},"א׳ עד ו׳"),h("option",{value:"sun-thu",selected:notify.brief_days==="sun-thu"||null},"א׳ עד ה׳"))):null,
         pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("brief",e.currentTarget,"הבריף נשלח")},"שלח בריף עכשיו")):null),
       sec("crit","🚨 דחוף בלבד",notify.critical?"פעיל":"כבוי",
-        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות"))),
-      sec("last","📄 הבריף האחרון","",briefBlock()));
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות")))
+      ,h("div",{class:"sqhint"},"הבריף עצמו: כפתור ☀️ למעלה במסך הראשי."));
     if(keep){const p=m.querySelector(".sqpanel");if(p)p.scrollTop=top;}
   }
   function abroadOn(){return notify.abroad===true&&(!notify.abroad_until||notify.abroad_until>=todayISO());}
@@ -2121,10 +2214,11 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
   window.addEventListener("hashchange",routeHash);
   if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.type==="sq-open"&&d.url){try{const u=new URL(d.url);if(u.hash&&u.hash!==location.hash)location.hash=u.hash;else routeHash();}catch(x){}}});
   $("setBtn").onclick=()=>showSettings();
+  $("sunBtn").onclick=()=>showBrief();
   function initNotify(){
     db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last");
       notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;
-      if(!routed&&allTopics.length){routed=true;routeHash();}else if(document.getElementById("briefM"))showBrief();else renderSettings();},()=>{});
+      if(!routed&&allTopics.length){routed=true;routeHash();}else if($("briefFull"))showBrief(true);else renderSettings();renderSunDot();},()=>{});
     db.collection("topics").onSnapshot(()=>{if(!routed&&allTopics.length){routed=true;routeHash();}},()=>{});
     syncPush();
   }

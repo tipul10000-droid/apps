@@ -135,7 +135,9 @@ async function briefNow(source: string, list?: any[]) {
   // a Claude-written brief (the 07:00 sweep writes settings/morning_brief for today) wins when present
   const ai = await getDoc(APP, "settings", "morning_brief");
   if (ai && ai.date === today && ai.body) b = { ...b, title: String(ai.title || b.title).slice(0, 80), body: String(ai.body).slice(0, 400), lines: Array.isArray(ai.lines) && ai.lines.length ? ai.lines.map(String) : String(ai.body).split("\n"), by: "claude" };
-  const n = await sendTo(list || (await subs()), { title: b.title, body: b.body, tag: "sq-brief", url: APP_URL + "#brief" });
+  // the notification is one line only; the full brief opens in the app (#brief), Oren 3.11.2026
+  const head = String(b.title || "").replace(/^☀️?\s*בוקר טוב\s*·\s*/, "").trim();
+  const n = await sendTo(list || (await subs()), { title: "☀️ הבריף של הבוקר מוכן", body: (head ? head + " · " : "") + "לחיצה פותחת את הבריף", tag: "sq-brief", url: APP_URL + "#brief" });
   await putDoc(APP, "settings", "brief_last", { at: new Date().toISOString(), date: today, title: b.title, body: b.body, lines: b.lines, pick: b.pick, by: b.by || "auto", source, sent: n });
   return { sent: n, ...b };
 }
