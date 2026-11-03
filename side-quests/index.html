@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.6";window.SQ_BUILD_AT="3.11.2026 09:10";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.7";window.SQ_BUILD_AT="3.11.2026 08:35";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1053,7 +1053,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 <script>
 (function(){
   const KINDS={project:"מפרויקטים",followup:"מעקב",admin:"סידורים",reminder:"תזכורת",research:"בירור",idea:"רעיון"};
-  const STATUS={active:"בתנועה",waiting_me:"מחכה לי",waiting_other:"מחכה לאחרים",paused:"בהקפאה",done:"בוצע",promoted:"עלה לפרויקט",archived:"בארכיון"};
+  const STATUS={active:"בתנועה",waiting_me:"מחכה לך",waiting_other:"מחכה לאחרים",paused:"בהקפאה",done:"בוצע",promoted:"עלה לפרויקט",archived:"בארכיון"};
   const OPEN=["active","waiting_me","waiting_other","paused"];
   const P4=["--p4a","--p4b","--p4c","--p4d"];
   const ICON={
@@ -1215,7 +1215,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     if(c)return iconBtn("go",ICON.chat,"קפוץ לשיחה של המשימה",null,c);
     if(m)return iconBtn("go",ICON.mail,"פתח את המייל של המשימה",null,m);
     if(!(t.project&&projById(t.project)))return h("span",{class:"ib ph","aria-hidden":"true"}); // level 1: no chat icon at all
-    return h("a",{class:"ib go off",href:contUrl(t),target:"_blank",rel:"noopener",title:"אין עדיין שיחה משלה","aria-label":"אין עדיין שיחה משלה. שם המשימה יועתק",html:ICON.chat,onclick:e=>{e.stopPropagation();const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("אין שיחה משלה עדיין. שם המשימה הועתק, הדבק בשיחה");}catch(x){}}});}
+    return h("a",{class:"ib go off",href:contUrl(t),target:"_blank",rel:"noopener",title:"אין עדיין שיחה למשימה הזו","aria-label":"אין עדיין שיחה למשימה הזו. שם המשימה יועתק",html:ICON.chat,onclick:e=>{e.stopPropagation();const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("אין עדיין שיחה למשימה הזו. שם המשימה הועתק, הדבק בשיחה");}catch(x){}}});}
   function contUrl(t){const p=t.project&&projById(t.project);return chatOf(t)||(p&&safeUrl(p.claude_url||""))||SQ_CHAT;}
   function contBtn(t,cls,label){const direct=!!chatOf(t);return h("a",{class:cls,href:contUrl(t),target:"_blank",rel:"noopener",html:cls==="cont"?ICON.chat:"",onclick:e=>{e.stopPropagation();if(!direct){const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("שם המשימה הועתק, הדבק בשיחה");}catch(x){}}}},label||"המשך בשיחה");}
   function logPush(t,text,now){return [...(Array.isArray(t.log)?t.log:[]),{at:now,text}];}
@@ -1466,7 +1466,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     const g=[group("⏰ חזר אליך",back,true),group("לטיפול עכשיו",hot,true),group("בתנועה",moving),group("מחכה לאחרים",waiting,false,"wait"),group("בהקפאה",paused),group("אחר כך",later,false,"later")].filter(Boolean);
     $("list").replaceChildren(...(g.length?g:urg.length?[h("div",{class:"empty"},"כל המשימות כאן דחופות, הן למעלה.")]:[h("div",{class:"empty"},topics.length?ctxNow!=="all"?`אין משימות פתוחות למצב: ${CTX[ctxNow].full}.`:"אין משימות בסינון הזה.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-${QUESTS[quest].name}״.`)]));
   }
-  function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString()},"בוצע ✓  (נמצא ב״בוצעו״)");}
+  function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString()},"בוצע ✓ (עבר ל״בוצעו״)");}
 
   // fun zone: topics marked fun / kind "fun" / tag "fun question" live here, not in the task list
   function isFun(t){return !!t.fun||t.kind==="fun"||(Array.isArray(t.tags)&&t.tags.includes("fun question"));}
@@ -1509,7 +1509,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     const all=Array.isArray(t.items)?t.items:[];const it=all[idx];if(!it)return;
     const nv=it.vote===v?"":v;
     const items=all.map((x,i)=>i===idx?{...x,vote:nv}:x);
-    patch(t,{items,log:logPush(t,(nv==="love"?"👍👍 ":nv==="up"?"👍 ":nv==="down"?"👎 ":"בוטל דירוג: ")+it.label,new Date().toISOString())},nv==="love"?"אהבת מאוד 👍👍 (נחשב כפול)":nv==="up"?"אהבת 👍":nv==="down"?"לא בשבילך 👎":"הדירוג בוטל");
+    patch(t,{items,log:logPush(t,(nv==="love"?"👍👍 ":nv==="up"?"👍 ":nv==="down"?"👎 ":"ביטלת דירוג: ")+it.label,new Date().toISOString())},nv==="love"?"אהבת מאוד 👍👍 (נחשב כפול)":nv==="up"?"אהבת 👍":nv==="down"?"לא בשבילך 👎":"הדירוג בוטל");
   }
   function itemRow(t,x,idx){
     const u=safeUrl(x.url||"");
@@ -1893,7 +1893,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     e.preventDefault();micStop(true);const v=$("qtitle").value.trim();if(!v||!db)return;
     const now=new Date().toISOString();
     if(/^[\[{`]/.test(v)){ // a block pasted from a Claude chat
-      let items;try{const j=JSON.parse(v.replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,""));items=[].concat(j.quest||j.bakane||j.topics||j);}catch(err){toast("לא הצלחתי לקרוא את הבלוק שהודבק");return;}
+      let items;try{const j=JSON.parse(v.replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,""));items=[].concat(j.quest||j.bakane||j.topics||j);}catch(err){toast("לא הצלחתי לקרוא את הטקסט שהודבק");return;}
       let n=0;
       for(const x of items.filter(x=>x&&x.title)){
         const ex=x.id&&allTopics.find(t=>t.id===x.id&&!isFun(t));
@@ -1988,7 +1988,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
       items&&items.length?h("ul",null,...items.map(t=>h("li",null,t))):null,sub?h("div",{class:"sh-sub"},sub):null);
     document.body.append(e);return e;}
   const snapT=()=>new Map(allTopics.map(t=>[t.id,t]));
-  const STL={active:"פתוח",waiting_me:"מחכה לך",waiting_other:"מחכה לאחרים",paused:"מושהה",done:"בוצע",archived:"בארכיון",promoted:"הפך לפרויקט"};
+  const STL={active:"פתוח",waiting_me:"מחכה לך",waiting_other:"מחכה לאחרים",paused:"בהקפאה",done:"בוצע",archived:"בארכיון",promoted:"הפך לפרויקט"};
   function diffT(a,b){const out=[];for(const[id,t]of b){const o=a.get(id);const nm=String(t.title||id).slice(0,40);
       if(!o){out.push(`חדש: ${nm}`);continue;}
       if(o.status!==t.status)out.push(`${nm}: ${STL[t.status]||t.status}`);
@@ -2133,7 +2133,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
     if(!db){notice("חסר המפתח האישי. פתח את הלינק המלא עם המפתח (?k=...).");$("qbtn").disabled=true;$("list").replaceChildren();return;}
     try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"&&(await user.can("data.write"))===false){canWrite=false;$("qbtn").disabled=true;}}catch(e){}
-    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();},()=>notice("הקשר לנתונים נותק. רענן את הדף."));
+    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
