@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.4";window.SQ_BUILD_AT="3.11.2026 00:25";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.5";window.SQ_BUILD_AT="3.11.2026 03:25";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -335,6 +335,11 @@ body.fun-on .tasks-only{display:none!important}
 .tv-sec .tv-ph{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tv-ph>div{border:1.5px dashed var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--muted)}
 .tv-ph>div b{font-size:14px;color:var(--ink)}
+/* 5.5: series rows (topics zone="series", series_state towatch|waiting|seen) inside the cinema card */
+.tv-grp{display:flex;flex-direction:column;gap:6px;min-width:0}
+.tv-gh{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--ink)}
+.tv-gh .tv-c{font-size:11.5px;font-weight:700;color:#000;background:#F5C518;border-radius:999px;padding:1px 7px}
+.tv-grp .mv-empty{border:1.5px dashed var(--line);border-radius:12px;padding:8px 10px}
 /* Spotify zone (topic.zone="spotify"): numbered sessions, archive of finished ones, next-session picker */
 .fcard.sp{--fc:#1DB954;background:#121212;border-color:#121212;border-top-color:#1DB954;color:#F2F2F2;--line:#2C2C2C;--muted:#A7A7A7;--bg:#1C1C1C;--surface:#232323;--ink:#F2F2F2}
 .sp-head{display:flex;align-items:center;gap:12px}
@@ -1561,7 +1566,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
   }
   // Movies zone: topic zone "movies" (the external list), topics with zone "games" (one per game) and the Frame Horizon project,
   // shown together as one cinema card with a small IMDb badge: 1 Frame Horizon, 2 the external list, 3 games.
-  function isMovieZone(t){return t.zone==="movies"||t.zone==="games";}
+  function isMovieZone(t){return t.zone==="movies"||t.zone==="games"||t.zone==="series";}
   function gameRow(t){
     const pages=linksOf(t).filter(l=>linkType(l)!=="chat");
     const qs=questionsOf(t).filter(q=>!q.answer), offs=offersOf(t).filter(o=>(o.state||"open")==="open");
@@ -1575,6 +1580,13 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
         contBtn(t,"cont")));
     d.addEventListener("toggle",()=>{funFold[key]=d.open;});
     return d;
+  }
+  // 5.5: series = topics zone "series"; series_state towatch (default) | waiting (for a new season) | seen
+  function seriesGroups(series){
+    const of=st=>series.filter(t=>(t.series_state||"towatch")===st).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
+    const grp=(lbl,arr)=>h("div",{class:"tv-grp"},h("div",{class:"tv-gh"},lbl,arr.length?h("span",{class:"tv-c"},String(arr.length)):null),
+      arr.length?h("div",{class:"fc-rounds"},arr.map(gameRow)):h("div",{class:"mv-empty"},"עוד אין"));
+    return [grp("🍿 רוצה לראות",of("towatch")),grp("⏳ מחכה לעונה חדשה",of("waiting")),grp("✅ ראיתי",of("seen"))];
   }
   function moviesCard(list,fh){
     const mv=list.find(t=>t.zone==="movies");
@@ -1593,9 +1605,9 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
         mvPages.length?h("div",{class:"fc-links"},mvPages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
         ...questionsOf(mv).filter(q=>!q.answer).map(q=>questionCard(mv,q,false)),...offersOf(mv).filter(o=>(o.state||"open")==="open").map(o=>offerCard(mv,o,false))):null,
       h("section",{class:"mv-sec tv-sec"},h("h4",null,h("span",{class:"n"},3),"📺 סדרות"),
-        h("p",null,"כל הסדרות שראיתי, ואלה שעוד רצות ומחכות לעונה חדשה."),
-        h("div",{class:"tv-ph"},h("div",null,h("b",null,"⏳ מחכה לעונה חדשה"),"בקרוב"),h("div",null,h("b",null,"✅ ראיתי"),"בקרוב")),
-        h("div",{class:"mv-empty"},"הנתונים יגיעו מאפליקציית הסדרות שלך.")));
+        h("p",null,"סדרות שרוצה לראות, סדרות שמחכות לעונה חדשה, וכל מה שראיתי."),
+        ...seriesGroups(list.filter(t=>t.zone==="series")),
+        h("div",{class:"mv-empty"},"סדרה חדשה? כתוב לי בשיחה ואוסיף אותה כאן.")));
   }
   const STEAM_SVG='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#fff"/><circle cx="16" cy="16" r="13.2" fill="#1B2838"/><circle cx="20.6" cy="12.4" r="4.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="20.6" cy="12.4" r="2.2" fill="#fff"/><path d="M3 18.2 L10.6 21.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M11.2 21.6 L18 15.2" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="11.2" cy="21.6" r="3.1" fill="#1B2838" stroke="#fff" stroke-width="1.8"/></svg>';
   const PAD_SVG='<svg viewBox="0 0 54 38" aria-hidden="true"><path d="M14 6h26c6.5 0 10 4 11.5 11l2 10c1 5.5-3.5 9.5-8 7.5-2.5-1.1-4.5-4-6.5-6.5H15c-2 2.5-4 5.4-6.5 6.5-4.5 2-9-2-8-7.5l2-10C4 10 7.5 6 14 6z" fill="#2A475E" stroke="#66C0F4" stroke-width="1.5"/><rect x="11" y="13" width="3.4" height="11" rx="1" fill="#E6EEF5"/><rect x="7.2" y="16.8" width="11" height="3.4" rx="1" fill="#E6EEF5"/><circle cx="38" cy="14.5" r="2.3" fill="#66C0F4"/><circle cx="43" cy="18.5" r="2.3" fill="#F5C518"/><circle cx="33" cy="18.5" r="2.3" fill="#A4D007"/><circle cx="38" cy="22.5" r="2.3" fill="#E84D4D"/></svg>';
@@ -1612,7 +1624,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     const list=live.filter(t=>t.status!=="done"&&!isMovieZone(t)).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
     const cards=list.map((t,i)=>t.zone==="spotify"?spotifyCard(t):funCard(t,i));
     // movies zone keeps finished games (shown struck through) so the list grows as a record
-    const mz=live.filter(t=>isMovieZone(t)&&(t.zone==="games"||t.status!=="done")),fh=projById("frame-horizon");
+    const mz=live.filter(t=>isMovieZone(t)&&(t.zone==="games"||t.zone==="series"||t.status!=="done")),fh=projById("frame-horizon");
     if(mz.length||fh){const mc=moviesCard(mz,fh),ord=Math.min(99,...mz.filter(t=>t.zone==="movies").map(t=>t.fun_order||99));
       const at=list.findIndex(t=>(t.fun_order||99)>ord);cards.splice(at<0?cards.length:at,0,mc);}
     const games=mz.filter(t=>t.zone==="games").sort((a,b)=>(a.status==="done")-(b.status==="done")||(a.fun_order||99)-(b.fun_order||99));
