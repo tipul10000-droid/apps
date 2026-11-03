@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.5";window.SQ_BUILD_AT="3.11.2026 03:25";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="5.6";window.SQ_BUILD_AT="3.11.2026 09:10";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -340,6 +340,60 @@ body.fun-on .tasks-only{display:none!important}
 .tv-gh{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--ink)}
 .tv-gh .tv-c{font-size:11.5px;font-weight:700;color:#000;background:#F5C518;border-radius:999px;padding:1px 7px}
 .tv-grp .mv-empty{border:1.5px dashed var(--line);border-radius:12px;padding:8px 10px}
+/* 5.6: series hub (collection "series"): tabs now / queue / achievements, TVmaze posters loaded in the browser */
+.sr-sum{font-size:13px;color:var(--muted)}
+.sr-sum b{color:var(--ink)}
+.sr-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.sr-tab{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:8px 4px;font:inherit;font-size:12.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-width:0}
+.sr-tab b{font-size:18px;line-height:1;font-family:var(--f-display)}
+.sr-tab[aria-pressed="true"]{background:#F5C518;color:#1B1200;border-color:#F5C518}
+.sr-h{margin:6px 0 0;font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px}
+.sr-h small{font-weight:600;color:var(--muted);font-size:12px}
+.sp{flex:none;width:44px;height:62px;border-radius:7px;background:#2C2C34 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#F5C518;direction:ltr;overflow:hidden;position:relative}
+.sp.has{color:transparent}
+.sp.big{width:62px;height:88px;font-size:16px}
+.sr-now{display:flex;gap:12px;border:1px solid #F5C518;border-radius:14px;background:var(--surface);padding:10px;min-width:0}
+.sr-now .bd{min-width:0;flex:1;display:flex;flex-direction:column;gap:6px}
+.sr-nm{font-size:15.5px;font-weight:800;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+.sr-nm bdi{font-family:var(--f-display)}
+.sr-sub{font-size:12.5px;color:var(--muted)}
+.sr-bar{display:flex;gap:3px}
+.sr-bar i{flex:1;height:7px;border-radius:3px;background:#3A3A44}
+.sr-bar i.d{background:#F5C518}
+.sr-bar i.c{background:linear-gradient(90deg,#3A3A44 50%,#F5C518 50%)}
+[dir=rtl] .sr-bar i.c,.sr-bar i.c{background:linear-gradient(270deg,#F5C518 50%,#3A3A44 50%)}
+.sr-acts{display:flex;flex-wrap:wrap;gap:6px}
+.sr-b{border:1px solid #3A3A44;background:transparent;color:var(--ink);border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.sr-b.p{background:#F5C518;color:#1B1200;border-color:#F5C518}
+.sr-row{display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0;min-width:0}
+.sr-row:last-child{border-bottom:0}
+.sr-row .bd{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}
+.sr-rk{flex:none;width:22px;height:22px;border-radius:50%;background:#F5C518;color:#000;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.sr-chips{display:flex;flex-wrap:wrap;gap:4px}
+.sr-c{font-size:11px;font-weight:700;border-radius:999px;padding:2px 7px;border:1px solid #3A3A44;color:var(--muted);white-space:nowrap}
+.sr-c.ok{border-color:#2E7D4F;color:#7BE0A4;background:rgba(46,125,79,.15)}
+.sr-c.rm{border-color:#8A6A12;color:#F5C518;background:rgba(245,197,24,.1)}
+.sr-c.no{border-style:dashed}
+.sr-c.new{background:#2E7D4F;color:#fff;border-color:#2E7D4F}
+.sr-c.q{border-color:#8B5CF6;color:#C4B5FD}
+.sr-mv{flex:none;display:flex;flex-direction:column;gap:3px}
+.sr-mv button{width:30px;height:24px;border-radius:7px;border:1px solid #3A3A44;background:transparent;color:var(--ink);font-size:12px;cursor:pointer;padding:0}
+.sr-mv button:disabled{opacity:.3}
+.sr-mv button.go{background:#F5C518;color:#1B1200;border-color:#F5C518;height:26px}
+.sr-q{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:#C4B5FD}
+.sr-q .sr-b{padding:3px 10px;font-size:12px}
+.sr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.sr-stats div{border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:11.5px;color:var(--muted)}
+.sr-stats b{display:block;font-size:22px;color:#F5C518;font-family:var(--f-display);line-height:1.1}
+.sr-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.sr-t{border:0;background:none;padding:0;font:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:0;position:relative}
+.sr-t .sp{width:100%;height:auto;aspect-ratio:2/3}
+.sr-t span{font-size:11px;line-height:1.2;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-t em{position:absolute;top:4px;inset-inline-start:4px;font-style:normal;font-size:11px;background:#0E0E12;border-radius:999px;padding:1px 5px}
+.sr-t.off .sp{filter:grayscale(1);opacity:.55}
+.sr-t[aria-pressed="true"] .sp{outline:2px solid #F5C518;outline-offset:1px}
+.sr-det{border:1px solid #F5C518;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.sr-det a{color:#F5C518}
 /* Spotify zone (topic.zone="spotify"): numbered sessions, archive of finished ones, next-session picker */
 .fcard.sp{--fc:#1DB954;background:#121212;border-color:#121212;border-top-color:#1DB954;color:#F2F2F2;--line:#2C2C2C;--muted:#A7A7A7;--bg:#1C1C1C;--surface:#232323;--ink:#F2F2F2}
 .sp-head{display:flex;align-items:center;gap:12px}
@@ -1581,7 +1635,104 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
     d.addEventListener("toggle",()=>{funFold[key]=d.open;});
     return d;
   }
-  // 5.5: series = topics zone "series"; series_state towatch (default) | waiting (for a new season) | seen
+  // 5.6: Series hub. Collection "series": {name, status now|waiting|queue|done|dropped, show running|ended|canceled, seasons, season,
+  // order, at (where I am), he (what it is), fresh (new season out), maybe, binge, next {label, kind official|rumor, checked}, extras [{t,kind,seen}], check, imdb, tvq}
+  let seriesAll=[],serSel=null,serTab="now";
+  try{serTab=localStorage.getItem("sq_sertab")||"now";}catch(e){}
+  const TVM_KEY="sq_tvm2";let tvm={};try{tvm=JSON.parse(localStorage.getItem(TVM_KEY)||"{}");}catch(e){}
+  let tvmQ=[],tvmBusy=false;
+  function tvmNeed(s){const c=tvm[s.id];return !c||Date.now()-(c.at||0)>3*864e5;}
+  function tvmPump(){if(tvmBusy||!tvmQ.length)return;tvmBusy=true;const s=tvmQ.shift();
+    fetch("https://api.tvmaze.com/singlesearch/shows?embed=nextepisode&q="+encodeURIComponent(s.tvq||s.name)).then(r=>r.ok?r.json():null).then(j=>{
+      const ne=j&&j._embedded&&j._embedded.nextepisode;
+      tvm[s.id]={at:Date.now(),img:j&&j.image?(j.image.medium||"").replace(/^http:/,"https:"):"",ne:ne&&ne.airdate?{d:ne.airdate,s:ne.season,e:ne.number}:null,st:j&&j.status||""};
+      try{localStorage.setItem(TVM_KEY,JSON.stringify(tvm));}catch(e){}
+      document.querySelectorAll('[data-sid="'+s.id+'"]').forEach(paintPoster);
+      if(ne&&s.status==="waiting")renderFun();
+    }).catch(()=>{}).finally(()=>{tvmBusy=false;setTimeout(tvmPump,450);});}
+  function paintPoster(el){const c=tvm[el.dataset.sid];if(c&&c.img){el.style.backgroundImage="url('"+c.img+"')";el.classList.add("has");}}
+  function poster(s,big){const ini=String(s.name||"?").replace(/^The /,"").split(/[\s:]+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+    const el=h("span",{class:"sp"+(big?" big":""),"data-sid":s.id,"aria-hidden":"true"},ini);paintPoster(el);
+    if(tvmNeed(s)&&!tvmQ.includes(s))tvmQ.push(s);return el;}
+  function serName(s){return h("div",{class:"sr-nm"},h("bdi",{dir:"ltr"},s.name));}
+  function seasonBar(s){const n=Math.min(+s.seasons||0,14);if(!n)return null;const cur=+s.season||0;
+    return h("div",{class:"sr-bar","aria-label":cur?("עונה "+cur+" מתוך "+n):(n+" עונות")},Array.from({length:n},(_,i)=>h("i",{class:i+1<cur?"d":i+1===cur?"c":null})));}
+  const SHOW={running:["עדיין רצה","ok"],ended:["הסתיימה",""],canceled:["בוטלה",""]};
+  function fmtD(iso){const p=String(iso).split("-");return p.length===3?(+p[2])+"."+(+p[1])+"."+p[0]:iso;}
+  async function serPatch(s,f,msg){if(!db||!canWrite)return;const prev={};Object.keys(f).forEach(k=>prev[k]=s[k]===undefined?null:s[k]);
+    try{await db.collection("series").doc(s.id).update({...f,updated_at:new Date().toISOString()});toast(msg||"נשמר",async()=>{try{await db.collection("series").doc(s.id).update(prev);toast("בוטל");}catch(e){fail(e);}});}catch(e){fail(e);}}
+  function byOrder(a,b){return (a.order||999)-(b.order||999)||String(a.name).localeCompare(String(b.name));}
+  function nowCard(s){
+    const n=+s.seasons||0,cur=+s.season||0;
+    return h("div",{class:"sr-now"},poster(s,true),h("div",{class:"bd"},serName(s),
+      h("div",{class:"sr-sub"},cur&&n?("עונה "+cur+" מתוך "+n):n?(n+" עונות"):""),seasonBar(s),
+      s.at?h("div",{class:"sr-sub"},s.at):null,
+      h("div",{class:"sr-acts"},
+        cur&&n&&cur<n?h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{season:cur+1,at:""},"עברת לעונה "+(cur+1))},"עונה "+(cur+1)+" ›"):null,
+        h("button",{class:"sr-b p",type:"button",onclick:()=>serPatch(s,{status:"done",done_at:new Date().toISOString().slice(0,10)},"🏆 נכנס להישגים")},"✓ סיימתי"),
+        h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{status:"queue",order:0},"חזר לראש הרשימה")},"להמשך"))));
+  }
+  function nextChip(s){const c=tvm[s.id];
+    if(c&&c.ne&&c.ne.d>=new Date().toISOString().slice(0,10))return h("span",{class:"sr-c ok"},"📅 עונה "+c.ne.s+" פרק "+c.ne.e+": "+fmtD(c.ne.d)+" · רשמי");
+    const x=s.next;if(!x||!x.label)return h("span",{class:"sr-c no"},"אין עדיין תאריך");
+    return h("span",{class:"sr-c "+(x.kind==="official"?"ok":"rm")},(x.kind==="official"?"📅 רשמי: ":"💬 שמועה: ")+x.label);}
+  function waitRow(s){return h("div",{class:"sr-row"},poster(s),h("div",{class:"bd"},serName(s),
+    h("div",{class:"sr-chips"},nextChip(s)),
+    h("div",{class:"sr-sub"},(s.seasons?"ראית "+s.seasons+" עונות":"")+(s.next&&s.next.checked?" · נבדק "+fmtD(s.next.checked):"")),
+    s.assumed?h("div",{class:"sr-q"},"ראית את כל העונות?",h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{assumed:false},"מאושר")},"כן"),h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{status:"queue",assumed:false,order:999},"עבר להשלים")},"לא")):null));}
+  function queueRow(s,i,arr){
+    const n=+s.seasons||0,cur=+s.season||0,started=!/לא התחלתי/.test(s.at||"");
+    const swap=async d=>{const o=arr[i+d];if(!o||!db)return;const a=s.order||i+1,b=o.order||i+1+d;try{await db.collection("series").doc(s.id).update({order:b===a?b+d:b});await db.collection("series").doc(o.id).update({order:a});}catch(e){fail(e);}};
+    return h("div",{class:"sr-row"},h("span",{class:"sr-rk"},String(i+1)),poster(s),
+      h("div",{class:"bd"},serName(s),
+        s.at||s.he?h("div",{class:"sr-sub"},[s.at,s.he].filter(Boolean).join(" · ")):null,
+        h("div",{class:"sr-chips"},
+          s.fresh?h("span",{class:"sr-c new"},"🆕 "+s.fresh):null,
+          SHOW[s.show]?h("span",{class:"sr-c "+SHOW[s.show][1]},SHOW[s.show][0]):null,
+          n?h("span",{class:"sr-c"},cur&&started?("עונה "+cur+"/"+n):(n+" עונות")):null,
+          !started?h("span",{class:"sr-c no"},"חדשה בשבילי"):null,
+          s.binge?h("span",{class:"sr-c"},"בינג' ארוך"):null)),
+      h("div",{class:"sr-mv"},h("button",{type:"button",class:"go","aria-label":"להתחיל עכשיו",title:"להתחיל עכשיו",onclick:()=>{const mx=Math.max(0,...seriesAll.filter(x=>x.status==="now").map(x=>x.order||0));serPatch(s,{status:"now",order:mx+1,season:cur||1},"▶️ עבר ל\"רואה עכשיו\"");}},"▶"),h("button",{type:"button","aria-label":"למעלה",disabled:i===0||null,onclick:()=>swap(-1)},"▲"),h("button",{type:"button","aria-label":"למטה",disabled:i===arr.length-1||null,onclick:()=>swap(1)},"▼")));
+  }
+  function serDetail(s){const ex=Array.isArray(s.extras)?s.extras:[];
+    const im=s.imdb?"https://www.imdb.com/title/"+s.imdb+"/":"https://www.imdb.com/find/?q="+encodeURIComponent(s.tvq||s.name);
+    return h("div",{class:"sr-det"},serName(s),
+      s.check?h("div",null,"❓ "+s.check):null,s.he?h("div",{class:"sr-sub"},s.he):null,s.at?h("div",{class:"sr-sub"},s.at):null,
+      s.seasons?h("div",{class:"sr-sub"},s.seasons+" עונות"+(s.status==="done"?" · ראית הכל":"")):null,
+      ...ex.map(x=>h("div",null,(x.kind==="film"?"🎬 ":"➕ ")+x.t+(x.seen===true?" · ראית ✓":x.seen===false?" · לא ראית":" · לא סימנת"))),
+      h("div",{class:"sr-acts"},h("a",{class:"sr-b",href:im,target:"_blank",rel:"noopener"},"IMDb"),
+        s.check?h("button",{class:"sr-b p",type:"button",onclick:()=>serPatch(s,{check:""},"סומן שראית")},"ראיתי הכל"):null,
+        s.status==="dropped"?h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{status:"queue",order:999},"עבר להשלים")},"בכל זאת להשלים"):null));}
+  function serTile(s){const on=serSel===s.id;
+    return h("button",{class:"sr-t"+(s.status==="dropped"?" off":""),type:"button","aria-pressed":on?"true":"false",onclick:()=>{serSel=on?null:s.id;renderFun();}},
+      poster(s),h("span",null,s.name),s.check?h("em",null,"❓"):(Array.isArray(s.extras)&&s.extras.some(x=>x.seen===true))?h("em",null,"🎬"):null);}
+  function seriesHub(){
+    const all=seriesAll.filter(s=>!s._deleted),of=st=>all.filter(s=>s.status===st).sort(byOrder);
+    const now=of("now"),wait=of("waiting"),q=of("queue"),done=of("done"),drop=of("dropped");
+    const qMain=q.filter(s=>!s.maybe),qMaybe=q.filter(s=>s.maybe);
+    if(!all.length)return [h("div",{class:"mv-empty"},"עוד אין סדרות.")];
+    const tab=(id,ic,lbl,n)=>h("button",{class:"sr-tab",type:"button","aria-pressed":serTab===id?"true":"false",onclick:()=>{serTab=id;serSel=null;try{localStorage.setItem("sq_sertab",id);}catch(e){}renderFun();}},h("b",null,String(n)),ic+" "+lbl);
+    const out=[h("div",{class:"sr-tabs"},tab("now","▶️","עכשיו",now.length+wait.length),tab("queue","📋","להשלים",q.length),tab("done","🏆","הישגים",done.length))];
+    if(serTab==="queue"){
+      out.push(h("div",{class:"sr-sum"},"הסדר הוא סדר העדיפות: ▲▼ לשנות, ▶ להתחיל לראות."),h("div",null,qMain.map((s,i,a)=>queueRow(s,i,a))));
+      if(qMaybe.length)out.push(h("div",{class:"sr-h"},"🤔 אולי",h("small",null,"רק אם יתברר שזה טוב")),h("div",null,qMaybe.map((s,i,a)=>queueRow(s,i,a))));
+    }else if(serTab==="done"){
+      const seasons=done.reduce((n,s)=>n+(+s.seasons||0),0),films=done.reduce((n,s)=>n+(Array.isArray(s.extras)?s.extras.filter(x=>x.seen===true).length:0),0);
+      out.push(h("div",{class:"sr-stats"},h("div",null,h("b",null,String(done.length)),"סדרות עד הסוף"),h("div",null,h("b",null,String(seasons)),"עונות"),h("div",null,h("b",null,String(films)),"סרטי המשך")));
+      const sel=all.find(s=>s.id===serSel);
+      out.push(h("div",{class:"sr-grid"},done.map(serTile)));
+      if(sel&&sel.status==="done")out.push(serDetail(sel));
+      if(drop.length){out.push(h("div",{class:"sr-h"},"◐ ראיתי חלק ועזבתי",h("small",null,String(drop.length))),h("div",{class:"sr-grid"},drop.map(serTile)));
+        if(sel&&sel.status==="dropped")out.push(serDetail(sel));}
+    }else{
+      out.push(h("div",{class:"sr-h"},"▶️ רואה עכשיו"),...(now.length?now.map(nowCard):[h("div",{class:"mv-empty"},"שום דבר. בחר מ\"להשלים\".")]));
+      if(qMain[0])out.push(h("div",{class:"sr-sub"},"הבא בתור: ",h("bdi",{dir:"ltr"},qMain[0].name)));
+      if(wait.length)out.push(h("div",{class:"sr-h"},"📅 מחכה לעונה חדשה",h("small",null,"ראית הכל, הסדרה עוד רצה")),h("div",null,wait.map(waitRow)));
+    }
+    setTimeout(tvmPump,50);
+    return out;
+  }
+  // 5.5 (legacy): series = topics zone "series"; series_state towatch (default) | waiting (for a new season) | seen
   function seriesGroups(series){
     const of=st=>series.filter(t=>(t.series_state||"towatch")===st).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
     const grp=(lbl,arr)=>h("div",{class:"tv-grp"},h("div",{class:"tv-gh"},lbl,arr.length?h("span",{class:"tv-c"},String(arr.length)):null),
@@ -1605,8 +1756,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
         mvPages.length?h("div",{class:"fc-links"},mvPages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
         ...questionsOf(mv).filter(q=>!q.answer).map(q=>questionCard(mv,q,false)),...offersOf(mv).filter(o=>(o.state||"open")==="open").map(o=>offerCard(mv,o,false))):null,
       h("section",{class:"mv-sec tv-sec"},h("h4",null,h("span",{class:"n"},3),"📺 סדרות"),
-        h("p",null,"סדרות שרוצה לראות, סדרות שמחכות לעונה חדשה, וכל מה שראיתי."),
-        ...seriesGroups(list.filter(t=>t.zone==="series")),
+        ...seriesHub(),
         h("div",{class:"mv-empty"},"סדרה חדשה? כתוב לי בשיחה ואוסיף אותה כאן.")));
   }
   const STEAM_SVG='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#fff"/><circle cx="16" cy="16" r="13.2" fill="#1B2838"/><circle cx="20.6" cy="12.4" r="4.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="20.6" cy="12.4" r="2.2" fill="#fff"/><path d="M3 18.2 L10.6 21.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M11.2 21.6 L18 15.2" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="11.2" cy="21.6" r="3.1" fill="#1B2838" stroke="#fff" stroke-width="1.8"/></svg>';
@@ -1989,6 +2139,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
       const th=s.docs.find(x=>x.id==="travel_hub"),tr=s.docs.find(x=>x.id==="travel_report");travelHub=th?th.data():null;travelReport=tr?tr.data():null;renderTravel();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
+    db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderFun();renderDash();},()=>{});
     db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));renderList();renderDash();},()=>{});
     db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
