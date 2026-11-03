@@ -6,16 +6,15 @@ Movies watch list (same data layer, English LTR): https://tipul10000-droid.githu
 
 Rules for working on it: `../CLAUDE.md` (sections "side-quests ו-movies").
 
-## Modes (from 6.0)
-One "מצב" button in the hero = where Oren is + (at home) what he is available for. Auto by Israel time, manual choice lasts until the next automatic change (localStorage `sq_mode`, today only):
-- Sun-Thu 07:00-08:30 and 17:00-19:00 `commute` (🚗 on the way): full app, top group = quick tasks, calls, errands.
-- Sun-Thu 08:30-17:00 `work` (💼): focus view. Only Work + Army quests, plus up to 5 tiny personal tasks (urgent, phone/call/at-work tags, or simple level-1 tasks; quick-added first). No quest buttons, counters, dashboards or Fun. "תצוגה מלאה" opens the full app until 17:00.
-- `warmy` (🪖 reserve day, manual): same focus, Army first, 3 tiny tasks.
-- Fri 08:00-12:00 `friday` (☕ errands half-day): full app, errands and quick tasks on top.
-- `abroad` (✈️): when settings/notify `abroad` is on. Travel quest + urgent from everywhere. Picking it in the menu turns abroad notifications on.
-- Else `home` (🏠 evenings, weekends: heavy tasks too).
-Quick task = open, simple (level 1), added by hand in the app ("נוסף ידנית") or tagged out/call/mobile. It goes to the "⚡" group at the top: born fast, closed fast.
-Rows (6.0): one circle to finish + title + one quiet line + at most one chip. Chat / later / urgent / done live in the action bar of an opened task. Groups Oren can't act on (waiting for others, paused, later) start folded (`sq_fold`).
+## Modes (6.2)
+One "מצב" button, one choice, three modes. The app stays the same; a mode only hides quests and re-orders tasks. Side Quests is always the main quest.
+- `home` (🏠): all 6 quests.
+- `work` (💼, auto Sun-Thu 08:30-18:30): only Side, Army, Work. In Side: quick tasks on top ("קצרות, אפשר בין לבין"), tasks that need home/computer/errands fold into "🏠 לבית ולערב".
+- `abroad` (✈️, = settings/notify abroad): everything but Work and Army. In Side: phone/call tasks on top, the rest folds into "🏠 כשאחזור".
+- Time of day inside home: on the way (Sun-Thu 07:00-08:30, 18:30-19:30) calls/errands/quick on top; Friday 08:00-12:00 errands on top.
+- Manual choice: localStorage `sq_mode` {m, auto, day}, holds until the next automatic change and never past today. No separate availability filter any more (topic `context` tags still drive the sorting).
+Quick task = open, simple (level 1), added by hand ("נוסף ידנית") or tagged out/call/mobile (at work: no out/pc/house/lior). Urgent counts as quick outside home.
+Rows (6.0): one circle to finish + title + one quiet line + at most one chip. Chat / later / urgent / done live in the action bar of an opened task. Waiting / paused / later groups start folded (`sq_fold`).
 
 ## Files
 
