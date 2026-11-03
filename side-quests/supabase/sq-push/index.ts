@@ -55,7 +55,8 @@ async function keys() {
     k = { pub: g.publicKey, priv: g.privateKey };
     await putDoc(SRV, "secrets", "vapid", k);
   }
-  webpush.setVapidDetails("mailto:noreply@sidequests.invalid", k.pub, k.priv);
+  // Apple rejects a fake contact (403 BadJwtToken): the subject must be a real https URL or mailto (fixed 3.11.2026)
+  webpush.setVapidDetails(APP_URL, k.pub, k.priv);
   return k;
 }
 
@@ -65,14 +66,18 @@ async function subs() {
 async function sendTo(list: any[], msg: { title: string; body: string; tag?: string; url?: string }) {
   await keys();
   let ok = 0;
+  const fails: string[] = [];
   await Promise.allSettled(list.map(async (s: any) => {
     try {
       await webpush.sendNotification({ endpoint: s.endpoint, keys: s.keys }, JSON.stringify(msg), { TTL: 6 * 3600, urgency: "high" });
       ok++;
     } catch (e: any) {
       if (e?.statusCode === 404 || e?.statusCode === 410) await putDoc(APP, "push_subs", s.id, { _deleted: true, gone_at: new Date().toISOString() });
+      else fails.push(`${s.device || s.id}: ${e?.statusCode || ""} ${String(e?.body || e?.message || e).slice(0, 120)}`);
     }
   }));
+  // keep the last failure visible (server-only state), so a silent miss can be diagnosed
+  if (fails.length) await putDoc(SRV, "state", "last_error", { at: new Date().toISOString(), title: msg.title, errors: fails });
   return ok;
 }
 
