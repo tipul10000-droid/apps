@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.7";window.SQ_BUILD_AT="4.11.2026 11:05";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.8";window.SQ_BUILD_AT="4.11.2026 11:20";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -338,7 +338,7 @@ body.fun-on .tasks-only{display:none!important}
 /* 5.5: series rows (topics zone="series", series_state towatch|waiting|seen) inside the cinema card */
 .tv-grp{display:flex;flex-direction:column;gap:6px;min-width:0}
 .tv-gh{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--ink)}
-.tv-gh .tv-c{font-size:11.5px;font-weight:700;color:#000;background:#F5C518;border-radius:999px;padding:1px 7px}
+.tv-gh .tv-c{font-size:11.5px;font-weight:700;color:#000;background:var(--sa,#F5C518);border-radius:999px;padding:1px 7px}
 .tv-grp .mv-empty{border:1.5px dashed var(--line);border-radius:12px;padding:8px 10px}
 /* 5.6: series hub (collection "series"): tabs now / queue / achievements, TVmaze posters loaded in the browser */
 .sr-sum{font-size:13px;color:var(--muted)}
@@ -346,29 +346,29 @@ body.fun-on .tasks-only{display:none!important}
 .sr-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .sr-tab{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:8px 4px;font:inherit;font-size:12.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-width:0}
 .sr-tab b{font-size:18px;line-height:1;font-family:var(--f-display)}
-.sr-tab[aria-pressed="true"]{background:#F5C518;color:#1B1200;border-color:#F5C518}
+.sr-tab[aria-pressed="true"]{background:var(--sa,#F5C518);color:var(--sa-ink,#1B1200);border-color:var(--sa,#F5C518)}
 .sr-h{margin:6px 0 0;font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px}
 .sr-h small{font-weight:600;color:var(--muted);font-size:12px}
-.srp{flex:none;width:44px;height:62px;border-radius:7px;background:#2C2C34 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#F5C518;direction:ltr;overflow:hidden;position:relative}
+.srp{flex:none;width:44px;height:62px;border-radius:7px;background:#2C2C34 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--sa,#F5C518);direction:ltr;overflow:hidden;position:relative}
 .srp.has{color:transparent}
 .srp.big{width:62px;height:88px;font-size:16px}
-.sr-now{display:flex;gap:12px;border:1px solid #F5C518;border-radius:14px;background:var(--surface);padding:10px;min-width:0}
+.sr-now{display:flex;gap:12px;border:1px solid var(--sa,#F5C518);border-radius:14px;background:var(--surface);padding:10px;min-width:0}
 .sr-now .bd{min-width:0;flex:1;display:flex;flex-direction:column;gap:6px}
 .sr-nm{font-size:15.5px;font-weight:800;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
 .sr-nm bdi{font-family:var(--f-display)}
 .sr-sub{font-size:12.5px;color:var(--muted)}
 .sr-bar{display:flex;gap:3px}
 .sr-bar i{flex:1;height:7px;border-radius:3px;background:#3A3A44}
-.sr-bar i.d{background:#F5C518}
-.sr-bar i.c{background:linear-gradient(90deg,#3A3A44 50%,#F5C518 50%)}
-[dir=rtl] .sr-bar i.c,.sr-bar i.c{background:linear-gradient(270deg,#F5C518 50%,#3A3A44 50%)}
+.sr-bar i.d{background:var(--sa,#F5C518)}
+.sr-bar i.c{background:linear-gradient(90deg,#3A3A44 50%,var(--sa,#F5C518) 50%)}
+[dir=rtl] .sr-bar i.c,.sr-bar i.c{background:linear-gradient(270deg,var(--sa,#F5C518) 50%,#3A3A44 50%)}
 .sr-acts{display:flex;flex-wrap:wrap;gap:6px}
 .sr-b{border:1px solid #3A3A44;background:transparent;color:var(--ink);border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
-.sr-b.p{background:#F5C518;color:#1B1200;border-color:#F5C518}
+.sr-b.p{background:var(--sa,#F5C518);color:var(--sa-ink,#1B1200);border-color:var(--sa,#F5C518)}
 .sr-row{display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0;min-width:0}
 .sr-row:last-child{border-bottom:0}
 .sr-row .bd{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}
-.sr-rk{flex:none;width:22px;height:22px;border-radius:50%;background:#F5C518;color:#000;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.sr-rk{flex:none;width:22px;height:22px;border-radius:50%;background:var(--sa,#F5C518);color:var(--sa-ink,#000);font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
 .sr-chips{display:flex;flex-wrap:wrap;gap:4px}
 .sr-c{font-size:11px;font-weight:700;border-radius:999px;padding:2px 7px;border:1px solid #3A3A44;color:var(--muted);white-space:nowrap}
 .sr-c.ok{border-color:#2E7D4F;color:#7BE0A4;background:rgba(46,125,79,.15)}
@@ -379,21 +379,34 @@ body.fun-on .tasks-only{display:none!important}
 .sr-mv{flex:none;display:flex;flex-direction:column;gap:3px}
 .sr-mv button{width:30px;height:24px;border-radius:7px;border:1px solid #3A3A44;background:transparent;color:var(--ink);font-size:12px;cursor:pointer;padding:0}
 .sr-mv button:disabled{opacity:.3}
-.sr-mv button.go{background:#F5C518;color:#1B1200;border-color:#F5C518;height:26px}
+.sr-mv button.go{background:var(--sa,#F5C518);color:var(--sa-ink,#1B1200);border-color:var(--sa,#F5C518);height:26px}
 .sr-q{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:#C4B5FD}
 .sr-q .sr-b{padding:3px 10px;font-size:12px}
 .sr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .sr-stats div{border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:11.5px;color:var(--muted)}
-.sr-stats b{display:block;font-size:22px;color:#F5C518;font-family:var(--f-display);line-height:1.1}
+.sr-stats b{display:block;font-size:22px;color:var(--sa,#F5C518);font-family:var(--f-display);line-height:1.1}
 .sr-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .sr-t{border:0;background:none;padding:0;font:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:0;position:relative}
 .sr-t .srp{width:100%;height:auto;aspect-ratio:2/3}
 .sr-t span{font-size:11px;line-height:1.2;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sr-t em{position:absolute;top:4px;inset-inline-start:4px;font-style:normal;font-size:11px;background:#0E0E12;border-radius:999px;padding:1px 5px}
 .sr-t.off .srp{filter:grayscale(1);opacity:.55}
-.sr-t[aria-pressed="true"] .srp{outline:2px solid #F5C518;outline-offset:1px}
-.sr-det{border:1px solid #F5C518;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
-.sr-det a{color:#F5C518}
+.sr-t[aria-pressed="true"] .srp{outline:2px solid var(--sa,#F5C518);outline-offset:1px}
+.sr-det{border:1px solid var(--sa,#F5C518);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.sr-det a{color:var(--sa,#F5C518)}
+/* 6.8: series = own Netflix-style card (black + red, N badge), separate from the cinema card */
+.fcard.nf{--fc:#E50914;--sa:#E50914;--sa-ink:#fff;background:linear-gradient(165deg,#1A0A0B 0%,#0B0B0B 55%);border:2px solid #3A1214;border-top:4px solid #E50914;color:#F5F5F1;--line:#2E2E2E;--muted:#B3B3B3;--bg:#141414;--surface:#1F1F1F;--ink:#F5F5F1;gap:12px;box-shadow:0 6px 18px rgba(229,9,20,.12)}
+.nf-head{display:flex;align-items:center;gap:12px}
+.nf-logo{flex:none;width:38px;height:52px;display:inline-flex;align-items:center;justify-content:center;background:#000;border-radius:7px;border:1px solid #3A1214}
+.nf-logo svg{width:22px;height:40px}
+.nf-head h3{font-size:18px;font-weight:800}
+.nf-head p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.nf-word{margin-inline-start:auto;flex:none;font-family:"Bebas Neue",Impact,"Arial Black",var(--f-display);font-weight:900;font-size:22px;letter-spacing:1px;color:#E50914;direction:ltr;text-decoration:none;transform:scaleY(1.15)}
+.fcard.nf .fbtn{background:#E50914;color:#fff}
+.fcard.nf .fbtn.ghost{background:transparent;color:#F5F5F1;border-color:#3A3A3A}
+.fcard.nf .cont,.fcard.nf .opt.chat{color:#F5F5F1;border-color:#3A3A3A;background:transparent}
+.fcard.nf .sr-c.rm{border-color:#7A1F23;color:#FF6B72;background:rgba(229,9,20,.12)}
+.fcard.nf .sr-t em{background:#000}
 /* Spotify zone (topic.zone="spotify"): numbered sessions, archive of finished ones, next-session picker */
 .fcard.sp{--fc:#1DB954;background:#121212;border-color:#121212;border-top-color:#1DB954;color:#F2F2F2;--line:#2C2C2C;--muted:#A7A7A7;--bg:#1C1C1C;--surface:#232323;--ink:#F2F2F2}
 .sp-head{display:flex;align-items:center;gap:12px}
@@ -1916,7 +1929,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     const mvPages=mv?linksOf(mv).filter(l=>linkType(l)!=="chat"):[];
     return h("article",{class:"fcard mv"},
       h("div",{class:"mv-head"},h("a",{class:"imdb",href:"https://www.imdb.com/",target:"_blank",rel:"noopener","aria-label":"IMDb"},"IMDb"),
-        h("div",{class:"fc-h"},h("h3",null,"סרטים וסדרות"),h("p",null,"מה לראות"))),
+        h("div",{class:"fc-h"},h("h3",null,"סרטים"),h("p",null,"מה לראות"))),
       fh?sec(1,"FRAME HORIZON",
         h("a",{class:"fh-logo",href:app||cl||"#",target:"_blank",rel:"noopener","aria-label":"פתח את Frame Horizon"},h("img",{src:"fh-logo.png",alt:"Frame Horizon",width:"560",height:"178"})),
         h("p",null,"ערבי סרטים שהופכים למסע"),
@@ -1925,10 +1938,16 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
         h("b",{class:"t"},"הרשימה שלי מחוץ ל-Frame Horizon"),mv.stand?h("p",null,mv.stand):null,
         mvPages.length?h("div",{class:"fc-links"},mvPages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
         ...questionsOf(mv).filter(q=>!q.answer).map(q=>questionCard(mv,q,false)),...offersOf(mv).filter(o=>(o.state||"open")==="open").map(o=>offerCard(mv,o,false)),
-        secChat(secUrl("movies",chatOf(mv)),"רשימת הסרטים","הוסף סרט · שאל · תקן")):null,
-      h("section",{class:"mv-sec tv-sec"},h("h4",null,h("span",{class:"n"},3),"📺 סדרות"),
-        ...seriesHub(),
-        secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן")));
+        secChat(secUrl("movies",chatOf(mv)),"רשימת הסרטים","הוסף סרט · שאל · תקן")):null);
+  }
+  // 6.8: series in their own Netflix-style card (was sub-area 3 of the cinema card)
+  const NF_SVG='<svg viewBox="0 0 22 40" aria-hidden="true"><path d="M1 0h6.2v40C5 39.6 3 39.5 1 39.5z" fill="#B1060F"/><path d="M14.8 0H21v39.5c-2 0-4 .1-6.2.5z" fill="#B1060F"/><path d="M1 0h6.2L21 39.5c-2.1 0-4.2.2-6.2.5z" fill="#E50914"/></svg>';
+  function seriesCard(){
+    const lg=h("a",{class:"nf-logo",href:"https://www.netflix.com/",target:"_blank",rel:"noopener","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
+    return h("article",{class:"fcard nf"},
+      h("div",{class:"nf-head"},lg,h("div",{class:"fc-h"},h("h3",null,"סדרות"),h("p",null,"מה רואים עכשיו ומה הבא בתור")),h("span",{class:"nf-word","aria-hidden":"true"},"SERIES")),
+      ...seriesHub(),
+      secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן"));
   }
   const STEAM_SVG='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#fff"/><circle cx="16" cy="16" r="13.2" fill="#1B2838"/><circle cx="20.6" cy="12.4" r="4.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="20.6" cy="12.4" r="2.2" fill="#fff"/><path d="M3 18.2 L10.6 21.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M11.2 21.6 L18 15.2" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="11.2" cy="21.6" r="3.1" fill="#1B2838" stroke="#fff" stroke-width="1.8"/></svg>';
   const PAD_SVG='<svg viewBox="0 0 54 38" aria-hidden="true"><path d="M14 6h26c6.5 0 10 4 11.5 11l2 10c1 5.5-3.5 9.5-8 7.5-2.5-1.1-4.5-4-6.5-6.5H15c-2 2.5-4 5.4-6.5 6.5-4.5 2-9-2-8-7.5l2-10C4 10 7.5 6 14 6z" fill="#2A475E" stroke="#66C0F4" stroke-width="1.5"/><rect x="11" y="13" width="3.4" height="11" rx="1" fill="#E6EEF5"/><rect x="7.2" y="16.8" width="11" height="3.4" rx="1" fill="#E6EEF5"/><circle cx="38" cy="14.5" r="2.3" fill="#66C0F4"/><circle cx="43" cy="18.5" r="2.3" fill="#F5C518"/><circle cx="33" cy="18.5" r="2.3" fill="#A4D007"/><circle cx="38" cy="22.5" r="2.3" fill="#E84D4D"/></svg>';
@@ -1946,10 +1965,11 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     const cards=list.map((t,i)=>t.zone==="spotify"?spotifyCard(t):funCard(t,i));
     // movies zone keeps finished games (shown struck through) so the list grows as a record
     const mz=live.filter(t=>isMovieZone(t)&&(t.zone==="games"||t.zone==="series"||t.status!=="done")),fh=projById("frame-horizon");
-    if(mz.length||fh){const mc=moviesCard(mz,fh),ord=Math.min(99,...mz.filter(t=>t.zone==="movies").map(t=>t.fun_order||99));
+    if(mz.some(t=>t.zone==="movies")||fh){const mc=moviesCard(mz,fh),ord=Math.min(99,...mz.filter(t=>t.zone==="movies").map(t=>t.fun_order||99));
       const at=list.findIndex(t=>(t.fun_order||99)>ord);cards.splice(at<0?cards.length:at,0,mc);}
     const games=mz.filter(t=>t.zone==="games").sort((a,b)=>(a.status==="done")-(b.status==="done")||(a.fun_order||99)-(b.fun_order||99));
-    if(games.length){const ci=cards.findIndex(c=>c.classList&&c.classList.contains("mv"));cards.splice(ci<0?cards.length:ci+1,0,gamesCard(games));}
+    {const ci=cards.findIndex(c=>c.classList&&c.classList.contains("mv"));cards.splice(ci<0?cards.length:ci+1,0,seriesCard());}
+    if(games.length){const ci=cards.findIndex(c=>c.classList&&c.classList.contains("nf"));cards.splice(ci<0?cards.length:ci+1,0,gamesCard(games));}
     $("funGrid").replaceChildren(...(cards.length?cards:[h("div",{class:"empty"},"עוד אין כאן כלום. בקש מ-Claude בשיחה להוסיף תחביב ל-Fun Quest.")]));
   }
 
