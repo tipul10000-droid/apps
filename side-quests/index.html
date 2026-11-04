@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.4";window.SQ_BUILD_AT="4.11.2026 06:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.5";window.SQ_BUILD_AT="4.11.2026 09:25";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1593,7 +1593,8 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       return;
     }
     const allK=topics.filter(isOpen).filter(kindOk).sort(byDate);
-    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t)&&!inStrip(t));
+    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)).sort((a,b)=>(sizeOf(a)==="quick"?0:1)-(sizeOf(b)==="quick"?0:1)), // 6.5: quick+urgent first, to fly through them
+       all=allK.filter(t=>!urg.includes(t)&&!inStrip(t));
     $("urgSec").hidden=!urg.length;$("urgList").replaceChildren(...urg.map(row));
     const back=all.filter(returned), later=all.filter(snoozed), open=all.filter(t=>!returned(t)&&!snoozed(t));
     const ph=phase(), away=mode==="work"||mode==="abroad";
