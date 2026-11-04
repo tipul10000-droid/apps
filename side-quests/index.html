@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.6";window.SQ_BUILD_AT="4.11.2026 09:58";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.7";window.SQ_BUILD_AT="4.11.2026 11:05";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -349,9 +349,9 @@ body.fun-on .tasks-only{display:none!important}
 .sr-tab[aria-pressed="true"]{background:#F5C518;color:#1B1200;border-color:#F5C518}
 .sr-h{margin:6px 0 0;font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px}
 .sr-h small{font-weight:600;color:var(--muted);font-size:12px}
-.sp{flex:none;width:44px;height:62px;border-radius:7px;background:#2C2C34 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#F5C518;direction:ltr;overflow:hidden;position:relative}
-.sp.has{color:transparent}
-.sp.big{width:62px;height:88px;font-size:16px}
+.srp{flex:none;width:44px;height:62px;border-radius:7px;background:#2C2C34 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#F5C518;direction:ltr;overflow:hidden;position:relative}
+.srp.has{color:transparent}
+.srp.big{width:62px;height:88px;font-size:16px}
 .sr-now{display:flex;gap:12px;border:1px solid #F5C518;border-radius:14px;background:var(--surface);padding:10px;min-width:0}
 .sr-now .bd{min-width:0;flex:1;display:flex;flex-direction:column;gap:6px}
 .sr-nm{font-size:15.5px;font-weight:800;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
@@ -387,11 +387,11 @@ body.fun-on .tasks-only{display:none!important}
 .sr-stats b{display:block;font-size:22px;color:#F5C518;font-family:var(--f-display);line-height:1.1}
 .sr-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .sr-t{border:0;background:none;padding:0;font:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:0;position:relative}
-.sr-t .sp{width:100%;height:auto;aspect-ratio:2/3}
+.sr-t .srp{width:100%;height:auto;aspect-ratio:2/3}
 .sr-t span{font-size:11px;line-height:1.2;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sr-t em{position:absolute;top:4px;inset-inline-start:4px;font-style:normal;font-size:11px;background:#0E0E12;border-radius:999px;padding:1px 5px}
-.sr-t.off .sp{filter:grayscale(1);opacity:.55}
-.sr-t[aria-pressed="true"] .sp{outline:2px solid #F5C518;outline-offset:1px}
+.sr-t.off .srp{filter:grayscale(1);opacity:.55}
+.sr-t[aria-pressed="true"] .srp{outline:2px solid #F5C518;outline-offset:1px}
 .sr-det{border:1px solid #F5C518;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
 .sr-det a{color:#F5C518}
 /* Spotify zone (topic.zone="spotify"): numbered sessions, archive of finished ones, next-session picker */
@@ -1822,7 +1822,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     }).catch(()=>{}).finally(()=>{tvmBusy=false;setTimeout(tvmPump,450);});}
   function paintPoster(el){const c=tvm[el.dataset.sid];if(c&&c.img){el.style.backgroundImage="url('"+c.img+"')";el.classList.add("has");}}
   function poster(s,big){const ini=String(s.name||"?").replace(/^The /,"").split(/[\s:]+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
-    const el=h("span",{class:"sp"+(big?" big":""),"data-sid":s.id,"aria-hidden":"true"},ini);paintPoster(el);
+    const el=h("span",{class:"srp"+(big?" big":""),"data-sid":s.id,"aria-hidden":"true"},ini);paintPoster(el);
     if(tvmNeed(s)&&!tvmQ.includes(s))tvmQ.push(s);return el;}
   function serName(s){return h("div",{class:"sr-nm"},h("bdi",{dir:"ltr"},s.name));}
   function seasonBar(s){const n=Math.min(+s.seasons||0,14);if(!n)return null;const cur=+s.season||0;
