@@ -25,7 +25,7 @@ Rows (6.0): one circle to finish + title + one quiet line + at most one chip. Ch
 | `manifest.json`, `icon-*.png`, `apple-touch-icon.png` | Home-screen app (PWA) name and icons. |
 | `sw.js` | Service worker: shows push notifications, opens the app on tap. No caching. |
 | `insurance.html` | Family insurance dashboard (policies, costs, renewals, coverage map, tasks). Same PIN/data layer (`sq-db.js`); data in `sidequests/insurance` (one doc per policy + `_meta`), never in the repo. |
-| `payments.html` | Fixed monthly payments dashboard (6.4): optimization cards with market price, a question and a ready-to-paste text; spending by category; full list; missing; cancelled. Data in `sidequests/payments` (one doc per payment + `_meta`), insurance shown as one live row from `insurance`. Fields: `name, cat, amt, cur, cycle (m/2m/y/var/once), pay, status (active/check/unknown/free/ended), src, note, market, save, lvl, opt_title, why, q{q,options,answer}, email{subject,to_label,body}`. No Gmail drafts addressed to Oren himself. |
+| `payments.html` | Fixed monthly payments dashboard (6.6): optimization cards with market price, a question and a ready-to-paste text; spending by category; full list; missing; cancelled. Data in `sidequests/payments` (one doc per payment + `_meta`), insurance shown as one live row from `insurance`. Fields: `name, cat, amt, cur, cycle (m/2m/y/var/once), pay, status (active/check/unknown/free/ended), src, note, market, save, lvl, opt_title, why, q{q,options,answer}, email{subject,to_label,body}`. No Gmail drafts addressed to Oren himself. |
 | `fh-logo.png` | Frame Horizon logo for its Fun Quest card. |
 | `supabase/schema.sql` | Tables and RPC functions (no secrets). Enough to rebuild the backend. |
 

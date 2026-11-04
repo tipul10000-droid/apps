@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.4";window.SQ_BUILD_AT="4.11.2026 11:45";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.6";window.SQ_BUILD_AT="4.11.2026 11:55";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1116,6 +1116,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     <div class="sec-head"><h2 id="hUrg">❗ דחוף</h2></div>
     <div class="group" id="urgList"></div>
   </section>
+  <section id="quickSec" class="tasks-only" hidden><div id="quickList"></div></section>
   <section aria-labelledby="hAsk" id="askSec" class="tasks-only" hidden>
     <div class="sec-head"><h2 id="hAsk">מחכה להחלטה שלך</h2></div>
     <div class="inbox" id="inbox"></div>
@@ -1174,19 +1175,21 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   function curMode(){const a=autoMode();if(modeOv&&(modeOv.auto!==a||modeOv.day!==ilDate()||!MODES[modeOv.m]))modeOv=null;return modeOv?modeOv.m:a;}
   let mode=curMode();
   const qHidden=q=>MHIDE[mode].includes(q);
-  // quick tasks: added on the spot from the app, or simple and doable from where I am now. Born fast, closed fast: they go on top.
+  // 6.4 (Oren 4.11): three task types, shown in this order. quick = up to ~1 hour, check-off. trip = one-off, heavier: go somewhere, a test, a fix at home.
+  // long = ongoing, takes days (Motzkin, insurance, a claim). Topic field `size`: quick|trip|long. Missing = guessed from level/context.
+  const SIZES={quick:{e:"⚡",l:"מהירה",g:"⚡ מהירות",sub:"עד שעה, צ׳יק צ׳ק"},trip:{e:"🚗",l:"נקודתית",g:"🚗 נקודתיות לטיפול",sub:"לצאת, ללכת לאנשהו"},long:{e:"🧭",l:"מתמשכת",g:"🧭 שוטפות וארוכות",sub:"לוקח כמה ימים"}};
   const QUICK_SRC=/נוסף ידנית/;
-  function isQuick(t){if(!isOpen(t)||snoozed(t)||t.status==="paused"||t.status==="waiting_other")return false;const c=ctxOf(t),ph=phase();
-    if(isUrgent(t)&&mode!=="home")return true;
-    if(ph==="commute"&&mode!=="work"&&c.includes("call"))return true; // in the car: calls of any size
-    if(levelOf(t)>1)return false;
-    const heavy=c.includes("pc")||c.includes("house");
-    if(mode==="work")return !heavy&&!c.includes("out")&&!c.includes("lior")&&(QUICK_SRC.test(t.source||"")||c.includes("mobile")||c.includes("call")||c.includes("office")||!c.length);
-    if(mode==="abroad")return c.includes("mobile")||c.includes("call");
-    if(QUICK_SRC.test(t.source||""))return !heavy;
-    return c.includes("out")||c.includes("call")||c.includes("mobile")||(ph!=="free")&&c.includes("lior");}
-  // things that can't be done where I am now: fold them away (Side only)
-  function isLater(t){if(quest!=="side"||isUrgent(t)||isQuick(t)||t.status==="waiting_other"||t.status==="paused")return false;if(mode==="work"||mode==="abroad")return true;return false;}
+  function sizeOf(t){if(SIZES[t.size])return t.size;const c=ctxOf(t);
+    if(t.kind==="project"||t.kind==="auto"||levelOf(t)>=3)return "long";
+    if(c.includes("out")||c.includes("house"))return "trip";
+    if(QUICK_SRC.test(t.source||"")||levelOf(t)===1)return "quick";
+    return "long";}
+  // in the car (commute, not at work) calls of any size join the quick ones on top
+  function isQuick(t){if(!isOpen(t)||snoozed(t)||t.status==="paused"||t.status==="waiting_other")return false;
+    if(phase()==="commute"&&mode!=="work"&&ctxOf(t).includes("call"))return true;
+    if(sizeOf(t)!=="quick")return false;
+    const c=ctxOf(t);if(mode==="abroad")return !c.includes("out")&&!c.includes("house");
+    return true;}
   function setMode(m,why){const a=autoMode();modeOv=m===a?null:{m,auto:a,day:ilDate()};try{modeOv?localStorage.setItem("sq_mode",JSON.stringify(modeOv)):localStorage.removeItem("sq_mode");}catch(e){}ctxMenu=false;refreshMode(true);if(why)toast(why);}
   function refreshMode(force){const m=curMode();if(!force&&m===mode)return;mode=m;openId=null;laterFor=null;filterKind="all";view="open";if(qHidden(quest))quest="side";applyQuest();if(db)renderAll();}
   setInterval(()=>refreshMode(),60000);
@@ -1433,7 +1436,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     if(quest==="fun"){jumpTo("funGrid");return;}
     const want=k==="done"?"done":"open";
     if(view!==want){view=want;openId=null;renderViews();renderFilters();renderList();}
-    if(k==="asks")jumpTo("askSec");else if(k==="wait"||k==="later"){const e=$("g-"+k);if(e&&e.tagName==="DETAILS")e.open=true;e?jumpTo("g-"+k):jumpTo("hAll");}else jumpTo("hAll");
+    if(k==="asks")jumpTo("askSec");else if(k==="wait"||k==="later"){const e=$("g-"+k);if(e&&e.tagName==="DETAILS")e.open=true;e?jumpTo("g-"+k):jumpTo("hAll");}else jumpTo($("quickSec").hidden?"hAll":"quickSec");
   }
   function jumpTo(id){const e=$(id);if(e&&!e.hidden&&e.offsetParent)e.scrollIntoView({behavior:"smooth",block:"start"});else toast("אין כרגע מה להציג כאן");}
   function renderStats(){
@@ -1557,6 +1560,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       log.length?h("div",{class:"src"},log.map(e=>`${fmtDate((e.at||"").slice(0,10))} · ${e.text||""}`).join("   |   ")):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"סטטוס"),...["active","waiting_me","waiting_other","paused"].map(s=>h("button",{class:"pill",type:"button","aria-pressed":t.status===s?"true":"false",onclick:()=>patch(t,{status:s})},STATUS[s]))):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"תזכורת"),dateInp,h("button",{class:"pill",type:"button",onclick:()=>snooze(t,1)},"מחר"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,7)},"+שבוע"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,30)},"+חודש"),t.next_date?h("button",{class:"pill",type:"button",onclick:()=>patch(t,{next_date:""},"התאריך הוסר")},"בלי תאריך"):null):null,
+      canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"סוג"),...Object.keys(SIZES).map(z=>h("button",{class:"pill",type:"button","aria-pressed":sizeOf(t)===z?"true":"false",onclick:()=>patch(t,{size:z},"עבר ל"+SIZES[z].g.slice(2))},SIZES[z].e+" "+SIZES[z].l))):null,
       canWrite?levelRow(t):null,
       canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"קישור"),linkInp,h("button",{class:"pill",type:"button",onclick:addLink},"הוסף")):null,
       shareId===t.id?sharePanel(t):null,
@@ -1606,24 +1610,28 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   function renderMain(){
     const kindOk=t=>(filterKind==="all"||t.kind===filterKind)&&ctxOk(t);
     if(view!=="open"){
-      $("urgSec").hidden=true;
+      $("urgSec").hidden=true;$("quickSec").hidden=true;
       const items=topics.filter(t=>view==="done"?(t.status==="done"||t.status==="promoted"):t.status==="archived").filter(kindOk).sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||""));
       $("list").replaceChildren(items.length?h("div",{class:"group"},items.map(row)):h("div",{class:"empty"},view==="done"?"עוד לא סימנת משימות כבוצעו.":"הארכיון ריק."));
       return;
     }
     const allK=topics.filter(isOpen).filter(kindOk).sort(byDate);
-    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)), all=allK.filter(t=>!urg.includes(t)&&!inStrip(t));
+    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)).sort((a,b)=>(sizeOf(a)==="quick"?0:1)-(sizeOf(b)==="quick"?0:1)), // 6.5: quick+urgent first, to fly through them
+       all=allK.filter(t=>!urg.includes(t)&&!inStrip(t));
     $("urgSec").hidden=!urg.length;$("urgList").replaceChildren(...urg.map(row));
     const back=all.filter(returned), later=all.filter(snoozed), open=all.filter(t=>!returned(t)&&!snoozed(t));
-    const ph=phase(), quickL=open.filter(isQuick).sort((a,b)=>(isUrgent(b)-isUrgent(a))||(b.created_at||"").localeCompare(a.created_at||""));
-    const laterHere=open.filter(t=>!quickL.includes(t)&&isLater(t));
-    const left=open.filter(t=>!quickL.includes(t)&&!laterHere.includes(t));
-    const hot=left.filter(isHot), rest=left.filter(t=>!isHot(t));
-    const moving=rest.filter(t=>t.status==="active"||t.status==="waiting_me"), waiting=rest.filter(t=>t.status==="waiting_other"), paused=rest.filter(t=>t.status==="paused");
-    const qTitle=mode==="work"?"⚡ קצרות, אפשר בין לבין":mode==="abroad"?"⚡ אפשר מהנייד":ph==="commute"?"⚡ בדרך: קצרות, שיחות וסידורים":ph==="friday"?"⚡ סידורים וקצרות לבוקר":"⚡ משימות קצרות";
-    const g=[group("⏰ חזר אליך",back,true),group(qTitle,quickL,true,"quick"),group("לטיפול עכשיו",hot,true),group("בתנועה",moving),
-      group(mode==="work"?"🏠 לבית ולערב":"🏠 כשאחזור",laterHere,false,"home",true),
+    const ph=phase(), away=mode==="work"||mode==="abroad";
+    const ord=(a,b)=>(isUrgent(b)-isUrgent(a))||(returned(b)-returned(a))||byDate(a,b);
+    const live=[...back,...open].filter(t=>t.status!=="waiting_other"&&t.status!=="paused");
+    const quickL=live.filter(isQuick).sort(ord), tripL=live.filter(t=>!quickL.includes(t)&&sizeOf(t)==="trip").sort(ord), longL=live.filter(t=>!quickL.includes(t)&&!tripL.includes(t)).sort(ord);
+    const waiting=open.filter(t=>t.status==="waiting_other"), paused=open.filter(t=>t.status==="paused");
+    const qTitle=mode==="work"?"⚡ מהירות, אפשר בין לבין":mode==="abroad"?"⚡ מהירות, מהנייד":ph==="commute"?"⚡ מהירות ושיחות לדרך":ph==="friday"?"⚡ מהירות לבוקר סידורים":"⚡ מהירות (עד שעה)";
+    const qg=group(qTitle,quickL,true,"quick");
+    $("quickSec").hidden=!qg;$("quickList").replaceChildren(...(qg?[qg]:[]));
+    const g=[group(SIZES.trip.g+(mode==="work"?" (אחרי העבודה)":mode==="abroad"?" (כשאחזור)":""),tripL,false,"trip",away),
+      group(SIZES.long.g,longL,false,"long",away),
       group("מחכה לאחרים",waiting,false,"wait",true),group("בהקפאה",paused,false,"paused",true),group("אחר כך",later,false,"later",true)].filter(Boolean);
+    if(!g.length&&qg){$("list").replaceChildren(h("div",{class:"empty"},"כל המשימות הפתוחות מהירות, הן למעלה."));return;}
     $("list").replaceChildren(...(g.length?g:urg.length?[h("div",{class:"empty"},"כל המשימות כאן דחופות, הן למעלה.")]:[h("div",{class:"empty"},topics.length?ctxNow!=="all"?`אין משימות פתוחות למצב: ${CTX[ctxNow].full}.`:"אין משימות בסינון הזה.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-${QUESTS[quest].name}״.`)]));
   }
   function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString()},"בוצע ✓ (עבר ל״בוצעו״)");}
@@ -2065,7 +2073,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
         const ex=x.id&&allTopics.find(t=>t.id===x.id&&!isFun(t));
         const links=(Array.isArray(x.links)?x.links:[]).filter(l=>l&&safeUrl(l.url)).map(l=>({label:String(l.label||"קישור"),url:l.url,type:l.type||linkType(l)}));
         const clean={title:String(x.title).slice(0,200),summary:String(x.summary||""),next_step:String(x.next_step||""),next_date:/^\d{4}-\d{2}-\d{2}$/.test(x.next_date||"")?x.next_date:"",kind:KINDS[x.kind]?x.kind:"research",status:STATUS[x.status]?x.status:"active",priority:x.priority==="high"?"high":"normal",area:String(x.area||""),source:String(x.source||"הודבק משיחה"),updated_at:now};
-        if(Array.isArray(x.context))clean.context=x.context.map(c=>CTX_OLD[c]||c).filter(c=>TAGS[c]);if(x.urgent)clean.urgent=true;
+        if(Array.isArray(x.context))clean.context=x.context.map(c=>CTX_OLD[c]||c).filter(c=>TAGS[c]);if(x.urgent)clean.urgent=true;if(SIZES[x.size])clean.size=x.size;
         try{
           if(ex)await db.collection("topics").doc(ex.id).update({...clean,links:[...linksOf(ex),...links.filter(l=>!linksOf(ex).some(o=>o.url===l.url))],log:[...(Array.isArray(ex.log)?ex.log:[]),{at:now,text:String(x.log_note||"עודכן משיחה")}]});
           else await db.collection("topics").doc(newId()).set({...clean,...(TQ.includes(x.quest)?{quest:x.quest}:TQ.includes(quest)?{quest}:{}),links,created_at:now,log:x.log_note?[{at:now,text:String(x.log_note)}]:[]});
@@ -2075,7 +2083,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       if(n){$("qtitle").value="";toast(n===1?"נוסף מהשיחה":`נוספו ${n} נושאים`);}
       return;
     }
-    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
+    try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",size:"quick",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
   function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"";}
