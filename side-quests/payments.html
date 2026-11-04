@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#3E2A6B">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.PAY_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<title>תשלומים חודשיים קבועים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* תשלומים חודשיים קבועים. הנתונים לא בקוד: sq_docs (app=sidequests, collection=payments, מסמך _meta להגדרות),
+   והביטוחים נקראים חי מ-collection=insurance. נקרא דרך sq-db.js עם הקוד של Side Quests. */
+:root{
+  --bg:#F4F2F7; --surface:#FFFFFF; --sunk:#ECE8F2; --ink:#1E1A26; --muted:#655E70; --line:#DCD6E4;
+  --hero:#3E2A6B; --hero-ink:#F6F3FB; --hero-muted:#C3B5E0; --accent:#F2B33D;
+  --ok:#22855A; --ok-soft:#E0F2E8; --mid:#B0640C; --mid-soft:#FBEBD3; --bad:#C23D4A; --bad-soft:#FBE2E4; --unk:#7A7385; --unk-soft:#ECEAF0;
+  --c-digital:#5B5BD6; --c-streaming:#C2378B; --c-telecom:#2773B8; --c-housing:#2E8B57; --c-car:#D08419; --c-insurance:#16706A; --c-leisure:#8E4FC0; --c-kids:#E0663C; --c-finance:#6B6B6B; --c-other:#8A8494;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#13111A; --surface:#1C1925; --sunk:#25212F; --ink:#ECE8F3; --muted:#A39BB0; --line:#332E3E;
+  --hero:#2A1D4A; --hero-ink:#F2EEF9; --hero-muted:#A898C9; --accent:#F4BD55;
+  --ok:#5FC08F; --ok-soft:#163024; --mid:#EBA74A; --mid-soft:#3A2A14; --bad:#EE7A84; --bad-soft:#3B1E22; --unk:#A39BB0; --unk-soft:#2A2633;
+  --c-digital:#9A9AF0; --c-streaming:#E77DB9; --c-telecom:#6FAEE6; --c-housing:#62C08A; --c-car:#EBA74A; --c-insurance:#5FC2B9; --c-leisure:#BC8FE6; --c-kids:#F2946F; --c-finance:#B0B0B0; --c-other:#A39BB0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#13111A; --surface:#1C1925; --sunk:#25212F; --ink:#ECE8F3; --muted:#A39BB0; --line:#332E3E;
+  --hero:#2A1D4A; --hero-ink:#F2EEF9; --hero-muted:#A898C9; --accent:#F4BD55;
+  --ok:#5FC08F; --ok-soft:#163024; --mid:#EBA74A; --mid-soft:#3A2A14; --bad:#EE7A84; --bad-soft:#3B1E22; --unk:#A39BB0; --unk-soft:#2A2633;
+  --c-digital:#9A9AF0; --c-streaming:#E77DB9; --c-telecom:#6FAEE6; --c-housing:#62C08A; --c-car:#EBA74A; --c-insurance:#5FC2B9; --c-leisure:#BC8FE6; --c-kids:#F2946F; --c-finance:#B0B0B0; --c-other:#A39BB0; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;direction:rtl}
+h1,h2,h3,h4{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+.num{font-family:var(--f-mono);direction:ltr;unicode-bidi:isolate}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 64px}
+
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:860px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);text-decoration:none;font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px;display:flex;align-items:center;gap:10px}
+.hero .sub{color:var(--hero-muted);font-size:14px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:#1F1606;text-decoration:none;font-family:var(--f-display);font-weight:800;font-size:17.5px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.chatbtn[hidden]{display:none}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-mono);font-size:21px;font-weight:500;line-height:1.2;direction:ltr;text-align:right;white-space:nowrap}
+.kpi span{color:var(--hero-muted);font-size:12.5px}
+.kpi.save b{color:var(--accent)}
+@media (max-width:600px){.kpis{grid-template-columns:repeat(2,1fr)}.kpi b{font-size:19px}}
+
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:700;white-space:nowrap;text-decoration:none}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .n{font-family:var(--f-mono);font-weight:500;font-size:12px;opacity:.75;margin-inline-start:4px}
+
+section{margin-bottom:26px;scroll-margin-top:70px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.sh h2{font-size:19px}
+.sh .hint{color:var(--muted);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.empty{padding:22px;text-align:center;color:var(--muted)}
+
+/* optimization */
+.opt{display:flex;flex-direction:column;gap:10px}
+.oc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 13px;border-inline-start:4px solid var(--cc,var(--line))}
+.oc.high{border-color:var(--bad);border-inline-start-color:var(--bad)}
+.oc .hd{display:flex;align-items:flex-start;gap:10px}
+.oc .ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--sunk);flex:none}
+.oc .tt{flex:1;min-width:0}
+.oc .tt b{display:block;font-size:15.5px;line-height:1.3}
+.oc .tt small{color:var(--muted);font-size:13px;display:block;margin-top:2px}
+.pill{flex:none;font-size:12.5px;font-weight:800;color:var(--ok);background:var(--ok-soft);border-radius:8px;padding:2px 8px;white-space:nowrap}
+.mk{margin:8px 0 0;font-size:13.5px;background:var(--sunk);border-radius:10px;padding:7px 10px}
+.mk b{font-weight:800}
+.q{margin-top:10px}
+.q p{margin:0 0 6px;font-weight:700;font-size:14.5px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts button{border:1.5px solid var(--hero);background:var(--surface);color:var(--hero);border-radius:999px;padding:7px 13px;font-weight:700;font-size:14px;min-height:36px;transition:background .15s}
+:root[data-theme="dark"] .opts button{border-color:var(--hero-muted);color:var(--hero-ink)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .opts button{border-color:var(--hero-muted);color:var(--hero-ink)}}
+.opts button.on{background:var(--hero);color:#fff}
+.ans{margin-top:8px;font-size:13.5px;color:var(--ok);font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ans button{border:0;background:none;color:var(--muted);text-decoration:underline;font-size:13px;padding:0}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.act{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-weight:700;font-size:13.5px;text-decoration:none;background:var(--bg)}
+.act.mail{border-color:var(--c-telecom);color:var(--c-telecom)}
+
+/* bars */
+.bars{padding:12px 14px}
+.brow{display:grid;grid-template-columns:118px 1fr 74px;gap:10px;align-items:center;margin:7px 0;font-size:14px;cursor:pointer;background:none;border:0;width:100%;text-align:start;padding:0}
+.track{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.fill{display:block;height:100%;border-radius:5px}
+.brow .v{font-family:var(--f-mono);font-size:13.5px;direction:ltr;text-align:left}
+.bnote{color:var(--muted);font-size:12.5px;margin-top:8px}
+
+/* list */
+.grp{margin-bottom:18px}
+.gh{display:flex;align-items:center;gap:8px;margin:0 2px 8px;font-family:var(--f-display);font-weight:700;font-size:16px}
+.gh .sw{width:10px;height:10px;border-radius:3px}
+.gh .s{margin-inline-start:auto;font-family:var(--f-mono);font-weight:500;font-size:13px;color:var(--muted);direction:ltr}
+.row{width:100%;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;padding:11px 13px;text-align:start;border:1px solid var(--line);border-radius:13px;background:var(--surface);margin-bottom:7px;border-inline-start:4px solid var(--cc,var(--line))}
+.row .t{font-weight:700;font-size:15px;line-height:1.3}
+.row .m{color:var(--muted);font-size:12.5px;display:flex;flex-wrap:wrap;gap:3px 9px;margin-top:2px}
+.row .p{text-align:left;direction:ltr}
+.row .p b{font-family:var(--f-mono);font-weight:500;font-size:15.5px;display:block}
+.row .p small{color:var(--muted);font-size:11.5px;direction:rtl;display:block;text-align:left}
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;border-radius:6px;padding:0 6px;line-height:19px}
+.tag.high{background:var(--bad-soft);color:var(--bad)} .tag.mid{background:var(--mid-soft);color:var(--mid)} .tag.low{background:var(--unk-soft);color:var(--unk)} .tag.okk{background:var(--ok-soft);color:var(--ok)}
+.row.ins{border-style:dashed}
+.ended{display:flex;flex-direction:column;gap:4px}
+.ended div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--muted);padding:6px 4px;border-bottom:1px solid var(--line)}
+.ended div:last-child{border-bottom:0}
+.ended s{color:var(--ink)}
+.miss{display:flex;flex-direction:column;gap:6px;padding:12px 14px;font-size:14px}
+.miss div{display:flex;gap:8px}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:40;display:none}
+.sheet{position:fixed;z-index:41;inset:auto 0 0 0;max-height:88vh;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));transform:translateY(102%);transition:transform .22s ease;max-width:720px;margin:0 auto}
+.open .scrim{display:block}.open .sheet{transform:none}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.sheet h3{font-size:20px;display:flex;align-items:center;gap:8px;padding-inline-end:40px}
+.sheet .x{position:absolute;top:12px;left:12px;border:0;background:var(--sunk);border-radius:999px;width:34px;height:34px;font-size:18px}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;margin:14px 0;font-size:15px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600}
+.box{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:14.5px}
+.box h4{margin:0 0 6px;font-size:14px;color:var(--muted)}
+.box pre{white-space:pre-wrap;font-family:var(--f-body);margin:0;font-size:14px}
+.conf{font-size:12.5px;color:var(--muted);margin-top:12px}
+.jump{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:8px}
+.jump::-webkit-scrollbar{display:none}
+.jump a{flex:none;font-size:13px;font-weight:700;color:var(--muted);text-decoration:none;padding:4px 10px;border-radius:999px;background:var(--sunk)}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;gap:12px;align-items:center;max-width:calc(100% - 32px)}
+.toast.on{display:flex}
+.toast button{border:0;background:none;color:var(--accent);font-weight:800;padding:0}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (prefers-reduced-motion:reduce){.sheet{transition:none}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="in">
+  <div class="top"><a class="back" href="./">→ Side Quests</a><span class="back" id="upd"></span></div>
+  <h1>💳 תשלומים חודשיים קבועים</h1>
+  <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span style="font-size:24px">💬</span><span>עבודה עם הצ'אט<small>שאלה, בדיקה, תוספת או שינוי</small></span></a>
+  <p class="sub" id="sub">כל מה שיורד כל חודש, מכל מקור: כרטיסים, בנק, חשבונות ומנויים. למעלה: מה אפשר להוזיל.</p>
+  <div class="kpis">
+    <div class="kpi"><b id="k-month">…</b><span>בחודש (ידוע)</span></div>
+    <div class="kpi"><b id="k-year">…</b><span>בשנה</span></div>
+    <div class="kpi save"><b id="k-save">…</b><span>אפשר לחסוך בחודש</span></div>
+    <div class="kpi"><b id="k-unk">…</b><span>בלי סכום עדיין</span></div>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <div class="bar"><div class="chips" id="cats"></div><nav class="jump" id="jump"></nav></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+
+<div id="sheetwrap"><div class="scrim" id="scrim"></div><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status"><span id="toastT"></span><button id="toastU" type="button">ביטול</button></div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const ils=n=>n==null||isNaN(n)?"?":"₪"+Math.round(n).toLocaleString("en-US");
+
+// קטגוריות: מה שאורן ביקש (אינטרנטי וסטרימינג, דיור, פנאי) ועוד כמה שמכסות את השאר
+const CATS={
+  telecom:{l:"אינטרנט, טלוויזיה וסלולר",i:"📶",c:"--c-telecom"},
+  streaming:{l:"סטרימינג",i:"🎬",c:"--c-streaming"},
+  digital:{l:"מנויים דיגיטליים ו-AI",i:"☁️",c:"--c-digital"},
+  housing:{l:"דיור: משכנתא, ארנונה, חשמל, מים",i:"🏠",c:"--c-housing"},
+  insurance:{l:"ביטוחים",i:"🛡️",c:"--c-insurance"},
+  car:{l:"רכב ותחבורה",i:"🚗",c:"--c-car"},
+  leisure:{l:"פנאי",i:"🎾",c:"--c-leisure"},
+  kids:{l:"ילדים וחינוך",i:"🎒",c:"--c-kids"},
+  finance:{l:"בנק ופיננסים",i:"🏦",c:"--c-finance"},
+  other:{l:"אחר",i:"📄",c:"--c-other"}};
+const CYC={m:"לחודש","2m":"כל חודשיים",y:"בשנה",var:"משתנה",once:"חד פעמי"};
+const STATUS={active:["פעיל","okk"],check:["לבדוק","mid"],unknown:["לא מזוהה","high"],free:["חינם","low"],ended:["בוטל","low"]};
+const SRC={gmail:"מהמייל",bills:"My Bills",card:"פירוט אשראי",bank:"בנק",cashflow:"מאפליקציית התזרים",manual:"ידני",insurance:"דשבורד הביטוחים"};
+
+let fCat="all", data={items:[],meta:{},ins:[]}, db=null;
+
+function fx(){return +(data.meta.fx_usd||3.7);}
+// ממוצע חודשי בשקלים: amt + cur + cycle
+function monthly(p){
+  if(p.status==="ended"||p.status==="free")return 0;
+  if(p.amt==null||p.amt===""||isNaN(+p.amt))return null;
+  let v=+p.amt*(p.cur==="USD"?fx():1);
+  if(p.cycle==="2m")v/=2; else if(p.cycle==="y")v/=12; else if(p.cycle==="once")v=0;
+  return v;
+}
+// הביטוחים: שורה אחת שמחושבת חי מדשבורד הביטוחים, כדי שלא יהיו שני מקורות לאותו כסף
+function insRow(){
+  const pol=data.ins.filter(x=>x.id!=="_meta"&&x.title&&!x.merged_into&&x.status!=="ended"&&x.status!=="unknown"&&x.status!=="per_trip");
+  const m=pol.reduce((s,x)=>s+(x.monthly!=null?+x.monthly||0:x.annual!=null?(+x.annual||0)/12:0),0);
+  if(!pol.length)return null;
+  return {id:"_insurance",name:"כל הביטוחים (חי מדשבורד הביטוחים)",cat:"insurance",amt:Math.round(m),cur:"ILS",cycle:"m",status:"active",src:"insurance",
+    note:`${pol.filter(x=>+x.monthly>0||+x.annual>0).length} פוליסות בתשלום. הפירוט, הכפלים והחיסכון נמצאים בדשבורד הביטוחים.`,link:"insurance.html",virtual:true};
+}
+function allItems(){const r=insRow();return [...data.items,...(r?[r]:[])];}
+function live(){return allItems().filter(p=>p.status!=="ended");}
+function isOpt(p){return p.status!=="ended"&&((+p.save>0)||p.lvl==="high"||p.lvl==="mid"||(p.q&&p.q.q&&!p.q.answer));}
+
+function chips(){
+  const L=live();
+  const cs=["all",...Object.keys(CATS).filter(c=>L.some(p=>p.cat===c))];
+  $("cats").innerHTML=cs.map(c=>{const n=c==="all"?L.length:L.filter(p=>p.cat===c).length;return `<button class="chip" data-c="${c}" aria-pressed="${fCat===c}">${c==="all"?"הכל":CATS[c].i+" "+CATS[c].l.split(":")[0]}<span class="n">${n}</span></button>`;}).join("");
+  $("cats").querySelectorAll("button").forEach(b=>b.onclick=()=>{fCat=b.dataset.c;render();});
+}
+
+function qBlock(p){
+  const q=p.q;if(!q||!q.q)return "";
+  if(q.answer)return `<div class="ans">✓ ${esc(q.answer)}<button data-undo="${esc(p.id)}">שינוי</button></div>`;
+  const opts=(q.options||[]).map(o=>typeof o==="string"?o:o.label);
+  return `<div class="q"><p>${esc(q.q)}</p><div class="opts">${opts.map((o,i)=>`<button data-ans="${esc(p.id)}" data-i="${i}">${esc(o)}</button>`).join("")}</div></div>`;
+}
+function actsBlock(p){
+  const a=[];
+  if(p.email&&safe(p.email.draft_url))a.push(`<a class="act mail" href="${esc(safe(p.email.draft_url))}" target="_blank" rel="noopener">✉️ טיוטה מוכנה ב-Gmail</a>`);
+  if(p.email&&p.email.body)a.push(`<button class="act" data-copy="${esc(p.id)}">📋 העתק את הנוסח</button>`);
+  (p.links||[]).filter(l=>safe(l.url)).forEach(l=>a.push(`<a class="act" href="${esc(safe(l.url))}" target="_blank" rel="noopener">🔗 ${esc(l.label)}</a>`));
+  return a.length?`<div class="acts">${a.join("")}</div>`:"";
+}
+
+function render(){
+  chips();
+  const L=live(), V=L.filter(p=>fCat==="all"||p.cat===fCat);
+  const known=L.map(monthly).filter(v=>v!=null), m=known.reduce((s,v)=>s+v,0);
+  const unk=L.filter(p=>monthly(p)==null).length;
+  const save=L.reduce((s,p)=>s+(p.q&&p.q.answer&&p.q.no_save?0:(+p.save||0)),0);
+  $("k-month").textContent=ils(m);$("k-year").textContent=ils(m*12);$("k-save").textContent=save?"~"+ils(save):"₪0";$("k-unk").textContent=unk;
+  const meta=data.meta;
+  if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
+  const chat=safe(meta.chat_url);if(chat){$("chat").href=chat;$("chat").hidden=false;}
+  let h="";
+
+  // 1. טיוב ושיפור: מה אפשר להוזיל, שאלות להחלטה וטיוטות
+  const rank={high:0,mid:1,low:2};
+  const O=V.filter(isOpt).sort((a,b)=>((a.q&&a.q.answer)?1:0)-((b.q&&b.q.answer)?1:0)||(rank[a.lvl]??3)-(rank[b.lvl]??3)||(+b.save||0)-(+a.save||0));
+  if(O.length){
+    h+=`<section id="s-opt"><div class="sh"><h2>⚡ טיוב ושיפור</h2><span class="hint">${O.filter(p=>p.q&&p.q.q&&!p.q.answer).length} שאלות פתוחות</span></div><div class="opt">`+
+      O.map(p=>{const c=CATS[p.cat]||CATS.other,v=monthly(p);return `<article class="oc ${p.lvl==="high"?"high":""}" style="--cc:var(${c.c})">
+        <div class="hd"><span class="ic">${esc(p.icon||c.i)}</span><span class="tt"><b>${esc(p.opt_title||p.name)}</b><small>${esc(p.why||"")}${v!=null?` · היום ${ils(v)} ${p.cycle==="var"?"בממוצע":"לחודש"}`:""}</small></span>${+p.save>0?`<span class="pill">עד ${ils(p.save)}/חודש</span>`:""}</div>
+        ${p.market?`<div class="mk"><b>מחיר שוק:</b> ${esc(p.market)}</div>`:""}
+        ${qBlock(p)}${actsBlock(p)}</article>`;}).join("")+`</div></section>`;
+  }
+
+  // 2. לאן הולך הכסף
+  const byCat={};L.forEach(p=>{const v=monthly(p);if(v>0)byCat[p.cat]=(byCat[p.cat]||0)+v;});
+  const mx=Math.max(1,...Object.values(byCat));
+  const bars=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<button class="brow" data-cat="${c}"><span>${CATS[c]?.i||""} ${esc((CATS[c]?.l||c).split(":")[0])}</span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;background:var(${CATS[c]?.c||"--c-other"})"></span></span><span class="v">${ils(v)}</span></button>`).join("");
+  if(fCat==="all")h+=`<section id="s-cost"><div class="sh"><h2>לאן הולך הכסף</h2><span class="hint">ממוצע חודשי, רק מה שידוע</span></div><div class="card bars">${bars||'<div class="empty">אין עדיין סכומים</div>'}<div class="bnote">${esc(meta.cost_note||"")}</div></div></section>`;
+
+  // 3. כל התשלומים לפי קטגוריה
+  const groups={};V.forEach(p=>{(groups[p.cat]=groups[p.cat]||[]).push(p);});
+  h+=`<section id="s-list"><div class="sh"><h2>כל התשלומים</h2><span class="hint">לחיצה פותחת פרטים</span></div>`;
+  if(!V.length)h+=`<div class="card empty">אין תשלומים בסינון הזה</div>`;
+  Object.keys(CATS).filter(c=>groups[c]).forEach(c=>{
+    const g=groups[c].sort((a,b)=>(monthly(b)??-1)-(monthly(a)??-1)), sum=g.reduce((s,p)=>s+(monthly(p)||0),0);
+    h+=`<div class="grp"><div class="gh"><span class="sw" style="background:var(${CATS[c].c})"></span>${CATS[c].i} ${esc(CATS[c].l)}<span class="s">${sum?ils(sum):""}</span></div>`+
+      g.map(p=>{const st=STATUS[p.status]||STATUS.active,v=monthly(p);
+        return `<button class="row ${p.virtual?"ins":""}" data-p="${esc(p.id)}" style="--cc:var(${CATS[c].c})"><span><span class="t">${esc(p.name)}</span><span class="m">${p.pay?`<span>${esc(p.pay)}</span>`:""}${p.next?`<span>הבא ${fmtD(p.next)}</span>`:""}${p.status!=="active"?`<span class="tag ${st[1]}">${st[0]}</span>`:""}${isOpt(p)&&+p.save>0?`<span class="tag okk">אפשר לחסוך</span>`:""}</span></span><span class="p"><b>${v!=null?ils(v):p.amt_label?esc(p.amt_label):"?"}</b><small>${p.cur==="USD"&&p.amt!=null?"$"+esc(p.amt)+" · ":""}${esc(CYC[p.cycle]||"לחודש")}</small></span></button>`;}).join("")+`</div>`;
+  });
+  h+=`</section>`;
+
+  // 4. מה עוד חסר בתמונה
+  const miss=meta.missing||[];
+  if(miss.length&&fCat==="all")h+=`<section id="s-miss"><div class="sh"><h2>מה עוד חסר בתמונה</h2><span class="hint">יגיע מהתזרים ומפירוטי האשראי</span></div><div class="card miss">${miss.map(x=>`<div><span>○</span><span>${esc(x)}</span></div>`).join("")}</div></section>`;
+
+  // 5. בוטלו לאחרונה
+  const E=data.items.filter(p=>p.status==="ended"&&(fCat==="all"||p.cat===fCat));
+  if(E.length)h+=`<section id="s-ended"><div class="sh"><h2>בוטלו או הוזלו לאחרונה</h2><span class="hint">כדי לזכור שזה כבר טופל</span></div><div class="card ended" style="padding:6px 12px">${E.map(p=>`<div><s>${esc(p.name)}</s><span>${esc(p.note||"")}</span></div>`).join("")}</div></section>`;
+
+  $("app").innerHTML=h;
+  const J=[["s-opt","טיוב"],["s-cost","לאן הולך"],["s-list","כל התשלומים"],["s-miss","חסר"],["s-ended","בוטלו"]].filter(([i])=>$(i));
+  $("jump").innerHTML=J.map(([i,l])=>`<a href="#${i}">${l}</a>`).join("");
+  $("app").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openItem(b.dataset.p));
+  $("app").querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{fCat=b.dataset.cat;render();scrollTo({top:0,behavior:"smooth"});});
+  $("app").querySelectorAll("[data-ans]").forEach(b=>b.onclick=()=>answer(b));
+  $("app").querySelectorAll("[data-undo]").forEach(b=>b.onclick=()=>setAnswer(b.dataset.undo,null));
+  $("app").querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>copyMail(b.dataset.copy));
+  $("foot").innerHTML=esc(meta.sources||"")+(meta.sources?"<br>":"")+"Side Quests · תשלומים קבועים · גרסה "+window.PAY_BUILD;
+}
+function fmtD(d){if(!d)return "";const [y,m,dd]=String(d).split("-");return dd?`${+dd}.${+m}`:`${+m}.${(y||"").slice(2)}`;}
+
+let undoFn=null,tt=null;
+function toast(t,u){$("toastT").textContent=t;undoFn=u||null;$("toastU").style.display=u?"":"none";$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>{$("toast").className="toast";undoFn=null;},5000);}
+$("toastU").onclick=()=>{const f=undoFn;$("toast").className="toast";undoFn=null;f&&f();};
+
+function answer(b){
+  b.classList.add("on");const id=b.dataset.ans,i=+b.dataset.i;
+  const p=data.items.find(x=>x.id===id);if(!p||!p.q)return;
+  const o=(p.q.options||[])[i],label=typeof o==="string"?o:o.label;
+  setTimeout(()=>setAnswer(id,label,o&&o.no_save),300);
+}
+async function setAnswer(id,label,noSave){
+  const p=data.items.find(x=>x.id===id);if(!p||!db)return;
+  const prev={...p.q},now=new Date().toISOString();
+  const q={...p.q,answer:label||"",answered_at:label?now:"",no_save:!!noSave};
+  const log=[...(Array.isArray(p.log)?p.log:[]),{at:now,text:label?`ענית: ${p.q.q} → ${label}`:"ביטלת תשובה"}];
+  p.q=q;render();
+  try{await db.collection("payments").doc(id).update({q,log,updated_at:now});
+    if(label)toast("נשמר. Claude ימשיך מכאן בריצה הקרובה",async()=>{p.q=prev;render();try{await db.collection("payments").doc(id).update({q:prev});}catch(e){}});}
+  catch(e){p.q=prev;render();toast("השמירה נכשלה, נסה שוב");}
+}
+async function copyMail(id){const p=data.items.find(x=>x.id===id);if(!p||!p.email)return;
+  const t=(p.email.subject?p.email.subject+"\n\n":"")+p.email.body;
+  try{await navigator.clipboard.writeText(t);toast("הנוסח הועתק");}catch(e){toast("לא הצלחתי להעתיק");}}
+
+function openItem(id){
+  const p=allItems().find(x=>x.id===id);if(!p)return;
+  if(p.virtual&&p.link){location.href=p.link;return;}
+  const c=CATS[p.cat]||CATS.other, st=STATUS[p.status]||STATUS.active, v=monthly(p);
+  const row=(k,val)=>val==null||val===""?"":`<dt>${k}</dt><dd>${val}</dd>`;
+  $("sheet").innerHTML=`<div class="grab"></div><button class="x" id="sx" aria-label="סגירה">✕</button>
+  <h3><span>${esc(p.icon||c.i)}</span>${esc(p.name)}</h3>
+  <dl class="kv">
+    ${row("סטטוס",`<span class="tag ${st[1]}">${st[0]}</span>`)}
+    ${row("סכום",p.amt!=null&&p.amt!==""?`<span class="num">${p.cur==="USD"?"$"+esc(p.amt):ils(+p.amt)}</span> ${esc(CYC[p.cycle]||"")}${p.cur==="USD"||p.cycle!=="m"?` · <span class="num">${ils(v)}</span> לחודש`:""}`:esc(p.amt_label||"לא ידוע עדיין"))}
+    ${row("משלמים דרך",esc(p.pay))}
+    ${row("מי משתמש",esc(p.who))}
+    ${row("החיוב הבא",p.next?fmtD(p.next):"")}
+    ${row("קטגוריה",c.i+" "+esc(c.l))}
+  </dl>
+  ${p.note?`<div class="box"><h4>מה ידוע</h4>${esc(p.note)}</div>`:""}
+  ${p.market?`<div class="box"><h4>מחיר שוק</h4>${esc(p.market)}</div>`:""}
+  ${p.q&&p.q.q?`<div class="box"><h4>החלטה</h4>${qBlock(p)}</div>`:""}
+  ${p.email&&p.email.body?`<div class="box"><h4>נוסח מוכן${p.email.to_label?" · "+esc(p.email.to_label):""}</h4><pre>${esc(p.email.body)}</pre></div>`:""}
+  ${actsBlock(p)}
+  ${(p.log||[]).length?`<div class="box"><h4>היסטוריה</h4>${p.log.slice(-5).reverse().map(l=>`<div style="font-size:13px;color:var(--muted)">${esc(String(l.at||"").slice(0,10))} · ${esc(l.text)}</div>`).join("")}</div>`:""}
+  <div class="conf">מקור: ${esc(SRC[p.src]||p.src||"")}${p.seen?` · נבדק ${esc(p.seen)}`:""}</div>`;
+  $("sheetwrap").className="open";
+  $("sheet").querySelectorAll("[data-ans]").forEach(b=>b.onclick=()=>{answer(b);setTimeout(()=>openItem(id),450);});
+  $("sheet").querySelectorAll("[data-undo]").forEach(b=>b.onclick=()=>{setAnswer(id,null);setTimeout(()=>openItem(id),50);});
+  $("sheet").querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>copyMail(id));
+  $("sx").onclick=close;$("sx").focus();
+}
+function close(){$("sheetwrap").className="";}
+$("scrim").onclick=close;document.addEventListener("keydown",e=>{if(e.key==="Escape")close();});
+
+window.claude.use("db").then(d=>{
+  db=d;if(!db)return;
+  db.collection("payments").onSnapshot(s=>{
+    const items=[],meta={};
+    s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")Object.assign(meta,v);else if(v.name)items.push({id:x.id,...v});});
+    data.items=items;data.meta=meta;render();
+  },()=>{});
+  db.collection("insurance").onSnapshot(s=>{data.ins=s.docs.map(x=>({id:x.id,...x.data()}));render();},()=>{});
+});
+})();
+</script>
+</body>
+</html>
