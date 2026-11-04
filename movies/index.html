@@ -67,7 +67,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1
 ul{list-style:none;margin:0;padding:0}
 .row{display:flex;flex-direction:column;gap:4px;padding:8px 12px 8px 10px;background:var(--card);position:relative;min-width:0}
 .l1{display:flex;align-items:flex-start;gap:6px;min-width:0}
-.l2{display:flex;align-items:center;gap:6px;min-width:0;padding-inline-start:52px}
+.l2{display:flex;align-items:center;gap:6px;row-gap:6px;flex-wrap:wrap;min-width:0;padding-inline-start:52px}
 .nodrag .l2,#seen .l2{padding-inline-start:24px}
 .act{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 8px;font:inherit;font-size:13.5px;color:var(--ink);background:transparent;cursor:pointer;white-space:nowrap;min-height:30px}
 .act .chk{width:18px;height:18px}
@@ -91,6 +91,7 @@ ul{list-style:none;margin:0;padding:0}
 .meta{flex:1;min-width:0;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rate{flex:none;display:inline-flex;align-items:center;gap:4px;text-decoration:none;font-weight:700;font-size:13.5px;color:#000;background:var(--imdb);border-radius:6px;padding:2px 7px;font-variant-numeric:tabular-nums;direction:ltr}
 .rate small{font-size:10px;font-weight:800;letter-spacing:.3px}
+.rate.rt{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--ink);gap:3px}
 .rate.none{background:transparent;color:var(--muted);border:1px dashed var(--line);font-weight:600}
 .icon{flex:none;width:32px;height:32px;border:0;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;display:grid;place-items:center;padding:0}
 .icon:hover{background:color-mix(in srgb,var(--line) 70%,transparent);color:var(--ink)}
@@ -126,7 +127,7 @@ ul{list-style:none;margin:0;padding:0}
 .hint{font-size:12.5px;color:var(--muted)}
 .hint button{border:0;background:transparent;color:var(--amber);font:inherit;font-weight:700;cursor:pointer;padding:0}
 .nodrag .handle{display:none}
-@media (max-width:480px){.row{padding-inline:8px}.meta{display:none}.l2{padding-inline-start:0}.nodrag .l2,#seen .l2{padding-inline-start:0}}
+@media (max-width:480px){.row{padding-inline:8px}.meta{display:none}.act.dl .lbl{display:none}.act.dl{padding-inline:8px}.l2{padding-inline-start:0}.nodrag .l2,#seen .l2{padding-inline-start:0}}
 .empty{padding:28px 18px;text-align:center;color:var(--muted)}
 .empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:4px}
 .foot{font-size:13px;color:var(--muted);padding:0 4px;display:flex;flex-direction:column;gap:4px}
@@ -165,6 +166,7 @@ ul{list-style:none;margin:0;padding:0}
         <select id="sort" class="sel" aria-label="Sort">
           <option value="mine">My order</option>
           <option value="rating">IMDb rating (high first)</option>
+          <option value="rt">Rotten Tomatoes (high first)</option>
           <option value="year_new">Year (newest)</option>
           <option value="year_old">Year (oldest)</option>
           <option value="title">Title (A-Z)</option>
@@ -225,7 +227,7 @@ function applyView(list,isTodo){
     if(view.f.new&&!(y>=2000))return false;
     return true;});
   const num=v=>v==null||v===""?-1:Number(v), yr=m=>parseInt(m.year,10)||0;
-  const cmp={rating:(a,b)=>num(b.imdb_rating)-num(a.imdb_rating),year_new:(a,b)=>yr(b)-yr(a),year_old:(a,b)=>yr(a)-yr(b),
+  const cmp={rating:(a,b)=>num(b.imdb_rating)-num(a.imdb_rating),rt:(a,b)=>num(b.rt)-num(a.rt),year_new:(a,b)=>yr(b)-yr(a),year_old:(a,b)=>yr(a)-yr(b),
     title:(a,b)=>a.title.replace(/^the /i,"").localeCompare(b.title.replace(/^the /i,""),"en"),added:(a,b)=>String(b.added_at||"").localeCompare(String(a.added_at||""))}[view.sort];
   if(cmp)out=out.slice().sort(cmp);
   return out;
@@ -237,6 +239,9 @@ function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 function imdbUrl(m){return m.imdb_url||("https://www.imdb.com/find/?s=tt&q="+encodeURIComponent(m.title+(m.year?" "+m.year:"")))}
 
 function fmtD(iso){if(!iso)return"";const d=new Date(iso);return isNaN(d)?"":`${d.getDate()}.${d.getMonth()+1}.${String(d.getFullYear()).slice(2)}`}
+function rtUrl(m){return "https://www.rottentomatoes.com/search?search="+encodeURIComponent(m.title)}
+function rtHTML(m){const v=m.rt; if(v==null||v==="")return `<a class="rate rt none" href="${esc(rtUrl(m))}" target="_blank" rel="noopener" title="Rotten Tomatoes: not rated yet">🍅 ?</a>`;
+  return `<a class="rate rt" href="${esc(rtUrl(m))}" target="_blank" rel="noopener" title="Rotten Tomatoes (critics)">🍅 ${Math.round(Number(v))}%</a>`}
 function rowHTML(m,i,seen){
   const r=(m.imdb_rating!=null&&m.imdb_rating!=="")
     ? `<a class="rate" href="${esc(imdbUrl(m))}" target="_blank" rel="noopener" title="IMDb"><small>IMDb</small>${Number(m.imdb_rating).toFixed(1)}</a>`
@@ -245,12 +250,12 @@ function rowHTML(m,i,seen){
   return `<li class="row" data-id="${esc(m.id)}">
     <div class="l1">
       ${seen?"":`<span class="handle" tabindex="0" role="button" aria-label="Drag to reorder (arrow keys up/down)">${ICON.grip}</span><span class="num">${i+1}</span>`}
-      <span class="t"><bdi dir="ltr">${esc(m.title)}</bdi>${m.genre?`<span class="tag">${esc(m.genre)}</span>`:""}${m.lang?`<span class="tag lang" title="Not in English">🌐 ${esc(m.lang)}</span>`:""}</span>
+      <span class="t"><bdi dir="ltr">${esc(m.title)}</bdi>${m.year?` <span class="yr">${esc(m.year)}</span>`:""}${m.genre?`<span class="tag">${esc(m.genre)}</span>`:""}${m.lang?`<span class="tag lang" title="Not in English">🌐 ${esc(m.lang)}</span>`:""}</span>
     </div>
     <div class="l2">
       <label class="act${seen?" on":""}"><input type="checkbox" class="chk" ${seen?"checked":""} aria-label="Watched ${esc(m.title)}">Watched</label>
-      ${r}${m.year?`<span class="yr">${esc(m.year)}</span>`:""}
-      <button type="button" class="act dl ${m.downloaded?"on":""}" aria-pressed="${!!m.downloaded}" aria-label="Downloaded">${m.downloaded?ICON.dlOn:ICON.dl}${m.downloaded?"Ready":"Download"}</button>
+      ${r}${rtHTML(m)}
+      <button type="button" class="act dl ${m.downloaded?"on":""}" aria-pressed="${!!m.downloaded}" aria-label="Downloaded">${m.downloaded?ICON.dlOn:ICON.dl}<span class="lbl">${m.downloaded?"Ready":"Download"}</span></button>
       <span class="meta">${meta}</span>
       <button type="button" class="icon del" title="Delete" aria-label="Delete ${esc(m.title)}">${ICON.x}</button>
     </div>
