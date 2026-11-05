@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.7";window.SQ_BUILD_AT="5.11.2026 21:45";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="8.0";window.SQ_BUILD_AT="6.11.2026 01:55";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1096,6 +1096,133 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
 .qbtn .qn,.qbtn.q-fun .qn{font-size:12px}
 .stats .stat{min-height:42px;padding:4px 2px;font-size:10.5px;border-radius:10px}
 .stats .stat b{font-size:16px}
+/* ===== 8.0 clean (Oren 6.11.2026): one line per task, grouped lists, bigger text, extras folded below ===== */
+body{font-size:17px}
+main{padding-block:16px 72px}
+main .inner{gap:14px}
+#stats{display:none!important}
+.hero .inner{gap:12px}
+/* window bar: one segmented choice, then the windows */
+.ctxrow{display:flex!important;flex-direction:column;gap:8px}
+.ctxrow .avail{display:flex!important;flex-direction:column;gap:8px}
+.ctxrow.noside .avail{display:none!important}
+.wseg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;padding:3px;border-radius:12px;background:rgba(255,255,255,.12)}
+.wseg button{min-height:38px;border-radius:9px;font-size:15px;font-weight:600;color:var(--hero-ink)}
+.wseg button[aria-pressed="true"]{background:#fff;color:#111;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.wchips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.wgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.wchip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:64px;padding:6px 4px;border-radius:12px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.16);color:var(--hero-ink);text-align:center;min-width:0}
+.wgrid .wchip{min-height:56px}
+.wchip .e{font-size:20px;line-height:1.15}
+.wchip .l{font-size:13px;font-weight:700;line-height:1.25;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wchip small{font-size:11.5px;color:var(--hero-muted);font-variant-numeric:tabular-nums;line-height:1.2}
+.wchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.wchip[aria-pressed="true"] small{color:inherit;opacity:.75}
+.wchip:active{transform:scale(.97)}
+.wnow{display:flex;align-items:baseline;gap:8px;font-size:15.5px;color:var(--hero-ink);padding:2px 6px 0}
+.wnow small{color:var(--hero-muted);margin-inline-start:auto;font-size:13.5px}
+.ctxrow .refr{align-self:flex-end;width:auto!important;min-height:28px!important;padding:0 4px!important;background:transparent!important;border:0!important;color:var(--hero-muted)!important;font-size:13px!important;font-weight:600!important;gap:6px}
+.ctxrow .refr .ic{font-size:15px}
+/* grouped lists */
+#list,#more,#doneSec{display:flex;flex-direction:column;gap:14px}
+#more,#doneSec{gap:10px}
+#more:empty,#doneSec:empty{display:none}
+.gwrap{display:flex;flex-direction:column;gap:6px}
+.g-head{font-size:14px;font-weight:700;color:var(--muted);margin:0 14px;display:flex;gap:6px;align-items:center;letter-spacing:0}
+.g-head .n{font-family:inherit;font-weight:500;opacity:.8}
+.g-head.hot{color:var(--due)}
+.glist{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.glist>.row{border:0!important;border-radius:0;border-bottom:1px solid var(--line)!important;background:transparent;box-shadow:none!important}
+.glist>.row:last-child{border-bottom:0!important}
+.row{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;border-radius:14px}
+.row.lv1{background:var(--surface);border-style:solid}
+.ck{align-self:center;margin:0 auto;width:24px;height:24px;opacity:.65}
+.row .r-body{display:flex;flex-direction:row;align-items:center;gap:8px;min-height:54px;padding:0;padding-inline-end:14px}
+.r-title{flex:1;min-width:0;font-size:17px;font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;-webkit-line-clamp:unset}
+.r-urg{font-size:18px}
+.rc{flex:none;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rc.due{color:var(--due);font-weight:700}.rc.soon{color:var(--soon);font-weight:600}
+.rc.ask{width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:13.5px;display:inline-flex;align-items:center;justify-content:center}
+.r-chev{flex:none;color:var(--muted);opacity:.45;font-size:22px;line-height:1;transition:transform .2s}
+.row.is-open .r-chev{transform:rotate(-90deg)}
+.row.is-open{background:var(--surface)}
+.row.is-open .r-title{white-space:normal;font-weight:600}
+.r-later{grid-column:1/-1;margin:0 12px 12px}
+/* opened task */
+.drawer{grid-column:1/-1;border-top:1px solid var(--line);background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:12px;font-size:15.5px}
+.d-line{margin:0;color:var(--muted);font-size:15.5px;line-height:1.45}
+.steps,.d-links{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step{display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--line);font-size:15.5px;line-height:1.35}
+.step:last-child{border-bottom:0}
+.sck{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);background:transparent;display:inline-flex;align-items:center;justify-content:center;padding:0;opacity:.7;position:relative}
+.sck::before{content:"";position:absolute;inset:-10px}
+.sck svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.8}
+.sck.pressed,.step.done .sck{background:var(--k-admin);border-color:var(--k-admin);opacity:1}
+.step.done .s-t{color:var(--muted);text-decoration:line-through}
+.s-t{flex:1;min-width:0}
+.s-who{flex:none;font-size:12px;font-weight:700;color:var(--muted);background:var(--sunk);padding:2px 8px;border-radius:999px}
+.d-link{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:0 12px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-decoration:none;font-size:15.5px;font-weight:500;text-align:start}
+.d-link:last-child{border-bottom:0}
+.d-link .i{flex:none;width:22px;display:inline-flex;justify-content:center;color:var(--k-research);font-size:18px}
+.d-link .i svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8}
+.d-link .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d-link .c{color:var(--muted);opacity:.45;font-size:20px}
+.acts{gap:8px}
+.act{min-height:60px;font-size:13.5px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.drawer .ai{border-radius:12px;padding:12px;gap:8px}
+.drawer .ai .ai-q{font-size:15.5px;font-weight:600}
+.drawer .ai .opt{font-size:14px;min-height:36px;padding:6px 14px}
+details.more{border-top:0;padding-top:0}
+details.more>summary{text-align:center;color:var(--muted);font-size:14.5px;font-weight:600;padding:4px 0}
+details.more[open]>summary{margin-bottom:10px}
+.f-list{display:flex;flex-direction:column;gap:10px}
+.f-row,.f-list .d-row{display:flex;align-items:center;gap:10px;font-size:15px;flex-wrap:nowrap}
+.f-l,.f-list .d-row .lbl{flex:none;width:52px;min-width:52px;color:var(--muted);font-size:13.5px;font-weight:600}
+.f-row input{flex:1;min-width:0;min-height:36px;border-radius:9px}
+.f-list .lvsel{flex:1;min-width:0;min-height:36px;border-radius:9px}
+.seg{flex:1;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;padding:2px;border-radius:10px;background:var(--sunk)}
+.seg button{min-height:34px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.f-btn{flex:none;padding:0 14px;min-height:36px;border-radius:9px;background:var(--sunk);font-weight:600;font-size:14px}
+.f-log{display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:var(--muted);line-height:1.4}
+.f-log b{font-weight:600;margin-inline-end:6px;font-variant-numeric:tabular-nums}
+.f-foot{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px}
+.f-foot button{min-height:40px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600}
+.f-foot button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.f-foot .danger{color:var(--due)}
+/* the current window */
+.wcard{display:flex;flex-direction:column;gap:8px}
+.wc-head{display:flex;align-items:baseline;gap:8px;margin:2px 8px 0}
+.wc-head .e{font-size:20px}
+.wc-head b{font-size:21px;font-weight:700;font-family:var(--f-display)}
+.wc-head small{margin-inline-start:auto;color:var(--muted);font-size:14px;font-weight:600}
+.wc-empty{background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:18px;color:var(--muted);text-align:center;font-size:15.5px}
+.plancard{margin:0}
+/* folded rows */
+.fold{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.fold>summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:54px;padding:0 14px;cursor:pointer;font-size:17px;font-weight:500}
+.fold>summary::-webkit-details-marker{display:none}
+.fold .ft{flex:1;min-width:0}
+.fold .fn{color:var(--muted);font-variant-numeric:tabular-nums;font-size:15px}
+.fold .fc{color:var(--muted);opacity:.45;font-size:22px;line-height:1;transition:transform .2s}
+.fold[open]>summary .fc{transform:rotate(-90deg)}
+.fold[open]>summary{border-bottom:1px solid var(--line)}
+.fold.hot .ft{color:var(--due);font-weight:600}
+.fold.ask .fn{background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:0 9px;font-weight:700;min-width:24px;text-align:center}
+.fbody{display:flex;flex-direction:column}
+.fbody>.glist{border:0;border-radius:0}
+.fbody>.gwrap{padding:12px 10px 0}.fbody>.gwrap:last-child{padding-bottom:12px}
+.fbody>.inbox{padding:10px;gap:10px}
+.fbody>.dz-grid{padding:10px}
+.fbody>.dz-card{margin:0 10px 10px}
+.fbody>.dz-more{margin:0 10px 10px}
+.dashzone{margin:0;gap:0}
+.empty{border-radius:14px;font-size:15.5px}
+#tail{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+#tail>div{display:flex;flex-direction:column;gap:0!important}
+#tail .fold{border:0;border-radius:0;border-top:1px solid var(--line);margin-top:-1px}
+#tail:not(:has(.fold)){display:none}
+.dz-grid.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
 </style>
 </head>
 <body>
@@ -1179,28 +1306,14 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     <div class="fzgrid" id="funGrid"></div>
   </section>
   <section class="tvzone" id="tvSec" aria-label="אזור הטיולים"></section>
-  <section class="dashzone tasks-only" id="dashSec" aria-labelledby="hDash" hidden></section>
-  <section aria-labelledby="hUrg" id="urgSec" class="tasks-only" hidden>
-    <div class="sec-head"><h2 id="hUrg">❗ דחוף</h2></div>
-    <div class="group" id="urgList"></div>
-  </section>
-  <section id="nowSec" class="tasks-only" hidden><div id="nowList"></div></section>
-  <section id="quickSec" class="tasks-only" hidden><div id="quickList"></div></section>
-  <section aria-labelledby="hAsk" id="askSec" class="tasks-only" hidden>
-    <div class="sec-head"><h2 id="hAsk">מחכה להחלטה שלך</h2></div>
-    <div class="inbox" id="inbox"></div>
-  </section>
-  <section aria-labelledby="hAll" class="tasks-only">
-    <div class="sec-head"><h2 id="hAll">המשימות</h2></div>
-    <div class="views" id="views" role="tablist"></div>
-    <div class="filters" id="filters" hidden></div>
-    <div id="list"><div class="empty">טוען…</div></div>
-    
-  </section>
+  <section id="mainSec" class="tasks-only"><div id="list"><div class="empty">טוען…</div></div></section>
+  <section id="askSec" class="tasks-only" hidden></section>
   <section aria-labelledby="hProj" class="tasks-only ai-only">
     <div class="sec-head"><h2 id="hProj">הפרויקטים שלי</h2></div>
     <div class="pgrid" id="strip"></div>
   </section>
+  <section id="tail" class="tasks-only"><div id="more"></div><div class="dashzone" id="dashSec" hidden></div><div id="doneSec"></div></section>
+  <div hidden><div id="urgSec"></div><div id="urgList"></div><div id="nowSec"></div><div id="nowList"></div><div id="quickSec"></div><div id="quickList"></div><div id="inbox"></div><div id="views"></div><div id="filters"></div></div>
 </div></main>
 <footer class="ver gut"><button type="button" id="ver" aria-label="גרסה. לחיצה בודקת אם יש גרסה חדשה"></button></footer>
 
@@ -1225,7 +1338,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   const CTX={call:{e:"📞",l:"זמין לשיחות",full:"זמין לשיחות טלפון / ברכב",sub:"ברכב, אפשר לדבר"},pc:{e:"💻",l:"מול המחשב",full:"מול המחשב",sub:"עבודה במחשב"},house:{e:"🔧",l:"בבית",full:"בבית, משימות בית",sub:"להתקין, לתקן, לסדר"},out:{e:"🛒",l:"סידורים בחוץ",full:"סידורי חוץ",sub:"קניות וסידורים"},office:{e:"🏢",l:"בעבודה",full:"בעבודה: רק קצר ומרחוק",sub:"קצר, מהנייד או בשיחה"},lior:{e:"👫",l:"עם ליאור",full:"עם ליאור",sub:"בירורים שעושים יחד"}};
   const TAGS={...CTX,mobile:{e:"📱",l:"בנייד",full:"אפשר מהנייד, מכל מקום"}};
   const CTX_OLD={home:"pc",phone:"mobile"};
-  let ctxNow="all",ctxMenu=false; // 6.2: no separate availability filter any more; the mode + time of day decide (one choice, Oren 3.11)
+  let ctxNow="all",ctxMenu=false,winMore=false,wMode="auto";try{wMode=localStorage.getItem("sq_wmode")||"auto";}catch(e){} // 6.2: no separate availability filter any more; the mode + time of day decide (one choice, Oren 3.11)
   function ctxOf(t){const out=[];for(let c of (Array.isArray(t.context)?t.context:[])){c=CTX_OLD[c]||c;if(TAGS[c]&&!out.includes(c))out.push(c);}return out;}
   // 6.2 modes (Oren 3.11, second round): ONE choice, three modes. The app stays the same app; a mode only hides quests and re-orders tasks.
   // home = all 6 quests. work (auto Sun-Thu 08:30-18:30) = Side, Army, Work only. abroad (settings/notify abroad) = everything but Work and Army.
@@ -1545,21 +1658,22 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   function dashChat(d,proj){const a=secChat(secUrl("dash_"+d.id,d.chat,chatOf(allTopics.find(x=>x.id===d.id)||{}),proj&&proj.claude_url),"הדשבורד "+(d.title||""),"");
     a.className="dz-chat";if(a.lastChild&&a.lastChild.nodeType===3)a.lastChild.remove();a.append(h("span",null,"עבודה עם הצ׳אט",h("small",null,"שאלות, תוספות ועדכונים")));return a;}
   const DASH_MAX=3, DASH_IDLE=90;
+  // 8.0: dashboards are not day-to-day. One folded row near the bottom; opens to the tiles and the card.
   function renderDash(){const sec=$("dashSec");if(!sec)return;
     if(quest==="travel"){sec.hidden=true;sec.replaceChildren();renderTravel();return;} // travel dashboards live inside their zone
     const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
     if(!mine.length){sec.hidden=true;sec.replaceChildren();return;}
     const idle=d=>!dashTasks(d).some(isOpen)&&dashActivity(d)&&(Date.now()-dashActivity(d))/86400000>DASH_IDLE;
     const act=mine.filter(d=>!d.archived&&!idle(d)).sort((a,b)=>(dashTasks(b).some(isOpen)?1:0)-(dashTasks(a).some(isOpen)?1:0)||(a.order||99)-(b.order||99));
-    const top=act.slice(0,DASH_MAX),extra=[...act.slice(DASH_MAX),...mine.filter(d=>!d.archived&&idle(d))],old=mine.filter(d=>d.archived);
+    const extra=mine.filter(d=>!d.archived&&idle(d)),old=mine.filter(d=>d.archived);
     const cur=dashOpen&&mine.find(d=>d.id===dashOpen);
     sec.hidden=false;
-    sec.replaceChildren(...[h("div",{class:"sec-head"},h("h2",{id:"hDash"},"הדשבורדים שלי")),
-      top.length?h("div",{class:"dz-grid"},top.map(d=>dashTile(d))):null,
+    sec.replaceChildren(foldBox("dash","📊 דשבורדים",act.length,[
+      act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null,
       cur?dashCard(cur):null,
-      extra.length||old.length?h("details",{class:"dz-more"},h("summary",null,`עוד דשבורדים וארכיון (${extra.length+old.length})`),
+      extra.length||old.length?h("details",{class:"dz-more"},h("summary",null,`ארכיון (${extra.length+old.length})`),
         extra.length?h("div",{class:"dz-grid"},extra.map(d=>dashTile(d,true))):null,
-        old.length?h("div",{class:"dz-old"},old.map(d=>safeUrl(d.url||"")?h("a",{href:safeUrl(d.url),target:"_blank",rel:"noopener"},(d.icon||"📄")+" "+(d.title||"")+(d.note?" · "+d.note:"")):null)):null):null].filter(Boolean));
+        old.length?h("div",{class:"dz-old"},old.map(d=>safeUrl(d.url||"")?h("a",{href:safeUrl(d.url),target:"_blank",rel:"noopener"},(d.icon||"📄")+" "+(d.title||"")):null)):null):null].filter(Boolean),{force:!!cur}));
   }
   function goBtn(t){const c=chatOf(t),m=!c&&mailOf(t);
     if(c)return iconBtn("go",ICON.chat,"קפוץ לשיחה של המשימה",null,c);
@@ -1615,16 +1729,16 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
         withTitle?contBtn(t,"opt chat","💬 המשך בשיחה"):null):null,
       q.answer?null:laterMenu(t,"q:"+t.id+":"+q.id));
   }
+  // 8.0: questions sit in one folded row under the window. Only two kinds: where a task fits, or what the next step is.
   function renderInbox(){
     const cards=[];
-    const order=[...topics.filter(t=>isOpen(t)&&returned(t)),...topics.filter(t=>isOpen(t)&&!returned(t)&&!snoozed(t)).sort(byDate)].filter(ctxOk).sort((a,b)=>(isUrgent(b)?1:0)-(isUrgent(a)?1:0));
+    const order=[...topics.filter(t=>isOpen(t)&&returned(t)),...topics.filter(t=>isOpen(t)&&!returned(t)&&!snoozed(t)).sort(byDate)].sort((a,b)=>(isUrgent(b)?1:0)-(isUrgent(a)?1:0));
     order.forEach(t=>{
       questionsOf(t).filter(q=>!q.answer).forEach(q=>cards.push(questionCard(t,q,true)));
       offersOf(t).filter(o=>(o.state||"open")==="open").forEach(o=>cards.push(offerCard(t,o,true)));
     });
-    $("askSec").hidden=!cards.length;
-    const cap=mode==="home"?3:2, shown=inboxAll?cards:cards.slice(0,cap);
-    $("inbox").replaceChildren(...shown,...(cards.length>cap?[h("button",{class:"pill",type:"button",style:"align-self:center",onclick:()=>{inboxAll=!inboxAll;renderInbox();}},inboxAll?"פחות":`עוד ${cards.length-cap} החלטות`)]:[]));
+    const sec=$("askSec");sec.hidden=!cards.length;if(!cards.length){sec.replaceChildren();return;}
+    sec.replaceChildren(foldBox("asks","שאלות ממך",cards.length,[h("div",{class:"inbox"},cards)],{ask:true}));
   }
   function jumpTo(id){const e=$(id);if(e&&!e.hidden&&e.offsetParent)e.scrollIntoView({behavior:"smooth",block:"start"});else toast("אין כרגע מה להציג כאן");}
   // counters (from 4.9): a red "+N" = how many were added since your previous visit, per quest. No minus.
@@ -1690,27 +1804,35 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       return card;
     }));
   }
+  // 8.0 (Oren 6.11): the window bar is one segmented choice: automatic (by day and hour), pick (previous, current, next,
+  // and "עוד" for the rest) or off (everything, organized, no window). Kept in localStorage sq_wmode. Modes moved to settings.
+  function winTrio(){const n=ilNow(),L=dayWins(n.d,planFor(ilDate())).filter(x=>x[1]!=="sleep");let i=0;for(let k=0;k<L.length;k++)if(L[k][0]<=n.m)i=k;
+    const r=[];if(i>0)r.push(L[i-1]);r.push(L[i]);if(i+1<L.length)r.push(L[i+1]);return r;}
+  function setWMode(m){wMode=m;winMore=false;try{localStorage.setItem("sq_wmode",m);}catch(e){}
+    if(m!=="pick"&&winOv){setWin(null);return;}renderCtx();renderList();}
+  function pickMode(m){let ab=false;try{ab=abroadOn();}catch(e){}
+    if(m==="abroad"&&!ab){setNotify({abroad:true,abroad_tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"",abroad_since:new Date().toISOString()});modeOv=null;try{localStorage.removeItem("sq_mode");}catch(e){}setTimeout(()=>toast("✈️ מצב חו״ל"),0);return;}
+    if(m!=="abroad"&&ab){notify={...notify,abroad:false,abroad_until:""};setNotify({abroad:false,abroad_until:""});}
+    setMode(m,MODES[m].e+" "+MODES[m].l+(m===autoMode()?" (אוטומטי)":" עד המעבר הבא"));renderSettings();}
   function renderCtx(){
-    const M=MODES[mode], auto=!modeOv, ph=phase();
-    const pickMode=m=>{let ab=false;try{ab=abroadOn();}catch(e){}
-      if(m==="abroad"&&!ab){setNotify({abroad:true,abroad_tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"",abroad_since:new Date().toISOString()});modeOv=null;try{localStorage.removeItem("sq_mode");}catch(e){}ctxMenu=false;setTimeout(()=>toast("✈️ מצב חו״ל: בלי עבודה וצבא, בלי בריף, רק קריטי"),0);return;}
-      if(m!=="abroad"&&ab){notify={...notify,abroad:false,abroad_until:""};setNotify({abroad:false,abroad_until:""});}
-      setMode(m,MODES[m].e+" "+MODES[m].l+(m===autoMode()?" (אוטומטי)":" עד המעבר הבא"));};
-    const mOpt=k=>h("button",{type:"button","aria-pressed":mode===k?"true":"false",onclick:()=>pickMode(k)},h("span",null,MODES[k].e+" "+MODES[k].l),h("small",null,MODES[k].sub));
-    const hint=mode==="work"?(auto?"עד 18:30":""):mode==="abroad"?(notify.abroad_until?"עד "+fmtDate(notify.abroad_until):""):ph==="commute"?"בדרך":ph==="friday"?"בוקר סידורים":"";
-    // 7.3: the button shows the availability window (what fits now); the 3 modes (which quests show) sit under it in the menu
-    const w=curWin(),W=WINS[w.id];
-    const wOpt=k=>h("button",{type:"button","aria-pressed":w.id===k?"true":"false",onclick:()=>setWin(k)},h("span",null,WINS[k].e+" "+WINS[k].l),h("small",null,WINS[k].sub));
-    $("avail").replaceChildren(
-      h("button",{class:"avbtn"+(w.manual||mode!=="home"?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false","aria-label":"חלון זמינות: "+W.l,onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},
-        h("span",{class:"e","aria-hidden":"true"},W.e),h("span",{class:"v"},W.l),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
-      h("div",{class:"avmenu m3",hidden:!ctxMenu,role:"group","aria-label":"חלון זמינות ומצב"},
-        h("div",{class:"note wtop"},w.manual?"בחרת ידנית, עד "+(w.end||"סוף החלון")+". ":"לפי היום והשעה. ","איפה אתה עכשיו?"),
-        ...WIN_PICK.map(wOpt),
-        w.manual?h("button",{type:"button",class:"auto",onclick:()=>setWin(null)},h("span",null,"🔄 אוטומטי"),h("small",null,"לפי היום והשעה")):null,
-        h("div",{class:"note wtop"},"מצב: אילו קווסטים מוצגים"),
-        ...Object.keys(MODES).map(mOpt),
-        h("div",{class:"note"},(auto?"אוטומטי. ":"ידני, עד המעבר הבא. ")+"א׳-ה׳ 08:30-18:30 עבודה, אחרת בית. בדרך ובשישי בבוקר הקצרות והסידורים עולים למעלה.")));
+    const side=quest==="side",w=curWin(),W=WINS[w.id],eff=w.manual?"pick":wMode;
+    const seg=(k,l)=>h("button",{type:"button","aria-pressed":eff===k?"true":"false",onclick:()=>setWMode(k)},l);
+    const kids=[];
+    if(side){
+      kids.push(h("div",{class:"wseg",role:"group","aria-label":"חלון זמינות"},seg("auto","אוטומטי"),seg("pick","בחירה"),seg("off","בלי חלונות")));
+      if(eff==="pick"){
+        const trio=winTrio(),ids=trio.map(x=>x[1]);
+        const chip=(id,t)=>h("button",{type:"button",class:"wchip","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;setWin(id);wMode="pick";try{localStorage.setItem("sq_wmode","pick");}catch(e){}}},
+          h("span",{class:"e","aria-hidden":"true"},WINS[id].e),h("span",{class:"l"},WINS[id].l),t!=null?h("small",null,hhmm(t)):null);
+        const other=!ids.includes(w.id)?w.id:null;
+        kids.push(h("div",{class:"wchips"},...trio.map(x=>chip(x[1],x[0])),
+          h("button",{type:"button",class:"wchip more","aria-expanded":winMore?"true":"false","aria-pressed":other?"true":"false",onclick:()=>{winMore=!winMore;renderCtx();}},
+            h("span",{class:"e","aria-hidden":"true"},other?WINS[other].e:"⋯"),h("span",{class:"l"},other?WINS[other].l:"עוד"),h("small",null,winMore?"▲":"▼"))));
+        if(winMore)kids.push(h("div",{class:"wgrid"},...WIN_PICK.map(id=>chip(id,null))));
+      }
+    }
+    $("avail").replaceChildren(...kids);
+    $("avail").parentNode.classList.toggle("noside",!side);
   }
   function setCtx(t,c){const cur=ctxOf(t),next=cur.includes(c)?cur.filter(x=>x!==c):[...cur,c];patch(t,{context:next},next.length?"מתאים ל: "+next.map(x=>TAGS[x].l).join(", "):"מתאים לכל מקום");}
   function setUrgent(t){const on=!t.urgent;if(openId===t.id&&!on)openId=null;patch(t,{urgent:on,urgent_by:on?"oren":"",urgent_at:on?new Date().toISOString():"",...(on&&snoozed(t)?{snooze_until:""}:{}),log:logPush(t,on?"סומן דחוף ❗":"הוסר סימון דחוף",new Date().toISOString())},on?"❗ סומן דחוף, עלה לראש הרשימה":"הוסר סימון דחוף");}
@@ -1723,25 +1845,24 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     if(href)return h("a",{class:"ib "+cls,href,target:"_blank",rel:"noopener",title:label,"aria-label":label,html:svg});
     return h("button",{class:"ib "+cls,type:"button",title:label,"aria-label":label,html:svg,onclick});
   }
+  function stepsOf(t){return (Array.isArray(t.steps)?t.steps:[]).filter(s=>s&&s.text);}
+  // 8.0 (Oren 6.11): one line per task. Circle, title, at most one small mark. Everything else inside.
   function row(t){
-    const k=KINDS[t.kind]?t.kind:"research", n=daysUntil(t.next_date), open=isOpen(t);
-    const dcls=n==null?"":n<=0?" due":n<=3?" soon":"";
-    const asks=openAsks(t), lv=levelOf(t);
-    const qe=null;
-    // one chip only, by what matters most: snoozed > waiting for your decision > date
-    const wl=open&&!snoozed(t)&&!asks&&!t.next_date&&t.status!=="waiting_other"&&t.status!=="paused"&&!fitsWin(t,curWin().id)?nextWinLabel(t):""; // 7.3: when it fits next
-    const chip=!open?null:snoozed(t)?h("span",{class:"tag zz"},"⏰ "+fmtWhen(t.snooze_until)):asks?h("span",{class:"tag ask"},asks===1?"להחלטה":`${asks} להחלטה`):t.next_date?h("span",{class:"date"+dcls},relDate(t.next_date)):wl?h("span",{class:"tag win"},wl):null;
-    const sub=!open?null:t.waiting_for?(t.status==="waiting_me"?"מחכה לך: ":"ממתין ל: ")+t.waiting_for:t.next_step||"";
-    const el=h("div",{class:"row lv"+lv+(open?"":" closed")+(isUrgent(t)?" urgent":"")+(openId===t.id?" is-open":""),style:`--k:var(--k-${k})`,"data-id":t.id},
+    const open=isOpen(t),n=daysUntil(t.next_date),asks=openAsks(t),st=stepsOf(t),sd=st.filter(s=>s.done).length;
+    let chip=null;
+    if(open){if(snoozed(t))chip=h("span",{class:"rc"},"⏰ "+fmtWhen(t.snooze_until));
+      else if(t.next_date&&n!=null&&n<=7)chip=h("span",{class:"rc"+(n<=0?" due":n<=2?" soon":"")},relDate(t.next_date));
+      else if(asks)chip=h("span",{class:"rc ask","aria-label":asks===1?"שאלה אחת":asks+" שאלות"},"?");
+      else if(st.length)chip=h("span",{class:"rc"},sd+"/"+st.length);}
+    const isO=openId===t.id;
+    const el=h("div",{class:"row"+(open?"":" closed")+(isUrgent(t)?" urgent":"")+(isO?" is-open":""),"data-id":t.id},
       open?(canWrite?h("button",{class:"ck",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:press(()=>markDone(t))}):h("span",{class:"ck ph","aria-hidden":"true"})):h("span",{class:"ck on","aria-label":"בוצע",html:ICON.done}),
-      h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":openId===t.id?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
-        h("div",{class:"r-line"},
-          isUrgent(t)?h("span",{class:"r-urg","aria-label":"דחוף"},"!"):null,
-          qe?h("span",{class:"r-q","aria-hidden":"true"},qe):null,
-          h("span",{class:"r-title"},t.title||"(ללא כותרת)")),
-        sub||chip?h("div",{class:"r-sub"},chip,sub?h("span",{class:"r-next"},sub):null):null));
-    if(laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.style.gridColumn="1/-1";m.style.margin="0 8px 8px";el.append(m);}
-    if(openId===t.id)el.append(drawer(t));
+      h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":isO?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
+        isUrgent(t)?h("span",{class:"r-urg","aria-label":"דחוף"},"!"):null,
+        h("span",{class:"r-title"},t.title||"(ללא כותרת)"),
+        chip,h("span",{class:"r-chev","aria-hidden":"true"},"‹")));
+    if(laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.classList.add("r-later");el.append(m);}
+    if(isO)el.append(drawer(t));
     return el;
   }
   // the 4 row buttons of 5.x now live here, as one calm action bar at the top of an opened task
@@ -1755,39 +1876,48 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       open?a("done",ICON.done,"בוצע",press(()=>markDone(t))):null);
   }
   const ICON_TXT_CHAT="פתח שיחה";
+  const WHO={claude:"Claude",lior:"ליאור",other:"מחכה"};
+  function toggleStep(t,s){const now=new Date().toISOString();const steps=stepsOf(t).map(x=>x.id===s.id?{...x,done:!x.done,done_at:x.done?"":now}:x);
+    patch(t,{steps,log:logPush(t,(s.done?"נפתח שוב: ":"בוצע: ")+s.text,now)},s.done?"נפתח שוב":"✓ "+s.text.slice(0,30));}
   function drawer(t){
-    const log=Array.isArray(t.log)?[...t.log].reverse().slice(0,4):[];
-    const linkInp=h("input",{id:"lnk-"+t.id,type:"url",placeholder:"הדבק קישור לשיחה או לדף","aria-label":"קישור חדש"});
-    const dateInp=h("input",{id:"dt-"+t.id,type:"date",value:t.next_date||"","aria-label":"תאריך תזכורת",onchange:e=>patch(t,{next_date:e.target.value||""},"התאריך עודכן")});
+    const st=stepsOf(t),qs=questionsOf(t),offs=offersOf(t),open=isOpen(t);
+    const dd=t.dash&&dashById(t.dash),pr=t.project&&projById(t.project);
+    const line=t.status==="waiting_other"&&t.waiting_for?"מחכה ל"+t.waiting_for.replace(/^(ל|ל-)/,""):!st.length?(t.next_step||t.stand||""):"";
+    const links=linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t));
+    const log=Array.isArray(t.log)?[...t.log].reverse().slice(0,6):[];
+    const linkInp=h("input",{id:"lnk-"+t.id,type:"url",placeholder:"הדבק קישור","aria-label":"קישור חדש"});
     const addLink=()=>{const u=safeUrl(linkInp.value.trim());if(!u){toast("הקישור לא תקין");return;}const type=linkType({url:u});const label=type==="chat"?"שיחה":type==="page"?"דף":"קישור";patch(t,{links:[...linksOf(t),{label,url:u,type}]},"הקישור נוסף");};
-    const stRows=[["עומד",t.stand],["הצעד הבא",t.next_step],["תאריך",t.next_date?`${fmtDate(t.next_date)} (${relDate(t.next_date)})`:""],["טופל לאחרונה",ago(lastHandled(t))],["עדכון מפרויקט",t.sync&&t.sync.at?`${ago(Date.parse(t.sync.at))}${t.sync.from?" · "+t.sync.from:""}`:""]].filter(r=>r[1]);
-    const qs=questionsOf(t), offs=offersOf(t);
-    const dd=t.dash&&dashById(t.dash), pr=t.project&&projById(t.project);
+    const segRow=(lbl,opts)=>h("div",{class:"f-row"},h("span",{class:"f-l"},lbl),h("div",{class:"seg"},opts));
+    const fitL=open&&t.status!=="waiting_other"?(fitsWin(t,curWin().id)?WINS[curWin().id].e+" עכשיו":nextWinLabel(t)):"";
     return h("div",{class:"drawer"},
-      actBar(t),
-      dd||pr?h("div",{class:"d-row"},pr?h("span",{class:"ptag"},picOf(pr,16),pr.name):null,dd&&!inDashCard?h("button",{class:"dcrumb",type:"button",style:`--dc:${dd.c1||"#555"}`,onclick:()=>openDash(dd.id)},(dd.icon||"📊")+" "+(dd.title||"")+" ›"):null):null,
-      stRows.length?h("div",{class:"st"},...stRows.flatMap(r=>[h("span",{class:"lbl"},r[0]),h("div",null,r[1])])):null,
+      line?h("p",{class:"d-line"},line):null,
+      st.length?h("div",{class:"steps"},st.map(s=>h("div",{class:"step"+(s.done?" done":"")},
+        canWrite?h("button",{class:"sck",type:"button","aria-label":(s.done?"פתח שוב: ":"סמן כבוצע: ")+s.text,"aria-pressed":s.done?"true":"false",onclick:press(()=>toggleStep(t,s)),html:s.done?ICON.done:""}):h("span",{class:"sck"}),
+        h("span",{class:"s-t"},s.text),s.who&&WHO[s.who]&&!s.done?h("span",{class:"s-who"},WHO[s.who]):null))):null,
       ...qs.filter(q=>!q.answer).map(q=>questionCard(t,q,false)),
       ...offs.filter(o=>(o.state||"open")==="open").map(o=>offerCard(t,o,false)),
-      linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).length?h("div",{class:"d-row files"},linksOf(t).filter(l=>safeUrl(l.url)!==chatOf(t)).map(l=>h("a",{class:"lnk"+(linkType(l)==="file"?" file":""),href:safeUrl(l.url),target:"_blank",rel:"noopener",html:(linkType(l)==="chat"?ICON.chat:ICON.page)},l.label||"קישור"))):null,
-      h("details",{class:"more",open:shareId===t.id||!isOpen(t)?"":null},h("summary",null,"עוד: פרטים, עריכה ושיתוף"),h("div",null,
-      t.summary?h("p",null,t.summary):null,
-      canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"מתי אפשר"),...Object.keys(TAGS).map(c=>h("button",{class:"pill",type:"button","aria-pressed":ctxOf(t).includes(c)?"true":"false",onclick:()=>setCtx(t,c)},TAGS[c].e+" "+TAGS[c].l))):null,
-      ...qs.filter(q=>q.answer).map(q=>questionCard(t,q,false)),
-      ...offs.filter(o=>(o.state||"open")!=="open").map(o=>offerCard(t,o,false)),
-      log.length?h("div",{class:"src"},log.map(e=>`${fmtDate((e.at||"").slice(0,10))} · ${e.text||""}`).join("   |   ")):null,
-      canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"סטטוס"),...["active","waiting_me","waiting_other","paused"].map(s=>h("button",{class:"pill",type:"button","aria-pressed":t.status===s?"true":"false",onclick:()=>patch(t,{status:s})},STATUS[s]))):null,
-      canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"תזכורת"),dateInp,h("button",{class:"pill",type:"button",onclick:()=>snooze(t,1)},"מחר"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,7)},"+שבוע"),h("button",{class:"pill",type:"button",onclick:()=>snooze(t,30)},"+חודש"),t.next_date?h("button",{class:"pill",type:"button",onclick:()=>patch(t,{next_date:""},"התאריך הוסר")},"בלי תאריך"):null):null,
-      canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"סוג"),...Object.keys(SIZES).map(z=>h("button",{class:"pill",type:"button","aria-pressed":sizeOf(t)===z?"true":"false",onclick:()=>patch(t,{size:z},"עבר ל"+SIZES[z].g.slice(2))},SIZES[z].e+" "+SIZES[z].l))):null,
-      canWrite?levelRow(t):null,
-      canWrite?h("div",{class:"d-row"},h("span",{class:"lbl"},"קישור"),linkInp,h("button",{class:"pill",type:"button",onclick:addLink},"הוסף")):null,
-      shareId===t.id?sharePanel(t):null,
-      h("div",{class:"d-row",style:"justify-content:space-between"},h("span",{class:"src"},`${KINDS[t.kind]||""}${t.area?" · "+t.area:""} · ${t.source||""}`),
-        h("span",{class:"d-row"},
-          h("button",{class:"pill",type:"button","aria-pressed":shareId===t.id?"true":"false",onclick:()=>{shareId=shareId===t.id?null:t.id;shareMode="task";renderList();}},"שיתוף"),
-          canWrite&&!isOpen(t)?h("button",{class:"pill",type:"button",onclick:()=>patch(t,{status:"active"},"הוחזר לפתוחות")},"החזר לפתוחות"):null,
-          canWrite&&t.status!=="archived"?h("button",{class:"pill",type:"button",onclick:()=>{openId=null;patch(t,{status:"archived"},"הועבר לארכיון");}},"לארכיון"):null,
-          canWrite?h("button",{class:"pill danger",type:"button",onclick:e=>del(t,e.currentTarget)},"מחיקה"):null)))));
+      dd&&!inDashCard||pr||links.length?h("div",{class:"d-links"},
+        dd&&!inDashCard?h("button",{class:"d-link",type:"button",onclick:()=>openDash(dd.id)},h("span",{class:"i","aria-hidden":"true"},dd.icon||"📊"),h("span",{class:"t"},dd.title||"דשבורד"),h("span",{class:"c","aria-hidden":"true"},"‹")):null,
+        pr?h("a",{class:"d-link",href:contUrl(t),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true"},pr.icon||"🧩"),h("span",{class:"t"},pr.name||"פרויקט"),h("span",{class:"c","aria-hidden":"true"},"‹")):null,
+        links.map(l=>h("a",{class:"d-link",href:safeUrl(l.url),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true",html:isGmail(l.url)?ICON.mail:linkType(l)==="chat"?ICON.chat:ICON.page}),h("span",{class:"t"},l.label||"קישור"),h("span",{class:"c","aria-hidden":"true"},"‹")))):null,
+      actBar(t),
+      h("details",{class:"more",open:shareId===t.id||!open?"":null},h("summary",null,"פרטים ועריכה"),h("div",{class:"f-list"},
+        fitL?h("div",{class:"f-row"},h("span",{class:"f-l"},"מתאים"),h("span",null,fitL)):null,
+        t.summary?h("div",{class:"f-row"},h("span",{class:"f-l"},"תקציר"),h("span",null,t.summary)):null,
+        canWrite?segRow("סוג",Object.keys(SIZES).map(z=>h("button",{type:"button","aria-pressed":sizeOf(t)===z?"true":"false",onclick:()=>patch(t,{size:z},"עבר ל"+SIZES[z].g.slice(2))},SIZES[z].e+" "+SIZES[z].l))):null,
+        canWrite?segRow("מצב",["active","waiting_other","paused"].map(s=>h("button",{type:"button","aria-pressed":(t.status==="waiting_me"?"active":t.status)===s?"true":"false",onclick:()=>patch(t,{status:s})},s==="active"?"פתוחה":s==="waiting_other"?"מחכה":"הקפאה"))):null,
+        canWrite?h("div",{class:"f-row"},h("span",{class:"f-l"},"תאריך"),h("input",{id:"dt-"+t.id,type:"date",value:t.next_date||"","aria-label":"תאריך",onchange:e=>patch(t,{next_date:e.target.value||""},"התאריך עודכן")})):null,
+        canWrite?levelRow(t):null,
+        canWrite?h("div",{class:"f-row"},h("span",{class:"f-l"},"קישור"),linkInp,h("button",{class:"f-btn",type:"button",onclick:addLink},"הוסף")):null,
+        ...qs.filter(q=>q.answer).map(q=>questionCard(t,q,false)),
+        ...offs.filter(o=>(o.state||"open")!=="open").map(o=>offerCard(t,o,false)),
+        log.length?h("div",{class:"f-log"},log.map(e=>h("div",null,h("b",null,fmtDate((e.at||"").slice(0,10))),e.text||""))):null,
+        shareId===t.id?sharePanel(t):null,
+        h("div",{class:"f-foot"},
+          h("button",{type:"button","aria-pressed":shareId===t.id?"true":"false",onclick:()=>{shareId=shareId===t.id?null:t.id;shareMode="task";renderList();}},"שיתוף"),
+          canWrite&&!open?h("button",{type:"button",onclick:()=>patch(t,{status:"active"},"הוחזר לפתוחות")},"החזר"):null,
+          canWrite&&t.status!=="archived"?h("button",{type:"button",onclick:()=>{openId=null;patch(t,{status:"archived"},"הועבר לארכיון");}},"לארכיון"):null,
+          canWrite?h("button",{class:"danger",type:"button",onclick:e=>del(t,e.currentTarget)},"מחיקה"):null))));
   }
   function shareText(t,mode){
     const links=linksOf(t),chat=links.find(l=>linkType(l)==="chat"),page=links.find(l=>linkType(l)==="page");
@@ -1814,50 +1944,56 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   }
   function toggle(id){openId=openId===id?null:id;renderList();}
   const folded={};try{Object.assign(folded,JSON.parse(localStorage.getItem("sq_fold")||"{}"));}catch(e){}
-  function group(title,items,hot,gid,fold){if(!items.length)return null;
-    if(!fold)return h("div",{class:"group",id:gid?"g-"+gid:null},h("div",{class:"g-head"+(hot?" hot":"")},title,h("span",{class:"n"},items.length)),items.map(row));
-    const key=quest+":"+(gid||title),isOpenG=folded[key]===true||items.some(t=>t.id===openId);
-    const d=h("details",{class:"group fold",id:gid?"g-"+gid:null,open:isOpenG?"":null},h("summary",{class:"g-head"},title,h("span",{class:"n"},items.length)),h("div",{class:"g-body"},items.map(row)));
-    d.addEventListener("toggle",()=>{folded[key]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
-  function renderViews(){
-    const c={open:topics.filter(isOpen).length,done:topics.filter(t=>t.status==="done"||t.status==="promoted").length,archive:topics.filter(t=>t.status==="archived").length};
-    const tab=(v,label)=>h("button",{class:"vtab",type:"button",role:"tab","aria-selected":view===v?"true":"false",onclick:()=>{view=v;openId=null;shareId=null;renderViews();renderFilters();renderList();}},label,h("span",{class:"n"},c[v]));
-    $("views").replaceChildren(tab("open","פתוחות"),tab("done","בוצעו"),tab("archive","ארכיון"));
-  }
+  // a titled card of rows (iOS-like grouped list)
+  function group(title,items,hot,gid){if(!items.length)return null;
+    return h("div",{class:"gwrap",id:gid?"g-"+gid:null},title?h("div",{class:"g-head"+(hot?" hot":"")},title,h("span",{class:"n"},items.length)):null,h("div",{class:"glist"},items.map(row)));}
+  // a folded row that opens to its content; remembers open/closed per quest (sq_fold)
+  function foldBox(key,title,count,body,o){o=o||{};const k=quest+":"+key;const op=folded[k]===true||!!o.force;
+    const d=h("details",{class:"fold"+(o.hot?" hot":"")+(o.ask?" ask":""),id:"g-"+key,open:op?"":null},
+      h("summary",null,h("span",{class:"ft"},title),h("span",{class:"fn"},count),h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"fbody"},body));
+    d.addEventListener("toggle",()=>{folded[k]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
+  function foldRows(key,title,items,o){if(!items.length)return null;return foldBox(key,title,items.length,[h("div",{class:"glist"},items.map(row))],{...(o||{}),force:items.some(t=>t.id===openId)});}
+  function renderViews(){}
   function renderList(){renderMain();renderStrip();renderDash();}
   function renderMain(){
-    const kindOk=t=>(filterKind==="all"||t.kind===filterKind)&&ctxOk(t);
-    if(view!=="open"){
-      $("urgSec").hidden=true;$("quickSec").hidden=true;$("nowSec").hidden=true;
-      const items=topics.filter(t=>view==="done"?(t.status==="done"||t.status==="promoted"):t.status==="archived").filter(kindOk).sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||""));
-      $("list").replaceChildren(items.length?h("div",{class:"group"},items.map(row)):h("div",{class:"empty"},view==="done"?"עוד לא סימנת משימות כבוצעו.":"הארכיון ריק."));
-      return;
+    const allK=topics.filter(isOpen).filter(t=>!inStrip(t)).sort(byDate);
+    const side=quest==="side",w=curWin(),winOn=side&&(wMode!=="off"||w.manual);
+    const urgAll=allK.filter(t=>isUrgent(t)&&!snoozed(t)).sort((a,b)=>(sizeOf(a)==="quick"?0:1)-(sizeOf(b)==="quick"?0:1));
+    const rest=allK.filter(t=>!urgAll.includes(t)),later=rest.filter(snoozed),open=rest.filter(t=>!snoozed(t));
+    const waiting=open.filter(t=>t.status==="waiting_other"),paused=open.filter(t=>t.status==="paused");
+    const live=open.filter(t=>t.status!=="waiting_other"&&t.status!=="paused");
+    const ord=(a,b)=>(returned(b)-returned(a))||byDate(a,b);
+    const away=mode==="work"||mode==="abroad";
+    const bySize=(L,pre)=>{const q=L.filter(t=>sizeOf(t)==="quick"||isOwn(t)&&sizeOf(t)!=="long").sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)),tr=L.filter(t=>!q.includes(t)&&sizeOf(t)==="trip").sort(ord),lo=L.filter(t=>!q.includes(t)&&!tr.includes(t)).sort(ord);return [q,tr,lo];};
+    const top=[],more=[];
+    if(winOn){
+      const W=WINS[w.id];const pc=planCard(planAsk());if(pc)top.push(pc);
+      const unprof=t=>isOwn(t)&&!howOf(t).length; // typed by Oren and not profiled yet: show it now, Claude profiles it within the hour
+      const uIn=urgAll.filter(t=>fitsWin(t,w.id)||unprof(t)),uOut=urgAll.filter(t=>!uIn.includes(t));
+      const fit=W.acc.length?live.filter(t=>fitsWin(t,w.id)||unprof(t)).sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)||(minsOf(a)-minsOf(b))):[];
+      const L=[...uIn,...fit];
+      top.push(h("div",{class:"wcard"},
+        h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},W.e),h("b",null,W.l),w.end?h("small",null,"עד "+w.end):null),
+        L.length?h("div",{class:"glist"},L.map(row)):h("div",{class:"wc-empty"},W.acc.length?"אין כרגע משימה לחלון הזה":"זמן חסום. רק דחוף")));
+      if(uOut.length)top.push(foldRows("uout","❗ דחוף לחלון אחר",uOut,{hot:true}));
+      const others=live.filter(t=>!fit.includes(t));
+      if(others.length){const [q,tr,lo]=bySize(others);
+        more.push(foldBox("rest","כל שאר המשימות",others.length,[group(SIZES.quick.g,q),group(SIZES.trip.g,tr),group(SIZES.long.g,lo)].filter(Boolean),{force:others.some(t=>t.id===openId)}));}
+    }else{
+      if(urgAll.length)top.push(group("❗ דחוף",urgAll,true,"urg"));
+      const [q,tr,lo]=bySize(live);
+      if(q.length)top.push(group(SIZES.quick.g,q,false,"quick"));
+      if(away){if(tr.length)more.push(foldRows("trip",SIZES.trip.g,tr));if(lo.length)more.push(foldRows("long",SIZES.long.g,lo));}
+      else{if(tr.length)top.push(group(SIZES.trip.g,tr,false,"trip"));if(lo.length)top.push(group(SIZES.long.g,lo,false,"long"));}
+      if(!top.length)top.push(h("div",{class:"empty"},topics.length?"אין משימות פתוחות.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה ב-+ למעלה.`));
     }
-    const allK=topics.filter(isOpen).filter(kindOk).sort(byDate);
-    const urg=allK.filter(t=>isUrgent(t)&&!snoozed(t)).sort((a,b)=>(sizeOf(a)==="quick"?0:1)-(sizeOf(b)==="quick"?0:1)), // 6.5: quick+urgent first, to fly through them
-       all=allK.filter(t=>!urg.includes(t)&&!inStrip(t));
-    $("urgSec").hidden=!urg.length;$("urgList").replaceChildren(...urg.map(row));
-    const back=all.filter(returned), later=all.filter(snoozed), open=all.filter(t=>!returned(t)&&!snoozed(t));
-    const ph=phase(), away=mode==="work"||mode==="abroad";
-    const ord=(a,b)=>(isUrgent(b)-isUrgent(a))||(returned(b)-returned(a))||byDate(a,b);
-    const live0=[...back,...open].filter(t=>t.status!=="waiting_other"&&t.status!=="paused");
-    // 7.3: "עכשיו" = what fits the current window (Side Quests only). Those rows are not repeated below.
-    const side=quest==="side",w=curWin(),W=WINS[w.id],nowL=side?nowList(live0):[],live=live0.filter(t=>!nowL.includes(t));
-    if(side){const pc=planCard(planAsk());
-      const head=h("div",{class:"now-head"},h("span",{class:"e","aria-hidden":"true"},W.e),h("b",null,"עכשיו: "+W.l),w.end?h("small",null,"עד "+w.end):null);
-      const body=!W.acc.length?h("div",{class:"now-empty"},W.sub+". אין מה לעשות עכשיו, רק מה שדחוף למעלה."):nowL.length?h("div",{class:"group"},nowL.map(row)):h("div",{class:"now-empty"},"אין כרגע משימה שמתאימה ל"+W.l+". "+W.sub+".");
-      $("nowSec").hidden=false;$("nowList").replaceChildren(...[pc,h("div",{class:"nowbox"+(W.acc.length?"":" calm")},head,body)].filter(Boolean));}
-    else $("nowSec").hidden=true;
-    const quickL=live.filter(isQuick).sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)), tripL=live.filter(t=>!quickL.includes(t)&&sizeOf(t)==="trip").sort(ord), longL=live.filter(t=>!quickL.includes(t)&&!tripL.includes(t)).sort(ord);
-    const waiting=open.filter(t=>t.status==="waiting_other"), paused=open.filter(t=>t.status==="paused");
-    const qTitle=mode==="work"?"⚡ מהירות, אפשר בין לבין":mode==="abroad"?"⚡ מהירות, מהנייד":ph==="commute"?"⚡ מהירות ושיחות לדרך":ph==="friday"?"⚡ מהירות לבוקר סידורים":"⚡ מהירות (עד שעה)";
-    const qg=group(qTitle,quickL,true,"quick");
-    $("quickSec").hidden=!qg;$("quickList").replaceChildren(...(qg?[qg]:[]));
-    const g=[group(SIZES.trip.g+(mode==="work"?" (אחרי העבודה)":mode==="abroad"?" (כשאחזור)":""),tripL,false,"trip",away),
-      group(SIZES.long.g,longL,false,"long",away),
-      group("מחכה לאחרים",waiting,false,"wait",true),group("בהקפאה",paused,false,"paused",true),group("אחר כך",later,false,"later",true)].filter(Boolean);
-    if(!g.length&&qg){$("list").replaceChildren(h("div",{class:"empty"},"כל המשימות הפתוחות מהירות, הן למעלה."));return;}
-    $("list").replaceChildren(...(g.length?g:urg.length?[h("div",{class:"empty"},"כל המשימות כאן דחופות, הן למעלה.")]:[h("div",{class:"empty"},topics.length?ctxNow!=="all"?`אין משימות פתוחות למצב: ${CTX[ctxNow].full}.`:"אין משימות בסינון הזה.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-${QUESTS[quest].name}״.`)]));
+    more.push(foldRows("wait","מחכה לאחרים",waiting),foldRows("later","אחר כך",later),foldRows("paused","בהקפאה",paused));
+    const doneL=topics.filter(t=>t.status==="done"||t.status==="promoted").sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")).slice(0,30);
+    const arch=topics.filter(t=>t.status==="archived"&&!t.merged_into).sort((a,b)=>(b.updated_at||"").localeCompare(a.updated_at||"")).slice(0,30);
+    $("list").replaceChildren(...top);
+    $("more").replaceChildren(...more.filter(Boolean));
+    $("doneSec").replaceChildren(...[foldRows("done","בוצעו",doneL),foldRows("archive","ארכיון",arch)].filter(Boolean));
+    renderInbox();
   }
   function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString(),done_win:curWin().id},"בוצע ✓ (עבר ל״בוצעו״)");} // 7.3: done_win teaches which window really closes what
 
@@ -2258,7 +2394,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   function travelDashes(z){return dashes.filter(d=>!d._deleted&&d.quest==="travel"&&(d.tzone==="il"?"il":"abroad")===z);}
   function zoneDash(z){const all=travelDashes(z),act=all.filter(d=>!d.archived).sort((a,b)=>(a.order||99)-(b.order||99)),old=all.filter(d=>d.archived);
     if(!all.length)return null;const cur=dashOpen&&act.find(d=>d.id===dashOpen);
-    return h("div",{class:"tv-dash"},h("p",{class:"tv-sub"},"דשבורדים"),act.length?h("div",{class:"dz-grid"},act.map(d=>dashTile(d))):null,cur?dashCard(cur):null,
+    return h("div",{class:"tv-dash"},h("p",{class:"tv-sub"},"דשבורדים"),act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null,cur?dashCard(cur):null,
       old.length?h("details",{class:"dz-more"},h("summary",null,`ארכיון (${old.length})`),h("div",{class:"dz-old"},old.map(d=>safeUrl(d.url||"")?h("a",{href:safeUrl(d.url),target:"_blank",rel:"noopener"},(d.icon||"📄")+" "+(d.title||"")):null))):null);}
   function zoneHead(z,title,sub,svg){return h("div",{class:"tz-hero tz-"+z,id:tvZone[z]},h("div",{class:"tz-art",html:svg}),h("div",{class:"tz-txt"},h("h2",null,title),h("p",null,sub)));}
   function renderTravel(){
@@ -2305,7 +2441,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   }
   window.addEventListener("hashchange",()=>{const q=questFromHash();if(qHidden(q)){setMode("home","🏠 עברתי לבית כדי לפתוח את "+QUESTS[q].name);return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
   applyQuest();
-  function renderAll(){renderQnav();renderStats();renderCtx();renderInbox();renderViews();renderFilters();renderStrip();renderList();renderFun();renderTravel();renderDash();}
+  function renderAll(){renderQnav();renderCtx();renderStrip();renderList();renderFun();renderTravel();renderDash();}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:""};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -2629,6 +2765,9 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
       // 7.0 (Oren 5.11): straight to the Side Quests chat, to ask for a fix or a change in the app
       h("a",{class:"sqbtn sqchat",href:SQ_CHAT,target:"_blank",rel:"noopener"},"💬 שיפורים ושינויים באפליקציה"),
+      sec("mode","🏠 מצב",MODES[mode].e+" "+MODES[mode].l+(modeOv?"":" · אוטומטי"),
+        h("div",{class:"tsbtns"},...Object.keys(MODES).map(k=>h("button",{type:"button","aria-pressed":mode===k?"true":"false",onclick:()=>pickMode(k)},MODES[k].e+" "+MODES[k].l))),
+        h("div",{class:"sqhint"},"עבודה: רק סייד, צבא ועבודה. חו״ל: בלי עבודה וצבא. אוטומטי: א׳-ה׳ 08:30-18:30 עבודה.")),
       sec("push","🔔 התראות",pushOn?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"sqstate "+cls},h("span",{class:"d"}),h("span",null,st)),h("span",{style:"flex:1"}),act||null),
         isIOS&&!standalone()?h("div",{class:"sqhint"},"שיתוף ← הוסף למסך הבית, ואז מהאייקון."):null,
