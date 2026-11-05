@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.3";window.SQ_BUILD_AT="5.11.2026 16:55";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.4";window.SQ_BUILD_AT="5.11.2026 18:40";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1270,35 +1270,47 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   // and which chip a task shows ("🌙 הלילה"). Super-urgent (❗) stays on top in every window.
   // Task profile (topic field `fit`, written by Claude): {how:[call|phone|pc|place|home|lior], mins, when:[window ids], where, hours}.
   // `when` wins; without it `how` (or the old `context` tags) decides.
+  // 7.4 (Oren's answers, 5.11.2026): strict matching. A task fits a window only if everything fits: the kind of step
+  // (call / phone / pc / place / home / family / with Lior), door-to-door minutes (`max`), who it needs (`with` and when
+  // they are available) and the place's hours (`day_only`). Urgency never makes an impossible task fit: an urgent task
+  // stays on top with the chip of its next window. Only "super urgent" breaks windows, and Oren marks that himself.
   const WINS={
-    home_am:{e:"🏠",l:"בוקר בבית",s:"בוקר בבית",sub:"הבנות יוצאות, מתארגן. רק דחוף",acc:[]},
-    errands:{e:"🛒",l:"סידורי בוקר",s:"בסידורי הבוקר",sub:"מקומות שפתוחים בבוקר, שיחות",acc:["place","call","phone"]},
-    drive_am:{e:"🚗",l:"נסיעה לעבודה",s:"בנסיעה בבוקר",sub:"שיחות, המוקדים פתוחים",acc:["call"]},
-    work:{e:"💼",l:"בעבודה",s:"בעבודה, בין לבין",sub:"כמה דקות בטלפון: שיחה קצרה, מייל מוכן, בירור",acc:["phone","call"],max:15},
+    home_am:{e:"☕",l:"בוקר בבית",s:"בבוקר",sub:"דקה-שתיים בנייד: הודעה קצרה, תזכורת",acc:["phone"],max:2},
+    errands:{e:"🛒",l:"סידורי בוקר",s:"בסידורי הבוקר",sub:"כפר סבא, בדרך לנתניה או בנתניה לפני העבודה",acc:["place","call","phone"]},
+    drive_am:{e:"🚗",l:"נסיעה לעבודה",s:"בנסיעה בבוקר",sub:"שיחות בדיבורית או הכתבה ל-Claude. בלי קריאה",acc:["call"]},
+    work:{e:"💼",l:"בעבודה",s:"בעבודה",sub:"שיחה עד 20 דק׳ (כולל המתנה), מחשב לדברים אישיים, משימות עבודה",acc:["phone","call","pc","work"],max:30},
     drive_pm:{e:"🚗",l:"נסיעה הביתה",s:"בדרך הביתה",sub:"שיחות אישיות. רוב המוקדים סגורים",acc:["call"],eve:true},
-    near_home:{e:"🛍️",l:"ליד הבית",s:"ליד הבית בערב",sub:"סידור קטן שפתוח בערב",acc:["place"],max:30,eve:true},
-    family:{e:"👨‍👩‍👧",l:"זמן משפחה",s:"",sub:"ילדים, ארוחה, ליאור. רק דחוף",acc:[]},
+    near_home:{e:"🛍️",l:"ליד הבית",s:"ליד הבית בערב",sub:"מרכז כפר סבא ואזור התעשייה: סופר, בית מרקחת, נקודת איסוף",acc:["place"],max:45,eve:true},
+    family:{e:"👨‍👩‍👧",l:"זמן משפחה",s:"בזמן המשפחה",sub:"רק מה שמשרת את המשפחה, למשל ללמוד עם דניאלה",acc:["family"]},
+    counsel:{e:"💬",l:"טיפול זוגי",s:"",sub:"עם ליאור בתל אביב",acc:[]},
     football:{e:"⚽",l:"כדורגל",s:"",sub:"רק דחוף",acc:[]},
-    light:{e:"🛋️",l:"ערב, משהו קל",s:"בערב",sub:"בנייד, משהו קטן בבית",acc:["phone","home"],max:30},
-    deep:{e:"🌙",l:"זמן עומק",s:"בלילה",sub:"מחשב, בירורים ארוכים, משימות עם ליאור",acc:["pc","lior","phone","home"]},
-    solo:{e:"🦉",l:"לבד, בלי הפרעות",s:"מאוחר בלילה",sub:"מחשב ועומק. יעד שינה 00:30",acc:["pc","phone"]},
+    light:{e:"🛋️",l:"ערב עם ליאור",s:"בערב",sub:"משימות משותפות עם ליאור ודברים בבית. לא יוצאים",acc:["lior","home","phone","pc"],eve:true},
+    deep:{e:"🌙",l:"זמן עומק",s:"בלילה",sub:"לבד, מחשב, 90 דק׳ עד 01:00",acc:["pc","phone","home"],eve:true},
+    solo:{e:"🦉",l:"לבד בלילה",s:"בלילה",sub:"כמו זמן עומק",acc:["pc","phone","home"],eve:true},
     sleep:{e:"😴",l:"שינה",s:"",sub:"",acc:[]},
-    fri:{e:"🛒",l:"שישי, סידורים",s:"שישי בבוקר",sub:"סידורים ותיקונים עד הצהריים",acc:["place","call","phone","home"]},
-    weekend:{e:"🏡",l:"סופ״ש בבית",s:"בסופ״ש",sub:"בית, נייד, עם ליאור",acc:["home","phone","lior"]},
-    abroad:{e:"✈️",l:"חו״ל",s:"בחו״ל",sub:"רק מה שאפשר מהנייד",acc:["phone"]}
+    fri:{e:"🛒",l:"שישי, סידורים",s:"שישי בבוקר",sub:"סידורים ותיקונים עד 13:00",acc:["place","call","phone","home"]},
+    sat_am:{e:"🔧",l:"שבת בבוקר",s:"בשבת בבוקר",sub:"תיקונים בבית",acc:["home"]},
+    weekend:{e:"🏡",l:"סופ״ש",s:"בסופ״ש",sub:"משפחה, הורים, טיולים. רק אפליקציות ופרויקטים",acc:["proj"]},
+    abroad:{e:"✈️",l:"חו״ל",s:"בחו״ל",sub:"כמו יום עבודה בלי משפחה. במלון 22:00-02:00 זמן שלי",acc:["phone","pc","call"]}
   };
-  const WIN_PICK=["errands","drive_am","work","drive_pm","near_home","family","light","deep","solo","fri","weekend"];
+  // who a task needs, and in which windows that person is available (Lior: phone from 16:00, in person 21:30-23:00)
+  const WITH_OK={lior:["drive_pm","near_home","light","weekend","sat_am","counsel"],parents:["light","deep","weekend","sat_am"],yaniv:["fri","weekend","sat_am"]};
+  const WIN_PICK=["home_am","errands","drive_am","work","drive_pm","near_home","family","light","deep","fri","sat_am","weekend"];
   let plan=null; // settings/plan {date, errands_min, office}: tonight's answer for tomorrow morning
   function planFor(iso){return plan&&plan.date===iso?plan:null;}
-  // the windows of one day: [[start minute, window id], ...]. p = that day's plan (or null = defaults)
+  // the windows of one day: [[start minute, window id], ...]. p = that day's plan (or null = defaults).
+  // 00:00-01:00 is still the night before (deep). Fri 13:00 to Sat 23:00 is the weekend.
   function dayWins(d,p){
     const E=p&&p.errands_min!=null?+p.errands_min:30, office=!p||p.office!==false;
-    if(d===5)return [[0,"solo"],[120,"sleep"],[420,"home_am"],[480,"fri"],[720,"weekend"],[1170,"family"],[1350,"deep"]];
-    if(d===6)return [[0,"solo"],[120,"sleep"],[480,"weekend"],[1170,"family"],[1290,"light"],[1350,"deep"]];
-    const r=[[0,"solo"],[120,"sleep"],[390,"home_am"]];
-    if(!office)r.push([480,"errands"],[480+Math.max(E,120),"work"],[1110,"near_home"],[1170,"family"]);
-    else{if(E>0)r.push([480,"errands"]);r.push([480+E,"drive_am"],[480+E+30,"work"],[1110,"drive_pm"],[1140,"near_home"],[1170,"family"]);}
-    if(d===2)r.push([1245,"football"],[1380,"deep"]);else r.push([1290,"light"],[1350,"deep"]);
+    if(d===5)return [[0,"deep"],[60,"sleep"],[420,"home_am"],[480,"fri"],[780,"weekend"]];
+    if(d===6)return [[0,"weekend"],[60,"sleep"],[480,"sat_am"],[720,"weekend"],[1380,"deep"]];
+    const r=[[0,"deep"],[60,"sleep"],[420,"home_am"]];
+    // a day working from home (arrives at noon) = like Friday for errands
+    if(!office)r.push([480,"errands"],[720,"drive_am"],[750,"work"]);
+    else{if(E>0)r.push([480,"errands"]);r.push([480+E,"drive_am"],[480+E+30,"work"]);}
+    if(d===0)r.push([1110,"drive_pm"],[1140,"counsel"],[1260,"drive_pm"],[1290,"light"],[1410,"deep"]); // Sunday: couples counselling in Tel Aviv
+    else if(d===2)r.push([1110,"drive_pm"],[1140,"near_home"],[1170,"family"],[1245,"football"],[1380,"deep"]); // Tuesday football 20:45-23:00
+    else r.push([1110,"drive_pm"],[1140,"near_home"],[1170,"family"],[1290,"light"],[1410,"deep"]);
     return r;}
   let winOv=null;try{winOv=JSON.parse(localStorage.getItem("sq_win")||"null");}catch(e){}
   const hhmm=m=>String(Math.floor(m/60)%24).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
@@ -1320,18 +1332,20 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     if(!r.length&&sizeOf(t)==="trip")r.push("place");return r;}
   function minsOf(t){const f=fitOf(t);if(f.mins)return +f.mins;const s=sizeOf(t);return s==="quick"?15:60;}
   function fitsWin(t,id){const W=WINS[id];if(!W||!W.acc.length)return false;const f=fitOf(t);if(f.owner==="claude")return false; // Claude's own checks never ask for a window
-    if(Array.isArray(f.when)&&f.when.length)return f.when.includes(id)||(id==="abroad"&&f.when.includes("work"));
+    const wd=Array.isArray(f.with)?f.with:[];if(wd.some(p=>WITH_OK[p]&&!WITH_OK[p].includes(id)))return false; // the person it needs isn't available then
+    if(Array.isArray(f.when)&&f.when.length){const wh=f.when.map(x=>x==="solo"?"deep":x);return wh.includes(id==="solo"?"deep":id)||(id==="abroad"&&wh.includes("work"));}
+    if(t.quest==="work")return id==="work"; // work tasks: at work (critical ones get when:[work,deep])
     if(W.max&&minsOf(t)>W.max)return false;const hw=howOf(t);
-    if(!hw.length)return id==="deep"||id==="weekend"||(id==="light"&&sizeOf(t)==="quick"); // not profiled yet: at night / weekend
+    if(!hw.length)return id==="deep"; // not profiled yet: only the deep window (Claude asks about it)
     if(W.eve&&f.day_only&&hw.every(x=>x==="call"||x==="place"))return false; // a call center / office that closes before evening
-    return hw.some(x=>W.acc.includes(x));}
+    return Array.isArray(f.how)&&f.how.length?hw.every(x=>W.acc.includes(x)):hw.some(x=>W.acc.includes(x));} // a profile needs all of its means; old context tags are alternatives
   // next window (from now on, up to a week) where the task fits, as a short chip: "🌙 הלילה", "🛒 שישי בבוקר", "🚗 בנסיעה מחר"
   function nextWinLabel(t){const n=ilNow(),base=ilDate();
     for(let k=0;k<7;k++){const d=(n.d+k)%7,L=dayWins(d,planFor(addDays(base,k)));
       for(let i=0;i<L.length;i++){const end=i+1<L.length?L[i+1][0]:1440;if(k===0&&end<=n.m)continue;if(k===0&&L[i][0]<=n.m)continue;
         const id=L[i][1];if(!fitsWin(t,id))continue;const W=WINS[id];let l;
         if(id==="fri")l="שישי בבוקר";else if(id==="weekend")l=d===6?"בשבת":"שישי אחה״צ";
-        else if(id==="solo")l=k<=1?"מאוחר בלילה":k===2?"מחר בלילה":"בלילה של "+HE_DAYS[(d+6)%7]; // 00:00-02:00 belongs to the night before
+        else if(id==="deep"&&L[i][0]<120)l=k<=1?"הלילה":k===2?"מחר בלילה":"בלילה של "+HE_DAYS[(d+6)%7]; // 00:00-01:00 belongs to the night before
         else if(k===0)l=id==="deep"?"הלילה":id==="light"?"הערב":W.s;
         else if(k===1)l=id==="deep"?"מחר בלילה":W.s+" מחר";
         else l=W.s+", "+HE_DAYS[d];
