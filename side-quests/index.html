@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.0";window.SQ_BUILD_AT="5.11.2026 10:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.1";window.SQ_BUILD_AT="5.11.2026 11:45";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -770,6 +770,10 @@ main .inner{gap:18px}
 .ctxrow .refr .rv{color:var(--hero-muted);font-weight:600;overflow:hidden;text-overflow:ellipsis}
 .ctxrow .refr .rv:empty{display:none}
 .ctxrow .refr.spin .rk{display:none}
+/* 7.1: mode and refresh get a visible outline (on the black Side banner they disappeared) */
+.ctxrow .avbtn,.ctxrow .refr{border:1.5px solid rgba(255,255,255,.45)}
+.ctxrow .avbtn:not(.on),.ctxrow .refr{background:rgba(255,255,255,.08)}
+.ctxrow .avbtn.on{border-color:var(--accent)}
 body.fun-on .ctxrow{grid-template-columns:1fr}
 body.fun-on .ctxrow .refr{grid-column:1}
 /* new task line with a mic at its left end */
