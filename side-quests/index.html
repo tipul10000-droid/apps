@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.2";window.SQ_BUILD_AT="5.11.2026 12:15";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.3";window.SQ_BUILD_AT="5.11.2026 16:55";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -701,6 +701,23 @@ body:not(.q-side) .tb.tsun{display:none}
 .bp-btns button{flex:1;min-height:42px;border-radius:12px;font-weight:800;font-size:14.5px}
 .bp-btns .main{background:#E9773B;color:#fff}.bp-btns .alt{background:var(--sunk);color:var(--ink)}
 .bp-empty{color:var(--muted);font-size:14px;padding:6px 0}
+/* 7.3: availability windows */
+main,.sqmodal:not(.bpop) .sqpanel,.bpop:not(.car) .sqpanel{zoom:var(--tz,1)}
+.nowbox{border:2px solid var(--accent);border-radius:16px;padding:10px 10px 4px;margin:0 0 14px;background:var(--surface,#fff)}
+.nowbox.calm{border-style:dashed;border-color:var(--line);padding-bottom:10px}
+.now-head{display:flex;align-items:baseline;gap:8px;margin:0 4px 8px}
+.now-head .e{font-size:18px}.now-head b{font-size:16px}.now-head small{color:var(--muted);font-weight:700;margin-inline-start:auto;font-size:12.5px}
+.now-empty{color:var(--muted);font-size:13.5px;margin:0 4px 6px;line-height:1.4}
+.nowbox .group{margin:0}
+.plancard{border-radius:16px;padding:12px;margin:0 0 12px;background:linear-gradient(150deg,#FFE7B0,#FFC98A);color:#2A1500}
+.plancard b{display:block;font-size:15.5px;margin-bottom:8px}
+.pc-btns{display:flex;flex-wrap:wrap;gap:6px}
+.pc-btns button{flex:1 1 auto;min-height:40px;padding:0 12px;border-radius:11px;background:rgba(255,255,255,.75);color:#2A1500;font-weight:700;font-size:14px}
+.tag.win{background:var(--sunk);color:var(--muted);font-weight:600}
+.avmenu .note.wtop{grid-column:1/-1;margin:4px 2px 0;font-size:12px;color:var(--hero-muted);font-weight:700}
+.tsbtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tsbtns button{flex:1 1 auto;min-height:40px;padding:0 10px;border-radius:11px;background:var(--sunk);color:var(--ink);font-weight:700;font-size:14px;border:1.5px solid transparent}
+.tsbtns button[aria-pressed="true"]{border-color:var(--k-research);background:var(--surface,#fff)}
 /* 7.0: car mode (morning brief only): 🚗 at the top left, big text for reading from the phone holder */
 .bp-car{flex:none;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:19px;padding:0;background:rgba(255,255,255,.35);border:1.5px solid rgba(42,21,0,.25)}
 .bp-car[aria-pressed="true"]{background:#2A1500;border-color:#2A1500}
@@ -1167,6 +1184,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     <div class="sec-head"><h2 id="hUrg">❗ דחוף</h2></div>
     <div class="group" id="urgList"></div>
   </section>
+  <section id="nowSec" class="tasks-only" hidden><div id="nowList"></div></section>
   <section id="quickSec" class="tasks-only" hidden><div id="quickList"></div></section>
   <section aria-labelledby="hAsk" id="askSec" class="tasks-only" hidden>
     <div class="sec-head"><h2 id="hAsk">מחכה להחלטה שלך</h2></div>
@@ -1245,9 +1263,109 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     if(sizeOf(t)!=="quick")return false;
     const c=ctxOf(t);if(mode==="abroad")return !c.includes("out")&&!c.includes("house");
     return true;}
+  // ===== 7.3 (Oren 5.11.2026): availability windows. His day is a row of windows, each with its own "strength":
+  // how long, what kind of step fits (a call, a few minutes on the phone, a place to go, computer, home, with Lior).
+  // The app knows the window from day + time + tonight's answer "how much errand time tomorrow" (settings/plan),
+  // or from his tap / an iPhone Shortcut (?w=drive). Nothing is hidden: the window only decides what goes to "עכשיו"
+  // and which chip a task shows ("🌙 הלילה"). Super-urgent (❗) stays on top in every window.
+  // Task profile (topic field `fit`, written by Claude): {how:[call|phone|pc|place|home|lior], mins, when:[window ids], where, hours}.
+  // `when` wins; without it `how` (or the old `context` tags) decides.
+  const WINS={
+    home_am:{e:"🏠",l:"בוקר בבית",s:"בוקר בבית",sub:"הבנות יוצאות, מתארגן. רק דחוף",acc:[]},
+    errands:{e:"🛒",l:"סידורי בוקר",s:"בסידורי הבוקר",sub:"מקומות שפתוחים בבוקר, שיחות",acc:["place","call","phone"]},
+    drive_am:{e:"🚗",l:"נסיעה לעבודה",s:"בנסיעה בבוקר",sub:"שיחות, המוקדים פתוחים",acc:["call"]},
+    work:{e:"💼",l:"בעבודה",s:"בעבודה, בין לבין",sub:"כמה דקות בטלפון: שיחה קצרה, מייל מוכן, בירור",acc:["phone","call"],max:15},
+    drive_pm:{e:"🚗",l:"נסיעה הביתה",s:"בדרך הביתה",sub:"שיחות אישיות. רוב המוקדים סגורים",acc:["call"],eve:true},
+    near_home:{e:"🛍️",l:"ליד הבית",s:"ליד הבית בערב",sub:"סידור קטן שפתוח בערב",acc:["place"],max:30,eve:true},
+    family:{e:"👨‍👩‍👧",l:"זמן משפחה",s:"",sub:"ילדים, ארוחה, ליאור. רק דחוף",acc:[]},
+    football:{e:"⚽",l:"כדורגל",s:"",sub:"רק דחוף",acc:[]},
+    light:{e:"🛋️",l:"ערב, משהו קל",s:"בערב",sub:"בנייד, משהו קטן בבית",acc:["phone","home"],max:30},
+    deep:{e:"🌙",l:"זמן עומק",s:"בלילה",sub:"מחשב, בירורים ארוכים, משימות עם ליאור",acc:["pc","lior","phone","home"]},
+    solo:{e:"🦉",l:"לבד, בלי הפרעות",s:"מאוחר בלילה",sub:"מחשב ועומק. יעד שינה 00:30",acc:["pc","phone"]},
+    sleep:{e:"😴",l:"שינה",s:"",sub:"",acc:[]},
+    fri:{e:"🛒",l:"שישי, סידורים",s:"שישי בבוקר",sub:"סידורים ותיקונים עד הצהריים",acc:["place","call","phone","home"]},
+    weekend:{e:"🏡",l:"סופ״ש בבית",s:"בסופ״ש",sub:"בית, נייד, עם ליאור",acc:["home","phone","lior"]},
+    abroad:{e:"✈️",l:"חו״ל",s:"בחו״ל",sub:"רק מה שאפשר מהנייד",acc:["phone"]}
+  };
+  const WIN_PICK=["errands","drive_am","work","drive_pm","near_home","family","light","deep","solo","fri","weekend"];
+  let plan=null; // settings/plan {date, errands_min, office}: tonight's answer for tomorrow morning
+  function planFor(iso){return plan&&plan.date===iso?plan:null;}
+  // the windows of one day: [[start minute, window id], ...]. p = that day's plan (or null = defaults)
+  function dayWins(d,p){
+    const E=p&&p.errands_min!=null?+p.errands_min:30, office=!p||p.office!==false;
+    if(d===5)return [[0,"solo"],[120,"sleep"],[420,"home_am"],[480,"fri"],[720,"weekend"],[1170,"family"],[1350,"deep"]];
+    if(d===6)return [[0,"solo"],[120,"sleep"],[480,"weekend"],[1170,"family"],[1290,"light"],[1350,"deep"]];
+    const r=[[0,"solo"],[120,"sleep"],[390,"home_am"]];
+    if(!office)r.push([480,"errands"],[480+Math.max(E,120),"work"],[1110,"near_home"],[1170,"family"]);
+    else{if(E>0)r.push([480,"errands"]);r.push([480+E,"drive_am"],[480+E+30,"work"],[1110,"drive_pm"],[1140,"near_home"],[1170,"family"]);}
+    if(d===2)r.push([1245,"football"],[1380,"deep"]);else r.push([1290,"light"],[1350,"deep"]);
+    return r;}
+  let winOv=null;try{winOv=JSON.parse(localStorage.getItem("sq_win")||"null");}catch(e){}
+  const hhmm=m=>String(Math.floor(m/60)%24).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+  function curWin(){const n=ilNow(),today=ilDate();
+    if(winOv&&winOv.until>Date.now()&&WINS[winOv.id])return {id:winOv.id,end:winOv.end||"",manual:true};
+    if(mode==="abroad")return {id:"abroad",end:""};
+    const L=dayWins(n.d,planFor(today));let i=0;for(let k=0;k<L.length;k++)if(L[k][0]<=n.m)i=k;
+    return {id:L[i][1],end:i+1<L.length?hhmm(L[i+1][0]):"00:00"};}
+  function setWin(id){if(!id){winOv=null;try{localStorage.removeItem("sq_win");}catch(e){}}
+    else{const n=ilNow(),L=dayWins(n.d,planFor(ilDate()));const k=L.findIndex(x=>x[1]===id&&x[0]>=n.m-240);
+      // holds until that window would end today, else two hours
+      const endM=k<0?n.m+120:k+1<L.length?L[k+1][0]:1440,ms=Math.max(30,endM-n.m)*60000;
+      winOv={id,until:Date.now()+ms,end:hhmm(endM%1440)};try{localStorage.setItem("sq_win",JSON.stringify(winOv));}catch(e){}}
+    ctxMenu=false;renderCtx();renderList();}
+  const HOW_OF_CTX={call:"call",mobile:"phone",office:"phone",pc:"pc",out:"place",house:"home",lior:"lior"};
+  function fitOf(t){return t.fit&&typeof t.fit==="object"?t.fit:{};}
+  function howOf(t){const f=fitOf(t);if(Array.isArray(f.how)&&f.how.length)return f.how;
+    const r=[];for(const c of ctxOf(t)){const x=HOW_OF_CTX[c];if(x&&!r.includes(x))r.push(x);}
+    if(!r.length&&sizeOf(t)==="trip")r.push("place");return r;}
+  function minsOf(t){const f=fitOf(t);if(f.mins)return +f.mins;const s=sizeOf(t);return s==="quick"?15:60;}
+  function fitsWin(t,id){const W=WINS[id];if(!W||!W.acc.length)return false;const f=fitOf(t);if(f.owner==="claude")return false; // Claude's own checks never ask for a window
+    if(Array.isArray(f.when)&&f.when.length)return f.when.includes(id)||(id==="abroad"&&f.when.includes("work"));
+    if(W.max&&minsOf(t)>W.max)return false;const hw=howOf(t);
+    if(!hw.length)return id==="deep"||id==="weekend"||(id==="light"&&sizeOf(t)==="quick"); // not profiled yet: at night / weekend
+    if(W.eve&&f.day_only&&hw.every(x=>x==="call"||x==="place"))return false; // a call center / office that closes before evening
+    return hw.some(x=>W.acc.includes(x));}
+  // next window (from now on, up to a week) where the task fits, as a short chip: "🌙 הלילה", "🛒 שישי בבוקר", "🚗 בנסיעה מחר"
+  function nextWinLabel(t){const n=ilNow(),base=ilDate();
+    for(let k=0;k<7;k++){const d=(n.d+k)%7,L=dayWins(d,planFor(addDays(base,k)));
+      for(let i=0;i<L.length;i++){const end=i+1<L.length?L[i+1][0]:1440;if(k===0&&end<=n.m)continue;if(k===0&&L[i][0]<=n.m)continue;
+        const id=L[i][1];if(!fitsWin(t,id))continue;const W=WINS[id];let l;
+        if(id==="fri")l="שישי בבוקר";else if(id==="weekend")l=d===6?"בשבת":"שישי אחה״צ";
+        else if(id==="solo")l=k<=1?"מאוחר בלילה":k===2?"מחר בלילה":"בלילה של "+HE_DAYS[(d+6)%7]; // 00:00-02:00 belongs to the night before
+        else if(k===0)l=id==="deep"?"הלילה":id==="light"?"הערב":W.s;
+        else if(k===1)l=id==="deep"?"מחר בלילה":W.s+" מחר";
+        else l=W.s+", "+HE_DAYS[d];
+        return W.e+" "+l;}}
+    return "";}
+  // ?w=drive|work|home... from an iPhone Shortcut (CarPlay connected, arrived at work), ?car=1 = big text in the brief
+  (function(){try{const q=new URLSearchParams(location.search);let w=q.get("w");if(!w&&!q.get("car"))return;
+    if(w){const m=ilNow().m;if(w==="drive")w=m<780?"drive_am":"drive_pm";if(w==="home")w=m<1170?"near_home":"light";
+      if(WINS[w]){winOv={id:w,until:Date.now()+(w.startsWith("drive")?45:120)*60000,end:""};localStorage.setItem("sq_win",JSON.stringify(winOv));}}
+    if(q.get("car")==="1")localStorage.setItem("sq_car","1");else if(q.get("car")==="0")localStorage.removeItem("sq_car");
+    q.delete("w");q.delete("car");const s=q.toString();history.replaceState(null,"",location.pathname+(s?"?"+s:"")+location.hash);}catch(e){}})();
+  // tonight: "how much errand time tomorrow morning?" (Sun-Thu). Asked after 20:00, and in the morning before 08:00 if not answered.
+  function planAsk(){const n=ilNow(),today=ilDate();let iso=null,dd=null,when="";
+    if(n.m>=1200){iso=addDays(today,1);dd=(n.d+1)%7;when="מחר בבוקר";}else if(n.m<480){iso=today;dd=n.d;when="הבוקר";}
+    if(!iso||dd>4||planFor(iso))return null;return {iso,when};}
+  function savePlan(iso,fields){plan={date:iso,...fields,at:new Date().toISOString()};
+    if(db&&canWrite)db.collection("settings").doc("plan").set(plan).catch(()=>toast("השמירה נכשלה"));
+    renderCtx();renderList();if($("briefM"))showBrief(briefMd);
+    toast(fields.office===false?"מחר לא נוסע, הבוקר כולו לסידורים":fields.errands_min?"נשמר: "+fields.errands_min+" דק׳ סידורים":"נשמר: בלי סידורים, ישר לעבודה");}
+  function planCard(a){if(!a)return null;const b=(l,f)=>h("button",{type:"button",onclick:press(()=>savePlan(a.iso,f))},l);
+    return h("div",{class:"plancard"},h("b",null,"🌅 כמה זמן סידורים "+a.when+"?"),
+      h("div",{class:"pc-btns"},b("אין",{errands_min:0}),b("חצי שעה",{errands_min:30}),b("שעה",{errands_min:60}),b("שעתיים",{errands_min:120}),b("לא נוסע לעבודה",{errands_min:180,office:false})));}
+  // the "עכשיו" box (Side Quests only): 3-5 things that fit this window and the time left in it
+  function nowList(live){const w=curWin(),W=WINS[w.id];if(!W.acc.length)return [];
+    return live.filter(t=>!isUrgent(t)&&fitsWin(t,w.id)).sort((a,b)=>(isOwn(b)-isOwn(a))||(returned(b)-returned(a))||byDate(a,b)||(minsOf(a)-minsOf(b))).slice(0,5);}
+  // text size: follows the iPhone text size (Settings > Display > Text Size, also his car automation), or a fixed size
+  let tsPref="auto";try{tsPref=localStorage.getItem("sq_ts")||"auto";}catch(e){}
+  function sysScale(){try{if(!(window.CSS&&CSS.supports("font","-apple-system-body")))return 1;const s=document.createElement("span");s.style.font="-apple-system-body";s.style.position="absolute";s.style.visibility="hidden";s.textContent="א";document.body.append(s);const fs=parseFloat(getComputedStyle(s).fontSize)||17;s.remove();return Math.min(1.6,Math.max(.9,fs/17));}catch(e){return 1;}}
+  function applyTs(){const z=tsPref==="auto"?sysScale():(+tsPref||1);document.documentElement.style.setProperty("--tz",String(Math.round(z*100)/100));}
+  function setTs(v){tsPref=v;try{v==="auto"?localStorage.removeItem("sq_ts"):localStorage.setItem("sq_ts",v);}catch(e){}applyTs();renderSettings();}
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")applyTs();});
   function setMode(m,why){const a=autoMode();modeOv=m===a?null:{m,auto:a,day:ilDate()};try{modeOv?localStorage.setItem("sq_mode",JSON.stringify(modeOv)):localStorage.removeItem("sq_mode");}catch(e){}ctxMenu=false;refreshMode(true);if(why)toast(why);}
   function refreshMode(force){const m=curMode();if(!force&&m===mode)return;mode=m;openId=null;laterFor=null;filterKind="all";view="open";if(qHidden(quest))quest="side";applyQuest();if(db)renderAll();}
-  setInterval(()=>refreshMode(),60000);
+  let lastWin="";setInterval(()=>{refreshMode();const w=curWin().id;if(w!==lastWin){lastWin=w;if(db){renderCtx();renderList();}}},60000);
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshMode();});
   function ctxOk(t){if(ctxNow==="all")return true;const c=ctxOf(t);
     if(ctxNow==="office")return c.includes("office")||c.includes("mobile")||c.includes("call"); // at work: only short, remote things (iPhone or a call)
@@ -1287,7 +1405,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   }
   function fmtWhen(z){if(z==="someday")return"כשיהיה זמן";const d=new Date(z),n=daysUntil(new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10));const hm=d.toTimeString().slice(0,5);return (n===0?"היום ":n===1?"מחר ":fmtDate(new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10))+" ")+hm;}
   let laterFor=null;
-  function remindLater(t,when,label){const z=when==="someday"?"someday":when.toISOString();laterFor=null;patch(t,{snooze_until:z,log:logPush(t,"תזכורת: "+label,new Date().toISOString())},when==="someday"?"עבר ל״אחר כך״":"אזכיר לך "+fmtWhen(z));}
+  function remindLater(t,when,label){const z=when==="someday"?"someday":when.toISOString();laterFor=null;patch(t,{snooze_until:z,snooze_win:curWin().id,log:logPush(t,"תזכורת: "+label,new Date().toISOString())},when==="someday"?"עבר ל״אחר כך״":"אזכיר לך "+fmtWhen(z));}
   function laterBtn(t,key){return canWrite?h("button",{class:"opt later",type:"button",onclick:e=>{e.stopPropagation();laterFor=laterFor===key?null:key;renderAll();}},"⏰ אחר כך"):null;}
   function laterMenu(t,key){if(laterFor!==key)return null;return h("div",{class:"later-menu"},laterOptions().map(([l,w])=>h("button",{class:"opt",type:"button",onclick:press(()=>remindLater(t,w,l))},l)),t.snooze_until?h("button",{class:"opt",type:"button",onclick:press(()=>{laterFor=null;patch(t,{snooze_until:""},"התזכורת בוטלה");})},"בטל תזכורת"):null);}
   function offersOf(t){return (Array.isArray(t.ai_offers)?t.ai_offers:[]).filter(o=>o&&o.text&&!o.superseded);}
@@ -1544,10 +1662,17 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       setMode(m,MODES[m].e+" "+MODES[m].l+(m===autoMode()?" (אוטומטי)":" עד המעבר הבא"));};
     const mOpt=k=>h("button",{type:"button","aria-pressed":mode===k?"true":"false",onclick:()=>pickMode(k)},h("span",null,MODES[k].e+" "+MODES[k].l),h("small",null,MODES[k].sub));
     const hint=mode==="work"?(auto?"עד 18:30":""):mode==="abroad"?(notify.abroad_until?"עד "+fmtDate(notify.abroad_until):""):ph==="commute"?"בדרך":ph==="friday"?"בוקר סידורים":"";
+    // 7.3: the button shows the availability window (what fits now); the 3 modes (which quests show) sit under it in the menu
+    const w=curWin(),W=WINS[w.id];
+    const wOpt=k=>h("button",{type:"button","aria-pressed":w.id===k?"true":"false",onclick:()=>setWin(k)},h("span",null,WINS[k].e+" "+WINS[k].l),h("small",null,WINS[k].sub));
     $("avail").replaceChildren(
-      h("button",{class:"avbtn"+(mode!=="home"?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false","aria-label":"מצב: "+M.l,onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},
-        h("span",{class:"e","aria-hidden":"true"},M.e),h("span",{class:"v"},M.l+(hint?" · "+hint:"")),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
-      h("div",{class:"avmenu m3",hidden:!ctxMenu,role:"group","aria-label":"מצב"},
+      h("button",{class:"avbtn"+(w.manual||mode!=="home"?" on":""),type:"button","aria-expanded":ctxMenu?"true":"false","aria-label":"חלון זמינות: "+W.l,onclick:()=>{ctxMenu=!ctxMenu;renderCtx();}},
+        h("span",{class:"e","aria-hidden":"true"},W.e),h("span",{class:"v"},W.l),h("span",{class:"car","aria-hidden":"true"},ctxMenu?"▲":"▼")),
+      h("div",{class:"avmenu m3",hidden:!ctxMenu,role:"group","aria-label":"חלון זמינות ומצב"},
+        h("div",{class:"note wtop"},w.manual?"בחרת ידנית, עד "+(w.end||"סוף החלון")+". ":"לפי היום והשעה. ","איפה אתה עכשיו?"),
+        ...WIN_PICK.map(wOpt),
+        w.manual?h("button",{type:"button",class:"auto",onclick:()=>setWin(null)},h("span",null,"🔄 אוטומטי"),h("small",null,"לפי היום והשעה")):null,
+        h("div",{class:"note wtop"},"מצב: אילו קווסטים מוצגים"),
         ...Object.keys(MODES).map(mOpt),
         h("div",{class:"note"},(auto?"אוטומטי. ":"ידני, עד המעבר הבא. ")+"א׳-ה׳ 08:30-18:30 עבודה, אחרת בית. בדרך ובשישי בבוקר הקצרות והסידורים עולים למעלה.")));
   }
@@ -1568,7 +1693,8 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     const asks=openAsks(t), lv=levelOf(t);
     const qe=null;
     // one chip only, by what matters most: snoozed > waiting for your decision > date
-    const chip=!open?null:snoozed(t)?h("span",{class:"tag zz"},"⏰ "+fmtWhen(t.snooze_until)):asks?h("span",{class:"tag ask"},asks===1?"להחלטה":`${asks} להחלטה`):t.next_date?h("span",{class:"date"+dcls},relDate(t.next_date)):null;
+    const wl=open&&!snoozed(t)&&!asks&&!t.next_date&&t.status!=="waiting_other"&&t.status!=="paused"&&!fitsWin(t,curWin().id)?nextWinLabel(t):""; // 7.3: when it fits next
+    const chip=!open?null:snoozed(t)?h("span",{class:"tag zz"},"⏰ "+fmtWhen(t.snooze_until)):asks?h("span",{class:"tag ask"},asks===1?"להחלטה":`${asks} להחלטה`):t.next_date?h("span",{class:"date"+dcls},relDate(t.next_date)):wl?h("span",{class:"tag win"},wl):null;
     const sub=!open?null:t.waiting_for?(t.status==="waiting_me"?"מחכה לך: ":"ממתין ל: ")+t.waiting_for:t.next_step||"";
     const el=h("div",{class:"row lv"+lv+(open?"":" closed")+(isUrgent(t)?" urgent":"")+(openId===t.id?" is-open":""),style:`--k:var(--k-${k})`,"data-id":t.id},
       open?(canWrite?h("button",{class:"ck",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:press(()=>markDone(t))}):h("span",{class:"ck ph","aria-hidden":"true"})):h("span",{class:"ck on","aria-label":"בוצע",html:ICON.done}),
@@ -1666,7 +1792,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   function renderMain(){
     const kindOk=t=>(filterKind==="all"||t.kind===filterKind)&&ctxOk(t);
     if(view!=="open"){
-      $("urgSec").hidden=true;$("quickSec").hidden=true;
+      $("urgSec").hidden=true;$("quickSec").hidden=true;$("nowSec").hidden=true;
       const items=topics.filter(t=>view==="done"?(t.status==="done"||t.status==="promoted"):t.status==="archived").filter(kindOk).sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||""));
       $("list").replaceChildren(items.length?h("div",{class:"group"},items.map(row)):h("div",{class:"empty"},view==="done"?"עוד לא סימנת משימות כבוצעו.":"הארכיון ריק."));
       return;
@@ -1678,7 +1804,14 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     const back=all.filter(returned), later=all.filter(snoozed), open=all.filter(t=>!returned(t)&&!snoozed(t));
     const ph=phase(), away=mode==="work"||mode==="abroad";
     const ord=(a,b)=>(isUrgent(b)-isUrgent(a))||(returned(b)-returned(a))||byDate(a,b);
-    const live=[...back,...open].filter(t=>t.status!=="waiting_other"&&t.status!=="paused");
+    const live0=[...back,...open].filter(t=>t.status!=="waiting_other"&&t.status!=="paused");
+    // 7.3: "עכשיו" = what fits the current window (Side Quests only). Those rows are not repeated below.
+    const side=quest==="side",w=curWin(),W=WINS[w.id],nowL=side?nowList(live0):[],live=live0.filter(t=>!nowL.includes(t));
+    if(side){const pc=planCard(planAsk());
+      const head=h("div",{class:"now-head"},h("span",{class:"e","aria-hidden":"true"},W.e),h("b",null,"עכשיו: "+W.l),w.end?h("small",null,"עד "+w.end):null);
+      const body=!W.acc.length?h("div",{class:"now-empty"},W.sub+". אין מה לעשות עכשיו, רק מה שדחוף למעלה."):nowL.length?h("div",{class:"group"},nowL.map(row)):h("div",{class:"now-empty"},"אין כרגע משימה שמתאימה ל"+W.l+". "+W.sub+".");
+      $("nowSec").hidden=false;$("nowList").replaceChildren(...[pc,h("div",{class:"nowbox"+(W.acc.length?"":" calm")},head,body)].filter(Boolean));}
+    else $("nowSec").hidden=true;
     const quickL=live.filter(isQuick).sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)), tripL=live.filter(t=>!quickL.includes(t)&&sizeOf(t)==="trip").sort(ord), longL=live.filter(t=>!quickL.includes(t)&&!tripL.includes(t)).sort(ord);
     const waiting=open.filter(t=>t.status==="waiting_other"), paused=open.filter(t=>t.status==="paused");
     const qTitle=mode==="work"?"⚡ מהירות, אפשר בין לבין":mode==="abroad"?"⚡ מהירות, מהנייד":ph==="commute"?"⚡ מהירות ושיחות לדרך":ph==="friday"?"⚡ מהירות לבוקר סידורים":"⚡ מהירות (עד שעה)";
@@ -1690,7 +1823,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     if(!g.length&&qg){$("list").replaceChildren(h("div",{class:"empty"},"כל המשימות הפתוחות מהירות, הן למעלה."));return;}
     $("list").replaceChildren(...(g.length?g:urg.length?[h("div",{class:"empty"},"כל המשימות כאן דחופות, הן למעלה.")]:[h("div",{class:"empty"},topics.length?ctxNow!=="all"?`אין משימות פתוחות למצב: ${CTX[ctxNow].full}.`:"אין משימות בסינון הזה.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה בשורה למעלה, או בקש מ-Claude בשיחה: ״תכניס ל-${QUESTS[quest].name}״.`)]));
   }
-  function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString()},"בוצע ✓ (עבר ל״בוצעו״)");}
+  function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString(),done_win:curWin().id},"בוצע ✓ (עבר ל״בוצעו״)");} // 7.3: done_win teaches which window really closes what
 
   // fun zone: topics marked fun / kind "fun" / tag "fun question" live here, not in the task list
   function isFun(t){return !!t.fun||t.kind==="fun"||(Array.isArray(t.tags)&&t.tags.includes("fun question"));}
@@ -2406,6 +2539,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     if(md==="eve")return showEve();
     const b=curBrief("morning"),now=new Date(),wk=now.getDay()<=4,fri=now.getDay()===5;
     if(fri&&!errandsOn)errandsOn=true;
+    const tp=planFor(ilDate());if(tp&&(tp.errands_min>=60||tp.office===false))errandsOn=true; // 7.3: he said tonight he has a morning of errands
     const m=modal("briefM",
       h("div",{class:"bp-top"},h("div",{class:"bp-h"},h("b",null,"☀️ בוקר טוב"),h("small",null,`${HE_DAYS[now.getDay()]} ${now.getDate()}.${now.getMonth()+1}`),
           h("button",{class:"bp-car",type:"button","aria-pressed":carOn?"true":"false","aria-label":carOn?"מוד רכב פעיל: לחץ לטקסט רגיל":"מוד רכב: טקסט גדול",onclick:()=>setCar(!carOn)},"🚗"),
@@ -2439,6 +2573,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       bpSec("🚗 בדרך הביתה",b.way,"🛒"),
       bpSec("📞 בנסיעה",b.call,"📞"),
       bpSec("🌙 הערב, כשיש זמן",b.night,"🌙"),
+      planAsk()?h("div",{class:"bp-sec"},planCard({...planAsk(),when:"מחר בבוקר"})):null,
       h("div",{class:"bp-btns"},h("button",{class:"main",type:"button",onclick:closeBrief},"יאללה הביתה 🚗"))));
     m.classList.add("bpop");markBriefSeen("eve");
   }
@@ -2475,6 +2610,9 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
         notify.eve?h("div",{class:"sqrow"},h("div",{class:"lb"},"שעה"),h("select",{class:"sqsel","aria-label":"שעת בריף הערב",onchange:e=>setNotify({eve_time:e.target.value})},["16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30"].map(t=>h("option",{value:t,selected:t===notify.eve_time||null},t)))):null,
         notify.eve?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי בריף הערב",onchange:e=>setNotify({eve_days:e.target.value})},h("option",{value:"all",selected:!["sun-thu","sun-fri"].includes(notify.eve_days)||null},"כל יום"),h("option",{value:"sun-fri",selected:notify.eve_days==="sun-fri"||null},"א׳ עד ו׳"),h("option",{value:"sun-thu",selected:notify.eve_days==="sun-thu"||null},"א׳ עד ה׳"))):null,
         pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("eve",e.currentTarget,"בריף הערב נשלח")},"שלח בריף ערב עכשיו")):null),
+      sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
+        h("div",{class:"sqhint"},"״לפי האייפון״ עוקב אחרי הגדרות ← תצוגה ← גודל טקסט, כמו וואטסאפ. כשהאוטומציה ברכב מגדילה את הטקסט, גם כאן הוא גדל."),
+        h("div",{class:"tsbtns"},...[["auto","לפי האייפון"],["1","רגיל"],["1.15","גדול"],["1.3","גדול מאוד"],["1.5","🚗 רכב"]].map(([v,l])=>h("button",{type:"button","aria-pressed":tsPref===v?"true":"false",onclick:()=>setTs(v)},l)))),
       sec("crit","🚨 דחוף בלבד",notify.critical?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות")))
       ,h("div",{class:"sqhint"},"הבריפים עצמם: כפתור ☀️ למעלה במסך הראשי (בבוקר בוקר, אחרי הצהריים ערב)."));
@@ -2495,7 +2633,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   $("setBtn").onclick=()=>showSettings();
   $("sunBtn").onclick=()=>showBrief();
   function initNotify(){
-    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last");morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
+    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan");plan=pl?pl.data():null;morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
       notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;refreshMode();
       if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}else if($("briefM"))showBrief(briefMd);else renderSettings();renderSunDot();},()=>{});
     db.collection("topics").onSnapshot(()=>{if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}},()=>{});
@@ -2503,6 +2641,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   }
   renderStats();
   (async()=>{
+    applyTs();
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
     if(!db){notice("חסר המפתח האישי. פתח את הלינק המלא עם המפתח (?k=...).");$("qbtn").disabled=true;$("list").replaceChildren();return;}
     try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"&&(await user.can("data.write"))===false){canWrite=false;$("qbtn").disabled=true;}}catch(e){}
