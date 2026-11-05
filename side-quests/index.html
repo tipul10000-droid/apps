@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.5";window.SQ_BUILD_AT="5.11.2026 18:50";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.6";window.SQ_BUILD_AT="5.11.2026 18:55";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1275,7 +1275,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   // they are available) and the place's hours (`day_only`). Urgency never makes an impossible task fit: an urgent task
   // stays on top with the chip of its next window. Only "super urgent" breaks windows, and Oren marks that himself.
   const WINS={
-    home_am:{e:"☕",l:"בוקר בבית",s:"בבוקר",sub:"דקה-שתיים בנייד, רק לעצמי. בלי הודעות ושיחות לאנשים לפני 08:00",acc:["phone"],max:2,nopeople:true},
+    home_am:{e:"☕",l:"בוקר בבית",s:"בבוקר",sub:"דקה-שתיים בנייד. ליאור לידך, אבל בלי הודעות ושיחות לאחרים לפני 08:00",acc:["phone","lior"],max:2,nopeople:true},
     errands:{e:"🛒",l:"סידורי בוקר",s:"בסידורי הבוקר",sub:"כפר סבא, בדרך לנתניה או בנתניה לפני העבודה",acc:["place","call","phone"]},
     drive_am:{e:"🚗",l:"נסיעה לעבודה",s:"בנסיעה בבוקר",sub:"שיחות בדיבורית או הכתבה ל-Claude. בלי קריאה",acc:["call"]},
     work:{e:"💼",l:"בעבודה",s:"בעבודה",sub:"שיחה עד 20 דק׳ (כולל המתנה), מחשב לדברים אישיים, משימות עבודה",acc:["phone","call","pc","work"],max:30},
@@ -1294,7 +1294,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     abroad:{e:"✈️",l:"חו״ל",s:"בחו״ל",sub:"כמו יום עבודה בלי משפחה. במלון 22:00-02:00 זמן שלי",acc:["phone","pc","call"]}
   };
   // who a task needs, and in which windows that person is available (Lior: phone from 16:00, in person 21:30-23:00)
-  const WITH_OK={lior:["drive_pm","near_home","light","weekend","sat_am","counsel"],parents:["light","deep","weekend","sat_am"],yaniv:["fri","weekend","sat_am"]};
+  const WITH_OK={lior:["home_am","drive_pm","near_home","light","weekend","sat_am","counsel"],parents:["light","deep","weekend","sat_am"],yaniv:["fri","weekend","sat_am"]};
   const WIN_PICK=["home_am","errands","drive_am","work","drive_pm","near_home","family","light","deep","fri","sat_am","weekend"];
   let plan=null; // settings/plan {date, errands_min, office}: tonight's answer for tomorrow morning
   function planFor(iso){return plan&&plan.date===iso?plan:null;}
@@ -1333,7 +1333,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   function minsOf(t){const f=fitOf(t);if(f.mins)return +f.mins;const s=sizeOf(t);return s==="quick"?15:60;}
   function fitsWin(t,id){const W=WINS[id];if(!W||!W.acc.length)return false;const f=fitOf(t);if(f.owner==="claude")return false; // Claude's own checks never ask for a window
     const wd=Array.isArray(f.with)?f.with:[];if(wd.some(p=>WITH_OK[p]&&!WITH_OK[p].includes(id)))return false; // the person it needs isn't available then
-    if(W.nopeople&&(f.people||wd.length||howOf(t).some(x=>x==="call"||x==="lior")))return false; // no messages or calls to people before 08:00 (Oren 5.11)
+    if(W.nopeople&&(f.people===true||(Array.isArray(f.people)&&f.people.some(p=>p!=="lior"))||wd.some(p=>p!=="lior")||howOf(t).includes("call")))return false; // no messages or calls to others before 08:00; Lior is right there (Oren 5.11)
     if(Array.isArray(f.when)&&f.when.length){const wh=f.when.map(x=>x==="solo"?"deep":x);return wh.includes(id==="solo"?"deep":id)||(id==="abroad"&&wh.includes("work"));}
     if(t.quest==="work")return id==="work"; // work tasks: at work (critical ones get when:[work,deep])
     if(W.max&&minsOf(t)>W.max)return false;const hw=howOf(t);
