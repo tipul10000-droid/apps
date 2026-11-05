@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="6.9";window.SQ_BUILD_AT="4.11.2026 14:55";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.0";window.SQ_BUILD_AT="5.11.2026 10:40";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -661,6 +661,7 @@ html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 .sqbtn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
 .sqbtn:disabled{opacity:.5}
 .sqbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sqbtn.sqchat{display:flex;width:100%;margin:0 0 12px;text-decoration:none}
 .sqstate{display:flex;align-items:center;gap:8px;font-weight:700}
 .sqstate .d{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none}
 .sqstate.on .d{background:var(--k-admin)}.sqstate.bad .d{background:var(--due)}
@@ -700,6 +701,27 @@ body:not(.q-side) .tb.tsun{display:none}
 .bp-btns button{flex:1;min-height:42px;border-radius:12px;font-weight:800;font-size:14.5px}
 .bp-btns .main{background:#E9773B;color:#fff}.bp-btns .alt{background:var(--sunk);color:var(--ink)}
 .bp-empty{color:var(--muted);font-size:14px;padding:6px 0}
+/* 7.0: car mode (morning brief only): 🚗 at the top left, big text for reading from the phone holder */
+.bp-car{flex:none;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:19px;padding:0;background:rgba(255,255,255,.35);border:1.5px solid rgba(42,21,0,.25)}
+.bp-car[aria-pressed="true"]{background:#2A1500;border-color:#2A1500}
+.bp-h .bp-car+.px{margin-inline-start:0}
+.bpop.car .sqpanel{max-width:100%;max-height:92vh}
+.bpop.car .bp-top{padding:16px 16px 14px}
+.bpop.car .bp-h b{font-size:28px}
+.bpop.car .bp-h small{font-size:17px}
+.bpop.car .bp-car{width:48px;height:48px;font-size:26px}
+.bpop.car .bp-h .px{font-size:34px}
+.bpop.car .bp-head{font-size:22px;margin-top:8px}
+.bpop.car .bp-in{padding:4px 18px 18px}
+.bpop.car .bp-sec{margin-top:16px}
+.bpop.car .bp-sec h4{font-size:18px}
+.bpop.car .bp-row{gap:12px;padding:12px 0}
+.bpop.car .bp-row .e{width:30px;font-size:24px}
+.bpop.car .bp-row .x{font-size:23px;line-height:1.3}
+.bpop.car .bp-row .x small{font-size:17px;margin-top:2px}
+.bpop.car .bp-row .ok{width:48px;height:48px;font-size:22px}
+.bpop.car .bp-empty{font-size:20px}
+.bpop.car .bp-btns button{min-height:58px;font-size:21px}
 /* 2.9: quest logo sits under the title, in place of the subtitle, so the banner art stays visible */
 .qlogo{display:block;margin-top:4px;flex:none}
 .qlogo[hidden]{display:none}
@@ -1189,7 +1211,11 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     if(QUICK_SRC.test(t.source||"")||levelOf(t)===1)return "quick";
     return "long";}
   // in the car (commute, not at work) calls of any size join the quick ones on top
+  // 7.0 (Oren 5.11): small tasks he typed himself in the app (haircut, buy medicine) sit at the very top of the quick ones,
+  // in every mode and time of day: he wants to close them in the next hours. Only a task marked long stays out.
+  const isOwn=t=>QUICK_SRC.test(t.source||"")&&!t.dash&&!t.project;
   function isQuick(t){if(!isOpen(t)||snoozed(t)||t.status==="paused"||t.status==="waiting_other")return false;
+    if(isOwn(t)&&sizeOf(t)!=="long")return true;
     if(phase()==="commute"&&mode!=="work"&&ctxOf(t).includes("call"))return true;
     if(sizeOf(t)!=="quick")return false;
     const c=ctxOf(t);if(mode==="abroad")return !c.includes("out")&&!c.includes("house");
@@ -1627,7 +1653,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     const ph=phase(), away=mode==="work"||mode==="abroad";
     const ord=(a,b)=>(isUrgent(b)-isUrgent(a))||(returned(b)-returned(a))||byDate(a,b);
     const live=[...back,...open].filter(t=>t.status!=="waiting_other"&&t.status!=="paused");
-    const quickL=live.filter(isQuick).sort(ord), tripL=live.filter(t=>!quickL.includes(t)&&sizeOf(t)==="trip").sort(ord), longL=live.filter(t=>!quickL.includes(t)&&!tripL.includes(t)).sort(ord);
+    const quickL=live.filter(isQuick).sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)), tripL=live.filter(t=>!quickL.includes(t)&&sizeOf(t)==="trip").sort(ord), longL=live.filter(t=>!quickL.includes(t)&&!tripL.includes(t)).sort(ord);
     const waiting=open.filter(t=>t.status==="waiting_other"), paused=open.filter(t=>t.status==="paused");
     const qTitle=mode==="work"?"⚡ מהירות, אפשר בין לבין":mode==="abroad"?"⚡ מהירות, מהנייד":ph==="commute"?"⚡ מהירות ושיחות לדרך":ph==="friday"?"⚡ מהירות לבוקר סידורים":"⚡ מהירות (עד שעה)";
     const qg=group(qTitle,quickL,true,"quick");
@@ -2321,7 +2347,9 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     const b=curBrief("morning"),now=new Date(),wk=now.getDay()<=4,fri=now.getDay()===5;
     if(fri&&!errandsOn)errandsOn=true;
     const m=modal("briefM",
-      h("div",{class:"bp-top"},h("div",{class:"bp-h"},h("b",null,"☀️ בוקר טוב"),h("small",null,`${HE_DAYS[now.getDay()]} ${now.getDate()}.${now.getMonth()+1}`),h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeBrief},"×")),
+      h("div",{class:"bp-top"},h("div",{class:"bp-h"},h("b",null,"☀️ בוקר טוב"),h("small",null,`${HE_DAYS[now.getDay()]} ${now.getDate()}.${now.getMonth()+1}`),
+          h("button",{class:"bp-car",type:"button","aria-pressed":carOn?"true":"false","aria-label":carOn?"מוד רכב פעיל: לחץ לטקסט רגיל":"מוד רכב: טקסט גדול",onclick:()=>setCar(!carOn)},"🚗"),
+          h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeBrief},"×")),
         b.headline?h("div",{class:"bp-head"},String(b.headline)):null),
       h("div",{class:"bp-in"},
       bpSec("🚨 קריטי",b.critical,"🚨","bp-crit"),
@@ -2334,8 +2362,12 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       h("div",{class:"bp-btns"},
         !errandsOn&&(b.errands||[]).length?h("button",{class:"alt",type:"button",onclick:()=>{errandsOn=true;showBrief();}},"🛒 יש לי בוקר סידורים"):null,
         h("button",{class:"main",type:"button",onclick:closeBrief},"הבנתי ☕"))));
-    m.classList.add("bpop");markBriefSeen("morning");
+    m.classList.add("bpop");m.classList.toggle("car",carOn);markBriefSeen("morning");
   }
+  // 7.0 (Oren 5.11): car mode for the morning brief. He reads it in the car with the phone far away: one tap = big text.
+  // Remembered on this device (localStorage sq_car) until he taps again.
+  let carOn=false;try{carOn=localStorage.getItem("sq_car")==="1";}catch(e){}
+  function setCar(on){carOn=on;try{on?localStorage.setItem("sq_car","1"):localStorage.removeItem("sq_car");}catch(e){}if($("briefM"))showBrief("morning");}
   function showEve(){
     const b=curBrief("eve"),now=new Date();
     const m=modal("briefM",
@@ -2364,6 +2396,8 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     const sec=(k,title,val,...body)=>h("details",{class:"sqsec",open:setOpen.has(k)||null,ontoggle:e=>{e.currentTarget.open?setOpen.add(k):setOpen.delete(k);}},
       h("summary",null,h("span",{class:"t"},title),h("span",{class:"v"},val)),h("div",{class:"sqcard"},...body));
     const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
+      // 7.0 (Oren 5.11): straight to the Side Quests chat, to ask for a fix or a change in the app
+      h("a",{class:"sqbtn sqchat",href:SQ_CHAT,target:"_blank",rel:"noopener"},"💬 שיפורים ושינויים באפליקציה"),
       sec("push","🔔 התראות",pushOn?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"sqstate "+cls},h("span",{class:"d"}),h("span",null,st)),h("span",{style:"flex:1"}),act||null),
         isIOS&&!standalone()?h("div",{class:"sqhint"},"שיתוף ← הוסף למסך הבית, ואז מהאייקון."):null,
