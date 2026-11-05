@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#16233A">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CARS_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<script src="cars-market.js?v=1"></script>
+<title>רכבים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* דשבורד רכבים: הרכבים שלנו (שווי, ירידת ערך, תאריכים, ק"מ) + תומך החלטה לרכב חדש.
+   נתונים אישיים: sq_docs (app=sidequests, collection=cars): מסמך לכל רכב + _meta. מחקר שוק ציבורי: cars-market.js */
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --sunk:#E7EBF1; --ink:#141B26; --muted:#5B6678; --line:#D5DBE5;
+  --hero:#16233A; --hero-ink:#F1F5FB; --hero-muted:#A5B3C9; --accent:#F2A33A; --accent-ink:#22160A;
+  --kia:#1F8A84; --ford:#7357C2; --good:#1E8A52; --good-soft:#DFF2E7; --warn:#B26A00; --warn-soft:#FBEBCF; --bad:#C2384A; --bad-soft:#FBE1E4;
+  --link:#2F5BD3;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E131B; --surface:#161D28; --sunk:#1E2734; --ink:#E8EDF5; --muted:#9AA7BB; --line:#2A3443;
+  --hero:#111B2C; --hero-ink:#EEF3FA; --hero-muted:#93A3BC; --accent:#F4B154; --accent-ink:#22160A;
+  --kia:#42B8B0; --ford:#9C85E6; --good:#4CC384; --good-soft:#163024; --warn:#E9A945; --warn-soft:#3A2A12; --bad:#EE7A88; --bad-soft:#3B1E24; --link:#8CAAF5; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E131B; --surface:#161D28; --sunk:#1E2734; --ink:#E8EDF5; --muted:#9AA7BB; --line:#2A3443;
+  --hero:#111B2C; --hero-ink:#EEF3FA; --hero-muted:#93A3BC; --accent:#F4B154; --accent-ink:#22160A;
+  --kia:#42B8B0; --ford:#9C85E6; --good:#4CC384; --good-soft:#163024; --warn:#E9A945; --warn-soft:#3A2A12; --bad:#EE7A88; --bad-soft:#3B1E24; --link:#8CAAF5; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button,select,input{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.hero .sub{color:var(--hero-muted);font-size:14px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17.5px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tab{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 6px;font-weight:800;font-size:15px;cursor:pointer;font-family:var(--f-display)}
+.tab.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}
+.sh small{color:var(--muted);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+/* time slider */
+.tl{display:flex;align-items:center;gap:10px}
+.tl input[type=range]{flex:1;accent-color:var(--accent);height:30px}
+.tl .when{font-family:var(--f-display);font-weight:800;font-size:17px;min-width:96px;text-align:center}
+.marks{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin:0 2px}
+.marks button{border:0;background:none;padding:4px 2px;color:inherit;cursor:pointer;font-weight:700}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.sum div{background:var(--sunk);border-radius:12px;padding:8px 10px}
+.sum b{display:block;font-family:var(--f-display);font-size:18px}
+.sum span{font-size:12.5px;color:var(--muted)}
+svg.chart{width:100%;height:auto;display:block;margin-top:8px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:4px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-inline-end:5px}
+/* car card */
+.car{padding:0;overflow:hidden;border-top:5px solid var(--cc,#888)}
+.car .ph{position:relative;aspect-ratio:16/8;background:var(--sunk) center/cover no-repeat}
+.car .ph .tag{position:absolute;bottom:8px;right:8px;background:rgba(10,14,20,.72);color:#fff;font-size:12.5px;font-weight:700;padding:3px 9px;border-radius:999px}
+.car .bd{padding:12px 14px 14px}
+.car h3{font-size:21px}
+.chipsr{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 10px}
+.chipsr span{font-size:12.5px;font-weight:700;background:var(--sunk);padding:2px 8px;border-radius:999px}
+.vals{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.val{border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.val.w{border-color:var(--cc);border-width:2px}
+.val b{display:block;font-family:var(--f-display);font-size:19px}
+.val span{font-size:12.5px;color:var(--muted);display:block}
+.val em{font-style:normal;font-size:12px;font-weight:700}
+.dates{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.dt{border-radius:12px;padding:7px 9px;background:var(--sunk);min-width:0}
+.dt b{display:block;font-size:15px;font-family:var(--f-display)}
+.dt span{display:block;font-size:12px;color:var(--muted)}
+.dt.ok{background:var(--good-soft)} .dt.soon{background:var(--warn-soft)} .dt.bad{background:var(--bad-soft)}
+.dt.bad b{color:var(--bad)}
+.row{display:flex;gap:8px;align-items:center;padding:8px 0;border-top:1px dashed var(--line);font-size:14.5px;flex-wrap:wrap}
+.row .k{flex:none;width:86px;color:var(--muted);font-weight:700;font-size:13.5px}
+.row .v{flex:1;min-width:0}
+.mini{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:13.5px;font-weight:700;cursor:pointer}
+.mini.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.edit{display:none;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.edit.on{display:flex}
+.edit input{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 9px;width:120px}
+.iss{margin:8px 0 0;padding-inline-start:18px;font-size:14px}
+.iss li{margin:3px 0}
+.iss .hi{color:var(--bad);font-weight:700}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.links a{font-size:13px;background:var(--sunk);padding:4px 10px;border-radius:999px;color:var(--ink)}
+.q{border-top:1px solid var(--line);padding:9px 0}
+.q:first-child{border-top:0;padding-top:2px}
+.q .qt{font-weight:700;font-size:15px;margin-bottom:6px}
+.q .qt small{display:block;color:var(--muted);font-weight:600;font-size:12.5px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-weight:700;font-size:14px;cursor:pointer}
+.opt.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.task{display:flex;gap:9px;padding:8px 0;border-top:1px solid var(--line)}
+.task:first-child{border-top:0}
+.task .t{font-weight:700;line-height:1.3}
+.task .s{color:var(--muted);font-size:13.5px}
+/* decision */
+.ctrl{display:grid;gap:10px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.wt{display:grid;grid-template-columns:96px 1fr 30px;gap:8px;align-items:center;font-size:14px}
+.wt input{accent-color:var(--accent)}
+.lead{background:linear-gradient(135deg,var(--hero),#24406B);color:var(--hero-ink);border:0}
+.lead .lbl{font-size:12.5px;font-weight:800;letter-spacing:.02em;color:var(--accent)}
+.lead h3{font-size:22px;margin:2px 0}
+.lead p{margin:6px 0 0;color:var(--hero-muted);font-size:14.5px}
+.opt-row{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:right}
+.opt-row:first-child{border-top:0}
+.opt-row .rk{font-family:var(--f-display);font-weight:800;color:var(--muted);text-align:center}
+.opt-row .nm{font-weight:800;line-height:1.25}
+.opt-row .nm small{display:block;font-weight:600;color:var(--muted);font-size:12.5px}
+.opt-row .sc{text-align:left;min-width:86px}
+.opt-row .sc b{font-family:var(--f-display);font-size:17px;display:block}
+.opt-row .sc span{font-size:12px;color:var(--muted)}
+.fuel{font-size:11.5px;font-weight:800;padding:1px 7px;border-radius:999px;margin-inline-start:4px;vertical-align:1px;background:var(--sunk)}
+.f-EV{background:#DDF3E6;color:#13663B} .f-PHEV{background:#E1EBFC;color:#244FA8} .f-HEV{background:#E9E4FA;color:#5232A8} .f-ICE{background:#EFEFEF;color:#555}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .f-EV{background:#163024;color:#7FD9A6}:root:not([data-theme="light"]) .f-PHEV{background:#1A2A4A;color:#9CB8F5}:root:not([data-theme="light"]) .f-HEV{background:#261F45;color:#B9A6F2}:root:not([data-theme="light"]) .f-ICE{background:#2A2F38;color:#BBB}}
+.sbar{height:6px;border-radius:3px;background:var(--sunk);margin-top:3px;overflow:hidden}
+.sbar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.det{background:var(--sunk);border-radius:14px;padding:12px;margin:2px 0 10px}
+.det img{width:100%;border-radius:10px;display:block;margin-bottom:8px;aspect-ratio:16/9;object-fit:cover}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px}
+.pc ul{margin:4px 0 0;padding-inline-start:16px}
+.pc h4{margin:0;font-size:14px}
+.scores{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 12px;font-size:12.5px;margin:10px 0}
+.fin{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px}
+.fin table{width:100%;border-collapse:collapse;font-size:12.5px}
+.fin th,.fin td{white-space:nowrap;padding:5px 3px;text-align:right;border-top:1px solid var(--line);vertical-align:top}
+.fin th{font-weight:700;color:var(--muted);font-size:12.5px}
+.fin tr.best td{background:var(--good-soft)}
+.fin td b{font-family:var(--f-display)}
+.note{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.4}
+.exp{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.exp:first-child{border-top:0}
+.exp .ic{flex:none;width:38px;height:38px;border-radius:12px;background:var(--sunk);display:grid;place-items:center;font-size:20px}
+.exp .w{font-weight:800}
+.exp .p{font-size:13px;margin-top:3px}
+.check li{margin:4px 0}
+.empty{color:var(--muted);text-align:center;padding:20px}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:90vw}
+.toast.on{display:block}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (max-width:420px){.kpi b{font-size:17px}.val b{font-size:17px}.pc{grid-template-columns:1fr}.dt b{font-size:14px}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="in">
+  <div class="top"><a class="back" href="./">→ Side Quests</a><span class="back" id="upd"></span></div>
+  <h1>🚗 רכבים</h1>
+  <p class="sub">כמה שווים הרכבים שלנו היום ובעתיד, מה צריך לטפל בהם, ואיזה רכב גדול ונוח לקנות.</p>
+  <a class="chatbtn" id="chat" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שאל על הרכבים<small>״כמה אקבל על הקיה בקיץ?״ · ״ג׳אקו 8 או סורנטו יד 2?״</small></span></a>
+  <div class="kpis">
+    <div class="kpi"><b id="k-now">…</b><span>שווים היום (משוקלל)</span></div>
+    <div class="kpi"><b id="k-loss">…</b><span>ירידה בשנה הקרובה</span></div>
+    <div class="kpi"><b id="k-next">…</b><span id="k-next-l">הבא בתור</span></div>
+  </div>
+</div></header>
+<div class="wrap">
+  <div class="bar"><div class="tabs" id="tabs">
+    <button class="tab on" data-tab="mine">🚙 הרכבים שלי</button>
+    <button class="tab" data-tab="buy">🛒 רכב חדש</button>
+    <button class="tab" data-tab="exp">🧠 מומחים</button>
+  </div></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const M=window.CARS_MARKET||{options:[],experts:[],energy:{fuel:7.3,kwh:.64},rates:{loan:7.5,dealer:5.9,deposit:3.5,lease_discount:12,lease_margin:6.5}};
+const CHAT_FALLBACK="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD?thread=cmsg_01BSiCy73LfhTPuMwCS8XKQDEbG74ydUeN96CFiXcu5JbH";
+const NORM_KM_MONTH=1250; // ממוצע שהמחירונים מניחים (~15 אלף בשנה)
+let cars=[],meta={},topics=[],db=null;
+// per-viewer UI state (sq_ prefix)
+const UI_KEY="sq_cars_ui";let ui={tab:"mine",m:0,kind:"all",seven:false,budget:400000,open:null,trim:{},path:"loan",years:4,kmY:18000,sellKia:true,sellFord:true,buyIn:0,
+  w:{space:25,comfort:20,rel:20,resale:10,cost:15,tech:10}};
+try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
+function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
+
+// ---------- helpers ----------
+const ils=v=>"₪"+Math.round(v).toLocaleString("he-IL");
+const k=v=>Math.abs(v)>=1000?(Math.round(v/100)/10).toLocaleString("he-IL")+"K":Math.round(v)+"";
+const ilsK=v=>"₪"+k(v);
+function today(){const d=new Date();d.setHours(12,0,0,0);return d;}
+function ds(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function parseD(s){if(!s)return null;const p=String(s).split("-");return new Date(+p[0],(+p[1]||1)-1,+p[2]||15,12);}
+function monthsBetween(a,b){return (b-a)/(1000*60*60*24*30.4375);}
+function daysTo(s){const d=parseD(s);return d?Math.round((d-today())/86400000):null;}
+function dm(s){const d=parseD(s);return d?`${d.getDate()}.${d.getMonth()+1}.${String(d.getFullYear()).slice(2)}`:"";}
+function addMonths(d,m){const x=new Date(d);x.setMonth(x.getMonth()+Math.floor(m));x.setDate(x.getDate()+Math.round((m%1)*30));return x;}
+function whenTxt(m){if(m===0)return "היום";if(m<12)return m===1?"עוד חודש":"עוד "+m+" חודשים";const y=m/12;return "עוד "+(y===1?"שנה":y===2?"שנתיים":(Math.round(y*10)/10)+" שנים");}
+function monthName(d){return ["ינו׳","פבר׳","מרץ","אפר׳","מאי","יוני","יולי","אוג׳","ספט׳","אוק׳","נוב׳","דצמ׳"][d.getMonth()]+" "+String(d.getFullYear()).slice(2);}
+
+// ---------- km ----------
+function logs(c){return (c.km_log||[]).filter(x=>x&&x.d&&x.km).sort((a,b)=>a.d<b.d?-1:1);}
+function lastLog(c){const l=logs(c);return l[l.length-1]||null;}
+// קצב חודשי: ידני אם נקבע, אחרת לפי השימוש בפועל (בין שתי קריאות, או מהעלייה לכביש עד הקריאה האחרונה)
+function kmMonth(c){if(+c.km_month_manual)return +c.km_month_manual;const l=logs(c);
+  if(l.length>=2){const a=l[l.length-2],b=l[l.length-1],mo=monthsBetween(parseD(a.d),parseD(b.d));if(mo>=3&&b.km>a.km)return (b.km-a.km)/mo;}
+  if(l.length){const b=l[l.length-1],mo=monthsBetween(parseD(c.on_road),parseD(b.d));if(mo>6)return b.km/mo;}
+  return +c.km_month||NORM_KM_MONTH;}
+function kmAt(c,mFromNow){const now=today();const L=lastLog(c);
+  if(L)return Math.max(+L.km,+L.km+kmMonth(c)*(monthsBetween(parseD(L.d),now)+mFromNow));
+  return kmMonth(c)*(monthsBetween(parseD(c.on_road),now)+mFromNow);}
+function normKmAt(c,mFromNow){return NORM_KM_MONTH*(monthsBetween(parseD(c.on_road),today())+mFromNow);}
+
+// ---------- value model ----------
+const ADJ={ // [יד2, לוי יצחק] as fractions
+  hand:{1:[.06,.02],2:[0,-.02],3:[-.05,-.05],4:[-.09,-.08]},
+  origin:{private:[0,0],leasing:[-.06,-.08],rental:[-.10,-.12],unknown:[0,0]},
+  accidents:{none:[0,0],minor:[-.05,-.05],major:[-.18,-.18]},
+  service:{agency:[.03,0],garage:[0,0],irregular:[-.05,-.02]},
+  mech:{great:[.02,0],ok:[0,0],issues:[-.08,-.04]},
+  cosmetic:{like_new:[.03,0],normal:[0,0],scratches:[-.04,-.01]},
+  tires:{new:[.01,0],ok:[0,0],replace:[-.02,0]}
+};
+const ROUTE={private:{l:"מכירה פרטית",f:0},dealer:{l:"מכירה לסוחר",f:-.09},tradein:{l:"טרייד-אין אצל היבואן",f:-.12}};
+function licenseBad(c){const d=daysTo(c.dates&&c.dates.license);return d!=null&&d<0;}
+function adjFor(c,src,m){const i=src==="levi"?1:0,a=c.ans||{},out=[];
+  const push=(lbl,v)=>{if(v)out.push([lbl,v]);};
+  const km=kmAt(c,m),norm=normKmAt(c,m),per10=src==="levi"?.015:.02;
+  push("ק״מ "+(km>norm?"מעל":"מתחת")+" לממוצע",Math.max(-.25,Math.min(.15,-(km-norm)/10000*per10)));
+  const h=ADJ.hand[Math.min(4,+c.hand||2)];push("יד "+(c.hand||2),h?h[i]:0);
+  for(const key of ["origin","accidents","service","mech","cosmetic","tires"]){const v=a[key];if(v&&ADJ[key][v])push(QL[key]+": "+(QO[key].find(o=>o[0]===v)||[,v])[1],ADJ[key][v][i]);}
+  return out;}
+function baseAt(c,src,m){const v=c.val||{},b=+(src==="levi"?v.levi:v.yad2)||0,dep=c.dep||{},r=(+dep.r||10)/100,fl=+dep.floor||10000;
+  // מחירון של היום ← ירידה שנתית עד רצפה (ערך גרוטאה/מסחר)
+  return fl+(b-fl)*Math.pow(1-r,m/12);}
+function valueOf(c,src,m,weighted){const b=baseAt(c,src,m);if(!weighted)return b;const s=adjFor(c,src,m).reduce((t,x)=>t+x[1],0);return Math.max(+((c.dep||{}).floor)||8000,b*(1+s));}
+function central(c,m){return (valueOf(c,"yad2",m,true)+valueOf(c,"levi",m,true))/2;}
+function routeF(){return (ROUTE[(meta.ans||{}).route]||ROUTE.private).f;}
+function inHand(c,m){return central(c,m)*(1+routeF());}
+
+// ---------- questions (weighting) ----------
+const QL={origin:"מקור",accidents:"תאונות",service:"טיפולים",mech:"מצב מכני",cosmetic:"מראה",tires:"צמיגים"};
+const QO={
+  origin:[["private","פרטי מההתחלה"],["leasing","היה ליסינג/חברה"],["rental","היה השכרה"],["unknown","לא יודע"]],
+  accidents:[["none","בלי תאונות"],["minor","פח קל / שריטות"],["major","תאונה עם נזק שלדה"]],
+  service:[["agency","כל הטיפולים ביבואן"],["garage","מוסך קבוע, בזמן"],["irregular","לא תמיד בזמן"]],
+  mech:[["great","מצוין"],["ok","תקין, בלי בעיות"],["issues","יש תקלה ידועה"]],
+  cosmetic:[["like_new","כמו חדש"],["normal","בלאי רגיל"],["scratches","שריטות/מכות"]],
+  tires:[["new","חדשים"],["ok","בסדר"],["replace","צריך להחליף"]]
+};
+const QT={origin:"מאיפה הרכב הגיע לפני שקנית?",accidents:"היו תאונות?",service:"איפה עשו את הטיפולים?",mech:"איך הוא מבחינה מכנית?",cosmetic:"איך הוא נראה?",tires:"מה מצב הצמיגים?"};
+const QH={origin:"ליסינג או השכרה מורידים 6-12% במחירון",accidents:"נזק שלדה מוריד עד 18%",service:"ספר טיפולים ביבואן מעלה מחיר ביד2",mech:"",cosmetic:"",tires:""};
+
+// ---------- render: mine ----------
+function dateBox(lbl,s,note){const d=daysTo(s);const cls=d==null?"":d<0?"bad":d<=45?"soon":"ok";
+  const rel=d==null?"לא ידוע":d<0?"פג לפני "+(-d)+" ימים":d===0?"היום":d<=60?"בעוד "+d+" ימים":"עד "+dm(s);
+  return `<div class="dt ${cls}"><span>${esc(lbl)}</span><b>${d==null?"?":esc(dm(s))}</b><span>${esc(note||rel)}</span></div>`;}
+function nextService(c){const s=c.service||{};if(!s.d)return null;const d=addMonths(parseD(s.d),12);const kmLeft=s.km?(+s.km+15000)-kmAt(c,0):null;
+  let byKm=null;if(kmLeft!=null){byKm=addMonths(today(),Math.max(0,kmLeft/kmMonth(c)));}
+  return ds(byKm&&byKm<d?byKm:d);}
+function carCard(c){
+  const m=ui.m,cc=c.color_css||"#888";
+  const v=(src,w)=>valueOf(c,src,m,w),now=(src,w)=>valueOf(c,src,0,w);
+  const dlt=(a,b)=>m?`<em style="color:var(--bad)">${ilsK(a-b)}</em>`:"";
+  const adjs=[...adjFor(c,"yad2",m)].map(([l,x])=>`<li>${esc(l)}: <span class="num">${x>0?"+":""}${Math.round(x*1000)/10}%</span></li>`).join("");
+  const km=kmAt(c,0),L=lastLog(c);
+  const ns=nextService(c);
+  const lic=c.dates||{};
+  const iss=(c.issues||[]).map(x=>`<li class="${x.lvl==="high"?"hi":""}">${esc(x.text)}</li>`).join("");
+  const myTasks=topics.filter(t=>(t.car===c.id||(c.task_ids||[]).includes(t.id))&&t.status!=="done"&&t.status!=="archived");
+  const links=(c.links||[]).filter(l=>safe(l.url)).map(l=>`<a href="${esc(safe(l.url))}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("");
+  return `<article class="card car" style="--cc:${esc(cc)}" id="car-${esc(c.id)}">
+    <div class="ph" style="background-image:url('${esc(c.img||"")}')"><span class="tag">${esc(c.img_note||"תמונה להמחשה: אותו דגם וצבע")}</span></div>
+    <div class="bd">
+      <h3>${esc(c.emoji||"🚗")} ${esc(c.name)}</h3>
+      <div class="chipsr"><span>${esc(c.year)}</span><span>${esc(c.trim||"")}</span><span>${esc(c.color||"")}</span><span>יד ${esc(c.hand||"?")}</span><span>${esc(c.engine||"")}</span>${c.owner?`<span>${esc(c.owner)}</span>`:""}</div>
+      <div class="muted small" style="margin-bottom:6px">${m?`השווי ${esc(whenTxt(m))} (${esc(monthName(addMonths(today(),m)))})`:"השווי היום"}</div>
+      <div class="vals">
+        <div class="val"><span>יד2 רגיל</span><b class="num">${ils(v("yad2",false))}</b>${dlt(v("yad2",false),now("yad2",false))}</div>
+        <div class="val w"><span>יד2 משוקלל</span><b class="num">${ils(v("yad2",true))}</b>${dlt(v("yad2",true),now("yad2",true))}</div>
+        <div class="val"><span>לוי יצחק רגיל</span><b class="num">${ils(v("levi",false))}</b>${dlt(v("levi",false),now("levi",false))}</div>
+        <div class="val w"><span>לוי יצחק משוקלל</span><b class="num">${ils(v("levi",true))}</b>${dlt(v("levi",true),now("levi",true))}</div>
+      </div>
+      <details style="margin-top:6px"><summary class="small" style="cursor:pointer;font-weight:700;color:var(--link)">איך חושב המשוקלל</summary>
+        <ul class="iss">${adjs||"<li>אין עדיין התאמות</li>"}</ul>
+        <div class="note">רגיל = מחירון לרכב ממוצע מאותו דגם ושנה (${esc((c.val||{}).as_of||"")}). משוקלל = אחרי ק״מ, יד, מקור, תאונות ומצב. ${esc((c.val||{}).note||"")} בפועל ב${esc((ROUTE[(meta.ans||{}).route]||ROUTE.private).l)}: <b class="num">${ils(inHand(c,m))}</b>.</div>
+      </details>
+      <div class="dates">
+        ${dateBox("ביטוח",lic.insurance,lic.insurance_note)}
+        ${dateBox("טסט / רישיון",lic.license,lic.license_note)}
+        ${ns?dateBox("טיפול הבא",ns,"לפי 12 חודשים / 15 אלף ק״מ"):`<div class="dt soon"><span>טיפול</span><b>?</b><span><button class="mini" data-svc="${esc(c.id)}">מתי היה האחרון?</button></span></div>`}
+      </div>
+      <div class="edit" id="svc-${esc(c.id)}"><span class="small">טיפול אחרון:</span><input type="date" id="svcd-${esc(c.id)}" value="${esc((c.service||{}).d||"")}"><input type="number" inputmode="numeric" placeholder="ק״מ בטיפול" id="svck-${esc(c.id)}" value="${esc((c.service||{}).km||"")}"><button class="mini pri" data-svcsave="${esc(c.id)}">שמור</button></div>
+      <div class="row" style="margin-top:10px"><span class="k">קילומטראז׳</span><span class="v"><b class="num">${Math.round(km).toLocaleString("he-IL")}</b> ק״מ <span class="muted small">${L?"(עודכן ידנית "+esc(dm(L.d))+" + הערכה)":"(הערכה לפי "+kmMonth(c).toLocaleString("he-IL")+" ק״מ בחודש)"}</span></span><button class="mini" data-km="${esc(c.id)}">דייק</button></div>
+      <div class="edit" id="km-${esc(c.id)}"><input type="number" inputmode="numeric" placeholder="ק״מ במד" id="kmv-${esc(c.id)}"><button class="mini pri" data-kmsave="${esc(c.id)}">שמור ק״מ</button><span class="small muted">בחודש:</span><input type="number" inputmode="numeric" style="width:90px" id="kmm-${esc(c.id)}" value="${Math.round(kmMonth(c))}"><button class="mini" data-kmmsave="${esc(c.id)}">שמור</button></div>
+      <div class="row"><span class="k">סחירות</span><span class="v">${esc((c.dep||{}).liq||"")} <span class="muted small">· ירידה של כ-${esc((c.dep||{}).r||"?")}% בשנה${(c.dep||{}).days?" · נמכר תוך "+esc(c.dep.days):""}</span></span></div>
+      ${iss?`<div class="row"><span class="k">לטיפול</span><ul class="iss v" style="margin:0">${iss}</ul></div>`:""}
+      ${myTasks.length?`<div class="row"><span class="k">משימות</span><div class="v">${myTasks.map(t=>`<div class="task"><div><div class="t">${esc(t.title)}</div><div class="s">${esc(t.waiting_for||t.next_step||"")}</div></div></div>`).join("")}</div></div>`:""}
+      ${links?`<div class="links">${links}</div>`:""}
+    </div></article>`;
+}
+function questionsFor(c){const a=c.ans||{};
+  const keys=Object.keys(QO).filter(k2=>!(k2==="origin"&&c.bought_new));
+  const open=keys.filter(k2=>!a[k2]);
+  return `<div class="card" style="border-top:4px solid ${esc(c.color_css||"#888")}"><div class="sh" style="margin:0 0 4px"><h3 style="font-size:16px">${esc(c.emoji)} ${esc(c.name)}</h3><small>${open.length?open.length+" פתוחות":"הכל נענה ✓"}</small></div>
+    ${keys.map(k2=>`<div class="q"><div class="qt">${esc(QT[k2])}${QH[k2]?`<small>${esc(QH[k2])}</small>`:""}</div><div class="opts">${QO[k2].map(([v,l])=>`<button class="opt${a[k2]===v?" on":""}" data-ans="${esc(c.id)}|${k2}|${v}">${esc(l)}</button>`).join("")}</div></div>`).join("")}
+  </div>`;}
+function chart(){
+  const W=380,H=210,P={l:44,r:10,t:12,b:24},N=36;
+  const ser=cars.map(c=>({c,pts:Array.from({length:N+1},(_,i)=>central(c,i))}));
+  const tot=Array.from({length:N+1},(_,i)=>ser.reduce((s,x)=>s+x.pts[i],0));
+  const all=ser.flatMap(x=>x.pts),max=Math.max(...tot)*1.04,min=Math.max(0,Math.min(...all)*.75);
+  const X=i=>W-P.r-(i/N)*(W-P.l-P.r); // RTL: time flows right→left
+  const Y=v=>P.t+(1-(v-min)/(max-min))*(H-P.t-P.b);
+  const path=a=>a.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join(" ");
+  const ticks=[min,(min+max)/2,max].map(v=>`<line x1="${P.l}" x2="${W-P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${P.l-6}" y="${Y(v)+4}" font-size="11" fill="var(--muted)" text-anchor="end">${ilsK(v)}</text>`).join("");
+  const xt=[0,12,24,36].map(i=>`<text x="${X(i)}" y="${H-8}" font-size="11" fill="var(--muted)" text-anchor="middle">${i===0?"היום":i/12===1?"שנה":i/12===2?"שנתיים":"3 שנים"}</text>`).join("");
+  const mk=ui.m;
+  const lines=ser.map(s=>`<path d="${path(s.pts)}" fill="none" stroke="${esc(s.c.color_css)}" stroke-width="2.5" stroke-linejoin="round"/><circle cx="${X(mk)}" cy="${Y(s.pts[mk])}" r="4.5" fill="${esc(s.c.color_css)}" stroke="var(--surface)" stroke-width="2"/>`).join("");
+  const totL=`<path d="${path(tot)}" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 4" opacity=".75"/><circle cx="${X(mk)}" cy="${Y(tot[mk])}" r="4.5" fill="var(--ink)" stroke="var(--surface)" stroke-width="2"/>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="גרף ירידת הערך של הרכבים ב-3 השנים הקרובות">${ticks}${xt}<line x1="${X(mk)}" x2="${X(mk)}" y1="${P.t}" y2="${H-P.b}" stroke="var(--accent)" stroke-width="2"/>${totL}${lines}</svg>
+    <div class="legend">${cars.map(c=>`<span><i style="background:${esc(c.color_css)}"></i>${esc(c.name)}</span>`).join("")}<span><i style="background:var(--ink);opacity:.7"></i>שניהם יחד</span></div>`;
+}
+function mineTop(){
+  const m=ui.m,tot=cars.reduce((s,c)=>s+central(c,m),0),tot0=cars.reduce((s,c)=>s+central(c,0),0);
+  const hand=cars.reduce((s,c)=>s+inHand(c,m),0);
+  return `<div class="sum"><div><span>שניהם (משוקלל)</span><b class="num">${ils(tot)}</b></div><div><span>${m?"ירידה מהיום":"בעוד שנה"}</span><b class="num" style="color:var(--bad)">${ils(m?tot-tot0:cars.reduce((s,c)=>s+central(c,12),0)-tot0)}</b></div><div><span>ביד, ב${esc((ROUTE[(meta.ans||{}).route]||ROUTE.private).l)}</span><b class="num">${ils(hand)}</b></div></div>${chart()}`;}
+function mineCars(){return cars.map(carCard).join("");}
+function renderMine(){
+  const m=ui.m;
+  let h=`<section><div class="sh"><h2>💰 כמה כסף יש לי ברכבים</h2><small>גרור כדי לראות בעתיד</small></div><div class="card">
+    <div class="tl"><input type="range" min="0" max="36" step="1" value="${m}" id="slider" aria-label="חודשים מהיום"><span class="when" id="when">${esc(whenTxt(m))}</span></div>
+    <div class="marks">${[[0,"היום"],[1,"חודש"],[6,"חצי שנה"],[12,"שנה"],[24,"שנתיים"],[36,"3 שנים"]].map(([v,l])=>`<button data-m="${v}">${l}</button>`).join("")}</div>
+    <div id="mtop">${mineTop()}</div>
+    <div class="q" style="margin-top:8px"><div class="qt">איך תמכור?<small>משנה כמה כסף נכנס בפועל</small></div><div class="opts">${Object.entries(ROUTE).map(([v,o])=>`<button class="opt${((meta.ans||{}).route||"private")===v?" on":""}" data-route="${v}">${esc(o.l)}${o.f?" ("+Math.round(o.f*100)+"%)":""}</button>`).join("")}</div></div>
+  </div></section>`;
+  h+=`<section><div class="sh"><h2>🚙 הרכבים</h2><small>תמונות להמחשה</small></div><div style="display:grid;gap:14px" id="mcars">${mineCars()}</div></section>`;
+  const open=cars.reduce((s,c)=>s+Object.keys(QO).filter(k2=>!(k2==="origin"&&c.bought_new)&&!(c.ans||{})[k2]).length,0);
+  h+=`<section><div class="sh"><h2>🎯 לדייק את השווי המשוקלל</h2><small>${open?open+" שאלות פתוחות":"הכל נענה"}</small></div><div style="display:grid;gap:12px">${cars.map(questionsFor).join("")}</div>
+    <div class="note">כל תשובה נשמרת ומעדכנת את המשוקלל מיד. השווי הבסיסי הוא הערכה לפי מודעות ומחירון (${esc(meta.val_as_of||"")}). כדי לדייק: לבדוק במחירון לוי יצחק או ביד2 ולעדכן לי בצ׳אט.</div></section>`;
+  if((meta.links||[]).length)h+=`<section><div class="sh"><h2>🔗 איפה להתעדכן</h2></div><div class="card"><div class="links" style="margin:0">${meta.links.filter(l=>safe(l.url)).map(l=>`<a href="${esc(safe(l.url))}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div></div></section>`;
+  return h;
+}
+
+// ---------- decision model ----------
+function licFee(p){return p<150000?1500:p<200000?2100:p<250000?2700:p<300000?3300:3900;}
+function energyY(o,kmY){const c=o.cons||{},F=M.energy.fuel,E=M.energy.kwh;
+  if(o.fuel==="EV")return kmY*(c.kwh||18)/100*E*1.15;
+  if(o.fuel==="PHEV"){const ev=c.ev!=null?c.ev:.6;return kmY*(ev*(c.kwh||22)/100*E*1.1+(1-ev)*(c.l||7)/100*F);}
+  return kmY*(c.l||7)/100*F;}
+function resale(o,P,Y){return P*(1-o.dep1/100)*Math.pow(1-o.depY/100,Math.max(0,Y-1));}
+function pmt(L,ratePct,n,balloon){const r=ratePct/100/12;if(L<=0)return 0;const pvB=(balloon||0)/Math.pow(1+r,n);return r?(L-pvB)*r/(1-Math.pow(1+r,-n)):(L-(balloon||0))/n;}
+function tradeVal(){const m=+ui.buyIn||0;return cars.filter(c=>(c.id==="kia"&&ui.sellKia)||(c.id==="ford"&&ui.sellFord)).reduce((s,c)=>s+inHand(c,m),0);}
+function priceOf(o){const t=o.trims[Math.min(ui.trim[o.id]||0,o.trims.length-1)];return t.price;}
+function finance(o,path,P){
+  const Y=+ui.years,n=Y*12,R=M.rates,kmY=+ui.kmY;
+  const RV=resale(o,P,Y);
+  const ins=Math.max(3800,.022*(P+RV)/2+1500),lic=licFee(P),mnt=o.maint||1500,en=energyY(o,kmY);
+  const run=(ins+lic+mnt)*Y,enT=en*Y;
+  const T=Math.min(tradeVal(),P);
+  if(path==="lease"){
+    const Pf=P*(1-R.lease_discount/100);const mon=Math.max(0,(Pf-RV)/n)+(Pf+RV)/2*R.lease_margin/100/12+(ins+lic+mnt)/12;
+    const total=mon*n+enT;return {path,label:"ליסינג תפעולי",down:0,mon,total,RV:0,cashFree:T,interest:0,note:"כולל ביטוח, רישוי וטיפולים. בסוף מחזירים את הרכב. מגבלת ק״מ בשנה."};}
+  if(path==="cash"){const opp=P*R.deposit/100*Y*.6;const total=P+run+enT+opp-RV;return {path,label:"מזומן",down:P,mon:(ins+lic+mnt)/12,total,RV,cashFree:T-P,interest:0,opp,note:"כולל ריבית שהכסף היה מרוויח בפיקדון."};}
+  if(path==="dealer"){const L=P-T,B=Math.min(P*.5,Math.max(0,L));const mp=pmt(L,R.dealer,n,B);const interest=mp*n+B-L;const total=P+interest+run+enT+T*R.deposit/100*Y*.6-RV;
+    return {path,label:"מימון יבואן (בלון)",down:T,mon:mp+(ins+lic+mnt)/12,total,RV,interest,balloon:B,cashFree:0,note:"החזר נמוך, אבל בסוף משלמים בלון של "+ilsK(B)+" (או מוכרים את הרכב)."};}
+  const L=P-T,mp=pmt(L,R.loan,n,0),interest=mp*n-Math.max(0,L);const total=P+interest+run+enT+T*R.deposit/100*Y*.6-RV;
+  return {path:"loan",label:"הלוואה מהבנק",down:T,mon:mp+(ins+lic+mnt)/12,total,RV,interest,cashFree:0,note:"ריבית משוערת "+R.loan+"% (פריים+). הרכב שלך מהיום הראשון."};
+}
+const PATHS=[["cash","מזומן"],["loan","הלוואה מהבנק"],["dealer","מימון יבואן"],["lease","ליסינג תפעולי"]];
+function bestPath(o,P){return PATHS.map(([p])=>finance(o,p,P)).sort((a,b)=>a.total-b.total)[0];}
+function ranked(){
+  const list=M.options.filter(o=>(ui.kind==="all"||o.kind===ui.kind)&&(!ui.seven||o.seats>=7)&&priceOf(o)<=ui.budget);
+  const costs=list.map(o=>finance(o,ui.path,priceOf(o)).total/(ui.years*12));const minC=Math.min(...costs);
+  const W=ui.w,sw=Object.values(W).reduce((a,b)=>a+b,0)||1;
+  return list.map((o,i)=>{const cost=costs[i],costSc=10*minC/cost;const s=o.sc;
+    const score=(W.space*s.space+W.comfort*s.comfort+W.rel*s.rel+W.resale*s.resale+W.cost*(s.value+costSc)/2+W.tech*s.tech)/sw;
+    return {o,cost,score};}).sort((a,b)=>b.score-a.score);
+}
+function renderBuy(){
+  const T=tradeVal(),r=ranked();
+  const wl={space:"מרחב",comfort:"נוחות",rel:"אמינות",resale:"שמירת ערך",cost:"עלות",tech:"טכנולוגיה וחיסכון"};
+  let h=`<section><div class="sh"><h2>⚙️ מה חשוב לך</h2><small>הכל דינמי</small></div><div class="card ctrl">
+    <div class="seg">${[["all","הכל"],["new","חדש"],["used","יד שנייה"]].map(([v,l])=>`<button class="opt${ui.kind===v?" on":""}" data-set="kind|${v}">${l}</button>`).join("")}<button class="opt${ui.seven?" on":""}" data-set="seven|${ui.seven?0:1}">רק 7 מקומות</button></div>
+    <div class="wt"><span>תקציב עד</span><input type="range" min="140000" max="400000" step="10000" value="${ui.budget}" data-range="budget"><b class="num small">${ilsK(ui.budget)}</b></div>
+    ${Object.entries(wl).map(([key,l])=>`<div class="wt"><span>${l}</span><input type="range" min="0" max="40" step="5" value="${ui.w[key]}" data-w="${key}"><b class="num small">${ui.w[key]}</b></div>`).join("")}
+  </div></section>`;
+  h+=`<section><div class="sh"><h2>💳 איך קונים</h2></div><div class="card ctrl">
+    <div class="seg">${PATHS.map(([v,l])=>`<button class="opt${ui.path===v?" on":""}" data-set="path|${v}">${l}</button>`).join("")}</div>
+    <div class="seg">${[3,4,5].map(y=>`<button class="opt${+ui.years===y?" on":""}" data-set="years|${y}">${y} שנים</button>`).join("")}</div>
+    <div class="wt"><span>ק״מ בשנה</span><input type="range" min="10000" max="35000" step="1000" value="${ui.kmY}" data-range="kmY"><b class="num small">${k(ui.kmY)}</b></div>
+    <div class="wt"><span>קונים בעוד</span><input type="range" min="0" max="12" step="1" value="${ui.buyIn}" data-range="buyIn"><b class="num small">${ui.buyIn?ui.buyIn+" ח׳":"עכשיו"}</b></div>
+    <div class="seg"><button class="opt${ui.sellKia?" on":""}" data-set="sellKia|${ui.sellKia?0:1}">מוכרים את הקיה</button><button class="opt${ui.sellFord?" on":""}" data-set="sellFord|${ui.sellFord?0:1}">מוכרים את הפורד</button></div>
+    <div class="small">מהרכבים שלנו: <b class="num">${ils(T)}</b> ${T?"(הולך למקדמה)":""}</div>
+  </div></section>`;
+  if(!r.length){h+=`<div class="card empty">אין רכב שמתאים לסינון. נסה להגדיל תקציב.</div>`;return h;}
+  const L=r[0],lp=priceOf(L.o),lf=finance(L.o,ui.path,lp),bp=bestPath(L.o,lp);
+  h+=`<section><div class="card lead"><div class="lbl">⭐ האופציה המובילה לפי מה שבחרת</div><h3>${esc(L.o.name)}${L.o.name.includes(L.o.trims[ui.trim[L.o.id]||0].n)?"":` <span style="font-size:15px;opacity:.8">${esc(L.o.trims[ui.trim[L.o.id]||0].n)}</span>`}</h3>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px">
+      <div class="kpi"><b class="num">${ilsK(lp)}</b><span>מחיר</span></div><div class="kpi"><b class="num">${ils(lf.mon)}</b><span>תשלום חודשי (${esc(lf.label)})</span></div><div class="kpi"><b class="num">${ils(lf.total/(ui.years*12))}</b><span>עלות אמיתית לחודש</span></div></div>
+    <p>${esc(L.o.verdict||"")} המסלול הכי זול לרכב הזה: <b style="color:var(--hero-ink)">${esc(bp.label)}</b>.</p></div></section>`;
+  h+=`<section><div class="sh"><h2>📋 כל האפשרויות</h2><small>לחיצה פותחת פרטים ומימון</small></div><div class="card">${r.map((x,i)=>{
+    const o=x.o,open=ui.open===o.id;
+    return `<button class="opt-row" data-open="${esc(o.id)}" aria-expanded="${open}"><span class="rk">${i+1}</span><span class="nm">${esc(o.name)}<span class="fuel f-${esc(o.fuel)}">${{EV:"חשמלי",PHEV:"פלאג-אין",HEV:"היברידי",ICE:"בנזין"}[o.fuel]}</span><small>${esc(o.sub)} · ${o.kind==="used"?"יד 2 · ":""}מ-${ilsK(o.trims[0].price)}</small><span class="sbar"><i style="width:${Math.round(x.score*10)}%"></i></span></span><span class="sc"><b class="num">${(Math.round(x.score*10)/10).toFixed(1)}</b><span class="num">${ilsK(x.cost)}/ח׳</span></span></button>${open?detail(o):""}`;}).join("")}</div>
+    <div class="note">ציון = ממוצע משוקלל לפי מה שבחרת למעלה. ״לחודש״ = עלות אמיתית: כל התשלומים, ביטוח, רישוי, טיפולים ואנרגיה, פחות מה שהרכב שווה בסוף, חלקי מספר החודשים. מחירי חדש: מחירון 2026 (אוטו). יד שנייה: הערכה, לבדוק מודעות.</div></section>`;
+  return h;
+}
+function detail(o){
+  const ti=ui.trim[o.id]||0,P=o.trims[ti].price,rows=PATHS.map(([p])=>finance(o,p,P)),best=rows.slice().sort((a,b)=>a.total-b.total)[0];
+  const sc=o.sc,lb={space:"מרחב",comfort:"נוחות",rel:"אמינות",resale:"סחירות",value:"תמורה",tech:"טכנולוגיה"};
+  return `<div class="det">${o.img?`<img src="${esc(o.img)}" alt="${esc(o.name)}" loading="lazy">`:""}
+    <div class="seg" style="margin-bottom:8px">${o.trims.map((t,i)=>`<button class="opt${i===ti?" on":""}" data-trim="${esc(o.id)}|${i}">${esc(t.n)} · ${ilsK(t.price)}</button>`).join("")}</div>
+    <div class="small muted">${esc(o.seats)} מקומות · ${esc(o.len)} מ׳ · ${esc(o.sub)}</div>
+    <div class="scores">${Object.entries(lb).map(([key,l])=>`<div>${l} <b class="num">${sc[key]}</b><div class="sbar"><i style="width:${sc[key]*10}%"></i></div></div>`).join("")}</div>
+    <div class="pc"><div><h4>👍 בעד</h4><ul>${o.pros.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><h4>👎 נגד</h4><ul>${o.cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
+    <div class="fin"><b>מסלולי מימון ל-${ui.years} שנים</b> <span class="small muted">(${k(ui.kmY)} ק״מ בשנה)</span>
+      <table><tr><th>מסלול</th><th>מקדמה</th><th>בחודש</th><th>אמיתי לחודש</th></tr>
+      ${rows.map(f=>`<tr class="${f===best?"best":""}"><td>${esc(f.label)}${f===best?" ✓":""}</td><td><span class="num">${f.down>0?ilsK(f.down):"0"}</span></td><td><span class="num">${ilsK(f.mon)}</span></td><td><b class="num">${ils(f.total/(ui.years*12))}</b></td></tr>`).join("")}</table>
+      <div class="note">${rows.map(f=>`<b>${esc(f.label)}:</b> ${esc(f.note)}`).join("<br>")}<br>שווי משוער בסוף התקופה: <b class="num">${ils(resale(o,P,+ui.years))}</b>.</div></div>
+    <div class="links">${(o.links||[]).filter(l=>safe(l.u)).map(l=>`<a href="${esc(safe(l.u))}" target="_blank" rel="noopener">${esc(l.l)}</a>`).join("")}</div>
+  </div>`;
+}
+function renderExp(){
+  const ex=M.experts||[],count={};ex.forEach(e=>count[e.pick]=(count[e.pick]||0)+1);
+  const top=Object.entries(count).sort((a,b)=>b[1]-a[1]);const name=id=>(M.options.find(o=>o.id===id)||{}).name||id;
+  const prompt="התייעצות מומחים (council) על רכב חדש למשפחה: גדול ונוח מאוד, לא חובה 7 מקומות. ג׳אקו 8 אופציה. יש לנו קיה ספורטאז׳ 2015 ופורד פוקוס 2016. מה הייתם קונים ואיך הייתם מממנים?";
+  return `<section><div class="sh"><h2>🧠 התייעצות מומחים</h2><small>5 נקודות מבט</small></div><div class="card">
+    ${ex.map(e=>`<div class="exp"><span class="ic">${esc(e.ic)}</span><div><div class="w">${esc(e.who)}</div><div class="small">${esc(e.take)}</div><div class="p">בוחר: <b>${esc(name(e.pick))}</b></div></div></div>`).join("")}
+  </div>
+  <div class="card" style="margin-top:10px"><b>מה עולה מכולם</b><p class="small" style="margin:4px 0 0">אין הסכמה על דגם אחד, וזה אומר שההחלטה תלויה בשני דברים: כמה חשובה לך שמירת ערך (קיה/טויוטה/סקודה) מול כמה רכב תקבל לשקל (ג׳אקו 8). הכיוון שחוזר: <b>סורנטו היברידי יד 2 בן שנתיים</b> אם רוצים שקט, <b>ג׳אקו 8</b> אם יש טעינה בבית ומתכננים להחזיק 6+ שנים.</p></div>
+  <a class="chatbtn" style="background:var(--hero);color:var(--hero-ink)" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener" data-copy="${esc(prompt)}"><span style="font-size:24px">🎙️</span><span>הרץ מועצת מומחים מלאה<small>פותח את הצ׳אט ומעתיק את השאלה, להדביק ולשלוח</small></span></a>
+  </section>
+  <section><div class="sh"><h2>✅ לפני שקונים</h2></div><div class="card"><ul class="check" style="margin:0;padding-inline-start:18px">
+    <li>נסיעת מבחן עם כל המשפחה: 3 ילדים בשורה השנייה, תא מטען עם עגלה/מזוודות.</li>
+    <li>פלאג-אין או חשמלי: לוודא נקודת טעינה בחניה בבית (התקנה כ-3,000-6,000 ₪).</li>
+    <li>יד שנייה: בדיקה במכון (כולל סוללה בהיברידי), היסטוריית בעלויות ותאונות במשרד התחבורה.</li>
+    <li>להשוות הצעת מימון של היבואן להלוואה מהבנק לפי <b>עלות כוללת</b>, לא לפי החזר חודשי.</li>
+    <li>ליסינג תפעולי: לבדוק מגבלת ק״מ, השתתפות עצמית ומה קורה ביציאה מוקדמת.</li>
+    <li>למכור את הישנים לפני הקנייה או בטרייד-אין: הפרש של כ-10% לטובת מכירה פרטית.</li>
+  </ul><div class="note">אני לא פונה לסוכנויות, לא מבקש הצעות ולא לוקח הלוואה בשמך. רק מחקר והשוואה.</div></div></section>`;
+}
+
+function render(){
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab===ui.tab));
+  const t0=cars.reduce((s,c)=>s+central(c,0),0),t12=cars.reduce((s,c)=>s+central(c,12),0);
+  $("k-now").textContent=cars.length?ils(t0):"…";$("k-loss").textContent=cars.length?ils(t0-t12):"…";
+  const ev=[];cars.forEach(c=>{const d=c.dates||{};if(d.license)ev.push([d.license,"טסט "+c.short]);if(d.insurance)ev.push([d.insurance,"ביטוח "+c.short]);const n=nextService(c);if(n)ev.push([n,"טיפול "+c.short]);});
+  ev.sort((a,b)=>a[0]<b[0]?-1:1);const late=ev.filter(e=>daysTo(e[0])<0),nx=late[0]||ev.find(e=>daysTo(e[0])>=0);
+  if(nx){$("k-next").textContent=daysTo(nx[0])<0?"⚠️ "+nx[1]:dm(nx[0]);$("k-next-l").textContent=daysTo(nx[0])<0?(late.length>1?late.length+" באיחור":"באיחור"):nx[1];}
+  if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
+  $("chat").href=safe(meta.chat_url)||CHAT_FALLBACK;
+  if(!cars.length){$("app").innerHTML=`<div class="empty">טוען…</div>`;return;}
+  $("app").innerHTML=ui.tab==="buy"?renderBuy():ui.tab==="exp"?renderExp():renderMine();
+  syncSummary(t0,t12);
+  $("foot").innerHTML=`${esc(meta.sources||"")}<br>מחקר שוק: ${esc(M.as_of||"")} · דשבורד רכבים ${esc(window.CARS_BUILD)}`;
+}
+let sumT=0;function syncSummary(t0,t12){if(!db||!t0)return;const sm=meta.summary||{};if(sm.now&&Math.abs(sm.now-t0)/t0<.01)return;clearTimeout(sumT);
+  sumT=setTimeout(()=>{meta.summary={now:Math.round(t0),y1:Math.round(t12),at:ds(today())};db.collection("cars").doc("_meta").update({summary:meta.summary}).catch(()=>{});},1500);}
+let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
+async function upd(id,patch,msg){const c=id==="_meta"?meta:cars.find(x=>x.id===id);if(!c)return;const prev=JSON.parse(JSON.stringify(c));Object.assign(c,patch);render();
+  if(!db){toast("אין חיבור, לא נשמר");return;}
+  try{await db.collection("cars").doc(id).update(patch);toast(msg||"נשמר");}catch(e){Object.assign(c,prev);render();toast("לא נשמר, נסה שוב");}}
+let raf=0;
+document.addEventListener("input",e=>{const t=e.target;
+  if(t.id==="slider"){ui.m=+t.value;saveUi();$("when").textContent=whenTxt(ui.m);cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{$("mtop").innerHTML=mineTop();$("mcars").innerHTML=mineCars();});return;}
+  if(t.dataset.w){ui.w[t.dataset.w]=+t.value;t.nextElementSibling.textContent=t.value;saveUi();return;}
+  if(t.dataset.range){ui[t.dataset.range]=+t.value;const r=t.dataset.range;t.nextElementSibling.textContent=r==="budget"?ilsK(t.value):r==="kmY"?k(+t.value):(+t.value?t.value+" ח׳":"עכשיו");saveUi();}
+});
+// range inputs on the buy tab: re-render on release so dragging is never interrupted
+document.addEventListener("change",e=>{const t=e.target;if(t.dataset.w||t.dataset.range){const y=scrollY;render();scrollTo(0,y);}});
+document.addEventListener("click",e=>{const g=s=>e.target.closest(s);let b;
+  if(b=g(".tab")){ui.tab=b.dataset.tab;saveUi();render();scrollTo(0,0);return;}
+  if(b=g("[data-m]")){ui.m=+b.dataset.m;saveUi();$("slider").value=ui.m;$("when").textContent=whenTxt(ui.m);$("mtop").innerHTML=mineTop();$("mcars").innerHTML=mineCars();return;}
+  if(b=g("[data-set]")){const [key,v]=b.dataset.set.split("|");ui[key]=/^\d+$/.test(v)?(key==="years"?+v:v==="1"?true:v==="0"?false:+v):v;saveUi();const y=scrollY;render();scrollTo(0,y);return;}
+  if(b=g("[data-open]")){ui.open=ui.open===b.dataset.open?null:b.dataset.open;saveUi();const y=scrollY;render();scrollTo(0,y);return;}
+  if(b=g("[data-trim]")){const [id,i]=b.dataset.trim.split("|");ui.trim[id]=+i;saveUi();const y=scrollY;render();scrollTo(0,y);return;}
+  if(b=g("[data-ans]")){const [id,key,v]=b.dataset.ans.split("|");const c=cars.find(x=>x.id===id);if(!c)return;const y=scrollY;upd(id,{ans:{...(c.ans||{}),[key]:v}},"נשמר. המשוקלל עודכן");scrollTo(0,y);return;}
+  if(b=g("[data-route]")){const y=scrollY;upd("_meta",{ans:{...(meta.ans||{}),route:b.dataset.route}},"נשמר");scrollTo(0,y);return;}
+  if(b=g("[data-km]")){$("km-"+b.dataset.km).classList.toggle("on");return;}
+  if(b=g("[data-svc]")){$("svc-"+b.dataset.svc).classList.toggle("on");return;}
+  if(b=g("[data-kmsave]")){const id=b.dataset.kmsave,v=+$("kmv-"+id).value;if(!(v>1000)){toast("הקלד את המספר שבמד");return;}const c=cars.find(x=>x.id===id);upd(id,{km_log:[...(c.km_log||[]).filter(x=>x.d!==ds(today())),{d:ds(today()),km:v,src:"manual"}]},"נשמר. מעכשיו ההערכה ממשיכה מכאן");return;}
+  if(b=g("[data-kmmsave]")){const id=b.dataset.kmmsave,v=+$("kmm-"+id).value;if(!(v>=100&&v<=6000)){toast("מספר ק״מ בחודש לא סביר");return;}upd(id,{km_month_manual:v},"נשמר. הקצב הזה גובר על החישוב");return;}
+  if(b=g("[data-svcsave]")){const id=b.dataset.svcsave,d=$("svcd-"+id).value,km=+$("svck-"+id).value||null;if(!d){toast("בחר תאריך");return;}upd(id,{service:{d,km}},"נשמר. הטיפול הבא חושב");return;}
+  if(b=g("[data-copy]")){try{navigator.clipboard&&navigator.clipboard.writeText(b.dataset.copy);toast("השאלה הועתקה, הדבק בצ׳אט");}catch(x){}}
+});
+render();
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("cars").onSnapshot(s=>{const cs=[];meta={};
+    s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else if(v.name)cs.push({id:x.id,...v});});
+    cars=cs.sort((a,b)=>(a.order||9)-(b.order||9));render();},()=>{});
+  db.collection("topics").onSnapshot(s=>{topics=s.docs.map(x=>({id:x.id,...x.data()})).filter(t=>!t._deleted&&(t.dash==="cars"||t.car));render();},()=>{});
+});
+})();
+</script>
+</body>
+</html>

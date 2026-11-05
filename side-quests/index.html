@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.6";window.SQ_BUILD_AT="5.11.2026 18:55";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.7";window.SQ_BUILD_AT="5.11.2026 21:45";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1447,7 +1447,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a||!isGmail(a.href))return;e.preventDefault();e.stopPropagation();openGmail(a.href);},true);
   function mailOf(t){const ls=linksOf(t).filter(l=>isGmail(l.url));const l=ls.find(l=>gmailId(l.url))||ls.find(l=>!/compose=|#drafts/.test(l.url));return l?safeUrl(l.url):null;}
   // ---- 5.0: levels and dashboards (collection "dashboards" in sq_docs) ----
-  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], inDashCard=false;
+  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], carDocs=[], inDashCard=false;
   function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted);}
   function levelOf(t){const L=+t.level;if(L>=1&&L<=4)return L;if(t.project&&projById(t.project))return 4;if(t.dash&&dashById(t.dash))return 3;if(chatOf(t)||mailOf(t))return 2;return 1;}
   function levelRow(t){
@@ -1497,6 +1497,15 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       const kpis=[{v:String(tests.length),l:"מבחנים ב-14 יום"},{v:String(acts.length),l:"לפעולה"},nx?{v:fmtDate(nx.d),l:nx.who}:null].filter(Boolean);
       const sugs=acts.slice(0,3).map(a=>({text:a.text,sub:a.sub||""}));
       return {kpis,sugs,live:true,line:nx?`הבא: ${nx.who}, ${nx.t} (${fmtDate(nx.d)})`:""};
+    }
+    if(d.source==="cars"&&carDocs.length){ // 7.7: our two cars + new-car decision (cars.html)
+      const meta=carDocs.find(x=>x.id==="_meta")||{},cs=carDocs.filter(x=>x.id!=="_meta"&&x.name);
+      const ev=[];cs.forEach(c=>{const dt=c.dates||{};if(dt.license)ev.push({d:dt.license,l:"טסט "+(c.short||c.name)});if(dt.insurance)ev.push({d:dt.insurance,l:"ביטוח "+(c.short||c.name)});});
+      ev.sort((a,b)=>a.d<b.d?-1:1);const late=ev.filter(e=>daysUntil(e.d)<0),nx=ev.find(e=>daysUntil(e.d)>=0);
+      const sm=meta.summary||{},kk=v=>"₪"+Math.round(v/1000)+"K";
+      const kpis=[sm.now?{v:kk(sm.now),l:"שווים היום"}:null,{v:String(late.length),l:"באיחור"},nx?{v:fmtDate(nx.d),l:nx.l}:null].filter(Boolean);
+      const sugs=cs.flatMap(c=>(c.issues||[]).filter(x=>x.lvl==="high").map(x=>({text:(c.short||c.name)+": "+x.text.split(".")[0],sub:""}))).slice(0,3);
+      return {kpis,sugs,live:true,line:late.length?"⚠️ באיחור: "+late.map(e=>e.l).join(", "):(sm.now?"שווים היום כ-"+kk(sm.now):"")};
     }
     return {kpis:Array.isArray(d.kpis)?d.kpis:[],sugs:[],live:!!d.live};
   }
@@ -2684,6 +2693,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
     db.collection("payments").onSnapshot(s=>{payDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("family").onSnapshot(s=>{famDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
+    db.collection("cars").onSnapshot(s=>{carDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     initNotify();
   })();
 })();
