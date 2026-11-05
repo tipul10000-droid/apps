@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.4";window.SQ_BUILD_AT="5.11.2026 18:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="7.5";window.SQ_BUILD_AT="5.11.2026 18:50";</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
@@ -1275,7 +1275,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   // they are available) and the place's hours (`day_only`). Urgency never makes an impossible task fit: an urgent task
   // stays on top with the chip of its next window. Only "super urgent" breaks windows, and Oren marks that himself.
   const WINS={
-    home_am:{e:"☕",l:"בוקר בבית",s:"בבוקר",sub:"דקה-שתיים בנייד: הודעה קצרה, תזכורת",acc:["phone"],max:2},
+    home_am:{e:"☕",l:"בוקר בבית",s:"בבוקר",sub:"דקה-שתיים בנייד, רק לעצמי. בלי הודעות ושיחות לאנשים לפני 08:00",acc:["phone"],max:2,nopeople:true},
     errands:{e:"🛒",l:"סידורי בוקר",s:"בסידורי הבוקר",sub:"כפר סבא, בדרך לנתניה או בנתניה לפני העבודה",acc:["place","call","phone"]},
     drive_am:{e:"🚗",l:"נסיעה לעבודה",s:"בנסיעה בבוקר",sub:"שיחות בדיבורית או הכתבה ל-Claude. בלי קריאה",acc:["call"]},
     work:{e:"💼",l:"בעבודה",s:"בעבודה",sub:"שיחה עד 20 דק׳ (כולל המתנה), מחשב לדברים אישיים, משימות עבודה",acc:["phone","call","pc","work"],max:30},
@@ -1333,6 +1333,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   function minsOf(t){const f=fitOf(t);if(f.mins)return +f.mins;const s=sizeOf(t);return s==="quick"?15:60;}
   function fitsWin(t,id){const W=WINS[id];if(!W||!W.acc.length)return false;const f=fitOf(t);if(f.owner==="claude")return false; // Claude's own checks never ask for a window
     const wd=Array.isArray(f.with)?f.with:[];if(wd.some(p=>WITH_OK[p]&&!WITH_OK[p].includes(id)))return false; // the person it needs isn't available then
+    if(W.nopeople&&(f.people||wd.length||howOf(t).some(x=>x==="call"||x==="lior")))return false; // no messages or calls to people before 08:00 (Oren 5.11)
     if(Array.isArray(f.when)&&f.when.length){const wh=f.when.map(x=>x==="solo"?"deep":x);return wh.includes(id==="solo"?"deep":id)||(id==="abroad"&&wh.includes("work"));}
     if(t.quest==="work")return id==="work"; // work tasks: at work (critical ones get when:[work,deep])
     if(W.max&&minsOf(t)>W.max)return false;const hw=howOf(t);
@@ -1446,7 +1447,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
   document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a||!isGmail(a.href))return;e.preventDefault();e.stopPropagation();openGmail(a.href);},true);
   function mailOf(t){const ls=linksOf(t).filter(l=>isGmail(l.url));const l=ls.find(l=>gmailId(l.url))||ls.find(l=>!/compose=|#drafts/.test(l.url));return l?safeUrl(l.url):null;}
   // ---- 5.0: levels and dashboards (collection "dashboards" in sq_docs) ----
-  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], inDashCard=false;
+  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], inDashCard=false;
   function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted);}
   function levelOf(t){const L=+t.level;if(L>=1&&L<=4)return L;if(t.project&&projById(t.project))return 4;if(t.dash&&dashById(t.dash))return 3;if(chatOf(t)||mailOf(t))return 2;return 1;}
   function levelRow(t){
@@ -1484,6 +1485,18 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
       const sugs=openQ.filter(x=>x.lvl==="high"||+x.save>=20).sort((a,b)=>(rank[a.lvl]??3)-(rank[b.lvl]??3)||(+b.save||0)-(+a.save||0)).slice(0,3)
         .map(x=>({text:x.opt_title||x.name,sub:x.q.q+(+x.save>0?" · עד "+ils(+x.save)+" בחודש":"")}));
       return {kpis,sugs,live:true,line:`${ils(m)} בחודש`};
+    }
+    if(d.source==="family"&&famDocs.length){ // 7.5: kids' school world (family.html)
+      const meta=famDocs.find(x=>x.id==="_meta")||{},kids=famDocs.filter(x=>x.id!=="_meta"&&x.name);
+      const t=new Date(),ts=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+      const ok=(k,e)=>!Array.isArray(e.cls)||!e.cls.length||k.class_n==null||e.cls.includes(+k.class_n);
+      const evs=kids.flatMap(k=>(k.events||[]).filter(e=>e.d>=ts&&ok(k,e)).map(e=>({...e,who:k.name,sure:!(Array.isArray(e.cls)&&e.cls.length&&k.class_n==null)}))).sort((a,b)=>a.d<b.d?-1:1);
+      const tests=evs.filter(e=>/exam|quiz|submit/.test(e.type)&&e.sure&&daysUntil(e.d)<=14);
+      const acts=(Array.isArray(meta.actions)?meta.actions:[]).filter(a=>a.status!=="done");
+      const nx=evs.find(e=>e.type!=="holiday"&&e.sure);
+      const kpis=[{v:String(tests.length),l:"מבחנים ב-14 יום"},{v:String(acts.length),l:"לפעולה"},nx?{v:fmtDate(nx.d),l:nx.who}:null].filter(Boolean);
+      const sugs=acts.slice(0,3).map(a=>({text:a.text,sub:a.sub||""}));
+      return {kpis,sugs,live:true,line:nx?`הבא: ${nx.who}, ${nx.t} (${fmtDate(nx.d)})`:""};
     }
     return {kpis:Array.isArray(d.kpis)?d.kpis:[],sugs:[],live:!!d.live};
   }
@@ -2670,6 +2683,7 @@ details.group.fold>.g-body{display:flex;flex-direction:column;gap:6px;margin-top
     db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));renderList();renderDash();},()=>{});
     db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
     db.collection("payments").onSnapshot(s=>{payDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
+    db.collection("family").onSnapshot(s=>{famDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     initNotify();
   })();
 })();
