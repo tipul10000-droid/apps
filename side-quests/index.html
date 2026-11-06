@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="8.6";window.SQ_BUILD_AT="6.11.2026 08:17";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="8.7";window.SQ_BUILD_AT="6.11.2026 08:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1602,7 +1602,7 @@ details.more[open]>summary{margin-bottom:10px}
       sel("ds-"+t.id,[["","בלי דשבורד"],...qd.map(d=>[d.id,(d.icon||"📊")+" "+(d.title||d.id)])],t.dash,v=>patch(t,{dash:v},v?"חובר לדשבורד "+((dashById(v)||{}).title||""):"הוסר מהדשבורד")),
       sel("pj-"+t.id,[["","בלי פרויקט"],...[...projects].sort((a,b)=>(a.order||0)-(b.order||0)).map(p=>[p.id,(p.icon||"")+" "+(p.name||p.id)])],t.project,v=>patch(t,{project:v},v?"שויך לפרויקט "+((projById(v)||{}).name||""):"הוסר מהפרויקט")));
   }
-  function dashTasks(d){return allTopics.filter(t=>t.dash===d.id&&!t._deleted);}
+  function dashTasks(d){return allTopics.filter(t=>t.dash===d.id&&!t._deleted&&!(isBg(t)&&isOpen(t)));}
   function dashActivity(d){let best=Date.parse(d.updated_at||"")||0;for(const t of dashTasks(d)){const x=lastHandled(t);if(x>best)best=x;}return best;}
   function sugKey(text){let h2=0;for(const ch of String(text))h2=(h2*31+ch.charCodeAt(0))|0;return "k"+(h2>>>0).toString(36);}
   // live numbers for dashboards whose data lives in sq_docs (today: insurance)
@@ -2077,9 +2077,12 @@ details.more[open]>summary{margin-bottom:10px}
   function questFromHash(){const q=location.hash.slice(1);return QUESTS[q]?q:"side";}
   let quest=questFromHash(), allTopics=[];if(qHidden(quest))quest="side";
   let funMode=quest==="fun";
-  function splitTopics(){const tq=quest==="fun"?"side":quest;topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq);funTopics=allTopics.filter(isFun);}
+  // 8.4 (Oren 6.11): only tasks Oren himself does. Claude's background work (Notion syncs, scheduled checks, tracking) is never a task:
+  // background:true or fit.owner "claude" stays out of every quest; Claude opens a new task only when Oren must act, decide or know.
+  function isBg(t){return t.background===true||(t.fit&&t.fit.owner==="claude");}
+  function splitTopics(){const tq=quest==="fun"?"side":quest;topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t)));funTopics=allTopics.filter(isFun);}
   function renderQnav(){
-    const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)).length;
+    const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)&&!isBg(t)).length;
     const vis=Object.keys(QUESTS).filter(q=>!qHidden(q));$("qnav").dataset.n=vis.length;
     $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q];return h("button",{class:"qbtn q-"+q,type:"button","data-q":q,"aria-current":q===quest?"true":"false",onclick:()=>setQuest(q)},h("span",{class:"qe","aria-hidden":"true"},Q.e),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }
@@ -2733,7 +2736,7 @@ details.more[open]>summary{margin-bottom:10px}
   function autoBrief(){
     const now=new Date(),y=new Date(now);y.setDate(y.getDate()-1);y.setHours(20,0,0,0);const since=y.getTime();
     const wk=now.getDay()<=4;
-    const live=allTopics.filter(t=>!isFun(t)&&isOpen(t)&&t.status!=="paused"&&!snoozed(t));
+    const live=allTopics.filter(t=>!isFun(t)&&isOpen(t)&&!isBg(t)&&t.status!=="paused"&&!snoozed(t));
     const it=t=>({id:t.id,text:t.title||"",sub:t.next_step||t.waiting_for||""});
     const critical=live.filter(t=>t.critical||(t.urgent&&t.urgent_by&&t.urgent_by!=="oren")).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
     // news = touched from outside since 20:00 (sync from a project/scan, or created not by hand in the app)
@@ -2750,7 +2753,7 @@ details.more[open]>summary{margin-bottom:10px}
   // evening: what came in during the day, errands for the way home, one call/reminder for the drive, and what can wait for tonight
   function autoEve(){
     const now=new Date(),s=new Date(now);s.setHours(8,0,0,0);const since=s.getTime();
-    const live=allTopics.filter(t=>!isFun(t)&&isOpen(t)&&t.status!=="paused"&&!snoozed(t));
+    const live=allTopics.filter(t=>!isFun(t)&&isOpen(t)&&!isBg(t)&&t.status!=="paused"&&!snoozed(t));
     const it=t=>({id:t.id,text:t.title||"",sub:t.next_step||t.waiting_for||""});
     const critical=live.filter(t=>t.critical||(t.urgent&&t.urgent_by&&t.urgent_by!=="oren")).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
     const news=allTopics.filter(t=>!isFun(t)&&((t.sync&&t.sync.at&&Date.parse(t.sync.at)>=since)||(t.created_at&&Date.parse(t.created_at)>=since&&!MANUAL.test(t.source||""))))
