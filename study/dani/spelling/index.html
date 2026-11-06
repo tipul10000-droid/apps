@@ -89,7 +89,9 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 @keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
 .sqg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;max-width:300px;margin-inline:auto}
 .sqg div{background:#faf7ff;border:1px solid #ece4fb;border-radius:14px;padding:4px;text-align:center;font-size:11px;color:var(--mut)}
-.sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}
+.sqg svg{width:100%;height:auto;display:block}.sqg span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:15px}.sqg .own{cursor:pointer}
+.sqtab{display:flex;border:1px solid #e4d9fb;border-radius:12px;overflow:hidden;margin:2px 0 8px}.sqtab button{flex:1;font:inherit;font-size:14px;padding:7px 4px;border:0;background:#fff;color:#6d28d9;cursor:pointer}.sqtab button+button{border-right:1px solid #e4d9fb}.sqtab button.on{background:#7c3aed;color:#fff;font-weight:700}
+.sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
 .sqg .lock{background:#f3f4f6;border-style:dashed}.sqg .lock b{display:grid;place-items:center;aspect-ratio:1;font-size:26px;opacity:.6}
 .ib.gift{background:#fff1f7;border-color:#f9a8d4;color:#9d174d;font-weight:700;font-size:13px;white-space:nowrap;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;width:38px;text-align:center;direction:ltr;background:#db2777;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
 @keyframes gw{0%,88%,100%{transform:none}91%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}97%{transform:rotate(-3deg)}}
@@ -145,8 +147,8 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 <button class="btn" id="go" type="button">יאללה, מתחילות! 🚀</button><button class="lk" id="rs" type="button">↺ להתחיל מההתחלה</button>
 </div></div>
 <div class="ov" id="lst"><div class="pn"><h2>מילים שטעיתי בהן</h2><div id="lstb" class="wl"></div><button class="btn" id="lstp" type="button">תרגול של המילים האלה ✏️</button><button class="btn soft" style="width:100%;margin-top:8px" id="lstx" type="button">סגירה</button></div></div>
-<div class="ov" id="sqcol"><div class="pn"><h2>💜 לומדים ואוספים סקווישי דיגיטלי</h2><p style="margin:0 0 6px">על כל <b>6 תשובות נכונות</b> זוכים בסקווישי חדש: להקת קיי-פופ של מאכלים! לחצי על סקווישי כדי להכיר אותו. מה מסתתר מאחורי ה-❓? רק כשתזכי תגלי 😉</p><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
-<div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:#6d28d9;font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px;line-height:1.45"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך 😆 · כל 6 תשובות נכונות = סקווישי חדש</p><button class="btn" id="sqok" type="button">לאוסף! 💜</button></div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>💜 לומדים ואוספים סקווישי דיגיטלי</h2><div class="sqtab" id="sqtab"><button type="button" data-t="0">💜 הלהקה</button><button type="button" data-t="1">⭐ סופר סקווישים</button></div><p id="sqtx" style="margin:0 0 6px;height:4.4em;overflow:hidden;line-height:1.45"></p><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:#6d28d9;font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px;line-height:1.45"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">לאוסף! 💜</button></div></div>
 <div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
 
 <script src="../../track.js"></script>
@@ -196,6 +198,12 @@ const SQSND={
  avo(){osc('square',0,.7,[[0,95],[.4,80],[1,62]],.22,420,[23,18]);noise(0,.7,.12,500)},// פלוץ
  panda(){osc('sawtooth',0,.6,[[0,120],[.5,95],[1,70]],.3,700,[9,14])},// גרפס
  donut(){[0,.12,.24,.36,.48].forEach((t,i)=>osc('sine',t,.1,[[0,700+i*60],[1,1100+i*60]],.18))},// צחקוק
+ s_kimbap(){osc('sine',0,.6,[[0,300],[.5,1200],[1,500]],.25,0,[18,80])},// בוינג ענק
+ s_tteok(){osc('square',0,1,[[0,110],[.5,85],[1,55]],.24,380,[30,22]);noise(0,1,.14,450)},// פלוץ ענק
+ s_bingsu(){[0,.09,.18].forEach((t,i)=>osc('sine',t,.08,[[0,1600+i*200],[1,2400+i*200]],.15))},// צפצוף
+ s_dalgona(){[0,.12,.24,.36].forEach((t,i)=>osc('square',t,.1,[[0,[440,660,330,880][i]],[1,[440,660,330,880][i]]],.1,1800))},// רובוט
+ s_melona(){osc('sine',0,.7,[[0,500],[.5,1400],[1,700]],.22,0,[6,40])},// שריקת מגלשה
+ s_choco(){osc('sawtooth',0,.5,[[0,105],[1,75]],.3,650,[10,16]);[.55,.67,.79].forEach((t,i)=>osc('sine',t,.1,[[0,800+i*80],[1,1150+i*80]],.16))},// גרפס וצחקוק
  mochi(){osc('sawtooth',0,.5,[[0,140],[.4,230],[1,110]],.26,900,[30,25]);osc('square',.05,.4,[[0,70],[1,55]],.12,300)}};// נהמת מפלצת קטנה
 let CURSQ=null;const sqSound=id=>{(SQSND[id]||SND.pop)()};
 function speak(t){if(MUTE||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
@@ -218,7 +226,24 @@ const SQS=[
  svg:`<circle cx="50" cy="56" r="31" fill="#f5c78e" stroke="#b45309" stroke-width="2"/><path d="M21 52c2-16 16-27 29-27s27 11 29 27c-6 7-9 0-15 5s-9-2-14 2-11-4-16 0-9-5-13-7z" fill="#f9a8d4" stroke="#db2777" stroke-width="1.5"/><circle cx="50" cy="56" r="7" fill="#fff" stroke="#b45309" stroke-width="1.5"/>${[[32,40,'#60a5fa'],[64,38,'#facc15'],[44,32,'#34d399'],[70,48,'#a78bfa']].map(p=>`<rect x="${p[0]}" y="${p[1]}" width="6" height="2.4" rx="1.2" fill="${p[2]}"/>`).join('')}${face(50,74,.75)}${note(10,30,'#db2777')}${note(84,22,'#7c3aed')}${spark(90,62,4,'#facc15')}`},
 {id:'mochi',n:'מוֹצִ׳י-הַארְט',d:'מוצ׳י-הארט היא מנהיגת הלהקה 👑 היא שולחת לך לב באצבעות על כל מילה שלמדת. כשתאספי את כולם, כל הלהקה תופיע בשבילך!',
  svg:`<path d="M50 90C20 70 12 52 16 38c4-14 24-18 34-4 10-14 30-10 34 4 4 14-4 32-34 52z" fill="#e9d5ff" stroke="#9333ea" stroke-width="2"/><path d="M36 26l3-14 7 7 4-9 4 9 7-7 3 14z" fill="#fde047" stroke="#ca8a04" stroke-width="1.5" stroke-linejoin="round"/><circle cx="50" cy="12" r="2" fill="#f472b6"/>${face(50,54)}<path d="M82 62c-7-5-7-11-3-11 1 0 3 1 3 2 0-1 2-2 3-2 4 0 4 6-3 11z" fill="#f43f5e"/>${spark(14,24,5,'#f472b6')}${spark(88,30,4,'#facc15')}`}];
-const sqN=()=>SQS.filter(x=>SQ.includes(x.id)).length;
+// סופר סקווישים למתקדמים (אורן 6.11.2026): נפתחים אחרי שנאספו 6 הראשונים, וכל אחד דורש 12 תשובות נכונות.
+const aura=`<circle cx="50" cy="54" r="46" fill="#fde68a" opacity=".35"/><circle cx="50" cy="54" r="38" fill="#fef3c7" opacity=".55"/>`;
+const SQS2=[
+{id:'s_kimbap',n:'קִימְבַּאפּ-סְטָאר',sup:1,d:'קימבאפ-סטאר הוא הסופר-סולן של הלהקה ⭐ רק מי שלומדת ממש הרבה מגיעה אליו. את בדרך להיות אלופה אמיתית!',
+ svg:`${aura}<circle cx="50" cy="56" r="30" fill="#1f2937"/><circle cx="50" cy="56" r="25" fill="#fff"/><circle cx="50" cy="60" r="7" fill="#fb923c"/><circle cx="40" cy="64" r="4" fill="#facc15"/><circle cx="60" cy="64" r="4" fill="#4ade80"/>${face(50,48,.8)}<path d="M80 74q8-2 10-12" stroke="#7c3aed" stroke-width="2.5" fill="none"/><circle cx="90" cy="60" r="4" fill="#1f2937"/>${spark(18,20,6,'#facc15')}${spark(84,22,5,'#f472b6')}`},
+{id:'s_tteok',n:'טְטוֹקִי-פַייר',sup:1,d:'טטוקי-פייר חריף וחם, והוא נותן לך כוח אש 🔥 כל מילה שאת כותבת נכון מדליקה עוד להבה. סופר כוח!',
+ svg:`${aura}<path d="M18 30L86 82" stroke="#a16207" stroke-width="3" stroke-linecap="round"/>${[[30,40],[50,56],[70,72]].map(p=>`<rect x="${p[0]-13}" y="${p[1]-9}" width="26" height="18" rx="9" fill="#ef4444" stroke="#b91c1c" stroke-width="1.6" transform="rotate(37 ${p[0]} ${p[1]})"/>`).join('')}${face(50,56,.55)}<path d="M44 52h12" stroke="#1f2937" stroke-width="3"/><path d="M76 18c4 6-2 8 2 14-6-2-8-8-2-14zM20 66c4 6-2 8 2 14-6-2-8-8-2-14z" fill="#f97316"/>${spark(84,46,5,'#facc15')}`},
+{id:'s_bingsu',n:'בִּינְגְסוּ-דִּיוָוה',sup:1,d:'בינגסו-דיווה קרה כמו קרח ונוצצת כמו במה 👑 היא אומרת: גם כשקשה, ממשיכים בקור רוח. את מדהימה!',
+ svg:`${aura}<path d="M18 58h64c0 18-14 30-32 30S18 76 18 58z" fill="#c4b5fd" stroke="#7c3aed" stroke-width="2"/><path d="M22 58c-2-18 12-30 28-30s30 12 28 30z" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/><circle cx="50" cy="26" r="7" fill="#f43f5e"/><path d="M47 19l3-5 3 5" fill="#22c55e"/><path d="M34 34l4-8 4 6 4-8 4 8 4-6 4 8z" fill="#fde047" stroke="#ca8a04" stroke-width="1.2" transform="translate(0 -6)"/>${face(50,46,.8)}${[[34,52,'#fb7185'],[64,50,'#60a5fa'],[56,40,'#facc15']].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="2.6" fill="${p[2]}"/>`).join('')}${spark(14,30,5,'#a78bfa')}${spark(88,36,5,'#facc15')}`},
+{id:'s_dalgona',n:'דַּאלְגוֹנָה-רוֹבּוֹ',sup:1,d:'דאלגונה-רובו הוא סוכריית הדבש הכי חכמה בגלקסיה 🤖 הוא מחשב שאת כבר יודעת המון מילים. בּיפּ בּוּפּ, אלופה!',
+ svg:`${aura}<circle cx="50" cy="56" r="32" fill="#f59e0b" stroke="#b45309" stroke-width="2"/><circle cx="50" cy="56" r="26" fill="#fbbf24"/><path d="M50 36l5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z" fill="none" stroke="#92400e" stroke-width="2" stroke-linejoin="round"/>${face(50,60,.8)}<path d="M50 24v-10" stroke="#6b7280" stroke-width="2"/><circle cx="50" cy="12" r="4" fill="#ef4444"/><rect x="12" y="50" width="8" height="14" rx="3" fill="#60a5fa"/><rect x="80" y="50" width="8" height="14" rx="3" fill="#60a5fa"/>${spark(86,24,5,'#facc15')}`},
+{id:'s_melona',n:'מֵלוֹנָה-פּוֹפּ',sup:1,d:'מלונה-פופ הוא שלגון המלון הכי מגניב ממיונג-דונג 🍈 הוא מחליק על הבמה כמו כוכב. עוד מילה, עוד צעד, ואת על הבמה!',
+ svg:`${aura}<rect x="32" y="14" width="36" height="58" rx="12" fill="#86efac" stroke="#16a34a" stroke-width="2"/><path d="M38 24h24" stroke="#bbf7d0" stroke-width="3" stroke-linecap="round"/><rect x="45" y="72" width="10" height="20" rx="4" fill="#fde68a" stroke="#ca8a04" stroke-width="1.5"/>${face(50,46,.8)}<path d="M40 46c-6-4-6-9-2-9 1 0 2 1 2 2 0-1 1-2 2-2 4 0 4 5-2 9zM60 46c-6-4-6-9-2-9 1 0 2 1 2 2 0-1 1-2 2-2 4 0 4 5-2 9z" fill="#db2777"/><path d="M43 41h14" stroke="#db2777" stroke-width="1.6"/>${note(14,34,'#7c3aed')}${spark(86,30,5,'#facc15')}`},
+{id:'s_choco',n:'צ׳וֹקוֹ-פַּאי קְווִין',sup:1,d:'צ׳וקו-פאי קווין היא המלכה של כל הסקווישים 👑🍫 רק אלופות אמיתיות מגיעות אליה. אם אספת אותה, את כוכבת על!',
+ svg:`${aura}<ellipse cx="50" cy="62" rx="34" ry="22" fill="#78350f" stroke="#451a03" stroke-width="2"/><ellipse cx="50" cy="58" rx="34" ry="20" fill="#92400e"/><path d="M18 62h64" stroke="#fef3c7" stroke-width="3" stroke-dasharray="6 3"/><path d="M34 30l4-14 8 9 4-11 4 11 8-9 4 14z" fill="#fde047" stroke="#ca8a04" stroke-width="1.5" stroke-linejoin="round"/><circle cx="50" cy="16" r="2.4" fill="#f472b6"/>${face(50,54,.85)}<path d="M84 90l4-38" stroke="#6b7280" stroke-width="4" stroke-linecap="round"/><circle cx="88" cy="46" r="7" fill="#c084fc"/>${spark(14,26,6,'#facc15')}${spark(70,14,4,'#f472b6')}`}];
+const ALLSQ=SQS.concat(SQS2),baseDone=()=>SQS.every(x=>SQ.includes(x.id));
+const sqEvery=()=>baseDone()?12:6;
+const sqN=()=>ALLSQ.filter(x=>SQ.includes(x.id)).length;
 const sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
 
 // ---------- עזר ----------
@@ -282,8 +307,8 @@ document.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ANS&&$('nx')&&$('n
 function showNext(){ANS=true;$('card').classList.add('ans');StudyKB.lock(true);const c=$('chk');if(c&&CUR.mode==='dict'){c.textContent='הבא ←';c.disabled=false;$('hint').style.visibility=$('idk').style.visibility='hidden'}const n=$('nx');if(n){n.style.visibility='visible'}}
 function streak(ok){if(ok){S.st.c++;if(S.st.c>S.st.b)S.st.b=S.st.c;if([3,5,10,15,20,30,50].includes(S.st.c)){popTxt('🔥 רצף של '+S.st.c+'!');mon('dance')}}else S.st.c=0}
 function addPts(p){if(p>0){S.pts+=p;popTxt('+'+p+' ⭐')}}
-const SQ_EVERY=6;// כל 6 תשובות נכונות = סקווישי מתנה
-function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=SQ_EVERY){S.cc=0;setTimeout(squishy,900)}upd()}
+const SQ_EVERY=6;// כל 6 תשובות נכונות = סקווישי; אחרי שנאספו 6 הראשונים: כל 12 = סופר סקווישי (sqEvery)
+function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=sqEvery()){S.cc=0;setTimeout(squishy,900)}upd()}
 // רמז (אורן 6.11.2026): כל לחיצה חושפת עוד אות מההתחלה. נחשפה כל המילה = טעות שלמדו ממנה, עוברים לבאה. נכון עם רמז לא נחשב כתיבה נכונה.
 function hint(){if(ANS)return;const e=CUR.e,inp=$('ans');let h=(CUR.h||0)+1;while(h<e.length&&e[h-1]===' ')h++;CUR.h=h;SND.click();
   if(h>=e.length){inp.value=e;return revealed()}
@@ -333,18 +358,24 @@ function renderDone(){StudyKB.hide();upd();$('card').innerHTML=`<div class="done
 function startPrac(){const l=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0);if(!l.length){mon('hop','עוד אין מילים שטעית בהן 😎');return}PRAC=shuf(l);next()}
 
 // ---------- סקווישי ----------
-function squishy(){let s=SQS.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(SQS);if(isNew){SQ.push(s.id);LS.set('dani_sp_sq',SQ)}
+function squishy(){const L=baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(L);if(s.sup)$('sqtt').textContent=isNew?'⭐ סופר סקווישי חדש! ⭐':'⭐ סופר סקווישי!';if(isNew){SQ.push(s.id);LS.set('dani_sp_sq',SQ)}
   CURSQ=s.id;$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לאוסף! 💜';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
   $('sqov').classList.add('on');SND.pop();upd()}
 $('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
 $('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click()};
-$('sqb').onclick=()=>{const left=SQ_EVERY-(S.cc||0);$('sqct').textContent=`אספת ${sqN()} מתוך ${SQS.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} לסקווישי הבא`;$('sqpb').style.width=((S.cc||0)/SQ_EVERY*100)+'%';$('sqg').innerHTML=SQS.map(s=>SQ.includes(s.id)?`<div class="own" data-id="${s.id}">${sqSvg(s)}${esc(s.n)}</div>`:`<div class="lock"><b>❓</b></div>`).join('');$('sqcol').classList.add('on')};
-$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=SQS.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent='הסקווישי שלך 💜';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+let SQT=0;function sqRender(){const sup=SQT===1,L=sup?SQS2:SQS,ev=sqEvery(),left=ev-(S.cc||0);
+  $('sqtab').querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.t===SQT));
+  $('sqtx').innerHTML=sup?(baseDone()?'רמה למתקדמות! על כל <b>12 תשובות נכונות</b> זוכים בסופר סקווישי נוצץ ⭐':'הסופר סקווישים נפתחים אחרי שאוספים את כל 6 הסקווישים של הלהקה 🔒'):'על כל <b>6 תשובות נכונות</b> זוכים בסקווישי: להקת קיי-פופ של מאכלים! לחצי על סקווישי כדי להכיר אותו.';
+  $('sqct').textContent=`אספת ${L.filter(x=>SQ.includes(x.id)).length} מתוך ${L.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${baseDone()?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
+  $('sqg').innerHTML=L.map(s=>SQ.includes(s.id)?`<div class="own${s.sup?' sup':''}" data-id="${s.id}">${sqSvg(s)}<span>${esc(s.n)}</span></div>`:`<div class="lock"><b>${sup&&!baseDone()?'🔒':'❓'}</b><span>???</span></div>`).join('')}
+$('sqtab').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;SQT=+b.dataset.t;SND.click();sqRender()};
+$('sqb').onclick=()=>{SQT=baseDone()?1:0;sqRender();$('sqcol').classList.add('on')};
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 💜';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
 // ---------- ממשק ----------
 function upd(){const d=done();$('dn').textContent=d;$('tt').textContent=N;$('pbi').style.width=(d/N*100)+'%';
-  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('sqn').textContent=sqN()+'/'+SQS.length;
+  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('sqn').textContent=sqN()+'/'+ALLSQ.length;
   const hard=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0).sort((a,b)=>S.w[b].err-S.w[a].err).slice(0,8).map(e=>({e,n:S.w[e].err}));
   if(window.StudyTrack)StudyTrack.report({total:N,done:d,learning:WORDS.filter(w=>{const s=S.w[w[0]].s;return s==='learn'||s==='dict'}).length,att:S.att,ok:S.okc,first:S.first,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:sqN(),hard,started:S.started})}
 $('mute').onclick=()=>{MUTE=!MUTE;LS.set('dani_sp_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.click()};$('mute').textContent=MUTE?'🔇':'🔊';
