@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.0";window.SQ_BUILD_AT="6.11.2026 12:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.1";window.SQ_BUILD_AT="6.11.2026 13:00";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1411,6 +1411,19 @@ details.more[open]>summary{margin-bottom:10px}
 #setM .sqgrow{animation:sqgrow .34s ease-out both;overflow:hidden}
 @media (prefers-reduced-motion:reduce){#setM .sqgrow{animation:none}}
 body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolrow .tchat{border-color:rgba(255,255,255,.34)!important}
+/* 10.1 (Oren 6.11): the "leave by / closes at" strip belongs to the main Side quest only, never in Fun or other quests */
+body:not(.q-side) #tgate,body.fun-on #tgate{display:none!important}
+/* 10.1 (Oren 6.11): one tool row in every quest: chat | refresh | small search. Fixed columns, so nothing overlaps (Fun Quest had refresh on top of chat) */
+.ctxrow .toolrow{grid-template-columns:minmax(0,1fr) minmax(0,.62fr) 42px}
+.ctxrow .toolrow .tchat,body.fun-on .ctxrow .toolrow .tchat{grid-column:1;grid-row:1}
+.ctxrow .toolrow .refr,body.fun-on .ctxrow .toolrow .refr{grid-column:2;grid-row:1}
+.ctxrow .toolrow .tfind{grid-column:3;grid-row:1;display:flex;align-items:center;justify-content:center;width:42px;min-height:40px;padding:0;margin:0;border-radius:12px;border:1.5px solid rgba(255,255,255,.38);background:rgba(255,255,255,.07);color:var(--hero-ink)}
+body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
+.ctxrow .toolrow .tfind svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.ctxrow .toolrow .tfind.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.ctxrow .toolrow .tfind:active{background:rgba(255,255,255,.14)}
+.ctxrow .toolrow .refr,.ctxrow .toolrow .tchat{font-size:13.5px!important;padding:0 8px!important}
+.ctxrow .toolrow .refr .rv{overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -1476,12 +1489,12 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   </div>
   <div class="qb-in gut"><span class="ai-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
-<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tb tsun" id="sunBtn" type="button" aria-label="בריף הבוקר"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tsun" id="sunBtn" type="button" aria-label="בריף הבוקר"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><a class="tchat" id="tchat" href="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span><span>עדכונים ושינויים בצ׳אט</span></a></div></div>
+    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><a class="tchat" id="tchat" href="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span><span>עדכונים בצ׳אט</span></a><button class="tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
@@ -2542,11 +2555,12 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
     return h("article",{class:"fcard sp","data-id":t.id},
       h("div",{class:"sp-head"},h("a",{class:"sp-logo",href:"https://open.spotify.com/",target:"_blank",rel:"noopener","aria-label":"Spotify",html:SPOT_SVG+"<span>Spotify</span>"}),
         h("div",{class:"fc-h"},h("h3",null,t.title||"המוזיקה שלי"),t.stand?h("p",null,t.stand):null)),
-      liked.length?h("div",{class:"sp-taste"},"למדתי שאתה אוהב: ",h("b",null,liked.join(" · "))):null,
       pages.length?h("div",{class:"fc-links"},pages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
       live.length?h("div",{class:"fc-rounds"},live.map((s,i)=>sessBlock(t,s,i===0))):null,
       next,
       arch.length?(()=>{const k=t.id+":arch",d=h("details",{class:"sp-arch",open:funFold[k]||null},h("summary",null,"📦 ארכיון · "+(arch.length===1?"סשן אחד":arch.length+" סשנים")),h("div",{class:"fc-rounds"},arch.map(s=>sessBlock(t,s,false))));d.addEventListener("toggle",()=>{funFold[k]=d.open;});return d;})():null,
+      // 10.1 (Oren 6.11): what I liked sits at the bottom, collapsed
+      liked.length?(()=>{const k=t.id+":liked",d=h("details",{class:"sp-arch",open:funFold[k]||null},h("summary",null,"👍 מה אהבתי · "+liked.length),h("div",{class:"sp-taste"},h("b",null,liked.join(" · "))));d.addEventListener("toggle",()=>{funFold[k]=d.open;});return d;})():null,
       contBtn(t,"cont"));
   }
   // Movies zone: topic zone "movies" (the external list), topics with zone "games" (one per game) and the Frame Horizon project,
@@ -2693,7 +2707,7 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   function seriesCard(){
     const lg=h("a",{class:"nf-logo",href:"https://www.netflix.com/",target:"_blank",rel:"noopener","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
     return h("article",{class:"fcard nf"},
-      h("div",{class:"nf-head"},lg,h("div",{class:"fc-h"},h("h3",null,"סדרות"),h("p",null,"מה רואים עכשיו ומה הבא בתור")),h("span",{class:"nf-word","aria-hidden":"true"},"SERIES")),
+      h("div",{class:"nf-head"},lg,h("div",{class:"fc-h"},h("h3",null,"סדרות"),h("p",null,"מה רואים עכשיו ומה הבא בתור"))),
       ...seriesHub(),
       secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן"));
   }
