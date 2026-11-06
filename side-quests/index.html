@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.0";window.SQ_BUILD_AT="6.11.2026 08:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.1";window.SQ_BUILD_AT="6.11.2026 09:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1830,8 +1830,9 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   }
   let addingFor=null;
   function projById(id){return projects.find(p=>p.id===id);}
-  // project tasks (kind "project" linked to a known project) live inside their project card at the bottom, not in the main list
-  function isProjTask(t){return t.kind==="project"&&!!t.project&&!!projById(t.project);}
+  // project tasks (any topic linked to a known project) live inside their project card, not in the main list.
+  // 8.9 (Oren 6.11): every open end of a project (question, spec, feature, roadmap) is a sub-task in its project card, whatever its kind.
+  function isProjTask(t){return !!t.project&&!!projById(t.project);}
   function inStrip(t){return quest==="ai"&&isProjTask(t);} // project tasks sit inside their project card, only in AI Projects
   function picOf(p,size){const st=size?`width:${size}px;height:${size}px;border-radius:${size/4}px;font-size:${size*.55}px`:"";const bg=`background:${p.color||"var(--hero)"};${st}`;const img=safeUrl(p.icon_url||"")||(String(p.icon_url||"").startsWith("data:image/")?p.icon_url:null);if(img){const fb=p.icon||(p.name||"?").slice(0,1);return h("span",{class:"pic has-img",style:bg},h("img",{src:img,alt:"",onerror:e=>{const s=e.currentTarget.parentNode;s.classList.remove("has-img");s.textContent=fb;}}));}return h("span",{class:"pic",style:bg},p.icon||(p.name||"?").slice(0,1));}
   function renderStrip(){
