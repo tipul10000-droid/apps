@@ -28,6 +28,12 @@ h1{margin:0;font-size:24px;color:#1f2933}header p{margin:2px 0 0;font-size:15px;
 .tb{display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px;box-shadow:var(--sh);font:inherit;text-align:right;cursor:pointer}
 .tb:active{transform:scale(.98)}.tb svg{width:46px;height:36px;flex:none}.tb .gi{font-size:26px;width:40px;text-align:center;flex:none}
 .tb b{display:block;font-size:16px}.tb small{display:block;font-size:12px;color:var(--mut)}
+.ov{position:fixed;inset:0;z-index:40;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;padding:16px}.ov.on{display:flex}
+.pn{background:var(--card);border-radius:20px;padding:18px 16px;width:100%;max-width:420px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.pn img{width:84px;height:84px;object-fit:cover;object-position:top;border-radius:50%;background:#e8eef7}
+.pn h2{margin:6px 0 6px;font-size:22px}.pn p{margin:4px 0;font-size:16px;line-height:1.45;color:var(--mut)}.pn p b{color:var(--fg)}
+.pn .bt{display:block;width:100%;margin-top:10px;padding:13px;font:inherit;font-size:17px;border-radius:14px;cursor:pointer;border:1px solid var(--bd);background:#f4f6f9;color:var(--fg)}
+.pn .bt.pr{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}.pn .bt.g{background:#fff7e6;border-color:#fcd9a8;color:#9a3412}
 </style></head><body><main>
 <header><img src="icon.svg" alt=""><div><h1>מי לומד עכשיו?</h1><p>לוחצים על השם שלך</p></div></header>
 <nav class="kids">
@@ -42,5 +48,21 @@ h1{margin:0;font-size:24px;color:#1f2933}header p{margin:2px 0 0;font-size:15px;
 </div>
 <script>
 (function(){var b=document.getElementById('gst');if(window.STUDY_GUEST){b.innerHTML='<span class="gi">🚪</span><span><b>יציאה ממצב אורח</b><small>חזרה לאפליקציה הרגילה</small></span>';b.onclick=function(){studyGuest(false,location.pathname)};document.querySelector('.top p, header p').textContent='מצב אורח: לוחצים על ילד ומתנסים'}else b.onclick=function(){studyGuest(true,location.pathname)}})();
+</script>
+<div class="ov" id="who"><div class="pn"><img id="whoi" alt=""><h2 id="whot"></h2><p id="whop"></p><p id="whog"></p>
+<button class="bt pr" id="whoy" type="button"></button><button class="bt g" id="whogb" type="button">🧪 כניסה במצב אורח</button><button class="bt" id="whob" type="button">→ חזרה למסך הראשי</button></div></div>
+<script>
+// אזהרה לפני כניסה לאזור של ילד (אורן 6.11.2026): ההתקדמות נרשמת לילד. במצב אורח לא מוצגת.
+(function(){var K={evyatar:['אביתר'],dani:['דני'],lia:['ליה']},ov=document.getElementById('who'),go=null;
+ document.querySelectorAll('a.kid').forEach(function(a){a.addEventListener('click',function(ev){if(window.STUDY_GUEST)return;var id=a.getAttribute('href').replace('/',''),k=K[id];if(!k)return;ev.preventDefault();go=a.href;
+  var n=k[0];document.getElementById('whoi').src='kids/'+id+'.webp';
+  document.getElementById('whot').textContent='האזור של '+n+' בלבד';
+  document.getElementById('whop').innerHTML='כל התקדמות מכאן תירשם בהישגים של <b>'+n+'</b>.';
+  document.getElementById('whog').textContent='לא '+n+'? אפשר להיכנס במצב אורח, בלי להשפיע.';
+  document.getElementById('whoy').textContent='אני '+n+', להמשיך ←';ov.classList.add('on')})});
+ document.getElementById('whoy').onclick=function(){if(go)location.href=go};
+ document.getElementById('whogb').onclick=function(){studyGuest(true,location.pathname)};
+ document.getElementById('whob').onclick=function(){ov.classList.remove('on')};
+ ov.addEventListener('click',function(ev){if(ev.target===ov)ov.classList.remove('on')})})();
 </script>
 </main></body></html>
