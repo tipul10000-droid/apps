@@ -25,7 +25,7 @@
 .pbar{height:10px;background:#e3e8ef;border-radius:6px;overflow:hidden;margin:6px 0 10px}.pbar i{display:block;height:100%;background:var(--ac)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .st{background:#f6f8fb;border-radius:10px;padding:8px 10px}.st small{display:block;color:var(--mut);font-size:12px}.st b{font-size:17px}
-.qzc{margin-top:16px;padding-top:12px;border-top:1px solid var(--bd,#e3e8ef)}.qzc h3{margin:0 0 6px}.qzc .qs{height:64px;box-sizing:border-box;overflow:hidden;line-height:1.35;font-size:14px;border-radius:10px;padding:6px 8px;background:#f6f8fc;transition:background .4s}.qzc .qs.fl{background:#e9f7ef}.qzc .qs small{color:var(--mut)}.qzc .pd{color:#c2410c;font-size:13px}.qzc .qb{display:flex;gap:8px;margin-top:8px}.qzc .qb .b{flex:1 1 0;margin:0;padding:10px 6px;white-space:nowrap}.qzc .qb .b:not(.soft){background:var(--ac);color:#fff}.qzc .qb .soft{background:#fff;color:var(--ac);border:1.5px solid var(--ac)}
+.qzc{margin-top:16px;padding-top:12px;border-top:1px solid var(--bd,#e3e8ef)}.qzc h3{margin:0 0 6px}.qzc .qs{height:64px;box-sizing:border-box;overflow:hidden;line-height:1.35;font-size:14px;border-radius:10px;padding:6px 8px;background:#f6f8fc;transition:background .4s}.qzc .qs.fl{background:#e9f7ef}.qzc .qs small{color:var(--mut)}.qzc .pd{color:#c2410c;font-size:13px}.qzc .qb{display:flex;gap:8px;margin-top:8px}.qzc .qb .b{flex:1 1 0;margin:0;padding:10px 6px;white-space:nowrap}.qzc .qb .b:not(.soft){background:var(--ac);color:#fff}.qzc .q3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.qzc .q3 .b{font-size:13px;padding:10px 2px;min-width:0;overflow:hidden;text-overflow:ellipsis}.qzc .qb .pm{background:#7c3aed}.qzc .qb .pm.on{background:#fff;color:#7c3aed;border:1.5px solid #7c3aed}.qzc .qb .soft{background:#fff;color:var(--ac);border:1.5px solid var(--ac)}
 .cnt{border:1.5px dashed #f0a35e;background:#fff7ed;border-radius:12px;padding:10px;margin:6px 0 10px;font-size:14px}.cnt .cl{line-height:1.45}.cnt .cb{display:flex;gap:8px;margin-top:8px}.cnt .cb .b{flex:1 1 0;margin:0;padding:11px 6px;white-space:nowrap;text-align:center;text-decoration:none}.cnt .cb button.b{background:#16a34a;color:#fff;font-size:16px}.cnt .cb .soft{background:#fff;color:var(--ac);border:1.5px solid var(--ac)}.cnt .cm{height:18px;font-size:13px;color:#c2410c;margin-top:4px}
 /* ציר הלימוד (אורן 6.11.2026): מימין לשמאל, מהיום הראשון ועד יום המבחן */
 .tl{margin-top:12px;border:1px solid #e3e8ef;border-radius:14px;padding:10px 10px 8px;background:#fafbfd}
@@ -180,12 +180,13 @@ function loadQz(kid,cmd){rpc('study_parents_quiz',{p_pin:PIN,p_kid:kid||null,p_c
  KIDS.forEach(k=>{const box=$('qz_'+k.id);if(!box)return;const q=(j.items||[]).find(x=>x.kid===k.id)||{},boy=k.id==='evyatar',now=Date.now();
   const lk=q.until_at&&Date.parse(q.until_at)>now,pend=q.cmd_at&&(!q.applied_at||Date.parse(q.applied_at)<Date.parse(q.cmd_at)),ms=lk?Date.parse(q.until_at)-now:0;
   const hm=Math.floor(ms/36e5)+':'+('0'+Math.floor(ms%36e5/6e4)).slice(-2);
-  let st=!q.seen_at?`עוד אין דיווח מהמכשיר של ${k.n}. מתעדכן כש${boy?'הוא נכנס':'היא נכנסת'} למסך הראשי.`
-   :lk?`🔒 נעול עוד <b dir="ltr">${hm}</b> · ${boy?'למד':'למדה'} ${Math.floor((q.act||0)/60)} מתוך 20 דק׳`:'🔓 פתוח';
-  if(pend)st+=`<br><span class="pd">⏳ ${q.cmd==='unlock'?'השחרור יקרה':'הנעילה תקרה'} כש${boy?'הוא יפתח':'היא תפתח'} את Study Monster</span>`;
+  const perm=q.cmd==='open',CM={unlock:'השחרור יקרה',lock:'הנעילה תקרה',open:'הפתיחה תתחיל',auto:'החזרה לכללים תקרה'};
+  let st=perm?`♾️ <b>פתוח קבוע</b>, בלי נעילה, עד שתחזיר לכללים.`:!q.seen_at?`עוד אין דיווח מהמכשיר של ${k.n}. מתעדכן כש${boy?'הוא נכנס':'היא נכנסת'} למסך הראשי.`
+   :lk?`🔒 נעול עוד <b dir="ltr">${hm}</b> · ${boy?'למד':'למדה'} ${Math.floor((q.act||0)/60)} מתוך 20 דק׳`:'🔓 פתוח (לפי הכללים הרגילים)';
+  if(pend)st+=`<br><span class="pd">⏳ ${CM[q.cmd]||''} כש${boy?'הוא יפתח':'היא תפתח'} את האפליקציה</span>`;
   else if(q.seen_at)st+=` <small>(עודכן ${ago(q.seen_at)})</small>`;
-  box.innerHTML=`<h3>🎯 חידון כניסה</h3><div class="qs${QZF===k.id?' fl':''}">${st}</div><div class="qb"><button class="b s" type="button" data-qz="${k.id}|unlock">🔓 לשחרר עכשיו</button><button class="b s soft" type="button" data-qz="${k.id}|lock">🔒 לנעול ל-4 שעות</button></div>
-  <div class="none" style="font-size:12px;margin-top:6px">הכלל הרגיל נשאר: אחרי 2 חידונים ברצף נעול ל-4 שעות, ו-20 דקות לימוד משחררות. כאן אפשר להחליט ידנית, למשל ${boy?'כשהוא למד':'כשהיא למדה'} מספיק היום.</div>`});
+  box.innerHTML=`<h3>🎯 חידון כניסה</h3><div class="qs${QZF===k.id?' fl':''}">${st}</div><div class="qb q3"><button class="b s" type="button" data-qz="${k.id}|unlock">🔓 לשחרר הפעם</button><button class="b s pm${perm?' on':''}" type="button" data-qz="${k.id}|${perm?'auto':'open'}">${perm?'↩ חזרה לכללים':'♾️ פתוח קבוע'}</button><button class="b s soft" type="button" data-qz="${k.id}|lock">🔒 לנעול</button></div>
+  <div class="none" style="font-size:12px;margin-top:6px">${perm?'פתוח קבוע גובר על הכול. "↩ חזרה לכללים" מחזיר את הנעילה האוטומטית.':`הכלל הרגיל: אחרי 2 חידונים ברצף נעול ל-4 שעות, ו-20 דקות לימוד משחררות. "לשחרר הפעם" פותח רק את הנעילה הנוכחית. "פתוח קבוע" מבטל את הנעילה עד שתחזיר לכללים.`}</div>`});
  QZF='';V.querySelectorAll('[data-qz]').forEach(b=>b.onclick=()=>{const [k,c]=b.dataset.qz.split('|');QZF=k;loadQz(k,c)})}).catch(()=>{})}
 // בקשות והצעות מהילדים (study_requests, נשלחות מדף הילד דרך study/req.js)
 const ARC={},NG={};const RQK={test:'📅 מבחן קרוב',quiz:'⏰ בוחן',hard:'🤔 לא מבין/ה',topic:'📚 נושא ללימוד',idea:'💡 רעיון לאפליקציה',bug:'🐞 באג באפליקציה'};
