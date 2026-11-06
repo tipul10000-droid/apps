@@ -35,6 +35,14 @@ h1{margin:0;font-size:22px;color:#1f2933;white-space:nowrap}header p{margin:2px 
 .pn h2{margin:6px 0 6px;font-size:22px}.pn p{margin:4px 0;font-size:16px;line-height:1.45;color:var(--mut)}.pn p b{color:var(--fg)}
 .pn .bt{display:block;width:100%;margin-top:10px;padding:13px;font:inherit;font-size:17px;border-radius:14px;cursor:pointer;border:1px solid var(--bd);background:#f4f6f9;color:var(--fg)}
 .pn .bt.pr{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}.pn .bt.g{background:#fff7e6;border-color:#fcd9a8;color:#9a3412}
+.qpn{height:min(560px,calc(100dvh - 32px));display:flex;flex-direction:column;text-align:center}
+.qh{display:flex;align-items:center;gap:10px;text-align:right;flex:none}.qh img{width:46px;height:80px;object-fit:contain;object-position:center bottom}.qh b{display:block;font-size:19px}.qh small{display:block;font-size:14px;color:var(--mut)}
+.dots{display:flex;justify-content:center;gap:8px;margin:10px 0 6px;flex:none}.dots i{width:30px;height:7px;border-radius:4px;background:#e3e8ef}.dots i.cur{background:#9db4d6}.dots i.on{background:var(--ac)}
+.qq{font-size:18px;font-weight:700;line-height:1.35;min-height:52px;display:flex;align-items:center;justify-content:center;flex:none}
+.qo{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;flex:none}.qb{height:56px;font:inherit;font-size:15px;border:1px solid var(--bd);border-radius:12px;background:#f4f6f9;color:var(--fg);cursor:pointer;padding:4px 6px;-webkit-tap-highlight-color:transparent}
+.qb.y{background:#dcfce7;border-color:#16a34a}.qb.n{background:#fee2e2;border-color:#dc2626}
+.qm{height:24px;margin:8px 0 0;font-size:15px;font-weight:600;color:var(--ac);flex:none}
+.qpn .bt{flex:none}
 </style></head><body><main>
 <header><img src="icon.svg" alt=""><div><h1>לימוד והכנה למבחנים 📚✨</h1><p>לוחצים על השם שלך</p></div></header>
 <div class="grp"><nav class="kids">
@@ -52,18 +60,47 @@ h1{margin:0;font-size:22px;color:#1f2933;white-space:nowrap}header p{margin:2px 
 </script>
 <div class="ov" id="who"><div class="pn"><img id="whoi" alt=""><h2 id="whot"></h2><p id="whop"></p><p id="whog"></p>
 <button class="bt pr" id="whoy" type="button"></button><button class="bt g" id="whogb" type="button">🧪 כניסה במצב אורח</button><button class="bt" id="whob" type="button">→ חזרה למסך הראשי</button></div></div>
+<div class="ov" id="qz"><div class="pn qpn"><div class="qh"><img id="qzi" alt=""><div><b id="qzt"></b><small id="qzs"></small></div></div>
+<div class="dots" id="qzd"><i></i><i></i><i></i></div><div class="qq" id="qzq"></div><div class="qo" id="qzo"></div><div class="qm" id="qzm"></div><div style="flex:1"></div>
+<button class="bt g" id="qzskip" type="button">🙈 אין לי מושג, תכניסו אותי</button><button class="bt" id="qzb" type="button">→ חזרה למסך הראשי</button></div></div>
 <script>
-// אזהרה לפני כניסה לאזור של ילד (אורן 6.11.2026): ההתקדמות נרשמת לילד. במצב אורח לא מוצגת.
-(function(){var K={evyatar:['אביתר'],dani:['דני'],lia:['ליה']},ov=document.getElementById('who'),go=null;
- document.querySelectorAll('a.kid').forEach(function(a){a.addEventListener('click',function(ev){if(window.STUDY_GUEST)return;var id=a.getAttribute('href').replace('/',''),k=K[id];if(!k)return;ev.preventDefault();go=a.href;
-  var n=k[0];document.getElementById('whoi').src='kids/'+id+'.webp';
-  document.getElementById('whot').textContent='האזור של '+n+' בלבד';
-  document.getElementById('whop').innerHTML='כל התקדמות מכאן תירשם בהישגים של <b>'+n+'</b>.';
-  document.getElementById('whog').textContent='לא '+n+'? אפשר להיכנס במצב אורח, בלי להשפיע.';
-  document.getElementById('whoy').textContent='אני '+n+', להמשיך ←';ov.classList.add('on')})});
- document.getElementById('whoy').onclick=function(){if(go)location.href=go};
- document.getElementById('whogb').onclick=function(){studyGuest(true,location.pathname)};
- document.getElementById('whob').onclick=function(){ov.classList.remove('on')};
- ov.addEventListener('click',function(ev){if(ev.target===ov)ov.classList.remove('on')})})();
+// כניסה לאזור של ילד (אורן 6.11.2026): פעם ראשונה במכשיר: "האזור של X בלבד" ← "אני X" ← 3 שאלות שרק הילד יודע (טעות = מתחילים מחדש).
+// אחרי שעבר: נשמר study_ok_<kid> ונכנסים ישר. במצב אורח: ישר לשאלות, עם כפתור עקיפה (רק לאורח).
+(function(){
+ var K={evyatar:{n:'אביתר',t:'שאלות של אוהדי צ׳לסי 💙',q:[
+   ['איך קוראים לאצטדיון הבית של צ׳לסי?',['סטמפורד ברידג׳','אנפילד','אולד טראפורד','האמירייטס']],
+   ['מה הכינוי של צ׳לסי?',['הכחולים (The Blues)','האדומים (The Reds)','התותחנים (The Gunners)','השדים (Red Devils)']],
+   ['איזה שחקן של צ׳לסי מפורסם בחגיגת ה"קר" (רועד מקור)?',['קול פאלמר','בוקאיו סאקה','ארלינג הולאנד','מוחמד סלאח']]]},
+  dani:{n:'דני',t:'שאלות של מעריצות קיי-פופ 💜',q:[
+   ['איך קוראים ללהקה של רומי, מירה וזואי?',['HUNTR/X','Saja Boys','BLACKPINK','TWICE']],
+   ['איך קוראים לשיר הכי מפורסם של HUNTR/X?',['Golden','Dynamite','Butter','Shut Down']],
+   ['מי מהם חבר בלהקת BTS?',['ג׳ונגקוק','ג׳ינו','ליסה','רומי']]]},
+  lia:{n:'ליה',t:'שאלות של מעריצות הסקווישים 🧸',q:[
+   ['איך קוראים למלכת הסקווישים?',['שילת','נועה','מיקה','אגם']],
+   ['מה מלכת הסקווישים הכי אוהבת לאסוף?',['סקווישים','מדבקות','בובות ברבי','קלפי פוקימון']],
+   ['באתגר שלה: כמה זמן יש לה לזהות כמה שיותר סקווישים?',['60 שניות','10 שניות','5 דקות','שעה שלמה']]]}};
+ var $=function(i){return document.getElementById(i)},ov=$('who'),qz=$('qz'),go=null,kid=null,qi=0,lock=false;
+ function ok(id){try{return localStorage.getItem('study_ok_'+id)==='1'}catch(e){return false}}
+ function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+ function ask(){lock=false;var q=K[kid].q[qi];$('qzq').textContent=q[0];$('qzm').textContent='';
+  [].forEach.call($('qzd').children,function(d,i){d.className=i<qi?'on':i===qi?'cur':''});
+  $('qzo').innerHTML='';shuf(q[1]).forEach(function(o){var b=document.createElement('button');b.type='button';b.className='qb';b.textContent=o;
+   b.onclick=function(){if(lock)return;lock=true;if(o===q[1][0]){b.classList.add('y');qi++;
+     if(qi>=3){[].forEach.call($('qzd').children,function(d){d.className='on'});$('qzm').textContent=(kid==='evyatar'?'ידעתי שזה אתה':'ידעתי שזו את')+'! נכנסים... 🎉';try{if(!window.STUDY_GUEST)localStorage.setItem('study_ok_'+kid,'1')}catch(e){}setTimeout(function(){location.href=go},700)}
+     else{$('qzm').textContent='נכון! ✨';setTimeout(ask,450)}}
+    else{b.classList.add('n');$('qzm').textContent='אופס, זו לא התשובה. מתחילים מההתחלה 🙃';setTimeout(function(){qi=0;ask()},1100)}};$('qzo').appendChild(b)})}
+ function quiz(){qi=0;var k=K[kid];$('qzi').src='kids/'+kid+'.webp';$('qzt').textContent='רק '+k.n+' יודע'+(kid==='evyatar'?'':'ת')+' את התשובות!';$('qzs').textContent=k.t;
+  $('qzskip').style.display=window.STUDY_GUEST?'':'none';ov.classList.remove('on');qz.classList.add('on');ask()}
+ document.querySelectorAll('a.kid').forEach(function(a){a.addEventListener('click',function(ev){var id=a.getAttribute('href').replace('/',''),k=K[id];if(!k)return;go=a.href;kid=id;
+  if(window.STUDY_GUEST){ev.preventDefault();return quiz()}
+  if(ok(id))return;ev.preventDefault();var n=k.n;$('whoi').src='kids/'+id+'.webp';
+  $('whot').textContent='האזור של '+n+' בלבד';$('whop').innerHTML='כל התקדמות מכאן תירשם בהישגים של <b>'+n+'</b>.';
+  $('whog').textContent='לא '+n+'? אפשר להיכנס במצב אורח, בלי להשפיע.';$('whoy').textContent='אני '+n+', להמשיך ←';ov.classList.add('on')})});
+ $('whoy').onclick=quiz;
+ $('whogb').onclick=function(){studyGuest(true,location.pathname)};
+ $('whob').onclick=function(){ov.classList.remove('on')};
+ $('qzb').onclick=function(){qz.classList.remove('on')};
+ $('qzskip').onclick=function(){if(go)location.href=go};
+ [ov,qz].forEach(function(o){o.addEventListener('click',function(ev){if(ev.target===o)o.classList.remove('on')})})})();
 </script>
 </main></body></html>
