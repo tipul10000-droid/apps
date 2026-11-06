@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="8.2";window.SQ_BUILD_AT="6.11.2026 03:25";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="8.3";window.SQ_BUILD_AT="6.11.2026 08:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1231,6 +1231,16 @@ details.more[open]>summary{margin-bottom:10px}
 #tail>div{display:flex;flex-direction:column;gap:0!important}
 #tail .fold{border:0;border-radius:0;border-top:1px solid var(--line);margin-top:-1px}
 #tail:not(:has(.fold)){display:none}
+/* 8.3: next window, parts inside a window, dashboards open at the bottom */
+.wcard.next{margin-top:6px}
+.wcard.next .wc-head b{font-size:18px}
+.wc-part{display:flex;flex-direction:column;gap:6px}
+.wc-sec{font-size:13.5px;font-weight:700;color:var(--muted);margin:4px 10px 0}
+.d-near{margin:0;padding:8px 12px;border-radius:10px;background:var(--sunk);font-size:14.5px;line-height:1.45}
+#dashSec{margin-top:18px;gap:10px}
+.dz-head{display:flex;align-items:baseline;gap:8px;margin:0 8px}
+.dz-head b{font-size:19px;font-family:var(--f-display)}
+.dz-head .n{color:var(--muted);font-size:14px;font-weight:600}
 .dz-grid.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
 </style>
 </head>
@@ -1321,7 +1331,8 @@ details.more[open]>summary{margin-bottom:10px}
     <div class="sec-head"><h2 id="hProj">הפרויקטים שלי</h2></div>
     <div class="pgrid" id="strip"></div>
   </section>
-  <section id="tail" class="tasks-only"><div id="more"></div><div class="dashzone" id="dashSec" hidden></div><div id="doneSec"></div></section>
+  <section id="tail" class="tasks-only"><div id="more"></div><div id="doneSec"></div></section>
+  <section class="dashzone tasks-only" id="dashSec" hidden></section>
   <div hidden><div id="urgSec"></div><div id="urgList"></div><div id="nowSec"></div><div id="nowList"></div><div id="quickSec"></div><div id="quickList"></div><div id="inbox"></div><div id="views"></div><div id="filters"></div></div>
 </div></main>
 <footer class="ver gut"><button type="button" id="ver" aria-label="גרסה. לחיצה בודקת אם יש גרסה חדשה"></button></footer>
@@ -1676,7 +1687,6 @@ details.more[open]>summary{margin-bottom:10px}
   function dashChat(d,proj){const a=secChat(secUrl("dash_"+d.id,d.chat,chatOf(allTopics.find(x=>x.id===d.id)||{}),proj&&proj.claude_url),"הדשבורד "+(d.title||""),"");
     a.className="dz-chat";if(a.lastChild&&a.lastChild.nodeType===3)a.lastChild.remove();a.append(h("span",null,"עבודה עם הצ׳אט",h("small",null,"שאלות, תוספות ועדכונים")));return a;}
   const DASH_MAX=3, DASH_IDLE=90;
-  // 8.0: dashboards are not day-to-day. One folded row near the bottom; opens to the tiles and the card.
   function renderDash(){const sec=$("dashSec");if(!sec)return;
     if(quest==="travel"){sec.hidden=true;sec.replaceChildren();renderTravel();return;} // travel dashboards live inside their zone
     const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
@@ -1686,12 +1696,13 @@ details.more[open]>summary{margin-bottom:10px}
     const extra=mine.filter(d=>!d.archived&&idle(d)),old=mine.filter(d=>d.archived);
     const cur=dashOpen&&mine.find(d=>d.id===dashOpen);
     sec.hidden=false;
-    sec.replaceChildren(foldBox("dash","📊 דשבורדים",act.length,[
+    // 8.3 (Oren 6.11): dashboards sit open at the very bottom of the app; their tasks also show as regular tasks above
+    sec.replaceChildren(...[h("div",{class:"dz-head"},h("b",null,"📊 דשבורדים"),h("span",{class:"n"},act.length)),
       act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null,
       cur?dashCard(cur):null,
       extra.length||old.length?h("details",{class:"dz-more"},h("summary",null,`ארכיון (${extra.length+old.length})`),
         extra.length?h("div",{class:"dz-grid"},extra.map(d=>dashTile(d,true))):null,
-        old.length?h("div",{class:"dz-old"},old.map(d=>safeUrl(d.url||"")?h("a",{href:safeUrl(d.url),target:"_blank",rel:"noopener"},(d.icon||"📄")+" "+(d.title||"")):null)):null):null].filter(Boolean),{force:!!cur}));
+        old.length?h("div",{class:"dz-old"},old.map(d=>safeUrl(d.url||"")?h("a",{href:safeUrl(d.url),target:"_blank",rel:"noopener"},(d.icon||"📄")+" "+(d.title||"")):null)):null):null].filter(Boolean));
   }
   function goBtn(t){const c=chatOf(t),m=!c&&mailOf(t);
     if(c)return iconBtn("go",ICON.chat,"קפוץ לשיחה של המשימה",null,c);
@@ -1907,8 +1918,10 @@ details.more[open]>summary{margin-bottom:10px}
     const addLink=()=>{const u=safeUrl(linkInp.value.trim());if(!u){toast("הקישור לא תקין");return;}const type=linkType({url:u});const label=type==="chat"?"שיחה":type==="page"?"דף":"קישור";patch(t,{links:[...linksOf(t),{label,url:u,type}]},"הקישור נוסף");};
     const segRow=(lbl,opts)=>h("div",{class:"f-row"},h("span",{class:"f-l"},lbl),h("div",{class:"seg"},opts));
     const fitL=open&&t.status!=="waiting_other"?(fitsWin(t,curWin().id)?WINS[curWin().id].e+" עכשיו":nextWinLabel(t)):"";
+    const near=open?sameArea(t):[],ga=geoOf(t).area;
     return h("div",{class:"drawer"},
       line?h("p",{class:"d-line"},line):null,
+      near.length?h("p",{class:"d-near"},"📍 כבר ב"+ga.replace(/^ב/,"")+"? גם: "+near.map(x=>x.title).join(" · ")):null,
       st.length?h("div",{class:"steps"},st.map(s=>h("div",{class:"step"+(s.done?" done":"")},
         canWrite?h("button",{class:"sck",type:"button","aria-label":(s.done?"פתח שוב: ":"סמן כבוצע: ")+s.text,"aria-pressed":s.done?"true":"false",onclick:press(()=>toggleStep(t,s)),html:s.done?ICON.done:""}):h("span",{class:"sck"}),
         h("span",{class:"s-t"},s.text),s.who&&WHO[s.who]&&!s.done?h("span",{class:"s-who"},WHO[s.who]):null))):null,
@@ -1972,6 +1985,30 @@ details.more[open]>summary{margin-bottom:10px}
     d.addEventListener("toggle",()=>{folded[k]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
   function foldRows(key,title,items,o){if(!items.length)return null;return foldBox(key,title,items.length,[h("div",{class:"glist"},items.map(row))],{...(o||{}),force:items.some(t=>t.id===openId)});}
   function renderViews(){}
+  // 8.3 (Oren 6.11): order inside every window. First what is done at home, then calls (also on the way), then going out:
+  // tasks bound to a place grouped by area, nearest area first (fit.area, fit.km from home). Tasks that can be done anywhere
+  // (fit.anywhere, e.g. buy milk) join the nearest outing. Tasks in the same area belong together ("you're already in Raanana").
+  function geoOf(t){const f=fitOf(t);return {area:String(f.area||"").trim(),km:f.km!=null&&f.km!==""&&!isNaN(+f.km)?+f.km:null,any:!!f.anywhere};}
+  function stageOf(t){const hw=howOf(t);if(hw.includes("place"))return geoOf(t).any?"any":"out";if(hw.includes("call"))return "call";return "home";}
+  function winSections(L){
+    const by=k=>L.filter(t=>stageOf(t)===k),home=by("home"),call=by("call"),out=by("out"),any=by("any");
+    const A={};for(const t of out){const g=geoOf(t),k=g.area||"בחוץ";const a=A[k]=A[k]||{k,km:999,items:[]};a.items.push(t);if(g.km!=null)a.km=Math.min(a.km,g.km);}
+    const AR=Object.values(A).sort((a,b)=>a.km-b.km);for(const a of AR)a.items.sort((x,y)=>(geoOf(x).km??999)-(geoOf(y).km??999));
+    const S=[];if(home.length)S.push({t:"🏠 קודם בבית",items:home});if(call.length)S.push({t:"📞 שיחות, אפשר בדרך",items:call});
+    if(any.length){if(AR.length)AR[0].items.push(...any);else S.push({t:"🛒 בחוץ, בכל מקום",items:any});}
+    AR.forEach((a,i)=>S.push({t:"📍 "+a.k+(a.km<999?" · "+a.km+" ק״מ":"")+(AR.length>1?(i?" · אחר כך":" · קודם"):""),items:a.items}));
+    return S;}
+  function sameArea(t){const g=geoOf(t);if(!g.area)return [];return allTopics.filter(x=>x.id!==t.id&&isOpen(x)&&!isFun(x)&&geoOf(x).area===g.area&&!geoOf(x).any);}
+  // the next window that can take tasks (skips sleep and blocked windows); today, else tomorrow
+  function nextWin(cur){const n=ilNow(),base=ilDate();
+    for(let k=0;k<2;k++){const L=dayWins((n.d+k)%7,planFor(addDays(base,k)));let start=0;
+      if(k===0){let i=0;for(let j=0;j<L.length;j++)if(L[j][0]<=n.m)i=j;if(cur.manual){const m=L.findIndex(x=>x[1]===cur.id&&x[0]>=n.m-240);if(m>=0)i=m;}start=i+1;}
+      for(let j=start;j<L.length;j++){const id=L[j][1];if(id===cur.id||!WINS[id].acc.length)continue;return {id,at:(k?"מחר ":"")+"מ-"+hhmm(L[j][0])};}}
+    return null;}
+  function winCard(W,tag,L,empty,next){const S=winSections(L);
+    return h("div",{class:"wcard"+(next?" next":"")},
+      h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},W.e),h("b",null,W.l),tag?h("small",null,tag):null),
+      L.length?(S.length>1?S.map(x=>h("div",{class:"wc-part"},h("div",{class:"wc-sec"},x.t),h("div",{class:"glist"},x.items.map(row)))):h("div",{class:"glist"},L.map(row))):h("div",{class:"wc-empty"},empty));}
   function renderList(){renderMain();renderStrip();renderDash();}
   function renderMain(){
     const allK=topics.filter(isOpen).filter(t=>!inStrip(t)).sort(byDate);
@@ -1987,14 +2024,18 @@ details.more[open]>summary{margin-bottom:10px}
     if(winOn){
       const W=WINS[w.id];const pc=planCard(planAsk());if(pc)top.push(pc);
       const unprof=t=>isOwn(t)&&!howOf(t).length; // typed by Oren and not profiled yet: show it now, Claude profiles it within the hour
-      const uIn=urgAll.filter(t=>fitsWin(t,w.id)||unprof(t)),uOut=urgAll.filter(t=>!uIn.includes(t));
+      const uIn=urgAll.filter(t=>fitsWin(t,w.id)||unprof(t));
       const fit=W.acc.length?live.filter(t=>fitsWin(t,w.id)||unprof(t)).sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)||(minsOf(a)-minsOf(b))):[];
       const L=[...uIn,...fit];
-      top.push(h("div",{class:"wcard"},
-        h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},W.e),h("b",null,W.l),w.end?h("small",null,"עד "+w.end):null),
-        L.length?h("div",{class:"glist"},L.map(row)):h("div",{class:"wc-empty"},W.acc.length?"אין כרגע משימה לחלון הזה":"זמן חסום. רק דחוף")));
+      top.push(winCard(W,w.end?"עד "+w.end:"",L,W.acc.length?"אין כרגע משימה לחלון הזה":"זמן חסום. רק דחוף"));
+      // 8.3 (Oren 6.11): and what comes next (e.g. Friday 07:30 home morning → Friday errands from 08:00)
+      const nx=nextWin(w),NW=nx&&WINS[nx.id];
+      const nU=nx?urgAll.filter(t=>!L.includes(t)&&fitsWin(t,nx.id)):[],nF=nx?live.filter(t=>!L.includes(t)&&fitsWin(t,nx.id)).sort((a,b)=>ord(a,b)||(minsOf(a)-minsOf(b))):[];
+      const NL=[...nU,...nF];
+      if(nx)top.push(winCard(NW,"הבא · "+nx.at,NL,"אין משימות לחלון הבא",true));
+      const uOut=urgAll.filter(t=>!uIn.includes(t)&&!nU.includes(t));
       if(uOut.length)top.push(foldRows("uout","❗ דחוף לחלון אחר",uOut,{hot:true}));
-      const others=live.filter(t=>!fit.includes(t));
+      const others=live.filter(t=>!fit.includes(t)&&!nF.includes(t));
       if(others.length){const [q,tr,lo]=bySize(others);
         more.push(foldBox("rest","כל שאר המשימות",others.length,[group(SIZES.quick.g,q),group(SIZES.trip.g,tr),group(SIZES.long.g,lo)].filter(Boolean),{force:others.some(t=>t.id===openId)}));}
     }else{
