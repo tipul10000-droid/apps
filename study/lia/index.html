@@ -13,10 +13,11 @@
 <a class="back" href="../">→ כל הילדים</a>
 <div class="top"><img src="../kids/lia.webp" alt=""><div><h1>היי ליה!</h1><p>מה לומדים היום?</p></div></div>
 <div class="list">
-<div class="empty">עוד אין כאן תכנים 🙂<br>יש לך מבחן או נושא ללמוד? ספרי לאבא כאן למטה 👇</div>
+<a class="item" href="phonics/"><span class="ic">🔤</span><span class="tx"><b>אותיות וצלילים באנגלית</b><small id="ph">35 צלילים, בהגייה אמריקאית</small><div class="bar"><i id="phb" style="width:0"></i></div></span><span class="go">‹</span></a>
 </div>
 <div id="rqm" style="margin-top:12px"></div>
 <div id="pbm" style="margin-top:10px"></div>
+<script>try{var s=JSON.parse(localStorage.getItem('lia_ph'));if(s&&s.w){var n=0;for(var k in s.w)if(s.w[k].s==='done')n++;if(s.T){document.getElementById('ph').textContent='את יודעת '+n+' מתוך 35 צלילים';document.getElementById('phb').style.width=(n/35*100)+'%'}}}catch(e){}</script>
 <script src="../req.js?v=2"></script><script>StudyReq.mount('lia',false)</script>
 <script src="../push.js?v=2"></script><script>StudyPush.kid(document.getElementById('pbm'),'lia',false)</script>
 </main></body></html>
