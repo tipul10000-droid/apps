@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#B8361F">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FOOD_BUILD="1.2";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FOOD_BUILD="1.3";</script>
 <script src="sq-db.js?v=9"></script>
 <title>אוכל ומסעדות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,10 +81,12 @@ section{margin-bottom:22px}
 .photo small{position:absolute;bottom:6px;inset-inline-end:8px;font-size:11px;font-weight:700;background:rgba(0,0,0,.5);color:#fff;border-radius:999px;padding:1px 8px}
 .src{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.1);color:var(--hero-ink)!important;font-weight:800}
 .src small{display:block;color:var(--hero-muted);font-weight:600;font-size:12.5px}
-.acts{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);margin-bottom:14px}
-.acts button{flex:1;border:0;background:none;padding:10px 4px;font-weight:800;font-size:14.5px;cursor:pointer;white-space:nowrap}
-.acts button+button{border-inline-start:1px solid var(--line)}
-.acts button.on{background:var(--good-soft);color:var(--good)}
+.acts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--line);margin-bottom:14px}
+.acts>*{grid-column:span 3;border:0;background:var(--surface);padding:10px 4px;font-weight:800;font-size:14.5px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:44px;display:flex;align-items:center;justify-content:center}
+.acts .mk{grid-column:span 4;cursor:default}
+.acts .pm{grid-column:span 1;font-size:22px;line-height:1;padding:0}
+.acts .pm.off{color:var(--muted);opacity:.45}
+.acts .on{background:var(--good-soft);color:var(--good)}
 .shop{list-style:none;margin:0;padding:0}
 .shop li{display:flex;align-items:center;gap:12px;padding:11px 2px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .shop li+li{border-top:1px solid var(--line)}
@@ -213,7 +215,7 @@ function tabRecipe(x){const t=x.time||{};let h="";
 function renderRecipe(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"המתכון לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
   $("hero").innerHTML=heroRecipe(x);
   $("bar").innerHTML=`<div class="seg"><button data-tab="shop" class="${ui.tab!=="recipe"?"on":""}">🛒 מצרכים</button><button data-tab="recipe" class="${ui.tab==="recipe"?"on":""}">👨‍🍳 מתכון</button></div>`;
-  const acts=`<div class="acts"><button data-tcart class="${x.cart?"on":""}">${x.cart?"✓ ברשימה":"🛒 לרשימה המשולבת"}</button><button data-made>✓ הכנתי${x.made_count?" ("+x.made_count+")":""}</button><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button></div>`;
+  const acts=`<div class="acts"><button data-tcart class="${x.cart?"on":""}">${x.cart?"✓ ברשימה":"🛒 לרשימה המשולבת"}</button><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button class="pm" data-made="1" aria-label="הכנתי עוד פעם">＋</button><div class="mk ${x.made_count?"on":""}">${x.made_count?"✓ הכנתי × "+x.made_count:"עוד לא הכנתי"}</div><button class="pm ${x.made_count?"":"off"}" data-made="-1" aria-label="להוריד אחד">−</button></div>`;
   $("app").innerHTML=acts+(ui.tab==="recipe"?tabRecipe(x):tabShop(x));}
 function cartItems(){return list("recipe").filter(x=>x.cart).flatMap(x=>shopOf(x).map(s=>({...s,from:x.title})));}
 function renderCart(){const C=list("recipe").filter(x=>x.cart);
@@ -242,7 +244,7 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
   const now=new Date().toISOString();
   if(g("[data-tcart]")){const id=curId();upd(id,{cart:!(items[id]||{}).cart,updated_at:now},(items[id]||{}).cart?"הוצא מהרשימה":"נוסף לרשימה המשולבת");return;}
   if(g("[data-fav]")){const id=curId();upd(id,{fav:!(items[id]||{}).fav,updated_at:now});return;}
-  if(g("[data-made]")){const id=curId(),x=items[id]||{};upd(id,{made_count:(x.made_count||0)+1,made_at:now,updated_at:now},"בתיאבון! 😋");return;}
+  if(b=g("[data-made]")){const id=curId(),x=items[id]||{},c=x.made_count||0,d=+b.dataset.made;if(d<0&&!c)return;const n=Math.max(0,c+d);upd(id,d>0?{made_count:n,made_at:now,updated_at:now}:{made_count:n,updated_at:now},d>0?"בתיאבון! 😋":n?"ירד ל-"+n:"חזר לאפס");return;}
   if(g("[data-add]")){const u=(prompt("הדבק לינק למתכון (רילס, טיקטוק, יוטיוב או אתר)")||"").trim();if(!u)return;if(!db){toast("אין חיבור");return;}
     const m=u.match(/https:\/\/\S+/);const url=m?m[0]:"";const id="r"+Date.now().toString(36);
     try{await db.collection("food").doc(id).set({kind:"recipe",title:url?"מתכון חדש":u.slice(0,100),icon:"🍴",cat:ui.cat==="all"?"other":ui.cat,status:"new",source:{url},shop:[],ingredients:[],steps:[],created_at:now,updated_at:now,log:[{at:now,text:"נפתח מהדשבורד"}]});
