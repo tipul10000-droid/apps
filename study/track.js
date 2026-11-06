@@ -32,7 +32,9 @@
     try{fetch(SB_URL+'/rest/v1/rpc/study_report',{method:'POST',keepalive:!!keep,headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},
       body:JSON.stringify({p_device:d.id,p_token:d.token,p_kid:kid,p_app:app,p_data:p})}).catch(function(){})}catch(e){}}
   function later(){dirty=true;clearTimeout(timer);timer=setTimeout(function(){send(false)},4000)}
-  function act(){lastAct=Date.now()}
+  var lastTap=0;function act(){lastAct=lastTap=Date.now()}
+  // שחרור חידון הכניסה (אורן 6.11.2026): בזמן נעילה, כל 5 שניות של לימוד פעיל (נגיעה ב-30 השניות האחרונות) נספרות ב-study_qz_<kid>.act; 20 דקות = הנעילה משתחררת.
+  function qzAct(){if(Date.now()-lastTap>30000)return;try{var qk='study_qz_'+kid,q=JSON.parse(localStorage.getItem(qk)||'{}');if(!q.until||q.until<=Date.now())return;q.act=(q.act||0)+5;if(q.act>=1200){q.until=0;q.act=0;q.n=0}localStorage.setItem(qk,JSON.stringify(q))}catch(e){}}
   function rpc(fn,body){return fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(body)}).then(function(r){return r.ok?r.json():null})}
   function checkReset(keys,old){if(window.STUDY_GUEST)return;var sk='study_rs_'+kid+'_'+app;
     try{rpc('study_reset_get',{p_kid:kid,p_app:app}).then(function(j){if(!j||!j.at)return;var at=new Date(j.at).getTime(),seen=get(sk);if(seen===j.at)return;
@@ -43,7 +45,7 @@
   window.StudyTrack={
     init:function(k,a,keys){kid=k;app=a;KEYS=keys||[];var key='study_t_'+k+'_'+a,old=get(key);if(KEYS.length){checkReset(KEYS,old);restore()}T=old||{first:new Date().toISOString(),sec:0,days:{}};T.days=T.days||{};
       ['pointerdown','keydown','touchstart'].forEach(function(e){addEventListener(e,act,{passive:true})});
-      setInterval(function(){if(document.visibilityState!=='visible'||Date.now()-lastAct>60000)return;T.sec+=5;var t=today();T.days[t]=(T.days[t]||0)+5;T.last=new Date().toISOString();set(key,T);dirty=true},5000);
+      setInterval(function(){if(document.visibilityState!=='visible'||Date.now()-lastAct>60000)return;T.sec+=5;qzAct();var t=today();T.days[t]=(T.days[t]||0)+5;T.last=new Date().toISOString();set(key,T);dirty=true},5000);
       setInterval(function(){if(dirty)send(false)},60000);
       addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&dirty)send(true)});
       addEventListener('pagehide',function(){if(dirty)send(true)});
