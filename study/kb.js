@@ -5,11 +5,11 @@
 (function(){
   var css='#skb{position:fixed;left:0;right:0;bottom:0;z-index:35;background:#d4d7dd;padding:6px 3px calc(env(safe-area-inset-bottom,0px) + 6px);direction:ltr;user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:0 -1px 0 #b9bdc5;display:none}'+
     '#skb.on{display:block}#skb .r{display:flex;justify-content:center;gap:5px;margin:0 auto 9px;max-width:520px}#skb .r:last-child{margin-bottom:0}'+
-    '#skb button{flex:1 1 0;max-width:46px;height:44px;border:0;border-radius:6px;background:#fff;color:#111;font:400 22px -apple-system,system-ui,Arial,sans-serif;box-shadow:0 1px 0 #898a8d;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}'+
+    '#skb button{flex:1 1 0;max-width:48px;height:48px;border:0;border-radius:6px;background:#fff;color:#111;font:400 22px -apple-system,system-ui,Arial,sans-serif;box-shadow:0 1px 0 #898a8d;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}'+
     '#skb button.dn{background:#eef0f3;transform:translateY(1px);box-shadow:none}'+
     '#skb .fn{background:#abb0ba;font-size:17px;max-width:60px;flex-grow:1.4}#skb .sp{max-width:none;flex-grow:5;font-size:16px;color:#333}#skb .go{max-width:none;flex-grow:2.2;background:#7c3aed;color:#fff;font-size:17px;font-weight:600}'+
     '#skb .r2{padding:0 4.5%}#skb .pop{position:absolute;pointer-events:none;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.25);font:500 30px -apple-system,system-ui,Arial,sans-serif;width:52px;height:56px;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-100%)}'+
-    '@media(max-height:720px){#skb button{height:38px}#skb .r{margin-bottom:6px}#skb{padding-top:5px}}'+
+    '@media(max-height:720px){#skb button{height:42px}#skb .r{margin-bottom:6px}#skb{padding-top:5px}}'+
     '#skb.locked button{opacity:.45}body.skb-on{padding-bottom:var(--skbh,240px)}';
   var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
   var ROWS=['qwertyuiop','asdfghjkl','zxcvbnm'],kb=null,inp=null,opt={},pop=null,rep=null,locked=false;
@@ -17,10 +17,22 @@
     var h='<div class="r">'+key(ROWS[0])+'</div><div class="r r2">'+key(ROWS[1])+'</div><div class="r">'+key(ROWS[2])+'<button class="fn" data-k="del" aria-label="מחיקה">⌫</button></div>'+
       '<div class="r"><button class="fn" data-k="\'">\'</button><button class="fn" data-k="-">-</button><button class="sp" data-k=" ">space</button><button class="go" data-k="enter"></button></div>';
     kb.innerHTML=h;document.body.appendChild(kb);pop=document.createElement('div');pop.className='pop';pop.style.display='none';kb.appendChild(pop);
-    kb.addEventListener('click',function(ev){var b=ev.target.closest('button');if(b&&b.dataset.k==='enter')press('enter')});// אישור ב-click, כדי שהלחיצה לא תיפול על כפתור שמתחת למקלדת אחרי שהיא נסגרת
-    kb.addEventListener('pointerdown',function(ev){var b=ev.target.closest('button');ev.preventDefault();if(!b)return;b.classList.add('dn');if(b.dataset.k!=='enter')press(b.dataset.k,b);
+    // מגע (אייפון): touchstart ישיר, כל אצבע לחוד (הקלדה בשתי אגודלים), ולחיצה ברווח בין מקשים הולכת למקש הקרוב (אורן 6.11.2026: המקלדת לא הגיבה מספיק טוב).
+    var act={},lastTouch=0;
+    function keyAt(x,y){var el=document.elementFromPoint(x,y),b=el&&el.closest&&el.closest('#skb button');if(b)return b;
+      var best=null,bd=26;kb.querySelectorAll('button').forEach(function(k){if(k.offsetParent===null)return;var r=k.getBoundingClientRect(),dx=Math.max(r.left-x,0,x-r.right),dy=Math.max(r.top-y,0,y-r.bottom),d=Math.sqrt(dx*dx+dy*dy);if(d<bd){bd=d;best=k}});return best}
+    function stopRep(){clearTimeout(rep);clearInterval(rep)}
+    kb.addEventListener('touchstart',function(ev){ev.preventDefault();ev.stopPropagation();lastTouch=Date.now();
+      [].forEach.call(ev.changedTouches,function(t){var b=keyAt(t.clientX,t.clientY);if(!b)return;act[t.identifier]=b;b.classList.add('dn');var k=b.dataset.k;
+        if(k!=='enter')press(k,b);if(k==='del'){stopRep();rep=setTimeout(function(){rep=setInterval(function(){press('del')},90)},420)}})},{passive:false});
+    var tEnd=function(ev){ev.preventDefault();ev.stopPropagation();lastTouch=Date.now();
+      [].forEach.call(ev.changedTouches,function(t){var b=act[t.identifier];delete act[t.identifier];if(!b)return;b.classList.remove('dn');if(b.dataset.k==='del')stopRep();if(b.dataset.k==='enter'&&ev.type==='touchend')press('enter')});
+      if(!Object.keys(act).length){pop.style.display='none';stopRep()}};
+    kb.addEventListener('touchend',tEnd,{passive:false});kb.addEventListener('touchcancel',tEnd,{passive:false});
+    kb.addEventListener('click',function(ev){if(Date.now()-lastTouch<800)return;var b=ev.target.closest('button');if(b&&b.dataset.k==='enter')press('enter')});// אישור ב-click, כדי שהלחיצה לא תיפול על כפתור שמתחת למקלדת אחרי שהיא נסגרת
+    kb.addEventListener('pointerdown',function(ev){if(ev.pointerType==='touch'||Date.now()-lastTouch<800){ev.preventDefault();return}var b=ev.target.closest('button');ev.preventDefault();if(!b)return;b.classList.add('dn');if(b.dataset.k!=='enter')press(b.dataset.k,b);
       if(b.dataset.k==='del'){clearInterval(rep);var t0=setTimeout(function(){rep=setInterval(function(){press('del')},90)},420);rep=t0}});
-    var up=function(){clearTimeout(rep);clearInterval(rep);pop.style.display='none';kb.querySelectorAll('.dn').forEach(function(b){b.classList.remove('dn')})};
+    var up=function(ev){if(ev&&ev.pointerType==='touch')return;clearTimeout(rep);clearInterval(rep);pop.style.display='none';kb.querySelectorAll('.dn').forEach(function(b){b.classList.remove('dn')})};
     kb.addEventListener('pointerup',up);kb.addEventListener('pointercancel',up);kb.addEventListener('pointerleave',up);
     document.addEventListener('keydown',function(ev){if(!kb.classList.contains('on')||ev.metaKey||ev.ctrlKey||ev.altKey)return;
       if(ev.key==='Enter'){ev.preventDefault();ev.stopPropagation();press('enter')}else if(ev.key==='Backspace'){ev.preventDefault();press('del')}
