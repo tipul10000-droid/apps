@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.8";window.SQ_BUILD_AT="6.11.2026 17:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.9";window.SQ_BUILD_AT="6.11.2026 17:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -731,6 +731,9 @@ body:not(.q-side) .tb.tsun{display:none}
 @keyframes bpin{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 .bp-top{position:relative;padding:14px 16px 12px;background:linear-gradient(150deg,#FFD98A 0%,#F6A24A 60%,#EC7F3E 100%);color:#2A1500}
 .bp-top.eve{background:linear-gradient(150deg,#8E7CF0 0%,#E0739A 55%,#F2A15A 100%);color:#1E0F2E}
+.bp-top.fri{background:linear-gradient(150deg,#FFE7A3 0%,#9ED9A0 60%,#4FB38A 100%);color:#0E2A1C}
+.bp-top.wkend{background:linear-gradient(150deg,#FFD3B0 0%,#F49A86 55%,#C77DB8 100%);color:#2A0F1E}
+.bp-top.week{background:linear-gradient(150deg,#A9D3FF 0%,#6FA3F0 55%,#4F6FD8 100%);color:#0B1A3A}
 .bp-h{display:flex;align-items:center;gap:8px}
 .bp-h b{font:800 18px var(--f-display,inherit)}
 .bp-h small{font-size:12.5px;font-weight:700;opacity:.75;margin-inline-start:auto}
@@ -3213,7 +3216,7 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
   // ===== 3.4: settings + notifications (Web Push via Supabase function sq-push) + morning brief =====
   const PUSH_FN="https://emgtyfksnofzzlutngbf.supabase.co/functions/v1/sq-push";
   const VAPID="BG4jnuAYF7dwLbC_NQAdtdlaVWLk3TKpS0E221Y3J9KrhkspmnMokjUUQwt3gCnsID8dmwCCiCjCGM94qoDCPEQ";
-  const NDEF={brief:true,brief_time:"08:00",brief_days:"all",eve:true,eve_time:"18:00",eve_days:"sun-thu",critical:true,quiet_from:22,quiet_to:7};
+  const NDEF={brief:true,brief_time:"08:00",brief_days:"sun-thu",wk:true,eve:true,eve_time:"18:00",eve_days:"sun-thu",critical:true,quiet_from:22,quiet_to:7};
   let notify={...NDEF},briefLast=null,eveLast=null,pushOn=false,pushEp="";
   const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
   const standalone=()=>window.navigator.standalone===true||matchMedia("(display-mode: standalone)").matches;
@@ -3288,7 +3291,7 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
     el.append(near.length?h("div",{class:"lfr"},...near.map(x=>row(x.t,x.k))):h("div",{class:"lfr"},h("div",null,"✓ אין משימות במקום הזה")));
     if(any.length){el.append(h("div",{class:"lh"},"🛒 בכל מקום, גם כאן"));el.append(h("div",{class:"lfr"},...any.map(x=>row(x.t,null))));}
     if(far.length){el.append(h("div",{class:"lh"},"🧭 בהמשך"));el.append(h("div",{class:"lfr"},...far.map(x=>row(x.t,x.k))));}}
-  function closeModal(keep){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(keep!==true)unlockScroll();if(/^#(brief|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
+  function closeModal(keep){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(keep!==true)unlockScroll();if(/^#(brief|eve|fri|wkend|week|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
   function modal(id,...kids){closeModal(true);lockScroll();const m=h("div",{class:"sqmodal",id,onclick:e=>{if(e.target===m)closeModal();}},h("div",{class:"sqpanel",role:"dialog","aria-modal":"true"},...kids));document.body.append(m);return m;}
   function sw(on,fn,label){return h("input",{type:"checkbox",class:"sqsw",role:"switch",checked:on||null,"aria-label":label,onchange:e=>fn(e.target.checked)});}
   // ===== 5.9: morning brief = a short popup (Oren 3.11.2026). It tells him only what he does NOT know
@@ -3303,54 +3306,128 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
   // Small tasks he adds himself (born in a moment) should also close fast: they go first in these windows.
   let morningBrief=null,eveBrief=null,errandsOn=false,briefMd="morning";
   const hm=s=>{const [a,b]=String(s||"").split(":").map(x=>parseInt(x)||0);return a*60+b;};
-  function briefMode(){const d=new Date(),m=d.getHours()*60+d.getMinutes();return m>=Math.min(hm(notify.eve_time||"18:00")-90,15*60)?"eve":"morning";}
-  const seenKey=md=>md==="eve"?"sq_eve_seen":"sq_brief_seen";
-  function briefSeenToday(md){try{return localStorage.getItem(seenKey(md||briefMode()))===todayISO();}catch(e){return false;}}
-  function markBriefSeen(md){try{localStorage.setItem(seenKey(md||briefMd),todayISO());}catch(e){}renderSunDot();}
-  function renderSunDot(){const d=$("sunDot");if(!d)return;const md=briefMode(),t=todayISO();
-    d.hidden=briefSeenToday(md)||!(md==="eve"?((eveBrief&&eveBrief.date===t)||(eveLast&&eveLast.date===t)):((morningBrief&&morningBrief.date===t)||(briefLast&&briefLast.date===t)));
-    const b=$("sunBtn");if(b)b.setAttribute("aria-label",md==="eve"?"בריף הערב":"בריף הבוקר");}
+  // ===== 10.7 (Oren 6.11.2026): the briefs follow his week, not the clock.
+  // Sun-Thu: morning (on the way to work) and evening (back home from work). Thu night: Friday's errands half-day.
+  // Friday as the weekend starts (13:00): the weekend (small tasks, family, home). Saturday night: the coming week.
+  // No evening brief on Friday or Saturday night. The ☀️ button always opens the LATEST brief.
+  // Slots = [kind, minute the app starts showing it]; the push times live in sq-push (Thu 21:30, Fri 13:00, Sat 21:00).
+  const BKD={morning:{doc:"morning_brief",l:"בריף הבוקר"},eve:{doc:"evening_brief",l:"בריף הערב"},
+    fri:{doc:"fri_brief",l:"בריף לשישי",t:"🛒 שישי: סידורים",ok:"יאללה 🛒"},
+    wkend:{doc:"weekend_brief",l:"בריף הסופ״ש",t:"🏡 סופ״ש טוב",ok:"סופ״ש טוב 🏡"},
+    week:{doc:"week_brief",l:"בריף לשבוע",t:"🗓️ השבוע שמתחיל",ok:"שבוע טוב 💪"}};
+  let xBriefs={};
+  const dayOkB=(days,d)=>days==="all"?true:days==="sun-fri"?d!==6:d<=4;
+  function briefSlots(d){const r=[];
+    if(notify.brief!==false&&dayOkB(notify.brief_days||"sun-thu",d))r.push(["morning",300]);
+    if(notify.eve!==false&&dayOkB(notify.eve_days||"sun-thu",d))r.push(["eve",Math.min(hm(notify.eve_time||"18:00")-90,900)]);
+    if(notify.wk!==false){if(d===4)r.push(["fri",1260]);if(d===5)r.push(["wkend",750]);if(d===6)r.push(["week",1200]);}
+    return r.sort((a,b)=>a[1]-b[1]);}
+  // the latest brief that already started: {kind, date = the day it belongs to, age in minutes}
+  function latestBrief(){const n=ilNow(),base=ilDate();
+    for(let k=0;k<8;k++){const d=((n.d-k)%7+7)%7,L=briefSlots(d).filter(x=>k>0||x[1]<=n.m);
+      if(L.length){const x=L[L.length-1];return {kind:x[0],date:addDays(base,-k),age:k*1440+n.m-x[1]};}}
+    return {kind:"morning",date:base,age:0};}
+  function briefMode(){return latestBrief().kind;}
+  function briefDate(md){const L=latestBrief();return L.kind===md?L.date:ilDate();}
+  const seenKey=md=>"sq_bseen_"+md;
+  function briefSeenToday(md){md=md||briefMode();try{return localStorage.getItem(seenKey(md))===briefDate(md);}catch(e){return false;}}
+  function markBriefSeen(md){md=md||briefMd;try{localStorage.setItem(seenKey(md),briefDate(md));}catch(e){}renderSunDot();}
+  function renderSunDot(){const d=$("sunDot");if(!d)return;const L=latestBrief();
+    d.hidden=briefSeenToday(L.kind)||L.age>16*60;
+    const b=$("sunBtn");if(b)b.setAttribute("aria-label",BKD[L.kind].l);}
+  // what may go into a brief (Oren 6.11.2026, after a Friday evening brief full of closed, far and irrelevant things):
+  // open, not waiting for others, not snoozed, not a project open-end (AI Projects), not planned for a later day,
+  // and a long task only when its date or deadline is within 3 days. Critical always passes.
+  const planDay=t=>(t.day_plan&&t.day_plan.date)||t.next_date||"";
+  function bOk(t,iso){if(!isOpen(t)||t.status==="paused"||t.status==="waiting_other"||snoozed(t)||isFun(t)||isBg(t))return false;
+    if(t.critical===true)return true;
+    if(t.quest==="ai"||(t.project&&!t.dash))return false;
+    const p=planDay(t);if(p&&iso&&p>iso)return false;
+    if(sizeOf(t)==="long"){const dl=dlOf(t),near=x=>{const n=x?daysUntil(x):null;return n!=null&&n<=3;};if(!near(p)&&!near(dl&&dl.d))return false;}
+    return true;}
+  // critical = marked critical, or urgent by someone else (not Oren, not a Claude run)
+  const bCrit=t=>isOpen(t)&&t.status!=="paused"&&!snoozed(t)&&!isFun(t)&&(t.critical===true||(!!t.urgent&&!!t.urgent_by&&t.urgent_by!=="oren"&&t.urgent_by!=="claude"&&t.quest!=="ai"));
+  // rank inside a brief: planned for that day (in his order) > overdue > urgent/high > near deadline > his own small tasks
+  function bRank(t,iso){const p=planDay(t),dl=dlOf(t);let s=0;
+    if(p===iso)s-=300+(10-Math.min(9,+((t.day_plan&&t.day_plan.date===iso&&t.day_plan.n)||9)));
+    else if(p&&p<iso)s-=120;
+    if(t.urgent)s-=60;if(t.priority==="high")s-=30;
+    const dd=dl?daysUntil(dl.d):null;if(dd!=null)s+=Math.max(-40,Math.min(40,dd*3-40));
+    if(isOwn(t)&&sizeOf(t)!=="long")s-=40;if(t.status==="waiting_me")s-=10;
+    return s;}
+  // tasks that fit at least one of the windows on day iso (strict window match, see fitsWin), best first
+  // at = minute of that day when he would do it: a place / call center already closed then is dropped (timegate.js)
+  function openAt(t,iso,at){if(at==null||!window.SQGate)return true;const g=window.SQGate.gate(t,iso,new Date(iso+"T12:00:00").getDay(),at);return !g||g.kind==="unknown"||(g.kind!=="closed"&&g.state!=="past");}
+  function bFit(iso,wins,at){return allTopics.filter(t=>bOk(t,iso)&&!bCrit(t)&&wins.some(w=>fitsWin(t,w))&&openAt(t,iso,at)).sort((a,b)=>bRank(a,iso)-bRank(b,iso));}
+  // a row written earlier (by Claude at 07:38 or by the app) whose task is closed / paused / snoozed since then disappears
+  function liveItem(x){if(!x||!x.text)return false;if(!x.id)return true;const t=allTopics.find(z=>z.id===x.id);if(!t)return true;return isOpen(t)&&t.status!=="paused"&&!snoozed(t);}
+  const cut=(s,n)=>{s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s;};
   const MANUAL=/נוסף ידנית/;
-  const ERRAND=/^(לקנות|לקחת|להחליף|לסדר|לעבור|לאסוף|להביא|לתקן|לשכפל|להחזיר|למסור|להוציא|לצלם)/;
-  const PHONE=/^(להזכיר|לשלוח הודעה|להתקשר|לשאול|לבקש|לשלם|לקבוע|לענות|לאשר)/;
-  const bQuick=t=>MANUAL.test(t.source||"")&&!ctxOf(t).includes("pc")&&String(t.next_step||"").length<60;
-  const isErrand=t=>ctxOf(t).includes("out")||ERRAND.test(String(t.title||"").trim());
-  const isPhone=t=>{const c=ctxOf(t);return c.includes("call")||c.includes("lior")||c.includes("mobile")||PHONE.test(String(t.title||"").trim());};
-  function bScore(t){const n=daysUntil(t.next_date),age=(Date.now()-Date.parse(t.created_at||0))/864e5;
-    return (isUrgent(t)||t.critical?0:100)+(n==null?50:Math.max(-20,Math.min(40,n)))+(t.priority==="high"?0:20)+(t.status==="waiting_me"?0:10)-(bQuick(t)&&age<14?70:0);}
   function autoBrief(){
     const now=new Date(),y=new Date(now);y.setDate(y.getDate()-1);y.setHours(20,0,0,0);const since=y.getTime();
-    const wk=now.getDay()<=4;
-    const live=allTopics.filter(t=>!isFun(t)&&isOpen(t)&&!isBg(t)&&t.status!=="paused"&&!snoozed(t));
+    const wk=now.getDay()<=4,today=ilDate();
     const it=t=>({id:t.id,text:t.title||"",sub:t.next_step||t.waiting_for||""});
-    const critical=live.filter(t=>t.critical||(t.urgent&&t.urgent_by&&t.urgent_by!=="oren")).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
-    // news = touched from outside since 20:00 (sync from a project/scan, or created not by hand in the app)
-    const news=allTopics.filter(t=>!isFun(t)&&((t.sync&&t.sync.at&&Date.parse(t.sync.at)>=since)||(t.created_at&&Date.parse(t.created_at)>=since&&!MANUAL.test(t.source||""))))
-      .slice(0,3).map(t=>({id:t.id,text:t.title||"",sub:t.stand||""}));
+    const critical=allTopics.filter(bCrit).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
+    const news=bNews(since).map(t=>({id:t.id,text:t.title||"",sub:t.stand||""}));
     const used=new Set([...critical,...news].map(x=>x.id));
-    const pick=(f,n)=>{const r=live.filter(t=>!used.has(t.id)&&t.status!=="waiting_other"&&f(ctxOf(t),t)).sort((a,b)=>bScore(a)-bScore(b)).slice(0,n);r.forEach(t=>used.add(t.id));return r.map(it);};
-    const nowL=pick((c,t)=>isPhone(t)&&!isErrand(t),3);
-    const work=wk?pick(c=>c.includes("office"),2):[];
-    const evening=wk?pick((c,t)=>isErrand(t),2):[];
-    const errands=pick((c,t)=>isErrand(t)||c.includes("house")||bQuick(t),now.getDay()===5?6:4);
+    const pick=(wins,n)=>{const r=bFit(today,wins).filter(t=>!used.has(t.id)).slice(0,n);r.forEach(t=>used.add(t.id));return r.map(it);};
+    const nowL=pick(["home_am","drive_am"],3);
+    const work=wk?pick(["work"],2):[];
+    const evening=wk?pick(["near_home"],2):[];
+    const errands=pick(["errands","fri"],now.getDay()===5?6:4);
     return {auto:true,headline:critical.length?critical[0].text:news.length?"יש עדכונים מהלילה":"בוקר רגיל, הנה מה שמתאים עכשיו",news,critical,now:nowL,work,evening,errands};
   }
   // evening: what came in during the day, errands for the way home, one call/reminder for the drive, and what can wait for tonight
   function autoEve(){
-    const now=new Date(),s=new Date(now);s.setHours(8,0,0,0);const since=s.getTime();
-    const live=allTopics.filter(t=>!isFun(t)&&isOpen(t)&&!isBg(t)&&t.status!=="paused"&&!snoozed(t));
+    const now=new Date(),s=new Date(now);s.setHours(8,0,0,0);const since=s.getTime(),today=ilDate();
     const it=t=>({id:t.id,text:t.title||"",sub:t.next_step||t.waiting_for||""});
-    const critical=live.filter(t=>t.critical||(t.urgent&&t.urgent_by&&t.urgent_by!=="oren")).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
-    const news=allTopics.filter(t=>!isFun(t)&&((t.sync&&t.sync.at&&Date.parse(t.sync.at)>=since)||(t.created_at&&Date.parse(t.created_at)>=since&&!MANUAL.test(t.source||""))))
-      .slice(0,3).map(t=>({id:t.id,text:t.title||"",sub:t.stand||""}));
+    const critical=allTopics.filter(bCrit).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
+    const news=bNews(since).map(t=>({id:t.id,text:t.title||"",sub:t.stand||""}));
     const used=new Set([...critical,...news].map(x=>x.id));
-    const pick=(f,n)=>{const r=live.filter(t=>!used.has(t.id)&&t.status!=="waiting_other"&&f(ctxOf(t),t)).sort((a,b)=>bScore(a)-bScore(b)).slice(0,n);r.forEach(t=>used.add(t.id));return r.map(it);};
-    const way=pick((c,t)=>isErrand(t),3);
-    const call=[{text:"לשאול את ליאור אם לקנות משהו בדרך",e:"💬"},...pick((c,t)=>isPhone(t)&&!isErrand(t),1)];
-    const night=pick(c=>c.includes("pc")||c.includes("house"),2);
-    return {auto:true,headline:way.length?"בדרך הביתה: "+way.slice(0,2).map(x=>x.text).join(" · "):"לשאול את ליאור אם צריך משהו מהדרך",critical,news,way,call,night};
+    const pick=(wins,n,at)=>{const r=bFit(today,wins,at).filter(t=>!used.has(t.id)).slice(0,n);r.forEach(t=>used.add(t.id));return r.map(it);};
+    // only places still open on the way / near home tonight (fitsWin drops day-only offices), calls for the drive, light things for tonight
+    const way=pick(["near_home"],2,1140);
+    const call=[{text:"לשאול את ליאור אם לקנות משהו בדרך",e:"💬"},...pick(["drive_pm"],1,1110)];
+    const night=pick(["light","deep"],2);
+    return {auto:true,headline:critical.length?cut(critical[0].text,32):way.length?"בדרך הביתה: "+cut(way[0].text,24):"לשאול את ליאור אם צריך משהו מהדרך",top:[...critical.slice(0,1).map(x=>({...x,e:"🚨"})),...way.slice(0,1).map(x=>({...x,e:"🛒"})),call[0],...night.slice(0,1).map(x=>({...x,e:"🌙"}))].slice(0,3),critical,news,way,call,night};
   }
-  function curBrief(md){const t=todayISO();
+  // news = arrived from outside since `since` (a sync from a project/scan, or created not by hand), only open life tasks
+  function bNews(since){return allTopics.filter(t=>isOpen(t)&&t.status!=="paused"&&!isFun(t)&&!isBg(t)&&t.quest!=="ai"&&!(t.project&&!t.dash)&&
+    ((t.sync&&t.sync.at&&Date.parse(t.sync.at)>=since)||(t.created_at&&Date.parse(t.created_at)>=since&&!MANUAL.test(t.source||"")))).slice(0,2);}
+  // 10.7: automatic Friday / weekend / week briefs (Claude's routine writes a better one into settings/<doc>; this is the fallback)
+  function autoX(kind,date){const used=new Set(),S=[];
+    const take=(arr,n)=>{const r=arr.filter(t=>!used.has(t.id)).slice(0,n);r.forEach(t=>used.add(t.id));return r;};
+    const sec=(hd,e,ts)=>{if(ts.length)S.push({h:hd,e,items:ts.map(t=>({id:t.id,text:t.title||"",sub:t.next_step||"",e}))});};
+    const crit=take(allTopics.filter(bCrit),2);sec("🚨 קריטי","🚨",crit);let head="";
+    const how=t=>howOf(t);
+    if(kind==="fri"){const iso=addDays(date,1); // the brief comes Thursday night, for Friday 08:00-13:00
+      const out=take(bFit(iso,["fri"],480).filter(t=>how(t).includes("place")),6);
+      const calls=take(bFit(iso,["fri"],480).filter(t=>how(t).length&&how(t).every(x=>x==="call"||x==="phone")),2);
+      const home=take(bFit(iso,["fri","sat_am"]).filter(t=>how(t).includes("home")),2);
+      sec("🛒 בחוץ, לפי הסדר","🛒",out);sec("📞 שיחות עד הצהריים","📞",calls);sec("🔧 בבית","🔧",home);
+      head=crit.length?cut(crit[0].title,32):out.length?"לשישי: "+out.slice(0,2).map(t=>cut(t.title,18)).join(" · "):"שישי פנוי, בלי סידורים";}
+    else if(kind==="wkend"){const iso=addDays(date,1); // Friday 13:00 to Saturday night: family, home, small things. No offices.
+      const atHome=t=>{const f=fitOf(t),h0=how(t);if(Array.isArray(f.when)&&f.when.length)return ["weekend","sat_am","light","deep","family"].some(w=>fitsWin(t,w));
+        return h0.length>0&&h0.every(x=>["home","phone","lior","family","pc"].includes(x))&&t.quest!=="work"&&t.quest!=="army";};
+      const L=allTopics.filter(t=>bOk(t,iso)&&!bCrit(t)&&atHome(t)).sort((a,b)=>bRank(a,iso)-bRank(b,iso));
+      const fam=take(L.filter(t=>t.dash==="family"||how(t).some(x=>x==="family"||x==="lior")||(Array.isArray(fitOf(t).with)&&fitOf(t).with.some(p=>p==="lior"||p==="parents"))),3);
+      const home=take(L.filter(t=>how(t).includes("home")),3);
+      const small=take(L.filter(t=>sizeOf(t)==="quick"||(isOwn(t)&&sizeOf(t)!=="long")),3);
+      sec("👨‍👩‍👧 משפחה","👨‍👩‍👧",fam);sec("🔧 בבית","🔧",home);sec("⚡ קטנות","⚡",small);
+      head=crit.length?cut(crit[0].title,32):fam.length?"בסופ״ש: "+cut(fam[0].title,24):home.length?"בסופ״ש: "+cut(home[0].title,24):"סופ״ש רגוע, אין משהו דחוף";}
+    else{const from=addDays(date,1),to=addDays(date,5); // Saturday night: Sunday to Thursday
+      const L=allTopics.filter(t=>bOk(t,to)&&!bCrit(t)&&!used.has(t.id));
+      const dated=L.filter(t=>planDay(t)&&planDay(t)<=to).sort((a,b)=>planDay(a)<planDay(b)?-1:planDay(a)>planDay(b)?1:bRank(a,planDay(a))-bRank(b,planDay(b))).slice(0,10);
+      dated.forEach(t=>used.add(t.id));
+      const late=dated.filter(t=>planDay(t)<from);sec("⏮️ נשאר מהשבוע שעבר","⏮️",late);
+      for(let k=1;k<=5;k++){const iso=addDays(date,k),ts=dated.filter(t=>planDay(t)===iso),dd=new Date(iso+"T12:00:00");sec(`📅 ${HE_DAYS[dd.getDay()]} ${dd.getDate()}.${dd.getMonth()+1}`,"📅",ts);}
+      const dls=take(L.filter(t=>{const dl=dlOf(t);return dl&&dl.d>=from&&dl.d<=addDays(date,14);}).sort((a,b)=>dlOf(a).d<dlOf(b).d?-1:1),3);
+      sec("⏳ מועדים בשבועיים הקרובים","⏳",dls);
+      const n=dated.length-late.length;head=crit.length?cut(crit[0].title,32):n?`השבוע: ${n} דברים עם יום קבוע`:"שבוע בלי מועדים קבועים";}
+    const top=S.flatMap(s=>s.items).slice(0,3);
+    return {auto:true,date,headline:head,top,sections:S};}
+  function curBrief(md){const t=briefDate(md);
+    if(BKD[md]&&!["morning","eve"].includes(md)){const x=xBriefs[md];return x&&x.date===t&&Array.isArray(x.sections)?x:autoX(md,t);}
     if(md==="eve"){const e=eveBrief&&eveBrief.date===t&&(eveBrief.way||eveBrief.news||eveBrief.call)?eveBrief:null;return e||autoEve();}
     const m=morningBrief&&morningBrief.date===t&&(morningBrief.now||morningBrief.news||morningBrief.critical)?morningBrief:null;return m||autoBrief();}
   function bpDone(t){markDone(t);setTimeout(()=>{if($("briefM"))showBrief(briefMd);},350);}
@@ -3358,13 +3435,13 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
     return h("div",{class:"bp-row"},h("span",{class:"e","aria-hidden":"true"},x.e||emoji),
       h("button",{class:"x",type:"button",onclick:()=>{if(t){markBriefSeen();closeModal();openTask(t.id);}}},String(x.text||""),x.sub?h("small",null,String(x.sub)):null),
       t&&isOpen(t)&&canWrite?h("button",{class:"ok",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:()=>bpDone(t)},"✓"):null);}
-  function bpSec(title,items,emoji,cls){const a=(Array.isArray(items)?items:[]).filter(x=>x&&x.text);if(!a.length)return null;
+  function bpSec(title,items,emoji,cls){const a=(Array.isArray(items)?items:[]).filter(liveItem);if(!a.length)return null;
     return h("div",{class:"bp-sec"+(cls?" "+cls:"")},h("h4",null,title),a.map(x=>bpRow(x,emoji)));}
   function closeBrief(){markBriefSeen(briefMd);briefFull=false;closeModal();}
   // 8.4 (Oren 6.11.2026: "עמוס מדי, קצר ומדויק"): short view first = the headline and up to 3 rows in big type.
   // Claude's routine writes `top` (the 3 picks); without it the app takes critical, one news item and the best picks.
   let briefFull=false;
-  const bAll=(b,keys)=>{const seen=new Set(),r=[];keys.forEach(([k,e])=>(Array.isArray(b[k])?b[k]:[]).forEach(x=>{if(!x||!x.text)return;const key=x.id||x.text;if(seen.has(key))return;seen.add(key);r.push({...x,e:x.e||e});}));return r;};
+  const bAll=(b,keys)=>{const seen=new Set(),r=[];keys.forEach(([k,e])=>(Array.isArray(b[k])?b[k]:[]).forEach(x=>{if(!liveItem(x))return;const key=x.id||x.text;if(seen.has(key))return;seen.add(key);r.push({...x,e:x.e||e});}));return r;};
   function briefKeys(md){return md==="eve"?[["critical","🚨"],["way","🛒"],["call","📞"],["news","🆕"],["night","🌙"]]
     :[["critical","🚨"],["now","📞"],["news","🆕"],...(errandsOn?[["errands","🛒"]]:[]),["work","⚡"],["evening","🛒"]];}
   // 10.0: today's "צא עד" deadlines always lead the brief (timegate.js)
@@ -3372,7 +3449,7 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
     return G.list(allTopics,ilDate(),n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past").slice(0,2)
       .map(g=>{const tx=G.text(g);return {text:`${tx.head.replace(/^\S+\s/,"")} · ${g.title}`,id:g.id,e:g.closed?"🚫":g.call?"📞":"🚗"};});}
   function briefTop(b,md){const g=md==="eve"?[]:gateTop(),gi=new Set(g.map(x=>x.id));return [...g,...briefTop0(b,md).filter(x=>!x.id||!gi.has(x.id))].slice(0,3);}
-  function briefTop0(b,md){const own=(Array.isArray(b.top)?b.top:[]).filter(x=>x&&x.text);if(own.length)return own.slice(0,3);
+  function briefTop0(b,md){const own=(Array.isArray(b.top)?b.top:[]).filter(liveItem);if(own.length)return own.slice(0,3);
     const crit=bAll(b,[["critical","🚨"]]).slice(0,1),news=bAll(b,[["news","🆕"]]).slice(0,1);
     const ids=new Set([...crit,...news].map(x=>x.id||x.text));
     const rest=bAll(b,briefKeys(md).filter(([k])=>k!=="critical"&&k!=="news")).filter(x=>!ids.has(x.id||x.text));
@@ -3383,13 +3460,15 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
   const bpMoreBtn=(more)=>briefFull?h("button",{class:"more",type:"button",onclick:()=>{briefFull=false;showBrief(briefMd);}},"פחות ▴")
     :more?h("button",{class:"more",type:"button",onclick:()=>{briefFull=true;showBrief(briefMd);}},`עוד ${more} ▾`):null;
   // first open of the day, in the morning, on the Side Quests main screen: the brief greets him once
-  function autoBriefOnOpen(){const hr=new Date().getHours(),md=briefMode();if(quest!=="side"||briefSeenToday(md)||location.hash)return;
-    if(md==="morning"?(hr<5||hr>=12):(hr>=22||!notify.eve))return;
-    setTimeout(()=>{if(!document.querySelector(".sqmodal"))showBrief(md);},500);}
+  // 10.7: the latest brief greets him once (first open after it starts), not after 16 hours, not at night, morning only until noon
+  function autoBriefOnOpen(){const L=latestBrief(),m=ilNow().m;if(quest!=="side"||briefSeenToday(L.kind)||location.hash)return;
+    if(L.age>16*60||m<300||m>=1380||(L.kind==="morning"&&m>=720))return;
+    setTimeout(()=>{if(!document.querySelector(".sqmodal"))showBrief(L.kind);},500);}
   function showBrief(md){
     if(!$("briefM"))briefFull=false; // every new open starts short
-    md=md==="eve"||md==="morning"?md:briefMode();briefMd=md;
+    md=BKD[md]?md:briefMode();briefMd=md;
     if(md==="eve")return showEve();
+    if(md!=="morning")return showX(md);
     const b=curBrief("morning"),now=new Date(),wk=now.getDay()<=4,fri=now.getDay()===5;
     if(fri&&!errandsOn)errandsOn=true;
     const tp=planFor(ilDate());if(tp&&(tp.errands_min>=60||tp.office===false))errandsOn=true; // 7.3: he said tonight he has a morning of errands
@@ -3433,6 +3512,21 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
       h("div",{class:"bp-btns"},bpMoreBtn(1),h("button",{class:"main",type:"button",onclick:closeBrief},"יאללה הביתה 🚗"))));
     m.classList.add("bpop");markBriefSeen("eve");
   }
+  // 10.7: Friday errands (Thu night), weekend (Fri 13:00), the coming week (Sat night). Same short popup: headline + 3 rows, "עוד" = all sections.
+  function showX(kind){const B=BKD[kind],b=curBrief(kind),dd=new Date(addDays(briefDate(kind),kind==="fri"?1:0)+"T12:00:00"); // the Friday brief shows Friday's date
+    const ttl=kind==="fri"&&ilNow().d!==5?"🛒 מחר שישי: סידורים":B.t;
+    const secs=(Array.isArray(b.sections)?b.sections:[]).map(s=>({...s,items:(Array.isArray(s.items)?s.items:[]).filter(liveItem)})).filter(s=>s.items.length);
+    const all=secs.flatMap(s=>s.items.map(x=>({...x,e:x.e||s.e})));
+    const top=(Array.isArray(b.top)&&b.top.filter(liveItem).length?b.top.filter(liveItem):all).slice(0,3),ids=new Set(top.map(x=>x.id||x.text));
+    const more=all.filter(x=>!ids.has(x.id||x.text)).length;
+    const empty=h("div",{class:"bp-empty"},kind==="week"?"שבוע פנוי, בלי מועדים ✨":"אין שום דבר דחוף. תהנה 🌿");
+    const btns=h("div",{class:"bp-btns"},bpMoreBtn(briefFull?1:more),h("button",{class:"main",type:"button",onclick:closeBrief},B.ok));
+    const m=modal("briefM",
+      h("div",{class:"bp-top "+kind+(briefFull?"":" short")},h("div",{class:"bp-h"},h("b",null,ttl),h("small",null,`${HE_DAYS[dd.getDay()]} ${dd.getDate()}.${dd.getMonth()+1}`),h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeBrief},"×")),
+        b.headline?h("div",{class:"bp-head"},String(b.headline)):null),
+      briefFull?h("div",{class:"bp-in bp-full"},...secs.map(s=>bpSec(s.h,s.items,s.e)),all.length?null:empty,btns)
+        :h("div",{class:"bp-in"},top.length?h("div",{class:"bp-sec bp-short"},top.map(x=>bpRow(x,x.e))):empty,btns));
+    m.classList.add("bpop");m.classList.toggle("car",carOn);markBriefSeen(kind);}
   const setOpen=new Set();
   // 9.6 (Oren 6.11, standing rule): a tapped control never moves. The panel has a fixed height (opening a section grows
   // downward only), and after every re-render the tapped control is put back at the exact same spot on screen (a spacer at
@@ -3507,7 +3601,9 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
         pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("eve",e.currentTarget,"בריף הערב נשלח")},"שלח בריף ערב עכשיו")):null),
       sec("crit","🚨 דחוף בלבד",notify.critical?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות"))),
-      h("div",{class:"sqhint"},"הבריפים עצמם: כפתור ☀️ למעלה במסך הראשי (בבוקר בוקר, אחרי הצהריים ערב)."),
+      sec("wk","🗓️ שישי, סופ״ש ושבוע",abroadOn()?"מושהה בחו״ל":notify.wk!==false?"פעיל":"כבוי",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"חמישי 21:30 לסידורי שישי, שישי 13:00 לסופ״ש, מוצ״ש 21:00 לשבוע הקרוב")),sw(notify.wk!==false,v=>setNotify({wk:v}),"בריפים לשישי, לסופ״ש ולשבוע"))),
+      h("div",{class:"sqhint"},"הבריפים עצמם: הכפתור למעלה במסך הראשי פותח תמיד את הבריף האחרון."),
       grp("📦 ארכיון"),
       archSec(sec),
       h("button",{type:"button",class:"sqbtn ghost sqdone",onclick:closeModal},"✓ סגור"),
@@ -3550,7 +3646,7 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
     setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
   let routed=false;
   function routeHash(){const hs=location.hash;
-    if(hs==="#brief"){showBrief("morning");return true;}if(hs==="#eve"){showBrief("eve");return true;}if(hs==="#settings"){showSettings();return true;}
+    if(hs==="#brief"){showBrief("morning");return true;}if(hs==="#eve"){showBrief("eve");return true;}if(/^#(fri|wkend|week)$/.test(hs)){showBrief(hs.slice(1));return true;}if(hs==="#settings"){showSettings();return true;}
     const m=hs.match(/^#t=(.+)$/);if(m&&allTopics.length){const id=decodeURIComponent(m[1]);try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}openTask(id);return true;}
     return false;}
   window.addEventListener("hashchange",routeHash);
@@ -3560,6 +3656,7 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
   $("locBtn").onclick=()=>showHere(true);
   function initNotify(){
     db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan");plan=pl?pl.data():null;morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
+      xBriefs={};for(const k of ["fri","wkend","week"]){const d0=s.docs.find(x=>x.id===BKD[k].doc);if(d0)xBriefs[k]=d0.data();}
       notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;refreshMode();
       if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}else if($("briefM"))showBrief(briefMd);else renderSettings();renderSunDot();},()=>{});
     db.collection("topics").onSnapshot(()=>{if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}},()=>{});

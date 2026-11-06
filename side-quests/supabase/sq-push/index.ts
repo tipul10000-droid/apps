@@ -84,7 +84,7 @@ async function sendTo(list: any[], msg: { title: string; body: string; tag?: str
 }
 
 // ---------- prefs ----------
-const DEF = { brief: true, brief_time: "08:00", brief_days: "all", eve: true, eve_time: "18:00", eve_days: "sun-thu", critical: true, quiet_from: 22, quiet_to: 7 };
+const DEF = { brief: true, brief_time: "08:00", brief_days: "sun-thu", wk: true, eve: true, eve_time: "18:00", eve_days: "sun-thu", critical: true, quiet_from: 22, quiet_to: 7 };
 async function prefs() { return { ...DEF, ...((await getDoc(APP, "settings", "notify")) || {}) }; }
 
 // ---------- brief ----------
@@ -165,6 +165,21 @@ async function eveNow(source: string, list?: any[]) {
   }
   const n = await sendTo(list || (await subs()), { title: "🌆 ערב טוב", body: head, tag: "sq-eve", url: APP_URL + "#eve" });
   await putDoc(APP, "settings", "eve_last", { at: new Date().toISOString(), date: today, headline: head, by: ai && ai.date === today ? "claude" : "auto", source, sent: n });
+  return { sent: n, headline: head };
+}
+// ---------- 10.7 (Oren 6.11.2026): Friday errands (Thu 21:30), weekend (Fri 13:00), the coming week (Sat 21:00) ----------
+// Claude's routines write settings/fri_brief | weekend_brief | week_brief {date, headline, top, sections}; the app shows them (#fri/#wkend/#week).
+const XB = [
+  { k: "fri", wd: "Thu", at: 21 * 60 + 30, doc: "fri_brief", title: "🛒 מחר שישי", def: "הבריף לסידורים של מחר מוכן" },
+  { k: "wkend", wd: "Fri", at: 13 * 60, doc: "weekend_brief", title: "🏡 סופ״ש טוב", def: "הבריף לסופ״ש מוכן" },
+  { k: "week", wd: "Sat", at: 21 * 60, doc: "week_brief", title: "🗓️ שבוע טוב", def: "הבריף לשבוע הקרוב מוכן" },
+];
+async function xNow(x: any, source: string, list?: any[]) {
+  const today = il().date;
+  const ai = await getDoc(APP, "settings", x.doc);
+  const head = ai && ai.date === today && ai.headline ? String(ai.headline) : x.def;
+  const n = await sendTo(list || (await subs()), { title: x.title, body: head, tag: "sq-" + x.k, url: APP_URL + "#" + x.k });
+  await putDoc(APP, "settings", x.k + "_last", { at: new Date().toISOString(), date: today, headline: head, by: ai && ai.date === today ? "claude" : "auto", source, sent: n });
   return { sent: n, headline: head };
 }
 const dayOkFor = (days: string, wd: string) => days === "sun-thu" ? !["Fri", "Sat"].includes(wd) : days === "sun-fri" ? wd !== "Sat" : true;
@@ -270,6 +285,13 @@ async function tick() {
   if (p.eve && !p.abroadOn && dayOkFor(p.eve_days, t.wd) && se.date !== t.date && t.mins >= ea && t.mins < ea + 120) {
     await putDoc(SRV, "state", "eve", { date: t.date });
     out.eve = await eveNow("schedule");
+  }
+  if (p.wk !== false && !p.abroadOn) for (const x of XB) {
+    if (t.wd !== x.wd || t.mins < x.at || t.mins >= x.at + 120) continue;
+    const sx = (await getDoc(SRV, "state", "b_" + x.k)) || {};
+    if (sx.date === t.date) continue;
+    await putDoc(SRV, "state", "b_" + x.k, { date: t.date });
+    out[x.k] = await xNow(x, "schedule");
   }
   out.crit = await criticalTick(p, t);
   try { out.gates = await gateTick(p, t); } catch (e: any) { out.gates = { error: String(e?.message || e) }; }
