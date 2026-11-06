@@ -38,6 +38,11 @@
 .lbx{margin-top:10px;font-size:14px;background:#f3f0ff;border-radius:10px;padding:8px 10px;line-height:1.5}
 .res{margin-top:8px;font-size:14px}.res>div{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #dde5f1}
 .res .sc{font-size:17px;color:var(--ac)}.res .x{font:inherit;font-size:12px;color:var(--mut);background:none;border:0;cursor:pointer;padding:2px 6px}
+.tabs{display:flex;gap:6px;margin-top:10px}.tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:48px;font:inherit;font-size:16px;font-weight:600;color:var(--fg);background:#fff;border:1px solid var(--bd);border-radius:12px;cursor:pointer;padding:0 6px;position:relative}.tabs button img{width:30px;height:30px;border-radius:8px;object-fit:contain;pointer-events:none}.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}.tabs .dot{position:absolute;top:5px;left:7px;width:9px;height:9px;border-radius:50%;background:#e11d48;display:none}.tabs .dot.on{display:block}
+.kid.off{display:none}
+.ev{margin:4px 0 10px;background:#eef3fb;border:1px solid #d6e2f3;border-radius:12px;padding:10px 12px;font-size:15px}.ev .l{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px}.ev .ok{color:#15803d;font-weight:700}.ev .pen{font:inherit;font-size:14px;background:#fff;border:1px solid var(--bd);border-radius:10px;width:84px;height:34px;cursor:pointer;flex:none}.ev .row{display:flex;gap:6px;margin-top:8px}.ev input{font:inherit;font-size:15px;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;flex:1;min-width:0}.ev .ed{display:none}.ev .ed.on{display:flex;animation:grow .2s ease-out}.ev.fl{animation:flash 1.6s ease-out}.ev .sv{color:#15803d;font-size:13px;font-weight:700;margin-top:4px}
+@keyframes grow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}@keyframes flash{0%{background:#dcfce7;border-color:#22c55e}100%{background:#eef3fb}}
+.kid>.app:first-child{border-top:0;margin-top:0;padding-top:0}.head h1{white-space:nowrap}.head>span{display:flex;gap:5px;flex-wrap:nowrap}.head .b.s{padding:7px 9px;font-size:14px;white-space:nowrap}
 .head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 /* הסרגל העליון נשאר קבוע למעלה, והגלילה רק מתחתיו (אורן 6.11.2026) */.stk{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);margin:-4px -16px 12px;padding:4px 16px 10px;border-bottom:1px solid var(--bd);box-shadow:0 -80px 0 var(--bg),0 4px 10px rgba(31,41,51,.05)}.stk .back{margin:0 0 4px}body:has(.stk)>main>a.back{display:none}
 html,body,*{touch-action:manipulation}
@@ -75,11 +80,24 @@ function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה
   if((+d.done||0)>=r.done){r.done=+d.done||0;r.total=+d.total||r.total;r.learning=d.learning;r.pts=d.pts;r.first_ok=d.first}
   r.best=Math.max(r.best,+d.best||0);const f=d.first||x.first_at;if(f&&(!r.first||f<r.first))r.first=f;const l=d.last||x.updated_at;if(l&&(!r.last||l>r.last))r.last=l;
   for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)})});return r}
+const id0=(k,a)=>k.id+'_'+a.id;
+let TAB='dani',SAVED='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}
+// אירוע = תוכן לימוד עם מבחן/הכתבה אחד (אורן 6.11.2026): תאריך ← אחרי שעבר: ציון ← הציון. תאריך שנשמר מוצג עם ✓ ועיפרון לעריכה.
+function evBox(k,a,t,RS,id){const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null;
+ const G=RS[0],DN=t&&t.done,PAST=t&&t.d&&dl!==null&&dl<=0,TN=esc(t&&t.note||a.test),fl=SAVED===id?' fl':'';
+ if(G)return`<div class="ev${fl}"><div class="l"><span>✅ ${esc(G.note||TN)}${G.d?' ('+fmtD(G.d)+')':''}: ציון <b class="sc" style="font-size:18px;color:var(--ac)">${+G.score}</b></span><button class="pen" type="button" data-h="${G.id}">✕ מחיקה</button></div>${fl?'<div class="sv">✓ הציון נשמר</div>':''}</div>`;
+ if(DN||PAST)return`<div class="ev${fl}"><div class="l"><span>📝 ${TN}${t&&t.d?' ('+fmtD(t.d)+')':''} כבר היה. מה הציון?</span></div><div class="row"><input type="number" id="s_${id}" placeholder="ציון (0-100)" min="0" max="100" inputmode="decimal"><button class="b s" type="button" data-r="${k.id}|${a.id}|${t&&t.d||''}">שמירת ציון</button></div></div>`;
+ const has=t&&t.d,when=has?(dl===1?'מחר':'בעוד '+dl+' ימים'):'';
+ return`<div class="ev${fl}"><div class="l"><span>${has?`📅 ה${TN} הקרוב${a.test==='הכתבה'?'ה':''}: <b>${fmtD(t.d)}</b> (${when})${t.auto?'':' <span class="ok">✓</span>'}`:`📅 אין עדיין תאריך ל${a.test}`}</span>${has?`<button class="pen" type="button" data-e="${id}">✏️ עריכה</button>`:''}</div>
+ ${fl?'<div class="sv">✓ התאריך נשמר</div>':''}${t&&t.auto?`<div class="auto">🤖 התאמה אוטומטית מדשבורד המשפחה. אם זה לא נכון, ✏️ עריכה.</div>`:''}
+ <div class="row ed${has?'':' on'}" id="e_${id}"><input type="date" id="d_${id}" value="${t&&t.d||''}"><button class="b s" type="button" data-t="${k.id}|${a.id}">שמירת תאריך</button></div></div>`}
+function needsGrade(j,k){return k.apps.some(a=>{const t=(j.tests||[]).find(x=>x.kid===k.id&&x.app===a.id)||(j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null);if(!t)return false;
+ if((j.results||[]).some(x=>x.kid===k.id&&x.app===a.id))return false;return t.done||(t.d&&new Date(t.d+'T00:00:00')<=new Date(new Date().toDateString()))})}
 function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/'+t.app]=t);
- let h=`<div class="stk"><a class="back" href="../">→ כל הילדים</a><div class="head"><h1 style="margin:0;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button> <button class="b s" id="rf" type="button">רענון</button> <button class="b s" id="lo" type="button">יציאה</button></span></div></div>`;
- KIDS.forEach(k=>{h+=`<div class="kid"><div class="kh"><img src="../kids/${k.id}.webp" alt=""><b>${k.n}</b></div>`;
+ let h=`<div class="stk"><a class="back" href="../">→ כל הילדים</a><div class="head"><h1 style="margin:0;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button><button class="b s" id="rf" type="button">רענון</button><button class="b s" id="lo" type="button">יציאה</button></span></div><div class="tabs" id="tabs">${KIDS.map(k=>`<button type="button" data-k="${k.id}"${k.id===TAB?' class="on"':''}><img src="../kids/${k.id}.webp" alt="">${k.n}<i class="dot" id="dot_${k.id}"></i></button>`).join('')}</div></div>`;
+ KIDS.forEach(k=>{h+=`<div class="kid${k.id===TAB?'':' off'}" id="kd_${k.id}">`;
   if(!k.apps.length)h+=`<div class="none">עוד אין תכנים</div>`;
-  k.apps.forEach(a=>{const rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`;
+  k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`+evBox(k,a,t,RS,id0(k,a));
    if(!rows.length)h+=`<div class="none">עוד לא התחיל${k.id==='evyatar'?'':'ה'} (או שעוד לא נכנס${k.id==='evyatar'?'':'ה'} מאז שהוספנו את המעקב)</div>`;
    else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null;
     h+=`<div class="big"><b>${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>
@@ -95,23 +113,17 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
      if(dl>0&&left>0)h+=`<div class="none" style="margin-top:8px">נשארו ${left} ${a.unit} ו-${dl} ימים: בערך ${Math.ceil(left/dl)} ביום.</div>`}}
    if(a.id==='vocab'){const L=(j.lb||[]).filter(x=>LBN.includes(String(x.name).trim().toLowerCase()));
     if(L.length)h+=`<div class="lbx">🏅 מלוח הדירוג באפליקציה: ${L.map(x=>`הכינוי <b>${esc(x.name)}</b>: נלמדו ${x.learned}, שיא רצף ${x.best}, עדכון אחרון ${fmtD(x.updated_at)}`).join('<br>')}</div>`}
-   const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null,id=k.id+'_'+a.id;
-   const G=RS[0],DN=t&&t.done,PAST=t&&t.d&&dl!==null&&dl<=0,TN=esc(t&&t.note||a.test);
-   // שורה אחת לכל תוכן (אורן 6.11.2026): תאריך (אוטומטי או ידני) ← כשהמבחן היה: ציון ← הציון. בלי "מבחן חדש".
-   if(G)h+=`<div class="test">✅ ${esc(G.note||TN)}${G.d?' ('+fmtD(G.d)+')':''}: ציון <b class="sc">${+G.score}</b> <button class="x" type="button" data-h="${G.id}" title="מחיקת הציון">✕</button></div>`;
-   else if(DN||PAST)h+=`<div class="test">📝 ${TN}${t&&t.d?' ('+fmtD(t.d)+')':''}: אחרי המבחן. מה הציון?<div class="row"><input type="number" id="s_${id}" placeholder="ציון (0-100)" min="0" max="100" inputmode="decimal"><button class="b s" type="button" data-r="${k.id}|${a.id}|${t&&t.d||''}">שמירת ציון</button></div></div>`;
-   else h+=`<div class="test">📅 ${t&&t.d?`${TN}: <b>${fmtD(t.d)}</b> (${dl===1?'מחר':'בעוד '+dl+' ימים'})`:`אין עדיין תאריך ל${a.test}`}
-   ${t&&t.auto?`<div class="auto">🤖 התאמה אוטומטית מדשבורד המשפחה. אם זה לא נכון, תקנו כאן.</div>`:''}
-   <div class="row"><input type="date" id="d_${id}" value="${t&&t.d||''}"><button class="b s" type="button" data-t="${k.id}|${a.id}">שמירת תאריך</button></div></div>`;
    h+=`<div class="rst"><button class="lnk" type="button" data-z="${k.id}|${a.id}|${a.n}|${k.n}">↺ איפוס ההתקדמות</button>${RZ?`<small>אופס לאחרונה ${fmtD(RZ.at)}</small>`:''}</div></div>`})
   h+=`<div class="rqs" id="rq_${k.id}"></div></div>`});
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
- V.innerHTML=h;loadReq();if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem('study_par_pin')}catch(e){}PIN='';pinView()};
+ V.innerHTML=h;SAVED='';KIDS.forEach(k=>{const d=$('dot_'+k.id);if(d)d.classList.toggle('on',needsGrade(j,k))});loadReq();
+ V.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{TAB=b.dataset.k;try{localStorage.setItem('study_par_tab',TAB)}catch(e){}V.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));KIDS.forEach(k=>$('kd_'+k.id).classList.toggle('off',k.id!==TAB));scrollTo(0,0)});
+ V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':'✏️ עריכה'});if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem('study_par_pin')}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
  V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const [k,a]=b.dataset.t.split('|'),id=k+'_'+a;b.textContent='...';
-  done(b,rpc('study_parents_set_test',{p_pin:PIN,p_kid:k,p_app:a,p_d:$('d_'+id).value||null,p_note:''}))});
+  SAVED=id;done(b,rpc('study_parents_set_test',{p_pin:PIN,p_kid:k,p_app:a,p_d:$('d_'+id).value||null,p_note:''}))});
  V.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const [k,a,dd]=b.dataset.r.split('|'),id=k+'_'+a,sc=$('s_'+id).value.trim();
-  if(sc===''||isNaN(+sc)||+sc<0||+sc>100){$('s_'+id).focus();return}b.textContent='...';
+  if(sc===''||isNaN(+sc)||+sc<0||+sc>100){$('s_'+id).focus();return}b.textContent='...';SAVED=id;
   done(b,rpc('study_parents_result',{p_pin:PIN,p_kid:k,p_app:a,p_d:dd||iso(new Date()),p_note:'',p_score:+sc}))});
  V.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{const [k,a,an,kn]=b.dataset.z.split('|');
   if(!confirm(`לאפס את ההתקדמות של ${kn} ב${an}?\n\nבפעם הבאה שייכנסו לאפליקציה בטלפון, הכול יתחיל מאפס (נקודות, רצף ומילים). הציונים ותאריכי המבחנים נשארים.`))return;b.textContent='...';
