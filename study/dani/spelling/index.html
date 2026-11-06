@@ -161,9 +161,17 @@ const WORDS=[
 ['on the left','מִשְּׂמֹאל'],['on the right','מִיָּמִין'],['glasses','מִשְׁקָפַיִים'],['hole','חוֹר'],['jeans',"גִ'ינְס"],['pair','זוּג'],
 ['pocket','כִּיס'],['raincoat','מְעִיל גֶּשֶׁם'],['suit','חֲלִיפָה'],['top','חוּלְצָה / חֵלֶק עֶלְיוֹן'],['watch','שָׁעוֹן'],
 ['comfortable','נוֹחַ'],['pretty','יָפֶה'],['throw','לִזְרוֹק']];
-const ALT={little:['small','tiny'],road:['street','way'],wide:['broad'],whole:['all','entire'],pretty:['beautiful','cute','nice'],amazing:['wonderful','awesome','great'],
-comfortable:['comfy','cozy'],watch:['clock'],top:['shirt','t-shirt','tshirt'],pair:['couple'],raincoat:['coat'],inside:['in'],over:['above'],across:['opposite'],
-village:['town'],hill:['mountain'],'come home':['go home','return home'],floor:['story','storey'],throw:['toss']};
+// מילים קרובות (אורן 6.11.2026): תשובה נכונה באנגלית אבל לא המילה של ההכתבה = לא נחשבת נכונה, אבל גם לא שוברת את הרצף.
+const ALT={across:['opposite','over','through','crossing','the other side'],amazing:['wonderful','awesome','great','fantastic','incredible','cool','super','excellent'],
+hill:['mountain','mount','hills'],little:['small','tiny','mini'],narrow:['thin','tight','slim'],over:['above','on','on top','on top of','upon','up'],
+road:['street','way','highway','path','route'],side:['edge','part'],village:['town','small town'],whole:['all','entire','complete','full','total'],wide:['broad','big','large'],
+'dining room':['kitchen','eating room'],downstairs:['down','downstair','lower floor','below'],floor:['story','storey','level','ground'],front:['face','forward','in front'],
+inside:['in','into','within'],roof:['ceiling','top'],stairs:['steps','staircase','stair','ladder'],'swimming pool':['pool'],upstairs:['up','upstair','upper floor','above'],
+'come home':['go home','return home','back home','get home','return'],'ground floor':['first floor','floor','ground','downstairs'],
+'on the left':['left','to the left','from the left','on left'],'on the right':['right','to the right','from the right','on right'],
+glasses:['sunglasses','spectacles','glass'],hole:['gap','pit'],jeans:['pants','trousers','jean'],pair:['couple','two'],pocket:['pockets','bag'],
+raincoat:['coat','jacket'],suit:['costume','tuxedo'],top:['shirt','t-shirt','tshirt','blouse'],watch:['clock','wristwatch'],
+comfortable:['comfy','cozy','cosy','soft'],pretty:['beautiful','cute','nice','lovely'],throw:['toss','drop','cast']};
 const N=WORDS.length,HE={};WORDS.forEach(w=>HE[w[0]]=w[1]);
 const $=id=>document.getElementById(id);
 const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -319,6 +327,7 @@ function revealed(){
   fb.innerHTML=`<div class="t mid">זו המילה:</div><div class="big">${esc(e)}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button><div class="ask">נחזור אליה בהמשך, ואז תכתבי אותה לבד</div>`;speak(e);save();upd();showNext()}
 function check(raw){if(ANS)return;const e=CUR.e,w=S.w[e],r=classify(raw,e),fb=$('fb');
   if(CUR.prac){ if(r.k==='ok'){SND.ok();mon('hop',pick(OK));addPts(CUR.h?1:2);fb.innerHTML=`<div class="t ok">נכון!${CUR.h?' (עם רמז 💡)':' 🎉'}</div>`;streak(true);maybeSquishy()}
+    else if(r.k==='alt'){SND.mid();mon('hop','גם זה נכון באנגלית! הרצף נשמר 🔥');fb.innerHTML=altHtml(e);speak(e)}
     else{SND.mid();mon('sad',pick(MID));fb.innerHTML=diffHtml(raw,e,r);streak(false);speak(e)} save();upd();return showNext()}
   S.att++;S.T++;
   if(r.k==='ok'&&CUR.h){S.okc++;SND.ok();addPts(3);const wasNew=w.s==='new';w.s='dict';w.need=Math.max(w.need||0,wasNew?2:1);w.err++;w.due=S.T+3;
@@ -330,12 +339,13 @@ function check(raw){if(ANS)return;const e=CUR.e,w=S.w[e],r=classify(raw,e),fb=$(
       else{w.due=S.T+4;mon('hop',pick(OK));fb.innerHTML=`<div class="t ok">נכון! 🎉</div><div class="ask">עוד פעם אחת נכון והיא שלך</div>`}}
     maybeSquishy();
   }else if(r.k==='spell'||r.k==='alt'){w.err++;if(w.s==='new'){w.s='dict';w.need=2}w.need=Math.max(w.need||0,1);w.due=S.T+3;
-    if(r.k==='alt'){SND.mid();mon('hop','גם זה נכון באנגלית! אבל בהכתבה צריך מילה אחרת 😉');fb.innerHTML=`<div class="t mid">כמעט! בהכתבה המילה היא:</div><div class="big">${esc(e)}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button>`;}
+    if(r.k==='alt'){SND.mid();mon('hop','גם זה נכון באנגלית! הרצף נשמר 🔥');fb.innerHTML=altHtml(e)}
     else{SND.mid();streak(false);mon('sad',pick(MID));fb.innerHTML=diffHtml(raw,e,r)}
     speak(e);
   }else{w.err++;w.s='learn';w.m=0;w.need=2;w.due=S.T+2;SND.bad();streak(false);mon('sad',pick(BAD));
     fb.innerHTML=`<div class="t no">${r.other?'זו מילה אחרת מהרשימה 🙂':'לא נורא!'} ${esc(HE[e])} באנגלית זה:</div><div class="big">${esc(e)}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button><div class="ask">נחזור אליה עוד מעט, קודם כדי להבין מה היא אומרת</div>`;speak(e)}
   save();upd();showNext()}
+function altHtml(e){return`<div class="t mid">קרוב! 🙂 בהכתבה המילה היא:</div><div class="big">${esc(e)}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button><div class="ask">הרצף לא נשבר 🔥 המילה תחזור עוד מעט</div>`}
 function diffHtml(raw,e,r){const a=norm(raw),t=norm(e),al=r.al||align(a,t);let you='',ok='';const hints=[];
   al.ops.forEach(o=>{if(o[0]==='='){you+=ch(o[1]);ok+=ch(o[2])}
     else if(o[0]==='s'){you+=`<span class="x">${ch(o[1])}</span>`;ok+=`<span class="g">${ch(o[2])}</span>`;hints.push(o[2]===' '?`חסר רווח במקום <b>${esc(o[1])}</b>`:o[1]===' '?`במקום רווח צריך <b>${esc(o[2])}</b>`:`במקום <b>${esc(o[1])}</b> צריך <b>${esc(o[2])}</b>`)}
