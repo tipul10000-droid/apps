@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2E2420">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.HOUSING_BUILD="1.1";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.HOUSING_BUILD="1.2";</script>
 <script src="sq-db.js?v=9"></script>
 <title>דיור</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,6 +48,17 @@ button,select,input{font:inherit;color:inherit}
 .kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
 .kpi b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.kpis.k2{grid-template-columns:repeat(2,1fr)}
+.kpi.nx{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:10px 12px}
+.kpi.nx .when{flex:none;min-width:66px;text-align:center;padding-inline-end:12px;border-inline-end:1px solid rgba(255,255,255,.16)}
+.kpi.nx .when small{display:block;color:var(--hero-muted);font-size:11.5px;line-height:1.3;white-space:nowrap}
+.kpi.nx .when b{overflow:visible;text-overflow:clip}
+.kpi.nx .what{flex:1;min-width:0;font-size:14.5px;line-height:1.35}
+.kpi.nx .who{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;font-weight:600;margin-bottom:2px}
+.kpi.nx .who i{font-style:normal;display:inline-flex;align-items:center;gap:5px}
+.kpi.nx .who .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.kpi.nx .t{display:block}
+.kpi.nx .t2{display:block;color:var(--hero-muted);font-size:12.5px;margin-top:1px}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .tab{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 6px;font-weight:800;font-size:15px;cursor:pointer;font-family:var(--f-display)}
@@ -134,10 +145,10 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
   <h1>🏠 דיור</h1>
   <p class="sub">הדירה שלנו במוצקין, האם למכור אותה, והבית השכור בכפר סבא.</p>
   <a class="chatbtn" id="chat" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שאל על הדיור<small>״כמה יישאר לנו אם נמכור ב-2.1?״ · ״מתי להודיע לשוכר?״</small></span></a>
-  <div class="kpis">
+  <div class="kpis k2">
     <div class="kpi"><b id="k-eq">…</b><span>ההון שלנו בדירה</span></div>
     <div class="kpi"><b id="k-net">…</b><span>נטו בחודש מהשכירות</span></div>
-    <div class="kpi"><b id="k-next">…</b><span id="k-next-l">הבא בתור</span></div>
+    <div class="kpi nx"><div class="when"><small>הבא בתור</small><b id="k-next">…</b><small id="k-next-in"></small></div><div class="what"><div class="who" id="k-next-who"></div><div class="t" id="k-next-l">…</div><div class="t2" id="k-next-2"></div></div></div>
   </div>
 </div></header>
 <div class="wrap">
@@ -169,6 +180,7 @@ function today(){const d=new Date();d.setHours(12,0,0,0);return d;}
 function ds(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function parseD(s){if(!s)return null;const p=String(s).split("-");return new Date(+p[0],(+p[1]||1)-1,+p[2]||1,12);}
 function daysTo(s){const d=parseD(s);return d?Math.round((d-today())/86400000):null;}
+function inDays(n){return n==null?"":n<0?"⚠️ באיחור":n===0?"היום":n===1?"מחר":"בעוד "+n+" ימים";}
 function dm(s){const d=parseD(s);return d?`${d.getDate()}.${d.getMonth()+1}.${String(d.getFullYear()).slice(2)}`:"";}
 function my(s){const d=parseD(s);return d?`${d.getMonth()+1}.${d.getFullYear()}`:"";}
 function until(s){const n=daysTo(s);if(n==null)return "";if(n<0)return "עבר";if(n<45)return "בעוד "+n+" ימים";const m=Math.round(n/30.4);return m<24?"בעוד "+m+" חודשים":"בעוד "+(Math.round(m/12*10)/10)+" שנים";}
@@ -353,7 +365,7 @@ function render(){
   if(!M.name){$("app").innerHTML=`<div class="empty">${loaded?"אין עדיין נתונים":"טוען…"}</div>`;return;}
   const E=est(),bal=+mort().balance||0,net=rentNow()-(+mort().monthly||0),nx=nextEvent();
   $("k-eq").textContent=kk(E-bal);$("k-net").textContent=ils(net);
-  if(nx){$("k-next").textContent=dm(nx.d);$("k-next-l").textContent=nx.t;}
+  $("k-next").textContent=nx?dm(nx.d):"-";$("k-next-in").textContent=nx?inDays(daysTo(nx.d)):"";$("k-next-l").textContent=nx?nx.t:"אין אירוע קרוב";
   $("app").innerHTML=ui.tab==="sell"?renderSell():ui.tab==="home"?renderHome():renderMotz();
   $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד דיור ${esc(window.HOUSING_BUILD)}`;
 }

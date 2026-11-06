@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#1F4A44">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <title>דשבורד משפחה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,6 +51,17 @@ button,select{font:inherit;color:inherit}
 .kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
 .kpi b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kpi span{color:var(--hero-muted);font-size:12.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.kpis.k2{grid-template-columns:repeat(2,1fr)}
+.kpi.nx{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:10px 12px}
+.kpi.nx .when{flex:none;min-width:66px;text-align:center;padding-inline-end:12px;border-inline-end:1px solid rgba(255,255,255,.16)}
+.kpi.nx .when small{display:block;color:var(--hero-muted);font-size:11.5px;line-height:1.3;white-space:nowrap}
+.kpi.nx .when b{overflow:visible;text-overflow:clip}
+.kpi.nx .what{flex:1;min-width:0;font-size:14.5px;line-height:1.35}
+.kpi.nx .who{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;font-weight:600;margin-bottom:2px}
+.kpi.nx .who i{font-style:normal;display:inline-flex;align-items:center;gap:5px}
+.kpi.nx .who .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.kpi.nx .t{display:block}
+.kpi.nx .t2{display:block;color:var(--hero-muted);font-size:12.5px;margin-top:1px}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
 .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
@@ -120,10 +131,10 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
   <h1>👨‍👩‍👧‍👦 משפחה</h1>
   <p class="sub">בית הספר והעולם של אביתר, דניאלה וליה: מבחנים, הגשות, טיולים, מה להכין ומה לחתום.</p>
   <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span style="font-size:24px">💬</span><span>שאל על הילדים<small>״מתי המבחן הבא של דניאלה?״ · ״מה יש לאביתר השבוע?״</small></span></a>
-  <div class="kpis">
+  <div class="kpis k2">
     <div class="kpi"><b id="k-ex">…</b><span>מבחנים ב-14 יום</span></div>
     <div class="kpi"><b id="k-act">…</b><span>לפעולה</span></div>
-    <div class="kpi"><b id="k-next">…</b><span id="k-next-l">הבא בתור</span></div>
+    <div class="kpi nx"><div class="when"><small>הבא בתור</small><b id="k-next">…</b><small id="k-next-in"></small></div><div class="what"><div class="who" id="k-next-who"></div><div class="t" id="k-next-l">…</div><div class="t2" id="k-next-2"></div></div></div>
   </div>
 </div></header>
 <div class="wrap">
@@ -144,6 +155,7 @@ let kids=[],meta={},fKid="all",db=null;
 function todayStr(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function addDays(s,n){const d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
 function diff(s){return Math.round((new Date(s+"T12:00:00")-new Date(todayStr()+"T12:00:00"))/86400000);}
+function inDays(n){return n==null?"":n<0?"⚠️ באיחור":n===0?"היום":n===1?"מחר":"בעוד "+n+" ימים";}
 function dm(s){const [,m,d]=s.split("-");return `${+d}.${+m}`;}
 function rel(s){const n=diff(s);return n===0?"היום":n===1?"מחר":n===2?"מחרתיים":n<0?"עבר":n<14?"בעוד "+n+" ימים":"בעוד "+Math.round(n/7)+" שב׳";}
 function dow(s){return DOW[new Date(s+"T12:00:00").getDay()];}
@@ -211,7 +223,10 @@ function render(){
   const open=actions().filter(a=>a.status!=="done");
   $("k-ex").textContent=exMaybe?"~"+(ex14+exMaybe):ex14;$("k-act").textContent=open.length;
   const nx=fut.find(e=>e.type!=="holiday"&&!e.maybe&&e.d>=t);
-  $("k-next").textContent=nx?dm(nx.d)+" "+(nx.kid?nx.kid.name:""):"-";$("k-next-l").textContent=nx?nx.t:"הבא בתור";
+  const nxKids=nx?(nx.kids||(nx.kid?[nx.kid]:[])):[];
+  $("k-next").textContent=nx?dm(nx.d):"-";$("k-next-in").textContent=nx?inDays(diff(nx.d)):"";
+  $("k-next-who").innerHTML=nxKids.map(k=>`<i><i class="dot" style="background:${esc(k.color||"#888")}"></i>${esc(k.name)}</i>`).join("");
+  $("k-next-l").textContent=nx?nx.t:"אין אירוע קרוב";$("k-next-2").textContent=nx&&nx.sub?nx.sub:"";
   if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
   const chat=safe(meta.chat_url);if(chat){$("chat").href=chat;$("chat").hidden=false;}
   const soon=fut.filter(e=>diff(e.d)<=14||(e.to&&e.d<=t));

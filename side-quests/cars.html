@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#16233A">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CARS_BUILD="1.1";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CARS_BUILD="1.2";</script>
 <script src="sq-db.js?v=9"></script>
 <script src="cars-market.js?v=1"></script>
 <title>רכבים</title>
@@ -50,6 +50,17 @@ button,select,input{font:inherit;color:inherit}
 .kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
 .kpi b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.kpis.k2{grid-template-columns:repeat(2,1fr)}
+.kpi.nx{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:10px 12px}
+.kpi.nx .when{flex:none;min-width:66px;text-align:center;padding-inline-end:12px;border-inline-end:1px solid rgba(255,255,255,.16)}
+.kpi.nx .when small{display:block;color:var(--hero-muted);font-size:11.5px;line-height:1.3;white-space:nowrap}
+.kpi.nx .when b{overflow:visible;text-overflow:clip}
+.kpi.nx .what{flex:1;min-width:0;font-size:14.5px;line-height:1.35}
+.kpi.nx .who{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;font-weight:600;margin-bottom:2px}
+.kpi.nx .who i{font-style:normal;display:inline-flex;align-items:center;gap:5px}
+.kpi.nx .who .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.kpi.nx .t{display:block}
+.kpi.nx .t2{display:block;color:var(--hero-muted);font-size:12.5px;margin-top:1px}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .tab{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 6px;font-weight:800;font-size:15px;cursor:pointer;font-family:var(--f-display)}
@@ -173,10 +184,10 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
   <h1>🚗 רכבים</h1>
   <p class="sub">כמה שווים הרכבים שלנו היום ובעתיד, מה צריך לטפל בהם, ואיזה רכב גדול ונוח לקנות.</p>
   <a class="chatbtn" id="chat" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שאל על הרכבים<small>״כמה אקבל על הקיה בקיץ?״ · ״ג׳אקו 8 או סורנטו יד 2?״</small></span></a>
-  <div class="kpis">
+  <div class="kpis k2">
     <div class="kpi"><b id="k-now">…</b><span>שווים היום (משוקלל)</span></div>
     <div class="kpi"><b id="k-loss">…</b><span>ירידה בשנה הקרובה</span></div>
-    <div class="kpi"><b id="k-next">…</b><span id="k-next-l">הבא בתור</span></div>
+    <div class="kpi nx"><div class="when"><small>הבא בתור</small><b id="k-next">…</b><small id="k-next-in"></small></div><div class="what"><div class="who" id="k-next-who"></div><div class="t" id="k-next-l">…</div><div class="t2" id="k-next-2"></div></div></div>
   </div>
 </div></header>
 <div class="wrap">
@@ -213,6 +224,7 @@ function ds(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")
 function parseD(s){if(!s)return null;const p=String(s).split("-");return new Date(+p[0],(+p[1]||1)-1,+p[2]||15,12);}
 function monthsBetween(a,b){return (b-a)/(1000*60*60*24*30.4375);}
 function daysTo(s){const d=parseD(s);return d?Math.round((d-today())/86400000):null;}
+function inDays(n){return n==null?"":n<0?"⚠️ באיחור":n===0?"היום":n===1?"מחר":"בעוד "+n+" ימים";}
 function dm(s){const d=parseD(s);return d?`${d.getDate()}.${d.getMonth()+1}.${String(d.getFullYear()).slice(2)}`:"";}
 function addMonths(d,m){const x=new Date(d);x.setMonth(x.getMonth()+Math.floor(m));x.setDate(x.getDate()+Math.round((m%1)*30));return x;}
 function whenTxt(m){if(m===0)return "היום";if(m<12)return m===1?"עוד חודש":"עוד "+m+" חודשים";const y=m/12;return "עוד "+(y===1?"שנה":y===2?"שנתיים":(Math.round(y*10)/10)+" שנים");}
@@ -466,7 +478,8 @@ function render(){
   $("k-now").textContent=cars.length?ils(t0):"…";$("k-loss").textContent=cars.length?ils(t0-t12):"…";
   const ev=[];cars.forEach(c=>{const d=c.dates||{};if(d.license)ev.push([d.license,"טסט "+c.short]);if(d.insurance)ev.push([d.insurance,"ביטוח "+c.short]);const n=nextService(c);if(n)ev.push([n,"טיפול "+c.short]);});
   ev.sort((a,b)=>a[0]<b[0]?-1:1);const late=ev.filter(e=>daysTo(e[0])<0),nx=late[0]||ev.find(e=>daysTo(e[0])>=0);
-  if(nx){$("k-next").textContent=daysTo(nx[0])<0?"⚠️ "+nx[1]:dm(nx[0]);$("k-next-l").textContent=daysTo(nx[0])<0?(late.length>1?late.length+" באיחור":"באיחור"):nx[1];}
+  $("k-next").textContent=nx?dm(nx[0]):"-";$("k-next-in").textContent=nx?inDays(daysTo(nx[0])):"";$("k-next-l").textContent=nx?nx[1]:"אין מועד קרוב";
+  $("k-next-2").textContent=late.length>1?"גם באיחור: "+late.slice(1).map(e=>e[1]).join(", "):"";
   if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
   $("chat").href=safe(meta.chat_url)||CHAT_FALLBACK;
   if(!cars.length){$("app").innerHTML=`<div class="empty">טוען…</div>`;return;}
