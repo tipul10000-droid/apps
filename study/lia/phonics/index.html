@@ -145,7 +145,7 @@ function playFile(f,fb,then){if(MUTE)return;try{speechSynthesis.cancel()}catch(e
   if(!AUD.has(f)){fb();if(then)setTimeout(then,1100);return}
   const a=new Audio('audio/'+f+'.mp3');PL=a;a.onended=()=>{if(then&&PL===a)setTimeout(then,250)};a.onerror=()=>{fb();if(then)setTimeout(then,1100)};a.play().catch(()=>{})}
 // צליל של פריט: הקלטה של הצליל לבד; אין? הקראה של צליל ממושך (sss) או של המילה
-function sound(it,then){const k=it.snd;if(/^[AEIOU]$/.test(k))return playFile('s-'+k,()=>tts(k,.75),then);playFile('s-'+k,()=>tts(it.tt||it.word,.7),then)}
+function sound(it,then){const k=it.snd;if(/^[AEIOU]$/.test(k))return playFile('s-long'+k.toLowerCase(),()=>tts(k,.75),then);playFile('s-'+k,()=>tts(it.tt||it.word,.7),then)}
 function word(w,then){playFile('w-'+w,()=>tts(w,.75),then)}
 const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
 
