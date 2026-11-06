@@ -32,6 +32,7 @@
 .test{margin-top:10px;background:#eef3fb;border-radius:10px;padding:9px 10px;font-size:15px}
 .test .row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}.test input{font:inherit;font-size:15px;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;flex:1;min-width:0}
 .none{color:var(--mut);font-size:15px}
+.rqs{margin-top:12px;border-top:1px solid var(--bd);padding-top:10px}.rqs h3{margin:0 0 6px;font-size:16px}.rq{background:#f6f8fc;border:1px solid var(--bd);border-radius:12px;padding:9px 10px;margin-top:7px}.rq.dn{opacity:.55}.rq .t{font-size:13px;color:var(--mut);display:flex;justify-content:space-between;gap:6px}.rq .tx{font-size:16px;margin:4px 0 2px;white-space:pre-wrap;word-break:break-word}.rq .a{display:flex;gap:14px}
 .lnk{background:none;border:0;color:var(--ac,#2f5d9e);font:inherit;font-size:14px;padding:6px 0;cursor:pointer;text-decoration:underline}.rst{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-top:10px;border-top:1px dashed #d3d9e2;padding-top:4px}.rst small{color:#8a94a3;font-size:12px}
 .auto{font-size:13px;color:#7c5a00;background:#fff8e1;border-radius:8px;padding:5px 8px;margin-top:6px}
 .lbx{margin-top:10px;font-size:14px;background:#f3f0ff;border-radius:10px;padding:8px 10px;line-height:1.5}
@@ -101,9 +102,9 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
    ${t&&t.auto?`<div class="auto">🤖 התאמה אוטומטית מדשבורד המשפחה. אם זה לא נכון, תקנו כאן.</div>`:''}
    <div class="row"><input type="date" id="d_${id}" value="${t&&t.d||''}"><button class="b s" type="button" data-t="${k.id}|${a.id}">שמירת תאריך</button></div></div>`;
    h+=`<div class="rst"><button class="lnk" type="button" data-z="${k.id}|${a.id}|${a.n}|${k.n}">↺ איפוס ההתקדמות</button>${RZ?`<small>אופס לאחרונה ${fmtD(RZ.at)}</small>`:''}</div></div>`})
-  h+=`</div>`});
+  h+=`<div class="rqs" id="rq_${k.id}"></div></div>`});
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
- V.innerHTML=h;$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem('study_par_pin')}catch(e){}PIN='';pinView()};
+ V.innerHTML=h;loadReq();$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem('study_par_pin')}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
  V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const [k,a]=b.dataset.t.split('|'),id=k+'_'+a;b.textContent='...';
   done(b,rpc('study_parents_set_test',{p_pin:PIN,p_kid:k,p_app:a,p_d:$('d_'+id).value||null,p_note:''}))});
@@ -115,6 +116,12 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
   done(b,rpc('study_parents_reset',{p_pin:PIN,p_kid:k,p_app:a}))});
  V.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{if(!confirm('למחוק את הציון? אפשר יהיה להזין אותו מחדש.'))return;
   done(b,rpc('study_parents_result',{p_pin:PIN,p_kid:null,p_app:null,p_d:null,p_note:null,p_score:null,p_hide_id:+b.dataset.h}))})}
+// בקשות והצעות מהילדים (study_requests, נשלחות מדף הילד דרך study/req.js)
+const RQK={test:'📅 מבחן קרוב',quiz:'⏰ בוחן',hard:'🤔 לא מבין/ה',topic:'📚 נושא ללימוד',idea:'💡 רעיון לאפליקציה'};
+function loadReq(id,set){rpc('study_parents_requests',{p_pin:PIN,p_id:id||null,p_set:set||null}).then(j=>{if(!j||!j.ok)return;
+ KIDS.forEach(k=>{const box=$('rq_'+k.id);if(!box)return;const L=j.items.filter(x=>x.kid===k.id),open=L.filter(x=>!x.done).length;
+  box.innerHTML=`<h3>💬 בקשות והצעות${open?` (${open===1?"1 חדשה":open+" חדשות"})`:''}</h3>`+(L.length?L.slice(0,30).map(x=>`<div class="rq${x.done?' dn':''}"><div class="t"><span>${RQK[x.kind]||''}</span><span>${ago(x.at)}</span></div><div class="tx">${esc(x.txt)}</div><div class="a">${x.done?`<button class="lnk" type="button" data-q="${x.id}|open">↩ לא טופל</button>`:`<button class="lnk" type="button" data-q="${x.id}|done">✓ טופל</button>`}<button class="lnk" type="button" data-q="${x.id}|hide">הסתרה</button></div></div>`).join(''):`<div class="none">עוד לא ${k.id==='evyatar'?'שלח':'שלחה'} בקשות</div>`)});
+ V.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const [i,s]=b.dataset.q.split('|');if(s==='hide'&&!confirm('להסתיר את הבקשה?'))return;b.textContent='...';loadReq(+i,s)})}).catch(()=>{})}
 ['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,ev=>ev.preventDefault(),{passive:false}));
 if(PIN)load();else pinView();
 </script>

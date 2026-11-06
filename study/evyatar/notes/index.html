@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study · החומרים שלי</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css">
+<style>
+/* החומרים שלי (אורן 6.11.2026): דפי נוסחאות, סיכומים, תמונות, PDF ופתקים של אביתר. נשמר בשרת (study_materials), הסתרה במקום מחיקה. */
+main{display:flex;flex-direction:column}
+.top{flex:none}.add{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px}
+.add button{height:52px;font:600 16px system-ui,Arial,sans-serif;border-radius:14px;border:1px solid var(--bd);background:var(--card);color:var(--fg);box-shadow:var(--sh);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.add button:active{background:#f1f4f8}.add .p{background:var(--ac);border-color:var(--ac);color:#fff}.add .p:active{background:#244a80}
+#ls{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start;padding-bottom:8px}
+.m{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:var(--sh);cursor:pointer;text-align:right;font:inherit;color:inherit;padding:0;-webkit-tap-highlight-color:transparent}
+.m *{pointer-events:none}.m .th{height:96px;background:#e8eef7 center/cover no-repeat;display:grid;place-items:center;font-size:38px}
+.m .nt{height:96px;box-sizing:border-box;padding:8px 10px;font-size:12px;line-height:1.35;color:var(--mut);overflow:hidden;background:#fffbea;text-align:right;white-space:pre-wrap}
+.m b{display:block;font-size:15px;padding:7px 10px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.m small{display:block;font-size:12px;color:var(--mut);padding:0 10px 8px}
+.emp{grid-column:1/-1;background:var(--card);border:1px dashed var(--bd);border-radius:16px;padding:22px 16px;text-align:center;color:var(--mut);line-height:1.5}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 14px) 12px calc(env(safe-area-inset-bottom,0px) + 14px);box-sizing:border-box}
+#ad{align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 56px)}.ov.on{display:flex}
+.pn{background:#fff;border-radius:18px;padding:14px;width:100%;max-width:520px;box-sizing:border-box;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.pn h2{margin:0 0 10px;font-size:19px}.pn input,.pn textarea{display:block;width:100%;box-sizing:border-box;font:16px system-ui,Arial,sans-serif;border:1.5px solid var(--bd);border-radius:12px;padding:10px;color:var(--fg);margin-bottom:8px}
+.pn textarea{height:150px;resize:none}.pn input:focus,.pn textarea:focus{outline:none;border-color:var(--ac)}
+.pn .pv{height:120px;border-radius:12px;background:#e8eef7 center/contain no-repeat;margin-bottom:8px;display:grid;place-items:center;font-size:40px}
+.bs{display:grid;grid-template-columns:2fr 1fr;gap:8px}.bs button{height:46px;font:600 16px system-ui,Arial,sans-serif;border-radius:12px;border:1px solid var(--bd);background:#fff;color:var(--fg);cursor:pointer}.bs .go{background:var(--ac);border-color:var(--ac);color:#fff}.bs .go:disabled{opacity:.5}
+.msg{height:20px;font-size:14px;margin:2px 0 6px;color:var(--ac);text-align:center}
+#vw .pn{height:100%;display:flex;flex-direction:column;padding:10px}
+#vw .hd{flex:none;display:flex;align-items:center;gap:8px;margin-bottom:8px}#vw .hd b{flex:1;min-width:0;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#vw .hd button{flex:none;height:38px;min-width:44px;font:600 14px system-ui,Arial,sans-serif;border-radius:10px;border:1px solid var(--bd);background:#fff;color:var(--fg);cursor:pointer;padding:0 10px}
+#vb{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;background:#f1f4f8;border-radius:12px}
+#vb img{display:block;width:100%;height:auto}#vb.z img{width:260%;max-width:none}
+#vb .txt{padding:14px;font-size:17px;line-height:1.55;white-space:pre-wrap;word-break:break-word;background:#fffbea;min-height:100%;box-sizing:border-box}
+#vb .pdf{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:var(--mut);padding:16px;box-sizing:border-box}
+#vb .pdf a{display:inline-block;background:var(--ac);color:#fff;text-decoration:none;font-weight:600;border-radius:12px;padding:12px 20px}
+#vw .tip{flex:none;font-size:12px;color:var(--mut);text-align:center;height:18px;margin-top:6px}
+@media(max-height:700px){.m .th,.m .nt{height:78px}.add button{height:46px}}
+</style>
+</head><body><main>
+<a class="back" href="../">→ חזרה</a>
+<div class="top"><img src="../../kids/evyatar.webp" alt=""><div><h1>📎 החומרים שלי</h1><p>דפי נוסחאות, סיכומים ותמונות. תמיד כאן כשצריך להיזכר</p></div></div>
+<div class="add"><button type="button" class="p" id="af">📷 תמונה או קובץ</button><button type="button" id="an">✍️ פתק חדש</button></div>
+<input type="file" id="fi" accept="image/*,application/pdf" hidden>
+<div id="ls"><div class="emp">טוען...</div></div>
+</main>
+<div class="ov" id="ad"><div class="pn"><h2 id="adh">חומר חדש</h2><div class="pv" id="pv"></div><input id="tt" maxlength="80" placeholder="שם (למשל: דף נוסחאות במתמטיקה)"><textarea id="tx" maxlength="20000" placeholder="מה חשוב לזכור?"></textarea>
+<div class="msg" id="am"></div><div class="bs"><button type="button" class="go" id="ag">שמירה</button><button type="button" id="ac">ביטול</button></div></div></div>
+<div class="ov" id="vw"><div class="pn"><div class="hd"><b id="vt"></b><button type="button" id="vd" title="הסתרה">🗑</button><button type="button" id="vc">סגירה</button></div><div id="vb"></div><div class="tip" id="vtip"></div></div></div>
+<script>
+var KID='evyatar',SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
+var $=function(i){return document.getElementById(i)},L=[],cur=null,pend=null,busy=false;
+function rpc(fn,b){return fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(b)}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function fd(d){return new Date(d).toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'2-digit'})}
+function load(){rpc('study_material_list',{p_kid:KID}).then(function(j){L=j||[];draw()}).catch(function(){$('ls').innerHTML='<div class="emp">אין חיבור כרגע. נסה שוב עוד מעט.</div>'})}
+function draw(){if(!L.length){$('ls').innerHTML='<div class="emp">עוד אין כאן חומרים.<br>צלם דף נוסחאות, סיכום מהמחברת או כל דבר שתרצה לזכור, והוא יחכה לך כאן לפני כל מבחן 💪</div>';return}
+  $('ls').innerHTML=L.map(function(m,i){var top=m.kind==='note'?'<div class="nt">'+esc(m.note||'')+'</div>':m.kind==='img'&&m.thumb?'<div class="th" style="background-image:url('+m.thumb+')"></div>':'<div class="th">'+(m.kind==='pdf'?'📄':'🖼️')+'</div>';
+    return '<button type="button" class="m" data-i="'+i+'">'+top+'<b>'+esc(m.title)+'</b><small>'+fd(m.at)+'</small></button>'}).join('');
+  [].forEach.call($('ls').querySelectorAll('.m'),function(b){b.onclick=function(){view(L[+b.dataset.i])}})}
+// הוספה
+function openAdd(kind,prev){pend={kind:kind,data:prev&&prev.data,thumb:prev&&prev.thumb,mime:prev&&prev.mime};busy=false;$('ag').disabled=false;$('am').textContent='';
+  $('adh').textContent=kind==='note'?'✍️ פתק חדש':kind==='pdf'?'📄 קובץ חדש':'📷 תמונה חדשה';$('tt').value=prev&&prev.name||'';$('tx').value='';
+  $('tx').style.display=kind==='note'?'':'none';$('pv').style.display=kind==='note'?'none':'';$('pv').style.backgroundImage=kind==='img'?'url('+prev.thumb+')':'none';$('pv').textContent=kind==='pdf'?'📄':'';
+  $('ad').classList.add('on')}
+function guestMsg(){alert('במצב אורח אי אפשר להוסיף חומרים (שום דבר לא נשמר).');}
+$('an').onclick=function(){if(window.STUDY_GUEST)return guestMsg();openAdd('note')};
+$('af').onclick=function(){if(window.STUDY_GUEST)return guestMsg();$('fi').value='';$('fi').click()};
+function shrink(img,max,q){var s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);
+  var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);return c.toDataURL('image/jpeg',q)}
+$('fi').onchange=function(){var f=this.files[0];if(!f)return;var name=f.name.replace(/\.[^.]+$/,'').slice(0,80);
+  if(f.type==='application/pdf'){if(f.size>4e6)return alert('הקובץ גדול מדי (עד 4MB).');var r=new FileReader();r.onload=function(){openAdd('pdf',{data:r.result,mime:'application/pdf',name:name})};r.readAsDataURL(f);return}
+  if(!/^image\//.test(f.type))return alert('אפשר להוסיף תמונה או PDF.');
+  var u=URL.createObjectURL(f),im=new Image();im.onload=function(){var d=shrink(im,2200,.85),t=shrink(im,320,.7);URL.revokeObjectURL(u);openAdd('img',{data:d,thumb:t,mime:'image/jpeg',name:/^IMG|^image|^\d/.test(name)?'':name})};
+  im.onerror=function(){alert('לא הצלחתי לפתוח את התמונה.')};im.src=u};
+$('ac').onclick=function(){$('ad').classList.remove('on')};
+$('ag').onclick=function(){if(busy||!pend)return;var t=$('tt').value.trim();if(!t){$('am').textContent='תן שם, כדי שיהיה קל למצוא ✍️';$('tt').focus();return}
+  var data=pend.kind==='note'?$('tx').value.trim():pend.data;if(!data){$('am').textContent='כתוב משהו בפתק ✍️';$('tx').focus();return}
+  busy=true;$('ag').disabled=true;$('am').textContent='שומר...';
+  rpc('study_material_add',{p_kid:KID,p_title:t,p_kind:pend.kind,p_mime:pend.mime||'',p_data:data,p_thumb:pend.thumb||null}).then(function(j){
+    if(j&&j.ok){$('ad').classList.remove('on');load()}else{busy=false;$('ag').disabled=false;$('am').textContent=j&&j.err==='big'?'הקובץ גדול מדי':j&&j.err==='limit'?'הוספת הרבה. נסה שוב עוד קצת':'משהו לא הצליח. נסה שוב'}})
+   .catch(function(){busy=false;$('ag').disabled=false;$('am').textContent='אין חיבור כרגע. נסה שוב'})};
+// צפייה
+var blobU=null;
+function view(m){cur=m;$('vt').textContent=m.title;$('vb').className='';$('vb').innerHTML='<div class="pdf">טוען...</div>';$('vtip').textContent='';$('vw').classList.add('on');
+  rpc('study_material_get',{p_id:m.id}).then(function(j){if(cur!==m)return;if(!j||!j.data){$('vb').innerHTML='<div class="pdf">החומר לא נמצא</div>';return}
+    if(j.kind==='note'){$('vb').innerHTML='<div class="txt">'+esc(j.data)+'</div>'}
+    else if(j.kind==='img'){$('vb').innerHTML='<img alt="" src="'+j.data+'">';$('vtip').textContent='לחיצה על התמונה מגדילה ומקטינה';$('vb').querySelector('img').onclick=function(){$('vb').classList.toggle('z')}}
+    else{try{var b=atob(j.data.split(',')[1]),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);if(blobU)URL.revokeObjectURL(blobU);blobU=URL.createObjectURL(new Blob([a],{type:'application/pdf'}))}catch(e){}
+      $('vb').innerHTML='<div class="pdf"><div style="font-size:48px">📄</div><div>קובץ PDF</div>'+(blobU?'<a href="'+blobU+'" target="_blank" rel="noopener">פתיחת הקובץ</a>':'')+'</div>'}})
+   .catch(function(){$('vb').innerHTML='<div class="pdf">אין חיבור כרגע</div>'})}
+$('vc').onclick=function(){cur=null;$('vw').classList.remove('on')};
+$('vd').onclick=function(){if(!cur)return;if(window.STUDY_GUEST)return guestMsg();if(!confirm('להוריד את "'+cur.title+'" מהחומרים?'))return;var m=cur;
+  rpc('study_material_hide',{p_kid:KID,p_id:m.id}).then(function(){$('vw').classList.remove('on');cur=null;load()}).catch(function(){alert('אין חיבור כרגע')})};
+load();
+</script>
+</body></html>
