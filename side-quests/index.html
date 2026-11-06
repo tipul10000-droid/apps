@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.6";window.SQ_BUILD_AT="6.11.2026 10:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.7";window.SQ_BUILD_AT="6.11.2026 11:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1705,7 +1705,7 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a||!isGmail(a.href))return;e.preventDefault();e.stopPropagation();openGmail(a.href);},true);
   function mailOf(t){const ls=linksOf(t).filter(l=>isGmail(l.url));const l=ls.find(l=>gmailId(l.url))||ls.find(l=>!/compose=|#drafts/.test(l.url));return l?safeUrl(l.url):null;}
   // ---- 5.0: levels and dashboards (collection "dashboards" in sq_docs) ----
-  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], carDocs=[], houseDocs=[], inDashCard=false;
+  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], carDocs=[], houseDocs=[], shopDocs=[], inDashCard=false;
   function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted);}
   function levelOf(t){const L=+t.level;if(L>=1&&L<=4)return L;if(t.project&&projById(t.project))return 4;if(t.dash&&dashById(t.dash))return 3;if(chatOf(t)||mailOf(t))return 2;return 1;}
   function levelRow(t){
@@ -1773,6 +1773,13 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
       const kpis=[eq?{v:kk(eq),l:"הון במוצקין"}:null,{v:"₪"+Math.round(net).toLocaleString("he-IL"),l:"נטו בחודש"},nx?{v:fmtDate(nx.d)+"."+nx.d.slice(2,4),l:nx.t}:null].filter(Boolean);
       const sugs=(M.issues||[]).filter(x=>x.lvl==="high").map(x=>({text:x.text.split(".")[0],sub:""})).slice(0,2);
       return {kpis,sugs,live:true,line:nx?`הבא: ${nx.t} (${fmtDate(nx.d)})`:""};
+    }
+    if(d.source==="shopping"&&shopDocs.length){ // 9.6: purchases research (shopping.html)
+      const its=shopDocs.filter(x=>x.id!=="_meta"&&x.title),open=its.filter(x=>!["bought","dropped"].includes(x.status));
+      const qs=open.flatMap(x=>(x.questions||[]).filter(q=>!q.answer&&!q.superseded).map(q=>({x,q})));
+      const kpis=[{v:String(open.length),l:"בבירור"},{v:String(open.filter(x=>x.status==="deciding").length),l:"להחלטה"},{v:String(qs.length),l:"שאלות אליך"}];
+      const sugs=qs.slice(0,2).map(o=>({text:(o.x.icon||"🛒")+" "+o.x.title+": "+o.q.q,sub:(o.q.options||[]).join(" / ")}));
+      return {kpis,sugs,live:true,line:open.length?"בבירור: "+open.map(x=>x.title).slice(0,3).join(", "):""};
     }
     return {kpis:Array.isArray(d.kpis)?d.kpis:[],sugs:[],live:!!d.live};
   }
@@ -3124,6 +3131,7 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
     db.collection("family").onSnapshot(s=>{famDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("cars").onSnapshot(s=>{carDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("housing").onSnapshot(s=>{houseDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
+    db.collection("shopping").onSnapshot(s=>{shopDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     initNotify();
   })();
 })();
