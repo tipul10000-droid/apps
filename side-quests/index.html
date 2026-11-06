@@ -10,7 +10,16 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="8.0";window.SQ_BUILD_AT="6.11.2026 01:55";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="8.1";window.SQ_BUILD_AT="6.11.2026 02:30";
+/* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
+(function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
+d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
+d.innerHTML='<b>קרתה תקלה באפליקציה</b><div style="font-size:12px;opacity:.9;margin:4px 0 8px;direction:ltr;text-align:left;word-break:break-word"></div><button type="button" style="background:#fff;color:#B3261E;border:0;border-radius:10px;padding:8px 14px;font:600 15px -apple-system,system-ui,sans-serif">טען מחדש</button>';
+d.querySelector("div").textContent=String(msg||"").slice(0,300)+" · v"+window.SQ_BUILD;d.querySelector("button").onclick=function(){location.replace(location.pathname+"?u="+Date.now()+location.hash);};document.body.appendChild(d);}
+window.sqShowErr=bar;
+window.addEventListener("error",function(e){bar((e.message||"error")+(e.lineno?" @"+e.lineno+":"+e.colno:""));});
+window.addEventListener("unhandledrejection",function(e){var r=e.reason;bar("promise: "+((r&&(r.message||r))||""));});
+setTimeout(function(){var l=document.getElementById("list"),pin=document.getElementById("sq-pin");if(!pin&&l&&/טוען/.test(l.textContent)&&l.children.length<=1)bar("הנתונים לא הגיעו אחרי 20 שניות");},20000);})();</script>
 <script src="sq-db.js?v=9"></script>
 <title>Side Quests</title>
 
