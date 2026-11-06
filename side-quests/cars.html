@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#16233A">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CARS_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CARS_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <script src="cars-market.js?v=1"></script>
 <title>רכבים</title>
@@ -81,11 +81,11 @@ svg.chart{width:100%;height:auto;display:block;margin-top:8px}
 .car h3{font-size:21px}
 .chipsr{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 10px}
 .chipsr span{font-size:12.5px;font-weight:700;background:var(--sunk);padding:2px 8px;border-radius:999px}
-.vals{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.val{border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.vals{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.val{border:1px solid var(--line);border-radius:12px;padding:8px 8px}
 .val.w{border-color:var(--cc);border-width:2px}
-.val b{display:block;font-family:var(--f-display);font-size:19px}
-.val span{font-size:12.5px;color:var(--muted);display:block}
+.val b{display:block;font-family:var(--f-display);font-size:17px}
+.val span{font-size:12px;color:var(--muted);display:block;line-height:1.25}
 .val em{font-style:normal;font-size:12px;font-weight:700}
 .dates{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
 .dt{border-radius:12px;padding:7px 9px;background:var(--sunk);min-width:0}
@@ -252,7 +252,8 @@ function baseAt(c,src,m){const v=c.val||{},b=+(src==="levi"?v.levi:v.yad2)||0,de
   // מחירון של היום ← ירידה שנתית עד רצפה (ערך גרוטאה/מסחר)
   return fl+(b-fl)*Math.pow(1-r,m/12);}
 function valueOf(c,src,m,weighted){const b=baseAt(c,src,m);if(!weighted)return b;const s=adjFor(c,src,m).reduce((t,x)=>t+x[1],0);return Math.max(+((c.dep||{}).floor)||8000,b*(1+s));}
-function central(c,m){return (valueOf(c,"yad2",m,true)+valueOf(c,"levi",m,true))/2;}
+function marketAt(c,m){const mk=(c.val||{}).market;if(!mk||!+mk.v)return 0;const b0=baseAt(c,"yad2",0);return b0?+mk.v*baseAt(c,"yad2",m)/b0:+mk.v;}
+function central(c,m){const w=valueOf(c,"yad2",m,true),mk=marketAt(c,m);return mk?(w+mk)/2:w;}
 function routeF(){return (ROUTE[(meta.ans||{}).route]||ROUTE.private).f;}
 function inHand(c,m){return central(c,m)*(1+routeF());}
 
@@ -294,14 +295,13 @@ function carCard(c){
       <div class="chipsr"><span>${esc(c.year)}</span><span>${esc(c.trim||"")}</span><span>${esc(c.color||"")}</span><span>יד ${esc(c.hand||"?")}</span><span>${esc(c.engine||"")}</span>${c.owner?`<span>${esc(c.owner)}</span>`:""}</div>
       <div class="muted small" style="margin-bottom:6px">${m?`השווי ${esc(whenTxt(m))} (${esc(monthName(addMonths(today(),m)))})`:"השווי היום"}</div>
       <div class="vals">
-        <div class="val"><span>יד2 רגיל</span><b class="num">${ils(v("yad2",false))}</b>${dlt(v("yad2",false),now("yad2",false))}</div>
-        <div class="val w"><span>יד2 משוקלל</span><b class="num">${ils(v("yad2",true))}</b>${dlt(v("yad2",true),now("yad2",true))}</div>
-        <div class="val"><span>לוי יצחק רגיל</span><b class="num">${ils(v("levi",false))}</b>${dlt(v("levi",false),now("levi",false))}</div>
-        <div class="val w"><span>לוי יצחק משוקלל</span><b class="num">${ils(v("levi",true))}</b>${dlt(v("levi",true),now("levi",true))}</div>
+        <div class="val"><span>מחיר שוק (מודעות)</span><b class="num">${marketAt(c,m)?ils(marketAt(c,m)):"—"}</b>${marketAt(c,m)?dlt(marketAt(c,m),marketAt(c,0)):""}</div>
+        <div class="val"><span>מחירון יד2</span><b class="num">${ils(v("yad2",false))}</b>${dlt(v("yad2",false),now("yad2",false))}</div>
+        <div class="val w"><span>מחירון משוקלל</span><b class="num">${ils(v("yad2",true))}</b>${dlt(v("yad2",true),now("yad2",true))}</div>
       </div>
       <details style="margin-top:6px"><summary class="small" style="cursor:pointer;font-weight:700;color:var(--link)">איך חושב המשוקלל</summary>
         <ul class="iss">${adjs||"<li>אין עדיין התאמות</li>"}</ul>
-        <div class="note">רגיל = מחירון לרכב ממוצע מאותו דגם ושנה (${esc((c.val||{}).as_of||"")}). משוקלל = אחרי ק״מ, יד, מקור, תאונות ומצב. ${esc((c.val||{}).note||"")} בפועל ב${esc((ROUTE[(meta.ans||{}).route]||ROUTE.private).l)}: <b class="num">${ils(inHand(c,m))}</b>.</div>
+        <div class="note">מחיר שוק = ממוצע מודעות אמיתיות ביד2 לרכבים דומים (${esc(((c.val||{}).market||{}).note||"")}). מחירון = מחירון יד2 לרכב ממוצע מאותו דגם ושנה (${esc((c.val||{}).as_of||"")}). משוקלל = המחירון אחרי ק״מ, יד, מקור, תאונות ומצב. ${esc((c.val||{}).note||"")} בפועל ב${esc((ROUTE[(meta.ans||{}).route]||ROUTE.private).l)}: <b class="num">${ils(inHand(c,m))}</b>.</div>
       </details>
       <div class="dates">
         ${dateBox("ביטוח",lic.insurance,lic.insurance_note)}
@@ -355,7 +355,7 @@ function renderMine(){
   h+=`<section><div class="sh"><h2>🚙 הרכבים</h2><small>תמונות להמחשה</small></div><div style="display:grid;gap:14px" id="mcars">${mineCars()}</div></section>`;
   const open=cars.reduce((s,c)=>s+Object.keys(QO).filter(k2=>!(k2==="origin"&&c.bought_new)&&!(c.ans||{})[k2]).length,0);
   h+=`<section><div class="sh"><h2>🎯 לדייק את השווי המשוקלל</h2><small>${open?open+" שאלות פתוחות":"הכל נענה"}</small></div><div style="display:grid;gap:12px">${cars.map(questionsFor).join("")}</div>
-    <div class="note">כל תשובה נשמרת ומעדכנת את המשוקלל מיד. השווי הבסיסי הוא הערכה לפי מודעות ומחירון (${esc(meta.val_as_of||"")}). כדי לדייק: לבדוק במחירון לוי יצחק או ביד2 ולעדכן לי בצ׳אט.</div></section>`;
+    <div class="note">כל תשובה נשמרת ומעדכנת את המשוקלל מיד. הבסיס: מחירון יד2 ומודעות יד2 (${esc(meta.val_as_of||"")}). ביד2 אין מחשבון ק״מ ויד, ולכן המשוקלל מחושב כאן.</div></section>`;
   if((meta.links||[]).length)h+=`<section><div class="sh"><h2>🔗 איפה להתעדכן</h2></div><div class="card"><div class="links" style="margin:0">${meta.links.filter(l=>safe(l.url)).map(l=>`<a href="${esc(safe(l.url))}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div></div></section>`;
   return h;
 }
