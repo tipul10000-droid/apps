@@ -9,6 +9,7 @@
     '#skb button.dn{background:#eef0f3;transform:translateY(1px);box-shadow:none}'+
     '#skb .fn{background:#abb0ba;font-size:17px;max-width:60px;flex-grow:1.4}#skb .sp{max-width:none;flex-grow:5;font-size:16px;color:#333}#skb .go{max-width:none;flex-grow:2.2;background:#7c3aed;color:#fff;font-size:17px;font-weight:600}'+
     '#skb .r2{padding:0 4.5%}#skb .pop{position:absolute;pointer-events:none;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.25);font:500 30px -apple-system,system-ui,Arial,sans-serif;width:52px;height:56px;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-100%)}'+
+    '@media(max-height:720px){#skb button{height:38px}#skb .r{margin-bottom:6px}#skb{padding-top:5px}}'+
     '#skb.locked button{opacity:.45}body.skb-on{padding-bottom:var(--skbh,240px)}';
   var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
   var ROWS=['qwertyuiop','asdfghjkl','zxcvbnm'],kb=null,inp=null,opt={},pop=null,rep=null,locked=false;
