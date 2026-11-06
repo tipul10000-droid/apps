@@ -196,7 +196,7 @@ async function criticalTick(p: any, t0: ReturnType<typeof il>) {
 }
 
 // ---------- "צא עד" / "להתקשר עד" (10.0, Oren 6.11.2026 after missing the Kia test) ----------
-// Every open task planned for today with opening hours (fit.open / fit.at) gets up to 3 pushes:
+// Every open task planned for today with opening hours (fit.open / fit.appt) gets up to 3 pushes:
 // ~90 min before the leave/call deadline, ~20 min before, and once it is late but the place is still open.
 // A task whose place is closed today gets one morning push. At 20:00 one push lists tomorrow's deadlines.
 const WD: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
@@ -223,13 +223,14 @@ async function gateTick(p: any, t: ReturnType<typeof il>) {
       const left = g.by - t.mins;
       stage = left <= 0 ? 3 : left <= 20 ? 2 : left <= 90 ? 1 : 0;
     }
-    if (!stage || (sent[g.id] || 0) >= stage) continue;
-    if (stage === 9 && t.hour >= 13) { sent[g.id] = 9; continue; } // only worth saying in the morning
+    const k = g.key || g.id;
+    if (!stage || (sent[k] || 0) >= stage) continue;
+    if (stage === 9 && t.hour >= 13) { sent[k] = 9; continue; } // only worth saying in the morning
     const tx = SQGate.text(g);
     const pre = stage === 3 ? "⚠️ עכשיו! " : "";
     list = list || (await subs());
     await sendTo(list, { title: `${pre}${tx.head} · ${short(g.title, 40)}`, body: short(tx.body + (g.est ? " (שעות משוערות)" : ""), 170), tag: "sq-gate-" + g.id, url: APP_URL + "#t=" + encodeURIComponent(g.id) });
-    sent[g.id] = stage; out.push({ id: g.id, stage });
+    sent[k] = stage; out.push({ id: k, stage });
   }
   // tomorrow, once at 20:00-21:59
   let tom = st.tom || "";

@@ -95,3 +95,7 @@ Policy doc: title, cat (health|life|nursing|car|home|travel|hmo|pension|accident
 ### Movie fields (`movies/movies`)
 
 title, year, genre, lang, imdb_rating, note, source, seen, seen_at, downloaded, order, added_at, updated_at.
+
+## 10.4: מקום מסוים מול משימה כללית, וכפתור 📍
+- `fit.alts` [{name, area, km, open, src}] למשימה שכל מקום יכול לעשות (פיתות, סופר). `SQGate.gate` בוחר את הקרוב שעוד מספיקים להגיע אליו; אם הקרוב סגור, את הפתוח עד מאוחר יותר, והטקסט אומר לאן ללכת ולמה. `key` = `id@index`, ו-sq-push שומר את שלבי ההתראה לפי המפתח הזה.
+- כפתור 📍 (`#locBtn`) בשורה העליונה: מפעיל מיקום, מזהה עיר מ-`CITIES` (בלי שירות חיצוני), חלון `#locM` עם מה שאפשר לעשות כאן. כשלא בבית, הסידור לפי אזור והפס האדום מחשבים מרחק מהמיקום הנוכחי (`kmHere`, `hereFit`). המיקום נשאר ב-`sq_loc` במכשיר בלבד.

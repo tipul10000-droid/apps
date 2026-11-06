@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.3";window.SQ_BUILD_AT="6.11.2026 13:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.4";window.SQ_BUILD_AT="6.11.2026 14:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -22,7 +22,7 @@ window.addEventListener("error",function(e){bar((e.message||"error")+(e.lineno?"
 window.addEventListener("unhandledrejection",function(e){var r=e.reason;bar("promise: "+((r&&(r.message||r))||""));});
 setTimeout(function(){var l=document.getElementById("list"),pin=document.getElementById("sq-pin");if(!pin&&l&&/טוען/.test(l.textContent)&&l.children.length<=1)bar("הנתונים לא הגיעו אחרי 20 שניות");},20000);})();</script>
 <script src="sq-db.js?v=9"></script>
-<script src="timegate.js?v=1"></script>
+<script src="timegate.js?v=2"></script>
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -699,6 +699,31 @@ html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 .tb.tsun{width:34px;height:34px;padding:0;position:relative;background:#F6B53C;color:#3B2200;border:1px solid rgba(255,255,255,.5);box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .tb.tsun svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .tb.tsun circle{fill:currentColor}
+/* 10.4 (Oren 6.11): 📍 where am I. Same size in every state; only the colour changes (a tapped button never moves) */
+.tb.tloc{width:34px;height:34px;padding:0;position:relative;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.tb.tloc svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.tb.tloc.on{background:#2F80ED;border-color:#fff}
+.tb.tloc.on svg circle{fill:currentColor}
+.tb.tloc.busy svg{animation:locp 1s ease-in-out infinite}
+@keyframes locp{50%{opacity:.35}}
+#locM .sqpanel{height:calc(70vh / var(--tz,1));max-height:none;display:flex;flex-direction:column;padding:0}
+@supports (height:1dvh){#locM .sqpanel{height:calc(70dvh / var(--tz,1))}}
+#locM .lhd{display:flex;align-items:center;gap:8px;padding:14px 16px 8px;flex:none}
+#locM .lbody{flex:1;overflow:auto;padding:0 16px 8px}
+#locM .lnow{font-size:16px;font-weight:700;margin:2px 0 10px}
+#locM .lnow small{display:block;font-weight:500;color:var(--muted);font-size:13px}
+#locM .lfr{border:1px solid var(--line,rgba(0,0,0,.14));border-radius:14px;overflow:hidden;margin:6px 0 12px;animation:sqgrow .22s ease-out}
+#locM .lfr>*{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:11px 12px;border:0;border-top:1px solid var(--line,rgba(0,0,0,.12));background:none;color:inherit;font:inherit}
+#locM .lfr>*:first-child{border-top:0}
+#locM .lfr .lt{flex:1;min-width:0}
+#locM .lfr .lt b{display:block;font-size:15px}
+#locM .lfr .lt small{display:block;color:var(--muted);font-size:13px}
+#locM .lfr .lk{flex:none;font-size:12.5px;color:var(--muted);font-weight:700}
+#locM .lh{font-weight:800;font-size:14px;margin:12px 0 0}
+#locM .lft{flex:none;display:flex;border-top:1px solid var(--line,rgba(0,0,0,.14));padding-bottom:env(safe-area-inset-bottom,0px)}
+#locM .lft button{flex:1;min-height:52px;font-weight:700;font-size:15px;background:none;border:0;color:inherit}
+#locM .lft button+button{border-inline-start:1px solid var(--line,rgba(0,0,0,.14))}
+@keyframes sqgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 body:not(.q-side) .tb.tsun{display:none}
 /* 5.9: the brief is a short popup, not a page (Oren 3.11): only what is new to him, critical, and what fits this morning */
 .sqmodal.bpop{align-items:center;background:rgba(10,8,4,.62);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);padding:16px}
@@ -1501,7 +1526,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   </div>
   <div class="qb-in gut"><span class="ai-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
-<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tsun" id="sunBtn" type="button" aria-label="בריף הבוקר"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tsun" id="sunBtn" type="button" aria-label="בריף הבוקר"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
@@ -1567,6 +1592,28 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   // Device only: localStorage sq_loc {on, home:{la,lo}, work:{la,lo}, last:{la,lo,acc,at}}. Never sent anywhere, never in the repo.
   let loc={on:false};try{loc=JSON.parse(localStorage.getItem("sq_loc")||"null")||{on:false};}catch(e){}
   let locErr="",locBusy=false;
+  let locHook=null;
+  // 10.4 (Oren 6.11): 📍 button. Tapping it turns location on (same opt-in as 9.6) and tells the app which city he is in, from a
+  // fixed table of city centres in the code (no reverse-geocoding service: the location never leaves the device).
+  // Then the errands in that city come first, distances and "צא עד" count from where he is now, and a window lists what fits here.
+  const CITIES=[["כפר סבא",32.178,34.907],["רעננה",32.184,34.871],["הוד השרון",32.150,34.888],["הרצליה",32.166,34.843],["רמת השרון",32.146,34.839],["פתח תקווה",32.087,34.887],["ראש העין",32.096,34.957],["תל אביב",32.080,34.781],["רמת גן",32.068,34.824],["גבעתיים",32.071,34.810],["בני ברק",32.084,34.834],["גבעת שמואל",32.078,34.848],["חולון",32.011,34.774],["בת ים",32.017,34.745],["ראשון לציון",31.964,34.804],["נתניה",32.321,34.853],["כפר יונה",32.317,34.935],["אבן יהודה",32.270,34.888],["כוכב יאיר",32.223,34.997],["קדימה",32.278,34.915],["תל מונד",32.257,34.918],["טייבה",32.266,35.009],["חדרה",32.434,34.919],["קיסריה",32.500,34.900],["זכרון יעקב",32.571,34.952],["חיפה",32.794,34.990],["קריית מוצקין",32.837,35.078],["קריית ביאליק",32.833,35.085],["קריית אתא",32.808,35.105],["עכו",32.928,35.076],["נהריה",33.006,35.098],["כרמיאל",32.914,35.296],["טבריה",32.795,35.531],["עפולה",32.607,35.289],["נצרת",32.700,35.303],["יקנעם",32.659,35.105],["ירושלים",31.778,35.235],["מודיעין",31.899,35.010],["רחובות",31.894,34.811],["נס ציונה",31.930,34.799],["יבנה",31.877,34.739],["לוד",31.951,34.895],["רמלה",31.929,34.866],["אור יהודה",32.029,34.856],["יהוד",32.033,34.890],["שוהם",31.999,34.946],["אשדוד",31.804,34.655],["אשקלון",31.669,34.571],["באר שבע",31.252,34.791],["אילת",29.558,34.952]];
+  const normCity=s=>String(s||"").replace(/[״"׳']/g,"").replace(/קרית/g,"קריית").replace(/תקוה/g,"תקווה").trim();
+  // a fresh sample (up to 2 hours) = "here"
+  function here(){const L=loc.last;return loc.on&&L&&Date.now()-L.at<2*3600e3?L:null;}
+  function cityAt(p){if(!p)return null;if(!inIsrael(p))return {name:"חו״ל",abroad:true};let best=null;
+    for(const [n,la,lo] of CITIES){const d=distM(p,{la,lo});if(!best||d<best.d)best={name:n,d};}return best&&best.d<7000?best:null;}
+  function cityOf(area){const a=normCity(area);if(!a)return null;for(const c of CITIES)if(a.includes(c[0]))return {name:c[0],la:c[1],lo:c[2]};return null;}
+  // km from where he is now to a task's place (the task's own lat/lo if it has them, else its city centre); null = unknown
+  function kmHere(f){const p=here();if(!p||!f)return null;let q=null;
+    if(f.lat!=null&&f.lng!=null)q={la:+f.lat,lo:+f.lng};else{const c=cityOf(f.area);if(c)q=c;}
+    if(!q)return null;return Math.round(distM(p,q)/100)/10;}
+  function hereCity(){const c=cityAt(here());return c&&!c.abroad?c.name:null;}
+  // a copy of a task with distances counted from here (for "צא עד" and the alternatives), when he is away from home
+  function hereFit(t){const f=fitOf(t);if(!here()||locPlace()==="home")return t;const k=kmHere(f);
+    const alts=Array.isArray(f.alts)?f.alts.map(a=>{const x=kmHere(a);return x==null?a:{...a,km:x,travel:null};}):f.alts;
+    if(k==null&&alts===f.alts)return t;return {...t,fit:{...f,...(k!=null?{km:k,travel:null}:{}),...(alts?{alts}:{})}};}
+  function updLocBtn(){const b=document.getElementById("locBtn");if(!b)return;b.classList.toggle("on",!!here());b.classList.toggle("busy",locBusy);
+    const c=hereCity();b.setAttribute("aria-label",c?"מיקום: "+c:"איפה אני עכשיו");}
   function saveLoc(){try{localStorage.setItem("sq_loc",JSON.stringify(loc));}catch(e){}}
   function distM(a,b){const r=x=>x*Math.PI/180,dl=r(b.la-a.la),dn=r(b.lo-a.lo);const q=Math.sin(dl/2)**2+Math.cos(r(a.la))*Math.cos(r(b.la))*Math.sin(dn/2)**2;return 2*6371000*Math.asin(Math.sqrt(q));}
   const inIsrael=p=>p.la>29.4&&p.la<33.4&&p.lo>34.2&&p.lo<35.95;
@@ -1577,8 +1624,8 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   function sampleLoc(force,cb){if(!cb&&!loc.on)return;if(!navigator.geolocation){locErr="המכשיר לא נותן מיקום";renderSettings();return;}
     if(!force&&!cb&&loc.last&&Date.now()-loc.last.at<5*60e3)return;if(locBusy)return;locBusy=true;
     navigator.geolocation.getCurrentPosition(p=>{locBusy=false;const c={la:+p.coords.latitude.toFixed(5),lo:+p.coords.longitude.toFixed(5),acc:Math.round(p.coords.accuracy||0),at:Date.now()};
-        loc.last=c;locErr="";if(cb)cb(c);saveLoc();refreshMode();renderSettings();},
-      e=>{locBusy=false;locErr=e&&e.code===1?"אין הרשאת מיקום. באייפון: הגדרות ← Safari ← מיקום ← לשאול או לאפשר":"לא הצלחתי לקבל מיקום. ננסה שוב בכניסה הבאה";renderSettings();},
+        loc.last=c;locErr="";if(cb)cb(c);saveLoc();refreshMode();renderSettings();if(locHook)locHook();},
+      e=>{locBusy=false;locErr=e&&e.code===1?"אין הרשאת מיקום. באייפון: הגדרות ← Safari ← מיקום ← לשאול או לאפשר":"לא הצלחתי לקבל מיקום. ננסה שוב בכניסה הבאה";renderSettings();if(locHook)locHook();},
       {enableHighAccuracy:false,timeout:12000,maximumAge:120000});}
   const MODES={home:{e:"🏠",l:"בית",sub:"כל 6 הקווסטים"},work:{e:"💼",l:"עבודה",sub:"רק סייד, צבא ועבודה. קצרות למעלה"},abroad:{e:"✈️",l:"חו״ל",sub:"בלי עבודה וצבא. מה שאפשר מהנייד למעלה"}};
   const MHIDE={home:[],work:["fun","travel","ai"],abroad:["work","army"]};
@@ -2407,10 +2454,11 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
     for(const t of P){const g=geoOf(t),k=g.area||"בחוץ",l=AR[AR.length-1];if(l&&l.k===k){l.items.push(t);if(g.km!=null)l.km=Math.min(l.km,g.km);}else AR.push({k,km:g.km??999,ord:dayOrd(t),items:[t]});}
     const A={};for(const t of out){if(dayOrd(t)!=null)continue;const g=geoOf(t),k=g.area||"בחוץ",pl=AR.find(x=>x.k===k);if(pl){pl.items.push(t);continue;}
       const a=A[k]=A[k]||{k,km:999,items:[]};a.items.push(t);if(g.km!=null)a.km=Math.min(a.km,g.km);}
-    const AQ=Object.values(A).sort((a,b)=>a.km-b.km);for(const a of AQ)a.items.sort((x,y)=>(geoOf(x).km??999)-(geoOf(y).km??999));AR.push(...AQ);
+    const hc=hereCity();if(here())for(const a of Object.values(A)){const k=kmHere({area:a.k});if(k!=null){a.km=k;a.here=hc&&normCity(a.k).includes(hc);}}
+    const AQ=Object.values(A).sort((a,b)=>(b.here?1:0)-(a.here?1:0)||a.km-b.km);for(const a of AQ)a.items.sort((x,y)=>(geoOf(x).km??999)-(geoOf(y).km??999));AR.push(...AQ);
     const S=[];if(home.length)S.push({t:"🏠 קודם בבית",items:home});if(call.length)S.push({t:"📞 שיחות, אפשר בדרך",items:call});
     if(any.length){if(AR.length)AR[0].items.push(...any);else S.push({t:"🛒 בחוץ, בכל מקום",items:any});}
-    AR.forEach((a,i)=>S.push({t:"📍 "+a.k+(a.km<999?" · "+a.km+" ק״מ":"")+(AR.length>1?(i?" · אחר כך":" · קודם"):""),items:a.items}));
+    AR.forEach((a,i)=>S.push({t:(a.here?"📍 אתה כאן: ":"📍 ")+a.k+(a.km<999?" · "+a.km+" ק״מ":"")+(AR.length>1?(i?" · אחר כך":" · קודם"):""),items:a.items}));
     const so=x=>Math.min(99,...x.items.map(t=>dayOrd(t)??99));if(S.some(x=>so(x)<99)){S.sort((a,b)=>so(a)-so(b));S.forEach((x,i)=>{if(i&&x.items===home)x.t="🏠 בבית";});} // stable: unplanned keep the fixed order
     return S;}
   // 9.2: Oren's own order for one day: day_plan {date, n} (n = 1 first). Wins over home-first and distance on that date only.
@@ -2942,7 +2990,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   // 9.9 (Oren 6.11.2026): "צא עד Y, סוגרים ב-X" for today's tasks that depend on opening hours (timegate.js; same math as the push)
   function renderGate(){const el=document.getElementById("tgate");if(!el||!window.SQGate)return;
     const n=ilNow(),G=window.SQGate,today=ilDate(),esc=v=>String(v==null?"":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
-    const L=G.list(allTopics,today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past");
+    updLocBtn();const L=G.list(allTopics.map(hereFit),today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past");
     if(!L.length){el.hidden=true;el.innerHTML="";return;}
     const left=g=>{const m=g.by-n.m;return m<=0?"עכשיו!":m<60?`עוד ${m} דק׳`:`עוד ${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} ש׳`;};
     el.innerHTML=L.slice(0,4).map(g=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`;}).join("");
@@ -3135,6 +3183,28 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   let lockY=null;
   function lockScroll(){if(lockY!==null)return;lockY=window.scrollY;document.body.style.top=-lockY+"px";document.documentElement.classList.add("sqlock");}
   function unlockScroll(){if(lockY===null)return;const y=lockY;lockY=null;document.documentElement.classList.remove("sqlock");document.body.style.top="";window.scrollTo(0,y);}
+  function showHere(sample){
+    if(sample){if(!loc.on){loc.on=true;saveLoc();}locHook=()=>{updLocBtn();renderAll();if(document.getElementById("locM"))fillHere();};sampleLoc(true);updLocBtn();}
+    const body=h("div",{class:"lbody",id:"locBody"});
+    modal("locM",h("div",{class:"lhd"},h("h2",null,"📍 איפה אני",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),body,
+      h("div",{class:"lft"},h("button",{type:"button",onclick:()=>showHere(true)},"🔄 לעדכן מיקום"),h("button",{type:"button",onclick:closeModal},"✓ סגור")));
+    fillHere();}
+  function fillHere(){const el=document.getElementById("locBody");if(!el)return;el.innerHTML="";const p=here();
+    if(locBusy&&!p){el.append(h("div",{class:"lnow"},"מאתר מיקום…"));return;}
+    if(!p){el.append(h("div",{class:"lnow"},locErr||"עוד אין מיקום",h("small",null,"המיקום נשאר רק במכשיר הזה")));return;}
+    const c=cityAt(p),pl=locPlace(),ago=Math.round((Date.now()-p.at)/60000);
+    el.append(h("div",{class:"lnow"},c&&c.abroad?"✈️ בחו״ל":pl==="home"?"🏠 בבית"+(c?" ("+c.name+")":""):pl==="work"?"💼 בעבודה":c?"עכשיו ב"+c.name:"לא ליד עיר שאני מכיר",
+      h("small",null,(ago<1?"עכשיו":"לפני "+ago+" דק׳")+(locBusy?" · מעדכן…":"")+" · המיקום נשאר רק במכשיר")));
+    const L=allTopics.filter(t=>isOpen(t)&&t.status!=="waiting_other"&&t.status!=="paused"&&!snoozed(t)&&!isFun(t)&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&stageOf(t)!=="home"&&stageOf(t)!=="call"&&howOf(t).includes("place"));
+    const G=window.SQGate,n=ilNow(),today=ilDate();
+    const row=(t,k)=>{const g=G?G.gate(hereFit(t),today,n.d,n.m):null;const tx=g&&g.kind!=="unknown"&&g.state!=="past"?G.text(g):null;
+      return h("button",{type:"button",onclick:()=>{closeModal();openTask(t.id);}},h("span",{class:"lt"},h("b",null,t.title||""),tx?h("small",null,tx.head+" · "+tx.body):fitOf(t).where?h("small",null,fitOf(t).where):null),k!=null?h("span",{class:"lk"},k<1?"כאן":k+" ק״מ"):null);};
+    const withK=L.map(t=>({t,k:kmHere(fitOf(t)),any:!!fitOf(t).anywhere})),near=withK.filter(x=>!x.any&&x.k!=null&&x.k<=6).sort((a,b)=>a.k-b.k);
+    const any=withK.filter(x=>x.any),far=withK.filter(x=>!x.any&&x.k!=null&&x.k>6).sort((a,b)=>a.k-b.k).slice(0,4);
+    el.append(h("div",{class:"lh"},near.length?"📍 אפשר לעשות כאן":"📍 כאן"));
+    el.append(near.length?h("div",{class:"lfr"},...near.map(x=>row(x.t,x.k))):h("div",{class:"lfr"},h("div",null,"✓ אין משימות במקום הזה")));
+    if(any.length){el.append(h("div",{class:"lh"},"🛒 בכל מקום, גם כאן"));el.append(h("div",{class:"lfr"},...any.map(x=>row(x.t,null))));}
+    if(far.length){el.append(h("div",{class:"lh"},"🧭 בהמשך"));el.append(h("div",{class:"lfr"},...far.map(x=>row(x.t,x.k))));}}
   function closeModal(keep){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(keep!==true)unlockScroll();if(/^#(brief|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
   function modal(id,...kids){closeModal(true);lockScroll();const m=h("div",{class:"sqmodal",id,onclick:e=>{if(e.target===m)closeModal();}},h("div",{class:"sqpanel",role:"dialog","aria-modal":"true"},...kids));document.body.append(m);return m;}
   function sw(on,fn,label){return h("input",{type:"checkbox",class:"sqsw",role:"switch",checked:on||null,"aria-label":label,onchange:e=>fn(e.target.checked)});}
@@ -3404,6 +3474,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.type==="sq-open"&&d.url){try{const u=new URL(d.url);if(u.hash&&u.hash!==location.hash)location.hash=u.hash;else routeHash();}catch(x){}}});
   $("setBtn").onclick=()=>showSettings();
   $("sunBtn").onclick=()=>showBrief();
+  $("locBtn").onclick=()=>showHere(true);
   function initNotify(){
     db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan");plan=pl?pl.data():null;morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
       notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;refreshMode();

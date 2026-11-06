@@ -11,6 +11,10 @@
 //   last_in: minutes before closing that the last car / customer is taken (default 0)
 //   travel: one-way minutes (default from km: 6 + 1.5*km, else 15)
 //   hours_src, hours_at, hours_est (true = an estimate; the app asks to confirm)
+//   alts: [{name, area, km, open, last_in?, travel?, src}] (10.4, Oren 6.11.2026): a generic errand (pitas, groceries) that any of
+//         several places can do. The nearest place that can still be reached wins; when the nearest one is closed or closing,
+//         the gate points to a place that closes later, even if a bit farther, and the text says so ("X כבר סגור, לך ל-Y").
+//         With alts, fit.open is ignored. key = id@<index of the picked place>, so the push restarts when the pick changes.
 // The same file is loaded by the app (<script src="timegate.js">) and bundled into the sq-push edge function.
 (function (G) {
   const DOW = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
@@ -40,7 +44,7 @@
   // gate for a task on date `date` (weekday `dow`) at minute-of-day `now`. Returns null when the task has no hours.
   function gate(t, date, dow, now) {
     const f = t && t.fit && typeof t.fit === "object" ? t.fit : null;
-    if (!f || (!f.open && !f.appt)) return null;
+    if (!f || (!f.open && !f.appt && !(Array.isArray(f.alts) && f.alts.length))) return null;
     const call = isCall(f), travel = travelOf(f), last = +f.last_in || 0;
     const need = call ? Math.min(+f.mins || 15, 45) : 0;
     const buf = call ? 5 : 10;
@@ -51,6 +55,7 @@
       const by = call ? a : a - travel - buf;
       return { ...base, kind: "at", open: null, close: a, by, closed: false, state: now >= a ? "past" : now >= by ? "late" : by - now <= 30 ? "soon" : "ok" };
     }
+    if (Array.isArray(f.alts) && f.alts.length) return altGate(t, f, date, dow, now);
     const rs = ranges(f.open, dow);
     if (rs == null) return { ...base, kind: "unknown" };
     if (!rs.length) return { ...base, kind: "closed", closed: true, next: nextOpen(f.open, dow) };
@@ -59,6 +64,35 @@
     const close = r[1], by = close - last - travel - need - buf;
     const state = now >= close - last ? "past" : now >= by ? "late" : by - now <= 30 ? "soon" : by - now <= 120 ? "near" : "ok";
     return { ...base, kind: "open", open: r[0], close, last, by, closed: false, state, before: now < r[0] };
+  }
+  // several places that can do the same errand: pick the nearest one that can still be reached in time
+  function altGate(t, f, date, dow, now) {
+    const opts = [];
+    f.alts.forEach((a, i) => {
+      if (!a || !a.open) return;
+      const fa = { ...f, open: a.open, km: a.km, travel: a.travel, last_in: a.last_in, where: a.name || f.where, hours_est: !!a.est, appt: null };
+      delete fa.alts;
+      const g = gate({ ...t, fit: fa }, date, dow, now);
+      if (!g || g.kind === "unknown") return;
+      opts.push({ ...g, i, km: a.km != null && !isNaN(+a.km) ? +a.km : 99, area: a.area || "" });
+    });
+    if (!opts.length) return { id: t.id, title: t.title || "", kind: "unknown" };
+    opts.sort((a, b) => a.km - b.km);
+    const near = opts[0];
+    const live = opts.filter((g) => g.kind === "open" && g.state !== "past");
+    const reach = live.filter((g) => now < g.by);
+    let pick;
+    if (reach.length) pick = reach[0];
+    else if (live.length) pick = live.slice().sort((a, b) => b.close - a.close)[0];
+    else if (opts.every((g) => g.kind === "closed")) {
+      const nx = opts.map((g) => g.next).filter(Boolean)[0] || null;
+      return { ...near, kind: "closed", closed: true, next: nx, key: t.id, alts: opts.length };
+    } else pick = opts.filter((g) => g.kind === "open").sort((a, b) => b.close - a.close)[0] || near;
+    // a backup when the pick itself is tight: the place that closes latest
+    const later = reach.filter((g) => g !== pick && g.close > pick.close).sort((a, b) => b.close - a.close)[0] || null;
+    const backup = (pick.state === "soon" || pick.state === "late") && later ? { where: later.where, close: later.close, by: later.by, km: later.km } : null;
+    const nearTxt = near === pick ? null : near.kind === "closed" ? "סגור היום" : now >= near.close - (near.last || 0) ? "כבר סגור" : "סוגר ב-" + fmt(near.close);
+    return { ...pick, key: t.id + "@" + pick.i, switched: near !== pick, near: near.where, nearTxt, backup, alts: opts.length };
   }
   function nextOpen(open, dow) {
     for (let i = 1; i <= 7; i++) { const d = (dow + i) % 7, rs = ranges(open, d); if (rs && rs.length) return { dow: d, day: DOW[d], from: fmt(rs[0][0]), to: fmt(rs[rs.length - 1][1]) }; }
@@ -79,6 +113,12 @@
     if (g.kind === "closed") return { head: (g.call ? "📵 לא עונים היום" : "🚫 סגור היום"), body: `${w}סגור היום.${g.next ? ` פתוח שוב ב${g.next.day} מ-${g.next.from}.` : ""}` };
     if (g.kind === "at") return { head: g.call ? `📞 שיחה ב-${fmt(g.close)}` : `🚗 צא עד ${fmt(g.by)}`, body: `${w}ב-${fmt(g.close)}.${g.call ? "" : ` ${g.travel} דק׳ נסיעה.`}` };
     const lastTxt = g.last ? ` (כניסה אחרונה ${fmt(g.close - g.last)})` : "";
+    if (g.alts) {
+      // the place to go comes first (the strip cuts long lines), then why
+      const sw = g.switched ? ` (${g.near} ${g.nearTxt})` : "";
+      const bk = g.backup ? ` לא מספיק? ${g.backup.where} עד ${fmt(g.backup.close)}.` : "";
+      return { head: `🚗 צא עד ${fmt(g.by)}`, body: `${g.switched ? "לך ל" : ""}${g.where}: פתוח עד ${fmt(g.close)}${lastTxt}, ${g.travel} דק׳.${sw}${bk}`, tip: !!(g.switched || g.backup) };
+    }
     if (g.call) return { head: `📞 להתקשר עד ${fmt(g.by)}`, body: `${w || "המוקד "}נסגר ב-${fmt(g.close)}.` };
     return { head: `🚗 צא עד ${fmt(g.by)}`, body: `${w}סוגרים ב-${fmt(g.close)}${lastTxt}. ${g.travel} דק׳ נסיעה.` };
   }
