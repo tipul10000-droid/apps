@@ -69,7 +69,7 @@ const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1
 // הקוד נבדק בשרת (study_parents_get). אחרי קוד נכון הוא נשמר במכשיר (study_par_pin); קוד שגוי מוחק אותו.
 const KIDS=[{id:'evyatar',n:'אביתר',apps:[{id:'vocab',n:'אוצר מילים באנגלית',unit:'מילים',test:'מבחן'}]},
 {id:'dani',n:'דני',apps:[{id:'spelling',n:'הכתבה ואוצר מילים באנגלית',unit:'מילים',test:'הכתבה'}]},
-{id:'lia',n:'ליה',apps:[]}];
+{id:'lia',n:'ליה',apps:[{id:'phonics',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן'}]}];
 // הכינויים של אביתר בלוח הדירוג של אוצר המילים
 const LBN=['אביה','אביתר','evyatar','avia'];
 const $=id=>document.getElementById(id),V=$('v');
@@ -93,7 +93,8 @@ function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה
  rows.forEach(x=>{const d=x.data||{};r.sec+=+d.sec||0;r.att+=+d.att||0;r.ok+=+d.ok||0;
   if((+d.done||0)>=r.done){r.done=+d.done||0;r.total=+d.total||r.total;r.learning=d.learning;r.pts=d.pts;r.first_ok=d.first}
   r.best=Math.max(r.best,+d.best||0);const f=d.first||x.first_at;if(f&&(!r.first||f<r.first))r.first=f;const l=d.last||x.updated_at;if(l&&(!r.last||l>r.last))r.last=l;
-  for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)})});return r}
+  for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)});
+  if(d.group)r.group=Math.max(r.group||0,+d.group);for(const g in d.tests||{}){const o=d.tests[g]||{};r.tests=r.tests||{};const c=r.tests[g]||{best:0};r.tests[g]={best:Math.max(c.best,+o.best||0),last:(!c.d||o.d>=c.d)?o.last:c.last,d:(!c.d||o.d>=c.d)?o.d:c.d}}});return r}
 const id0=(k,a)=>k.id+'_'+a.id;
 let TAB='dani',SAVED='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}
 // אירוע = תוכן לימוד עם מבחן/הכתבה אחד (אורן 6.11.2026): תאריך ← אחרי שעבר: ציון ← הציון. תאריך שנשמר מוצג עם ✓ ועיפרון לעריכה.
@@ -140,6 +141,9 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
     ${r.learning!=null?`<div class="st"><small>בתהליך לימוד</small><b>${r.learning}</b> <small>${a.unit}</small></div>`:''}<div class="st"><small>שיא רצף</small><b>${r.best}</b></div></div>`;
     h+=timeline(r,t,a,k);
     const hd=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,8);if(hd.length)h+=`<div class="hard">מתקשה ב: ${hd.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`;
+    // ליה, אותיות וצלילים: מבחני דקה (כמה צלילים נכונים בדקה) לכל קבוצה
+    if(r.tests&&Object.keys(r.tests).length)h+=`<div class="hard">⏱️ מבחני דקה: ${Object.keys(r.tests).sort().map(g=>`<span>קבוצה ${esc(g.slice(1))}: ${r.tests[g].best} נכונים (שיא)</span>`).join('')}</div>`;
+    if(r.group)h+=`<div class="none" style="margin-top:6px">עכשיו בקבוצה ${r.group} מתוך 6</div>`;
     if(t&&t.d&&r.total){const dl=Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5),left=r.total-r.done;
      if(dl>0&&left>0)h+=`<div class="none" style="margin-top:8px">נשארו ${left} ${a.unit} ו-${dl} ימים: בערך ${Math.ceil(left/dl)} ביום.</div>`}}
    if(a.id==='vocab'){const L=(j.lb||[]).filter(x=>LBN.includes(String(x.name).trim().toLowerCase()));

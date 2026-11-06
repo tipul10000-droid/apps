@@ -12,6 +12,7 @@ const BASE = "https://tipul10000-droid.github.io/apps/study/";
 const APPS = [
   { kid: "evyatar", app: "vocab", name: "אביתר", boy: true, what: "אוצר מילים באנגלית", unit: "מילים", test: "המבחן באנגלית" },
   { kid: "dani", app: "spelling", name: "דני", boy: false, what: "הכתבה באנגלית", unit: "מילים", test: "ההכתבה" },
+  { kid: "lia", app: "phonics", name: "ליה", boy: false, what: "אותיות וצלילים באנגלית", unit: "צלילים", test: "המבחן" },
 ];
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json", ...CORS } });
