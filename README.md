@@ -6,7 +6,7 @@
 - `side-quests/` – לוח משימות אישי (פרטי, נפתח עם קוד). הרצה, פריסה ומבנה הנתונים: `side-quests/README.md`. לינק: https://tipul10000-droid.github.io/apps/side-quests/
 - `movies/` – רשימת צפייה אישית (אותו מפתח). לינק: https://tipul10000-droid.github.io/apps/movies/
 - `frida/` – מעקב שקילות ולקוחות לקבוצות ההרזיה של פרידה. לינק: https://tipul10000-droid.github.io/apps/frida/
-- `study/` – לימוד אוצר מילים באנגלית (עבר מהמאגר english-vocab). לינק: https://tipul10000-droid.github.io/apps/study/
+- `study/` – אזור לימוד לשלושת הילדים (מסך בחירה). `study/evyatar/` = אוצר מילים באנגלית (עבר מהמאגר english-vocab); `study/dani/`, `study/lia/` בקרוב. לינק: https://tipul10000-droid.github.io/apps/study/
 
 כללי עבודה: ראו `CLAUDE.md`.
 
@@ -20,6 +20,6 @@
 אין משתני סביבה ואין secrets במאגר. מפתח Supabase הציבורי (anon) נמצא בקוד (`*/config.js`, `study/index.html`) וזה מותר. מפתח סודי (service_role) לעולם לא נכנס למאגר. קודי גישה פרטיים (PIN של side-quests, מפתח movies) לא נמצאים במאגר.
 
 ## study בקצרה (למי שממשיך את העבודה)
-- קובץ אחד: `study/index.html`. הנתונים של כל משתמש ב-localStorage של הדפדפן (`vq1`, `vq1streak`, `vq1lvl`, `vq1blk`, `vq1lb`); אסור לשנות שמות או מבנה. פירוט מלא ב-`CLAUDE.md`.
+- אוצר המילים: קובץ אחד, `study/evyatar/index.html`. הנתונים של כל משתמש ב-localStorage של הדפדפן (`vq1`, `vq1streak`, `vq1lvl`, `vq1blk`, `vq1lb`); אסור לשנות שמות או מבנה. פירוט מלא ב-`CLAUDE.md`.
 - לוח דירוג: הטבלה `vocab_lb_players` ופונקציות `vocab_lb_upsert` / `vocab_lb_get` (`study/supabase/leaderboard.sql`).
 - הכתובת הישנה (מאגר `english-vocab`) מפנה ל-`/apps/study/`.
