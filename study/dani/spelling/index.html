@@ -101,7 +101,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:26px;font-weight:900;color:#6d28d9;z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap}
 @keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
-.donebox{text-align:center}.donebox .he{font-size:26px}
+.skel{direction:ltr;font:700 24px ui-monospace,Menlo,Consolas,monospace;letter-spacing:2px;color:#6d28d9;margin:4px 0}.skel u{text-decoration:none;color:#c4b5fd}#lvl{color:#6d28d9;font-weight:800}.donebox{text-align:center}.donebox .he{font-size:26px}
 .btns.b3{align-items:stretch}.btns.b3 .btn{padding:8px 4px;font-size:15px;min-height:46px}.btns.b3 #chk{flex:1.15;font-size:17px}.btns.b3 .soft{flex:1;font-size:14px;line-height:1.2}
 @media(max-height:760px){.chips{display:none}.prog{padding:6px 10px}.pb{margin:6px 0 2px!important}.stage{margin:5px 0 4px;align-items:center;height:auto}#mon{width:36px;height:38px}.bub{font-size:14px;padding:5px 10px;margin-bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bub:before{display:none}.he{font-size:25px}.big{font-size:23px}.fb .t{font-size:16px}.say{margin-top:2px}#nx{padding:10px}.card{padding:10px 12px}.opt{padding:7px;margin-top:5px}.en{font-size:26px}.mode{margin-bottom:4px}.card>.ask{display:none}.card>.fb{margin:4px 0}.stage{display:none}.dif{margin:6px auto 2px;gap:3px 10px}.hints{font-size:13px;margin:4px 0 0}.hints div{margin:1px 0}.fb .ask{font-size:13px;margin:2px 0}}
 @media(prefers-reduced-motion:reduce){#mon,#sqimg,.stick,#lid1,#lid2{animation:none!important}}
@@ -112,7 +112,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 </style></head><body><main>
 <div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="bl" type="button" aria-label="מילים שטעיתי בהן">📋</button><button class="ib" id="hw" type="button" aria-label="איך זה עובד">❓</button><button class="ib gift" id="sqb" type="button">💜 סקווישים <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
 <div class="prog">
-  <div class="row"><span><b id="dn">0</b> מתוך <span id="tt">36</span> מילים</span><span class="chips"><span class="chip test" id="tst" style="display:none"></span><span class="chip" id="pts">⭐ 0</span><span class="chip" id="stc">🔥 0</span></span></div>
+  <div class="row"><span><span id="lvl"></span><b id="dn">0</b> מתוך <span id="tt">36</span> מילים</span><span class="chips"><span class="chip test" id="tst" style="display:none"></span><span class="chip" id="pts">⭐ 0</span><span class="chip" id="stc">🔥 0</span></span></div>
   <div class="pb"><i id="pbi"></i></div>
 </div>
 <div class="stage">
@@ -182,6 +182,7 @@ const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return 
 let S=LS.get('dani_sp');
 function fresh(){const w={};WORDS.forEach(x=>w[x[0]]={s:'new',need:0,m:0,due:0,err:0});return{v:2,T:0,pts:0,st:{c:0,b:0},att:0,okc:0,first:0,w,cc:0,intro:0,started:new Date().toISOString()}}
 if(!S||!S.w)S=fresh();WORDS.forEach(x=>{if(!S.w[x[0]])S.w[x[0]]={s:'new',need:0,m:0,due:0,err:0}});
+if(S.adv&&S.adv.w)WORDS.forEach(x=>{if(!S.adv.w[x[0]])S.adv.w[x[0]]={s:'new',need:2,due:0,err:0,h:0}});
 if((S.v||1)<2){for(const k in S.w){const x=S.w[k];if(x.s==='done'&&!x.err){x.s='dict';x.need=1;x.due=S.T||0}}S.v=2}// מ-6.11.2026: כל מילה נכתבת נכון פעמיים
 const save=()=>LS.set('dani_sp',S);save();
 let SQ=LS.get('dani_sp_sq')||[];let MUTE=!!LS.get('dani_sp_mute');
@@ -290,9 +291,18 @@ function confetti(n){const c=['#a78bfa','#f472b6','#facc15','#60a5fa','#34d399']
 
 // ---------- מצב ותור ----------
 const done=()=>WORDS.filter(w=>S.w[w[0]].s==='done').length;
+// ---------- שלב מתקדם (אורן 6.11.2026, אחרי שדני סיימה 36/36) ----------
+// אותן 36 מילים מההתחלה, קשה יותר: הרמז הוא רק חלקי (חלק מהאותיות, פעם אחת למילה), ונכון עם רמז לא נחשב.
+// מילים שהיו קשות בשלב 1 (S.w[e].err) באות קודם, חוזרות מהר יותר וצריך לכתוב אותן נכון 3 פעמים (שאר המילים: פעמיים).
+// S.adv = {on, w:{e:{s,need,due,err,h}}, T, att, okc, started, fin}; נשמר בתוך dani_sp, כך שגיבוי ואיפוס מכסים גם אותו.
+const ADV=()=>!!(S.adv&&S.adv.on);
+function advStart(){const w={};WORDS.forEach(x=>{const e=x[0],h=S.w[e].err||0;w[e]={s:'new',need:h>=2?3:2,due:0,err:0,h}});
+  S.adv={on:1,w,T:0,att:0,okc:0,started:new Date().toISOString()};save()}
+const advDone=()=>ADV()?WORDS.filter(w=>S.adv.w[w[0]].s==='done').length:0;
 let CUR=null,LAST=null,PRAC=null,ANS=false;
 function next(){
   if(PRAC){if(!PRAC.length){PRAC=null;mon('dance','סיימנו תרגול! 💜 חוזרות למשימה');}else{CUR={e:PRAC.shift(),mode:'dict',prac:true};return render()}}
+  if(ADV())return nextAdv();
   const all=WORDS.map(w=>w[0]).filter(e=>S.w[e].s!=='done');
   if(!all.length){CUR=null;return renderDone()}
   const act=all.filter(e=>S.w[e].s!=='new'),fresh=all.filter(e=>S.w[e].s==='new');
@@ -301,13 +311,23 @@ function next(){
   if(!e&&fresh.length&&act.length<8)e=pick(fresh.filter(x=>x!==LAST).length?fresh.filter(x=>x!==LAST):fresh);
   if(!e){const r=act.filter(x=>x!==LAST).sort((a,b)=>S.w[a].due-S.w[b].due);e=r[0]||(fresh.length?pick(fresh):act[0])}
   CUR={e,mode:S.w[e].s==='learn'?'mean':'dict'};render()}
+function nextAdv(){const A=S.adv,all=WORDS.map(w=>w[0]).filter(e=>A.w[e].s!=='done');
+  if(!all.length){CUR=null;if(!A.fin){A.fin=new Date().toISOString();save()}return renderAdvDone()}
+  const act=all.filter(e=>A.w[e].s!=='new'),nw=all.filter(e=>A.w[e].s==='new').sort((a,b)=>A.w[b].h-A.w[a].h);
+  let e=act.filter(x=>A.w[x].due<=A.T&&x!==LAST).sort((a,b)=>A.w[a].due-A.w[b].due)[0];
+  if(!e&&nw.length&&act.length<8)e=(nw.filter(x=>x!==LAST)[0]||nw[0]);
+  if(!e)e=act.filter(x=>x!==LAST).sort((a,b)=>A.w[a].due-A.w[b].due)[0]||nw[0]||act[0];
+  CUR={e,mode:'dict',adv:true};render()}
+// רמז חלקי: האות הראשונה ועוד בערך שליש מהאותיות, השאר קווים. אותו שלד לאותה מילה בכל פעם.
+function skel(e){let k=0;for(const c of e)k=(k*31+c.charCodeAt(0))%997;const L=[...e];
+  return L.map((c,i)=>c===' '?'&nbsp;':(i===0||((i*7+k)%3===0&&i!==L.length-1)?esc(c):'<u>_</u>')).join(' ')}
 function render(){ANS=false;const e=CUR.e,c=$('card');c.classList.remove('ans');c.classList.toggle('mean',CUR.mode!=='dict');if(CUR.mode!=='dict'){StudyKB.attach(null,{enterLabel:null,onEnter:()=>{if(ANS)goNext()}});StudyKB.lock(true)}// המקלדת נשארת במקום גם במצב בחירה, כדי שהמסך לא יקפוץ
   if(CUR.mode==='dict'){
     c.innerHTML=`${CUR.prac?'<div class="pxr"><span class="mode prac">🔁 מצב תרגול</span><button class="pxb" id="pxit" type="button">✕ יציאה מהתרגול</button></div>':''}<div class="he">${esc(HE[e])}</div>
     <input id="ans" type="text" lang="en" dir="ltr" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="כתבי באנגלית" readonly inputmode="none">
-    <div class="fb" id="fb"></div><div class="btns b3"><button class="btn soft" id="hint" type="button">💡 תני לי רמז</button><button class="btn" id="chk" type="button">צדקתי?</button><button class="btn soft" id="idk" type="button">🤷‍♀️ לא יודעת, הבאה</button></div>`;
-    const inp=$('ans');CUR.h=0;StudyKB.attach(inp,{enterLabel:null,onEnter:v=>{if(!ANS)check(v);else goNext()},onKey:()=>tone(1500,0,.03,'sine',.03)});
-    $('chk').onclick=()=>{if(ANS)goNext();else check(inp.value)};if($('pxit'))$('pxit').onclick=exitPrac;$('idk').onclick=()=>check('');$('hint').onclick=hint;
+    <div class="fb" id="fb"></div><div class="btns b3"><button class="btn soft" id="hint" type="button">${CUR.adv?'💡 רמז חלקי':'💡 תני לי רמז'}</button><button class="btn" id="chk" type="button">צדקתי?</button><button class="btn soft" id="idk" type="button">🤷‍♀️ לא יודעת, הבאה</button></div>`;
+    const inp=$('ans');CUR.h=0;const CK=CUR.adv?checkAdv:check;StudyKB.attach(inp,{enterLabel:null,onEnter:v=>{if(!ANS)CK(v);else goNext()},onKey:()=>tone(1500,0,.03,'sine',.03)});
+    $('chk').onclick=()=>{if(ANS)goNext();else CK(inp.value)};if($('pxit'))$('pxit').onclick=exitPrac;$('idk').onclick=()=>CK('');$('hint').onclick=CUR.adv?hintAdv:hint;
   }else{
     const opts=shuf([e].concat(shuf(WORDS.map(w=>w[0]).filter(x=>x!==e)).slice(0,3)));
     c.innerHTML=`<div class="en">${esc(e)}</div><button class="say" id="say" type="button">🔊 לשמוע</button><div class="ask">בחרי את התרגום הנכון</div>
@@ -353,6 +373,24 @@ function check(raw){if(ANS)return;const e=CUR.e,w=S.w[e],r=classify(raw,e),fb=$(
   }else{w.err++;w.s='learn';w.m=0;w.need=2;w.due=S.T+2;SND.bad();streak(false);mon('sad',pick(BAD));
     fb.innerHTML=`<div class="t no">${r.other?'זו מילה אחרת מהרשימה 🙂':'לא נורא!'} ${esc(HE[e])} באנגלית זה:</div><div class="big">${esc(e)}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button><div class="ask">נחזור אליה עוד מעט, קודם כדי להבין מה היא אומרת</div>`;speak(e)}
   save();upd();showNext()}
+function hintAdv(){if(ANS||CUR.h)return;CUR.h=1;SND.click();const b=$('hint');b.disabled=true;b.textContent='💡 רמז נוצל';
+  $('fb').innerHTML=`<div class="ask">רמז: חלק מהאותיות</div><div class="skel">${skel(CUR.e)}</div>`}
+function checkAdv(raw){if(ANS)return;const A=S.adv,e=CUR.e,w=A.w[e],r=classify(raw,e),fb=$('fb');A.att++;A.T++;S.att++;
+  const wasNew=w.s==='new';if(wasNew)w.s='dict';
+  if(r.k==='ok'&&CUR.h){A.okc++;S.okc++;SND.ok();addPts(3);w.due=A.T+3;mon('hop','נכון, עם רמז 💡');
+    fb.innerHTML=`<div class="t ok">נכון, עם רמז 💡</div><div class="ask">בשלב המתקדם זה נחשב רק בלי רמז. נחזור אליה</div>`}
+  else if(r.k==='ok'){A.okc++;S.okc++;SND.ok();streak(true);w.need=Math.max(0,w.need-1);addPts(w.h>=2?15:10);
+    if(w.need<=0){w.s='done';mon('dance','המילה '+esc(e)+' כבושה גם במתקדם! 🚀');fb.innerHTML=`<div class="t ok">${wasNew?'מהפעם הראשונה! ':''}המילה שלך גם בשלב המתקדם ✅</div>`;confetti(26)}
+    else{w.due=A.T+(w.h>=2?3:5);mon('hop',pick(OK));fb.innerHTML=`<div class="t ok">נכון! 🎉</div><div class="ask">עוד ${w.need===1?'פעם אחת':w.need+' פעמים'} והיא שלך</div>`}
+    maybeSquishy()}
+  else if(r.k==='alt'){w.err++;w.due=A.T+2;SND.mid();mon('hop','גם זה נכון באנגלית! הרצף נשמר 🔥');fb.innerHTML=altHtml(e);speak(e)}
+  else if(r.k==='spell'){w.err++;w.need=Math.min(4,Math.max(w.need,2));w.due=A.T+2;SND.mid();streak(false);mon('sad',pick(MID));fb.innerHTML=diffHtml(raw,e,r);speak(e)}
+  else{w.err++;w.need=Math.min(4,w.need+1);w.due=A.T+2;SND.bad();streak(false);mon('sad',pick(BAD));
+    fb.innerHTML=`<div class="t no">${esc(HE[e])} באנגלית זה:</div><div class="big">${esc(e)}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button><div class="ask">היא תחזור עוד מעט 💪</div>`;speak(e)}
+  save();upd();showNext()}
+function renderAdvDone(){StudyKB.hide();upd();$('card').innerHTML=`<div class="donebox"><div style="font-size:54px">🚀🏆</div><div class="he">כבשת גם את השלב המתקדם! כל ${N} המילים 💜</div><p class="ask">רוצה עוד סיבוב? כל תשובה נכונה מקרבת אולטרה סקווישי 💎</p>
+  <div class="btns"><button class="btn" id="pa" type="button">תרגול כל המילים</button><button class="btn" id="pm" type="button">רק מה שטעיתי</button></div></div>`;
+  $('pa').onclick=()=>{PRAC=shuf(WORDS.map(w=>w[0]));next()};$('pm').onclick=()=>startPrac();mon('dance','את מלכת ההכתבה! 👑🚀');SND.win();confetti(60)}
 function altHtml(e){return`<div class="t mid">קרוב! 🙂 בהכתבה המילה היא:</div><div class="big">${esc(e)}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button><div class="ask">הרצף לא נשבר 🔥 המילה תחזור עוד מעט</div>`}
 function diffHtml(raw,e,r){const a=norm(raw),t=norm(e),al=r.al||align(a,t);let you='',ok='';const hints=[];
   al.ops.forEach(o=>{if(o[0]==='='){you+=ch(o[1]);ok+=ch(o[2])}
@@ -369,10 +407,12 @@ function meanAns(b){if(ANS)return;const e=CUR.e,w=S.w[e],pickd=b.dataset.e,fb=$(
     speak(e)}
   else{b.classList.add('no');w.m=0;w.due=S.T+2;SND.bad();streak(false);mon('sad',pick(BAD));fb.innerHTML=`<div class="t no">${esc(e)} = ${esc(HE[e])}</div>`;speak(e)}
   save();upd();showNext()}
-function renderDone(){StudyKB.hide();upd();$('card').innerHTML=`<div class="donebox"><div style="font-size:54px">🏆</div><div class="he">סיימת! את יודעת לכתוב את כל ${N} המילים 💜</div><p class="ask">בא לך לחזק לפני ההכתבה?</p>
-  <div class="btns"><button class="btn" id="pa" type="button">תרגול כל המילים</button><button class="btn" id="pm" type="button">רק מה שטעיתי</button></div></div>`;
+function renderDone(){StudyKB.hide();upd();$('card').innerHTML=`<div class="donebox"><div style="font-size:54px">🏆</div><div class="he">סיימת! את יודעת לכתוב את כל ${N} המילים 💜</div><p class="ask">מוכנה לשלב הבא? 🚀 אותן מילים, עם פחות רמזים. המילים שהיו קשות יחזרו יותר, ובדרך אוספים אולטרה סקווישים 💎</p>
+  <button class="btn" id="adv" type="button" style="width:100%">🚀 לשלב המתקדם</button>
+  <div class="btns"><button class="btn soft" id="pa" type="button">תרגול כל המילים</button><button class="btn soft" id="pm" type="button">רק מה שטעיתי</button></div></div>`;
+  $('adv').onclick=()=>{advStart();SND.ok();mon('dance','שלב מתקדם! הפעם עם רמז חלקי בלבד 🚀');next()};
   $('pa').onclick=()=>{PRAC=shuf(WORDS.map(w=>w[0]));next()};$('pm').onclick=()=>startPrac();mon('dance','את אלופת ההכתבה! 👑');SND.win();confetti(60)}
-function startPrac(){const l=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0);if(!l.length){mon('hop','עוד אין מילים שטעית בהן 😎');return}PRAC=shuf(l);next()}
+function startPrac(){const l=WORDS.map(w=>w[0]).filter(e=>ADV()?S.adv.w[e].err>0:S.w[e].err>0);if(!l.length){mon('hop','עוד אין מילים שטעית בהן 😎');return}PRAC=shuf(l);next()}
 
 // ---------- סקווישי ----------
 function squishy(){const L=supDone()?SQS3:baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(L);if(s.ult)$('sqtt').textContent=isNew?'💎 אולטרה סקווישי חדש! 💎':'💎 אולטרה סקווישי!';else if(s.sup)$('sqtt').textContent=isNew?'⭐ סופר סקווישי חדש! ⭐':'⭐ סופר סקווישי!';if(isNew){SQ.push(s.id);LS.set('dani_sp_sq',SQ)}
@@ -390,15 +430,15 @@ $('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALL
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
 // ---------- ממשק ----------
-function upd(){const d=done();$('dn').textContent=d;$('tt').textContent=N;$('pbi').style.width=(d/N*100)+'%';
+function upd(){const d=ADV()?advDone():done();$('lvl').textContent=ADV()?'🚀 מתקדם: ':'';$('dn').textContent=d;$('tt').textContent=N;$('pbi').style.width=(d/N*100)+'%';
   $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('sqn').textContent=sqN()+'/'+ALLSQ.length;
-  const hard=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0).sort((a,b)=>S.w[b].err-S.w[a].err).slice(0,8).map(e=>({e,n:S.w[e].err}));
-  if(window.StudyTrack)StudyTrack.report({total:N,done:d,learning:WORDS.filter(w=>{const s=S.w[w[0]].s;return s==='learn'||s==='dict'}).length,att:S.att,ok:S.okc,first:S.first,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:sqN(),hard,started:S.started})}
+  const WS=ADV()?S.adv.w:S.w,hard=WORDS.map(w=>w[0]).filter(e=>WS[e].err>0).sort((a,b)=>WS[b].err-WS[a].err).slice(0,8).map(e=>({e,n:WS[e].err}));
+  if(window.StudyTrack)StudyTrack.report({total:N,done:d,lvl:ADV()?2:1,l1:done(),learning:WORDS.filter(w=>{const s=WS[w[0]].s;return s==='learn'||s==='dict'}).length,att:S.att,ok:S.okc,first:S.first,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:sqN(),hard,hard1:ADV()?WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0).sort((a,b)=>S.w[b].err-S.w[a].err).slice(0,8).map(e=>({e,n:S.w[e].err})):undefined,started:S.started})}
 $('mute').onclick=()=>{MUTE=!MUTE;LS.set('dani_sp_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.click()};$('mute').textContent=MUTE?'🔇':'🔊';
 $('hw').onclick=()=>$('intro').classList.add('on');
 $('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();if(!S.intro){S.intro=1;save()}if(CUR)render();else next()};
-$('bl').onclick=()=>{const l=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0).sort((a,b)=>S.w[b].err-S.w[a].err);
-  $('lstb').innerHTML=l.length?l.map(e=>`<div><span><b>${esc(e)}</b> · ${esc(HE[e])}</span><small>${S.w[e].s==='done'?'✅ ':''}טעיתי ${S.w[e].err}×</small></div>`).join(''):'<p style="color:var(--mut)">עוד אין מילים כאלה 😎</p>';
+$('bl').onclick=()=>{const WS=ADV()?S.adv.w:S.w,l=WORDS.map(w=>w[0]).filter(e=>WS[e].err>0).sort((a,b)=>WS[b].err-WS[a].err);
+  $('lstb').innerHTML=l.length?l.map(e=>`<div><span><b>${esc(e)}</b> · ${esc(HE[e])}</span><small>${WS[e].s==='done'?'✅ ':''}טעיתי ${WS[e].err}×</small></div>`).join(''):'<p style="color:var(--mut)">עוד אין מילים כאלה 😎</p>';
   $('lstp').style.display=l.length?'':'none';$('lst').classList.add('on')};
 $('lstx').onclick=()=>$('lst').classList.remove('on');$('lstp').onclick=()=>{$('lst').classList.remove('on');startPrac()};
 $('rs').onclick=()=>$('rsov').classList.add('on');$('rsn').onclick=()=>$('rsov').classList.remove('on');
@@ -406,7 +446,7 @@ $('rsy').onclick=()=>{const keep={started:S.started,intro:1};S=fresh();S.started
 
 if(window.StudyTrack){StudyTrack.init('dani','spelling',['dani_sp','dani_sp_sq']);StudyTrack.gift(()=>{squishy();$('sqtt').textContent='🎁 מתנה! ענית נכון על הכל לפני ההכתבה';mon('dance','מתנה מיוחדת בשבילך! 🎁');confetti(60)});StudyTrack.test(j=>{const d=Math.ceil((new Date(j.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);if(d>=0){const t=$('tst');t.style.display='';t.textContent='📅 '+(j.note||'הכתבה')+(d===0?' היום!':d===1?' מחר!':' בעוד '+d+' ימים')}})}
 upd();
-const d0=done();mon('hop',d0?`היי דני! כבר ענית נכון על ${d0===1?'מילה אחת':d0+' מילים'}. ממשיכות? 💜`:'היי דני! אני מוצ׳י, ואני פה לעזור לך עם ההכתבה 💜');
+const d0=done();if(ADV())mon('hop',`היי דני! 🚀 שלב מתקדם: ${advDone()} מתוך ${N}. ממשיכות?`);else mon('hop',d0?`היי דני! כבר ענית נכון על ${d0===1?'מילה אחת':d0+' מילים'}. ממשיכות? 💜`:'היי דני! אני מוצ׳י, ואני פה לעזור לך עם ההכתבה 💜');
 if(!S.intro)$('intro').classList.add('on');
 next();
 </script>
