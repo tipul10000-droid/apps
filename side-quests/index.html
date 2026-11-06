@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.9";window.SQ_BUILD_AT="6.11.2026 17:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.0";window.SQ_BUILD_AT="6.11.2026 16:58";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1447,6 +1447,12 @@ details.more[open]>summary{margin-bottom:10px}
 #setM .sqcard>.sqrow:not(:first-child){border-top:1px solid var(--line);margin-top:8px}
 #setM .sqsec summary .t{white-space:nowrap}
 #setM .sqsec summary .v{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#setM .sqcard>.sqrow.lspot{border-top:1px solid var(--line);margin-top:12px;min-height:0;padding-top:10px}
+#setM .sqrow.lspot .lb{font-weight:700}#setM .sqrow.lspot .lb small{font-weight:400}#setM .sqrow.lspot .lb small.no{color:var(--muted);font-style:italic}
+#setM .tsbtns.three button{flex:1 1 0;white-space:nowrap;padding:0 4px;font-size:15px}
+#setM .tsbtns button:disabled{opacity:.4}
+#setM .spoted{margin-top:10px}#setM .spotin{display:flex;gap:8px;margin-top:8px}#setM .spotin input{flex:1;min-width:0;text-align:left}
+#setM .sqhint.bad{color:#b3261e;font-weight:600}
 #setM .sqrow.wrap{flex-wrap:wrap;padding:8px 0}#setM .sqrow.wrap .lb{flex:1 1 100%}#setM .sqrow.wrap .sqsel{flex:1 1 100%}
 #setM .locst{min-height:2.9em}
 #setM .sqdone{display:flex;width:100%;margin-top:22px}
@@ -1663,7 +1669,7 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
   // 9.6 (Oren 6.11): "תצוגה לפי מיקום". Automatic = by hours, and (opt-in) by a location sample taken each time the app opens.
   // Device only: localStorage sq_loc {on, home:{la,lo}, work:{la,lo}, last:{la,lo,acc,at}}. Never sent anywhere, never in the repo.
   let loc={on:false};try{loc=JSON.parse(localStorage.getItem("sq_loc")||"null")||{on:false};}catch(e){}
-  let locErr="",locBusy=false;
+  let locErr="",locBusy=false,spotEdit=null,spotErr="";
   let locHook=null;
   // 10.4 (Oren 6.11): 📍 button. Tapping it turns location on (same opt-in as 9.6) and tells the app which city he is in, from a
   // fixed table of city centres in the code (no reverse-geocoding service: the location never leaves the device).
@@ -3535,7 +3541,9 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
   const pinKey=el=>el.getAttribute("data-pin")||el.tagName+"|"+(el.getAttribute("aria-label")||el.textContent.trim().slice(0,40));
   function holdPin(panel){if(!setPin||!panel)return;const el=[...panel.querySelectorAll("[data-pin],button,summary,input,select")].find(x=>pinKey(x)===setPin.k);if(!el)return;
     const sp=panel.querySelector(".sqspc");let dy=el.getBoundingClientRect().top-setPin.top;if(Math.abs(dy)<1)return;
-    const max=panel.scrollHeight-panel.clientHeight;if(sp&&panel.scrollTop+dy>max)sp.style.height=(parseFloat(sp.style.height)||0)+(panel.scrollTop+dy-max)/(parseFloat(getComputedStyle(panel).zoom)||1)+1+"px";
+    // 11.0: with big text the panel is zoomed. The rect is in screen px, scrollTop in the panel's own px, so divide by the zoom.
+    const z=parseFloat(getComputedStyle(panel).zoom)||1;dy/=z;
+    const max=panel.scrollHeight-panel.clientHeight;if(sp&&panel.scrollTop+dy>max)sp.style.height=(parseFloat(sp.style.height)||0)+(panel.scrollTop+dy-max)+1+"px";
     panel.scrollTop+=dy;}
   function renderSettings(){if(document.getElementById("setM"))showSettings(true);}
   function showSettings(keep){
@@ -3558,13 +3566,37 @@ body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labe
     const ago=ms=>{const m=Math.round(ms/60000);return m<1?"עכשיו":m<60?(m===1?"לפני דקה":"לפני "+m+" דק׳"):"לפני "+Math.round(m/60)+" שע׳";};
     const LP={abroad:"✈️ בחו״ל",work:"💼 ליד העבודה",home:"🏠 ליד הבית",other:"📍 לא ליד הבית או העבודה"};
     const why=ab&&!man?"מצב חו״ל פעיל"+(notify.abroad_until?" עד "+fmtDate(notify.abroad_until):""):lp&&lp!=="other"?"לפי המיקום":"לפי השעות";
-    const saveSpot=w=>{locErr="";sampleLoc(true,c=>{loc[w]={la:c.la,lo:c.lo};toast(w==="home"?"🏠 נשמר כאן כבית":"💼 נשמר כאן כעבודה");});};
+    // 11.0 (Oren 6.11): home and work spots are visible, editable and resettable. Each spot: where it is saved (city + distance from
+    // here), "📍 המיקום שלי עכשיו", "✏️ הקלדה" (paste coordinates or a Google Maps link) and "✕ מחיקה" with undo. Same three
+    // buttons in every state, so nothing moves. Home and work saved almost at the same spot = a warning (work wins near both).
+    const SPOT={home:{e:"🏠",l:"הבית",ok:"🏠 נשמר: הבית כאן"},work:{e:"💼",l:"העבודה",ok:"💼 נשמר: העבודה כאן"}};
+    const spotSet=(w,v,msg)=>{const old=loc[w]||null;if(v)loc[w]=v;else delete loc[w];saveLoc();refreshMode(true);renderSettings();
+      toast(msg,()=>{if(old)loc[w]=old;else delete loc[w];saveLoc();refreshMode(true);renderSettings();});};
+    const saveSpot=w=>{locErr="";spotEdit=null;sampleLoc(true,c=>spotSet(w,{la:c.la,lo:c.lo},SPOT[w].ok));};
+    const parseSpot=t=>{const m=String(t||"").match(/(-?\d{1,2}\.\d{3,})\s*[, ]\s*(-?\d{1,3}\.\d{3,})/);if(!m)return null;const v={la:+(+m[1]).toFixed(5),lo:+(+m[2]).toFixed(5)};
+      return Math.abs(v.la)<=90&&Math.abs(v.lo)<=180?v:null;};
+    const fmtM=m=>m<1000?Math.round(m/10)*10+" מ׳":(Math.round(m/100)/10)+" ק״מ";
+    const spotRow=w=>{const S=SPOT[w],v=loc[w],c=v?cityAt(v):null,me=here();
+      const st=!v?"לא נשמר":"נשמר"+(c?" · "+c.name:"")+(me?" · "+fmtM(distM(me,v))+" ממך עכשיו":"");
+      const ed=spotEdit===w;
+      return [h("div",{class:"sqrow lspot"},h("div",{class:"lb"},S.e+" "+S.l,h("small",{class:v?"":"no"},st))),
+        h("div",{class:"tsbtns three"},
+          h("button",{type:"button","data-pin":"spot:"+w+":here",onclick:()=>saveSpot(w)},"📍 אני שם עכשיו"),
+          h("button",{type:"button","data-pin":"spot:"+w+":edit","aria-pressed":ed?"true":"false",onclick:()=>{spotEdit=ed?null:w;spotErr="";setGrow=ed?null:"spot";renderSettings();}},"✏️ הקלדה"),
+          h("button",{type:"button","data-pin":"spot:"+w+":del",disabled:v?null:true,onclick:()=>{spotEdit=null;spotSet(w,null,S.e+" "+S.l+" נמחק");}},"✕ מחיקה")),
+        ed?h("div",{class:"spoted "+(grow("spot")||"")},
+          h("div",{class:"sqhint"},"בגוגל מפס: לחיצה ארוכה על המקום, ואז להעתיק את המספרים שמופיעים למעלה (למשל 32.17, 34.90) ולהדביק כאן."),
+          h("div",{class:"spotin"},h("input",{type:"text",class:"sqsel",inputmode:"decimal",dir:"ltr",placeholder:"32.17800, 34.90700","aria-label":"מיקום "+S.l,value:v?v.la+", "+v.lo:"",id:"spotIn"}),
+            h("button",{type:"button",class:"sqbtn","data-pin":"spot:"+w+":save",onclick:()=>{const el=document.getElementById("spotIn");const x=parseSpot(el&&el.value);
+              if(!x){spotErr="לא מצאתי מספרים של מיקום. צריך שני מספרים עם נקודה, מופרדים בפסיק.";renderSettings();return;}
+              spotEdit=null;spotErr="";spotSet(w,x,S.e+" "+S.l+" עודכן");}},"שמור")),
+          spotErr?h("div",{class:"sqhint bad"},"⚠️ "+spotErr):null):null];};
+    const same=loc.home&&loc.work?distM(loc.home,loc.work):null;
     const locBody=loc.on?[
-        h("div",{class:"tsbtns two "+(grow("loc")||"")},
-          h("button",{type:"button","aria-pressed":loc.home?"true":"false",onclick:()=>saveSpot("home")},(loc.home?"✓ ":"")+"🏠 כאן הבית"),
-          h("button",{type:"button","aria-pressed":loc.work?"true":"false",onclick:()=>saveSpot("work")},(loc.work?"✓ ":"")+"💼 כאן העבודה")),
-        h("div",{class:"sqhint locst "+(grow("loc")||"")},locErr?"⚠️ "+locErr:loc.last?"מיקום אחרון: "+(LP[lp||"other"]||"")+" · "+ago(Date.now()-loc.last.at):locBusy?"בודק מיקום…":"עוד אין מיקום. ייבדק בכניסה הבאה."),
-        h("div",{class:"sqhint"},"לחיצה אחת כשאתה שם. חו״ל מזוהה לבד. נשמר רק במכשיר הזה.")]:[];
+        h("div",{class:"sqhint "+(grow("loc")||"")},"כשאתה ליד המקום ששמרת כ״עבודה״ האפליקציה עוברת לתצוגת עבודה (רק סייד, צבא ועבודה). ליד ״הבית״: תצוגת בית (הכול). רחוק משניהם: לפי השעות. נשמר רק במכשיר הזה."),
+        ...spotRow("home"),...spotRow("work"),
+        same!=null&&same<1500?h("div",{class:"sqhint bad"},"⚠️ הבית והעבודה שמורים "+(same<50?"באותו מקום":"במרחק "+fmtM(same)+" זה מזה")+". כך ליד הבית האפליקציה חושבת שאתה בעבודה. מחק את מה שלא נכון, ושמור אותו כשתהיה שם."):null,
+        h("div",{class:"sqhint locst"},locErr?"⚠️ "+locErr:loc.last?"עכשיו: "+(LP[lp||"other"]||"")+" · נבדק "+ago(Date.now()-loc.last.at):locBusy?"בודק מיקום…":"עוד אין מיקום. ייבדק בכניסה הבאה.")]:[];
     const placeSec=sec("place","📍 תצוגה לפי מיקום",MODES[mode].e+" "+MODES[mode].l+(man?" · ידני":" ✦"),
         h("div",{class:"tsbtns two"},
           h("button",{type:"button","aria-pressed":man?"false":"true",onclick:()=>{setGrow="auto";pickAuto();}},h("span",{class:"ai-ic","aria-hidden":"true",html:AI_SPARK})," אוטומטי"),
