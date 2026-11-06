@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.5";window.SQ_BUILD_AT="6.11.2026 10:25";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.6";window.SQ_BUILD_AT="6.11.2026 10:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1318,6 +1318,32 @@ details.more[open]>summary{margin-bottom:10px}
 #setM .tsbtns{gap:1px;background:var(--line);border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
 #setM .tsbtns button{border:0!important;border-radius:0;background:var(--surface,#fff)}
 #setM .tsbtns button[aria-pressed="true"]{background:var(--k-research);color:#fff}
+/* 9.6 (Oren 6.11): settings never trap him. With big text (car) the panel used zoom on top of 94vh and grew past the
+   screen, so the × was off the top. Heights are divided by the zoom, the header with × is pinned, and there is a close button at the end.
+   The panel has a FIXED height, so opening a section only grows downward: the tapped row never moves (standing rule). */
+.sqmodal:not(.bpop) .sqpanel{max-height:calc(88vh / var(--tz,1))}
+.bpop:not(.car) .sqpanel{max-height:calc(80vh / var(--tz,1))}
+#setM .sqpanel{height:calc(92vh / var(--tz,1));max-height:none;display:block}
+@supports (height:1dvh){#setM .sqpanel{height:calc(92dvh / var(--tz,1))}}
+#setM .sqpanel h2{position:sticky;top:-20px;z-index:3;margin:-20px -18px 0;padding:16px 18px 10px;background:var(--surface,#fff);border-bottom:1px solid var(--line)}
+#setM .sqpanel .px{min-width:48px;min-height:48px;display:inline-flex;align-items:center;justify-content:center}
+#setM .sqgrp{margin:22px 4px 0;font:800 14px var(--f-display,inherit);color:var(--muted);letter-spacing:.02em}
+#setM .sqgrp:first-of-type{margin-top:14px}
+#setM .sqgrp+.sqsec{margin-top:8px}
+#setM .tsbtns{display:flex;flex-wrap:wrap}
+#setM .tsbtns button{flex:1 1 auto;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+#setM .tsbtns.two button{flex:1 1 0}
+#setM .tsbtns+.tsbtns{margin-top:10px}
+#setM .sqcard>.sqhint+.tsbtns,#setM .sqcard>.tsbtns+.sqhint{margin-top:10px}
+#setM .sqcard>.sqrow:not(:first-child){border-top:1px solid var(--line);margin-top:8px}
+#setM .sqsec summary .t{white-space:nowrap}
+#setM .sqsec summary .v{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#setM .sqrow.wrap{flex-wrap:wrap;padding:8px 0}#setM .sqrow.wrap .lb{flex:1 1 100%}#setM .sqrow.wrap .sqsel{flex:1 1 100%}
+#setM .locst{min-height:2.9em}
+#setM .sqdone{display:flex;width:100%;margin-top:22px}
+@keyframes sqgrow{from{max-height:0;opacity:0;transform:translateY(-6px)}70%{opacity:1}to{max-height:1400px;opacity:1;transform:none}}
+#setM .sqgrow{animation:sqgrow .34s ease-out both;overflow:hidden}
+@media (prefers-reduced-motion:reduce){#setM .sqgrow{animation:none}}
 body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolrow .tchat{border-color:rgba(255,255,255,.34)!important}
 </style>
 </head>
@@ -1441,17 +1467,38 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   // home = all 6 quests. work (auto Sun-Thu 08:30-18:30) = Side, Army, Work only. abroad (settings/notify abroad) = everything but Work and Army.
   // Side Quests is always the main quest. Inside it the list adapts by mode and time of day (phase): quick things on top, heavy things folded.
   // Manual choice in localStorage sq_mode {m, auto, day}: holds until the automatic mode changes, never past today.
+  // 9.6 (Oren 6.11): "תצוגה לפי מיקום". Automatic = by hours, and (opt-in) by a location sample taken each time the app opens.
+  // Device only: localStorage sq_loc {on, home:{la,lo}, work:{la,lo}, last:{la,lo,acc,at}}. Never sent anywhere, never in the repo.
+  let loc={on:false};try{loc=JSON.parse(localStorage.getItem("sq_loc")||"null")||{on:false};}catch(e){}
+  let locErr="",locBusy=false;
+  function saveLoc(){try{localStorage.setItem("sq_loc",JSON.stringify(loc));}catch(e){}}
+  function distM(a,b){const r=x=>x*Math.PI/180,dl=r(b.la-a.la),dn=r(b.lo-a.lo);const q=Math.sin(dl/2)**2+Math.cos(r(a.la))*Math.cos(r(b.la))*Math.sin(dn/2)**2;return 2*6371000*Math.asin(Math.sqrt(q));}
+  const inIsrael=p=>p.la>29.4&&p.la<33.4&&p.lo>34.2&&p.lo<35.95;
+  // where the last fresh sample (up to 4 hours old) puts him: abroad | work | home | other (= not near either, the hours decide)
+  function locPlace(){const L=loc.last;if(!loc.on||!L||Date.now()-L.at>4*3600e3)return null;if(!inIsrael(L))return "abroad";
+    const r=Math.max(400,Math.min(1500,(L.acc||0)+300));if(loc.work&&distM(L,loc.work)<r)return "work";if(loc.home&&distM(L,loc.home)<r)return "home";return "other";}
+  function locMode(){const p=locPlace();return p&&p!=="other"?p:null;}
+  function sampleLoc(force,cb){if(!cb&&!loc.on)return;if(!navigator.geolocation){locErr="המכשיר לא נותן מיקום";renderSettings();return;}
+    if(!force&&!cb&&loc.last&&Date.now()-loc.last.at<5*60e3)return;if(locBusy)return;locBusy=true;
+    navigator.geolocation.getCurrentPosition(p=>{locBusy=false;const c={la:+p.coords.latitude.toFixed(5),lo:+p.coords.longitude.toFixed(5),acc:Math.round(p.coords.accuracy||0),at:Date.now()};
+        loc.last=c;locErr="";if(cb)cb(c);saveLoc();refreshMode();renderSettings();},
+      e=>{locBusy=false;locErr=e&&e.code===1?"אין הרשאת מיקום. באייפון: הגדרות ← Safari ← מיקום ← לשאול או לאפשר":"לא הצלחתי לקבל מיקום. ננסה שוב בכניסה הבאה";renderSettings();},
+      {enableHighAccuracy:false,timeout:12000,maximumAge:120000});}
   const MODES={home:{e:"🏠",l:"בית",sub:"כל 6 הקווסטים"},work:{e:"💼",l:"עבודה",sub:"רק סייד, צבא ועבודה. קצרות למעלה"},abroad:{e:"✈️",l:"חו״ל",sub:"בלי עבודה וצבא. מה שאפשר מהנייד למעלה"}};
   const MHIDE={home:[],work:["fun","travel","ai"],abroad:["work","army"]};
   function ilNow(){const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Jerusalem",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const g=k=>(p.find(x=>x.type===k)||{}).value;return {d:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(g("weekday")),m:(+g("hour")%24)*60+(+g("minute"))};}
   function isWorkTime(){const n=ilNow();return n.d>=0&&n.d<=4&&n.m>=510&&n.m<1110;}
-  function autoMode(){let ab=false;try{ab=abroadOn();}catch(e){}return ab?"abroad":isWorkTime()?"work":"home";}
+  function autoMode(){let ab=false;try{ab=abroadOn();}catch(e){}return ab?"abroad":locMode()||(isWorkTime()?"work":"home");}
   // time of day inside a mode: on the way (Sun-Thu 07:00-08:30, 18:30-19:30), Friday errands (08:00-12:00), else evening/weekend
   function phase(){const n=ilNow();if(n.d>=0&&n.d<=4&&(n.m>=420&&n.m<510||n.m>=1110&&n.m<1170))return "commute";if(n.d===5&&n.m>=480&&n.m<720)return "friday";return "free";}
   const ilDate=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date());
   const MODE_END={work:"עד 18:30"};
   let modeOv=null;try{modeOv=JSON.parse(localStorage.getItem("sq_mode")||"null");}catch(e){}
-  function curMode(){const a=autoMode();if(modeOv&&(modeOv.auto!==a||modeOv.day!==ilDate()||!MODES[modeOv.m]))modeOv=null;return modeOv?modeOv.m:a;}
+  // 9.6 (Oren 6.11): a manual choice ({m, manual:true}) holds until he goes back to automatic. A temporary switch (opening a hidden quest) still ends with the next automatic change.
+  function curMode(){const a=autoMode();if(modeOv&&(!MODES[modeOv.m]||(!modeOv.manual&&(modeOv.auto!==a||modeOv.day!==ilDate()))))modeOv=null;
+    if(modeOv&&modeOv.manual&&modeOv.m==="abroad"&&a!=="abroad")modeOv=null; // the abroad mode ended (date passed or turned off elsewhere)
+    return modeOv?modeOv.m:a;}
+  const isManual=()=>!!(modeOv&&modeOv.manual);
   let mode=curMode();
   const qHidden=q=>MHIDE[mode].includes(q);
   // 6.4 (Oren 4.11): three task types, shown in this order. quick = up to ~1 hour, check-off. trip = one-off, heavier: go somewhere, a test, a fix at home.
@@ -1588,10 +1635,11 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   function applyTs(){const z=tsPref==="auto"?sysScale():(+tsPref||1);document.documentElement.style.setProperty("--tz",String(Math.round(z*100)/100));}
   function setTs(v){tsPref=v;try{v==="auto"?localStorage.removeItem("sq_ts"):localStorage.setItem("sq_ts",v);}catch(e){}applyTs();renderSettings();}
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")applyTs();});
-  function setMode(m,why){const a=autoMode();modeOv=m===a?null:{m,auto:a,day:ilDate()};try{modeOv?localStorage.setItem("sq_mode",JSON.stringify(modeOv)):localStorage.removeItem("sq_mode");}catch(e){}ctxMenu=false;refreshMode(true);if(why)toast(why);}
+  function setMode(m,why,manual){const a=autoMode();modeOv=manual?{m,manual:true}:m===a?null:{m,auto:a,day:ilDate()};try{modeOv?localStorage.setItem("sq_mode",JSON.stringify(modeOv)):localStorage.removeItem("sq_mode");}catch(e){}ctxMenu=false;refreshMode(true);if(why)toast(why);}
   function refreshMode(force){const m=curMode();if(!force&&m===mode)return;mode=m;openId=null;laterFor=null;filterKind="all";view="open";if(qHidden(quest))quest="side";applyQuest();if(db)renderAll();}
   let lastWin="";setInterval(()=>{refreshMode();const w=curWin().id;if(w!==lastWin){lastWin=w;if(db){renderCtx();renderList();}}},60000);
-  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshMode();});
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){refreshMode();sampleLoc();}});
+  setTimeout(()=>sampleLoc(),800);
   function ctxOk(t){if(ctxNow==="all")return true;const c=ctxOf(t);
     if(ctxNow==="office")return c.includes("office")||c.includes("mobile")||c.includes("call"); // at work: only short, remote things (iPhone or a call)
     if(ctxNow==="lior")return c.includes("lior"); // with Lior: only things done together
@@ -1921,10 +1969,14 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
     const r=[];if(i>0)r.push(L[i-1]);r.push(L[i]);if(i+1<L.length)r.push(L[i+1]);return r;}
   function setWMode(m){wMode=m;winMore=false;try{localStorage.setItem("sq_wmode",m);}catch(e){}
     if(m!=="pick"&&winOv){setWin(null);return;}renderCtx();renderList();}
+  // 9.6: manual = this mode until he taps "אוטומטי". Manual abroad also turns on the abroad notifications (quiet, no brief), as before.
   function pickMode(m){let ab=false;try{ab=abroadOn();}catch(e){}
-    if(m==="abroad"&&!ab){setNotify({abroad:true,abroad_tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"",abroad_since:new Date().toISOString()});modeOv=null;try{localStorage.removeItem("sq_mode");}catch(e){}setTimeout(()=>toast("✈️ מצב חו״ל"),0);return;}
+    if(m==="abroad"&&!ab){notify={...notify,abroad:true};setNotify({abroad:true,abroad_tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"",abroad_since:new Date().toISOString()});}
     if(m!=="abroad"&&ab){notify={...notify,abroad:false,abroad_until:""};setNotify({abroad:false,abroad_until:""});}
-    setMode(m,MODES[m].e+" "+MODES[m].l+(m===autoMode()?" (אוטומטי)":" עד המעבר הבא"));renderSettings();}
+    setMode(m,MODES[m].e+" "+MODES[m].l+" · ידני",true);renderSettings();}
+  function pickAuto(){let ab=false;try{ab=abroadOn();}catch(e){}
+    if(ab&&isManual()&&modeOv.m==="abroad"){notify={...notify,abroad:false,abroad_until:""};setNotify({abroad:false,abroad_until:""});}
+    modeOv=null;try{localStorage.removeItem("sq_mode");}catch(e){}refreshMode(true);toast("✦ אוטומטי: "+MODES[mode].e+" "+MODES[mode].l);renderSettings();}
   function renderCtx(){
     const side=quest==="side",w=curWin(),W=WINS[w.id],eff=w.manual?"pick":wMode;
     const seg=(k,l)=>h("button",{type:"button","aria-pressed":eff===k?"true":"false",onclick:()=>setWMode(k)},...[].concat(l));
@@ -2924,30 +2976,67 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
     m.classList.add("bpop");markBriefSeen("eve");
   }
   const setOpen=new Set();
+  // 9.6 (Oren 6.11, standing rule): a tapped control never moves. The panel has a fixed height (opening a section grows
+  // downward only), and after every re-render the tapped control is put back at the exact same spot on screen (a spacer at
+  // the bottom keeps that possible when content shrinks). What changed below it slides in (.sqgrow), so he sees what happened.
+  let setPin=null,setGrow=null;
+  const pinKey=el=>el.getAttribute("data-pin")||el.tagName+"|"+(el.getAttribute("aria-label")||el.textContent.trim().slice(0,40));
+  function holdPin(panel){if(!setPin||!panel)return;const el=[...panel.querySelectorAll("[data-pin],button,summary,input,select")].find(x=>pinKey(x)===setPin.k);if(!el)return;
+    const sp=panel.querySelector(".sqspc");let dy=el.getBoundingClientRect().top-setPin.top;if(Math.abs(dy)<1)return;
+    const max=panel.scrollHeight-panel.clientHeight;if(sp&&panel.scrollTop+dy>max)sp.style.height=(parseFloat(sp.style.height)||0)+(panel.scrollTop+dy-max)/(parseFloat(getComputedStyle(panel).zoom)||1)+1+"px";
+    panel.scrollTop+=dy;}
   function renderSettings(){if(document.getElementById("setM"))showSettings(true);}
   function showSettings(keep){
-    const sc=document.querySelector("#setM .sqpanel"),top=sc?sc.scrollTop:0;
+    const sc=document.querySelector("#setM .sqpanel"),top=sc?sc.scrollTop:0,spH=sc&&sc.querySelector(".sqspc")?sc.querySelector(".sqspc").style.height:"";
     let st,cls="",act;
     if(!pushSupported()){st=isIOS&&!standalone()?"באייפון ההתראות עובדות רק מהאייקון במסך הבית":"הדפדפן הזה לא תומך בהתראות";cls="bad";}
     else if(Notification.permission==="denied"){st="ההתראות חסומות בהגדרות הטלפון";cls="bad";}
     else if(pushOn){st="פעיל במכשיר הזה ("+devName()+")";cls="on";act=h("button",{class:"sqbtn ghost",type:"button",onclick:disablePush},"כבה");}
     else{st="כבוי במכשיר הזה";act=h("button",{class:"sqbtn",type:"button",onclick:e=>enablePush(e.currentTarget)},"🔔 הפעל התראות");}
     const times=["06:30","07:00","07:30","08:00","08:30","09:00"];
-    // 3.5: short sections, all closed; the summary line shows the current value
-    const sec=(k,title,val,...body)=>h("details",{class:"sqsec",open:setOpen.has(k)||null,ontoggle:e=>{e.currentTarget.open?setOpen.add(k):setOpen.delete(k);}},
-      h("summary",null,h("span",{class:"t"},title),h("span",{class:"v"},val)),h("div",{class:"sqcard"},...body));
+    const grow=k=>setGrow===k?"sqgrow":null;
+    // sections, all closed; the summary line shows the current value. Opening one slides its content in below it.
+    const sec=(k,title,val,...body)=>h("details",{class:"sqsec",open:setOpen.has(k)||null,ontoggle:e=>{const d=e.currentTarget;
+        if(d.open){if(!setOpen.has(k)){setOpen.add(k);const c=d.querySelector(".sqcard");if(c){c.classList.remove("sqgrow");void c.offsetWidth;c.classList.add("sqgrow");}}}else setOpen.delete(k);
+        holdPin(d.closest(".sqpanel"));}},
+      h("summary",{"data-pin":"sec:"+k},h("span",{class:"t"},title),h("span",{class:"v"},val)),h("div",{class:"sqcard"},...body));
+    const grp=t=>h("div",{class:"sqgrp"},t);
+    // display by place: automatic (hours + optional location) or manual (home / work / abroad until he goes back to automatic)
+    const man=isManual(),ab=abroadOn(),lp=locPlace();
+    const ago=ms=>{const m=Math.round(ms/60000);return m<1?"עכשיו":m<60?"לפני "+m+" דק׳":"לפני "+Math.round(m/60)+" שע׳";};
+    const LP={abroad:"✈️ בחו״ל",work:"💼 ליד העבודה",home:"🏠 ליד הבית",other:"📍 לא ליד הבית או העבודה"};
+    const why=ab&&!man?"מצב חו״ל פעיל"+(notify.abroad_until?" עד "+fmtDate(notify.abroad_until):""):lp&&lp!=="other"?"לפי המיקום":"לפי השעות";
+    const saveSpot=w=>{locErr="";sampleLoc(true,c=>{loc[w]={la:c.la,lo:c.lo};toast(w==="home"?"🏠 נשמר כאן כבית":"💼 נשמר כאן כעבודה");});};
+    const locBody=loc.on?[
+        h("div",{class:"tsbtns two "+(grow("loc")||"")},
+          h("button",{type:"button","aria-pressed":loc.home?"true":"false",onclick:()=>saveSpot("home")},(loc.home?"✓ ":"")+"🏠 כאן הבית"),
+          h("button",{type:"button","aria-pressed":loc.work?"true":"false",onclick:()=>saveSpot("work")},(loc.work?"✓ ":"")+"💼 כאן העבודה")),
+        h("div",{class:"sqhint locst "+(grow("loc")||"")},locErr?"⚠️ "+locErr:loc.last?"מיקום אחרון: "+(LP[lp||"other"]||"")+" · "+ago(Date.now()-loc.last.at):locBusy?"בודק מיקום…":"עוד אין מיקום. ייבדק בכניסה הבאה."),
+        h("div",{class:"sqhint"},"לחיצה אחת כשאתה שם. חו״ל מזוהה לבד. נשמר רק במכשיר הזה.")]:[];
+    const placeSec=sec("place","📍 תצוגה לפי מיקום",MODES[mode].e+" "+MODES[mode].l+(man?" · ידני":" ✦"),
+        h("div",{class:"tsbtns two"},
+          h("button",{type:"button","aria-pressed":man?"false":"true",onclick:()=>{setGrow="auto";pickAuto();}},h("span",{class:"ai-ic","aria-hidden":"true",html:AI_SPARK})," אוטומטי"),
+          h("button",{type:"button","aria-pressed":man?"true":"false",onclick:()=>{setGrow="man";if(!man)setMode(mode,MODES[mode].e+" "+MODES[mode].l+" · ידני",true);renderSettings();}},"✋ ידני")),
+        man?h("div",{class:"tsbtns "+(grow("man")||"")},...Object.keys(MODES).map(k=>h("button",{type:"button","aria-pressed":mode===k?"true":"false",onclick:()=>{setGrow=null;pickMode(k);}},MODES[k].e+" "+MODES[k].l)))
+          :h("div",{class:"sqhint "+(grow("auto")||"")},"עכשיו "+MODES[mode].e+" "+MODES[mode].l+", "+why+". בלי מיקום: עבודה בימי חול 08:30 עד 18:30."),
+        man?h("div",{class:"sqhint"},"נשאר כך עד ״אוטומטי״. עבודה: רק סייד, צבא ועבודה. חו״ל: בלי עבודה וצבא."):null,
+        ab?h("div",{class:"sqrow wrap"},h("div",{class:"lb"},"✈️ מצב חו״ל עד",h("small",null,"ריק = עד שמכבים. בחו״ל: בלי בריף, רק דבר קריטי חדש, ובשקט בלילה לפי השעה שם")),h("input",{type:"date",class:"sqsel","aria-label":"מצב חו״ל עד",value:notify.abroad_until||"",min:todayISO(),onchange:e=>setNotify({abroad_until:e.target.value})})):null,
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"לבדוק מיקום בכל כניסה",h("small",null,"ליד הבית, ליד העבודה, או בחו״ל")),
+          sw(loc.on,v=>{setGrow="loc";loc.on=v;locErr="";if(!v)loc.last=null;saveLoc();if(v)sampleLoc(true);refreshMode(true);renderSettings();},"לבדוק מיקום בכל כניסה")),
+        ...locBody);
     const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
-      // 8.8 (Oren 6.11): the chat button moved to the main screen, beside refresh
-      sec("mode","🏠 מצב",MODES[mode].e+" "+MODES[mode].l+(modeOv?"":" · אוטומטי"),
-        h("div",{class:"tsbtns"},...Object.keys(MODES).map(k=>h("button",{type:"button","aria-pressed":mode===k?"true":"false",onclick:()=>pickMode(k)},MODES[k].e+" "+MODES[k].l))),
-        h("div",{class:"sqhint"},"עבודה: רק סייד, צבא ועבודה. חו״ל: בלי עבודה וצבא. אוטומטי: א׳-ה׳ 08:30-18:30 עבודה.")),
+      grp("👁️ תצוגה"),
+      placeSec,
+      sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
+        h("div",{class:"tsbtns"},...[["auto","לפי האייפון"],["1","רגיל"],["1.15","גדול"],["1.3","גדול מאוד"],["1.5","🚗 רכב"]].map(([v,l])=>h("button",{type:"button","aria-pressed":tsPref===v?"true":"false",onclick:()=>setTs(v)},l))),
+        h("div",{class:"sqhint"},"״לפי האייפון״ עוקב אחרי הגדרות ← תצוגה ← גודל טקסט, כמו וואטסאפ. כשהאוטומציה ברכב מגדילה את הטקסט, גם כאן הוא גדל.")),
+      sec("geo","🗺️ סידור לפי אזור",geoOff?"כבוי":"פעיל",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"סידור לפי אזור",h("small",null,"מקבץ משימות לפי אזור, מהקרוב לרחוק, ומציע ״כבר ב...? גם:״. כבוי = בלי אזורים ובלי מרחקים")),sw(!geoOff,v=>setGeo(v),"סידור לפי אזור"))),
+      grp("🔔 התראות ובריפים"),
       sec("push","🔔 התראות",pushOn?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"sqstate "+cls},h("span",{class:"d"}),h("span",null,st)),h("span",{style:"flex:1"}),act||null),
         isIOS&&!standalone()?h("div",{class:"sqhint"},"שיתוף ← הוסף למסך הבית, ואז מהאייקון."):null,
         pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("test",e.currentTarget,"נשלחה התראת בדיקה")},"שלח בדיקה")):null),
-      sec("abroad","✈️ מצב חו״ל",abroadOn()?(notify.abroad_until?"עד "+fmtDate(notify.abroad_until):"פעיל"):"כבוי",
-        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בלי בריף ובלי הפרעות. רק דבר קריטי חדש קופץ, בשקט בלילה לפי השעה שם")),sw(abroadOn(),v=>setNotify(v?{abroad:true,abroad_tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"",abroad_since:new Date().toISOString()}:{abroad:false,abroad_until:""}),"מצב חו״ל")),
-        abroadOn()?h("div",{class:"sqrow"},h("div",{class:"lb"},"עד",h("small",null,"ריק = עד שמכבים")),h("input",{type:"date",class:"sqsel","aria-label":"מצב חו״ל עד",value:notify.abroad_until||"",min:todayISO(),onchange:e=>setNotify({abroad_until:e.target.value})})):null),
       sec("brief","☀️ בריף בוקר",abroadOn()?"מושהה בחו״ל":notify.brief?notify.brief_time:"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל"),sw(notify.brief,v=>setNotify({brief:v}),"בריף בוקר")),
         notify.brief?h("div",{class:"sqrow"},h("div",{class:"lb"},"שעה"),h("select",{class:"sqsel","aria-label":"שעת הבריף",onchange:e=>setNotify({brief_time:e.target.value})},times.map(t=>h("option",{value:t,selected:t===notify.brief_time||null},t)))):null,
@@ -2958,16 +3047,17 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
         notify.eve?h("div",{class:"sqrow"},h("div",{class:"lb"},"שעה"),h("select",{class:"sqsel","aria-label":"שעת בריף הערב",onchange:e=>setNotify({eve_time:e.target.value})},["16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30"].map(t=>h("option",{value:t,selected:t===notify.eve_time||null},t)))):null,
         notify.eve?h("div",{class:"sqrow"},h("div",{class:"lb"},"ימים"),h("select",{class:"sqsel","aria-label":"ימי בריף הערב",onchange:e=>setNotify({eve_days:e.target.value})},h("option",{value:"all",selected:!["sun-thu","sun-fri"].includes(notify.eve_days)||null},"כל יום"),h("option",{value:"sun-fri",selected:notify.eve_days==="sun-fri"||null},"א׳ עד ו׳"),h("option",{value:"sun-thu",selected:notify.eve_days==="sun-thu"||null},"א׳ עד ה׳"))):null,
         pushOn?h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:e=>pushCall("eve",e.currentTarget,"בריף הערב נשלח")},"שלח בריף ערב עכשיו")):null),
-      sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
-        h("div",{class:"sqhint"},"״לפי האייפון״ עוקב אחרי הגדרות ← תצוגה ← גודל טקסט, כמו וואטסאפ. כשהאוטומציה ברכב מגדילה את הטקסט, גם כאן הוא גדל."),
-        h("div",{class:"tsbtns"},...[["auto","לפי האייפון"],["1","רגיל"],["1.15","גדול"],["1.3","גדול מאוד"],["1.5","🚗 רכב"]].map(([v,l])=>h("button",{type:"button","aria-pressed":tsPref===v?"true":"false",onclick:()=>setTs(v)},l)))),
-      sec("geo","📍 מיקומים",geoOff?"כבוי":"פעיל",
-        h("div",{class:"sqrow"},h("div",{class:"lb"},"סידור לפי מיקום",h("small",null,"מקבץ משימות לפי אזור, מהקרוב לרחוק, ומציע ״כבר ב...? גם:״. כבוי = בלי אזורים ובלי מרחקים")),sw(!geoOff,v=>setGeo(v),"סידור לפי מיקום"))),
-      archSec(sec),
       sec("crit","🚨 דחוף בלבד",notify.critical?"פעיל":"כבוי",
-        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות")))
-      ,h("div",{class:"sqhint"},"הבריפים עצמם: כפתור ☀️ למעלה במסך הראשי (בבוקר בוקר, אחרי הצהריים ערב)."));
-    if(keep){const p=m.querySelector(".sqpanel");if(p)p.scrollTop=top;}
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות"))),
+      h("div",{class:"sqhint"},"הבריפים עצמם: כפתור ☀️ למעלה במסך הראשי (בבוקר בוקר, אחרי הצהריים ערב)."),
+      grp("📦 ארכיון"),
+      archSec(sec),
+      h("button",{type:"button",class:"sqbtn ghost sqdone",onclick:closeModal},"✓ סגור"),
+      h("div",{class:"sqspc",style:spH?"height:"+spH:null}));
+    const p=m.querySelector(".sqpanel");
+    p.addEventListener("click",e=>{const el=e.target.closest("[data-pin],button,summary,input,select");if(el&&p.contains(el))setPin={k:pinKey(el),top:el.getBoundingClientRect().top};},true);
+    if(keep&&p){p.scrollTop=top;holdPin(p);}
+    setGrow=null;
   }
   // 9.5 (Oren 6.11): everything that counts as "archive" lives only here: archived tasks (all quests) and archived / idle dashboards
   let archOpen=null;
