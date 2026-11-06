@@ -7,3 +7,13 @@
 
 /* 10.3: inside the Side Quests app (frame) the app bar holds the back button */
 .embed .sqhome{display:none}
+
+/* 11.4: ערכת עיצוב לכל דשבורד (60-30-10): רקע בהיר (60), צבע הנושא בכותרת (30), הדגשה (10).
+   כל דף מגדיר --hero, --hero2 (מעבר צבע), --accent ו---art (איור קטן לנושא). */
+.hero{position:relative;overflow:hidden;background-image:linear-gradient(135deg,var(--hero) 10%,var(--hero2,var(--hero)) 100%)}
+.hero::before{content:"";position:absolute;pointer-events:none;left:max(8px,calc(50% - 440px));top:calc(env(safe-area-inset-top,0px) + 66px);width:86px;height:86px;background:var(--art,none) no-repeat center/contain;opacity:.9}
+.hero h1,.hero .sub{padding-inline-end:96px}
+.hero::after{content:"";position:absolute;pointer-events:none;left:-70px;top:-70px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,var(--glow,rgba(255,255,255,.14)) 0%,transparent 68%)}
+.embed .hero::before{top:calc(env(safe-area-inset-top,0px) + 22px)}
+.hero>.in{position:relative;z-index:1}
+.sh h2::before{content:"";display:inline-block;width:5px;height:.9em;border-radius:3px;background:var(--mark,var(--accent));margin-inline-end:8px;vertical-align:-.08em}

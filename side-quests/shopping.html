@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#16303A">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.0";</script>
+<meta name="theme-color" content="#8E1F57">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <title>קניות ורכישות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,18 +15,18 @@
 /* דשבורד קניות ורכישות: כרטיסייה לכל קנייה (אפשרויות, השוואה, איפה הכי זול, ביקורות, יוטיוב, מועצת 5 המומחים).
    נתונים: sq_docs (app=sidequests, collection=shopping): מסמך לכל קנייה + _meta. אין כאן נתונים אישיים בקוד. */
 :root{
-  --bg:#F2F5F6; --surface:#FFFFFF; --sunk:#E6ECEE; --ink:#13232A; --muted:#5B6D74; --line:#D5DFE2;
-  --hero:#16303A; --hero-ink:#EEF6F8; --hero-muted:#A2BAC2; --accent:#F2B544; --accent-ink:#2B1D02;
+  --bg:#F7F4F6; --surface:#FFFFFF; --sunk:#EFE8EC; --ink:#24161D; --muted:#6E5C66; --line:#E6DAE0;
+  --hero:#8E1F57; --hero2:#D2457A; --art:url(img/art-shopping.svg); --hero-ink:#FFF3F8; --hero-muted:#F5C6D8; --accent:#F2B544; --accent-ink:#2B1D02;
   --good:#1E8A52; --good-soft:#DFF2E7; --warn:#B26A00; --warn-soft:#FBEBCF; --bad:#C2384A; --bad-soft:#FBE1E4; --link:#1F63C9; --pick:#0F7B6C; --pick-soft:#DDF3EE;
   --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0E1518; --surface:#162126; --sunk:#1F2C32; --ink:#E7F0F3; --muted:#9AAEB5; --line:#2C3C43;
-  --hero:#0F1D23; --hero-ink:#EAF4F7; --hero-muted:#93AAB2; --accent:#F4C062; --accent-ink:#2B1D02;
+  --bg:#161015; --surface:#1F171D; --sunk:#2A1F27; --ink:#F3E9EE; --muted:#B8A3AE; --line:#3A2C35;
+  --hero:#5A1338; --hero2:#8E1F57; --hero-ink:#FCEFF5; --hero-muted:#E7AFC5; --accent:#F4C062; --accent-ink:#2B1D02;
   --good:#4CC384; --good-soft:#163024; --warn:#E9A945; --warn-soft:#3A2A12; --bad:#EE7A88; --bad-soft:#3B1E24; --link:#8CB4F5; --pick:#4FD1B8; --pick-soft:#123029; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0E1518; --surface:#162126; --sunk:#1F2C32; --ink:#E7F0F3; --muted:#9AAEB5; --line:#2C3C43;
-  --hero:#0F1D23; --hero-ink:#EAF4F7; --hero-muted:#93AAB2; --accent:#F4C062; --accent-ink:#2B1D02;
+  --bg:#161015; --surface:#1F171D; --sunk:#2A1F27; --ink:#F3E9EE; --muted:#B8A3AE; --line:#3A2C35;
+  --hero:#5A1338; --hero2:#8E1F57; --hero-ink:#FCEFF5; --hero-muted:#E7AFC5; --accent:#F4C062; --accent-ink:#2B1D02;
   --good:#4CC384; --good-soft:#163024; --warn:#E9A945; --warn-soft:#3A2A12; --bad:#EE7A88; --bad-soft:#3B1E24; --link:#8CB4F5; --pick:#4FD1B8; --pick-soft:#123029; color-scheme:dark}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -149,7 +149,7 @@ table.cmp td.pk{background:var(--pick-soft)}
 .btn{border:0;background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 16px;font-weight:800;cursor:pointer;display:inline-block}
 .btn.big{width:100%;padding:13px 16px;font-size:16px;font-family:var(--f-display)}
 .btn.ghost{background:var(--sunk);color:var(--ink)}
-.council{background:linear-gradient(135deg,#2B2165,#16303A);color:#fff;border-radius:16px;padding:14px}
+.council{background:linear-gradient(135deg,#4A1D6E,#8E1F57);color:#fff;border-radius:16px;padding:14px}
 .council h3{font-size:18px}
 .council p{margin:6px 0 10px;font-size:14px;opacity:.9}
 .council .btn{background:var(--accent);color:var(--accent-ink)}
@@ -164,7 +164,7 @@ table.cmp td.pk{background:var(--pick-soft)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.offer .ph{width:72px;height:86px}.facts div{padding:6px 8px;font-size:13px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=2">
+<link rel="stylesheet" href="dash-back.css?v=3">
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
