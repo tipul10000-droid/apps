@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.1";window.SQ_BUILD_AT="6.11.2026 09:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.2";window.SQ_BUILD_AT="6.11.2026 08:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -137,6 +137,7 @@ main .inner{display:flex;flex-direction:column;gap:26px}
 .r-body{min-width:0;padding:9px 12px;display:flex;flex-direction:column;gap:2px;cursor:pointer}
 .r-line{display:flex;align-items:center;gap:8px;min-width:0}
 .r-title{font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.r-dl{font-weight:800;color:var(--accent)}.r-dl.hot{color:#D92D20}
 .r-next{font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tag{font-size:11.5px;font-weight:700;padding:0 7px;border-radius:999px;white-space:nowrap;flex:none}
 .tag.me{background:var(--soon-soft);color:var(--soon)}
@@ -1906,6 +1907,9 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   }
   function stepsOf(t){return (Array.isArray(t.steps)?t.steps:[]).filter(s=>s&&s.text);}
   // 8.0 (Oren 6.11): one line per task. Circle, title, at most one small mark. Everything else inside.
+  // 9.2: hard deadline countdown in the title itself (deadline {d: YYYY-MM-DD, l: what happens}), e.g. "⏳ 86 ימים · ..."
+  function dlTag(t){const D=t.deadline,n=D&&D.d?daysUntil(D.d):null;if(n==null)return null;
+    return h("span",{class:"r-dl"+(n<=14?" hot":""),title:(D.l||"")+" "+D.d.split("-").reverse().join(".")},n<0?"⏳ עבר המועד · ":n===0?"⏳ היום אחרון · ":"⏳ "+n+(n===1?" יום":" ימים")+" · ");}
   function row(t){
     const open=isOpen(t),n=daysUntil(t.next_date),asks=openAsks(t),st=stepsOf(t),sd=st.filter(s=>s.done).length;
     let chip=null;
@@ -1918,7 +1922,7 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
       open?(canWrite?h("button",{class:"ck",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:press(()=>markDone(t))}):h("span",{class:"ck ph","aria-hidden":"true"})):h("span",{class:"ck on","aria-label":"בוצע",html:ICON.done}),
       h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":isO?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
         isUrgent(t)?h("span",{class:"r-urg","aria-label":"דחוף"},"!"):null,
-        h("span",{class:"r-title"},t.title||"(ללא כותרת)"),
+        h("span",{class:"r-title"},open?dlTag(t):null,t.title||"(ללא כותרת)"),
         chip,h("span",{class:"r-chev","aria-hidden":"true"},"‹")));
     if(laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.classList.add("r-later");el.append(m);}
     if(isO)el.append(drawer(t));
@@ -2022,12 +2026,19 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   function stageOf(t){const hw=howOf(t);if(hw.includes("place"))return geoOf(t).any?"any":"out";if(hw.includes("call"))return "call";return "home";}
   function winSections(L){
     const by=k=>L.filter(t=>stageOf(t)===k),home=by("home"),call=by("call"),out=by("out"),any=by("any");
-    const A={};for(const t of out){const g=geoOf(t),k=g.area||"בחוץ";const a=A[k]=A[k]||{k,km:999,items:[]};a.items.push(t);if(g.km!=null)a.km=Math.min(a.km,g.km);}
-    const AR=Object.values(A).sort((a,b)=>a.km-b.km);for(const a of AR)a.items.sort((x,y)=>(geoOf(x).km??999)-(geoOf(y).km??999));
+    // 9.2: Oren's order for today (day_plan) comes first, in his sequence; consecutive stops in one area share a card.
+    const P=out.filter(t=>dayOrd(t)!=null).sort((x,y)=>dayOrd(x)-dayOrd(y)),AR=[];
+    for(const t of P){const g=geoOf(t),k=g.area||"בחוץ",l=AR[AR.length-1];if(l&&l.k===k){l.items.push(t);if(g.km!=null)l.km=Math.min(l.km,g.km);}else AR.push({k,km:g.km??999,ord:dayOrd(t),items:[t]});}
+    const A={};for(const t of out){if(dayOrd(t)!=null)continue;const g=geoOf(t),k=g.area||"בחוץ",pl=AR.find(x=>x.k===k);if(pl){pl.items.push(t);continue;}
+      const a=A[k]=A[k]||{k,km:999,items:[]};a.items.push(t);if(g.km!=null)a.km=Math.min(a.km,g.km);}
+    const AQ=Object.values(A).sort((a,b)=>a.km-b.km);for(const a of AQ)a.items.sort((x,y)=>(geoOf(x).km??999)-(geoOf(y).km??999));AR.push(...AQ);
     const S=[];if(home.length)S.push({t:"🏠 קודם בבית",items:home});if(call.length)S.push({t:"📞 שיחות, אפשר בדרך",items:call});
     if(any.length){if(AR.length)AR[0].items.push(...any);else S.push({t:"🛒 בחוץ, בכל מקום",items:any});}
     AR.forEach((a,i)=>S.push({t:"📍 "+a.k+(a.km<999?" · "+a.km+" ק״מ":"")+(AR.length>1?(i?" · אחר כך":" · קודם"):""),items:a.items}));
+    const so=x=>Math.min(99,...x.items.map(t=>dayOrd(t)??99));if(S.some(x=>so(x)<99)){S.sort((a,b)=>so(a)-so(b));S.forEach((x,i)=>{if(i&&x.items===home)x.t="🏠 בבית";});} // stable: unplanned keep the fixed order
     return S;}
+  // 9.2: Oren's own order for one day: day_plan {date, n} (n = 1 first). Wins over home-first and distance on that date only.
+  function dayOrd(t){const p=t.day_plan;return p&&p.date===ilDate()&&p.n!=null?+p.n:null;}
   function sameArea(t){const g=geoOf(t);if(!g.area)return [];return allTopics.filter(x=>x.id!==t.id&&isOpen(x)&&!isFun(x)&&geoOf(x).area===g.area&&!geoOf(x).any);}
   // the next window that can take tasks (skips sleep and blocked windows); today, else tomorrow
   function nextWin(cur){const n=ilNow(),base=ilDate();
@@ -2098,6 +2109,9 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   // 8.4 (Oren 6.11): only tasks Oren himself does. Claude's background work (Notion syncs, scheduled checks, tracking) is never a task:
   // background:true or fit.owner "claude" stays out of every quest; Claude opens a new task only when Oren must act, decide or know.
   function isBg(t){return t.background===true||(t.fit&&t.fit.owner==="claude");}
+  // 9.2: recurring task. recur {dow: 0-6 (5 = Friday)}: a done task reopens on its next day (closed before that day's 00:00 = open again)
+  function recurOpen(t){const r=t.recur;if(!r||r.dow==null||t.status!=="done")return t;const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()-r.dow+7)%7));
+    return new Date(t.done_at||0)<d?{...t,status:"active",done_at:"",next_date:d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}:t;}
   function splitTopics(){const tq=quest==="fun"?"side":quest;topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t)));funTopics=allTopics.filter(isFun);}
   function renderQnav(){
     const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)&&!isBg(t)).length;
@@ -2926,7 +2940,7 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
     if(!db){notice("חסר המפתח האישי. פתח את הלינק המלא עם המפתח (?k=...).");$("qbtn").disabled=true;$("list").replaceChildren();return;}
     try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"&&(await user.can("data.write"))===false){canWrite=false;$("qbtn").disabled=true;}}catch(e){}
-    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
+    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
