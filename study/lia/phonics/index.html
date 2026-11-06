@@ -74,7 +74,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 .sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
 .conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:20;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
-.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:26px;font-weight:900;color:var(--pu);z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:24px;font-weight:900;color:var(--pu);z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap;direction:rtl;unicode-bidi:isolate;background:#fff;border:2px solid #c7d2fe;border-radius:999px;padding:4px 16px;box-shadow:0 6px 18px rgba(55,48,163,.18)}
 @keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
 .cr{font-size:12px;color:var(--mut);line-height:1.4}
 @media(max-height:700px){.big{font-size:52px}.pic{font-size:44px}.word{font-size:24px}.say.lg{width:76px;height:76px;font-size:26px}.opt{height:50px;font-size:23px}.heb{font-size:17px;padding:6px 10px}.heb .hl{font-size:30px}.btn{height:46px;padding:9px}.chips{display:none}.ask{margin:4px 0 2px;font-size:15px}.tiles button{height:44px}.slots span{height:46px;font-size:28px}}
@@ -153,7 +153,9 @@ const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-function popTxt(t){const p=document.createElement('div');p.className='pop';p.textContent=t;document.body.appendChild(p);setTimeout(()=>p.remove(),1100)}
+// הודעות קופצות בתור: אחת בכל פעם, כדי שלא יעלו זו על זו
+const POPQ=[];let POPON=false;function popTxt(t){POPQ.push(t);if(!POPON)popNext()}
+function popNext(){const t=POPQ.shift();if(t===undefined){POPON=false;return}POPON=true;const p=document.createElement('div');p.className='pop';p.dir=/[\u0590-\u05FF]/.test(t)?'rtl':'ltr';p.style.direction=p.dir;p.textContent=t;document.body.appendChild(p);setTimeout(()=>{p.remove();popNext()},1050)}
 function confetti(n){const c=['#818cf8','#fb923c','#facc15','#60a5fa','#34d399'];for(let i=0;i<(n||40);i++){const e=document.createElement('i');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(c);e.style.animationDuration=(1.6+Math.random()*1.6)+'s';e.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3800)}}
 const OK=['מעולה! ✨','בדיוק! 🚀','את תותחית!','אלופה! 🌟','יס! 🪐','האוזן שלך מושלמת 👂','כמו אמריקאית אמיתית 🇺🇸'];
 const BAD=['לא נורא, בשביל זה מתרגלות 🪐','עכשיו את כבר יודעת 😉','הצליל הזה עוד יחזור'];
