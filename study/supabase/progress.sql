@@ -320,3 +320,5 @@ returns jsonb language sql security definer set search_path to '' as $$
 $$;
 revoke all on function public.study_request_status(text) from public;
 grant execute on function public.study_request_status(text) to anon, authenticated;
+-- 6.11.2026 (אורן): בקשה חדשה מילד שולחת התראה להורים (study-push, שלב 5). notified_at = מתי נשלחה ההתראה.
+alter table public.study_requests add column if not exists notified_at timestamptz;

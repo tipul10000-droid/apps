@@ -25,9 +25,21 @@
 .pbar{height:10px;background:#e3e8ef;border-radius:6px;overflow:hidden;margin:6px 0 10px}.pbar i{display:block;height:100%;background:var(--ac)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .st{background:#f6f8fb;border-radius:10px;padding:8px 10px}.st small{display:block;color:var(--mut);font-size:12px}.st b{font-size:17px}
-.days{display:flex;align-items:flex-end;gap:4px;height:44px;margin-top:10px}.days div{flex:1;text-align:center;font-size:10px;color:var(--mut)}
-.days i{display:block;background:#b8c7de;border-radius:3px 3px 0 0;margin:0 auto 2px;width:70%;min-height:2px}
-.days i.on{background:var(--ac)}
+/* ציר הלימוד (אורן 6.11.2026): מימין לשמאל, מהיום הראשון ועד יום המבחן */
+.tl{margin-top:12px;border:1px solid #e3e8ef;border-radius:14px;padding:10px 10px 8px;background:#fafbfd}
+.tl .tt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px;margin-bottom:6px}.tl .tt b{color:var(--ac)}.tl .tt small{color:var(--mut);font-size:12px;white-space:nowrap}
+.tl .cols{display:flex;align-items:stretch;gap:2px}
+.tl .c{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--mut);border-radius:6px;padding:2px 0}
+.tl .tg{height:14px;line-height:14px;font-size:10px;font-weight:700;white-space:nowrap}
+.tl .br{height:38px;width:100%;display:flex;align-items:flex-end;justify-content:center;border-bottom:2px solid #d3d9e2}
+.tl .br i{display:block;width:72%;max-width:16px;border-radius:3px 3px 0 0;background:var(--ac)}
+.tl .c.no .br i{height:2px!important;background:#c3cad4}
+.tl .c.fut .br{border-bottom:2px dashed #b8c7de}.tl .c.fut .br i{display:none}
+.tl .c.now{background:#e8eef7}.tl .c.now .tg{color:var(--ac)}
+.tl .c.ex{background:#fdeee6}.tl .c.ex .tg{color:#c2410c}.tl .c.ex .br{border-bottom:2px solid #e8913b}
+.tl .c.gap .br{border-bottom:2px dotted #c3cad4}
+.tl .dl{margin-top:1px}.tl .dn{font-size:9px;white-space:nowrap;height:11px}
+.tl .ft{margin-top:6px;font-size:13px;text-align:center}.tl .ft b{color:#c2410c}
 .hard{margin-top:10px;font-size:14px}.hard span{display:inline-block;background:#fff1f2;color:#9f1239;border-radius:14px;padding:2px 9px;margin:3px 2px;direction:ltr}
 .test{margin-top:10px;background:#eef3fb;border-radius:10px;padding:9px 10px;font-size:15px}
 .test .row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}.test input{font:inherit;font-size:15px;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;flex:1;min-width:0}
@@ -50,7 +62,7 @@ html,body,*{touch-action:manipulation}
 </style></head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
 <div id="v"></div>
-<script src="../push.js"></script>
+<script src="../push.js?v=2"></script>
 <script>
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
 // הקוד נבדק בשרת (study_parents_get). אחרי קוד נכון הוא נשמר במכשיר (study_par_pin); קוד שגוי מוחק אותו.
@@ -92,6 +104,24 @@ function evBox(k,a,t,RS,id){const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')
  return`<div class="ev${fl}"><div class="l"><span>${has?`📅 ה${TN} הקרוב${a.test==='הכתבה'?'ה':''}: <b>${fmtD(t.d)}</b> (${when})${t.auto?'':' <span class="ok">✓</span>'}`:`📅 אין עדיין תאריך ל${a.test}`}</span>${has?`<button class="pen" type="button" data-e="${id}">✏️ עריכה</button>`:''}</div>
  ${fl?'<div class="sv">✓ התאריך נשמר</div>':''}${t&&t.auto?`<div class="auto">🤖 התאמה אוטומטית מדשבורד המשפחה. אם זה לא נכון, ✏️ עריכה.</div>`:''}
  <div class="row ed${has?'':' on'}" id="e_${id}"><input type="date" id="d_${id}" value="${t&&t.d||''}"><button class="b s" type="button" data-t="${k.id}|${a.id}">שמירת תאריך</button></div></div>`}
+// ציר הלימוד: עמודה לכל יום, מהיום שהתחיל/ה (מימין) ועד יום המבחן (משמאל). היום מסומן, הימים שנשארו מקווקווים,
+// וביום המבחן אפשר ללמוד בבוקר. יותר מ-21 ימים: היום הראשון, נקודות, ו-19 הימים האחרונים.
+function timeline(r,t,a,k){const D0=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x},today=D0(new Date()),dk=Object.keys(r.days).sort();
+ let st=r.first?D0(r.first):today;if(dk[0]){const f=D0(dk[0]+'T00:00:00');if(f<st)st=f}if(st>today)st=today;
+ const ex=t&&t.d&&!t.done?D0(t.d+'T00:00:00'):null,end=ex&&ex>=st?ex:today,N=Math.round((end-st)/864e5)+1;
+ const all=[];for(let i=0;i<N;i++){const d=new Date(st);d.setDate(d.getDate()+i);all.push(d)}
+ const cols=N>21?[all[0],null,...all.slice(-19)]:all,mx=Math.max(300,...dk.map(x=>r.days[x]));
+ const dm=d=>d.getDate()+'.'+(d.getMonth()+1),T=esc(a.test),boy=k.id==='evyatar';
+ const studied=dk.filter(x=>r.days[x]>0&&D0(x+'T00:00:00')<=today).length;
+ const cell=d=>{if(!d)return`<div class="c gap"><div class="tg"></div><div class="br"></div><div class="dl">…</div><div class="dn"></div></div>`;
+  const s=r.days[iso(d)]||0,fut=d>today,now=+d===+today,isEx=ex&&+d===+ex,first=+d===+st;
+  const cl=['c',fut?'fut':'',!fut&&!s?'no':'',now?'now':'',isEx?'ex':''].join(' ');
+  const tg=isEx?'🎯':now?'היום':'',dn=first||now||isEx?dm(d):'';
+  return`<div class="${cl}" title="${dm(d)}: ${Math.round(s/60)} דק׳"><div class="tg">${tg}</div><div class="br"><i style="height:${s?Math.max(4,Math.round(s/mx*34)):2}px"></i></div><div class="dl">${'אבגדהוש'[d.getDay()]}</div><div class="dn">${dn}</div></div>`};
+ let ft;if(ex&&ex>=today){const dl=Math.round((ex-today)/864e5);
+  ft=dl===0?`<b>היום ${T}!</b> אפשר עוד לחזור על המילים בבוקר`:`נשארו <b>${dl} ${dl===1?'יום':'ימים'}</b> ללמוד + הבוקר של ה${T}`}
+ else ft=ex?'':`אין עדיין תאריך ל${T}. כשיהיה, הציר יגיע עד יום ה${T}.`;
+ return`<div class="tl"><div class="tt"><span>📆 ימי לימוד: <b>${studied}</b></span><small>${dm(st)} ← ${ex?'יום ה'+T+' '+dm(ex):'היום'}</small></div><div class="cols">${cols.map(cell).join('')}</div>${ft?`<div class="ft">${ft}</div>`:''}</div>`}
 function needsGrade(j,k){return k.apps.some(a=>{const t=(j.tests||[]).find(x=>x.kid===k.id&&x.app===a.id)||(j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null);if(!t)return false;
  if((j.results||[]).some(x=>x.kid===k.id&&x.app===a.id))return false;return t.done||(t.d&&new Date(t.d+'T00:00:00')<=new Date(new Date().toDateString()))})}
 function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/'+t.app]=t);
@@ -101,14 +131,13 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
   k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`+evBox(k,a,t,RS,id0(k,a));
    if(!rows.length)h+=`<div class="none">עוד לא התחיל${k.id==='evyatar'?'':'ה'} (או שעוד לא נכנס${k.id==='evyatar'?'':'ה'} מאז שהוספנו את המעקב)</div>`;
    else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null;
-    h+=`<div class="big"><b>${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>
+    h+=`<div class="big"><b dir="ltr" style="unicode-bidi:isolate">${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>
     <div class="grid"><div class="st"><small>אחוז הצלחה</small><b>${sr==null?'-':sr+'%'}</b> <small>${r.ok} נכונות מתוך ${r.att}</small></div>
     <div class="st"><small>זמן באפליקציה</small><b>${fmtT(r.sec)}</b> <small>${Object.keys(r.days).length} ימים</small></div>
     <div class="st"><small>התחיל${k.id==='evyatar'?'':'ה'} ללמוד</small><b>${fmtD(r.first)}</b></div>
     <div class="st"><small>פעילות אחרונה</small><b>${ago(r.last)}</b></div>
     ${r.learning!=null?`<div class="st"><small>בתהליך לימוד</small><b>${r.learning}</b> <small>${a.unit}</small></div>`:''}<div class="st"><small>שיא רצף</small><b>${r.best}</b></div></div>`;
-    const dd=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);dd.push([iso(d),d])}const mx=Math.max(60,...dd.map(x=>r.days[x[0]]||0));
-    h+=`<div class="days">${dd.map(x=>{const s=r.days[x[0]]||0;return`<div><i class="${s?'on':''}" style="height:${Math.round(s/mx*30)+2}px"></i>${'אבגדהוש'[x[1].getDay()]}</div>`}).join('')}</div>`;
+    h+=timeline(r,t,a,k);
     const hd=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,8);if(hd.length)h+=`<div class="hard">מתקשה ב: ${hd.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`;
     if(t&&t.d&&r.total){const dl=Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5),left=r.total-r.done;
      if(dl>0&&left>0)h+=`<div class="none" style="margin-top:8px">נשארו ${left} ${a.unit} ו-${dl} ימים: בערך ${Math.ceil(left/dl)} ביום.</div>`}}
