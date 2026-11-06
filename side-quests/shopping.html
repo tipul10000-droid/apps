@@ -164,7 +164,8 @@ table.cmp td.pk{background:var(--pick-soft)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.offer .ph{width:72px;height:86px}.facts div{padding:6px 8px;font-size:13px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=1">
+<link rel="stylesheet" href="dash-back.css?v=2">
+<script>/* 10.2: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
 <header class="hero"><div class="in" id="hero"></div></header>
@@ -187,6 +188,8 @@ let items={},meta={},db=null,loaded=false;
 const UI_KEY="sq_shop_ui";let ui={cat:"all",tab:"over",view:"open"};
 try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
 function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
+// inside Side Quests (frame): no own history entries, so the app's back button closes the dashboard
+const EMB=window.self!==window.top;function goHash(x){if(EMB)location.replace(location.pathname+location.search+"#"+x);else location.hash=x;}
 function curId(){const m=location.hash.match(/^#i=(.+)$/);return m?decodeURIComponent(m[1]):null;}
 
 const rate=c=>c==="₪"||c==="ILS"?1:+((meta.fx||{})[c])||({EUR:3.8,USD:3.4,GBP:4.4})[c]||0;
@@ -281,8 +284,8 @@ async function upd(id,patch,msg){const prev=JSON.parse(JSON.stringify(items[id]|
 window.addEventListener("hashchange",()=>{ui.tab="over";render();scrollTo(0,0);});
 document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
   if(b=g("[data-cat]")){ui.cat=b.dataset.cat;saveUi();render();return;}
-  if(b=g("[data-open]")){location.hash="i="+encodeURIComponent(b.dataset.open);return;}
-  if(g("[data-home]")){history.length>1&&curId()?history.back():(location.hash="");return;}
+  if(b=g("[data-open]")){goHash("i="+encodeURIComponent(b.dataset.open));return;}
+  if(g("[data-home]")){EMB?goHash(""):history.length>1&&curId()?history.back():(location.hash="");return;}
   if(b=g("[data-tab]")){ui.tab=b.dataset.tab;saveUi();render();scrollTo(0,0);return;}
   if(b=g("[data-ans]")){const id=curId(),x=items[id]||{};const now=new Date().toISOString();
     const qs=(x.questions||[]).map(q=>q.id===b.dataset.ans?{...q,answer:q.answer===b.dataset.v?"":b.dataset.v,answered_at:now}:q);
@@ -293,7 +296,7 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
     const id="p"+Date.now().toString(36),now=new Date().toISOString();
     try{await db.collection("shopping").doc(id).set({title:t.slice(0,120),icon:"🛒",cat:ui.cat==="all"?"other":ui.cat,status:"idea",created_at:now,updated_at:now,offers:[],log:[{at:now,text:"נפתח מהדשבורד"}]});
       const ok=await copy(`נושא קנייה חדש בדשבורד הקניות (id ${id}): "${t}". תבדוק אפשרויות, מחירים (כולל אמזון איטליה), ביקורות ויוטיוב, ותמלא את הכרטיסייה.`);
-      toast(ok?"נפתח. הבקשה הועתקה, הדבק בשיחה":"נפתח");location.hash="i="+encodeURIComponent(id);}catch(err){toast("לא נשמר");}return;}
+      toast(ok?"נפתח. הבקשה הועתקה, הדבק בשיחה":"נפתח");goHash("i="+encodeURIComponent(id));}catch(err){toast("לא נשמר");}return;}
 });
 render();
 window.claude.use("db").then(d=>{db=d;if(!db)return;

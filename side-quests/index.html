@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.1";window.SQ_BUILD_AT="6.11.2026 13:00";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.2";window.SQ_BUILD_AT="6.11.2026 13:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1268,6 +1268,18 @@ details.more[open]>summary{margin-bottom:10px}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .aipg{--bg:#141413;--surface:#1E1D1B;--sunk:#292826;--line:#3A3835}}
 :root[data-theme="dark"] .aipg{--bg:#141413;--surface:#1E1D1B;--sunk:#292826;--line:#3A3835}
 #pg3{z-index:38}
+/* 10.2: dashboard page (#…/d/<id>) over any level: our dashboard html in a frame, bar with back + chat */
+#pgD{z-index:40;overflow:hidden;display:flex;flex-direction:column}
+#pgD[hidden]{display:none}
+.dpg .pgbar{position:relative;flex:none;--accent:#fff}
+.dpg .pgback{color:#fff}
+.dpg .dfr{flex:1;min-height:0;width:100%;border:0;display:block;background:var(--bg)}
+.dpg .dscroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.dpg .pgedge{position:absolute;left:0;top:0;bottom:0;width:22px;z-index:6;display:none}
+@media (display-mode: standalone){.dpg .pgedge{display:block}}
+.pgchat{justify-self:end;display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:#fff;border-radius:12px;-webkit-tap-highlight-color:transparent}
+.pgchat svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.pgchat:active{background:rgba(255,255,255,.14)}
 .aipg[hidden]{display:none}
 .aipg.enter{animation:pgIn .3s cubic-bezier(.2,.8,.2,1)}
 @keyframes pgIn{from{transform:translateX(100%)}to{transform:none}}
@@ -1521,6 +1533,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
 <div id="pgShade" aria-hidden="true"></div>
 <div class="aipg" id="pg2" hidden role="region" aria-label="AI Projects"></div>
 <div class="aipg" id="pg3" hidden role="region" aria-label="פרויקט"></div>
+<div class="aipg dpg" id="pgD" hidden role="region" aria-label="דשבורד"></div>
 <footer class="ver gut"><button type="button" id="ver" aria-label="גרסה. לחיצה בודקת אם יש גרסה חדשה"></button></footer>
 
 <script>
@@ -1870,7 +1883,13 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
     const own=(Array.isArray(d.suggest)?d.suggest:[]).filter(x=>x&&x.text&&(!x.date||daysUntil(x.date)<=(x.show_days||60)));
     const taken=new Set(dashTasks(d).map(t=>norm(t.title)));
     return [...lv.sugs,...own].map(x=>({...x,key:x.key||sugKey(x.text)})).filter(x=>!st[x.key]&&!taken.has(norm(x.text)));}
-  function openDash(id){const d=dashById(id);if(!d)return;const q=d.quest||"side";if(quest!==q)setQuest(q);dashOpen=id;renderDash();setTimeout(()=>{const e=$("dz-card");e&&e.scrollIntoView({behavior:"smooth",block:"start"});},60);}
+  // 10.2 (Oren 6.11): a tap on a dashboard opens the dashboard itself, no summary card in between. Our own pages open
+  // in-app as a page layer (#…/d/<id>, back button + edge swipe); outside pages (claude.ai, Notion) open directly.
+  function dashFrame(u){if(!u)return null;try{const x=new URL(u,location.href);
+      if(x.origin===location.origin||/^https:\/\/tipul10000-droid\.github\.io$/.test(x.origin)){const m=x.pathname.match(/\/side-quests\/([\w-]+\.html)$/);if(m)return "./"+m[1]+x.search+x.hash;}}catch(e){}return null;}
+  function openDash(id){const d=dashById(id);if(!d)return;const u=safeUrl(d.url||"");
+    if(u&&!dashFrame(u)){window.open(u,"_blank","noopener");return;}
+    if(nav.dash===id)return;navGo({lvl:nav.lvl,id:nav.id,dash:id});}
   async function addFromSug(d,x){if(!db)return;const now=new Date().toISOString(),nid=newId();
     try{await db.collection("topics").doc(nid).set({title:String(x.text).slice(0,200),kind:"admin",status:"active",priority:"normal",area:"",next_step:x.sub&&!x.date?String(x.sub):"",next_date:x.date||"",summary:"",links:[],dash:d.id,...(TQ.includes(d.quest)?{quest:d.quest}:{}),source:"הוצע מהדשבורד "+(d.title||""),created_at:now,updated_at:now,log:[{at:now,text:"נוצר מהצעה של הדשבורד"}]});
       await db.collection("dashboards").doc(d.id).update({sugg:{...(d.sugg||{}),[x.key]:"added"}});
@@ -1879,16 +1898,16 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   function dashVars(d){return `--c1:${d.c1||"#444"};--c2:${d.c2||d.c1||"#777"}`;}
   function dashTile(d,lite){const kids=dashTasks(d).filter(isOpen),lv=liveOf(d),k=lv.kpis[0];
     const urgentN=kids.filter(t=>isUrgent(t)||isHot(t)).length;
-    return h("button",{class:"dz-tile"+(lite?" lite":""),type:"button",style:dashVars(d),"aria-expanded":dashOpen===d.id?"true":"false",onclick:()=>{dashOpen=dashOpen===d.id?null:d.id;renderDash();}},
+    return h("button",{class:"dz-tile"+(lite?" lite":""),type:"button",style:dashVars(d),onclick:()=>openDash(d.id)},
       h("span",{class:"bd"+(urgentN?" hot":"")},kids.length?`${kids.length} פתוחות`:"הכל סגור"),
       h("b",null,h("span",{class:"ti","aria-hidden":"true"},d.icon||"📊"),d.short||d.title||""),
       h("span",{class:"s"},lv.line||d.note||(k?`${k.v} ${k.l}`:"")));}
-  function dashCard(d){const lv=liveOf(d),url=safeUrl(d.url||""),all=dashTasks(d),kids=all.filter(isOpen).sort(byDate),closed=all.length-kids.length,sugs=dashSugs(d);
+  function dashCard(d,page){const lv=liveOf(d),url=safeUrl(d.url||""),all=dashTasks(d),kids=all.filter(isOpen).sort(byDate),closed=all.length-kids.length,sugs=dashSugs(d);
     const links=(Array.isArray(d.links)?d.links:[]).filter(l=>l&&safeUrl(l.url));const proj=d.project&&projById(d.project);
     const asOf=lv.live?"חי"+(d.updated_at?" · עודכן "+ago(Date.parse(d.updated_at)):""):(d.as_of?"תמונת מצב · נכון ל-"+d.as_of:"דף מידע");
     inDashCard=true;const rows=kids.map(row);inDashCard=false;
     return h("article",{class:"dz-card",id:"dz-card",style:dashVars(d)},
-      h("div",{class:"dz-cv"},h("span",{class:"ic","aria-hidden":"true"},d.icon||"📊"),h("div",{style:"min-width:0"},h("h3",null,d.title||""),h("p",null,asOf)),h("button",{class:"x",type:"button","aria-label":"סגור",onclick:()=>{dashOpen=null;renderDash();}},"✕")),
+      h("div",{class:"dz-cv"},h("span",{class:"ic","aria-hidden":"true"},d.icon||"📊"),h("div",{style:"min-width:0"},h("h3",null,d.title||""),h("p",null,asOf)),page?null:h("button",{class:"x",type:"button","aria-label":"סגור",onclick:()=>{dashOpen=null;renderDash();}},"✕")),
       dashChat(d,proj),
       lv.kpis.length?h("div",{class:"dz-kpis"},lv.kpis.slice(0,3).map(k=>h("div",{class:"dz-kpi"},h("b",null,k.v),h("span",null,k.l)))):null,
       url?h("a",{class:"dz-go",href:url,target:"_blank",rel:"noopener"},"פתח את הדשבורד ←"):null,
@@ -1908,12 +1927,10 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
     const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
     if(!mine.some(d=>!d.archived&&!dashIdle(d))){sec.hidden=true;sec.replaceChildren();return;}
     const act=mine.filter(d=>!d.archived&&!dashIdle(d)).sort((a,b)=>(dashTasks(b).some(isOpen)?1:0)-(dashTasks(a).some(isOpen)?1:0)||(a.order||99)-(b.order||99));
-    const cur=dashOpen&&mine.find(d=>d.id===dashOpen);
     sec.hidden=false;
     // 8.3 (Oren 6.11): dashboards sit open at the very bottom of the app; their tasks also show as regular tasks above
     sec.replaceChildren(...[h("div",{class:"dz-head"},h("b",null,"📊 דשבורדים"),h("span",{class:"n"},act.length)),
       act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null,
-      cur?dashCard(cur):null,
       // 9.5 (Oren 6.11): no archive here; archived and idle dashboards live in Settings → ארכיון
       ].filter(Boolean));
   }
@@ -2060,32 +2077,66 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   // history.state.sqd = how many of our own screens sit under this entry; >0 means "back" can be history.back().
   const PROJ_ALIAS={"personal-assistant":"side-quests"}; // merged 6.11: there is no separate "personal assistant" project
   const GEN_ID="_general";
-  var nav={lvl:1,id:null};
-  function navParse(){const m=location.hash.match(/^#\/ai(?:\/([^?#]*))?$/);if(!m)return {lvl:1,id:null};const id=m[1]?decodeURIComponent(m[1]):"";return id?{lvl:3,id:PROJ_ALIAS[id]||id}:{lvl:2,id:null};}
+  // 10.2: a dashboard is one more page on top of whatever was open: #/d/<id>, #/ai/d/<id> or #/ai/<project>/d/<id>
+  var nav={lvl:1,id:null,dash:null};
+  function navParse(){const m=location.hash.match(/^#(\/ai(?:\/([^/?#]+))?)?(?:\/d\/([^/?#]+))?$/);if(!m||(!m[1]&&!m[3]))return {lvl:1,id:null,dash:null};
+    const dash=m[3]?decodeURIComponent(m[3]):null;if(!m[1])return {lvl:1,id:null,dash};
+    const id=m[2]?decodeURIComponent(m[2]):"";return id?{lvl:3,id:PROJ_ALIAS[id]||id,dash}:{lvl:2,id:null,dash};}
   function lvl1Url(){return location.pathname+location.search+(quest==="side"?"":"#"+quest);}
-  function navUrl(n){return n.lvl===1?lvl1Url():n.lvl===2?location.pathname+location.search+"#/ai":location.pathname+location.search+"#/ai/"+encodeURIComponent(n.id);}
+  function navUrl(n){const b=location.pathname+location.search,dp=n.dash?"/d/"+encodeURIComponent(n.dash):"";
+    if(n.lvl===1)return dp?b+"#"+dp:lvl1Url();return b+"#/ai"+(n.lvl===3?"/"+encodeURIComponent(n.id):"")+dp;}
   function navDepth(){const s=history.state;return s&&typeof s.sqd==="number"?s.sqd:0;}
-  function navGo(n){const d=Math.max(0,n.lvl-1);try{history.pushState({sqd:d},"",navUrl(n));}catch(e){location.hash=navUrl(n).split("#")[1]||"";}syncNav(true);}
+  function navGo(n){const d=n.dash?navDepth()+1:Math.max(0,n.lvl-1);try{history.pushState({sqd:d},"",navUrl(n));}catch(e){location.hash=navUrl(n).split("#")[1]||"";}syncNav(true);}
   function goAi(){navGo({lvl:2,id:null});}
   function openProj(id){openId=null;navGo({lvl:3,id});}
   // back: our own previous entry = real history back; landed straight on this screen = replace with the parent
-  function navBack(noAnim){if(nav.lvl===1)return;const top=nav.lvl===3?$("pg3"):$("pg2");
-    const go=()=>{if(navDepth()>0){navSkipAnim=true;history.back();return;}const p={lvl:nav.lvl-1,id:null};try{history.replaceState({sqd:navDepth()},"",navUrl(p));}catch(e){}syncNav(false);};
+  function navTop(){return nav.dash?$("pgD"):nav.lvl===3?$("pg3"):nav.lvl===2?$("pg2"):null;}
+  function navUnder(el){return el&&el.id==="pgD"?(nav.lvl===3?$("pg3"):nav.lvl===2?$("pg2"):null):el&&el.id==="pg3"?$("pg2"):null;}
+  function navBack(noAnim){if(nav.lvl===1&&!nav.dash)return;const top=navTop();
+    const p=nav.dash?{lvl:nav.lvl,id:nav.id,dash:null}:{lvl:nav.lvl-1,id:null,dash:null};
+    const go=()=>{const want=navUrl(p);
+      if(navDepth()>0){const wasDash=nav.dash;navSkipAnim=true;history.back();
+        // a dashboard page may have pushed its own history (inside the frame): then close it by hand
+        if(wasDash)setTimeout(()=>{if(nav.dash===wasDash){try{history.replaceState({sqd:Math.max(0,navDepth()-1)},"",want);}catch(e){}syncNav(false);}},450);return;}
+      try{history.replaceState({sqd:navDepth()},"",want);}catch(e){}syncNav(false);};
     if(noAnim){go();return;}pgSlide(top,1,()=>go());}
   var navSkipAnim=false;
-  function syncNav(anim){const n=navParse();const was=nav.lvl;nav=n;if(navSkipAnim){anim=false;navSkipAnim=false;}
-    const p2=$("pg2"),p3=$("pg3");
-    for(const p of [p2,p3]){p.style.transform="";p.style.transition="";}
-    p2.hidden=n.lvl<2;p3.hidden=n.lvl<3;$("pgShade").style.opacity="0";
-    if(n.lvl>=2)renderNav();
-    if(n.lvl===3&&(was!==3||anim))p3.scrollTop=0;
-    if(anim&&n.lvl>was){const p=n.lvl===3?p3:p2;p.classList.remove("enter");void p.offsetWidth;p.classList.add("enter");}
-    if(n.lvl>=2)document.title=n.lvl===3?(projTitle(n.id)||"AI Projects"):"AI Projects";else document.title=QUESTS[quest].name;}
+  function syncNav(anim){const n=navParse();const was=nav.lvl,wasD=nav.dash;nav=n;if(navSkipAnim){anim=false;navSkipAnim=false;}
+    const p2=$("pg2"),p3=$("pg3"),pD=$("pgD");
+    for(const p of [p2,p3,pD]){p.style.transform="";p.style.transition="";}
+    p2.hidden=n.lvl<2;p3.hidden=n.lvl<3;pD.hidden=!n.dash;$("pgShade").style.opacity="0";
+    if(n.lvl>=2&&!(n.dash&&wasD))renderNav();
+    if(n.dash){if(n.dash!==dashPg.id)renderDashPg();}else if(dashPg.id){dashPg={id:null,frame:false};pD.replaceChildren();}
+    if(n.lvl===3&&(was!==3||(anim&&!wasD)))p3.scrollTop=0;
+    if(anim&&n.dash&&!wasD){pD.classList.remove("enter");void pD.offsetWidth;pD.classList.add("enter");}
+    else if(anim&&!n.dash&&n.lvl>was){const p=n.lvl===3?p3:p2;p.classList.remove("enter");void p.offsetWidth;p.classList.add("enter");}
+    if(n.dash){const d=dashById(n.dash);document.title=d?(d.title||"דשבורד"):"דשבורד";}
+    else if(n.lvl>=2)document.title=n.lvl===3?(projTitle(n.id)||"AI Projects"):"AI Projects";else document.title=QUESTS[quest].name;}
+  // the dashboard page: our own dashboard html in a frame (rendered once), or the in-app card for a dashboard with no page
+  var dashPg={id:null,frame:false};
+  function renderDashPg(){const pD=$("pgD"),id=nav.dash,d=dashById(id);
+    const back=nav.lvl===3?(projTitle(nav.id)||"AI Projects"):nav.lvl===2?"AI Projects":"Side Quests";
+    const u=d&&safeUrl(d.url||""),fr=u&&dashFrame(u);
+    if(dashPg.id===id&&dashPg.frame)return;
+    const proj=d&&d.project&&projById(d.project);
+    const cu=d&&secUrl("dash_"+d.id,d.chat,chatOf(allTopics.find(x=>x.id===d.id)||{}),proj&&proj.claude_url);
+    const chat=d?h("a",{class:"pgchat",href:cu||SQ_CHAT,target:"_blank",rel:"noopener","aria-label":"עבודה עם הצ׳אט על הדשבורד",html:ICON.chat,onclick:e=>{if(!cu){try{navigator.clipboard&&navigator.clipboard.writeText("לגבי הדשבורד "+(d.title||"")+" ב-Side Quests");toast("אין עדיין שיחה לדשבורד. השם הועתק, הדבק בשיחה");}catch(x){}}}}):h("span");
+    const bar=h("div",{class:"pgbar",style:d?`--hero:${d.c1||"#1F1E1D"}`:""},h("div",{class:"pgbar-in"},
+      h("button",{class:"pgback",type:"button","aria-label":"חזרה ל"+back,onclick:()=>navBack()},h("span",{class:"chev","aria-hidden":"true"},"‹"),h("span",null,back)),
+      h("div",{class:"pgtitle"},d?((d.icon?d.icon+" ":"")+(d.short||d.title||"")):""),chat));
+    const edge=h("div",{class:"pgedge","aria-hidden":"true"});
+    let body;
+    if(fr){body=h("iframe",{class:"dfr",src:fr,title:d.title||"דשבורד",allow:"clipboard-write"});dashPg={id,frame:true};}
+    else if(d&&u){body=h("div",{class:"dscroll"},h("div",{class:"pgbody"},h("a",{class:"dz-go",href:u,target:"_blank",rel:"noopener"},"פתח את הדשבורד ←")));dashPg={id,frame:false};}
+    else{const y=pD.querySelector(".dscroll")?pD.querySelector(".dscroll").scrollTop:0;
+      body=h("div",{class:"dscroll"},h("div",{class:"pgbody"},d?dashCard(d,true):h("div",{class:"empty"},dashes.length?"הדשבורד לא נמצא.":"טוען…")));dashPg={id:d?id:null,frame:false};
+      pD.replaceChildren(bar,body,edge);body.scrollTop=y;return;}
+    pD.replaceChildren(bar,body,edge);}
   function projTitle(id){if(id===GEN_ID)return "משימות כלליות";const p=projById(id);return p?p.name:"";}
   // slide a page out to the right (back) and run done after it
   function pgSlide(el,to,done){if(!el){done&&done();return;}const W=window.innerWidth;el.classList.remove("enter");
     el.style.transition="transform .26s cubic-bezier(.2,.8,.2,1)";el.style.transform=`translateX(${to*W}px)`;
-    const under=el.id==="pg3"?$("pg2"):null;if(under){under.style.transition="transform .26s cubic-bezier(.2,.8,.2,1)";under.style.transform="none";}
+    const under=navUnder(el);if(under){under.style.transition="transform .26s cubic-bezier(.2,.8,.2,1)";under.style.transform="none";}
     $("pgShade").style.transition="opacity .26s";$("pgShade").style.opacity="0";
     setTimeout(()=>{done&&done();},270);}
   function projWaiting(pid){return allTopics.filter(t=>t.project===pid&&t.status==="waiting_me"&&!isBg(t)&&!isFun(t)).length;}
@@ -2124,7 +2175,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
       const pds=dashes.filter(d=>d.project===id&&!d._deleted&&!d.archived);
       const acts=[app?h("a",{href:app,target:"_blank",rel:"noopener",html:ICON.app},"פתח אפליקציה"):null,cu?h("a",{href:cu,target:"_blank",rel:"noopener",html:ICON.chat},"פתח ב-Claude"):null].filter(Boolean);
       const extra=[...more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך")),
-        ...pds.map(d=>h("button",{type:"button",onclick:()=>{navBack(true);setTimeout(()=>openDash(d.id),60);}},(d.icon||"📊")+" "+(d.title||"")))];
+        ...pds.map(d=>h("button",{type:"button",onclick:()=>openDash(d.id)},(d.icon||"📊")+" "+(d.title||"")))];
       head=h("div",{class:"pjhead"},
         lok?h("div",{class:"pjlogo "+(p.logo_bg==="dark"?"dark":"light")},h("img",{src:logo,alt:p.name||""})):picOf(p,84),
         lok?null:h("h1",null,p.name||""),
@@ -2143,15 +2194,15 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   function relAgo(at){const d=new Date(at);if(isNaN(d))return "";const m=Math.round((Date.now()-d)/60000);if(m<60)return m<=1?"עכשיו":"לפני "+m+" דק׳";const hh=Math.round(m/60);if(hh<24)return "לפני "+hh+" שע׳";const dd=Math.round(hh/24);return dd===1?"אתמול":"לפני "+dd+" ימים";}
   try{history.scrollRestoration="manual";}catch(e){} // our pages keep their own scroll; the browser must not move level 1
   window.addEventListener("popstate",()=>syncNav(true));
-  window.addEventListener("hashchange",()=>{const n=navParse();if(n.lvl!==nav.lvl||n.id!==nav.id)syncNav(true);});
+  window.addEventListener("hashchange",()=>{const n=navParse();if(n.lvl!==nav.lvl||n.id!==nav.id||n.dash!==nav.dash)syncNav(true);});
   // edge swipe back: only in the home-screen app (Safari has its own), only from a narrow strip at the left edge
   (function edgeSwipe(){const EDGE=22;let st=null;
     const isSA=()=>window.navigator.standalone===true||matchMedia("(display-mode: standalone)").matches;
-    document.addEventListener("touchstart",e=>{st=null;if(nav.lvl<2||!isSA()||e.touches.length!==1||document.querySelector(".sqmodal"))return;
-      const t=e.touches[0];if(t.clientX>EDGE)return;const el=nav.lvl===3?$("pg3"):$("pg2");
-      st={x:t.clientX,y:t.clientY,t:Date.now(),el,under:nav.lvl===3?$("pg2"):null,on:false,dx:0,lx:t.clientX,lt:Date.now(),v:0};},{passive:true});
+    document.addEventListener("touchstart",e=>{st=null;if((nav.lvl<2&&!nav.dash)||!isSA()||e.touches.length!==1||document.querySelector(".sqmodal"))return;
+      const t=e.touches[0];if(t.clientX>EDGE)return;const el=navTop();
+      st={x:t.clientX,y:t.clientY,t:Date.now(),el,under:navUnder(el),on:false,dx:0,lx:t.clientX,lt:Date.now(),v:0};},{passive:true});
     document.addEventListener("touchmove",e=>{if(!st)return;const t=e.touches[0],dx=t.clientX-st.x,dy=t.clientY-st.y;
-      if(!st.on){if(Math.abs(dy)>10&&Math.abs(dy)>Math.abs(dx)){st=null;return;}if(dx<8)return;st.on=true;$("pgShade").style.zIndex=st.under?"37":"35";st.el.classList.remove("enter");st.el.style.transition="none";if(st.under)st.under.style.transition="none";$("pgShade").style.transition="none";}
+      if(!st.on){if(Math.abs(dy)>10&&Math.abs(dy)>Math.abs(dx)){st=null;return;}if(dx<8)return;st.on=true;$("pgShade").style.zIndex=String((parseInt(getComputedStyle(st.el).zIndex,10)||36)-1);st.el.classList.remove("enter");st.el.style.transition="none";if(st.under)st.under.style.transition="none";$("pgShade").style.transition="none";}
       e.preventDefault();const W=window.innerWidth,x=Math.max(0,Math.min(W,dx)),now=Date.now();
       st.v=(t.clientX-st.lx)/Math.max(1,now-st.lt);st.lx=t.clientX;st.lt=now;st.dx=x;
       st.el.style.transform=`translateX(${x}px)`;if(st.under)st.under.style.transform=`translateX(${-(1-x/W)*W*.28}px)`;
@@ -2357,7 +2408,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
     return h("div",{class:"wcard"+(next?" next":"")},
       h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},W.e),h("b",null,W.l),tag?h("small",null,tag):null),
       L.length?(S.length>1?S.map(x=>h("div",{class:"wc-part"},h("div",{class:"wc-sec"},x.t),h("div",{class:"glist"},x.items.map(row)))):h("div",{class:"glist"},L.map(row))):h("div",{class:"wc-empty"},empty));}
-  function renderList(){renderMain();renderStrip();renderDash();if(nav.lvl>=2)renderNav();}
+  function renderList(){renderMain();renderStrip();renderDash();if(nav.lvl>=2)renderNav();if(nav.dash&&!dashPg.frame)renderDashPg();}
   function renderMain(){
     const allK=topics.filter(isOpen).filter(t=>!inStrip(t)).sort(byDate);
     const side=quest==="side",w=curWin(),winOn=side&&(wMode!=="off"||w.manual);
@@ -2802,8 +2853,8 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   const tvZone={il:"tvZil",abroad:"tvZab"};
   function travelDashes(z){return dashes.filter(d=>!d._deleted&&d.quest==="travel"&&(d.tzone==="il"?"il":"abroad")===z);}
   function zoneDash(z){const all=travelDashes(z),act=all.filter(d=>!d.archived).sort((a,b)=>(a.order||99)-(b.order||99));
-    if(!act.length)return null;const cur=dashOpen&&act.find(d=>d.id===dashOpen);
-    return h("div",{class:"tv-dash"},h("p",{class:"tv-sub"},"דשבורדים"),act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null,cur?dashCard(cur):null);}
+    if(!act.length)return null;
+    return h("div",{class:"tv-dash"},h("p",{class:"tv-sub"},"דשבורדים"),act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null);}
   function zoneHead(z,title,sub,svg){return h("div",{class:"tz-hero tz-"+z,id:tvZone[z]},h("div",{class:"tz-art",html:svg}),h("div",{class:"tz-txt"},h("h2",null,title),h("p",null,sub)));}
   function renderTravel(){
     const sec=$("tvSec");if(!sec)return;
@@ -3289,7 +3340,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
           canWrite?h("button",{type:"button",onclick:()=>{archOpen=null;patch(t,{status:"active"},"הוחזר מהארכיון");setTimeout(renderSettings,50);}},"↩︎ החזר למשימות"):null,
           c?h("button",{type:"button",onclick:()=>window.open(c,"_blank","noopener")},"💬 לשיחה"):null)):null);};
     const dRow=d=>{const u=safeUrl(d.url||"");
-      return h("div",{class:"arow"},h("button",{type:"button",class:"ah",onclick:()=>{if(u)window.open(u,"_blank","noopener");else{closeModal();openDash(d.id);}}},
+      return h("div",{class:"arow"},h("button",{type:"button",class:"ah",onclick:()=>{closeModal();openDash(d.id);}},
         h("span",{class:"ae"},d.icon||"📊"),h("span",{class:"at"},d.title||""),h("span",{class:"ad"},d.archived?"בארכיון":"לא פעיל 90 יום")));};
     return sec("arch","📦 ארכיון",n?String(n):"ריק",
       n?null:h("div",{class:"sqhint"},"אין כרגע דברים בארכיון."),
