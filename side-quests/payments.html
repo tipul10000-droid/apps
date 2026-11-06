@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#3E2A6B">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.PAY_BUILD="1.2";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.PAY_BUILD="1.3";</script>
 <script src="sq-db.js?v=9"></script>
 <title>תשלומים חודשיים קבועים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -147,7 +147,7 @@ section{margin-bottom:26px;scroll-margin-top:70px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (prefers-reduced-motion:reduce){.sheet{transition:none}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=3">
+<link rel="stylesheet" href="dash-back.css?v=4">
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -360,7 +360,7 @@ window.claude.use("db").then(d=>{
   db=d;if(!db)return;
   db.collection("payments").onSnapshot(s=>{
     const items=[],meta={};
-    s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(v.excluded)return; // הלוואות ומשכנתא לא נכנסות לדשבורד (אורן, 6.11.2026)if(x.id==="_meta")Object.assign(meta,v);else if(v.name)items.push({id:x.id,...v});});
+    s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(v.excluded)return; /* הלוואות ומשכנתא לא נכנסות לדשבורד (אורן, 6.11.2026) */ if(x.id==="_meta")Object.assign(meta,v);else if(v.name)items.push({id:x.id,...v});});
     data.items=items;data.meta=meta;render();
   },()=>{});
   db.collection("insurance").onSnapshot(s=>{data.ins=s.docs.map(x=>({id:x.id,...x.data()}));render();},()=>{});

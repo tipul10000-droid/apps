@@ -164,7 +164,7 @@ table.cmp td.pk{background:var(--pick-soft)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.offer .ph{width:72px;height:86px}.facts div{padding:6px 8px;font-size:13px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=3">
+<link rel="stylesheet" href="dash-back.css?v=4">
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -208,7 +208,7 @@ function heroHome(L){const open=L.filter(isOpen),dec=open.filter(x=>x.status==="
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>נושא קנייה חדש או שאלה<small>״אני רוצה לקנות X, תבדוק״ · ״כדאי לקנות באמזון איטליה?״</small></span></a>
   <div class="kpis"><div class="kpi"><b>${open.length}</b><span>בבירור</span></div><div class="kpi"><b>${dec.length}</b><span>מחכים להחלטה</span></div><div class="kpi"><b>${qs}</b><span>שאלות אליך</span></div></div>`;}
 function heroItem(x){const p=pickOf(x),c=cheapest(x),img=safe(x.img)||(p&&safe(p.img));
-  return `<div class="top"><button class="back" data-home>→ כל הקניות</button><span class="back">${esc(ST[x.status]||"")}</span></div>
+  return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🛍️</span><span>כל הקניות</span></button><span class="back">${esc(ST[x.status]||"")}</span></div>
   <div class="ihead" style="margin-top:10px">${img?`<div class="pic" style="background-image:url('${esc(img)}')"></div>`:""}<div style="min-width:0"><h1 style="margin:0">${esc(x.icon||"🛒")} ${esc(x.title)}</h1><p class="sub">${esc(x.summary||"")}</p></div></div>
   <div class="kpis"><div class="kpi"><b>${(x.offers||[]).length}</b><span>אפשרויות</span></div><div class="kpi"><b>${c?ils(c.ils):"—"}</b><span>${c?"הכי זול: "+esc(c.store):"מחיר"}</span></div><div class="kpi"><b style="font-size:16px">${p?esc(p.short||p.brand||""):"—"}</b><span>ההמלצה</span></div></div>`;}
 

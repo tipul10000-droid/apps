@@ -4,9 +4,17 @@
 .sqhome img{width:34px;height:34px;border-radius:9px;display:block;flex:none;pointer-events:none}
 .sqhome .ar{font-size:18px;opacity:.85}
 .sqhome:active{background:rgba(255,255,255,.22)}
+/* 11.8: back inside a dashboard (recipe → all recipes) = the same button, with the dashboard's icon instead of the logo */
+.sqhome .em{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none;background:rgba(255,255,255,.16);font-size:20px;line-height:1}
+button.sqhome{width:auto;flex:none;justify-content:flex-start;cursor:pointer;font:inherit;font-family:var(--f-display,inherit);font-size:16.5px;font-weight:800;margin:0}
+/* 11.8 (Oren 6.11): from the home-screen app the back button sits 44px under the status bar, like the quest band */
+@media (display-mode: standalone){
+  html:not(.embed) .hero{padding-top:calc(env(safe-area-inset-top,0px) + 36px)}
+  html:not(.embed) .hero::before{top:calc(env(safe-area-inset-top,0px) + 94px)}
+}
 
-/* 10.3: inside the Side Quests app (frame) the app bar holds the back button */
-.embed .sqhome{display:none}
+/* 10.3: inside the Side Quests app (frame) the app bar holds the back button (sub-page backs stay) */
+.embed .sqhome:not(.sqsub){display:none}
 
 /* 11.4: ערכת עיצוב לכל דשבורד (60-30-10): רקע בהיר (60), צבע הנושא בכותרת (30), הדגשה (10).
    כל דף מגדיר --hero, --hero2 (מעבר צבע), --accent ו---art (איור קטן לנושא). */
