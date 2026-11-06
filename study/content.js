@@ -17,13 +17,15 @@
         var old=Object.keys(lj(CK)).sort().join();sj(CK,m);if(cb&&old!==Object.keys(m).sort().join())cb()}).catch(function(){})}
   window.StudyContent={
     reg:REG,ok:ok,refresh:refresh,
-    isNew:function(id){var a=approvedAt(id);if(!a||a==='live')return false;if(lj(SK)[id])return false;return Date.now()-Date.parse(a)<10*864e5},
-    seen:function(id){var s=lj(SK);if(!s[id]){s[id]=1;sj(SK,s)}},
+    // "נראה" נשמר עם זמן האישור: אישור מחדש (או ערך ישן 1) מחזיר את הסרט "חדש!" עד הכניסה הבאה.
+    isNew:function(id){var a=approvedAt(id);if(!a||a==='live')return false;if(lj(SK)[id]===a)return false;return Date.now()-Date.parse(a)<10*864e5},
+    seen:function(id){var s=lj(SK),a=approvedAt(id)||1;if(s[id]!==a){s[id]=a;sj(SK,s)}},
     // בדף התוכן: ילד שעוד אין לו אישור חוזר לדף שלו. הורה שנכנס מאזור ההורים (?review=1) רואה הכול, עם פס "תצוגת בדיקה".
     guard:function(id){
       try{if(/[?&]review=1/.test(location.search))sessionStorage.setItem('study_review','1')}catch(e){}
       if(REG[id]==='live')return;
-      if(review()){document.addEventListener('DOMContentLoaded',function(){var b=document.createElement('div');b.textContent='🧪 תצוגת בדיקה להורים: הילד עוד לא רואה את התוכן הזה';b.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff7ed;color:#9a3412;border-top:1px solid #fed7aa;font:600 12px system-ui,Arial,sans-serif;text-align:center;padding:4px 8px calc(env(safe-area-inset-bottom,0px) + 4px);pointer-events:none';document.body.appendChild(b)});return}
+      if(review()){window.STUDY_REVIEW=1; // תצוגת בדיקה של הורה: לא מדווחים ולא מגבים התקדמות בשם הילד (track.js)
+        document.addEventListener('DOMContentLoaded',function(){var b=document.createElement('div');b.textContent='🧪 תצוגת בדיקה להורים: הילד עוד לא רואה את התוכן הזה';b.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff7ed;color:#9a3412;border-top:1px solid #fed7aa;font:600 12px system-ui,Arial,sans-serif;text-align:center;padding:4px 8px calc(env(safe-area-inset-bottom,0px) + 4px);pointer-events:none';document.body.appendChild(b)});return}
       if(ok(id)){StudyContent.seen(id);return}
       document.documentElement.style.visibility='hidden';
       refresh();setTimeout(function(){if(ok(id)){document.documentElement.style.visibility='';StudyContent.seen(id)}else location.replace('../')},900)}
