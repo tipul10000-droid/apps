@@ -1,5 +1,5 @@
 // צליל מצחיק ושונה לכל סקווישי (אורן 6.11.2026): כל מזהה = צליל אחר לגמרי, בלי חזרות. WebAudio בלבד, בלי קבצים.
-// דני: peach cat avo panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco
+// דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco
 // ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi
 // שימוש: <script src="../../sqsound.js"></script>  SqSound.play(id, muted)
 (function(){
@@ -32,7 +32,7 @@
   s_bingsu:function(){osc('sine',0,.9,[[0,220],[1,200]],.22,0,[22,40]);noise(0,.9,.08,'highpass',3000,3000,0,22)},// ררררר קר! רעד
   s_dalgona:function(){noise(0,.06,.35,'highpass',2500);noise(.08,.05,.3,'highpass',3000);[523,659,784,1047].forEach(function(f,i){beep(.2+i*.09,f,.12,.13,'triangle')})},// קראק ואז טה-דה
   s_melona:function(){osc('sawtooth',0,.35,[[0,392],[1,370]],.16,1400,[6,8]);osc('sawtooth',.38,.35,[[0,370],[1,349]],.16,1400,[6,8]);osc('sawtooth',.76,.8,[[0,349],[1,262]],.16,1200,[7,14])},// קזו: וואה וואה וואאאה
-  s_choco:function(){osc('square',0,1.3,[[0,190],[.2,240],[.45,170],[.7,210],[1,120]],.2,900,[38,45,'square'],3);noise(0,1.3,.1,'bandpass',600,350,3,38)},// פלוץ צפצפני וארוך
+  s_choco:function(){[0,.17,.34].forEach(function(t,i){osc('sine',t,.13,[[0,330-i*20],[.5,190],[1,240]],.3,900)});osc('triangle',.55,.8,[[0,210],[.5,250],[1,300]],.24,1500,[5,10])},// נום נום נום... ממממ! (אוכלת עוגייה)
   // ---- ליה: אוכל וחלל ----
   rocket:function(){[0,.25,.5].forEach(function(t,i){beep(t,880-i*110,.12,.12)});noise(.75,1,.3,'lowpass',300,4000);osc('sawtooth',.75,1,[[0,60],[1,600]],.12,900)},// 3, 2, 1 המראה!
   pizza:function(){osc('sine',0,.45,[[0,600],[.5,300],[1,620]],.22,0,[8,60]);osc('sine',.48,.5,[[0,620],[1,250]],.22,0,[8,60])},// מאמא מיה! וואו-וואו

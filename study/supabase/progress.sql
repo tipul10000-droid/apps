@@ -322,3 +322,40 @@ revoke all on function public.study_request_status(text) from public;
 grant execute on function public.study_request_status(text) to anon, authenticated;
 -- 6.11.2026 (אורן): בקשה חדשה מילד שולחת התראה להורים (study-push, שלב 5). notified_at = מתי נשלחה ההתראה.
 alter table public.study_requests add column if not exists notified_at timestamptz;
+
+-- 6.11.2026: חידון כניסה, שליטה ידנית מאזור ההורים (החלטה רכה מעל החוק האוטומטי של 4 שעות / 20 דקות)
+-- המסך הראשי במכשיר של הילד מדווח את מצב הנעילה (study_quiz_sync) ומקבל פקודה אחרונה (unlock / lock) שלא בוצעה עדיין.
+create table if not exists public.study_quiz (
+  kid text primary key check (kid in ('evyatar','dani','lia')),
+  until_at timestamptz, act int not null default 0, seen_at timestamptz,
+  cmd text check (cmd in ('unlock','lock')), cmd_at timestamptz, applied_at timestamptz);
+alter table public.study_quiz enable row level security;
+revoke all on public.study_quiz from anon, authenticated;
+create or replace function public.study_quiz_sync(p_kid text, p_until bigint, p_act int, p_applied timestamptz)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare r public.study_quiz;
+begin
+  if p_kid not in ('evyatar','dani','lia') then return '{}'::jsonb; end if;
+  insert into public.study_quiz(kid, until_at, act, seen_at, applied_at)
+  values (p_kid, case when coalesce(p_until,0) > 0 then to_timestamp(p_until/1000.0) end, greatest(0, least(coalesce(p_act,0), 100000)), now(), p_applied)
+  on conflict (kid) do update set until_at = excluded.until_at, act = excluded.act, seen_at = now(),
+    applied_at = greatest(public.study_quiz.applied_at, excluded.applied_at)
+  returning * into r;
+  return jsonb_build_object('cmd', r.cmd, 'cmd_at', r.cmd_at);
+end $$;
+create or replace function public.study_parents_quiz(p_pin text, p_kid text, p_cmd text)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare v text := public.study_parents_check(p_pin);
+begin
+  if v <> 'ok' then return jsonb_build_object('ok', false, 'err', v); end if;
+  if p_cmd is not null then
+    if p_kid not in ('evyatar','dani','lia') or p_cmd not in ('unlock','lock') then return jsonb_build_object('ok', false, 'err', 'arg'); end if;
+    insert into public.study_quiz(kid, cmd, cmd_at) values (p_kid, p_cmd, now())
+    on conflict (kid) do update set cmd = p_cmd, cmd_at = now();
+  end if;
+  return jsonb_build_object('ok', true, 'now', now(), 'items', coalesce((select jsonb_agg(to_jsonb(q)) from public.study_quiz q), '[]'::jsonb));
+end $$;
+revoke all on function public.study_quiz_sync(text,bigint,int,timestamptz) from public;
+revoke all on function public.study_parents_quiz(text,text,text) from public;
+grant execute on function public.study_quiz_sync(text,bigint,int,timestamptz) to anon, authenticated;
+grant execute on function public.study_parents_quiz(text,text,text) to anon, authenticated;
