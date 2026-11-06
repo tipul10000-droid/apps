@@ -287,3 +287,36 @@ grant execute on function public.study_material_add(text,text,text,text,text,tex
 grant execute on function public.study_material_list(text) to anon, authenticated;
 grant execute on function public.study_material_get(bigint) to anon, authenticated;
 grant execute on function public.study_material_hide(text,bigint) to anon, authenticated;
+-- 6.11.2026 (אורן): בקשה שטופלה עוברת לארכיון באזור ההורים, והילד מקבל אינדיקציה שטופלה (study_request_status: רק id, סוג ומועד הטיפול, בלי הטקסט).
+alter table public.study_requests add column if not exists done_at timestamptz;
+create or replace function public.study_request_add(p_kid text, p_kind text, p_txt text)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare t text := btrim(coalesce(p_txt, '')); nid bigint;
+begin
+  if p_kid not in ('evyatar','dani','lia') or p_kind not in ('test','quiz','hard','topic','idea','bug') then return jsonb_build_object('ok', false, 'err', 'arg'); end if;
+  if t = '' then return jsonb_build_object('ok', false, 'err', 'empty'); end if;
+  if (select count(*) from public.study_requests where kid = p_kid and created_at > now() - interval '1 hour') >= 15
+     or (select count(*) from public.study_requests) >= 3000 then return jsonb_build_object('ok', false, 'err', 'limit'); end if;
+  insert into public.study_requests(kid, kind, txt) values (p_kid, p_kind, left(t, 500)) returning id into nid;
+  return jsonb_build_object('ok', true, 'id', nid);
+end $$;
+create or replace function public.study_parents_requests(p_pin text, p_id bigint default null, p_set text default null)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare v text := public.study_parents_check(p_pin);
+begin
+  if v <> 'ok' then return jsonb_build_object('ok', false, 'err', v); end if;
+  if p_id is not null then
+    if p_set = 'done' then update public.study_requests set done = true, done_at = now() where id = p_id;
+    elsif p_set = 'open' then update public.study_requests set done = false, done_at = null where id = p_id;
+    elsif p_set = 'hide' then update public.study_requests set hidden = true where id = p_id; end if;
+  end if;
+  return jsonb_build_object('ok', true, 'items', coalesce((select jsonb_agg(jsonb_build_object('id', id, 'kid', kid, 'kind', kind, 'txt', txt, 'done', done, 'at', created_at, 'done_at', done_at) order by done, created_at desc)
+    from (select * from public.study_requests where not hidden order by created_at desc limit 300) r), '[]'::jsonb));
+end $$;
+create or replace function public.study_request_status(p_kid text)
+returns jsonb language sql security definer set search_path to '' as $$
+  select coalesce(jsonb_agg(jsonb_build_object('id', id, 'kind', kind, 'done_at', done_at) order by done_at desc), '[]'::jsonb)
+  from (select id, kind, done_at from public.study_requests where kid = p_kid and done and not hidden and done_at > now() - interval '30 days' order by done_at desc limit 20) r
+$$;
+revoke all on function public.study_request_status(text) from public;
+grant execute on function public.study_request_status(text) to anon, authenticated;
