@@ -26,7 +26,7 @@
   function has(x){return !!PRE[x]}
   // שחזור גם כשבמכשיר יש התקדמות, אבל הגיבוי גדול ממנה ביותר מ-10 תשובות (אורן 6.11.2026: ההתקדמות של ליה נמחקה במכשיר והגיבוי נשאר).
   // הגיבוי שהשרת מחזיר תמיד מאוחר מהאיפוס האחרון, כך שאיפוס של ההורים לא מתבטל.
-  function restore(){if(off())return;var sk='study_rst_'+kid+'_'+app;
+  function restore(){if(off())return;var sk='study_rsd_'+kid+'_'+app;// רק נגד לולאת שחזורים באותה לשונית (לא נחסם אחרי איפוס: הגיבוי שהשרת מחזיר מאוחר מהאיפוס)
     try{if(sessionStorage.getItem(sk))return}catch(e){}
     var any=KEYS.some(has),lr=get('study_r_'+kid+'_'+app),la=(lr&&lr.data&&+lr.data.att)||0;
     // גיבוי מ-2 הדקות שאחרי איפוס לא חוזר: זה הדיווח האחרון של מכשיר שעוד לא קלט את האיפוס (אחרת האיפוס מתבטל בפתיחה הבאה)
@@ -46,7 +46,7 @@
     try{rpc('study_reset_get',{p_kid:kid,p_app:app}).then(function(j){if(!j||!j.at)return;var at=new Date(j.at).getTime(),seen=get(sk);if(seen===j.at)return;
       var has=keys.some(function(x){return localStorage.getItem(x)!=null}),before=!!(old&&old.first)&&new Date(old.first).getTime()<at;
       set(sk,j.at);if(!(has&&before))return;
-      stop=true;keys.concat(['study_t_'+kid+'_'+app,'study_r_'+kid+'_'+app]).forEach(function(x){try{localStorage.removeItem(x)}catch(e){}});try{sessionStorage.setItem('study_rst_'+kid+'_'+app,'1')}catch(e){}
+      stop=true;keys.concat(['study_t_'+kid+'_'+app,'study_r_'+kid+'_'+app]).forEach(function(x){try{localStorage.removeItem(x)}catch(e){}});
       location.reload()}).catch(function(){})}catch(e){}}
   window.StudyTrack={
     init:function(k,a,keys){kid=k;app=a;KEYS=keys||[];var key='study_t_'+k+'_'+a,old=get(key);if(KEYS.length){checkReset(KEYS,old);restore()}T=old||{first:new Date().toISOString(),sec:0,days:{}};T.days=T.days||{};
