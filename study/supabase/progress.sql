@@ -360,10 +360,21 @@ revoke all on function public.study_parents_quiz(text,text,text) from public;
 grant execute on function public.study_quiz_sync(text,bigint,int,timestamptz) to anon, authenticated;
 grant execute on function public.study_parents_quiz(text,text,text) to anon, authenticated;
 
--- 6.11.2026 (ממתין לאישור אורן): פתיחה קבועה של החידון. 'open' = בלי נעילה עד 'auto' (חזרה לכללים).
--- alter table public.study_quiz drop constraint if exists study_quiz_cmd_check;
--- alter table public.study_quiz add constraint study_quiz_cmd_check check (cmd in ('unlock','lock','open','auto'));
--- ב-study_parents_quiz: p_cmd not in ('unlock','lock','open','auto').
+-- 6.11.2026 (אורן אישר): פתיחה קבועה של החידון. 'open' = בלי נעילה עד 'auto' (חזרה לכללים).
+alter table public.study_quiz drop constraint if exists study_quiz_cmd_check;
+alter table public.study_quiz add constraint study_quiz_cmd_check check (cmd in ('unlock','lock','open','auto'));
+create or replace function public.study_parents_quiz(p_pin text, p_kid text, p_cmd text)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare v text := public.study_parents_check(p_pin);
+begin
+  if v <> 'ok' then return jsonb_build_object('ok', false, 'err', v); end if;
+  if p_cmd is not null then
+    if p_kid not in ('evyatar','dani','lia') or p_cmd not in ('unlock','lock','open','auto') then return jsonb_build_object('ok', false, 'err', 'arg'); end if;
+    insert into public.study_quiz(kid, cmd, cmd_at) values (p_kid, p_cmd, now())
+    on conflict (kid) do update set cmd = p_cmd, cmd_at = now();
+  end if;
+  return jsonb_build_object('ok', true, 'now', now(), 'items', coalesce((select jsonb_agg(to_jsonb(q)) from public.study_quiz q), '[]'::jsonb));
+end $$;
 
 -- 6.11.2026 (אורן אישר): אישור תוכן חדש (study/content.js). id = '<kid>/<app>'. האישור מוסיף שורה ל-study_notify לילד.
 create table if not exists public.study_content (
