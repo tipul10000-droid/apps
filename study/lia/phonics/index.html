@@ -39,7 +39,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 .says{display:flex;gap:8px;justify-content:center}
 .heb{border-radius:14px;padding:8px 12px;font-size:19px;line-height:1.45;width:100%;max-width:380px;flex:none}.heb .hl{display:block;font:800 36px/1.1 system-ui,Arial,sans-serif;margin:2px 0}
 .heb b{display:block;font-size:15px;margin-bottom:1px}.heb.same{background:#ecfdf5;color:#065f46}.heb.near{background:#fffbeb;color:#92400e}.heb.new{background:#fdf2f8;color:#9d174d}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:none}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:none}.opts.o3{grid-template-columns:1fr 1fr 1fr}
 .opt{font:700 26px system-ui,Arial,sans-serif;color:inherit;background:#fff;border:2px solid var(--bd);border-radius:14px;padding:6px;cursor:pointer;height:58px;direction:ltr}
 .opt.he{direction:rtl;font-size:28px}.opt.snd{font-size:20px}.opt.sel{border-color:#818cf8;background:#eef2ff}
 .opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}.opt.no{background:var(--no);border-color:var(--no);color:#fff}
@@ -99,7 +99,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 </ul>
 <p>על כל 6 תשובות נכונות מצטרף סקווישי חדש לאוסף 🪐</p>
 <button class="btn" id="go" type="button">יאללה, מתחילות! 🚀</button><button class="lk" id="rs" type="button">↺ להתחיל מההתחלה</button>
-<p class="cr">ההקלטות: Wikimedia Commons (רישיונות חופשיים, CC). פרטים בקובץ audio/CREDITS.txt</p>
+<p class="cr">ההקלטות: Feed the Monster של Curious Learning ו-Wikimedia Commons (רישיונות חופשיים). פרטים בקובץ audio/CREDITS.txt</p>
 </div></div>
 <div class="ov" id="sqcol"><div class="pn"><h2>🪐 לומדים ואוספים סקווישי דיגיטלי</h2><p id="sqtx" style="margin:0 0 6px;height:4.4em;overflow:hidden"></p><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
 <div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">לאוסף! 🪐</button></div></div>
@@ -116,7 +116,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 // פריט: [מזהה, תצוגה, מפתח-צליל, מילה, תמונה, דרגה (same|near|new), אות עברית / null, טקסט עברי, צליל-גיבוי ל-TTS או null]
 const G=[
 [['s','Ss','s','sun','☀️','same','ס','כְּמוֹ ס׳ בְּ<u>סַ</u>בְתָּא','sss'],['a','Aa','a','apple','🍎','new',null,'צְלִיל חָדָשׁ! בֵּין אֶ לְ-אַ, פֶּה פָּתוּחַ וְרָחָב',null],['t','Tt','t','tiger','🐯','same','ט','כְּמוֹ ט׳ בְּ<u>טִ</u>יּוּל',null],['p','Pp','p','pig','🐷','same','פּ','כְּמוֹ פּ בְּ<u>פִּ</u>יל',null],['i','Ii','i','insect','🐞','near',null,'אִ קְצָרָה מְאוֹד, קְצָת לְכִוּוּן אֶ',null],['n','Nn','n','nose','👃','same','נ','כְּמוֹ נ׳ בְּ<u>נָ</u>מֵר','nnn']],
-[['c','Cc','k','cat','🐱','same','ק','כְּמוֹ ק׳ בְּ<u>קוֹ</u>ף',null],['k','Kk','k','kite','🪁','same','ק','כְּמוֹ כּ בְּ<u>כַּ</u>דּוּר (גַּם c עוֹשָׂה אֶת זֶה)',null],['e','Ee','e','egg','🥚','same',null,'כְּמוֹ אֵ בְּ<u>אֵ</u>ם',null],['h','Hh','h','hat','🎩','same','ה','כְּמוֹ ה׳ בְּ<u>הַ</u>ר, נוֹשְׁפִים אֲוִויר',null],['r','Rr','r','rabbit','🐰','near',null,'דּוֹמֶה לְ-ר׳, אֲבָל הַלָּשׁוֹן מִתְגַּלְגֶּלֶת אָחוֹרָה וְלֹא נוֹגַעַת',null],['m','Mm','m','moon','🌙','same','מ','כְּמוֹ מ׳ בְּ<u>מַ</u>יִם','mmm'],['d','Dd','d','dog','🐶','same','ד','כְּמוֹ ד׳ בְּ<u>דָּ</u>ג',null]],
+[['c','Cc','k','cat','🐱','same','ק','כְּמוֹ ק׳ בְּ<u>קוֹ</u>ף',null],['k','Kk','k','kite','🪁','same','ק','כְּמוֹ כּ בְּ<u>כַּ</u>דּוּר (גַּם c עוֹשָׂה אֶת זֶה)',null],['e','Ee','e','egg','🥚','same',null,'כְּמוֹ אֵ בְּ<u>אֵ</u>שׁ',null],['h','Hh','h','hat','🎩','same','ה','כְּמוֹ ה׳ בְּ<u>הַ</u>ר, נוֹשְׁפִים אֲוִויר',null],['r','Rr','r','rabbit','🐰','near',null,'דּוֹמֶה לְ-ר׳, אֲבָל הַלָּשׁוֹן מִתְגַּלְגֶּלֶת אָחוֹרָה וְלֹא נוֹגַעַת',null],['m','Mm','m','moon','🌙','same','מ','כְּמוֹ מ׳ בְּ<u>מַ</u>יִם','mmm'],['d','Dd','d','dog','🐶','same','ד','כְּמוֹ ד׳ בְּ<u>דָּ</u>ג',null]],
 [['g','Gg','g','goat','🐐','same','ג','כְּמוֹ ג׳ בְּ<u>גָּ</u>מָל',null],['o','Oo','o','octopus','🐙','near',null,'אָ פְּתוּחָה, פֶּה פָּתוּחַ לְמַטָּה (hot = הָאט)',null],['u','Uu','u','umbrella','☂️','near',null,'אַ קְצָרָה וַעֲמֻקָּה (cup = קַפּ)',null],['l','Ll','l','lion','🦁','same','ל','כְּמוֹ ל׳ בְּ<u>לִ</u>ימוֹן','lll'],['f','Ff','f','fish','🐟','same','פ','כְּמוֹ פ׳ בְּיָ<u>פֶה</u>','fff'],['b','Bb','b','ball','⚽','same','בּ','כְּמוֹ בּ בְּ<u>בַּ</u>יִת',null]],
 [['j','Jj','j','juice','🧃','same','ג׳','כְּמוֹ ג׳ בְּ<u>גִ׳י</u>רָפָה',null],['z','Zz','z','zebra','🦓','same','ז','כְּמוֹ ז׳ בְּ<u>זֶ</u>בְּרָה','zzz'],['w','Ww','w','watermelon','🍉','new',null,'אֵין בְּעִבְרִית! שְׂפָתַיִים עֲגֻלּוֹת כְּמוֹ וּ, וּמִיָּד פּוֹתְחִים. לֹא ו׳',null],['v','Vv','v','van','🚐','same','ו','כְּמוֹ ו׳ בְּ<u>וֶ</u>רֶד','vvv'],['y','Yy','y','yo-yo','🪀','same','י','כְּמוֹ י׳ בְּ<u>יֶ</u>לֶד',null],['x','Xx','x','box','📦','same',null,'ק׳ וְס׳ בְּיַחַד: קְס, כְּמוֹ בְּטֶ<u>קְס</u>ְט',null],['qu','Qu qu','qu','queen','👑','near',null,'ק׳ וּמִיָּד w: קְוְ',null]],
 [['sh','sh','sh','ship','🚢','same','שׁ','כְּמוֹ שׁ בְּ<u>שֶׁ</u>מֶשׁ','shh'],['ch','ch','ch','chair','🪑','same','צ׳','כְּמוֹ צ׳ בְּ<u>צִ׳י</u>פְּס',null],['th','th','th','thumb','👍','new',null,'אֵין בְּעִבְרִית! קְצֵה הַלָּשׁוֹן בֵּין הַשִּׁנַּיִים, וְנוֹשְׁפִים',null],['ng','ng','ng','ring','💍','near',null,'נ׳ מֵהַגָּרוֹן, בְּלִי ג׳ בַּסּוֹף (sing)',null]],
@@ -206,7 +206,7 @@ function render(){ANS=false;SEL=null;const c=$('card'),m=CUR.mode,it=CUR.it;let 
   else if(m==='pic'){ask='באיזו אות מתחילה המילה?';mid=`<div class="pic" style="font-size:64px">${it.pic}</div><button class="say" id="rp" type="button">🔊 לשמוע שוב</button>`;opts=shuf([it].concat(distract(it,3)));}
   else{ask='איזו אות בעברית עושה אותו צליל?';mid=`<div class="big">${esc(it.show)}</div><button class="say" id="rp" type="button">🔊 הצליל</button>`;opts=shuf([it].concat(distract(it,3,'he')));cls='he'}
   h=head(TEST?'⏱️ <span id="tmr">60</span> · '+TEST.ok+' נכונות':S.w[it.id].s==='done'?'🔁 חזרה':'🎯 תרגול',TEST?'tst':'')+`<div class="ask">${ask}</div><div class="mid">${mid}</div>
-  <div class="opts">${opts.map((o,i)=>`<button class="opt ${cls}" type="button" data-id="${o.id}">${m==='see'?'🔊 '+(i+1):m==='heb'?esc(o.he):esc(lbl(o))}</button>`).join('')}</div>
+  <div class="opts${opts.length===3?' o3':''}">${opts.map((o,i)=>`<button class="opt ${cls}" type="button" data-id="${o.id}">${m==='see'?'🔊 '+(i+1):m==='heb'?esc(o.he):esc(lbl(o))}</button>`).join('')}</div>
   <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button" style="visibility:${m==='see'?'visible':'hidden'}"${m==='see'?' disabled':''}>${m==='see'?'זה הצליל!':'הבא ←'}</button></div>`;
   c.innerHTML=h;if($('tx'))$('tx').onclick=endTest;
   const play=()=>{if(m==='pic')word(it.word);else sound(it)};if($('rp'))$('rp').onclick=play;
@@ -239,7 +239,7 @@ function checkBuild(){const u=CUR.u,got=CUR.got.map(i=>CUR.tiles[i]),ok=got.join
   if(ok){S.okc++;S.bw=(S.bw||0)+1;SND.ok();streak(true);addPts(8);fb.innerHTML=`<div class="t ok">קראת וכתבת מילה! ${pick(OK)}</div>`;maybeSquishy()}
   else{SND.bad();streak(false);fb.innerHTML=`<div class="t no">כמעט! המילה היא: <span dir="ltr">${esc(u.join(''))}</span></div>`;$('sl').innerHTML=u.map(x=>`<span>${esc(x)}</span>`).join('')}
   word(u.join(''));save();upd();showNext()}
-function groupDone(g){SND.win();confetti(60);$('gdt').textContent=`סיימת את קבוצה ${g+1}! 🎉`;
+let GDQ=null;function groupDone(g){if($('sqov').classList.contains('on')){GDQ=g;return}GDQ=null;SND.win();confetti(60);$('gdt').textContent=`סיימת את קבוצה ${g+1}! 🎉`;
   $('gdp').innerHTML=`את יודעת את הצלילים <b dir="ltr">${esc(G[g].map(r=>r[0]).join(' '))}</b>.<br>בואי נבדוק כמו בבית ספר באמריקה: כמה צלילים נכונים בדקה אחת?`;$('gdov').classList.add('on')}
 $('gdy').onclick=()=>{$('gdov').classList.remove('on');startTest()};$('gdn').onclick=()=>{$('gdov').classList.remove('on');next()};
 // ---------- מבחן דקה (בסגנון DIBELS): שומעים צליל ובוחרים אות, כמה שיותר נכונות ב-60 שניות ----------
@@ -249,7 +249,7 @@ function startTest(){const L=IT.filter(x=>S.w[x.id].s==='done');if(L.length<4){n
 function testNext(){if(!TEST)return;if(Date.now()>=TEST.end)return endTest();const it=pick(TEST.L.filter(x=>x.id!==LAST));CUR={mode:'hear',it};render()}
 function endTest(){if(!TEST)return;clearInterval(TI);const t=TEST;TEST=null;const k='g'+(t.g+1),o=S.tests[k]||{best:0,n:0};o.last=t.ok;o.n++;o.best=Math.max(o.best,t.ok);o.d=new Date().toISOString().slice(0,10);o.tot=t.n;S.tests[k]=o;save();upd();
   const pct=t.n?Math.round(t.ok/t.n*100):0;SND.win();if(t.ok>=10)confetti(40);
-  $('card').innerHTML=head('⏱️ תוצאת המבחן','tst')+`<div class="mid"><div style="font-size:50px">${t.ok>=o.best&&t.ok>0?'🏆':'⭐'}</div><div class="tmr">${t.ok}</div><div>צלילים נכונים בדקה (${pct}% מ-${t.n})</div><div style="color:var(--mut)">השיא שלך: ${o.best}</div></div>
+  $('card').innerHTML=head('⏱️ תוצאת המבחן','tst')+`<div class="mid"><div style="font-size:50px">${t.ok>=o.best&&t.ok>0?'🏆':'⭐'}</div><div class="tmr">${t.ok}</div><div>צלילים נכונים בדקה</div><div style="color:var(--mut)">ענית על ${t.n}, ו-${pct}% מהן נכונות</div><div style="color:var(--mut)">השיא שלך: ${o.best}</div></div>
   <div class="fb"></div><div class="btns"><button class="btn soft" id="ta" type="button">⏱️ עוד פעם</button><button class="btn" id="nx" type="button">ממשיכות ←</button></div>`;
   $('ta').onclick=startTest;$('nx').onclick=()=>{SND.click();next()}}
 function renderDone(){upd();$('card').innerHTML=head('🏆 סיימת הכל')+`<div class="mid"><div style="font-size:54px">🏆</div><div style="font-size:22px;font-weight:800">את יודעת את כל ${N} הצלילים באנגלית! 🚀</div><p style="color:var(--mut);margin:4px 0">בא לך לחזק?</p></div>
@@ -264,7 +264,7 @@ function squishy(){const L=baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id
   CURSQ=s.id;$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לאוסף! 🪐';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
   $('sqov').classList.add('on');SND.pop();upd()}
 $('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
-$('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click()};
+$('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click();if(GDQ!==null)setTimeout(()=>groupDone(GDQ),250)};
 function sqRender(){const ev=sqEvery(),left=ev-(S.cc||0),bd=baseDone();
   $('sqtx').innerHTML=bd?'כל הצוות אצלך! עכשיו <b>סופר סקווישים</b>: כל אחד על <b>12 תשובות נכונות</b> ⭐':'על כל <b>6 תשובות נכונות</b> מצטרף סקווישי לצוות החלל. אחרי 6 נפתחים 6 סופר סקווישים ⭐ לחצי על סקווישי כדי להכיר אותו.';
   $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${bd?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
