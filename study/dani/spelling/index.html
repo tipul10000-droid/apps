@@ -182,6 +182,22 @@ bad(){tone(330,0,.25,'sine',.16,220)},
 pop(){tone(220,0,.18,'sine',.25,880);tone(880,.16,.2,'sine',.15,440)},
 win(){[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.16))},
 click(){tone(1800,0,.04,'square',.04)}};
+// צליל מצחיק לכל סקווישי (אורן 6.11.2026): בוינג, מיאו, פלוץ, גרפס, צחקוק, נהמת מפלצת קטנה
+function osc(type,t0,d,pts,vol,lp,lfo){const a=ac();if(!a||MUTE)return;const T=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();o.type=type;
+  o.frequency.setValueAtTime(pts[0][1],T);pts.slice(1).forEach(p=>o.frequency.linearRampToValueAtTime(p[1],T+p[0]*d));
+  if(lfo){const l=a.createOscillator(),lg=a.createGain();l.frequency.value=lfo[0];lg.gain.value=lfo[1];l.connect(lg);lg.connect(o.frequency);l.start(T);l.stop(T+d)}
+  g.gain.setValueAtTime(0,T);g.gain.linearRampToValueAtTime(vol,T+.015);g.gain.setValueAtTime(vol,T+d*.7);g.gain.linearRampToValueAtTime(0,T+d);
+  let n=o;if(lp){const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=lp;o.connect(f);n=f}n.connect(g);g.connect(a.destination);o.start(T);o.stop(T+d+.02)}
+function noise(t0,d,vol,lp){const a=ac();if(!a||MUTE)return;const T=a.currentTime+t0,b=a.createBuffer(1,Math.ceil(a.sampleRate*d),a.sampleRate),x=b.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1;
+  const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=b;f.type='lowpass';f.frequency.value=lp;g.gain.setValueAtTime(vol,T);g.gain.linearRampToValueAtTime(0,T+d);s.connect(f);f.connect(g);g.connect(a.destination);s.start(T)}
+const SQSND={
+ peach(){osc('sine',0,.45,[[0,180],[.3,620],[.6,260],[1,420]],.3,0,[14,60])},// בוינג
+ cat(){osc('triangle',0,.55,[[0,520],[.25,880],[.6,760],[1,430]],.22,2400)},// מיאו
+ avo(){osc('square',0,.7,[[0,95],[.4,80],[1,62]],.22,420,[23,18]);noise(0,.7,.12,500)},// פלוץ
+ panda(){osc('sawtooth',0,.6,[[0,120],[.5,95],[1,70]],.3,700,[9,14])},// גרפס
+ donut(){[0,.12,.24,.36,.48].forEach((t,i)=>osc('sine',t,.1,[[0,700+i*60],[1,1100+i*60]],.18))},// צחקוק
+ mochi(){osc('sawtooth',0,.5,[[0,140],[.4,230],[1,110]],.26,900,[30,25]);osc('square',.05,.4,[[0,70],[1,55]],.12,300)}};// נהמת מפלצת קטנה
+let CURSQ=null;const sqSound=id=>{(SQSND[id]||SND.pop)()};
 function speak(t){if(MUTE||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
 
 // ---------- סקווישים ----------
@@ -318,12 +334,12 @@ function startPrac(){const l=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0);if(!l.le
 
 // ---------- סקווישי ----------
 function squishy(){let s=SQS.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(SQS);if(isNew){SQ.push(s.id);LS.set('dani_sp_sq',SQ)}
-  $('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לאוסף! 💜';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
+  CURSQ=s.id;$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לאוסף! 💜';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
   $('sqov').classList.add('on');SND.pop();upd()}
-$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');SND.pop()};
+$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
 $('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click()};
 $('sqb').onclick=()=>{const left=SQ_EVERY-(S.cc||0);$('sqct').textContent=`אספת ${sqN()} מתוך ${SQS.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} לסקווישי הבא`;$('sqpb').style.width=((S.cc||0)/SQ_EVERY*100)+'%';$('sqg').innerHTML=SQS.map(s=>SQ.includes(s.id)?`<div class="own" data-id="${s.id}">${sqSvg(s)}${esc(s.n)}</div>`:`<div class="lock"><b>❓</b></div>`).join('');$('sqcol').classList.add('on')};
-$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=SQS.find(x=>x.id===d.dataset.id);if(!s)return;SND.pop();$('sqtt').textContent='הסקווישי שלך 💜';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=SQS.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent='הסקווישי שלך 💜';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
 // ---------- ממשק ----------
