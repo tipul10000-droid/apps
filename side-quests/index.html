@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.2";window.SQ_BUILD_AT="6.11.2026 13:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.3";window.SQ_BUILD_AT="6.11.2026 13:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1268,7 +1268,7 @@ details.more[open]>summary{margin-bottom:10px}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .aipg{--bg:#141413;--surface:#1E1D1B;--sunk:#292826;--line:#3A3835}}
 :root[data-theme="dark"] .aipg{--bg:#141413;--surface:#1E1D1B;--sunk:#292826;--line:#3A3835}
 #pg3{z-index:38}
-/* 10.2: dashboard page (#…/d/<id>) over any level: our dashboard html in a frame, bar with back + chat */
+/* 10.3: dashboard page (#…/d/<id>) over any level: our dashboard html in a frame, bar with back + chat */
 #pgD{z-index:40;overflow:hidden;display:flex;flex-direction:column}
 #pgD[hidden]{display:none}
 .dpg .pgbar{position:relative;flex:none;--accent:#fff}
@@ -1642,13 +1642,29 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
     solo:{e:"🦉",l:"לבד בלילה",s:"בלילה",sub:"כמו זמן עומק",acc:["pc","phone","home"],eve:true},
     sleep:{e:"😴",l:"שינה",s:"",sub:"",acc:[]},
     fri:{e:"🛒",l:"שישי, סידורים",s:"שישי בבוקר",sub:"סידורים ותיקונים עד 13:00",acc:["place","call","phone","home"]},
-    sat_am:{e:"🔧",l:"שבת בבוקר",s:"בשבת בבוקר",sub:"תיקונים בבית",acc:["home"]},
-    weekend:{e:"🏡",l:"סופ״ש",s:"בסופ״ש",sub:"משפחה, הורים, טיולים. רק אפליקציות ופרויקטים",acc:["proj"]},
+    sat_am:{e:"🔧",l:"שבת בבוקר",s:"בשבת בבוקר",sub:"תיקונים בבית",ss:"תיקונים בבית",acc:["home"]},
+    weekend:{e:"🏡",l:"סופ״ש",s:"בסופ״ש",sub:"משפחה, הורים, טיולים. רק אפליקציות ופרויקטים",ss:"אפליקציות ופרויקטים",acc:["proj"]},
     abroad:{e:"✈️",l:"חו״ל",s:"בחו״ל",sub:"כמו יום עבודה בלי משפחה. במלון 22:00-02:00 זמן שלי",acc:["phone","pc","call"]}
   };
   // who a task needs, and in which windows that person is available (Lior: phone from 16:00, in person 21:30-23:00)
   const WITH_OK={lior:["home_am","drive_pm","near_home","light","weekend","sat_am","counsel"],parents:["light","deep","weekend","sat_am"],yaniv:["fri","weekend","sat_am"]};
   const WIN_PICK=["home_am","errands","drive_am","work","drive_pm","near_home","family","light","deep","fri","sat_am","weekend"];
+  // 10.2 (Oren 6.11): windows that are really one stretch of time show as ONE card. Fri 13:00 → Sat 23:00 is the weekend,
+  // with Saturday morning (home fixes) inside it, so "סופ״ש" and "שבת בבוקר" are one card with a part for each. Sleep inside doesn't split it.
+  const WIN_GROUP={weekend:"wk",sat_am:"wk"};
+  const GROUP_WIN={wk:{e:"🏡",l:"סופ״ש",l6:"שבת"}};
+  // the run of one group from day k0 (0 = today), minute m0: [{id,k,s,e}] (consecutive pieces of one window merged, also over midnight)
+  function winRun(id0,k0,m0){const g=WIN_GROUP[id0];if(!g)return null;const n=ilNow(),base=ilDate(),segs=[];let end=null;
+    for(let k=k0;k<k0+3&&!end;k++){const L=dayWins((n.d+k)%7,planFor(addDays(base,k)));
+      for(let j=0;j<L.length;j++){const s=L[j][0],e=j+1<L.length?L[j+1][0]:1440,id=L[j][1];
+        if(k===k0&&e<=m0)continue;if(id==="sleep")continue;
+        if(WIN_GROUP[id]!==g){end={k,m:s};break;}
+        const last=segs[segs.length-1],ss=k===k0?Math.max(s,m0):s;
+        if(last&&last.id===id&&((last.ek===k&&last.e===s)||(last.ek===k-1&&last.e===1440&&s===0))){last.e=e;last.ek=k;}
+        else segs.push({id,k,s:ss,e,ek:k});}}
+    return {g,segs,end};}
+  // "08:00", "מחר 08:00", "שבת 08:00"; the end of Saturday (23:00) is מוצ״ש
+  function atLbl(k,m,isEnd){if(k===0)return hhmm(m);const d=(ilNow().d+k)%7;return (isEnd&&d===6&&m>=1080?"מוצ״ש":k===1?"מחר":HE_DAYS[d])+" "+hhmm(m);}
   let plan=null; // settings/plan {date, errands_min, office}: tonight's answer for tomorrow morning
   function planFor(iso){return plan&&plan.date===iso?plan:null;}
   // the windows of one day: [[start minute, window id], ...]. p = that day's plan (or null = defaults).
@@ -1671,7 +1687,9 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
     if(winOv&&winOv.until>Date.now()&&WINS[winOv.id])return {id:winOv.id,end:winOv.end||"",manual:true};
     if(mode==="abroad")return {id:"abroad",end:""};
     const L=dayWins(n.d,planFor(today));let i=0;for(let k=0;k<L.length;k++)if(L[k][0]<=n.m)i=k;
-    return {id:L[i][1],end:i+1<L.length?hhmm(L[i+1][0]):"00:00"};}
+    let end=i+1<L.length?hhmm(L[i+1][0]):"00:00";
+    if(i+1>=L.length){const T=dayWins((n.d+1)%7,planFor(addDays(today,1)));if(T[0]&&T[0][1]===L[i][1]&&T[1])end=hhmm(T[1][0]);}
+    return {id:L[i][1],end};}
   function setWin(id){if(!id){winOv=null;try{localStorage.removeItem("sq_win");}catch(e){}}
     else{const n=ilNow(),L=dayWins(n.d,planFor(ilDate()));const k=L.findIndex(x=>x[1]===id&&x[0]>=n.m-240);
       // holds until that window would end today, else two hours
@@ -1883,7 +1901,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
     const own=(Array.isArray(d.suggest)?d.suggest:[]).filter(x=>x&&x.text&&(!x.date||daysUntil(x.date)<=(x.show_days||60)));
     const taken=new Set(dashTasks(d).map(t=>norm(t.title)));
     return [...lv.sugs,...own].map(x=>({...x,key:x.key||sugKey(x.text)})).filter(x=>!st[x.key]&&!taken.has(norm(x.text)));}
-  // 10.2 (Oren 6.11): a tap on a dashboard opens the dashboard itself, no summary card in between. Our own pages open
+  // 10.3 (Oren 6.11): a tap on a dashboard opens the dashboard itself, no summary card in between. Our own pages open
   // in-app as a page layer (#…/d/<id>, back button + edge swipe); outside pages (claude.ai, Notion) open directly.
   function dashFrame(u){if(!u)return null;try{const x=new URL(u,location.href);
       if(x.origin===location.origin||/^https:\/\/tipul10000-droid\.github\.io$/.test(x.origin)){const m=x.pathname.match(/\/side-quests\/([\w-]+\.html)$/);if(m)return "./"+m[1]+x.search+x.hash;}}catch(e){}return null;}
@@ -2077,7 +2095,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   // history.state.sqd = how many of our own screens sit under this entry; >0 means "back" can be history.back().
   const PROJ_ALIAS={"personal-assistant":"side-quests"}; // merged 6.11: there is no separate "personal assistant" project
   const GEN_ID="_general";
-  // 10.2: a dashboard is one more page on top of whatever was open: #/d/<id>, #/ai/d/<id> or #/ai/<project>/d/<id>
+  // 10.3: a dashboard is one more page on top of whatever was open: #/d/<id>, #/ai/d/<id> or #/ai/<project>/d/<id>
   var nav={lvl:1,id:null,dash:null};
   function navParse(){const m=location.hash.match(/^#(\/ai(?:\/([^/?#]+))?)?(?:\/d\/([^/?#]+))?$/);if(!m||(!m[1]&&!m[3]))return {lvl:1,id:null,dash:null};
     const dash=m[3]?decodeURIComponent(m[3]):null;if(!m[1])return {lvl:1,id:null,dash};
@@ -2402,12 +2420,29 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   function nextWin(cur){const n=ilNow(),base=ilDate();
     for(let k=0;k<2;k++){const L=dayWins((n.d+k)%7,planFor(addDays(base,k)));let start=0;
       if(k===0){let i=0;for(let j=0;j<L.length;j++)if(L[j][0]<=n.m)i=j;if(cur.manual){const m=L.findIndex(x=>x[1]===cur.id&&x[0]>=n.m-240);if(m>=0)i=m;}start=i+1;}
-      for(let j=start;j<L.length;j++){const id=L[j][1];if(id===cur.id||!WINS[id].acc.length)continue;return {id,at:(k?"מחר ":"")+"מ-"+hhmm(L[j][0])};}}
+      const g=!cur.manual&&WIN_GROUP[cur.id];
+      for(let j=start;j<L.length;j++){const id=L[j][1];if(id===cur.id||!WINS[id].acc.length||(g&&WIN_GROUP[id]===g))continue;return {id,k,m:L[j][0],at:(k?"מחר ":"")+"מ-"+hhmm(L[j][0])};}}
     return null;}
   function winCard(W,tag,L,empty,next){const S=winSections(L);
     return h("div",{class:"wcard"+(next?" next":"")},
       h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},W.e),h("b",null,W.l),tag?h("small",null,tag):null),
       L.length?(S.length>1?S.map(x=>h("div",{class:"wc-part"},h("div",{class:"wc-sec"},x.t),h("div",{class:"glist"},x.items.map(row)))):h("div",{class:"glist"},L.map(row))):h("div",{class:"wc-empty"},empty));}
+  // 10.2: one card for a run of windows (the weekend). Header adapts to the day and the run's end; inside, a part for each
+  // window in it that has tasks, the current one first (no title if it is the only part). Returns {el, L} (L = its tasks).
+  function runCard(run,cur,pool,urg,next,startLbl){const G=GROUP_WIN[run.g],seen=new Set(),parts=[],L=[];
+    for(const sg of run.segs){if(seen.has(sg.id))continue;seen.add(sg.id);const W=WINS[sg.id];
+      const sort=(a,b)=>(isOwn(b)-isOwn(a))||(returned(b)-returned(a))||byDate(a,b)||(minsOf(a)-minsOf(b));
+      const it=[...urg.filter(t=>!L.includes(t)&&fitsWin(t,sg.id)),...pool.filter(t=>!L.includes(t)&&fitsWin(t,sg.id)).sort(sort)];
+      L.push(...it);const now=!next&&sg.k===0&&sg.s<=ilNow().m;
+      parts.push({now,it,t:W.e+" "+(now?"עכשיו":W.l+" · "+atLbl(sg.k,sg.s)+"-"+hhmm(sg.e))+" · "+(W.ss||W.sub)});}
+    const P=parts.filter(x=>x.it.length);const d6=(ilNow().d+(run.segs[0]?run.segs[0].k:0))%7===6;
+    const tag=(next?"הבא · "+startLbl+" ":"")+(run.end?"עד "+atLbl(run.end.k,run.end.m,true):"");
+    const el=h("div",{class:"wcard"+(next?" next":"")},
+      h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},G.e),h("b",null,d6&&G.l6?G.l6:G.l),tag?h("small",null,tag):null),
+      !P.length?h("div",{class:"wc-empty"},next?"אין משימות לחלון הזמן הבא":"אין כרגע משימה לחלון הזמן הזה"):
+      P.length===1&&P[0].now?h("div",{class:"glist"},P[0].it.map(row)):
+      P.map(x=>h("div",{class:"wc-part"},h("div",{class:"wc-sec"},x.t),h("div",{class:"glist"},x.it.map(row)))));
+    return {el,L};}
   function renderList(){renderMain();renderStrip();renderDash();if(nav.lvl>=2)renderNav();if(nav.dash&&!dashPg.frame)renderDashPg();}
   function renderMain(){
     const allK=topics.filter(isOpen).filter(t=>!inStrip(t)).sort(byDate);
@@ -2425,16 +2460,20 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
       const unprof=t=>isOwn(t)&&!howOf(t).length; // typed by Oren and not profiled yet: show it now, Claude profiles it within the hour
       const uIn=urgAll.filter(t=>fitsWin(t,w.id)||unprof(t));
       const fit=W.acc.length?live.filter(t=>fitsWin(t,w.id)||unprof(t)).sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)||(minsOf(a)-minsOf(b))):[];
-      const L=[...uIn,...fit];
-      top.push(winCard(W,w.end?"עד "+w.end:"",L,W.acc.length?"אין כרגע משימה לחלון הזמן הזה":"זמן חסום. רק דחוף"));
+      let L=[...uIn,...fit];
+      const run=!w.manual&&winRun(w.id,0,ilNow().m);
+      if(run){const c=runCard(run,w,live.filter(t=>!uIn.includes(t)),urgAll,false);L=c.L;top.push(c.el);}
+      else top.push(winCard(W,w.end?"עד "+w.end:"",L,W.acc.length?"אין כרגע משימה לחלון הזמן הזה":"זמן חסום. רק דחוף"));
       // 8.3 (Oren 6.11): and what comes next (e.g. Friday 07:30 home morning → Friday errands from 08:00)
       const nx=nextWin(w),NW=nx&&WINS[nx.id];
       const nU=nx?urgAll.filter(t=>!L.includes(t)&&fitsWin(t,nx.id)):[],nF=nx?live.filter(t=>!L.includes(t)&&fitsWin(t,nx.id)).sort((a,b)=>ord(a,b)||(minsOf(a)-minsOf(b))):[];
-      const NL=[...nU,...nF];
-      if(nx)top.push(winCard(NW,"הבא · "+nx.at,NL,"אין משימות לחלון הזמן הבא",true));
-      const uOut=urgAll.filter(t=>!uIn.includes(t)&&!nU.includes(t));
+      let NL=[...nU,...nF];
+      const nrun=nx&&winRun(nx.id,nx.k,nx.m);
+      if(nrun){const c=runCard(nrun,null,live.filter(t=>!L.includes(t)),urgAll.filter(t=>!L.includes(t)),true,nx.at);NL=c.L;top.push(c.el);}
+      else if(nx)top.push(winCard(NW,"הבא · "+nx.at,NL,"אין משימות לחלון הזמן הבא",true));
+      const uOut=urgAll.filter(t=>!L.includes(t)&&!NL.includes(t));
       if(uOut.length)top.push(foldRows("uout","❗ דחוף לחלון זמן אחר",uOut,{hot:true}));
-      const others=live.filter(t=>!fit.includes(t)&&!nF.includes(t));
+      const others=live.filter(t=>!L.includes(t)&&!NL.includes(t));
       if(others.length){const [q,tr,lo]=bySize(others);
         more.push(foldBox("rest","כל שאר המשימות",others.length,[group(SIZES.quick.g,q),group(SIZES.trip.g,tr),group(SIZES.long.g,lo)].filter(Boolean),{force:others.some(t=>t.id===openId)}));}
     }else{
