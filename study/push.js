@@ -40,20 +40,20 @@
     var flag='study_push_'+o.role+(o.kid?'_'+o.kid:'');
     function close(){ov.classList.remove('on')}
     ov.querySelector('.x').onclick=close;ov.onclick=function(e){if(e.target===ov)close()};
-    function steps(){return '<p><b>שלב 1: מוסיפים את Study למסך הבית</b></p><ol>'+
+    function steps(){return '<p><b>שלב 1: מוסיפים את Study Monster למסך הבית</b></p><ol>'+
       '<li>בספארי לוחצים על שלוש הנקודות (או כפתור השיתוף ⬆️) ליד שורת הכתובת.</li>'+
       '<li>לוחצים <b>"שיתוף"</b>.</li>'+
       '<li>גוללים למטה ברשימה ובוחרים <b>"הוספה למסך הבית"</b>.</li>'+
       '<li>מוודאים ש<b>"פתיחה כאפליקציית רשת"</b> מסומן.</li>'+
       '<li>לוחצים <b>"הוספה"</b>.</li></ol>'+
-      '<p><b>שלב 2: פותחים מהאייקון</b></p><ol start="6"><li>פותחים את <b>Study</b> מהאייקון החדש במסך הבית (היצור הירוק עם הספר), לא מהלינק.</li>'+
+      '<p><b>שלב 2: פותחים מהאייקון</b></p><ol start="6"><li>פותחים את <b>Study Monster</b> מהאייקון החדש במסך הבית (היצור הירוק עם הספר), לא מהלינק.</li>'+
       '<li>'+o.again+'</li></ol><p class="sm">ההתקדמות עוברת לבד לאפליקציה במסך הבית.</p>'}
     function draw(){
       m.textContent='';go.disabled=false;
       if(o.guest&&window.STUDY_GUEST){bd.innerHTML='<p>'+o.what+'</p><p><b>במצב אורח אין התראות.</b> יוצאים ממצב אורח, ואז אפשר להפעיל.</p>';go.textContent='הבנתי';go.className='go off';go.onclick=close;return}
       if(on){bd.innerHTML='<div class="ok">✓ ההתראות פועלות במכשיר הזה</div><p>'+o.what+'</p>';go.textContent='כיבוי התראות';go.className='go off';go.onclick=off;return}
       if(supported()&&(!isIOS()||standalone())){bd.innerHTML='<p>'+o.what+'</p><p class="sm">הטלפון ישאל אם לאשר התראות. לוחצים "אפשר".</p>';go.textContent='הפעלת התראות';go.className='go';go.onclick=enable;return}
-      if(isIOS()){bd.innerHTML='<p>'+o.what+'</p><p>באייפון התראות עובדות רק כש-Study נמצאת במסך הבית.</p>'+steps();go.textContent='הבנתי';go.className='go off';go.onclick=close;return}
+      if(isIOS()){bd.innerHTML='<p>'+o.what+'</p><p>באייפון התראות עובדות רק כש-Study Monster נמצאת במסך הבית.</p>'+steps();go.textContent='הבנתי';go.className='go off';go.onclick=close;return}
       bd.innerHTML='<p>'+o.what+'</p><p>הדפדפן הזה לא תומך בהתראות. אפשר לנסות בכרום, או בספארי באייפון.</p>';go.textContent='הבנתי';go.className='go off';go.onclick=close}
     function enable(){if(busy)return;busy=true;go.disabled=true;
       var ask=Notification.requestPermission(); // חייב לצאת ישר מהלחיצה, אחרת אייפון לא שואל
@@ -62,7 +62,7 @@
         .then(function(a){var r=a[0],key=a[1];if(!key)throw new Error('key');return r.pushManager.getSubscription().then(function(s){return s||r.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64(key)})})})
         .then(function(s){var j=s.toJSON();return rpc('study_push_save',{p_role:o.role,p_kid:o.kid||'',p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_pin:o.pin?o.pin():null})})
         .then(function(j){if(!j||!j.ok)throw new Error(j&&j.err||'save');on=true;lsS(flag,'1');busy=false;state();draw();m.textContent='מעולה! מעכשיו יגיעו התראות 🎉'})
-        .catch(function(e){busy=false;draw();m.textContent=e.message==='denied'?'ההתראות חסומות. מאשרים בהגדרות של הטלפון ← התראות ← Study':e.message==='locked'?'יותר מדי ניסיונות קוד. נסו בעוד חצי שעה':e.message==='bad'?'צריך להיכנס שוב עם הקוד':'לא הצלחנו להפעיל. נסו שוב'})}
+        .catch(function(e){busy=false;draw();m.textContent=e.message==='denied'?'ההתראות חסומות. מאשרים בהגדרות של הטלפון ← התראות ← Study Monster':e.message==='locked'?'יותר מדי ניסיונות קוד. נסו בעוד חצי שעה':e.message==='bad'?'צריך להיכנס שוב עם הקוד':'לא הצלחנו להפעיל. נסו שוב'})}
     function off(){if(busy)return;busy=true;go.disabled=true;
       current().then(function(s){if(s)return rpc('study_push_off',{p_endpoint:s.endpoint,p_role:o.role,p_kid:o.kid||''}).catch(function(){})})
         .then(function(){on=false;lsS(flag,null);busy=false;state();draw();m.textContent='ההתראות כובו'})

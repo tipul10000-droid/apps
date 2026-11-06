@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Study · אזור הורים</title>
+<title>Study Monster · אזור הורים</title>
 <link rel="manifest" href="../manifest.json">
-<link rel="icon" href="../icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="Study">
+<link rel="icon" href="../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
 <meta name="theme-color" content="#eef1f5">
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="../theme.css"><style>:root{padding-top:max(calc(env(safe-area-inset-top,0px) + 6px),44px)}</style>
@@ -39,7 +39,7 @@
 .res{margin-top:8px;font-size:14px}.res>div{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #dde5f1}
 .res .sc{font-size:17px;color:var(--ac)}.res .x{font:inherit;font-size:12px;color:var(--mut);background:none;border:0;cursor:pointer;padding:2px 6px}
 .head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-*{touch-action:pan-x pan-y}
+html,body,*{touch-action:manipulation}
 </style></head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
 <div id="v"></div>
@@ -118,12 +118,17 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
  V.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{if(!confirm('למחוק את הציון? אפשר יהיה להזין אותו מחדש.'))return;
   done(b,rpc('study_parents_result',{p_pin:PIN,p_kid:null,p_app:null,p_d:null,p_note:null,p_score:null,p_hide_id:+b.dataset.h}))})}
 // בקשות והצעות מהילדים (study_requests, נשלחות מדף הילד דרך study/req.js)
-const RQK={test:'📅 מבחן קרוב',quiz:'⏰ בוחן',hard:'🤔 לא מבין/ה',topic:'📚 נושא ללימוד',idea:'💡 רעיון לאפליקציה'};
+const RQK={test:'📅 מבחן קרוב',quiz:'⏰ בוחן',hard:'🤔 לא מבין/ה',topic:'📚 נושא ללימוד',idea:'💡 רעיון לאפליקציה',bug:'🐞 באג באפליקציה'};
 function loadReq(id,set){rpc('study_parents_requests',{p_pin:PIN,p_id:id||null,p_set:set||null}).then(j=>{if(!j||!j.ok)return;
  KIDS.forEach(k=>{const box=$('rq_'+k.id);if(!box)return;const L=j.items.filter(x=>x.kid===k.id),open=L.filter(x=>!x.done).length;
   box.innerHTML=`<h3>💬 בקשות והצעות${open?` (${open===1?"1 חדשה":open+" חדשות"})`:''}</h3>`+(L.length?L.slice(0,30).map(x=>`<div class="rq${x.done?' dn':''}"><div class="t"><span>${RQK[x.kind]||''}</span><span>${ago(x.at)}</span></div><div class="tx">${esc(x.txt)}</div><div class="a">${x.done?`<button class="lnk" type="button" data-q="${x.id}|open">↩ לא טופל</button>`:`<button class="lnk" type="button" data-q="${x.id}|done">✓ טופל</button>`}<button class="lnk" type="button" data-q="${x.id}|hide">הסתרה</button></div></div>`).join(''):`<div class="none">עוד לא ${k.id==='evyatar'?'שלח':'שלחה'} בקשות</div>`)});
  V.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const [i,s]=b.dataset.q.split('|');if(s==='hide'&&!confirm('להסתיר את הבקשה?'))return;b.textContent='...';loadReq(+i,s)})}).catch(()=>{})}
 ['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,ev=>ev.preventDefault(),{passive:false}));
+// דאבל-טאפ: באייפון user-scalable=no לא עובד. touch-action:manipulation מבטל זום בהקשה כפולה, ולמקרה שלא: הקשה שנייה מהירה לא מגיעה לזום, והלחיצה נשלחת ידנית.
+var lastT=0;document.addEventListener('touchend',function(ev){var n=Date.now(),t=ev.target;if(n-lastT<350&&ev.cancelable&&!(t.closest&&t.closest('input,textarea,select,[contenteditable]'))){ev.preventDefault();if(t.click)t.click()}lastT=n},{passive:false});
+document.addEventListener('touchstart',function(ev){if(ev.touches.length>1)ev.preventDefault()},{passive:false});
+document.addEventListener('dblclick',function(ev){ev.preventDefault()},{passive:false});
+
 if(PIN)load();else pinView();
 </script>
 </main></body></html>
