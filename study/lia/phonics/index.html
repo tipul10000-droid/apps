@@ -71,6 +71,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 .sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}
 .sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
 .sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
+.sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
 .sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
 .conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:20;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
@@ -107,8 +108,8 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 <div class="ov" id="gdov"><div class="pn" style="text-align:center"><div style="font-size:46px">🏅</div><h2 id="gdt"></h2><p id="gdp"></p><button class="btn" id="gdy" type="button">⏱️ למבחן של דקה</button><button class="btn soft" style="width:100%;margin-top:8px" id="gdn" type="button">אחר כך, ממשיכות</button></div></div>
 
 <script src="audio/list.js?v=1"></script>
-<script src="../squishies.js"></script>
-<script src="../../sqsound.js?v=1"></script>
+<script src="../squishies.js?v=2"></script>
+<script src="../../sqsound.js?v=3"></script>
 <script src="../../track.js?v=3"></script>
 <script>
 // אותיות וצלילים באנגלית לליה (אורן 6.11.2026). פוניקס שיטתי: צליל ← אות ← קריאה, 6 קבוצות לפי סדר Jolly Phonics, השוואה לעברית, הגייה אמריקאית.
@@ -257,21 +258,21 @@ function renderDone(){upd();$('card').innerHTML=head('🏆 סיימת הכל')+`
   $('ta').onclick=startTest;$('pa').onclick=()=>{const it=pick(IT);CUR={mode:pick(['hear','see']),it};render()};SND.win();confetti(50)}
 
 // ---------- סקווישים (אותה שיטה כמו בהכתבה של דני) ----------
-const SQS=LiaSquishies.list,SQS2=LiaSquishies.list2,aura=LiaSquishies.aura,ALLSQ=LiaSquishies.all;
-const baseDone=()=>SQS.every(x=>SQ.includes(x.id)),sqEvery=()=>baseDone()?12:6,sqN=()=>ALLSQ.filter(x=>SQ.includes(x.id)).length,sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
+const SQS=LiaSquishies.list,SQS2=LiaSquishies.list2,SQS3=LiaSquishies.list3,aura=LiaSquishies.aura,uaura=LiaSquishies.uaura,ALLSQ=LiaSquishies.all;
+const baseDone=()=>SQS.every(x=>SQ.includes(x.id)),supDone=()=>baseDone()&&SQS2.every(x=>SQ.includes(x.id)),sqEvery=()=>supDone()?50:baseDone()?12:6,sqN=()=>ALLSQ.filter(x=>SQ.includes(x.id)).length,sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
 let CURSQ=null;
-function squishy(){const L=baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(L);if(s.sup)$('sqtt').textContent=isNew?'⭐ סופר סקווישי חדש! ⭐':'⭐ סופר סקווישי!';if(isNew){SQ.push(s.id);LS.set('lia_ph_sq',SQ)}
+function squishy(){const L=supDone()?SQS3:baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(L);if(s.ult)$('sqtt').textContent=isNew?'💎 אולטרה סקווישי חדש! 💎':'💎 אולטרה סקווישי!';else if(s.sup)$('sqtt').textContent=isNew?'⭐ סופר סקווישי חדש! ⭐':'⭐ סופר סקווישי!';if(isNew){SQ.push(s.id);LS.set('lia_ph_sq',SQ)}
   CURSQ=s.id;$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לאוסף! 🪐';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
   $('sqov').classList.add('on');SND.pop();upd()}
 $('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
 $('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click();if(GDQ!==null)setTimeout(()=>groupDone(GDQ),250)};
 function sqRender(){const ev=sqEvery(),left=ev-(S.cc||0),bd=baseDone();
-  $('sqtx').innerHTML=bd?'כל הצוות אצלך! עכשיו <b>סופר סקווישים</b>: כל אחד על <b>12 תשובות נכונות</b> ⭐':'על כל <b>6 תשובות נכונות</b> מצטרף סקווישי לצוות החלל. אחרי 6 נפתחים 6 סופר סקווישים ⭐ לחצי על סקווישי כדי להכיר אותו.';
-  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${bd?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
-  const tile=s=>SQ.includes(s.id)?`<div class="own${s.sup?' sup':''}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${s.sup?' sup':''}">${sqSvg({svg:s.svg.split(aura).join('')})}</div>`;
-  $('sqg').innerHTML='<div class="sqhd">🪐 צוות החלל</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')}
+  $('sqtx').innerHTML=supDone()?'כל הסופר סקווישים אצלך! עכשיו <b>אולטרה סקווישים</b> 💎: כל אחד על <b>50 תשובות נכונות</b>. אלופה!':bd?'כל הצוות אצלך! עכשיו <b>סופר סקווישים</b>: כל אחד על <b>12 תשובות נכונות</b> ⭐':'על כל <b>6 תשובות נכונות</b> מצטרף סקווישי לצוות החלל. אחרי 6 נפתחים 6 סופר ⭐ ואחריהם 6 אולטרה 💎 לחצי על סקווישי כדי להכיר אותו.';
+  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${supDone()?'אולטרה ':bd?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
+  const cl=s=>s.ult?' ult':s.sup?' sup':'';const tile=s=>SQ.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}</div>`;
+  $('sqg').innerHTML='<div class="sqhd">🪐 צוות החלל</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')+'<div class="sqhd">💎 אולטרה סקווישים</div>'+SQS3.map(tile).join('')}
 $('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
-$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🪐';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🪐';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
 // ---------- ממשק ----------
