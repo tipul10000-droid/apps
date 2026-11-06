@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.5";window.SQ_BUILD_AT="6.11.2026 18:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.6";window.SQ_BUILD_AT="6.11.2026 19:15";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1418,6 +1418,30 @@ details.more[open]>summary{margin-bottom:10px}
 .acts{gap:1px!important;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .acts .act{border:0!important;border-radius:0!important;background:var(--surface)}
 .acts .act.urg[aria-pressed="true"]{background:var(--due)}
+/* 11.6: fifth button (time window), and its panel opening below. One frame per button group, no frame around the panel. */
+.acts.five{grid-template-columns:repeat(5,minmax(0,1fr))}
+.acts .act{white-space:nowrap}
+.act.win{color:#5b4bc4}.acts .act.win[aria-pressed="true"]{background:#5b4bc4;color:#fff}
+.fitp{margin-top:10px;animation:fpgrow .24s ease-out both}
+@keyframes fpgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fitp{animation:none}}
+.fp-sec{margin-top:10px}.fp-sec:first-child{margin-top:0}
+.fp-h{font-size:13px;font-weight:700;color:var(--muted);margin:0 2px 5px}
+.fp-g{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.fp-g.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.fp-g.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.fp-g.c5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.fp-g button{display:flex;align-items:center;justify-content:center;gap:4px;min-height:44px;padding:4px 3px;border:0;border-radius:0;background:var(--surface);color:var(--ink);font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fp-g button .e{font-size:15px;flex:none}
+.fp-g button.all{grid-column:1/-1}
+.fp-g button[aria-pressed="true"]{background:#5b4bc4;color:#fff}
+.fp-res{margin:10px 2px 8px;font-size:14px;font-weight:600;color:var(--ink)}
+.fp-act button{min-height:48px;font-size:15.5px;font-weight:700}
+.fp-act button.ok{background:var(--k-admin);color:#fff}.fp-act button.ok[disabled]{opacity:.45}
+/* 11.6: the two override windows (out / at the computer), bigger than the window chips */
+.wov{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:2px solid rgba(255,255,255,.6);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.06)}
+.wov button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 6px;border:0;background:transparent;color:var(--hero-ink);font-size:17px;font-weight:800;white-space:nowrap}
+.wov button+button{border-inline-start:2px solid rgba(255,255,255,.6)}
+.wov button .e{font-size:22px}
+.wov button[aria-pressed="true"]{background:#fff;color:#111}
 .ai .opts{gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;align-self:stretch}
 .ai .opts>.opt,.ai .opts>a.opt{flex:1 1 auto;border:0!important;border-radius:0!important;background:var(--surface);text-align:center;min-height:38px}
 .ai .opts>.opt.yes{background:var(--k-admin);color:#fff}
@@ -1655,7 +1679,8 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     claude:'<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>',
     play:'<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',
     snooze:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M5 4l3 2M19 4l-3 2"/></svg>',
-    mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6l8.5 7 8.5-7"/></svg>'
+    mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6l8.5 7 8.5-7"/></svg>',
+    win:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4M8 14h3M13 14h3M8 17h3"/></svg>'
   };
   // availability (topic field `context`: array of call|pc|house|out|mobile). "mobile" = doable on the phone (site/message), shows everywhere.
   // Empty = not classified, shows everywhere. Legacy keys from v2.8: home -> pc, phone -> mobile. Last choice in localStorage sq_ctx.
@@ -1771,7 +1796,11 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     fri:{e:"🛒",l:"שישי, סידורים",s:"שישי בבוקר",sub:"סידורים ותיקונים עד 13:00",acc:["place","call","phone","home"]},
     sat_am:{e:"🔧",l:"שבת בבוקר",s:"בשבת בבוקר",sub:"תיקונים בבית",ss:"תיקונים בבית",acc:["home"]},
     weekend:{e:"🏡",l:"סופ״ש",s:"בסופ״ש",sub:"משפחה, הורים, טיולים. רק אפליקציות ופרויקטים",ss:"אפליקציות ופרויקטים",acc:["proj"]},
-    abroad:{e:"✈️",l:"חו״ל",s:"בחו״ל",sub:"כמו יום עבודה בלי משפחה. במלון 22:00-02:00 זמן שלי",acc:["phone","pc","call"]}
+    abroad:{e:"✈️",l:"חו״ל",s:"בחו״ל",sub:"כמו יום עבודה בלי משפחה. במלון 22:00-02:00 זמן שלי",acc:["phone","pc","call"]},
+    // 11.6 (Oren 6.11): two manual overrides that ignore the daily schedule and filter hard by the means alone.
+    // A task shows only if it needs one of `need` and all of its means are in `acc` (no `when`, `with`, minutes or hours checks).
+    out:{e:"🚶",l:"מחוץ לבית",s:"מחוץ לבית",sub:"רק מה שעושים בחוץ: מקום, סידור, ושיחות בדרך",acc:["place","call","phone"],need:["place","call"],ov:true},
+    pc:{e:"💻",l:"על המחשב",s:"על המחשב",sub:"רק מה שצריך מחשב",acc:["pc","phone"],need:["pc"],ov:true}
   };
   // who a task needs, and in which windows that person is available (Lior: phone from 16:00, in person 21:30-23:00)
   const WITH_OK={lior:["home_am","drive_pm","near_home","light","weekend","sat_am","counsel"],parents:["light","deep","weekend","sat_am"],yaniv:["fri","weekend","sat_am"]};
@@ -1818,6 +1847,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     if(i+1>=L.length){const T=dayWins((n.d+1)%7,planFor(addDays(today,1)));if(T[0]&&T[0][1]===L[i][1]&&T[1])end=hhmm(T[1][0]);}
     return {id:L[i][1],end};}
   function setWin(id){if(!id){winOv=null;try{localStorage.removeItem("sq_win");}catch(e){}}
+    else if(WINS[id]&&WINS[id].ov){const n=ilNow(),endM=(n.m+240)%1440;winOv={id,until:Date.now()+240*60000,end:hhmm(endM)};try{localStorage.setItem("sq_win",JSON.stringify(winOv));}catch(e){}}
     else{const n=ilNow(),L=dayWins(n.d,planFor(ilDate()));const k=L.findIndex(x=>x[1]===id&&x[0]>=n.m-240);
       // holds until that window would end today, else two hours
       const endM=k<0?n.m+120:k+1<L.length?L[k+1][0]:1440,ms=Math.max(30,endM-n.m)*60000;
@@ -1830,6 +1860,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     if(!r.length&&sizeOf(t)==="trip")r.push("place");return r;}
   function minsOf(t){const f=fitOf(t);if(f.mins)return +f.mins;const s=sizeOf(t);return s==="quick"?15:60;}
   function fitsWin(t,id){const W=WINS[id];if(!W||!W.acc.length)return false;const f=fitOf(t);if(f.owner==="claude")return false; // Claude's own checks never ask for a window
+    if(W.ov){const hw=howOf(t);return hw.some(x=>W.need.includes(x))&&hw.every(x=>W.acc.includes(x));} // 11.6: out / pc override
     const wd=Array.isArray(f.with)?f.with:[];if(wd.some(p=>WITH_OK[p]&&!WITH_OK[p].includes(id)))return false; // the person it needs isn't available then
     if(W.nopeople&&(f.people===true||(Array.isArray(f.people)&&f.people.some(p=>p!=="lior"))||wd.some(p=>p!=="lior")||howOf(t).includes("call")))return false; // no messages or calls to others before 08:00; Lior is right there (Oren 5.11)
     if(Array.isArray(f.when)&&f.when.length){const wh=f.when.map(x=>x==="solo"?"deep":x);return wh.includes(id==="solo"?"deep":id)||(id==="abroad"&&wh.includes("work"));}
@@ -2405,7 +2436,10 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
         const trio=winTrio(),ids=trio.map(x=>x[1]);
         const chip=(id,t)=>h("button",{type:"button",class:"wchip","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;setWin(id);wMode="pick";try{localStorage.setItem("sq_wmode","pick");}catch(e){}}},
           h("span",{class:"e","aria-hidden":"true"},WINS[id].e),h("span",{class:"l"},WINS[id].l),t!=null?h("small",null,hhmm(t)):null);
-        const other=!ids.includes(w.id)?w.id:null;
+        const other=!ids.includes(w.id)&&!W.ov?w.id:null;
+        const ovb=id=>h("button",{type:"button","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;if(w.id===id){setWin(null);toast("חזרה לחלונות הזמן של היום");return;}setWin(id);wMode="pick";try{localStorage.setItem("sq_wmode","pick");}catch(e){}toast(WINS[id].e+" "+WINS[id].l+": "+WINS[id].sub);}},
+          h("span",{class:"e","aria-hidden":"true"},WINS[id].e),h("span",{class:"l"},WINS[id].l));
+        kids.push(h("div",{class:"wov",role:"group","aria-label":"עוקף את סדר היום"},ovb("out"),ovb("pc")));
         kids.push(h("div",{class:"wchips"},...trio.map(x=>chip(x[1],x[0])),
           h("button",{type:"button",class:"wchip more","aria-expanded":winMore?"true":"false","aria-pressed":other?"true":"false",onclick:()=>{winMore=!winMore;renderCtx();}},
             h("span",{class:"e","aria-hidden":"true"},other?WINS[other].e:"⋯"),h("span",{class:"l"},other?WINS[other].l:"עוד"),h("small",null,winMore?"▲":"▼"))));
@@ -2454,12 +2488,47 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   function actBar(t){
     if(!canWrite)return null;const open=isOpen(t),c=chatOf(t),m=!c&&mailOf(t);
     const a=(cls,ic,label,on)=>h("button",{class:"act "+cls,type:"button",onclick:on},h("span",{class:"ai-ic","aria-hidden":"true",html:ic}),label);
-    return h("div",{class:"acts"},
+    return h("div",{class:"acts"+(open?" five":"")},
       c?h("a",{class:"act go",href:c,target:"_blank",rel:"noopener"},h("span",{class:"ai-ic","aria-hidden":"true",html:ICON.chat}),"לשיחה"):m?h("a",{class:"act go",href:m,target:"_blank",rel:"noopener"},h("span",{class:"ai-ic","aria-hidden":"true",html:ICON.mail}),"למייל"):contBtn(t,"act go",ICON_TXT_CHAT),
       open?a("snz",ICON.snooze,"אחר כך",()=>{laterFor=laterFor==="r:"+t.id?null:"r:"+t.id;renderList();}):null,
       open?h("button",{class:"act urg",type:"button","aria-pressed":t.urgent?"true":"false",onclick:()=>setUrgent(t)},h("span",{class:"ai-ic bang","aria-hidden":"true"},"!"),t.urgent?"דחוף ✓":"דחוף"):null,
+      open?h("button",{class:"act win",type:"button","aria-pressed":fitFor===t.id?"true":"false","aria-expanded":fitFor===t.id?"true":"false",onclick:()=>{if(fitFor===t.id){fitFor=null;}else{fitFor=t.id;fitDraft=null;}renderList();}},h("span",{class:"ai-ic","aria-hidden":"true",html:ICON.win}),"חלון זמן"):null,
       open?a("done",ICON.done,"בוצע",press(()=>markDone(t))):null);
   }
+  // 11.6 (Oren 6.11): the fifth button. Oren fixes a task's profile by hand when Claude classified it wrong
+  // (e.g. joining a gym group is a phone task on a regular weekday, not a weekend one). Saved in fit with by:"oren";
+  // the hourly run and the briefs never change how / when / mins / size of such a profile.
+  let fitFor=null,fitDraft=null;
+  const FIT_HOW=[["call","📞","שיחה"],["phone","📱","בטלפון"],["pc","💻","מחשב"],["place","📍","לצאת"],["home","🏠","בבית"],["lior","👫","עם ליאור"]];
+  const FIT_MINS=[[5,"5 דק׳"],[15,"15 דק׳"],[30,"חצי שעה"],[60,"שעה"],[120,"שעתיים+"]];
+  function fitPanel(t){
+    const f=fitOf(t);if(!fitDraft||fitDraft.id!==t.id)fitDraft={id:t.id,how:[...howOf(t)].filter(x=>FIT_HOW.some(y=>y[0]===x)),mins:minsOf(t),when:Array.isArray(f.when)?f.when.filter(x=>WIN_PICK.includes(x)):[],size:sizeOf(t)};
+    const D=fitDraft,box=h("div",{class:"fitp"});
+    const b=(on,lbl,fn,cls)=>h("button",{type:"button",class:cls||null,"aria-pressed":on?"true":"false",onclick:()=>{fn();paint();}},...[].concat(lbl));
+    const tog=(arr,x)=>arr.includes(x)?arr.filter(y=>y!==x):[...arr,x];
+    const sec=(title,cols,btns)=>h("div",{class:"fp-sec"},h("div",{class:"fp-h"},title),h("div",{class:"fp-g c"+cols},btns));
+    function paint(){
+      const tmp={...t,size:D.size,fit:draftFit(f,D)};
+      const now=fitsWin(tmp,curWin().id),nl=now?WINS[curWin().id].e+" עכשיו":nextWinLabel(tmp);
+      box.replaceChildren(
+        sec("איך עושים את זה? (אפשר כמה)",3,FIT_HOW.map(([k,e,l])=>b(D.how.includes(k),[h("span",{class:"e","aria-hidden":"true"},e),l],()=>{D.how=tog(D.how,k);}))),
+        sec("כמה זמן, מדלת לדלת?",5,FIT_MINS.map(([m,l])=>b(D.mins===m,l,()=>{D.mins=m;}))),
+        sec("מתי? (בלי בחירה = כל חלון זמן שמתאים לאיך)",3,[b(!D.when.length,[h("span",{class:"e","aria-hidden":"true"},"✦"),"כל חלון זמן שמתאים"],()=>{D.when=[];},"all"),...WIN_PICK.map(id=>b(D.when.includes(id),[h("span",{class:"e","aria-hidden":"true"},WINS[id].e),WINS[id].l],()=>{D.when=tog(D.when,id);}))]),
+        sec("סוג המשימה",3,Object.keys(SIZES).map(z=>b(D.size===z,[h("span",{class:"e","aria-hidden":"true"},SIZES[z].e),SIZES[z].l],()=>{D.size=z;}))),
+        h("div",{class:"fp-res"},D.how.length?(nl?"יופיע ב: "+nl:"לא מתאים לאף חלון זמן השבוע"):"בחר לפחות דרך אחת"),
+        h("div",{class:"fp-g c2 fp-act"},
+          h("button",{type:"button",class:"ok",disabled:D.how.length?null:"",onclick:()=>saveFit(t)},"✓ שמור"),
+          h("button",{type:"button",onclick:()=>{fitFor=null;fitDraft=null;renderList();}},"ביטול")));}
+    paint();return box;}
+  // the profile the panel would save: Oren's means, minutes and windows; Lior is dropped from `with`/`people` unless he kept "עם ליאור"
+  function draftFit(f,D){const nf={...f,how:D.how,mins:D.mins,when:D.when,by:"oren",at:ilDate()};
+    if(!D.how.includes("lior")){if(Array.isArray(nf.with))nf.with=nf.with.filter(p=>p!=="lior");if(Array.isArray(nf.people))nf.people=nf.people.filter(p=>p!=="lior");}
+    if(!D.when.length)delete nf.when;return nf;}
+  function saveFit(t){const D=fitDraft;if(!D||!D.how.length)return;const nf=draftFit(fitOf(t),D);
+    const tmp={...t,size:D.size,fit:nf},nl=fitsWin(tmp,curWin().id)?WINS[curWin().id].e+" עכשיו":nextWinLabel(tmp);
+    const desc=D.how.map(k=>(FIT_HOW.find(y=>y[0]===k)||[])[2]).join(", ")+(D.when.length?" · "+D.when.map(id=>WINS[id].l).join(", "):"");
+    fitFor=null;fitDraft=null;
+    patch(t,{fit:nf,size:D.size,log:logPush(t,"שינוי ידני של חלון הזמן: "+desc,new Date().toISOString())},"נשמר"+(nl?". יופיע ב: "+nl:""));}
   const ICON_TXT_CHAT="פתח שיחה";
   const WHO={claude:"Claude",lior:"ליאור",other:"מחכה"};
   function toggleStep(t,s){const now=new Date().toISOString();const steps=stepsOf(t).map(x=>x.id===s.id?{...x,done:!x.done,done_at:x.done?"":now}:x);
@@ -2488,6 +2557,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
         pr?h("a",{class:"d-link",href:contUrl(t),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true"},pr.icon||"🧩"),h("span",{class:"t"},pr.name||"פרויקט"),h("span",{class:"c","aria-hidden":"true"},"‹")):null,
         links.map(l=>h("a",{class:"d-link",href:safeUrl(l.url),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true",html:isGmail(l.url)?ICON.mail:linkType(l)==="chat"?ICON.chat:ICON.page}),h("span",{class:"t"},l.label||"קישור"),h("span",{class:"c","aria-hidden":"true"},"‹")))):null,
       actBar(t),
+      fitFor===t.id&&open&&canWrite?fitPanel(t):null,
       h("details",{class:"more",open:shareId===t.id||!open?"":null},h("summary",null,"פרטים ועריכה"),h("div",{class:"f-list"},
         fitL?h("div",{class:"f-row"},h("span",{class:"f-l"},"מתאים"),h("span",null,fitL)):null,
         t.summary?h("div",{class:"f-row"},h("span",{class:"f-l"},"תקציר"),h("span",null,t.summary)):null,
@@ -2567,7 +2637,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   function dayOrd(t){const p=t.day_plan;return p&&p.date===ilDate()&&p.n!=null?+p.n:null;}
   function sameArea(t){const g=geoOf(t);if(!g.area)return [];return allTopics.filter(x=>x.id!==t.id&&isOpen(x)&&!isFun(x)&&geoOf(x).area===g.area&&!geoOf(x).any);}
   // the next window that can take tasks (skips sleep and blocked windows); today, else tomorrow
-  function nextWin(cur){const n=ilNow(),base=ilDate();
+  function nextWin(cur){if(WINS[cur.id]&&WINS[cur.id].ov)return null;const n=ilNow(),base=ilDate();
     for(let k=0;k<2;k++){const L=dayWins((n.d+k)%7,planFor(addDays(base,k)));let start=0;
       if(k===0){let i=0;for(let j=0;j<L.length;j++)if(L[j][0]<=n.m)i=j;if(cur.manual){const m=L.findIndex(x=>x[1]===cur.id&&x[0]>=n.m-240);if(m>=0)i=m;}start=i+1;}
       const g=!cur.manual&&WIN_GROUP[cur.id];
