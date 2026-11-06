@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2E2420">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.HOUSING_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<title>דיור</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* דשבורד דיור: הדירה במוצקין (שוכר, משכנתא, שווי), האם למכור, והבית השכור בכפר סבא.
+   נתונים אישיים: sq_docs (app=sidequests, collection=housing): motzkin, home, _meta. אין כאן נתונים אישיים בקוד. */
+:root{
+  --bg:#F5F2EE; --surface:#FFFFFF; --sunk:#ECE6DF; --ink:#211A16; --muted:#6B5F57; --line:#DDD3C9;
+  --hero:#2E2420; --hero-ink:#F7F1EB; --hero-muted:#BDAEA2; --accent:#E39A4F; --accent-ink:#2A170A;
+  --good:#1E8A52; --good-soft:#DFF2E7; --warn:#B26A00; --warn-soft:#FBEBCF; --bad:#C2384A; --bad-soft:#FBE1E4; --link:#2F5BD3;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14100E; --surface:#1E1916; --sunk:#29221E; --ink:#F0E9E3; --muted:#AA9D93; --line:#3A312B;
+  --hero:#1B1512; --hero-ink:#F4EEE8; --hero-muted:#A8988C; --accent:#EDAA63; --accent-ink:#2A170A;
+  --good:#4CC384; --good-soft:#163024; --warn:#E9A945; --warn-soft:#3A2A12; --bad:#EE7A88; --bad-soft:#3B1E24; --link:#8CAAF5; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14100E; --surface:#1E1916; --sunk:#29221E; --ink:#F0E9E3; --muted:#AA9D93; --line:#3A312B;
+  --hero:#1B1512; --hero-ink:#F4EEE8; --hero-muted:#A8988C; --accent:#EDAA63; --accent-ink:#2A170A;
+  --good:#4CC384; --good-soft:#163024; --warn:#E9A945; --warn-soft:#3A2A12; --bad:#EE7A88; --bad-soft:#3B1E24; --link:#8CAAF5; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button,select,input{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.hero .sub{color:var(--hero-muted);font-size:14px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17.5px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tab{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 6px;font-weight:800;font-size:15px;cursor:pointer;font-family:var(--f-display)}
+.tab.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}
+.sh small{color:var(--muted);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chips span{background:var(--sunk);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.box{background:var(--sunk);border-radius:12px;padding:8px 10px;min-width:0}
+.box span{display:block;font-size:12.5px;color:var(--muted);line-height:1.3}
+.box b{display:block;font-family:var(--f-display);font-size:18px;line-height:1.3}
+.box.hi{background:var(--good-soft)}
+.box.warn{background:var(--warn-soft)}
+.issues{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.issues li{padding:10px 12px;border-radius:12px;background:var(--warn-soft);font-size:14.5px}
+.issues li.hi{background:var(--bad-soft)}
+.tasks{display:grid;gap:8px}
+.task{display:flex;gap:10px;align-items:center;padding:11px 12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;color:inherit;font-weight:600}
+.task .ic{flex:none;width:34px;height:34px;border-radius:10px;background:var(--sunk);display:grid;place-items:center;font-size:18px}
+.task .t{font-weight:800;font-size:15.5px;line-height:1.3}
+.task .s{color:var(--muted);font-size:13px;line-height:1.35;margin-top:1px}
+.task .go{margin-inline-start:auto;color:var(--muted);font-size:18px}
+table.steps{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+table.steps td{padding:7px 4px;border-top:1px solid var(--line)}
+table.steps tr.now td{background:var(--good-soft);font-weight:800}
+table.steps tr.opt td{color:var(--muted)}
+table.steps td:last-child{text-align:left}
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl li{position:relative;padding:0 22px 14px 0;font-size:14.5px}
+.tl li:before{content:"";position:absolute;right:5px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--line)}
+.tl li:after{content:"";position:absolute;right:9px;top:18px;bottom:0;width:2px;background:var(--line)}
+.tl li:last-child:after{display:none}
+.tl li.done:before{background:var(--good)}
+.tl li.now:before{background:var(--accent);box-shadow:0 0 0 4px rgba(227,154,79,.25)}
+.tl li .d{font-weight:800;font-family:var(--f-display);font-size:13.5px;display:block}
+.tl li.done{color:var(--muted)}
+.q{margin-top:4px}
+.qt{font-weight:800;margin-bottom:6px}
+.qt small{display:block;font-weight:600;color:var(--muted);font-size:13px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-weight:700;font-size:14px;cursor:pointer}
+.opt.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.rng{display:flex;align-items:center;gap:10px;margin:6px 0}
+.rng input[type=range]{flex:1;accent-color:var(--accent);height:30px}
+.rng b{font-family:var(--f-display);font-size:18px;min-width:104px;text-align:center}
+.calc{list-style:none;margin:10px 0 0;padding:0;font-size:14.5px}
+.calc li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.calc li.tot{font-weight:800;font-size:16px}
+.calc li .neg{color:var(--bad)}
+.inrow{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.inrow input{width:140px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.btn{border:0;background:var(--ink);color:var(--bg);border-radius:10px;padding:8px 14px;font-weight:800;cursor:pointer}
+.btn.ghost{background:var(--sunk);color:var(--ink)}
+.more{display:none;margin-top:8px}
+.more.on{display:block}
+.check{margin:0;padding-inline-start:20px}
+.check li{margin:5px 0;font-size:14.5px}
+.links{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:6px;font-size:14.5px}
+.bal{height:12px;border-radius:6px;background:var(--sunk);overflow:hidden;display:flex;margin:8px 0 4px}
+.bal i{display:block;height:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:middle;margin-inline-end:4px}
+svg.chart{width:100%;height:auto;display:block;margin-top:6px}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.45}
+.empty{color:var(--muted);text-align:center;padding:20px}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:90vw}
+.toast.on{display:block}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (max-width:420px){.kpi b{font-size:17px}.box b{font-size:15.5px}.box span{font-size:12px}.grid3{gap:6px}.box{padding:7px 8px}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="in">
+  <div class="top"><a class="back" href="./">→ Side Quests</a><span class="back" id="upd"></span></div>
+  <h1>🏠 דיור</h1>
+  <p class="sub">הדירה שלנו במוצקין, האם למכור אותה, והבית השכור בכפר סבא.</p>
+  <a class="chatbtn" id="chat" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שאל על הדיור<small>״כמה יישאר לנו אם נמכור ב-2.1?״ · ״מתי להודיע לשוכר?״</small></span></a>
+  <div class="kpis">
+    <div class="kpi"><b id="k-eq">…</b><span>ההון שלנו בדירה</span></div>
+    <div class="kpi"><b id="k-net">…</b><span>נטו בחודש מהשכירות</span></div>
+    <div class="kpi"><b id="k-next">…</b><span id="k-next-l">הבא בתור</span></div>
+  </div>
+</div></header>
+<div class="wrap">
+  <div class="bar"><div class="tabs" id="tabs">
+    <button class="tab on" data-tab="motz">🏢 מוצקין</button>
+    <button class="tab" data-tab="sell">💰 למכור?</button>
+    <button class="tab" data-tab="home">🏠 הבית שלנו</button>
+  </div></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const CHAT_FALLBACK="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD?thread=cmsg_01BSiCy73LfhTPuMwCS8XKQDBuxeyzjiW5Y5xcXGN4R4Qd";
+const DEPOSIT_RATE=3.5; // ריבית פיקדון שנתית להשוואה גסה
+let M={},H={},meta={},topics=[],db=null,loaded=false;
+const UI_KEY="sq_housing_ui";let ui={tab:"motz",price:0,open:null};
+try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
+function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
+
+// ---------- helpers ----------
+const ils=v=>"₪"+Math.round(v).toLocaleString("he-IL");
+const kk=v=>{const a=Math.abs(v);return (v<0?"-":"")+"₪"+(a>=1e6?(Math.round(a/1e4)/100).toLocaleString("he-IL")+"M":a>=1000?Math.round(a/1000)+"K":Math.round(a));};
+function today(){const d=new Date();d.setHours(12,0,0,0);return d;}
+function ds(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function parseD(s){if(!s)return null;const p=String(s).split("-");return new Date(+p[0],(+p[1]||1)-1,+p[2]||1,12);}
+function daysTo(s){const d=parseD(s);return d?Math.round((d-today())/86400000):null;}
+function dm(s){const d=parseD(s);return d?`${d.getDate()}.${d.getMonth()+1}.${String(d.getFullYear()).slice(2)}`:"";}
+function my(s){const d=parseD(s);return d?`${d.getMonth()+1}.${d.getFullYear()}`:"";}
+function until(s){const n=daysTo(s);if(n==null)return "";if(n<0)return "עבר";if(n<45)return "בעוד "+n+" ימים";const m=Math.round(n/30.4);return m<24?"בעוד "+m+" חודשים":"בעוד "+(Math.round(m/12*10)/10)+" שנים";}
+function stepNow(steps){const t=ds(today());let cur=null;(steps||[]).forEach(s=>{if(s.from<=t)cur=s;});return cur||(steps||[])[0]||null;}
+function rentNow(){const t=M.tenant||{};const s=stepNow((t.steps||[]).filter(x=>!x.opt));return s?+s.rent:+t.rent||0;}
+function homeRent(){const s=stepNow(H.steps);return s?+s.rent:0;}
+function mort(){return M.mortgage||{};}
+function est(){return +((M.val||{}).est)||0;}
+function costs(){return Object.assign({broker_pct:1.5,lawyer_pct:0.5,prepay:20000},meta.costs||{});}
+function saleCalc(price){const c=costs(),bal=+mort().balance||0;
+  const broker=price*(+c.broker_pct||0)/100, lawyer=price*(+c.lawyer_pct||0)/100*1.18, prepay=+c.prepay||0;
+  const hand=price-bal-broker-lawyer-prepay;return {bal,broker,lawyer,prepay,hand};}
+function nextEvent(){const tl=(meta.timeline||[]).filter(x=>!x.done&&!x.now&&daysTo(x.d)>=0).sort((a,b)=>a.d<b.d?-1:1);return tl[0]||null;}
+function openTasks(){return topics.filter(t=>t.status!=="done"&&t.status!=="archived"&&!t.merged_into);}
+
+// ---------- tasks (from the Side Quests app) ----------
+function tasksBlock(){const ts=openTasks();if(!ts.length)return "";
+  const icon=t=>t.icon||(t.kind==="admin"?"📋":t.kind==="research"?"🧭":"📌");
+  return `<section><div class="sh"><h2>📌 משימות</h2><small>${ts.length} פתוחות · נפתחות באפליקציה</small></div><div class="tasks">${ts.map(t=>{
+    const st=t.waiting_for||t.stand||t.next_step||"";const steps=Array.isArray(t.steps)?t.steps:[];const dn=steps.filter(s=>s.done).length;
+    return `<a class="task" href="./#t=${encodeURIComponent(t.id)}"><span class="ic">${esc(icon(t))}</span><span style="min-width:0"><span class="t">${esc(t.title)}</span>${st?`<span class="s" style="display:block">${esc(st)}</span>`:""}${steps.length?`<span class="s" style="display:block">שלבים: ${dn}/${steps.length}</span>`:""}</span><span class="go">‹</span></a>`;}).join("")}</div></section>`;}
+
+// ---------- tab: Motzkin ----------
+function valChart(){const pts=((M.val||{}).hist||[]).filter(x=>x.d&&+x.v).sort((a,b)=>a.d<b.d?-1:1);if(pts.length<2)return "";
+  const W=320,Hh=120,p=28,xs=pts.map(x=>parseD(x.d).getTime()),ys=pts.map(x=>+x.v),bought=+((M.bought||{}).paid)||0;
+  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys,bought)*0.95,y1=Math.max(...ys)*1.03;
+  const X=t=>W-p-(t-x0)/(x1-x0||1)*(W-2*p),Y=v=>Hh-p-(v-y0)/(y1-y0||1)*(Hh-2*p);
+  const path=pts.map((q,i)=>(i?"L":"M")+X(xs[i]).toFixed(1)+","+Y(ys[i]).toFixed(1)).join(" ");
+  return `<svg class="chart" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="שווי הדירה לאורך השנים">
+    ${bought?`<line x1="${p}" x2="${W-p}" y1="${Y(bought).toFixed(1)}" y2="${Y(bought).toFixed(1)}" stroke="currentColor" stroke-opacity=".35" stroke-dasharray="4 4"/><text x="${W/2}" y="${(Y(bought)+12).toFixed(1)}" text-anchor="middle" font-size="10" fill="currentColor" opacity=".7">שילמנו ${kk(bought)}</text>`:""}
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    ${pts.map((q,i)=>`<circle cx="${X(xs[i]).toFixed(1)}" cy="${Y(ys[i]).toFixed(1)}" r="4" fill="var(--accent)"/><text x="${X(xs[i]).toFixed(1)}" y="${(Y(ys[i])-8).toFixed(1)}" font-size="10" text-anchor="middle" fill="currentColor">${kk(ys[i])}</text><text x="${X(xs[i]).toFixed(1)}" y="${Hh-2}" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".6">${parseD(q.d).getFullYear()}</text>`).join("")}
+  </svg>`;}
+function renderMotz(){
+  const t=M.tenant||{},m=mort(),b=M.bought||{},v=M.val||{},r=rentNow(),net=r-(+m.monthly||0),E=est(),bal=+m.balance||0;
+  let h=tasksBlock();
+  const iss=(M.issues||[]);if(iss.length)h+=`<section><div class="sh"><h2>⚠️ חשוב לדעת</h2></div><ul class="issues">${iss.map(x=>`<li class="${x.lvl==="high"?"hi":""}">${esc(x.text)}</li>`).join("")}</ul></section>`;
+  h+=`<section><div class="sh"><h2>🏢 הדירה</h2><small>${esc(M.project||"")}</small></div><div class="card">
+    <div style="font-weight:800;font-size:17px">${esc(M.addr||"")}</div>
+    <div class="chips"><span>${esc(M.rooms)} חדרים</span><span>קומה ${esc(M.floor)}</span><span>${esc(M.sqm)} מ״ר</span><span>מרפסת ${esc(M.balcony)} מ״ר</span><span>מחסן</span><span>חניה</span><span>${esc(M.dir||"")}</span></div>
+    <div class="note" style="margin-top:2px">${esc(M.registry||"")}</div></div></section>`;
+  // tenant
+  const steps=(t.steps||[]),cur=stepNow(steps.filter(x=>!x.opt));
+  h+=`<section><div class="sh"><h2>🔑 השוכר</h2><small>מ-${esc(my(t.since))}</small></div><div class="card">
+    <div class="grid3"><div class="box"><span>שכירות היום</span><b class="num">${ils(r)}</b></div><div class="box"><span>החוזה עד</span><b>${esc(dm(t.end))}</b></div><div class="box warn"><span>להודיע אם ממשיכים</span><b>${esc(dm(t.notice_by))}</b></div></div>
+    <div class="muted small" style="margin-top:6px">${esc(t.name||"")} · פיקדון ${ils(+t.deposit||0)} במזומן · ${esc(until(t.notice_by))} למועד ההודעה</div>
+    <table class="steps">${steps.map(s=>`<tr class="${cur&&s.from===cur.from?"now":""}${s.opt?" opt":""}"><td>${esc(my(s.from))}${s.opt?" (אופציה של השוכר)":""}</td><td class="num">${ils(+s.rent)}</td></tr>`).join("")}</table>
+    <div class="note">${esc(t.note||"")}</div></div></section>`;
+  // money
+  h+=`<section><div class="sh"><h2>🏦 משכנתא וכסף</h2><small>${esc(m.bank||"")}${m.balance_at?" · יתרה ל-"+esc(dm(m.balance_at)):""}</small></div><div class="card">
+    <div class="grid3"><div class="box"><span>שווי משוער</span><b class="num">${kk(E)}</b></div><div class="box"><span>יתרת משכנתא</span><b class="num">${kk(bal)}</b></div><div class="box hi"><span>ההון שלנו</span><b class="num">${kk(E-bal)}</b></div></div>
+    <div class="bal" aria-hidden="true"><i style="width:${E?Math.min(100,bal/E*100).toFixed(1):0}%;background:var(--muted);opacity:.45"></i><i style="flex:1;background:var(--good)"></i></div>
+    <div class="legend"><span><i style="background:var(--muted);opacity:.45"></i>של הבנק</span><span><i style="background:var(--good)"></i>שלנו</span></div>
+    <div class="grid3" style="margin-top:10px"><div class="box"><span>נכנס מהשוכר</span><b class="num">${ils(r)}</b></div><div class="box"><span>יוצא למשכנתא</span><b class="num">${ils(+m.monthly||0)}</b></div><div class="box ${net>=0?"hi":"warn"}"><span>נשאר בחודש</span><b class="num">${ils(net)}</b></div></div>
+    <div class="note">${esc(m.note||"")}. השווי: ${esc(v.src||"")}.</div>
+    <div class="inrow"><button class="btn ghost" data-open="val">✏️ עדכן שווי</button></div>
+    <div class="more${ui.open==="val"?" on":""}" id="m-val"><div class="inrow"><input id="val-in" inputmode="numeric" placeholder="למשל 2100000" aria-label="שווי משוער בשקלים"><button class="btn" data-save="val">שמור</button></div><div class="note">אחרי בדיקה במדלן או ב-nadlan.gov.il. נשמר עם התאריך של היום.</div></div>
+  </div></section>`;
+  h+=`<section><div class="sh"><h2>📈 שווי לאורך השנים</h2><small>הערכות, לא שמאות</small></div><div class="card">${valChart()}
+    <div class="note">${((v.hist||[]).slice().reverse().map(x=>`${dm(x.d)}: ${kk(+x.v)} (${x.src})`).join(" · "))}</div></div></section>`;
+  h+=`<section><div class="sh"><h2>🧾 הקנייה</h2><small>מחיר למשתכן</small></div><div class="card">
+    <div class="grid3"><div class="box"><span>שילמנו לקבלן</span><b class="num">${kk(+b.paid||0)}</b></div><div class="box"><span>מתוכם הצמדה</span><b class="num">${kk(+b.index_add||0)}</b></div><div class="box"><span>מפתח</span><b>${esc(my(b.keys))}</b></div></div>
+    <div class="note">הגרלה ${esc(dm(b.lottery))} · חוזה ${esc(dm(b.signed))} · טופס 4 ${esc(dm(b.form4))}. ${esc(b.note||"")}. ${esc(M.can_sell_note||"")}.</div></div></section>`;
+  const th=M.tenants_hist||[],ins=M.insurance||{};
+  h+=`<section><div class="sh"><h2>🗂️ עוד פרטים</h2></div><div class="card small">
+    <div style="font-weight:800;margin-bottom:4px">השוכרים מאז 2020</div>${th.map(x=>`<div>${esc(x.n)}: ${esc(x.from.replace(/^(\d{4})-(\d{2})$/,"$2.$1"))}${x.to?"–"+esc(x.to.replace(/^(\d{4})-(\d{2})$/,"$2.$1")):" עד היום"} · <span class="num">${ils(+x.rent)}</span></div>`).join("")}
+    <div style="font-weight:800;margin:10px 0 4px">ביטוח</div><div>${esc(ins.co||"")}, ${esc(ins.kind||"")}: מבנה ${kk(+ins.building||0)}, צד ג׳ ${kk(+ins.tp||0)}. ${esc(ins.note||"")}</div></div></section>`;
+  return h;
+}
+
+// ---------- tab: sell? ----------
+const DIRS=[["sell_empty","למכור כשהשוכר יוצא"],["sell_tenant","למכור עם השוכר"],["keep","להמשיך להשכיר"],["unsure","עוד לא יודע"]];
+function renderSell(){
+  const E=est(),P=ui.price||Math.round(E/25000)*25000||2000000,c=saleCalc(P),c0=costs(),r=rentNow(),m=mort(),net=r-(+m.monthly||0),paid=+((M.bought||{}).paid)||0;
+  const dep=c.hand*DEPOSIT_RATE/100/12,dir=(meta.ans||{}).direction||"";
+  let h=`<section><div class="card"><div class="q"><div class="qt">מה הכיוון עם הדירה?<small>עוזר לי לדעת מה להכין ומתי</small></div><div class="opts">${DIRS.map(([k2,l])=>`<button class="opt${dir===k2?" on":""}" data-dir="${k2}">${esc(l)}</button>`).join("")}</div></div></div></section>`;
+  h+=`<section><div class="sh"><h2>🧮 כמה יישאר ביד</h2><small>גרור את המחיר</small></div><div class="card">
+    <div class="rng"><input type="range" id="price" min="1600000" max="2600000" step="25000" value="${P}" aria-label="מחיר מכירה"><b class="num" id="pv">${kk(P)}</b></div>
+    <div class="muted small">השווי האחרון שלנו: ${kk(E)} (${esc(((M.val||{}).src)||"")})</div>
+    <ul class="calc" id="calc">${calcRows(P)}</ul>
+    <div class="inrow"><button class="btn ghost" data-open="costs">⚙️ עמלות ועלויות</button></div>
+    <div class="more${ui.open==="costs"?" on":""}">
+      <div class="inrow"><label class="small" style="min-width:150px">תיווך (% כולל מע״מ)</label><input id="c-broker" inputmode="decimal" value="${esc(c0.broker_pct)}"></div>
+      <div class="inrow"><label class="small" style="min-width:150px">עו״ד (% לפני מע״מ)</label><input id="c-lawyer" inputmode="decimal" value="${esc(c0.lawyer_pct)}"></div>
+      <div class="inrow"><label class="small" style="min-width:150px">עמלת פירעון מוקדם (₪)</label><input id="c-prepay" inputmode="numeric" value="${esc(c0.prepay)}"></div>
+      <div class="inrow"><button class="btn" data-save="costs">שמור</button></div>
+      <div class="note">תיווך 1.5% כולל מע״מ זה מה שסוכם עם המתווך ב-2023. עמלת הפירעון היא הערכה עד שלאומי יגידו מספר.</div></div>
+    <div class="note">בלי מס שבח: כנראה פטור כדירה יחידה (אין לכם דירה אחרת). חייבים לאמת עם רו״ח או עו״ד לפני החלטה.</div></div></section>`;
+  h+=`<section><div class="sh"><h2>⚖️ למכור או להשכיר</h2><small>השוואה גסה, בחודש</small></div><div class="card">
+    <div class="grid2"><div class="box ${net>=0?"":"warn"}"><span>להשכיר: נשאר אחרי המשכנתא</span><b class="num" id="cmp-keep">${ils(net)}</b></div><div class="box hi"><span>למכור: הכסף בפיקדון ${DEPOSIT_RATE}%</span><b class="num" id="cmp-sell">${ils(dep)}</b></div></div>
+    <div class="note">שכירות ${ils(r)} בחודש זה כ-${E?(r*12/E*100).toFixed(1):"?"}% בשנה מהשווי. בהשכרה הדירה גם יכולה לעלות או לרדת בערך, וזה לא בחשבון. מאז הקנייה (${kk(paid)}) הדירה עלתה בערך ב-<span class="num">${kk(E-paid)}</span>.</div></div></section>`;
+  h+=`<section><div class="sh"><h2>🗓️ ציר זמן</h2></div><div class="card"><ul class="tl">${(meta.timeline||[]).slice().sort((a,b)=>a.d<b.d?-1:1).map(x=>`<li class="${x.done?"done":x.now?"now":""}"><span class="d">${esc(dm(x.d))}${!x.done&&!x.now?" · "+esc(until(x.d)):""}</span>${esc(x.t)}</li>`).join("")}</ul></div></section>`;
+  h+=`<section><div class="sh"><h2>✅ לפני שמחליטים</h2></div><div class="card"><ol class="check">
+    <li>לסיים את הרישום בטאבו (בתהליך, משימה פתוחה)</li>
+    <li>שווי עדכני: עסקאות אחרונות בבניין ובשכונה</li>
+    <li>יתרה ועמלת פירעון מוקדם מלאומי (שירות לקוחות *6062)</li>
+    <li>מס שבח: לוודא פטור דירה יחידה עם רו״ח או עו״ד</li>
+    <li>אם קונים דירה אחרת לפני המכירה: לבדוק כמה זמן יש למכור כדי לשלם מס רכישה של דירה יחידה</li>
+    <li>השוכר: למכור איתו (למשקיע) או לחכות לסוף החוזה ב-${esc(dm((M.tenant||{}).end))}</li></ol>
+    <div class="links"><a href="https://www.nadlan.gov.il/" target="_blank" rel="noopener">עסקאות באתר הממשלתי</a><a href="https://www.madlan.co.il/" target="_blank" rel="noopener">מדלן</a><a href="https://www.gov.il/he/service/real-estate-taxation-calculator" target="_blank" rel="noopener">סימולטור מיסוי מקרקעין</a></div>
+    <div class="note">מחקר בלבד: אין פנייה למתווכים, לקונים או לבנק בלי אישור שלך.</div></div></section>`;
+  const s23=M.sale_2023||{};if(s23.ask)h+=`<section><div class="sh"><h2>⏪ הניסיון ב-2023</h2></div><div class="card small">${esc(dm(s23.d))}: ביקשנו ${kk(+s23.ask)} דרך ${esc(s23.broker||"")}, עמלה ${esc(s23.fee||"")}. ${esc(s23.result||"")}.</div></section>`;
+  return tasksBlock()+h;
+}
+function calcRows(P){const c=saleCalc(P),neg=v=>`<span class="num neg">-${ils(v)}</span>`;
+  return `<li><span>מחיר מכירה</span><span class="num">${ils(P)}</span></li><li><span>סגירת המשכנתא</span>${neg(c.bal)}</li><li><span>עמלת פירעון מוקדם (הערכה)</span>${neg(c.prepay)}</li><li><span>תיווך</span>${neg(c.broker)}</li><li><span>עו״ד</span>${neg(c.lawyer)}</li><li class="tot"><span>נשאר ביד</span><span class="num">${ils(c.hand)}</span></li>`;}
+
+// ---------- tab: our home ----------
+function renderHome(){
+  const cur=stepNow(H.steps),rent=homeRent(),net=rentNow()-(+mort().monthly||0),ins=H.insurance||{};
+  let h=`<section><div class="sh"><h2>🏠 ${esc(H.name||"")}</h2><small>${esc(H.kind||"")}</small></div><div class="card">
+    <div style="font-weight:800;font-size:17px">${esc(H.addr||"")}</div>
+    <div class="grid3" style="margin-top:8px"><div class="box"><span>שכירות היום</span><b class="num">${ils(rent)}</b></div><div class="box"><span>החוזה עד</span><b>${esc(dm(H.end))}</b></div><div class="box"><span>נשאר</span><b>${esc(until(H.end).replace("בעוד ",""))}</b></div></div>
+    <table class="steps">${(H.steps||[]).map(s=>`<tr class="${cur&&s.from===cur.from?"now":""}"><td>${esc(my(s.from))} · ${esc(s.l||"")}</td><td class="num">${ils(+s.rent)}</td></tr>`).join("")}</table>
+    <div class="note">${esc(H.checks_note||"")}. ועד בית ${ils(+H.vaad||0)} (מ-2023). ביטוח ${esc(ins.co||"")} ${esc(ins.kind||"")}, ${ils(+ins.annual||0)} בשנה.</div></div></section>`;
+  h+=`<section><div class="sh"><h2>💸 כמה עולה לנו לגור</h2><small>בחודש</small></div><div class="card">
+    <div class="grid3"><div class="box"><span>שכירות כאן</span><b class="num">${ils(rent)}</b></div><div class="box hi"><span>פחות הנטו ממוצקין</span><b class="num">${ils(net)}</b></div><div class="box"><span>בפועל</span><b class="num">${ils(rent-net)}</b></div></div>
+    <div class="note">בשנה: ${ils(rent*12)} שכירות. החוזה נגמר ב-${esc(dm(H.end))}, שנה לפני סוף האופציה של השוכר במוצקין (${esc(dm((M.tenant||{}).option_end))}).</div></div></section>`;
+  h+=`<section><div class="sh"><h2>🧭 איפה גרנו</h2></div><div class="card"><ul class="tl">${[...(H.hist||[]),{y:"2016",l:"קנינו את הדירה במוצקין (בהגרלה; מושכרת מאז 2020)",own:1}].sort((a,b)=>a.y<b.y?-1:a.y>b.y?1:(a.own?1:-1)).map((x,i,a)=>`<li class="${i===a.length-1?"now":"done"}"><span class="d">${esc(x.y)}${x.own?" · 🏢":""}</span>${esc(x.l)}</li>`).join("")}</ul></div></section>`;
+  return tasksBlock()+h;
+}
+
+function render(){
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab===ui.tab));
+  $("chat").href=safe(meta.chat_url)||CHAT_FALLBACK;
+  if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
+  if(!M.name){$("app").innerHTML=`<div class="empty">${loaded?"אין עדיין נתונים":"טוען…"}</div>`;return;}
+  const E=est(),bal=+mort().balance||0,net=rentNow()-(+mort().monthly||0),nx=nextEvent();
+  $("k-eq").textContent=kk(E-bal);$("k-net").textContent=ils(net);
+  if(nx){$("k-next").textContent=dm(nx.d);$("k-next-l").textContent=nx.t;}
+  $("app").innerHTML=ui.tab==="sell"?renderSell():ui.tab==="home"?renderHome():renderMotz();
+  $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד דיור ${esc(window.HOUSING_BUILD)}`;
+}
+let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
+async function upd(id,patch,msg){const tgt=id==="_meta"?meta:id==="home"?H:M;const prev=JSON.parse(JSON.stringify(tgt));Object.assign(tgt,patch);const y=scrollY;render();scrollTo(0,y);
+  if(!db){toast("אין חיבור, לא נשמר");return;}
+  try{await db.collection("housing").doc(id).update(patch);toast(msg||"נשמר");}catch(e){Object.assign(tgt,prev);render();toast("לא נשמר, נסה שוב");}}
+document.addEventListener("input",e=>{const t=e.target;if(t.id==="price"){ui.price=+t.value;saveUi();$("pv").textContent=kk(ui.price);$("calc").innerHTML=calcRows(ui.price);
+  const c=saleCalc(ui.price),el=$("cmp-sell");if(el)el.textContent=ils(c.hand*DEPOSIT_RATE/100/12);}});
+document.addEventListener("click",e=>{const g=s=>e.target.closest(s);let b;
+  if(b=g(".tab")){ui.tab=b.dataset.tab;saveUi();render();scrollTo(0,0);return;}
+  if(b=g("[data-open]")){ui.open=ui.open===b.dataset.open?null:b.dataset.open;saveUi();const y=scrollY;render();scrollTo(0,y);return;}
+  if(b=g("[data-dir]")){upd("_meta",{ans:{...(meta.ans||{}),direction:b.dataset.dir,direction_at:new Date().toISOString()}},"נשמר");return;}
+  if(b=g("[data-save]")){const k2=b.dataset.save;
+    if(k2==="val"){const v=+String($("val-in").value).replace(/[^\d]/g,"");if(!(v>=800000&&v<=5000000)){toast("הקלד שווי בשקלים, למשל 2100000");return;}
+      const val=M.val||{},d=ds(today());ui.open=null;saveUi();upd("motzkin",{val:{...val,est:v,as_of:d,src:"עודכן ידנית ב-"+dm(d),hist:[...(val.hist||[]).filter(x=>x.d!==d),{d,v,src:"עודכן ידנית"}]}},"השווי עודכן");return;}
+    if(k2==="costs"){const n=id=>{const x=parseFloat(String($(id).value).replace(/[^\d.]/g,""));return isNaN(x)?0:x;};
+      upd("_meta",{costs:{broker_pct:n("c-broker"),lawyer_pct:n("c-lawyer"),prepay:n("c-prepay")}},"העלויות נשמרו");return;}}
+});
+render();
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("housing").onSnapshot(s=>{loaded=true;s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else if(x.id==="motzkin")M=v;else if(x.id==="home")H=v;});render();},()=>{});
+  db.collection("topics").onSnapshot(s=>{topics=s.docs.map(x=>({id:x.id,...x.data()})).filter(t=>!t._deleted&&t.dash==="housing");render();},()=>{});
+});
+})();
+</script>
+</body>
+</html>
