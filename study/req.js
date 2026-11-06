@@ -38,7 +38,7 @@
       if(!ta.value.trim()){m.textContent='כתב'+Y+' כמה מילים ✍️';ta.focus();return}
       busy=true;go.disabled=true;m.textContent='שולח...';
       fetch(SB_URL+'/rest/v1/rpc/study_request_add',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify({p_kid:kid,p_kind:kind,p_txt:ta.value})})
-        .then(function(r){return r.json()}).then(function(j){if(j===true||(j&&j.ok)){if(j&&j.id){var mine=lsj('study_rq_mine_'+kid,{});mine[j.id]=ta.value.trim().slice(0,140);var ks=Object.keys(mine);if(ks.length>30)delete mine[ks[0]];lss('study_rq_mine_'+kid,mine)}m.textContent=window.STUDY_GUEST?'במצב אורח זה לא נשלח באמת 🧪':'נשלח! אבא ואמא יראו את זה 💌';ta.blur();setTimeout(close,1600)}
+        .then(function(r){return r.json()}).then(function(j){if(j===true||(j&&j.ok)){if(j&&j.id){var mine=lsj('study_rq_mine_'+kid,{});mine[j.id]=ta.value.trim().slice(0,140);var ks=Object.keys(mine);if(ks.length>30)delete mine[ks[0]];lss('study_rq_mine_'+kid,mine)}m.textContent=window.STUDY_GUEST?'במצב אורח זה לא נשלח באמת 👀':'נשלח! אבא ואמא יראו את זה 💌';ta.blur();setTimeout(close,1600)}
           else{busy=false;go.disabled=false;m.textContent=j&&j.err==='limit'?'שלחת הרבה בקשות. נסה'+Y+' שוב עוד קצת':'משהו לא הצליח. נסה'+Y+' שוב'}})
         .catch(function(){busy=false;go.disabled=false;m.textContent='אין חיבור כרגע. נסה'+Y+' שוב עוד מעט'})}
     // בקשה שאבא ואמא סימנו "טופל" (אורן 6.11.2026): חלון קטן פעם אחת לכל בקשה. השרת מחזיר רק id, סוג ומועד, בלי הטקסט; הטקסט נשמר רק במכשיר ששלח.
