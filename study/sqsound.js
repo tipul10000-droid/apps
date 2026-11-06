@@ -51,7 +51,7 @@
   // צלילים מוקלטים מהאינטרנט (אורן 6.11.2026): 15 צלילים מצחיקים ב-CC0 מ-Freesound (study/sqfx, קרדיטים ב-sqfx/CREDITS.txt).
   // לכל אולטרה סקווישי צליל מוקלט משלו (ULT). לסקווישים הישנים: לפעמים הצליל שלהם, ולפעמים צליל מוקלט אקראי (ערבוב).
   var BASE=((document.currentScript&&document.currentScript.src)||'').replace(/sqsound\.js.*$/,'')+'sqfx/';
-  var POOL=['f_wet','f_tiny','f_three','b_burp','b_loud','v_omg','v_omg2','v_wow','v_yay','c_boing','c_squeak','c_fall','c_dizzy','c_kiss','c_blbl'];
+  var POOL=['f_wet','f_tiny','f_three','b_burp','b_loud','v_omg','v_omg2','v_wow','v_yay','c_boing','c_squeak','c_fall','c_dizzy','c_kiss','c_blbl','v_faaa','v_faaa','v_aaah','v_woui','v_scream'];
   var ULT={u_ramyeon:'v_omg',u_hotteok:'c_boing',u_bungeo:'c_kiss',u_corndog:'b_burp',u_mandu:'f_wet',u_banana:'v_wow',
     u_hole:'c_fall',u_astro:'v_yay',u_donut:'c_squeak',u_meteor:'b_loud',u_robot:'c_dizzy',u_starfruit:'f_three'};
   var CUR=null,LAST=null;
