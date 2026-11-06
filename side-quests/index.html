@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.5";window.SQ_BUILD_AT="6.11.2026 14:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.6";window.SQ_BUILD_AT="6.11.2026 16:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1461,6 +1461,49 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
 .ctxrow .toolrow .tfind:active{background:rgba(255,255,255,.14)}
 .ctxrow .toolrow .refr,.ctxrow .toolrow .tchat{font-size:13.5px!important;padding:0 8px!important}
 .ctxrow .toolrow .refr .rv{overflow:hidden;text-overflow:ellipsis}
+
+/* 10.6 (Oren 6.11.2026): slim top. One thin banner row with icons in one frame, 6 quests in one row, floating + */
+.qband,body .qband{height:calc(58px + env(safe-area-inset-top,0px))!important;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box}
+.qband .qb-in{padding-block:0!important;justify-content:center!important;gap:0!important;padding-inline-end:220px}
+.qband .qb-in>p,.qband .qb-in>span,.qband .fz-title>p,.qband .fz-title>span,.qband .qlogo,.sb-compass,.ab-radar{display:none!important}
+.qband h2,.qband .fz-title h2{font-size:clamp(18px,5.5vw,23px)!important;line-height:1!important;margin:0!important;max-width:none!important;white-space:nowrap;letter-spacing:-.3px}
+.qband h2 br{display:none}.qband .fz-title h2 i,.qband h2 i{margin-inline-start:.22em}
+.topbtns{top:calc(env(safe-area-inset-top,0px) + 10px)!important;left:max(12px,env(safe-area-inset-left,0px))!important;gap:0!important;border:1.5px solid rgba(255,255,255,.4);border-radius:12px;overflow:hidden;background:rgba(17,17,17,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.topbtns .tb{width:38px!important;height:38px!important;border-radius:0!important;border:0!important;box-shadow:none!important;background:transparent!important;color:#fff!important;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0;margin:0;font-size:17px;text-decoration:none}
+.topbtns .tb+.tb{border-inline-start:1.5px solid rgba(255,255,255,.28)!important}
+.topbtns .tb svg{width:19px!important;height:19px!important}
+.topbtns .tb.tsun{color:#F6B53C!important}
+.topbtns .tb.tloc.on{background:#2F80ED!important}
+.topbtns .tb.tfind.on{background:var(--accent)!important;color:var(--accent-ink)!important}
+.topbtns .tb:active{background:rgba(255,255,255,.18)!important}
+.topbtns .tchat .ic{font-size:17px;line-height:1}
+.topbtns .tdot{top:5px!important;right:6px!important}
+.tadd.fab{position:fixed;z-index:30;left:max(18px,env(safe-area-inset-left,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:500 34px/1 system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.4);border:0;padding:0}
+.tadd.fab:active{filter:brightness(.92)}
+main{padding-bottom:90px}
+.toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))!important}
+.hero{padding-block:10px 8px!important}
+.hero .inner{gap:8px!important}
+.qnav,.qnav[data-n]{display:grid!important;grid-template-columns:repeat(var(--qn,6),minmax(0,1fr))!important;gap:0!important;border:1.5px solid rgba(255,255,255,.4);border-radius:13px;overflow:hidden}
+.qnav[data-n="3"]{--qn:3}.qnav[data-n="4"]{--qn:4}.qnav[data-n="5"]{--qn:5}
+.qnav .qbtn{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;height:50px!important;min-height:0!important;padding:0 2px!important;margin:0!important;border-radius:0!important;border:0!important;box-shadow:none!important;outline:0!important;background:transparent!important;color:#fff!important;opacity:.6;transform:none!important;filter:none!important}
+.qnav .qbtn+.qbtn{border-inline-start:1.5px solid rgba(255,255,255,.25)!important}
+.qnav .qbtn::before,.qnav .qbtn::after{display:none!important}
+.qnav .qbtn .qe{font-size:19px!important;line-height:1!important;margin:0!important;filter:none!important;opacity:1!important}
+.qnav .qbtn .qn{font:700 11px/1 system-ui,sans-serif!important;letter-spacing:0!important;white-space:nowrap;color:inherit!important;text-shadow:none!important}
+.qnav .qbtn .qn i{display:none}
+.qnav .qbtn[aria-current="true"]{background:#fff!important;color:#111!important;opacity:1}
+.qnav .qbtn[aria-current="true"] .qn{color:#d9772b!important}
+.ctxrow{gap:6px!important}
+.ctxrow .toolrow{display:flex!important;justify-content:flex-start}
+.ctxrow .toolrow .refr{width:170px!important;justify-content:flex-start!important;min-height:26px!important;padding:0 2px!important;border:0!important;background:transparent!important;color:var(--hero-muted)!important;font-size:12.5px!important;font-weight:600!important;gap:5px}
+.ctxrow .toolrow .refr .ic{font-size:14px}
+.ctxrow .toolrow .refr .rk{color:var(--hero-ink)}
+.ctxrow .toolrow .refr .rv:not(:empty)::before{content:"עודכן "}
+.ctxrow .toolrow .refr:has(.rv:not(:empty)) .rk{display:none}
+.ctxrow .wseg{border:1.5px solid rgba(255,255,255,.4)!important;border-radius:13px}
+.ctxrow .wseg button{min-height:40px!important}
+.ctxrow .wseg button+button{border-inline-start-width:1.5px!important;border-inline-start-color:rgba(255,255,255,.25)!important}
 </style>
 </head>
 <body>
@@ -1484,7 +1527,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   <div class="fz-floor" aria-hidden="true"></div>
   <div class="qb-in gut"><div class="fz-title">
     <span class="fz-press" aria-hidden="true">PRESS START</span>
-    <h2>FUN<br>QUEST</h2>
+    <h2>FUN <br>QUEST</h2>
     <p>מוזיקה, סרטים ותחביבים. רק כיף.</p>
   </div></div>
   <div class="fz-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -1526,12 +1569,13 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
   </div>
   <div class="qb-in gut"><span class="ai-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
-<div class="topbtns"><button class="tb tadd" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button><button class="tb tsun" id="sunBtn" type="button" aria-label="בריף הבוקר"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<button class="tadd fab" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button>
+<div class="topbtns"><a class="tb tchat" id="tchat" aria-label="עדכונים בצ׳אט" href="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span></a><button class="tb tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tb tsun" id="sunBtn" type="button" aria-label="בריף הבוקר"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><a class="tchat" id="tchat" href="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span><span>עדכונים בצ׳אט</span></a><button class="tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button></div></div>
+    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
@@ -2535,7 +2579,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
       if(q.length)top.push(group(SIZES.quick.g,q,false,"quick"));
       if(away){if(tr.length)more.push(foldRows("trip",SIZES.trip.g,tr));if(lo.length)more.push(foldRows("long",SIZES.long.g,lo));}
       else{if(tr.length)top.push(group(SIZES.trip.g,tr,false,"trip"));if(lo.length)top.push(group(SIZES.long.g,lo,false,"long"));}
-      if(!top.length)top.push(h("div",{class:"empty"},topics.length?"אין משימות פתוחות.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה ב-+ למעלה.`));
+      if(!top.length)top.push(h("div",{class:"empty"},topics.length?"אין משימות פתוחות.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה ב-+ למטה.`));
     }
     more.push(foldRows("wait","מחכה לאחרים",waiting),foldRows("later","אחר כך",later),foldRows("paused","בהקפאה",paused));
     const doneL=topics.filter(t=>t.status==="done"||t.status==="promoted").sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")).slice(0,30);
