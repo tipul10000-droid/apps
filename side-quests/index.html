@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.7";window.SQ_BUILD_AT="6.11.2026 19:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.8";window.SQ_BUILD_AT="6.11.2026 23:15";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1314,11 +1314,18 @@ details.more[open]>summary{margin-bottom:10px}
 #pgShade{position:fixed;inset:0;z-index:35;background:#000;opacity:0;pointer-events:none}
 .pgbar{position:sticky;top:0;z-index:3;background:var(--hero);color:var(--hero-ink);padding-top:env(safe-area-inset-top,0px);
   padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px))}
-.pgbar-in{height:50px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:6px}
-.pgback{justify-self:start;display:flex;align-items:center;gap:2px;height:44px;min-width:44px;max-width:100%;padding:0 8px 0 10px;border:0;background:none;color:var(--accent);font:inherit;font-size:17px;font-weight:500;cursor:pointer;white-space:nowrap;overflow:hidden}
-.pgback .chev{font-size:30px;line-height:1;margin-top:-3px;font-weight:300}
+/* 11.8 (Oren 6.11): one back button everywhere, same as the dashboards' (9.8): lower (44px under the status bar, like the
+   quest band), bigger, with the Side Quests logo. Fixed size, never moves. */
+.pgbar{padding-top:calc(env(safe-area-inset-top,0px) + 44px)}
+.pgbar-in{height:60px;display:grid;grid-template-columns:auto minmax(0,1fr) 44px;align-items:center;gap:8px}
+.pgback{justify-self:start;display:inline-flex;align-items:center;gap:9px;height:46px;box-sizing:border-box;max-width:62vw;padding:0 14px 0 6px;border-radius:14px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:var(--hero-ink,#fff);font:inherit;font-family:var(--f-display,inherit);font-size:16.5px;font-weight:800;line-height:1;
+  cursor:pointer;white-space:nowrap;overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.pgback:active{background:rgba(255,255,255,.22)}
+.pgback .ar{font-size:18px;opacity:.85;flex:none}
+.pgback img{width:34px;height:34px;border-radius:9px;display:block;flex:none;pointer-events:none}
 .pgback span:last-child{overflow:hidden;text-overflow:ellipsis}
-.pgtitle{font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw;text-align:center}
+.pgtitle{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;text-align:center;opacity:.92}
 .pgbody{padding:16px max(16px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
 .pghero{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14.5px;margin:-2px 2px 0}
 .pghero b{font-family:var(--f-display);font-size:26px;color:var(--ink);font-weight:800;letter-spacing:-.3px}
@@ -2329,7 +2336,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     const cu=d&&secUrl("dash_"+d.id,d.chat,chatOf(allTopics.find(x=>x.id===d.id)||{}),proj&&proj.claude_url);
     const chat=d?h("a",{class:"pgchat",href:cu||SQ_CHAT,target:"_blank",rel:"noopener","aria-label":"עבודה עם הצ׳אט על הדשבורד",html:ICON.chat,onclick:e=>{if(!cu){try{navigator.clipboard&&navigator.clipboard.writeText("לגבי הדשבורד "+(d.title||"")+" ב-Side Quests");toast("אין עדיין שיחה לדשבורד. השם הועתק, הדבק בשיחה");}catch(x){}}}}):h("span");
     const bar=h("div",{class:"pgbar",style:d?`--hero:${d.c1||"#1F1E1D"}`:""},h("div",{class:"pgbar-in"},
-      h("button",{class:"pgback",type:"button","aria-label":"חזרה ל"+back,onclick:()=>navBack()},h("span",{class:"chev","aria-hidden":"true"},"‹"),h("span",null,back)),
+      pgBack(back),
       h("div",{class:"pgtitle"},d?((d.icon?d.icon+" ":"")+(d.short||d.title||"")):""),chat));
     const edge=h("div",{class:"pgedge","aria-hidden":"true"});
     let body;
@@ -2349,8 +2356,10 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   function projWaiting(pid){return allTopics.filter(t=>t.project===pid&&t.status==="waiting_me"&&!isBg(t)&&!isFun(t)).length;}
   function projCounts(ts){const o=ts.filter(t=>isOpen(t)&&!isBg(t)&&!isFun(t));return {open:o.length,me:o.filter(t=>t.status==="waiting_me").length,asks:o.reduce((n,t)=>n+openAsks(t),0)};}
   function genTasks(){return allTopics.filter(t=>!isFun(t)&&questOf(t)==="ai"&&!isProjTask(t)&&!isBg(t));}
+  function pgBack(back){return h("button",{class:"pgback",type:"button","aria-label":"חזרה ל"+back,onclick:()=>navBack()},
+    h("span",{class:"ar","aria-hidden":"true"},"→"),h("img",{src:"icon-192.png?v=2",alt:""}),h("span",null,back));}
   function pgBar(back,title){return h("div",{class:"pgbar"},h("div",{class:"pgbar-in"},
-    h("button",{class:"pgback",type:"button","aria-label":"חזרה ל"+back,onclick:()=>navBack()},h("span",{class:"chev","aria-hidden":"true"},"‹"),h("span",null,back)),
+    pgBack(back),
     h("div",{class:"pgtitle"},title),h("span")));}
   function renderNav(){if(nav.lvl===3)renderProj();}
   function renderTiles(){const pg=$("aiTiles");if(!pg||quest!=="ai")return;const list=[...projects].sort((a,b)=>(a.order??99)-(b.order??99)||(a.name||"").localeCompare(b.name||""));

@@ -124,7 +124,7 @@ section{margin-bottom:22px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=3">
+<link rel="stylesheet" href="dash-back.css?v=4">
 <script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -168,7 +168,7 @@ function heroHome(){const R=list("recipe"),cart=R.filter(x=>x.cart);
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שלח לינק למתכון או מסעדה<small>רילס, טיקטוק, יוטיוב או אתר. אני מוציא קניות ומתכון</small></span></a>
   <div class="kpis"><div class="kpi"><b>${R.length}</b><span>מתכונים</span></div><div class="kpi"><b>${R.filter(x=>(x.made_count||0)>0).length}</b><span>כבר הכנתי</span></div><div class="kpi"><b>${cart.length}</b><span>ברשימת הקניות</span></div></div>`;}
 function heroRecipe(x){const s=x.source||{},u=safe(s.url),im=imgSrc(x.img);
-  return `<div class="top"><button class="back" data-home>→ כל המתכונים</button><span class="back">${x.fav?"⭐ מועדף":""}</span></div>
+  return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🍳</span><span>כל המתכונים</span></button><span class="back">${x.fav?"⭐ מועדף":""}</span></div>
   <h1>${im?"":esc(x.icon||"🍴")+" "}${esc(x.title)}</h1><p class="sub">${esc(x.summary||"")}</p>
   ${im?`<div class="photo" role="img" aria-label="${esc(x.title)}" style="background-image:url('${esc(im)}')">${x.img_note?`<small>${esc(x.img_note)}</small>`:""}</div>`:""}
   ${u?`<a class="src" href="${esc(u)}" target="_blank" rel="noopener"><span style="font-size:22px">▶️</span><span>לסרטון / למקור${s.author?" של "+esc(s.author):""}<small>${esc(PLAT[plat(x)]||"")}${s.label?" · "+esc(s.label):""}</small></span></a>`:""}`;}
@@ -219,7 +219,7 @@ function renderRecipe(id){const x={id,...(items[id]||{})};if(!x.title){$("app").
   $("app").innerHTML=acts+(ui.tab==="recipe"?tabRecipe(x):tabShop(x));}
 function cartItems(){return list("recipe").filter(x=>x.cart).flatMap(x=>shopOf(x).map(s=>({...s,from:x.title})));}
 function renderCart(){const C=list("recipe").filter(x=>x.cart);
-  $("hero").innerHTML=`<div class="top"><button class="back" data-home>→ כל המתכונים</button></div><h1>🛒 רשימת קניות משולבת</h1><p class="sub">${esc(C.map(x=>x.title).join(" · ")||"אין מתכונים ברשימה")}</p>`;
+  $("hero").innerHTML=`<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🍳</span><span>כל המתכונים</span></button></div><h1>🛒 רשימת קניות משולבת</h1><p class="sub">${esc(C.map(x=>x.title).join(" · ")||"אין מתכונים ברשימה")}</p>`;
   $("bar").innerHTML="";const s=cartItems();
   $("app").innerHTML=s.length?shopList(s,true)+`<div class="bar2"><button data-copy>📋 העתק רשימה</button><button data-clear>↺ נקה סימונים</button></div><div class="note">מוציאים מתכון מהרשימה מתוך דף המתכון.</div>`:`<div class="empty">אין עדיין מתכונים ברשימה. בדף מתכון לוחצים "🛒 לרשימה המשולבת".</div>`;}
 
