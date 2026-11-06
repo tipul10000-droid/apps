@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Study · הכתבה של דני</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Study">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css">
+<style>
+:root{--pu:#8b5cf6;--pu2:#c084fc;--pk:#ec4899;--pl:#f3edff;--ok:#16a34a;--no:#e11d48}
+main{padding-bottom:28px}
+.nav{display:flex;align-items:center;gap:8px;margin-bottom:8px}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:15px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:5px 12px;cursor:pointer}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px 14px;box-shadow:var(--sh)}
+.prog .row{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;color:var(--mut)}
+.prog .row b{color:var(--fg);font-size:20px}
+.pb{height:12px;background:#ece7f8;border-radius:8px;overflow:hidden;margin:8px 0 10px}
+.pb i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--pu),var(--pk));transition:width .6s cubic-bezier(.2,.9,.3,1.2)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:14px;background:var(--pl);color:#5b21b6;border-radius:20px;padding:3px 10px;white-space:nowrap}
+.chip.hot{background:#fff1e6;color:#c2410c}
+.chip.test{background:#e8eef7;color:var(--ac)}
+.stage{display:flex;align-items:flex-end;gap:8px;margin:14px 0 10px;min-height:96px}
+#mon{width:92px;height:96px;flex:none;transform-origin:50% 100%;animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-3px)}}
+#mon.hop{animation:hop .6s}#mon.sad{animation:sad .8s}#mon.dance{animation:dance 1.1s}
+@keyframes hop{30%{transform:translateY(-16px) scale(1.04,1.08)}60%{transform:translateY(0) scale(1.1,.88)}80%{transform:scale(.97,1.03)}}
+@keyframes sad{30%{transform:scale(1.08,.82) rotate(-5deg)}60%{transform:scale(1.05,.86) rotate(5deg)}}
+@keyframes dance{15%{transform:rotate(-12deg) translateY(-8px)}35%{transform:rotate(12deg) translateY(-8px)}55%{transform:rotate(-10deg)}75%{transform:rotate(8deg) translateY(-12px) scale(1.05)}}
+#lid1,#lid2{transform-box:fill-box;transform-origin:center;animation:blink 4.2s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
+.stick{transform-box:fill-box;transform-origin:50% 100%;animation:wave 1.6s ease-in-out infinite}
+@keyframes wave{50%{transform:rotate(14deg)}}
+.bub{position:relative;flex:1;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 12px;font-size:16px;box-shadow:var(--sh);margin-bottom:18px}
+.bub:before{content:"";position:absolute;right:-8px;bottom:14px;border:8px solid transparent;border-left-color:var(--card);border-right:0;filter:drop-shadow(1px 0 0 var(--bd))}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px 16px;box-shadow:var(--sh);text-align:center}
+.mode{display:inline-block;font-size:13px;font-weight:700;color:#6d28d9;background:var(--pl);border-radius:20px;padding:3px 12px;margin-bottom:10px}
+.mode.prac{color:#c2410c;background:#fff1e6}
+.he{font-size:30px;font-weight:800;line-height:1.25}
+.en{font-size:32px;font-weight:800;direction:ltr;unicode-bidi:isolate}
+.ask{font-size:15px;color:var(--mut);margin:6px 0 12px}
+#ans{width:100%;font:600 24px system-ui,Arial,sans-serif;text-align:center;direction:ltr;padding:12px;border:2px solid var(--bd);border-radius:14px;background:#fbfaff;color:var(--fg);outline:none}
+#ans:focus{border-color:var(--pu2);box-shadow:0 0 0 4px rgba(192,132,252,.25)}
+.btns{display:flex;gap:8px;margin-top:10px}
+.btn{flex:1;font:inherit;font-weight:700;padding:13px;border:0;border-radius:14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pu),var(--pk));box-shadow:0 3px 0 #6d28d9}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #6d28d9}
+.btn.soft{flex:0 0 auto;color:var(--mut);background:#f1f3f7;box-shadow:none;font-weight:600;font-size:15px}
+.opt{display:block;width:100%;margin-top:9px;padding:13px;font:inherit;color:inherit;background:#fff;border:2px solid var(--bd);border-radius:14px;cursor:pointer}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}.opt.no{background:var(--no);border-color:var(--no);color:#fff}
+.fb{margin-top:14px;text-align:center}
+.fb .t{font-size:20px;font-weight:800}
+.fb .t.ok{color:var(--ok)}.fb .t.no{color:var(--no)}.fb .t.mid{color:#c2410c}
+.dif{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;margin:12px auto 4px;max-width:360px;text-align:right}
+.dif span.l{font-size:14px;color:var(--mut)}
+.w{direction:ltr;text-align:left;font:700 24px ui-monospace,Menlo,Consolas,monospace;letter-spacing:2px}
+.w .x{color:var(--no);text-decoration:line-through;text-decoration-thickness:2px}
+.w .g{color:#fff;background:var(--ok);border-radius:5px;padding:0 1px}
+.w .gap{display:inline-block;width:.6em;border-bottom:3px solid var(--no);height:.9em}
+.hints{font-size:15px;margin:8px 0 2px;color:var(--fg)}.hints div{margin:3px 0}
+.hints b{direction:ltr;unicode-bidi:isolate;color:#6d28d9;background:var(--pl);border-radius:6px;padding:0 6px;font-family:ui-monospace,Menlo,monospace}
+.say{font:inherit;font-size:14px;background:var(--pl);color:#6d28d9;border:0;border-radius:20px;padding:4px 12px;cursor:pointer;margin-top:6px}
+.big{font-size:28px;font-weight:800;direction:ltr;unicode-bidi:isolate;color:#6d28d9;margin:6px 0 0}
+#nx{display:none;margin-top:14px}
+.foot{display:flex;gap:8px;margin-top:14px}.foot button{flex:1;padding:11px 6px;font:inherit;font-size:15px;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:12px;cursor:pointer}
+.ov{position:fixed;inset:0;background:rgba(31,41,51,.5);display:none;align-items:flex-start;justify-content:center;z-index:9;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 14px;overflow:auto}
+.ov.on{display:flex}
+.pn{background:var(--card);border-radius:20px;padding:18px 16px;width:100%;max-width:500px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.pn h2{margin:0 0 10px;font-size:22px}.pn p{margin:8px 0;line-height:1.5}.pn ul{margin:8px 0;padding-right:20px;line-height:1.55}
+.pn .btn{width:100%;margin-top:10px}
+.wl div{display:flex;justify-content:space-between;gap:10px;padding:8px 2px;border-bottom:1px solid #eef0f4}
+.wl b{direction:ltr;unicode-bidi:isolate}.wl small{color:var(--mut)}
+#sqov{align-items:center;background:rgba(91,33,182,.35)}
+#sqov .pn{text-align:center;overflow:hidden;position:relative}
+#sqimg{width:150px;height:150px;margin:6px auto;display:block;animation:sqin .9s cubic-bezier(.2,1.6,.4,1)}
+#sqimg.squish{animation:squish .5s}
+@keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
+@keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
+.sqg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.sqg div{background:#faf7ff;border:1px solid #ece4fb;border-radius:14px;padding:4px;text-align:center;font-size:11px;color:var(--mut)}
+.sqg svg{width:100%;height:auto;display:block}
+.sqg .lock svg{filter:grayscale(1) brightness(1.6);opacity:.35}
+.conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:20;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:26px;font-weight:900;color:#6d28d9;z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap}
+@keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
+.donebox{text-align:center}.donebox .he{font-size:26px}
+@media(prefers-reduced-motion:reduce){#mon,#sqimg,.stick,#lid1,#lid2{animation:none!important}}
+</style></head><body><main>
+<div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="sqb" type="button">🧸 <span id="sqn">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
+<div class="prog">
+  <div class="row"><span>יודעת לכתוב</span><span><b id="dn">0</b> / <span id="tt">36</span></span></div>
+  <div class="pb"><i id="pbi"></i></div>
+  <div class="chips"><span class="chip" id="pts">⭐ 0 נקודות</span><span class="chip" id="stc">🔥 רצף 0</span><span class="chip" id="stb">🏆 שיא 0</span><span class="chip test" id="tst" style="display:none"></span></div>
+</div>
+<div class="stage">
+<svg id="mon" viewBox="0 0 100 104" aria-hidden="true">
+  <defs><radialGradient id="mg" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#d8b4fe"/><stop offset=".6" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></radialGradient></defs>
+  <g class="stick"><rect x="84" y="44" width="4" height="26" rx="2" fill="#4c1d95"/><path d="M86 46c-6-7-12-1-8 5l8 8 8-8c4-6-2-12-8-5z" fill="#f9a8d4" stroke="#db2777" stroke-width="1.5"/><circle cx="83" cy="44" r="1.6" fill="#fff"/></g>
+  <ellipse cx="48" cy="99" rx="28" ry="4" fill="rgba(76,29,149,.15)"/>
+  <path d="M14 66C8 38 26 16 48 16s40 22 34 50c-3 18-14 30-34 30S17 84 14 66z" fill="url(#mg)" stroke="#6d28d9" stroke-width="2"/>
+  <path d="M30 22c-4-8 2-14 8-10M62 20c4-8 10-6 10 0" stroke="#6d28d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <g transform="translate(58 14) rotate(18)"><path d="M0 0l-9-6v12zM0 0l9-6v12z" fill="#f472b6" stroke="#be185d" stroke-width="1.2"/><circle r="3" fill="#fde047" stroke="#be185d" stroke-width="1"/></g>
+  <circle cx="35" cy="50" r="10" fill="#fff"/><circle cx="61" cy="50" r="10" fill="#fff"/>
+  <circle cx="36" cy="51" r="7" fill="#2e1065"/><circle cx="62" cy="51" r="7" fill="#2e1065"/>
+  <circle cx="33" cy="48" r="2.6" fill="#fff"/><circle cx="59" cy="48" r="2.6" fill="#fff"/><circle cx="39" cy="54" r="1.2" fill="#fff"/><circle cx="65" cy="54" r="1.2" fill="#fff"/>
+  <ellipse id="lid1" cx="35" cy="50" rx="10.5" ry="10.5" fill="#a78bfa"/><ellipse id="lid2" cx="61" cy="50" rx="10.5" ry="10.5" fill="#a78bfa"/>
+  <path d="M22 62q3-3 6 0q3 3-3 6q-6-3-3-6z" fill="#f9a8d4"/><path d="M68 62q3-3 6 0q3 3-3 6q-6-3-3-6z" fill="#f9a8d4"/>
+  <path id="mouth" d="M41 66q7 7 14 0" stroke="#4c1d95" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  <path d="M14 70q-8 2-6 10M82 70q6 4 2 0" stroke="#6d28d9" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <circle cx="12" cy="56" r="2.2" fill="#fde047" stroke="#ca8a04" stroke-width=".8"/>
+</svg>
+<div class="bub" id="bub">היי דני! 💜</div>
+</div>
+<div class="card" id="card"></div>
+<div class="foot"><button id="bl" type="button">מילים שטעיתי בהן</button><button id="hw" type="button">איך זה עובד?</button><button id="rs" type="button">איפוס</button></div>
+
+<div class="ov" id="intro"><div class="pn">
+<h2>היי דני! 💜 בואי נכבוש את ההכתבה</h2>
+<p><b>המטרה:</b> לדעת לכתוב באנגלית, באיות מדויק, את כל 36 המילים של ההכתבה.</p>
+<ul>
+<li>אני מראה לך מילה בעברית, ואת כותבת אותה באנגלית.</li>
+<li>כתבת נכון כבר בפעם הראשונה? מעולה, את יודעת אותה ✅</li>
+<li>טעית רק בכמה אותיות? אראה לך בדיוק איפה, והמילה תחזור בהמשך.</li>
+<li>לא ידעת מה המילה? נלמד אותה קודם: פעמיים "מה זה אומר", ואז שוב הכתבה.</li>
+<li>מילה שטעית בה צריך לכתוב נכון <b>פעמיים</b>, ואז היא שלך.</li>
+</ul>
+<p>כל תשובה נכונה נותנת נקודות ⭐, תשובות ברצף מדליקות 🔥, ומדי פעם קופץ סקווישי לאוסף 🧸</p>
+<button class="btn" id="go" type="button">יאללה, מתחילות! 🚀</button>
+</div></div>
+<div class="ov" id="lst"><div class="pn"><h2>מילים שטעיתי בהן</h2><div id="lstb" class="wl"></div><button class="btn" id="lstp" type="button">תרגול של המילים האלה ✏️</button><button class="btn soft" style="width:100%;margin-top:8px" id="lstx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>🧸 אוסף הסקווישים שלי</h2><p id="sqct" style="color:var(--mut);margin-top:0"></p><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqov"><div class="pn"><div style="font-size:15px;color:#6d28d9;font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p style="margin:0;color:var(--mut)">לחצי עליו כדי למעוך 😆</p><button class="btn" id="sqok" type="button">לאוסף! 💜</button></div></div>
+<div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
+
+<script src="../../track.js"></script>
+<script>
+// הכתבה ואוצר מילים לדני. מפתחות: dani_sp (התקדמות), dani_sp_sq (אוסף סקווישים), dani_sp_mute.
+const WORDS=[
+['across','מעבר / ממול'],['amazing','מדהים'],['hill','גבעה'],['little','קטן'],['narrow','צר'],['over','מעל'],
+['road','כביש / דרך'],['side','צד'],['village','כפר'],['whole','שלם'],['wide','רחב'],['dining room','חדר אוכל'],
+['downstairs','קומה למטה'],['floor','רצפה / קומה'],['front','חזית'],['inside','בתוך / מבפנים'],['roof','גג'],['stairs','מדרגות'],
+['swimming pool','בריכת שחייה'],['upstairs','קומה למעלה'],['come home','לחזור הביתה'],['ground floor','קומת קרקע'],
+['on the left','משמאל'],['on the right','מימין'],['glasses','משקפיים'],['hole','חור'],['jeans',"ג'ינס"],['pair','זוג'],
+['pocket','כיס'],['raincoat','מעיל גשם'],['suit','חליפה'],['top','חולצה / חלק עליון'],['watch','שעון'],
+['comfortable','נוח'],['pretty','יפה'],['throw','לזרוק']];
+const ALT={little:['small','tiny'],road:['street','way'],wide:['broad'],whole:['all','entire'],pretty:['beautiful','cute','nice'],amazing:['wonderful','awesome','great'],
+comfortable:['comfy','cozy'],watch:['clock'],top:['shirt','t-shirt','tshirt'],pair:['couple'],raincoat:['coat'],inside:['in'],over:['above'],across:['opposite'],
+village:['town'],hill:['mountain'],'come home':['go home','return home'],floor:['story','storey'],throw:['toss']};
+const N=WORDS.length,HE={};WORDS.forEach(w=>HE[w[0]]=w[1]);
+const $=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let S=LS.get('dani_sp');
+function fresh(){const w={};WORDS.forEach(x=>w[x[0]]={s:'new',need:0,m:0,due:0,err:0});return{v:1,T:0,pts:0,st:{c:0,b:0},att:0,okc:0,first:0,w,cc:0,intro:0,started:new Date().toISOString()}}
+if(!S||!S.w)S=fresh();WORDS.forEach(x=>{if(!S.w[x[0]])S.w[x[0]]={s:'new',need:0,m:0,due:0,err:0}});
+const save=()=>LS.set('dani_sp',S);
+let SQ=LS.get('dani_sp_sq')||[];let MUTE=!!LS.get('dani_sp_mute');
+
+// ---------- צלילים (WebAudio, בלי קבצים) ----------
+let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,t0,d,type,vol,f2){const a=ac();if(!a||MUTE)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t0+d);g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.18,a.currentTime+t0+.015);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
+const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.22,'triangle')},
+mid(){tone(660,0,.14,'sine',.14);tone(587,.12,.2,'sine',.12)},
+bad(){tone(330,0,.25,'sine',.16,220)},
+pop(){tone(220,0,.18,'sine',.25,880);tone(880,.16,.2,'sine',.15,440)},
+win(){[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.16))},
+click(){tone(1800,0,.04,'square',.04)}};
+function speak(t){if(MUTE||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+
+// ---------- סקווישים ----------
+function face(cx,cy,s){s=s||1;return `<circle cx="${cx-9*s}" cy="${cy}" r="${2.6*s}" fill="#3b0764"/><circle cx="${cx+9*s}" cy="${cy}" r="${2.6*s}" fill="#3b0764"/><circle cx="${cx-10*s}" cy="${cy-1}" r="${.9*s}" fill="#fff"/><circle cx="${cx+8*s}" cy="${cy-1}" r="${.9*s}" fill="#fff"/><path d="M${cx-4*s} ${cy+5*s}q${4*s} ${4*s} ${8*s} 0" stroke="#3b0764" stroke-width="${1.8*s}" fill="none" stroke-linecap="round"/><ellipse cx="${cx-15*s}" cy="${cy+5*s}" rx="${4*s}" ry="${2.4*s}" fill="#fb7185" opacity=".55"/><ellipse cx="${cx+15*s}" cy="${cy+5*s}" rx="${4*s}" ry="${2.4*s}" fill="#fb7185" opacity=".55"/>`}
+const SQS=[
+{id:'peach',n:'אפרסקי',svg:`<path d="M50 88c-24 0-36-16-34-34 2-18 18-30 34-22 16-8 32 4 34 22 2 18-10 34-34 34z" fill="#fdba9a" stroke="#f97316" stroke-width="2"/><path d="M50 32c0 10-2 20 0 30" stroke="#f9a37a" stroke-width="2" fill="none"/><path d="M50 32c-8-14 6-20 14-18-2 8-6 14-14 18z" fill="#4ade80" stroke="#16a34a" stroke-width="1.5"/>${face(50,60)}`},
+{id:'straw',n:'תותית',svg:`<path d="M50 90C26 74 16 52 22 40c6-10 50-10 56 0 6 12-4 34-28 50z" fill="#fb7185" stroke="#e11d48" stroke-width="2"/><path d="M28 38c6-10 14-4 22-12 8 8 16 2 22 12-8 4-36 4-44 0z" fill="#4ade80" stroke="#16a34a" stroke-width="1.5"/>${[[34,70],[64,68],[48,80],[30,54],[70,52]].map(p=>`<ellipse cx="${p[0]}" cy="${p[1]}" rx="1.6" ry="2.4" fill="#fde68a"/>`).join('')}${face(50,56)}`},
+{id:'cat',n:'מיאו-בון',svg:`<path d="M20 44l6-22 14 14h20l14-14 6 22c6 26-8 44-30 44S14 70 20 44z" fill="#fde68a" stroke="#d97706" stroke-width="2"/><path d="M26 26l4 10M74 26l-4 10" stroke="#f9a8d4" stroke-width="4" stroke-linecap="round"/>${face(50,60)}<path d="M12 62h14M12 68h14M74 62h14M74 68h14" stroke="#d97706" stroke-width="1.5"/>`},
+{id:'cloud',n:'ענני',svg:`<path d="M24 80c-14 0-16-20-2-24 0-16 18-22 26-12 8-14 32-10 32 8 14 2 14 28-2 28z" fill="#e0f2fe" stroke="#38bdf8" stroke-width="2"/>${face(50,62)}`},
+{id:'avo',n:'אבוקדו',svg:`<path d="M50 12c18 0 28 30 28 50 0 18-12 28-28 28S22 80 22 62c0-20 10-50 28-50z" fill="#86efac" stroke="#15803d" stroke-width="2"/><path d="M50 22c12 0 20 26 20 40 0 12-8 20-20 20s-20-8-20-20c0-14 8-40 20-40z" fill="#ecfccb"/><circle cx="50" cy="66" r="10" fill="#a16207"/>${face(50,46,.8)}`},
+{id:'boba',n:'בובה טי',svg:`<path d="M26 30h48l-6 58H32z" fill="#fde7d4" stroke="#b45309" stroke-width="2"/><rect x="22" y="24" width="56" height="8" rx="4" fill="#f9a8d4" stroke="#db2777" stroke-width="1.5"/><path d="M56 24l8-16" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/>${[[38,80],[48,82],[58,80],[43,74],[54,74]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.4" fill="#3b2316"/>`).join('')}${face(50,50,.85)}`},
+{id:'panda',n:'פנדי',svg:`<circle cx="26" cy="28" r="10" fill="#1f2937"/><circle cx="74" cy="28" r="10" fill="#1f2937"/><ellipse cx="50" cy="56" rx="34" ry="30" fill="#fff" stroke="#9ca3af" stroke-width="2"/><ellipse cx="38" cy="54" rx="8" ry="10" fill="#1f2937" transform="rotate(-20 38 54)"/><ellipse cx="62" cy="54" rx="8" ry="10" fill="#1f2937" transform="rotate(20 62 54)"/><circle cx="39" cy="54" r="2.6" fill="#fff"/><circle cx="61" cy="54" r="2.6" fill="#fff"/><path d="M46 66q4 4 8 0" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="28" cy="66" rx="4" ry="2.4" fill="#fb7185" opacity=".5"/><ellipse cx="72" cy="66" rx="4" ry="2.4" fill="#fb7185" opacity=".5"/>`},
+{id:'bunny',n:'באני',svg:`<ellipse cx="38" cy="26" rx="7" ry="18" fill="#fce7f3" stroke="#ec4899" stroke-width="2"/><ellipse cx="62" cy="26" rx="7" ry="18" fill="#fce7f3" stroke="#ec4899" stroke-width="2"/><ellipse cx="50" cy="62" rx="32" ry="26" fill="#fdf2f8" stroke="#ec4899" stroke-width="2"/>${face(50,62)}`},
+{id:'dump',n:'דאמפלינג',svg:`<path d="M14 66c0-20 16-34 36-34s36 14 36 34c-8 10-64 10-72 0z" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/><path d="M30 38q4 8 8-2q4 8 8-4q4 8 8 0q4 8 8-2q4 8 8 4" stroke="#ca8a04" stroke-width="1.6" fill="none"/>${face(50,58)}`},
+{id:'donut',n:'דונאטי',svg:`<circle cx="50" cy="54" r="34" fill="#f5c78e" stroke="#b45309" stroke-width="2"/><path d="M18 50c2-18 18-30 32-30s30 12 32 30c-6 8-10 0-16 6s-10-2-16 2-12-4-18 0-10-6-14-8z" fill="#f9a8d4" stroke="#db2777" stroke-width="1.5"/><circle cx="50" cy="54" r="8" fill="#fff" stroke="#b45309" stroke-width="1.5"/>${[[30,36,'#60a5fa'],[66,34,'#facc15'],[42,28,'#34d399'],[72,46,'#a78bfa']].map(p=>`<rect x="${p[0]}" y="${p[1]}" width="6" height="2.4" rx="1.2" fill="${p[2]}"/>`).join('')}${face(50,72,.8)}`},
+{id:'star',n:'כוכבית',svg:`<path d="M50 10l11 24 26 3-20 18 6 26-23-13-23 13 6-26-20-18 26-3z" fill="#fde047" stroke="#ca8a04" stroke-width="2" stroke-linejoin="round"/>${face(50,52,.85)}`},
+{id:'mochi',n:'מוצ׳י לב',svg:`<path d="M50 88C20 68 12 50 16 36c4-14 24-18 34-4 10-14 30-10 34 4 4 14-4 32-34 52z" fill="#e9d5ff" stroke="#9333ea" stroke-width="2"/>${face(50,52)}`}];
+const sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
+
+// ---------- עזר ----------
+const norm=s=>(s||'').toLowerCase().replace(/[’‘`]/g,"'").replace(/[-_.,!?]/g,' ').replace(/\s+/g,' ').trim();
+function lev(a,b){const m=a.length,n=b.length,d=[];for(let i=0;i<=m;i++){d[i]=[i];for(let j=1;j<=n;j++)d[i][j]=i?0:j}
+for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d}
+function align(a,b){const d=lev(a,b);let i=a.length,j=b.length;const ops=[];
+while(i>0||j>0){if(i>0&&j>0&&d[i][j]===d[i-1][j-1]+(a[i-1]===b[j-1]?0:1)){ops.push([a[i-1]===b[j-1]?'=':'s',a[i-1],b[j-1]]);i--;j--}
+else if(j>0&&d[i][j]===d[i][j-1]+1){ops.push(['m',null,b[j-1]]);j--}else{ops.push(['x',a[i-1],null]);i--}}return{dist:d[a.length][b.length],ops:ops.reverse()}}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ch=c=>c===' '?'&nbsp;':esc(c);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function classify(ans,target){const a=norm(ans),t=norm(target);
+if(!a)return{k:'mean'};if(a===t)return{k:'ok'};
+if(a.replace(/ /g,'')===t.replace(/ /g,''))return{k:'spell',al:align(a,t)};
+if((ALT[t]||[]).includes(a))return{k:'alt'};
+if(WORDS.some(w=>w[0]!==target&&norm(w[0])===a))return{k:'mean',other:a};
+const al=align(a,t),L=t.replace(/ /g,'').length,lim=Math.max(1,Math.floor(L*.4));
+if(al.dist<=lim&&(al.dist<L-1))return{k:'spell',al};return{k:'mean'}}
+
+// ---------- מפלצת ובועה ----------
+const OK=['מעולה! ✨','וואו, מדויק! 💜','את תותחית!','אלופה! 🌟','בדיוק ככה!','Daebak! 🤩','פייטינג! 💪','כמו כוכבת קיי-פופ ⭐','איזה איות מושלם 😍','יס! עוד אחת 🎶'];
+const MID=['כמעט! רק כמה אותיות 🙈','קרוב מאוד! בואי נראה מה התפספס','עוד קצת ואת שם 💜','האוזן שלך בכיוון, רק האיות 😉'];
+const BAD=['לא נורא, בשביל זה מתרגלות 💜','מילה חדשה? נלמד אותה ביחד','עכשיו את כבר יודעת מה זה 😉','גם כוכבות קיי-פופ מתאמנות המון 💪'];
+function mon(cls,txt){const m=$('mon');m.classList.remove('hop','sad','dance');void m.offsetWidth;if(cls)m.classList.add(cls);
+$('mouth').setAttribute('d',cls==='sad'?'M41 70q7-6 14 0':cls==='dance'?'M40 64q8 11 16 0z':'M41 66q7 7 14 0');if(txt)$('bub').innerHTML=txt}
+function popTxt(t){const p=document.createElement('div');p.className='pop';p.textContent=t;document.body.appendChild(p);setTimeout(()=>p.remove(),1100)}
+function confetti(n){const c=['#a78bfa','#f472b6','#facc15','#60a5fa','#34d399'];for(let i=0;i<(n||40);i++){const e=document.createElement('i');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(c);e.style.animationDuration=(1.6+Math.random()*1.6)+'s';e.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3800)}}
+
+// ---------- מצב ותור ----------
+const done=()=>WORDS.filter(w=>S.w[w[0]].s==='done').length;
+let CUR=null,LAST=null,PRAC=null,ANS=false;
+function next(){
+  if(PRAC){if(!PRAC.length){PRAC=null;mon('dance','סיימנו תרגול! 💜 חוזרות למשימה');}else{CUR={e:PRAC.shift(),mode:'dict',prac:true};return render()}}
+  const all=WORDS.map(w=>w[0]).filter(e=>S.w[e].s!=='done');
+  if(!all.length){CUR=null;return renderDone()}
+  const act=all.filter(e=>S.w[e].s!=='new'),fresh=all.filter(e=>S.w[e].s==='new');
+  let due=act.filter(e=>S.w[e].due<=S.T&&e!==LAST).sort((a,b)=>S.w[a].due-S.w[b].due);
+  let e=due[0];
+  if(!e&&fresh.length&&act.length<8)e=pick(fresh.filter(x=>x!==LAST).length?fresh.filter(x=>x!==LAST):fresh);
+  if(!e){const r=act.filter(x=>x!==LAST).sort((a,b)=>S.w[a].due-S.w[b].due);e=r[0]||(fresh.length?pick(fresh):act[0])}
+  CUR={e,mode:S.w[e].s==='learn'?'mean':'dict'};render()}
+function render(){ANS=false;const e=CUR.e,c=$('card');
+  if(CUR.mode==='dict'){
+    c.innerHTML=`<span class="mode${CUR.prac?' prac':''}">${CUR.prac?'🔁 תרגול':'✏️ הכתבה'}</span><div class="he">${esc(HE[e])}</div><div class="ask">איך כותבים את זה באנגלית?</div>
+    <input id="ans" type="text" lang="en" dir="ltr" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="type here...">
+    <div class="btns"><button class="btn" id="chk" type="button">בדיקה ✓</button><button class="btn soft" id="idk" type="button">לא יודעת 🤷‍♀️</button></div><div class="fb" id="fb"></div><button class="btn" id="nx" type="button" style="width:100%">הבא ←</button>`;
+    const inp=$('ans');inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();ev.stopPropagation();if(!ANS)check(inp.value)}});
+    $('chk').onclick=()=>check(inp.value);$('idk').onclick=()=>check('');
+    setTimeout(()=>{try{inp.focus({preventScroll:true})}catch(_){}},60);
+  }else{
+    const opts=shuf([e].concat(shuf(WORDS.map(w=>w[0]).filter(x=>x!==e)).slice(0,3)));
+    c.innerHTML=`<span class="mode">💭 מה זה אומר?</span><div class="en">${esc(e)}</div><button class="say" id="say" type="button">🔊 לשמוע</button><div class="ask">בחרי את התרגום הנכון</div>
+    ${opts.map(o=>`<button class="opt" type="button" data-e="${esc(o)}">${esc(HE[o])}</button>`).join('')}<div class="fb" id="fb"></div><button class="btn" id="nx" type="button" style="width:100%">הבא ←</button>`;
+    $('say').onclick=()=>speak(e);
+    c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>meanAns(b));
+  }
+  $('nx').onclick=goNext;LAST=e;}
+function goNext(){SND.click();next()}
+document.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ANS&&$('nx')&&$('nx').style.display==='block'){ev.preventDefault();goNext()}});
+function showNext(){ANS=true;const n=$('nx');n.style.display='block';setTimeout(()=>{try{n.focus({preventScroll:true})}catch(_){};n.scrollIntoView({block:'nearest',behavior:'smooth'})},50)}
+function streak(ok){if(ok){S.st.c++;if(S.st.c>S.st.b)S.st.b=S.st.c;if([3,5,10,15,20,30,50].includes(S.st.c)){popTxt('🔥 רצף של '+S.st.c+'!');mon('dance')}}else S.st.c=0}
+function addPts(p){if(p>0){S.pts+=p;popTxt('+'+p+' ⭐')}}
+function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=6||(S.cc>=3&&Math.random()<.18)){S.cc=0;setTimeout(squishy,900)}}
+function check(raw){if(ANS)return;const e=CUR.e,w=S.w[e],r=classify(raw,e),fb=$('fb');$('chk').disabled=$('idk').disabled=true;$('ans').readOnly=true;
+  if(CUR.prac){ if(r.k==='ok'){SND.ok();mon('hop',pick(OK));addPts(2);fb.innerHTML=`<div class="t ok">נכון! 🎉</div>`;streak(true);maybeSquishy()}
+    else{SND.mid();mon('sad',pick(MID));fb.innerHTML=diffHtml(raw,e,r);streak(false);speak(e)} save();upd();return showNext()}
+  S.att++;S.T++;
+  if(r.k==='ok'){S.okc++;SND.ok();streak(true);
+    if(w.s==='new'){w.s='done';S.first++;addPts(15);mon('dance','ידעת מהפעם הראשונה! '+pick(['😍','🤩','💜']));fb.innerHTML=`<div class="t ok">מושלם! ✅ את יודעת את המילה</div>`;confetti(18)}
+    else{w.need=Math.max(0,(w.need||1)-1);addPts(10);
+      if(w.need<=0){w.s='done';mon('dance','המילה '+esc(e)+' שלך! 🏆');fb.innerHTML=`<div class="t ok">כתבת נכון פעמיים! ✅ המילה שלך</div>`;confetti(26)}
+      else{w.due=S.T+4;mon('hop',pick(OK));fb.innerHTML=`<div class="t ok">נכון! 🎉</div><div class="ask">עוד פעם אחת נכון והיא שלך</div>`}}
+    maybeSquishy();
+  }else if(r.k==='spell'||r.k==='alt'){w.err++;if(w.s==='new'){w.s='dict';w.need=2}w.need=Math.max(w.need||0,1);w.due=S.T+3;
+    if(r.k==='alt'){SND.mid();mon('hop','גם זה נכון באנגלית! אבל בהכתבה צריך מילה אחרת 😉');fb.innerHTML=`<div class="t mid">כמעט! בהכתבה המילה היא:</div><div class="big">${esc(e)}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button>`;}
+    else{SND.mid();streak(false);mon('sad',pick(MID));fb.innerHTML=diffHtml(raw,e,r)}
+    speak(e);
+  }else{w.err++;w.s='learn';w.m=0;w.need=2;w.due=S.T+2;SND.bad();streak(false);mon('sad',pick(BAD));
+    fb.innerHTML=`<div class="t no">${r.other?'זו מילה אחרת מהרשימה 🙂':'לא נורא!'} ${esc(HE[e])} באנגלית זה:</div><div class="big">${esc(e)}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button><div class="ask">נחזור אליה עוד מעט, קודם כדי להבין מה היא אומרת</div>`;speak(e)}
+  save();upd();showNext()}
+function diffHtml(raw,e,r){const a=norm(raw),t=norm(e),al=r.al||align(a,t);let you='',ok='';const hints=[];
+  al.ops.forEach(o=>{if(o[0]==='='){you+=ch(o[1]);ok+=ch(o[2])}
+    else if(o[0]==='s'){you+=`<span class="x">${ch(o[1])}</span>`;ok+=`<span class="g">${ch(o[2])}</span>`;hints.push(o[2]===' '?`חסר רווח במקום <b>${esc(o[1])}</b>`:o[1]===' '?`במקום רווח צריך <b>${esc(o[2])}</b>`:`במקום <b>${esc(o[1])}</b> צריך <b>${esc(o[2])}</b>`)}
+    else if(o[0]==='m'){you+='<span class="gap"></span>';ok+=`<span class="g">${ch(o[2])}</span>`;hints.push(o[2]===' '?'חסר רווח בין המילים':`חסרה האות <b>${esc(o[2])}</b>`)}
+    else{you+=`<span class="x">${ch(o[1])}</span>`;hints.push(o[1]===' '?'יש רווח מיותר':`האות <b>${esc(o[1])}</b> מיותרת`)}});
+  return `<div class="t mid">כמעט! ככה כותבים נכון:</div><div class="dif"><span class="l">כתבת</span><div class="w">${you}</div><span class="l">נכון</span><div class="w">${ok}</div></div>
+  <div class="hints">${hints.slice(0,4).map(h=>`<div>👉 ${h}</div>`).join('')}</div><button class="say" type="button" onclick="speak('${esc(e)}')">🔊 לשמוע</button><div class="ask">המילה תחזור עוד מעט 💜</div>`}
+function meanAns(b){if(ANS)return;const e=CUR.e,w=S.w[e],pickd=b.dataset.e,fb=$('fb');ANS=true;S.att++;S.T++;
+  $('card').querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x.dataset.e===e)x.classList.add('ok')});
+  if(pickd===e){S.okc++;w.m=(w.m||0)+1;SND.ok();streak(true);addPts(3);
+    if(w.m>=2){w.s='dict';w.need=2;w.due=S.T+3;mon('hop','עכשיו את יודעת מה זה! בפעם הבאה: הכתבה ✏️');fb.innerHTML=`<div class="t ok">נכון! 🎉</div><div class="ask">בפעם הבאה תכתבי אותה בעצמך</div>`}
+    else{w.due=S.T+3;mon('hop',pick(OK));fb.innerHTML=`<div class="t ok">נכון! 🎉</div>`}
+    speak(e)}
+  else{b.classList.add('no');w.m=0;w.due=S.T+2;SND.bad();streak(false);mon('sad',pick(BAD));fb.innerHTML=`<div class="t no">${esc(e)} = ${esc(HE[e])}</div>`;speak(e)}
+  save();upd();showNext()}
+function renderDone(){upd();$('card').innerHTML=`<div class="donebox"><div style="font-size:54px">🏆</div><div class="he">סיימת! את יודעת לכתוב את כל ${N} המילים 💜</div><p class="ask">בא לך לחזק לפני ההכתבה?</p>
+  <div class="btns"><button class="btn" id="pa" type="button">תרגול כל המילים</button><button class="btn" id="pm" type="button">רק מה שטעיתי</button></div></div>`;
+  $('pa').onclick=()=>{PRAC=shuf(WORDS.map(w=>w[0]));next()};$('pm').onclick=()=>startPrac();mon('dance','את אלופת ההכתבה! 👑');SND.win();confetti(60)}
+function startPrac(){const l=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0);if(!l.length){mon('hop','עוד אין מילים שטעית בהן 😎');return}PRAC=shuf(l);next()}
+
+// ---------- סקווישי ----------
+function squishy(){let s=SQS.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(SQS);if(isNew){SQ.push(s.id);LS.set('dani_sp_sq',SQ)}
+  $('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
+  $('sqov').classList.add('on');SND.pop();upd()}
+$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');SND.pop()};
+$('sqok').onclick=()=>{$('sqov').classList.remove('on');SND.click()};
+$('sqb').onclick=()=>{$('sqct').textContent=`אספת ${SQ.length} מתוך ${SQS.length}`;$('sqg').innerHTML=SQS.map(s=>`<div class="${SQ.includes(s.id)?'':'lock'}">${sqSvg(s)}${SQ.includes(s.id)?esc(s.n):'?'}</div>`).join('');$('sqcol').classList.add('on')};
+$('sqcx').onclick=()=>$('sqcol').classList.remove('on');
+
+// ---------- ממשק ----------
+function upd(){const d=done();$('dn').textContent=d;$('tt').textContent=N;$('pbi').style.width=(d/N*100)+'%';
+  $('pts').textContent='⭐ '+S.pts+' נקודות';$('stc').textContent='🔥 רצף '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('stb').textContent='🏆 שיא '+S.st.b;$('sqn').textContent=SQ.length;
+  const hard=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0).sort((a,b)=>S.w[b].err-S.w[a].err).slice(0,8).map(e=>({e,n:S.w[e].err}));
+  if(window.StudyTrack)StudyTrack.report({total:N,done:d,learning:WORDS.filter(w=>{const s=S.w[w[0]].s;return s==='learn'||s==='dict'}).length,att:S.att,ok:S.okc,first:S.first,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:SQ.length,hard,started:S.started})}
+$('mute').onclick=()=>{MUTE=!MUTE;LS.set('dani_sp_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.click()};$('mute').textContent=MUTE?'🔇':'🔊';
+$('hw').onclick=()=>$('intro').classList.add('on');
+$('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();if(!S.intro){S.intro=1;save()}if(CUR)render();else next()};
+$('bl').onclick=()=>{const l=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0).sort((a,b)=>S.w[b].err-S.w[a].err);
+  $('lstb').innerHTML=l.length?l.map(e=>`<div><span><b>${esc(e)}</b> · ${esc(HE[e])}</span><small>${S.w[e].s==='done'?'✅ ':''}טעיתי ${S.w[e].err}×</small></div>`).join(''):'<p style="color:var(--mut)">עוד אין מילים כאלה 😎</p>';
+  $('lstp').style.display=l.length?'':'none';$('lst').classList.add('on')};
+$('lstx').onclick=()=>$('lst').classList.remove('on');$('lstp').onclick=()=>{$('lst').classList.remove('on');startPrac()};
+$('rs').onclick=()=>$('rsov').classList.add('on');$('rsn').onclick=()=>$('rsov').classList.remove('on');
+$('rsy').onclick=()=>{const keep={started:S.started,intro:1};S=fresh();S.started=keep.started;S.intro=1;save();$('rsov').classList.remove('on');PRAC=null;LAST=null;upd();mon('hop','מתחילות מחדש! 💜');next()};
+
+if(window.StudyTrack){StudyTrack.init('dani','spelling');StudyTrack.test(j=>{const d=Math.ceil((new Date(j.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);if(d>=0){const t=$('tst');t.style.display='';t.textContent='📅 '+(j.note||'הכתבה')+(d===0?' היום!':d===1?' מחר!':' בעוד '+d+' ימים')}})}
+upd();
+const d0=done();mon('hop',d0?`היי דני! כבר יודעת ${d0} מילים, ממשיכות? 💜`:'היי דני! אני מוצ׳י, ואני פה לעזור לך עם ההכתבה 💜');
+if(!S.intro)$('intro').classList.add('on');
+next();
+</script>
+</main></body></html>

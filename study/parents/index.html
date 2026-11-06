@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Study · אזור הורים</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Study">
+<meta name="theme-color" content="#eef1f5">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../theme.css">
+<style>
+.pin{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px 16px;box-shadow:var(--sh);text-align:center;margin-top:20px}
+.pin h1{margin:0 0 6px;font-size:22px}.pin p{margin:0 0 14px;color:var(--mut);font-size:15px}
+.pin input{width:160px;font:700 28px system-ui;letter-spacing:10px;text-align:center;padding:10px;border:2px solid var(--bd);border-radius:12px;direction:ltr}
+.pin input:focus{outline:none;border-color:var(--ac)}
+.b{font:inherit;font-weight:700;color:#fff;background:var(--ac);border:0;border-radius:12px;padding:12px 22px;cursor:pointer;margin-top:12px}
+.b.s{background:#f1f3f7;color:var(--fg);font-weight:600;padding:8px 14px;font-size:15px;margin:0}
+.msg{min-height:22px;margin-top:10px;color:#be123c;font-size:15px}
+.kid{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;box-shadow:var(--sh);margin-bottom:14px}
+.kh{display:flex;align-items:center;gap:10px;margin-bottom:8px}.kh img{width:46px;height:46px;border-radius:12px;object-fit:cover;object-position:top;background:#f3f5f9}.kh b{font-size:20px}
+.app{border-top:1px solid #eef0f4;padding-top:10px;margin-top:10px}
+.app h3{margin:0 0 6px;font-size:16px}
+.big{display:flex;align-items:baseline;gap:8px}.big b{font-size:26px}.big span{color:var(--mut);font-size:14px}
+.pbar{height:10px;background:#e3e8ef;border-radius:6px;overflow:hidden;margin:6px 0 10px}.pbar i{display:block;height:100%;background:var(--ac)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.st{background:#f6f8fb;border-radius:10px;padding:8px 10px}.st small{display:block;color:var(--mut);font-size:12px}.st b{font-size:17px}
+.days{display:flex;align-items:flex-end;gap:4px;height:44px;margin-top:10px}.days div{flex:1;text-align:center;font-size:10px;color:var(--mut)}
+.days i{display:block;background:#b8c7de;border-radius:3px 3px 0 0;margin:0 auto 2px;width:70%;min-height:2px}
+.days i.on{background:var(--ac)}
+.hard{margin-top:10px;font-size:14px}.hard span{display:inline-block;background:#fff1f2;color:#9f1239;border-radius:14px;padding:2px 9px;margin:3px 2px;direction:ltr}
+.test{margin-top:10px;background:#eef3fb;border-radius:10px;padding:9px 10px;font-size:15px}
+.test .row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}.test input{font:inherit;font-size:15px;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;flex:1;min-width:0}
+.none{color:var(--mut);font-size:15px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+</style></head><body><main>
+<a class="back" href="../">→ כל הילדים</a>
+<div id="v"></div>
+<script>
+const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
+// הקוד נבדק בשרת (study_parents_get). אחרי קוד נכון הוא נשמר במכשיר (study_par_pin); קוד שגוי מוחק אותו.
+const KIDS=[{id:'evyatar',n:'אביתר',apps:[{id:'vocab',n:'אוצר מילים באנגלית',unit:'מילים',test:'מבחן'}]},
+{id:'dani',n:'דני',apps:[{id:'spelling',n:'הכתבה ואוצר מילים באנגלית',unit:'מילים',test:'הכתבה'}]},
+{id:'lia',n:'ליה',apps:[]}];
+const $=id=>document.getElementById(id),V=$('v');
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let PIN='';try{PIN=localStorage.getItem('study_par_pin')||''}catch(e){}
+const rpc=(fn,b)=>fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(b)}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
+function pinView(msg){V.innerHTML=`<div class="pin"><h1>🔒 אזור הורים</h1><p>ההתקדמות של כל הילדים. הכניסה עם קוד.</p>
+<input id="pi" type="password" inputmode="numeric" autocomplete="off" maxlength="8"><br><button class="b" id="pb" type="button">כניסה</button><div class="msg" id="pm">${esc(msg||'')}</div></div>`;
+ const go=()=>{const v=$('pi').value.trim();if(!v)return;PIN=v;load(true)};$('pb').onclick=go;$('pi').onkeydown=e=>{if(e.key==='Enter')go()};setTimeout(()=>$('pi').focus(),50)}
+function load(fromForm){if(fromForm&&$('pm'))$('pm').textContent='בודק...';
+ rpc('study_parents_get',{p_pin:PIN}).then(j=>{
+  if(!j||!j.ok){try{if(j&&j.err==='bad')localStorage.removeItem('study_par_pin')}catch(e){}PIN='';return pinView(j&&j.err==='locked'?'יותר מדי ניסיונות. אפשר לנסות שוב בעוד חצי שעה.':'הקוד לא נכון')}
+  try{localStorage.setItem('study_par_pin',PIN)}catch(e){}show(j)})
+ .catch(()=>pinView('אין חיבור לשרת כרגע. נסו שוב עוד מעט.'))}
+const fmtT=s=>{s=Math.round(s/60);if(s<60)return s+' דק׳';return Math.floor(s/60)+' שע׳ '+(s%60?s%60+' דק׳':'')};
+const fmtD=d=>d?new Date(d).toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'2-digit'}):'-';
+function ago(d){if(!d)return'-';const m=(Date.now()-new Date(d))/6e4;if(m<2)return'עכשיו';if(m<60)return'לפני '+Math.round(m)+' דק׳';const h=m/60;if(h<24)return'לפני '+Math.round(h)+' שע׳';const dd=Math.round(h/24);return dd===1?'אתמול':'לפני '+dd+' ימים'}
+function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה: זמן ותשובות מצטברים, התקדמות לפי המכשיר המתקדם ביותר
+ const r={sec:0,att:0,ok:0,done:0,total:0,best:0,first:null,last:null,days:{},hard:{},dev:rows.length};
+ rows.forEach(x=>{const d=x.data||{};r.sec+=+d.sec||0;r.att+=+d.att||0;r.ok+=+d.ok||0;
+  if((+d.done||0)>=r.done){r.done=+d.done||0;r.total=+d.total||r.total;r.learning=d.learning;r.pts=d.pts;r.first_ok=d.first}
+  r.best=Math.max(r.best,+d.best||0);const f=d.first||x.first_at;if(f&&(!r.first||f<r.first))r.first=f;const l=d.last||x.updated_at;if(l&&(!r.last||l>r.last))r.last=l;
+  for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)})});return r}
+function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/'+t.app]=t);
+ let h=`<div class="head"><h1 style="margin:0 0 12px;font-size:22px">אזור הורים</h1><span><button class="b s" id="rf" type="button">רענון</button> <button class="b s" id="lo" type="button">יציאה</button></span></div>`;
+ KIDS.forEach(k=>{h+=`<div class="kid"><div class="kh"><img src="../kids/${k.id}.webp" alt=""><b>${k.n}</b></div>`;
+  if(!k.apps.length)h+=`<div class="none">עוד אין תכנים</div>`;
+  k.apps.forEach(a=>{const rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id];h+=`<div class="app"><h3>${a.n}</h3>`;
+   if(!rows.length)h+=`<div class="none">עוד לא התחיל${k.id==='evyatar'?'':'ה'} (או שעוד לא נכנס${k.id==='evyatar'?'':'ה'} מאז שהוספנו את המעקב)</div>`;
+   else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null;
+    h+=`<div class="big"><b>${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>
+    <div class="grid"><div class="st"><small>אחוז הצלחה</small><b>${sr==null?'-':sr+'%'}</b> <small>${r.ok} נכונות מתוך ${r.att}</small></div>
+    <div class="st"><small>זמן באפליקציה</small><b>${fmtT(r.sec)}</b> <small>${Object.keys(r.days).length} ימים</small></div>
+    <div class="st"><small>התחיל${k.id==='evyatar'?'':'ה'} ללמוד</small><b>${fmtD(r.first)}</b></div>
+    <div class="st"><small>פעילות אחרונה</small><b>${ago(r.last)}</b></div>
+    ${r.learning!=null?`<div class="st"><small>בתהליך לימוד</small><b>${r.learning}</b> <small>${a.unit}</small></div>`:''}<div class="st"><small>שיא רצף</small><b>${r.best}</b></div></div>`;
+    const dd=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);dd.push([iso(d),d])}const mx=Math.max(60,...dd.map(x=>r.days[x[0]]||0));
+    h+=`<div class="days">${dd.map(x=>{const s=r.days[x[0]]||0;return`<div><i class="${s?'on':''}" style="height:${Math.round(s/mx*30)+2}px"></i>${'אבגדהוש'[x[1].getDay()]}</div>`}).join('')}</div>`;
+    const hd=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,8);if(hd.length)h+=`<div class="hard">מתקשה ב: ${hd.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`;
+    if(t&&t.d&&r.total){const dl=Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5),left=r.total-r.done;
+     if(dl>0&&left>0)h+=`<div class="none" style="margin-top:8px">נשארו ${left} ${a.unit} ו-${dl} ימים: בערך ${Math.ceil(left/dl)} ביום.</div>`}}
+   const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null;
+   h+=`<div class="test">📅 ${t&&t.d?`${esc(t.note||a.test)}: <b>${fmtD(t.d)}</b> ${dl>0?'(בעוד '+dl+' ימים)':dl===0?'(היום)':'(עבר)'}`:`אין תאריך ${a.test}`}
+   <div class="row"><input type="date" id="d_${k.id}_${a.id}" value="${t&&t.d||''}"><input id="n_${k.id}_${a.id}" placeholder="${a.test}" maxlength="40" value="${esc(t&&t.note||'')}"><button class="b s" type="button" data-k="${k.id}" data-a="${a.id}">שמירה</button></div></div></div>`})
+  h+=`</div>`});
+ h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
+ V.innerHTML=h;$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem('study_par_pin')}catch(e){}PIN='';pinView()};
+ V.querySelectorAll('.test button').forEach(b=>b.onclick=()=>{const k=b.dataset.k,a=b.dataset.a;b.textContent='...';
+  rpc('study_parents_set_test',{p_pin:PIN,p_kid:k,p_app:a,p_d:$('d_'+k+'_'+a).value||null,p_note:$('n_'+k+'_'+a).value}).then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'})})}
+if(PIN)load();else pinView();
+</script>
+</main></body></html>
