@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.7";window.SQ_BUILD_AT="6.11.2026 16:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.8";window.SQ_BUILD_AT="6.11.2026 17:05";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1507,6 +1507,27 @@ main{padding-bottom:90px}
 .ctxrow .wseg{border:1.5px solid rgba(255,255,255,.4)!important;border-radius:13px}
 .ctxrow .wseg button{min-height:40px!important}
 .ctxrow .wseg button+button{border-inline-start-width:1.5px!important;border-inline-start-color:rgba(255,255,255,.25)!important}
+
+/* 10.7 (Oren 6.11.2026): top row lower (out of the iPhone status-bar blur), sun+moon brief icon, floating search above +, AI Projects tiles on the main page */
+.qband,body .qband{height:calc(102px + env(safe-area-inset-top,0px))!important;padding-top:calc(env(safe-area-inset-top,0px) + 44px)!important}
+.topbtns{top:calc(env(safe-area-inset-top,0px) + 54px)!important}
+.topbtns .tb.tsun svg.sunmoon{width:24px!important;height:24px!important;fill:none;stroke:none}
+.sunmoon .sm-sun{fill:#F6B53C}.sunmoon .sm-ray{stroke:#F6B53C;stroke-width:2;stroke-linecap:round;fill:none}
+.sunmoon .sm-moon{fill:#C9D3FF}
+.qb-ai .ai-term{display:none!important}
+.tfind.fab{position:fixed;z-index:30;left:max(25px,calc(env(safe-area-inset-left,0px) + 7px));bottom:calc(92px + env(safe-area-inset-bottom,0px));width:44px;height:44px;border-radius:50%;display:grid;place-items:center;padding:0;background:#2a2a2a;color:#fff;border:1.5px solid rgba(255,255,255,.35);box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.tfind.fab svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.tfind.fab.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.toast{bottom:calc(150px + env(safe-area-inset-bottom,0px))!important}
+main{padding-bottom:150px}
+body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labelledby="hProj"]{display:none!important}
+#aiTiles{margin-top:4px}
+#aiTiles .ptiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+@media (min-width:640px){#aiTiles .ptiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#aiTiles .ptile{border:0;border-radius:0;height:192px;background:var(--surface)}
+#aiTiles .ptile>*{flex-shrink:0}
+#aiTiles .ptile:active{background:var(--sunk)}
+#aiTiles .ptile:last-child:nth-child(odd){grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -1572,8 +1593,8 @@ main{padding-bottom:90px}
   </div>
   <div class="qb-in gut"><span class="ai-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
-<button class="tadd fab" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button>
-<div class="topbtns"><a class="tb tchat" id="tchat" aria-label="עדכונים בצ׳אט" href="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span></a><button class="tb tfind" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tb tsun" id="sunBtn" type="button" aria-label="בריף הבוקר"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<button class="tfind fab" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tadd fab" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button>
+<div class="topbtns"><a class="tb tchat" id="tchat" aria-label="עדכונים בצ׳אט" href="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
@@ -1592,6 +1613,7 @@ main{padding-bottom:90px}
   </section>
   <section class="tvzone" id="tvSec" aria-label="אזור הטיולים"></section>
   <section id="tgate" hidden aria-label="שעות סגירה היום"></section>
+  <section id="aiTiles" class="ai-only" aria-label="AI Projects"></section>
   <section id="mainSec" class="tasks-only"><div id="list"><div class="empty">טוען…</div></div></section>
   <section id="askSec" class="tasks-only" hidden></section>
   <section aria-labelledby="hProj" class="tasks-only ai-only">
@@ -2205,14 +2227,14 @@ main{padding-bottom:90px}
   function navUrl(n){const b=location.pathname+location.search,dp=n.dash?"/d/"+encodeURIComponent(n.dash):"";
     if(n.lvl===1)return dp?b+"#"+dp:lvl1Url();return b+"#/ai"+(n.lvl===3?"/"+encodeURIComponent(n.id):"")+dp;}
   function navDepth(){const s=history.state;return s&&typeof s.sqd==="number"?s.sqd:0;}
-  function navGo(n){const d=n.dash?navDepth()+1:Math.max(0,n.lvl-1);try{history.pushState({sqd:d},"",navUrl(n));}catch(e){location.hash=navUrl(n).split("#")[1]||"";}syncNav(true);}
-  function goAi(){navGo({lvl:2,id:null});}
+  function navGo(n){const d=n.dash?navDepth()+1:(n.lvl>=2?1:0);try{history.pushState({sqd:d},"",navUrl(n));}catch(e){location.hash=navUrl(n).split("#")[1]||"";}syncNav(true);}
+  function goAi(){setQuest("ai");}
   function openProj(id){openId=null;navGo({lvl:3,id});}
   // back: our own previous entry = real history back; landed straight on this screen = replace with the parent
   function navTop(){return nav.dash?$("pgD"):nav.lvl===3?$("pg3"):nav.lvl===2?$("pg2"):null;}
-  function navUnder(el){return el&&el.id==="pgD"?(nav.lvl===3?$("pg3"):nav.lvl===2?$("pg2"):null):el&&el.id==="pg3"?$("pg2"):null;}
+  function navUnder(el){return el&&el.id==="pgD"?(nav.lvl===3?$("pg3"):nav.lvl===2?$("pg2"):null):null;}
   function navBack(noAnim){if(nav.lvl===1&&!nav.dash)return;const top=navTop();
-    const p=nav.dash?{lvl:nav.lvl,id:nav.id,dash:null}:{lvl:nav.lvl-1,id:null,dash:null};
+    const p=nav.dash?{lvl:nav.lvl,id:nav.id,dash:null}:{lvl:1,id:null,dash:null};
     const go=()=>{const want=navUrl(p);
       if(navDepth()>0){const wasDash=nav.dash;navSkipAnim=true;history.back();
         // a dashboard page may have pushed its own history (inside the frame): then close it by hand
@@ -2220,10 +2242,13 @@ main{padding-bottom:90px}
       try{history.replaceState({sqd:navDepth()},"",want);}catch(e){}syncNav(false);};
     if(noAnim){go();return;}pgSlide(top,1,()=>go());}
   var navSkipAnim=false;
-  function syncNav(anim){const n=navParse();const was=nav.lvl,wasD=nav.dash;nav=n;if(navSkipAnim){anim=false;navSkipAnim=false;}
+  function syncNav(anim){const n=navParse();
+    // 10.7: AI Projects is a normal quest page (tiles on level 1); old #/ai = that page, a project page sits on top of it
+    if(n.lvl>=2&&quest!=="ai"&&typeof applyQuest==="function"&&!qHidden("ai")){quest="ai";applyQuest();if(db)renderAll();}
+    if(n.lvl===2){n.lvl=1;try{history.replaceState(history.state,"",navUrl(n));}catch(e){}}const was=nav.lvl,wasD=nav.dash;nav=n;if(navSkipAnim){anim=false;navSkipAnim=false;}
     const p2=$("pg2"),p3=$("pg3"),pD=$("pgD");
     for(const p of [p2,p3,pD]){p.style.transform="";p.style.transition="";}
-    p2.hidden=n.lvl<2;p3.hidden=n.lvl<3;pD.hidden=!n.dash;$("pgShade").style.opacity="0";
+    p2.hidden=true;p3.hidden=n.lvl<3;pD.hidden=!n.dash;$("pgShade").style.opacity="0";
     if(n.lvl>=2&&!(n.dash&&wasD))renderNav();
     if(n.dash){if(n.dash!==dashPg.id)renderDashPg();}else if(dashPg.id){dashPg={id:null,frame:false};pD.replaceChildren();}
     if(n.lvl===3&&(was!==3||(anim&&!wasD)))p3.scrollTop=0;
@@ -2264,18 +2289,18 @@ main{padding-bottom:90px}
   function pgBar(back,title){return h("div",{class:"pgbar"},h("div",{class:"pgbar-in"},
     h("button",{class:"pgback",type:"button","aria-label":"חזרה ל"+back,onclick:()=>navBack()},h("span",{class:"chev","aria-hidden":"true"},"‹"),h("span",null,back)),
     h("div",{class:"pgtitle"},title),h("span")));}
-  function renderNav(){if(nav.lvl>=2)renderTiles();if(nav.lvl===3)renderProj();}
-  function renderTiles(){const pg=$("pg2");const list=[...projects].sort((a,b)=>(a.order??99)-(b.order??99)||(a.name||"").localeCompare(b.name||""));
+  function renderNav(){if(nav.lvl===3)renderProj();}
+  function renderTiles(){const pg=$("aiTiles");if(!pg||quest!=="ai")return;const list=[...projects].sort((a,b)=>(a.order??99)-(b.order??99)||(a.name||"").localeCompare(b.name||""));
     const gen=genTasks().filter(isOpen);
     // 10.7 (Oren 6.11): a count always says what it counts: "3 משימות פתוחות", "2 החלטות"
     const tile=(id,pic,name,c)=>h("button",{class:"ptile",type:"button","data-pid":id,onclick:()=>openProj(id)},pic,h("span",{class:"pn"},name),
       c.open?h("span",{class:"pw"+(c.me||c.asks?"":" soft")},heN(c.open,"משימה פתוחה אחת","משימות פתוחות")):h("span",{class:"pw z"},"✓ אין משימות פתוחות"),
       h("span",{class:"pd"+(c.asks?"":" off"),"aria-hidden":c.asks?null:"true"},c.asks?heN(c.asks,"החלטה אחת","החלטות"):"–"));
-    const kids=[pgBar("Side Quests","AI Projects"),h("div",{class:"pgbody"},
+    const kids=[
       projects.length?h("div",{class:"ptiles"},...list.map(p=>tile(p.id,picOf(p,72),p.name||"",projCounts(allTopics.filter(t=>t.project===p.id)))),
         gen.length?tile(GEN_ID,h("span",{class:"pic",style:"background:var(--hero);width:72px;height:72px;border-radius:18px;font-size:38px"},"✻"),"משימות כלליות",projCounts(gen)):null)
-      :h("div",{class:"empty"},"טוען…"))];
-    const y=pg.scrollTop;pg.replaceChildren(...kids);pg.scrollTop=y;}
+      :h("div",{class:"empty"},"טוען…")];
+    pg.replaceChildren(...kids);}
   function pjFold(key,title,count,body){if(!count)return null;const k="pj:"+key;const d=h("details",{class:"fold",open:folded[k]===true?"":null},
       h("summary",null,h("span",{class:"ft"},title),h("span",{class:"fn"},count),h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"fbody"},body));
     d.addEventListener("toggle",()=>{folded[k]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
@@ -2606,7 +2631,7 @@ main{padding-bottom:90px}
   const TQ=["army","work","travel","ai"]; // quests stored in t.quest; missing = side
   function questOf(t){return TQ.includes(t.quest)?t.quest:"side";}
   function questFromHash(){const q=location.hash.slice(1);return QUESTS[q]?q:"side";}
-  if(location.hash==="#ai")try{history.replaceState(null,"",location.pathname+location.search+"#/ai");}catch(e){}
+  if(location.hash==="#/ai")try{history.replaceState(null,"",location.pathname+location.search+"#ai");}catch(e){}
   let quest=questFromHash(), allTopics=[];if(qHidden(quest))quest="side";
   let funMode=quest==="fun";
   // 8.4 (Oren 6.11): only tasks Oren himself does. Claude's background work (Notion syncs, scheduled checks, tracking) is never a task:
@@ -2630,7 +2655,7 @@ main{padding-bottom:90px}
     if(Q.ph)$("qtitle").placeholder=Q.ph;
     splitTopics();renderQnav();
   }
-  function setQuest(q){if(q==="ai"){goAi();return;}if(q===quest)return;quest=q;openId=null;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();window.scrollTo(0,0);}
+  function setQuest(q){if(q===quest)return;quest=q;openId=null;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();window.scrollTo(0,0);}
   function setFun(on){setQuest(on?"fun":"side");}
   const FC=["var(--fz2)","var(--fz3)","var(--fz1)","var(--fz4)"];
   function funCard(t,i){
@@ -3043,7 +3068,7 @@ main{padding-bottom:90px}
         secChat(secUrl("travel_abroad",...(A.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),(projById("holiday-optimizer")||{}).claude_url),"טיולים בחו״ל","שיחה: טיולים בחו״ל")));
     sec.replaceChildren(jump,il,ab,h("div",{class:"tv-sec-h tz-tasks"},"🧳 משימות הטיולים"));
   }
-  window.addEventListener("hashchange",()=>{if(location.hash==="#ai"){try{history.replaceState(history.state,"","#/ai");}catch(e){}syncNav(true);return;}if(location.hash.startsWith("#/"))return;const q=questFromHash();if(qHidden(q)){setMode("home","🏠 עברתי לבית כדי לפתוח את "+QUESTS[q].name);return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
+  window.addEventListener("hashchange",()=>{if(location.hash.startsWith("#/"))return;const q=questFromHash();if(qHidden(q)){setMode("home","🏠 עברתי לבית כדי לפתוח את "+QUESTS[q].name);return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
   applyQuest();
   // 9.9 (Oren 6.11.2026): "צא עד Y, סוגרים ב-X" for today's tasks that depend on opening hours (timegate.js; same math as the push)
   function renderGate(){const el=document.getElementById("tgate");if(!el||!window.SQGate)return;
@@ -3053,7 +3078,7 @@ main{padding-bottom:90px}
     const left=g=>{const m=g.by-n.m;return m<=0?"עכשיו!":m<60?`עוד ${m} דק׳`:`עוד ${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} ש׳`;};
     el.innerHTML=L.slice(0,4).map(g=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`;}).join("");
     el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>openTask(b.dataset.id));}
-  function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderFun();renderTravel();renderDash();}
+  function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:""};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -3095,7 +3120,7 @@ main{padding-bottom:90px}
   const norm=x=>String(x||"").toLowerCase().normalize("NFKD").replace(/[\u0591-\u05C7]/g,"").replace(/[׳״'"`]/g,"").replace(/\s+/g," ");
   function textOf(v,out){if(v==null)return out;if(typeof v==="string")out.push(v);else if(Array.isArray(v))v.forEach(x=>textOf(x,out));else if(typeof v==="object")for(const k in v){if(k==="url"||k==="id"||k==="_deleted")continue;textOf(v[k],out);}return out;}
   function showFind(on){$("find").hidden=!on;$("fres").hidden=!on||!$("fq").value.trim();$("findBtn").setAttribute("aria-expanded",on?"true":"false");$("findBtn").classList.toggle("on",on);
-    if(on){showAdd(false);setTimeout(()=>$("fq").focus(),50);}else{$("fq").value="";$("fres").replaceChildren();}}
+    if(on){showAdd(false);$("find").scrollIntoView({block:"nearest"});setTimeout(()=>$("fq").focus(),50);}else{$("fq").value="";$("fres").replaceChildren();}}
   function runFind(){
     const q=norm($("fq").value).trim(),box=$("fres");
     if(!q){box.hidden=true;box.replaceChildren();return;}
@@ -3554,7 +3579,7 @@ main{padding-bottom:90px}
       const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
-    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderFun();renderDash();},()=>{});
+    db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderTiles();renderFun();renderDash();},()=>{});
     db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));renderList();renderDash();},()=>{});
     db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
     db.collection("payments").onSnapshot(s=>{payDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
