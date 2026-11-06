@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#3A1F14">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FOOD_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FOOD_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <title>אוכל ומסעדות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -68,7 +68,7 @@ section{margin-bottom:22px}
 /* recipe cards */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
 .rcard{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;text-align:start;padding:0;color:inherit}
-.rcard .img{height:120px;background:var(--sunk) center/cover no-repeat;display:grid;place-items:center;font-size:56px;position:relative}
+.rcard .img{height:150px;background:var(--sunk) center/cover no-repeat;display:grid;place-items:center;font-size:56px;position:relative}
 .rcard .img .badge{position:absolute;top:8px;inset-inline-start:8px;font-size:12px;font-weight:800;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:2px 9px}
 .rcard .bd{padding:10px 12px 12px}
 .rcard .t{font-family:var(--f-display);font-weight:800;font-size:17px;line-height:1.3}
@@ -76,6 +76,9 @@ section{margin-bottom:22px}
 .addcard{border:2px dashed var(--line);border-radius:16px;background:none;min-height:120px;cursor:pointer;font-weight:800;font-size:16px;color:var(--muted);padding:12px}
 .addcard small{display:block;font-weight:600;font-size:13px;margin-top:4px}
 /* recipe page */
+#app{min-height:calc(100vh - 60px)}
+.photo{margin:12px 0 4px;border-radius:16px;overflow:hidden;aspect-ratio:3/2;background:rgba(255,255,255,.08) center/cover no-repeat;position:relative}
+.photo small{position:absolute;bottom:6px;inset-inline-end:8px;font-size:11px;font-weight:700;background:rgba(0,0,0,.5);color:#fff;border-radius:999px;padding:1px 8px}
 .src{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.1);color:var(--hero-ink)!important;font-weight:800}
 .src small{display:block;color:var(--hero-muted);font-weight:600;font-size:12.5px}
 .acts{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);margin-bottom:14px}
@@ -135,6 +138,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const imgSrc=u=>/^food-img\/[\w.-]+$/.test(u||"")?u:safe(u);
 const CHAT_FALLBACK="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCPVaxKfpuhZBN5R4bcqVQKvM";
 const CATS=[["all","הכול"],["sweet","🍫 מתוקים"],["main","🍲 עיקריות"],["side","🥗 סלטים ותוספות"],["breakfast","🍳 בוקר"],["baking","🥖 מאפים"],["drink","🥤 משקאות"],["other","🍴 אחר"]];
 const PLAT={instagram:"אינסטגרם",tiktok:"טיקטוק",youtube:"יוטיוב",facebook:"פייסבוק",web:"אתר"};
@@ -142,7 +146,7 @@ let items={},meta={},db=null,loaded=false;
 const UI_KEY="sq_food_ui";let ui={sec:"recipes",cat:"all",tab:"shop"};
 try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
 function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
-// ticks ("bought / have at home") live only on this device
+// ticks ("got it") live only on this device
 const CK_KEY="sq_food_chk";let chk={};try{chk=JSON.parse(localStorage.getItem(CK_KEY)||"{}");}catch(e){}
 function saveChk(){try{localStorage.setItem(CK_KEY,JSON.stringify(chk));}catch(e){}}
 const EMB=window.self!==window.top;function goHash(x){if(EMB)location.replace(location.pathname+location.search+"#"+x);else location.hash=x;}
@@ -153,7 +157,7 @@ function list(kind){return Object.entries(items).map(([id,v])=>({id,...v})).filt
   .sort((a,b)=>(!!b.fav-!!a.fav)||String(b.created_at||"").localeCompare(String(a.created_at||"")));}
 function plat(x){const s=x.source||{};if(s.platform)return s.platform;const u=s.url||"";return /instagram/.test(u)?"instagram":/tiktok/.test(u)?"tiktok":/youtu/.test(u)?"youtube":/facebook|fb\.watch/.test(u)?"facebook":"web";}
 function shopOf(x){return (x.shop||[]).map((s,i)=>({...s,key:x.id+":"+i}));}
-function leftToBuy(x){return shopOf(x).filter(s=>s.where!=="home"&&!chk[s.key]).length;}
+function leftToBuy(x){return shopOf(x).filter(s=>!chk[s.key]).length;}
 
 // ---------- hero ----------
 function heroHome(){const R=list("recipe"),cart=R.filter(x=>x.cart);
@@ -161,9 +165,10 @@ function heroHome(){const R=list("recipe"),cart=R.filter(x=>x.cart);
   <h1>🍽️ אוכל ומסעדות</h1><p class="sub">מתכונים שראיתי ברשת, עם רשימת קניות לסופר ומתכון מסודר. ובהמשך גם מסעדות.</p>
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שלח לינק למתכון או מסעדה<small>רילס, טיקטוק, יוטיוב או אתר. אני מוציא קניות ומתכון</small></span></a>
   <div class="kpis"><div class="kpi"><b>${R.length}</b><span>מתכונים</span></div><div class="kpi"><b>${R.filter(x=>(x.made_count||0)>0).length}</b><span>כבר הכנתי</span></div><div class="kpi"><b>${cart.length}</b><span>ברשימת הקניות</span></div></div>`;}
-function heroRecipe(x){const s=x.source||{},u=safe(s.url);
+function heroRecipe(x){const s=x.source||{},u=safe(s.url),im=imgSrc(x.img);
   return `<div class="top"><button class="back" data-home>→ כל המתכונים</button><span class="back">${x.fav?"⭐ מועדף":""}</span></div>
-  <h1>${esc(x.icon||"🍴")} ${esc(x.title)}</h1><p class="sub">${esc(x.summary||"")}</p>
+  <h1>${im?"":esc(x.icon||"🍴")+" "}${esc(x.title)}</h1><p class="sub">${esc(x.summary||"")}</p>
+  ${im?`<div class="photo" role="img" aria-label="${esc(x.title)}" style="background-image:url('${esc(im)}')">${x.img_note?`<small>${esc(x.img_note)}</small>`:""}</div>`:""}
   ${u?`<a class="src" href="${esc(u)}" target="_blank" rel="noopener"><span style="font-size:22px">▶️</span><span>לסרטון / למקור${s.author?" של "+esc(s.author):""}<small>${esc(PLAT[plat(x)]||"")}${s.label?" · "+esc(s.label):""}</small></span></a>`:""}`;}
 
 // ---------- home ----------
@@ -172,7 +177,7 @@ function renderHome(){$("hero").innerHTML=heroHome();
   $("bar").innerHTML=`<div class="seg">${secs.map(([k,l])=>`<button data-sec="${k}" class="${ui.sec===k?"on":""}">${l}</button>`).join("")}</div>`
     +(ui.sec==="recipes"?`<div class="chipsel">${CATS.map(([k,l])=>`<button data-cat="${k}" class="${ui.cat===k?"on":""}">${l}</button>`).join("")}</div>`:"");
   $("app").innerHTML=ui.sec==="rest"?renderRest():renderRecipes();}
-function card(x){const img=safe(x.img),t=x.time||{},n=leftToBuy(x);
+function card(x){const img=imgSrc(x.img),t=x.time||{},n=leftToBuy(x);
   return `<button class="rcard" data-open="${esc(x.id)}"><div class="img" ${img?`style="background-image:url('${esc(img)}')"`:""}>${img?"":esc(x.icon||"🍴")}${x.status==="new"?`<span class="badge">⏳ בעבודה</span>`:x.fav?`<span class="badge">⭐</span>`:""}</div><div class="bd">
     <div class="t">${esc(x.title)}</div>
     <div class="s">${[(x.source||{}).author,t.total,x.made_count?"הכנתי ×"+x.made_count:"",x.cart&&n?"🛒 "+n+" לקנות":""].filter(Boolean).map(esc).join(" · ")}</div></div></button>`;}
@@ -186,17 +191,14 @@ function renderRest(){const L=list("restaurant");
   return `<div class="grid">${L.map(x=>`<div class="rcard" style="cursor:default"><div class="img">${esc(x.icon||"🍽️")}</div><div class="bd"><div class="t">${esc(x.title)}</div><div class="s">${esc([x.city,x.style,x.price].filter(Boolean).join(" · "))}</div>${safe(x.url)?`<a href="${esc(x.url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px">לפרטים</a>`:""}</div></div>`).join("")}</div>`;}
 
 // ---------- recipe ----------
-function shopList(items2,showFrom){const buy=items2.filter(s=>s.where!=="home"),home=items2.filter(s=>s.where==="home");
+function shopList(items2,showFrom){
   const row=s=>`<li class="${chk[s.key]?"ok":""}" data-ck="${esc(s.key)}"><span class="bx">✓</span><span class="it">${esc(s.item)}${s.note||(showFrom&&s.from)?`<small>${esc([s.note,showFrom?s.from:""].filter(Boolean).join(" · "))}</small>`:""}</span><span class="q">${esc(s.qty||"")}</span></li>`;
   const group=arr=>{const by={};arr.forEach(s=>{(by[s.aisle||"שונות"]=by[s.aisle||"שונות"]||[]).push(s);});const ks=Object.keys(by);
     return ks.map(k=>`${ks.length>1?`<div class="aisle">${esc(k)}</div>`:""}<ul class="shop">${by[k].map(row).join("")}</ul>`).join("");};
-  let h="";
-  if(buy.length)h+=`<section><div class="sh"><h2>🛒 לקנות בסופר</h2><small>${buy.filter(s=>!chk[s.key]).length} נשארו</small></div><div class="card">${group(buy)}</div></section>`;
-  if(home.length)h+=`<section><div class="sh"><h2>🏠 לוודא שיש בבית</h2><small>מסמנים מה יש</small></div><div class="card">${group(home)}</div></section>`;
-  return h;}
-function shopText(title,arr){const buy=arr.filter(s=>s.where!=="home"),home=arr.filter(s=>s.where==="home");
-  const ln=s=>"• "+s.item+(s.qty?" ("+s.qty+")":"");
-  return `🛒 ${title}\n\nלקנות:\n${buy.map(ln).join("\n")}${home.length?"\n\nלוודא בבית:\n"+home.map(ln).join("\n"):""}`;}
+  // one list: buy or already at home doesn't matter (Oren 6.11.2026)
+  return items2.length?`<section><div class="sh"><h2>🛒 רשימת מצרכים</h2><small>${items2.filter(s=>!chk[s.key]).length} נשארו</small></div><div class="card">${group(items2)}</div></section>`:"";}
+function shopText(title,arr){const ln=s=>"• "+s.item+(s.qty?" ("+s.qty+")":"");
+  return `🛒 ${title}\n\n${arr.map(ln).join("\n")}`;}
 function tabShop(x){const s=shopOf(x);if(!s.length)return `<div class="empty">${x.status==="new"?"אני עובד על המתכון הזה. רשימת הקניות תופיע כאן.":"אין עדיין רשימת קניות."}</div>`;
   return shopList(s)+`<div class="bar2"><button data-copy>📋 העתק רשימה</button><button data-clear>↺ נקה סימונים</button></div>`;}
 function tabRecipe(x){const t=x.time||{};let h="";
@@ -210,7 +212,7 @@ function tabRecipe(x){const t=x.time||{};let h="";
   return h||`<div class="empty">המתכון בדרך.</div>`;}
 function renderRecipe(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"המתכון לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
   $("hero").innerHTML=heroRecipe(x);
-  $("bar").innerHTML=`<div class="seg"><button data-tab="shop" class="${ui.tab!=="recipe"?"on":""}">🛒 קניות</button><button data-tab="recipe" class="${ui.tab==="recipe"?"on":""}">👨‍🍳 מתכון</button></div>`;
+  $("bar").innerHTML=`<div class="seg"><button data-tab="shop" class="${ui.tab!=="recipe"?"on":""}">🛒 מצרכים</button><button data-tab="recipe" class="${ui.tab==="recipe"?"on":""}">👨‍🍳 מתכון</button></div>`;
   const acts=`<div class="acts"><button data-tcart class="${x.cart?"on":""}">${x.cart?"✓ ברשימה":"🛒 לרשימה המשולבת"}</button><button data-made>✓ הכנתי${x.made_count?" ("+x.made_count+")":""}</button><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button></div>`;
   $("app").innerHTML=acts+(ui.tab==="recipe"?tabRecipe(x):tabShop(x));}
 function cartItems(){return list("recipe").filter(x=>x.cart).flatMap(x=>shopOf(x).map(s=>({...s,from:x.title})));}
@@ -233,7 +235,7 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
   if(b=g("[data-open]")){ui.tab="shop";goHash("r="+encodeURIComponent(b.dataset.open));return;}
   if(g("[data-cart]")){goHash("cart");return;}
   if(g("[data-home]")){EMB?goHash(""):history.length>1&&(curId()||isCart())?history.back():(location.hash="");return;}
-  if(b=g("[data-tab]")){ui.tab=b.dataset.tab;saveUi();render();scrollTo(0,0);return;}
+  if(b=g("[data-tab]")){const k=b.dataset.tab,top=b.getBoundingClientRect().top;ui.tab=k;saveUi();render();/* tapped tab stays put */const nb=document.querySelector(`[data-tab="${k}"]`);if(nb)scrollBy(0,nb.getBoundingClientRect().top-top);return;}
   if(b=g("[data-ck]")){const k=b.dataset.ck;if(chk[k])delete chk[k];else chk[k]=1;saveChk();const y=scrollY;render();scrollTo(0,y);return;}
   if(g("[data-copy]")){const id=curId();const t=isCart()?shopText("רשימת קניות",cartItems()):shopText((items[id]||{}).title||"",shopOf({id,...items[id]}));toast(await copy(t)?"הרשימה הועתקה":"לא הצלחתי להעתיק");return;}
   if(g("[data-clear]")){const keys=isCart()?cartItems().map(s=>s.key):shopOf({id:curId(),...items[curId()]}).map(s=>s.key);keys.forEach(k=>delete chk[k]);saveChk();render();toast("הסימונים נוקו");return;}
@@ -244,7 +246,7 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
   if(g("[data-add]")){const u=(prompt("הדבק לינק למתכון (רילס, טיקטוק, יוטיוב או אתר)")||"").trim();if(!u)return;if(!db){toast("אין חיבור");return;}
     const m=u.match(/https:\/\/\S+/);const url=m?m[0]:"";const id="r"+Date.now().toString(36);
     try{await db.collection("food").doc(id).set({kind:"recipe",title:url?"מתכון חדש":u.slice(0,100),icon:"🍴",cat:ui.cat==="all"?"other":ui.cat,status:"new",source:{url},shop:[],ingredients:[],steps:[],created_at:now,updated_at:now,log:[{at:now,text:"נפתח מהדשבורד"}]});
-      const ok=await copy(`מתכון חדש בדשבורד האוכל (id ${id}): ${u}\nתוציא ממנו רשימת קניות לסופר ישראלי (לקנות / לוודא בבית, עם כמויות) ומתכון מסודר, ותמלא את הכרטיס.`);
+      const ok=await copy(`מתכון חדש בדשבורד האוכל (id ${id}): ${u}\nתוציא ממנו רשימת מצרכים אחת לסופר ישראלי (עם כמויות, לפי מחלקה), מתכון מסודר ותמונה יפה של המנה (img), ותמלא את הכרטיס.`);
       toast(ok?"נוסף. הבקשה הועתקה, הדבק בשיחה":"נוסף");setTimeout(()=>window.open(safe(meta.chat_url)||CHAT_FALLBACK,"_blank","noopener"),700);goHash("r="+encodeURIComponent(id));}catch(err){toast("לא נשמר");}return;}
 });
 render();
