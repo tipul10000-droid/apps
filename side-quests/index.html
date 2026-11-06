@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.2";window.SQ_BUILD_AT="6.11.2026 08:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.3";window.SQ_BUILD_AT="6.11.2026 10:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1271,6 +1271,31 @@ details.more[open]>summary{margin-bottom:10px}
 .ctxrow .toolrow .tchat span:last-child{overflow:hidden;text-overflow:ellipsis}
 .ctxrow .toolrow .ic{font-size:15px;flex:none}
 .ctxrow .toolrow .refr:active,.ctxrow .toolrow .tchat:active{transform:scale(.98);background:rgba(255,255,255,.14)!important}
+/* 9.3 (Oren 6.11): the time-window choice gets a clear frame and three clearly separate buttons; "auto" carries the AI sparkle */
+.ctxrow .wseg{gap:5px;padding:5px;border-radius:14px;background:rgba(0,0,0,.22);border:2px solid rgba(255,255,255,.55)!important}
+.ctxrow .wseg button{display:flex;align-items:center;justify-content:center;gap:4px;min-height:40px;padding:0 4px;font-size:14.5px;white-space:nowrap;border-radius:10px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.3)}
+.ctxrow .wseg button::before{display:none!important}
+.ctxrow .wseg button[aria-pressed="true"]{background:#fff;color:#111;border-color:#fff}
+.wseg .ai-ic{display:inline-flex;color:#f2a33a}.wseg button[aria-pressed="true"] .ai-ic{color:#d9772b}
+/* 9.3: always-on questions & decisions area */
+.fold.noask .fe{display:flex;align-items:center;gap:10px;min-height:50px;padding:0 14px;font-size:17px}
+.fold.noask .fok{color:var(--muted);font-size:14.5px;font-weight:600}
+/* 9.3 (Oren 6.11): settings bigger and easier: near full height, larger rows, text and controls */
+#setM .sqpanel{max-height:94vh;max-width:560px;font-size:16.5px;padding:20px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+#setM .sqpanel h2{font-size:23px;margin-bottom:6px}
+#setM .sqpanel .px{font-size:30px;padding:4px 10px}
+#setM .sqsec{margin-top:12px}
+#setM .sqsec summary{min-height:58px;padding:0 16px;font-size:17.5px;border-radius:14px}
+#setM .sqsec summary .v{font-size:15px}
+#setM .sqsec[open] summary{border-radius:14px 14px 0 0}
+#setM .sqsec .sqcard{padding:12px 16px;border-radius:0 0 14px 14px}
+#setM .sqrow{min-height:56px;gap:12px}
+#setM .sqrow .lb small{font-size:14px;margin-top:2px}
+#setM .sqsel{font-size:17px;padding:9px 12px;min-height:44px}
+#setM .sqbtn{min-height:48px;font-size:16.5px}
+#setM .tsbtns button{min-height:48px;font-size:16px}
+#setM .sqhint{font-size:14.5px}
+#setM .sqsw{width:54px;height:32px}#setM .sqsw::after{width:26px;height:26px}#setM .sqsw:checked::after{inset-inline-start:25px}
 body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolrow .tchat{border-color:rgba(255,255,255,.34)!important}
 </style>
 </head>
@@ -1761,6 +1786,9 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
       if(op.then&&op.then.q)qs=[...qs,{id:"q"+Date.now().toString(36),q:String(op.then.q),options:Array.isArray(op.then.options)?op.then.options:[],answer:""}];
       if(op.offer)extra.ai_offers=[...offersOf(t),{id:"o"+Date.now().toString(36),text:String(op.offer),state:"open"}];
       if(op.close){extra.status="done";extra.done_at=now;}
+      // 9.3: deadline questions. {label, deadline:{d,l}} sets the countdown; {label, no_deadline:true} marks "no deadline"
+      if(op.deadline&&/^\d{4}-\d{2}-\d{2}$/.test(op.deadline.d||""))extra.deadline={d:op.deadline.d,l:String(op.deadline.l||"")};
+      if(op.no_deadline){extra.deadline=null;extra.deadline_none=true;}
     }
     patch(t,{questions:qs,...extra,log:logPush(t,`ענית: ${q.q} → ${ans}`,now)},op&&op.close?"נסגר ✓":"התשובה נשמרה");
   }
@@ -1796,8 +1824,10 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
       questionsOf(t).filter(q=>!q.answer).forEach(q=>cards.push(questionCard(t,q,true)));
       offersOf(t).filter(o=>(o.state||"open")==="open").forEach(o=>cards.push(offerCard(t,o,true)));
     });
-    const sec=$("askSec");sec.hidden=!cards.length;if(!cards.length){sec.replaceChildren();return;}
-    sec.replaceChildren(foldBox("asks","שאלות ממך",cards.length,[h("div",{class:"inbox"},cards)],{ask:true}));
+    // 9.3 (Oren 6.11): the questions & decisions area is always there. Empty = a calm "nothing to decide" line.
+    const sec=$("askSec");sec.hidden=false;
+    if(!cards.length){sec.replaceChildren(h("div",{class:"fold ask noask"},h("div",{class:"fe"},h("span",{class:"ft"},"שאלות והחלטות"),h("span",{class:"fok"},"✓ אין כרגע, נהדר"))));return;}
+    sec.replaceChildren(foldBox("asks","שאלות והחלטות",cards.length,[h("div",{class:"inbox"},cards)],{ask:true}));
   }
   function jumpTo(id){const e=$(id);if(e&&!e.hidden&&e.offsetParent)e.scrollIntoView({behavior:"smooth",block:"start"});else toast("אין כרגע מה להציג כאן");}
   // counters (from 4.9): a red "+N" = how many were added since your previous visit, per quest. No minus.
@@ -1866,6 +1896,7 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   }
   // 8.0 (Oren 6.11): the window bar is one segmented choice: automatic (by day and hour), pick (previous, current, next,
   // and "עוד" for the rest) or off (everything, organized, no window). Kept in localStorage sq_wmode. Modes moved to settings.
+  const AI_SPARK='<svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path fill="currentColor" d="M19 14.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z" opacity=".8"/></svg>';
   function winTrio(){const n=ilNow(),L=dayWins(n.d,planFor(ilDate())).filter(x=>x[1]!=="sleep");let i=0;for(let k=0;k<L.length;k++)if(L[k][0]<=n.m)i=k;
     const r=[];if(i>0)r.push(L[i-1]);r.push(L[i]);if(i+1<L.length)r.push(L[i+1]);return r;}
   function setWMode(m){wMode=m;winMore=false;try{localStorage.setItem("sq_wmode",m);}catch(e){}
@@ -1876,10 +1907,10 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
     setMode(m,MODES[m].e+" "+MODES[m].l+(m===autoMode()?" (אוטומטי)":" עד המעבר הבא"));renderSettings();}
   function renderCtx(){
     const side=quest==="side",w=curWin(),W=WINS[w.id],eff=w.manual?"pick":wMode;
-    const seg=(k,l)=>h("button",{type:"button","aria-pressed":eff===k?"true":"false",onclick:()=>setWMode(k)},l);
+    const seg=(k,l)=>h("button",{type:"button","aria-pressed":eff===k?"true":"false",onclick:()=>setWMode(k)},...[].concat(l));
     const kids=[];
     if(side){
-      kids.push(h("div",{class:"wseg",role:"group","aria-label":"חלון זמינות"},seg("auto","אוטומטי"),seg("pick","בחירה"),seg("off","בלי חלונות")));
+      kids.push(h("div",{class:"wseg",role:"group","aria-label":"חלון זמן"},seg("auto",[h("span",{class:"ai-ic","aria-hidden":"true",html:AI_SPARK}),"אוטומטי"]),seg("pick","בחירה"),seg("off","בלי חלונות זמן")));
       if(eff==="pick"){
         const trio=winTrio(),ids=trio.map(x=>x[1]);
         const chip=(id,t)=>h("button",{type:"button",class:"wchip","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;setWin(id);wMode="pick";try{localStorage.setItem("sq_wmode","pick");}catch(e){}}},
@@ -1908,7 +1939,8 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   function stepsOf(t){return (Array.isArray(t.steps)?t.steps:[]).filter(s=>s&&s.text);}
   // 8.0 (Oren 6.11): one line per task. Circle, title, at most one small mark. Everything else inside.
   // 9.2: hard deadline countdown in the title itself (deadline {d: YYYY-MM-DD, l: what happens}), e.g. "⏳ 86 ימים · ..."
-  function dlTag(t){const D=t.deadline,n=D&&D.d?daysUntil(D.d):null;if(n==null)return null;
+  function dlOf(t){const D=t.deadline;if(typeof D==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(D))return {d:D,l:""};return D&&typeof D==="object"&&D.d?D:null;}
+  function dlTag(t){const D=dlOf(t),n=D&&D.d?daysUntil(D.d):null;if(n==null)return null;
     return h("span",{class:"r-dl"+(n<=14?" hot":""),title:(D.l||"")+" "+D.d.split("-").reverse().join(".")},n<0?"⏳ עבר המועד · ":n===0?"⏳ היום אחרון · ":"⏳ "+n+(n===1?" יום":" ימים")+" · ");}
   function row(t){
     const open=isOpen(t),n=daysUntil(t.next_date),asks=openAsks(t),st=stepsOf(t),sd=st.filter(s=>s.done).length;
@@ -2022,7 +2054,10 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   // 8.3 (Oren 6.11): order inside every window. First what is done at home, then calls (also on the way), then going out:
   // tasks bound to a place grouped by area, nearest area first (fit.area, fit.km from home). Tasks that can be done anywhere
   // (fit.anywhere, e.g. buy milk) join the nearest outing. Tasks in the same area belong together ("you're already in Raanana").
-  function geoOf(t){const f=fitOf(t);return {area:String(f.area||"").trim(),km:f.km!=null&&f.km!==""&&!isNaN(+f.km)?+f.km:null,any:!!f.anywhere};}
+  // 9.3 (Oren 6.11): settings switch to stop ordering and grouping by place (localStorage sq_geo="off")
+  let geoOff=false;try{geoOff=localStorage.getItem("sq_geo")==="off";}catch(e){}
+  function setGeo(on){geoOff=!on;try{localStorage.setItem("sq_geo",on?"on":"off");}catch(e){}renderList();renderSettings();toast(on?"📍 סידור לפי מיקום פעיל":"📍 בלי סידור לפי מיקום");}
+  function geoOf(t){if(geoOff)return {area:"",km:null,any:false};const f=fitOf(t);return {area:String(f.area||"").trim(),km:f.km!=null&&f.km!==""&&!isNaN(+f.km)?+f.km:null,any:!!f.anywhere};}
   function stageOf(t){const hw=howOf(t);if(hw.includes("place"))return geoOf(t).any?"any":"out";if(hw.includes("call"))return "call";return "home";}
   function winSections(L){
     const by=k=>L.filter(t=>stageOf(t)===k),home=by("home"),call=by("call"),out=by("out"),any=by("any");
@@ -2068,14 +2103,14 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
       const uIn=urgAll.filter(t=>fitsWin(t,w.id)||unprof(t));
       const fit=W.acc.length?live.filter(t=>fitsWin(t,w.id)||unprof(t)).sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)||(minsOf(a)-minsOf(b))):[];
       const L=[...uIn,...fit];
-      top.push(winCard(W,w.end?"עד "+w.end:"",L,W.acc.length?"אין כרגע משימה לחלון הזה":"זמן חסום. רק דחוף"));
+      top.push(winCard(W,w.end?"עד "+w.end:"",L,W.acc.length?"אין כרגע משימה לחלון הזמן הזה":"זמן חסום. רק דחוף"));
       // 8.3 (Oren 6.11): and what comes next (e.g. Friday 07:30 home morning → Friday errands from 08:00)
       const nx=nextWin(w),NW=nx&&WINS[nx.id];
       const nU=nx?urgAll.filter(t=>!L.includes(t)&&fitsWin(t,nx.id)):[],nF=nx?live.filter(t=>!L.includes(t)&&fitsWin(t,nx.id)).sort((a,b)=>ord(a,b)||(minsOf(a)-minsOf(b))):[];
       const NL=[...nU,...nF];
-      if(nx)top.push(winCard(NW,"הבא · "+nx.at,NL,"אין משימות לחלון הבא",true));
+      if(nx)top.push(winCard(NW,"הבא · "+nx.at,NL,"אין משימות לחלון הזמן הבא",true));
       const uOut=urgAll.filter(t=>!uIn.includes(t)&&!nU.includes(t));
-      if(uOut.length)top.push(foldRows("uout","❗ דחוף לחלון אחר",uOut,{hot:true}));
+      if(uOut.length)top.push(foldRows("uout","❗ דחוף לחלון זמן אחר",uOut,{hot:true}));
       const others=live.filter(t=>!fit.includes(t)&&!nF.includes(t));
       if(others.length){const [q,tr,lo]=bySize(others);
         more.push(foldBox("rest","כל שאר המשימות",others.length,[group(SIZES.quick.g,q),group(SIZES.trip.g,tr),group(SIZES.long.g,lo)].filter(Boolean),{force:others.some(t=>t.id===openId)}));}
@@ -2908,6 +2943,8 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
       sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
         h("div",{class:"sqhint"},"״לפי האייפון״ עוקב אחרי הגדרות ← תצוגה ← גודל טקסט, כמו וואטסאפ. כשהאוטומציה ברכב מגדילה את הטקסט, גם כאן הוא גדל."),
         h("div",{class:"tsbtns"},...[["auto","לפי האייפון"],["1","רגיל"],["1.15","גדול"],["1.3","גדול מאוד"],["1.5","🚗 רכב"]].map(([v,l])=>h("button",{type:"button","aria-pressed":tsPref===v?"true":"false",onclick:()=>setTs(v)},l)))),
+      sec("geo","📍 מיקומים",geoOff?"כבוי":"פעיל",
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"סידור לפי מיקום",h("small",null,"מקבץ משימות לפי אזור, מהקרוב לרחוק, ומציע ״כבר ב...? גם:״. כבוי = בלי אזורים ובלי מרחקים")),sw(!geoOff,v=>setGeo(v),"סידור לפי מיקום"))),
       sec("crit","🚨 דחוף בלבד",notify.critical?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"בשקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות")))
       ,h("div",{class:"sqhint"},"הבריפים עצמם: כפתור ☀️ למעלה במסך הראשי (בבוקר בוקר, אחרי הצהריים ערב)."));
