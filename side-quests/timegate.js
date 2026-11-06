@@ -11,6 +11,8 @@
 //   last_in: minutes before closing that the last car / customer is taken (default 0)
 //   travel: one-way minutes (default from km: 6 + 1.5*km, else 15)
 //   hours_src, hours_at, hours_est (true = an estimate; the app asks to confirm)
+//   remind: "HH:MM" (11.5, Oren 6.11.2026, sport dashboard): a plain timed reminder on the planned day (register in ARBOX,
+//         go train). One push at that time, no travel math. kind "remind".
 //   alts: [{name, area, km, open, last_in?, travel?, src}] (10.4, Oren 6.11.2026): a generic errand (pitas, groceries) that any of
 //         several places can do. The nearest place that can still be reached wins; when the nearest one is closed or closing,
 //         the gate points to a place that closes later, even if a bit farther, and the text says so ("X כבר סגור, לך ל-Y").
@@ -44,7 +46,7 @@
   // gate for a task on date `date` (weekday `dow`) at minute-of-day `now`. Returns null when the task has no hours.
   function gate(t, date, dow, now) {
     const f = t && t.fit && typeof t.fit === "object" ? t.fit : null;
-    if (!f || (!f.open && !f.appt && !(Array.isArray(f.alts) && f.alts.length))) return null;
+    if (!f || (!f.open && !f.appt && !f.remind && !(Array.isArray(f.alts) && f.alts.length))) return null;
     const call = isCall(f), travel = travelOf(f), last = +f.last_in || 0;
     const need = call ? Math.min(+f.mins || 15, 45) : 0;
     const buf = call ? 5 : 10;
@@ -56,6 +58,10 @@
       return { ...base, kind: "at", open: null, close: a, by, closed: false, state: now >= a ? "past" : now >= by ? "late" : by - now <= 30 ? "soon" : "ok" };
     }
     if (Array.isArray(f.alts) && f.alts.length) return altGate(t, f, date, dow, now);
+    if (f.remind && !f.open) {
+      const r = hm(f.remind); if (r == null) return null;
+      return { ...base, kind: "remind", call: false, open: null, close: r, by: r, closed: false, note: String(t.next_step || "").trim(), state: now >= r + 180 ? "past" : now >= r ? "late" : r - now <= 30 ? "soon" : "ok" };
+    }
     const rs = ranges(f.open, dow);
     if (rs == null) return { ...base, kind: "unknown" };
     if (!rs.length) return { ...base, kind: "closed", closed: true, next: nextOpen(f.open, dow) };
@@ -111,6 +117,7 @@
   function text(g) {
     const w = g.where ? g.where + " " : "";
     if (g.kind === "closed") return { head: (g.call ? "📵 לא עונים היום" : "🚫 סגור היום"), body: `${w}סגור היום.${g.next ? ` פתוח שוב ב${g.next.day} מ-${g.next.from}.` : ""}` };
+    if (g.kind === "remind") return { head: `⏰ ${fmt(g.close)}`, body: g.note || g.where || "תזכורת" };
     if (g.kind === "at") return { head: g.call ? `📞 שיחה ב-${fmt(g.close)}` : `🚗 צא עד ${fmt(g.by)}`, body: `${w}ב-${fmt(g.close)}.${g.call ? "" : ` ${g.travel} דק׳ נסיעה.`}` };
     const lastTxt = g.last ? ` (כניסה אחרונה ${fmt(g.close - g.last)})` : "";
     if (g.alts) {
@@ -122,5 +129,16 @@
     if (g.call) return { head: `📞 להתקשר עד ${fmt(g.by)}`, body: `${w || "המוקד "}נסגר ב-${fmt(g.close)}.` };
     return { head: `🚗 צא עד ${fmt(g.by)}`, body: `${w}סוגרים ב-${fmt(g.close)}${lastTxt}. ${g.travel} דק׳ נסיעה.` };
   }
-  G.SQGate = { gate, list, text, fmt, hm, dayOf, ranges, nextOpen, DOW };
+  // recurring task (9.2): recur {dow: 0-6}. A done task reopens on its next day (closed before that day's 00:00 = open again),
+  // planned for that day. Same rule in the app and in sq-push, so a weekly reminder pushes again every week.
+  function recurOpen(t, today) {
+    const r = t && t.recur; if (!r || r.dow == null || t.status !== "done") return t;
+    const d = today ? new Date(today + "T00:00:00") : new Date(); d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - ((d.getDay() - r.dow + 7) % 7));
+    const iso = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    const doneAt = t.done_at ? Date.parse(t.done_at) : 0;
+    // done_at is UTC; compare with that day's 00:00 in Israel (UTC+2/+3): 21:00Z the evening before is safe enough
+    return doneAt < Date.parse(iso + "T00:00:00Z") - 2 * 3600000 ? { ...t, status: "active", done_at: "", next_date: iso } : t;
+  }
+  G.SQGate = { gate, list, text, fmt, hm, dayOf, ranges, nextOpen, recurOpen, DOW };
 })(typeof globalThis !== "undefined" ? globalThis : window);

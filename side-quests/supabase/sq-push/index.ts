@@ -50,6 +50,12 @@ async function listColl(app: string, coll: string) {
   return (data || []).filter((r: any) => !(r.data && r.data._deleted)).map((r: any) => ({ id: r.id, ...(r.data || {}) }));
 }
 
+// topics with weekly tasks reopened for their day (recur, shared with the app in timegate.js)
+async function listTopics() {
+  const d = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jerusalem" }).format(new Date());
+  return (await listColl(APP, "topics")).map((t: any) => SQGate.recurOpen(t, d));
+}
+
 async function keys() {
   let k = await getDoc(SRV, "secrets", "vapid");
   if (!k?.pub || !k?.priv) {
@@ -132,7 +138,7 @@ function buildBrief(all: any[]) {
 
 async function briefNow(source: string, list?: any[]) {
   const today = il().date;
-  const all = await listColl(APP, "topics");
+  const all = await listTopics();
   let b: any = buildBrief(all);
   // a Claude-written brief (the 07:00 sweep writes settings/morning_brief for today) wins when present
   const ai = await getDoc(APP, "settings", "morning_brief");
@@ -157,7 +163,7 @@ async function eveNow(source: string, list?: any[]) {
   const ai = await getDoc(APP, "settings", "evening_brief");
   if (ai && ai.date === today && ai.headline) head = String(ai.headline);
   if (!head) {
-    const all = await listColl(APP, "topics");
+    const all = await listTopics();
     const way = all.filter((t: any) => isTask(t) && OPEN.includes(t.status || "active") && t.status !== "waiting_other" && !snoozed(t, now) &&
       ((Array.isArray(t.context) && t.context.includes("out")) || ERRAND.test(String(t.title || "").trim())))
       .sort((a: any, b: any) => Date.parse(b.created_at || 0) - Date.parse(a.created_at || 0));
@@ -194,7 +200,7 @@ async function criticalTick(p: any, t0: ReturnType<typeof il>) {
   if (p.abroadOn && p.abroad_tz) { try { t = il(Date.now(), p.abroad_tz); } catch (_) { t = t0; } }
   const quiet = p.quiet_from > p.quiet_to ? (t.hour >= p.quiet_from || t.hour < p.quiet_to) : (t.hour >= p.quiet_from && t.hour < p.quiet_to);
   if (quiet) return { critical: 0, quiet: true };
-  const all = await listColl(APP, "topics");
+  const all = await listTopics();
   const st = (await getDoc(SRV, "state", "critical")) || {};
   const seen: Record<string, string> = st.seen || {};
   const hits = all.filter((x: any) => isTask(x) && OPEN.includes(x.status || "active") && !snoozed(x, Date.now()) &&
@@ -223,7 +229,7 @@ async function gateTick(p: any, t: ReturnType<typeof il>) {
   if (p.gates === false || p.abroadOn) return { gates: 0 };
   const quiet = p.quiet_from > p.quiet_to ? (t.hour >= p.quiet_from || t.hour < p.quiet_to) : (t.hour >= p.quiet_from && t.hour < p.quiet_to);
   if (quiet) return { gates: 0, quiet: true };
-  const all = await listColl(APP, "topics");
+  const all = await listTopics();
   const st = (await getDoc(SRV, "state", "gates")) || {};
   const sent: Record<string, number> = st.date === t.date ? (st.sent || {}) : {};
   const dow = WD[t.wd] ?? new Date().getDay();
@@ -234,6 +240,7 @@ async function gateTick(p: any, t: ReturnType<typeof il>) {
     // stage: 1 = heads-up (<=90 min), 2 = soon (<=20 min), 3 = late but still open; 9 = closed today
     let stage = 0;
     if (g.kind === "closed") stage = 9;
+    else if (g.kind === "remind") stage = t.mins >= g.by && g.state !== "past" ? 2 : 0; // one push at the time
     else if (g.state !== "past") {
       const left = g.by - t.mins;
       stage = left <= 0 ? 3 : left <= 20 ? 2 : left <= 90 ? 1 : 0;
@@ -243,6 +250,7 @@ async function gateTick(p: any, t: ReturnType<typeof il>) {
     if (stage === 9 && t.hour >= 13) { sent[k] = 9; continue; } // only worth saying in the morning
     const tx = SQGate.text(g);
     const pre = stage === 3 ? "⚠️ עכשיו! " : "";
+    if (g.kind === "remind") { list = list || (await subs()); await sendTo(list, { title: `⏰ ${short(g.title, 60)}`, body: short(tx.body, 170), tag: "sq-gate-" + g.id, url: APP_URL + "#t=" + encodeURIComponent(g.id) }); sent[k] = stage; out.push({ id: k, stage }); continue; }
     list = list || (await subs());
     await sendTo(list, { title: `${pre}${tx.head} · ${short(g.title, 40)}`, body: short(tx.body + (g.est ? " (שעות משוערות)" : ""), 170), tag: "sq-gate-" + g.id, url: APP_URL + "#t=" + encodeURIComponent(g.id) });
     sent[k] = stage; out.push({ id: k, stage });
@@ -253,7 +261,7 @@ async function gateTick(p: any, t: ReturnType<typeof il>) {
     const d2 = new Date(Date.parse(t.date + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
     const g2 = SQGate.list(all, d2, (dow + 1) % 7, 0, gateOk);
     if (g2.length) {
-      const lines = g2.slice(0, 3).map((g: any) => g.kind === "closed" ? `${short(g.title, 26)}: סגור מחר` : `${short(g.title, 26)}: ${g.call ? "עד" : "צא עד"} ${SQGate.fmt(g.by)}`);
+      const lines = g2.slice(0, 3).map((g: any) => g.kind === "closed" ? `${short(g.title, 26)}: סגור מחר` : g.kind === "remind" ? `${short(g.title, 26)}: ⏰ ${SQGate.fmt(g.by)}` : `${short(g.title, 26)}: ${g.call ? "עד" : "צא עד"} ${SQGate.fmt(g.by)}`);
       list = list || (await subs());
       await sendTo(list, { title: "🗓️ מחר יש שעת סגירה", body: lines.join(" · "), tag: "sq-gate-tom", url: APP_URL });
       out.push({ tomorrow: g2.length });
