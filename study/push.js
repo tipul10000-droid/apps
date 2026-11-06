@@ -14,7 +14,8 @@
   function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
   function standalone(){return navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)}
   function b64(b){var p='='.repeat((4-b.length%4)%4),raw=atob((b+p).replace(/-/g,'+').replace(/_/g,'/')),o=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)o[i]=raw.charCodeAt(i);return o}
-  var reg=null,POPEN=null,PDOT=null,PON=false;
+  var reg=null,POPEN=null,PDOT=null,PON=false,PBTN=null;
+  function glow(el,v){if(el)el.classList.toggle('pglow',!!v&&!window.STUDY_GUEST)} // התראות כבויות = כפתור זוהר כתזכורת (רק צל, הגודל לא משתנה)
   if(supported()&&!window.STUDY_GUEST){try{navigator.serviceWorker.register(ROOT+'sw.js',{scope:ROOT}).then(function(r){reg=r}).catch(function(){})}catch(e){}}
   function ready(){return reg?Promise.resolve(reg):navigator.serviceWorker.ready}
   function current(){if(!supported()||Notification.permission!=='granted')return Promise.resolve(null);return ready().then(function(r){return r.pushManager.getSubscription()})}
@@ -29,6 +30,7 @@
     '#pov .bd{flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 16px;font-size:15px;line-height:1.5}#pov .bd p{margin:0 0 10px}#pov ol{margin:0 0 10px;padding-inline-start:22px}#pov li{margin-bottom:6px}'+
     '#pov .ft{flex:none;padding:10px 16px 14px;border-top:1px solid #e3e8ef}#pov .m{height:20px;font-size:14px;margin-bottom:8px;text-align:center;color:#2f5d9e}'+
     '#pov .go{display:block;width:100%;height:48px;font:600 16px system-ui,Arial,sans-serif;border-radius:12px;border:1px solid #2f5d9e;background:#2f5d9e;color:#fff;cursor:pointer}#pov .go.off{background:#fff;color:#1f2933;border-color:#d3d9e2}#pov .go:disabled{opacity:.5}'+
+    '.pglow{animation:pglow 1.8s ease-in-out infinite}@keyframes pglow{0%,100%{box-shadow:0 0 0 0 rgba(232,145,30,0)}50%{box-shadow:0 0 0 3px rgba(232,145,30,.55),0 0 16px rgba(232,145,30,.6)}}'+
     '#pov .ok{background:#e9f7ef;border-radius:12px;padding:10px 12px;margin-bottom:10px;color:#1d7a4a;font-weight:600}#pov .sm{font-size:13px;color:#5b6675}';
 
   function mount(o){
@@ -78,17 +80,17 @@
       var open=mount({role:'kid',kid:kid,guest:true,
         what:'ההתראות הן <b>רק אם רוצים</b>. אם מפעילים, תקבל'+(boy?'':'י')+' הודעה על כל תוכן חדש שאבא ואמא מכינים לך (מילים חדשות, מבחן חדש), ועל מתנות 🎁.',
         again:'נכנסים לאזור שלך, לוחצים כאן על <b>🔔 התראות</b> ואז <b>"הפעלת התראות"</b>, ומאשרים כשהטלפון שואל.',
-        onState:function(v){if(window.STUDY_GUEST)return;sm.textContent=v?'פועלות ✓ על כל תוכן חדש':'כבויות · לחיצה להסבר והפעלה';sm.className=v?'on':''}});
+        onState:function(v){if(window.STUDY_GUEST)return;sm.textContent=v?'פועלות ✓ על כל תוכן חדש':'כבויות · לחיצה להסבר והפעלה';sm.className=v?'on':'';glow(b,!v)}});
       var b=document.createElement('button');b.type='button';b.className='pbn';
       b.innerHTML='<span class="ic">🔔</span><span><b>התראות על תוכן חדש</b><small>כבויות · לחיצה להסבר והפעלה</small></span>';
       var sm=b.querySelector('small');if(window.STUDY_GUEST)sm.textContent='לא פעילות במצב אורח';
-      b.onclick=open;host.appendChild(b);return b},
+      glow(b,true);b.onclick=open;host.appendChild(b);return b},
     parent:function(btn,getPin){ // אפשר לקרוא שוב אחרי רינדור מחדש: החלון נבנה פעם אחת
-      var dot=document.createElement('i');dot.style.cssText='display:inline-block;width:8px;height:8px;border-radius:50%;background:'+(PON?'#1d9e5a':'#c3cad4')+';margin-inline-start:6px;vertical-align:middle';btn.appendChild(dot);PDOT=dot;
+      var dot=document.createElement('i');dot.style.cssText='display:inline-block;width:8px;height:8px;border-radius:50%;background:'+(PON?'#1d9e5a':'#c3cad4')+';margin-inline-start:6px;vertical-align:middle';btn.appendChild(dot);PDOT=dot;PBTN=btn;glow(btn,!PON);
       if(!POPEN)POPEN=mount({role:'parent',pin:getPin,
         what:'מקבלים: <b>דוח קטן אחרי כל תרגול</b> (כמה זמן, כמה תשובות, כמה נכונות ובאחוזים), <b>תזכורת לבדוק עם הילד</b> כשהמבחן קרוב וההתקדמות נמוכה (יום-יומיים לפני: עד 3 פעמים ביום), והודעה כשהילד יודע הכל לפני המבחן (והוא מקבל מתנה באפליקציה). בשקט 22:00-07:00.',
         again:'נכנסים לאזור ההורים, לוחצים <b>🔔 התראות</b> ואז <b>"הפעלת התראות"</b>.',
-        onState:function(v){PON=v;if(PDOT)PDOT.style.background=v?'#1d9e5a':'#c3cad4'}});
+        onState:function(v){PON=v;if(PDOT)PDOT.style.background=v?'#1d9e5a':'#c3cad4';glow(PBTN,!v)}});
       btn.onclick=POPEN}
   };
 })();

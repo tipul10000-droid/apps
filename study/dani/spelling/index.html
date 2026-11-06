@@ -30,7 +30,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 .chip{font-size:14px;background:var(--pl);color:#5b21b6;border-radius:20px;padding:3px 10px;white-space:nowrap}
 .chip.hot{background:#fff1e6;color:#c2410c}
 .chip.test{background:#e8eef7;color:var(--ac)}
-.stage{display:flex;align-items:flex-end;gap:8px;margin:8px 0 6px;min-height:0;flex:none}
+.stage{display:flex;align-items:flex-end;gap:8px;margin:8px 0 6px;min-height:0;flex:none;height:76px}/* גובה קבוע: בועה של שורה או שתיים לא מזיזה את הכרטיס */
 #mon{width:50px;height:52px;flex:none;transform-origin:50% 100%;animation:bob 2.6s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-3px)}}
 #mon.hop{animation:hop .6s}#mon.sad{animation:sad .8s}#mon.dance{animation:dance 1.1s}
@@ -41,11 +41,14 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 @keyframes blink{0%,94%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
 .stick{transform-box:fill-box;transform-origin:50% 100%;animation:wave 1.6s ease-in-out infinite}
 @keyframes wave{50%{transform:rotate(14deg)}}
-.bub{position:relative;flex:1;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 12px;font-size:16px;box-shadow:var(--sh);margin-bottom:10px}
+.bub{position:relative;flex:1;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 12px;font-size:16px;box-shadow:var(--sh);margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .bub:before{content:"";position:absolute;right:-8px;bottom:14px;border:8px solid transparent;border-left-color:var(--card);border-right:0;filter:drop-shadow(1px 0 0 var(--bd))}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px 14px;box-shadow:var(--sh);text-align:center}
 .mode{display:inline-block;font-size:13px;font-weight:700;color:#6d28d9;background:var(--pl);border-radius:20px;padding:3px 12px;margin-bottom:10px}
 .mode.prac{color:#c2410c;background:#fff1e6}
+/* יציאה מתרגול (אורן 6.11.2026): שורה קבועה בראש הכרטיס, גלויה גם אחרי תשובה */
+.pxr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex:none}.pxr .mode{margin:0}
+.pxb{height:34px;padding:0 12px;border-radius:17px;border:1.5px solid #c2410c;background:#fff;color:#c2410c;font:inherit;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}.pxb:active{background:#fff1e6}
 .he{font-size:28px;font-weight:800;line-height:1.2;margin:4px 0 8px}
 .en{font-size:32px;font-weight:800;direction:ltr;unicode-bidi:isolate}
 .ask{font-size:15px;color:var(--mut);margin:6px 0 12px}
@@ -100,7 +103,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 @keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
 .donebox{text-align:center}.donebox .he{font-size:26px}
 .btns.b3{align-items:stretch}.btns.b3 .btn{padding:8px 4px;font-size:15px;min-height:46px}.btns.b3 #chk{flex:1.15;font-size:17px}.btns.b3 .soft{flex:1;font-size:14px;line-height:1.2}
-@media(max-height:760px){.chips{display:none}.prog{padding:6px 10px}.pb{margin:6px 0 2px!important}.stage{margin:5px 0 4px;align-items:center}#mon{width:36px;height:38px}.bub{font-size:14px;padding:5px 10px;margin-bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bub:before{display:none}.he{font-size:25px}.big{font-size:23px}.fb .t{font-size:16px}.say{margin-top:2px}#nx{padding:10px}.card{padding:10px 12px}.opt{padding:7px;margin-top:5px}.en{font-size:26px}.mode{margin-bottom:4px}.card>.ask{display:none}.card>.fb{margin:4px 0}.stage{display:none}.dif{margin:6px auto 2px;gap:3px 10px}.hints{font-size:13px;margin:4px 0 0}.hints div{margin:1px 0}.fb .ask{font-size:13px;margin:2px 0}}
+@media(max-height:760px){.chips{display:none}.prog{padding:6px 10px}.pb{margin:6px 0 2px!important}.stage{margin:5px 0 4px;align-items:center;height:auto}#mon{width:36px;height:38px}.bub{font-size:14px;padding:5px 10px;margin-bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bub:before{display:none}.he{font-size:25px}.big{font-size:23px}.fb .t{font-size:16px}.say{margin-top:2px}#nx{padding:10px}.card{padding:10px 12px}.opt{padding:7px;margin-top:5px}.en{font-size:26px}.mode{margin-bottom:4px}.card>.ask{display:none}.card>.fb{margin:4px 0}.stage{display:none}.dif{margin:6px auto 2px;gap:3px 10px}.hints{font-size:13px;margin:4px 0 0}.hints div{margin:1px 0}.fb .ask{font-size:13px;margin:2px 0}}
 @media(prefers-reduced-motion:reduce){#mon,#sqimg,.stick,#lid1,#lid2{animation:none!important}}
 /* QA 6.11.2026: מסך נמוך (Safari עם סרגלים): כפתורים ומקלדת נמוכים יותר, כדי שהמילה הנכונה תיראה במלואה */
 .card.mean>.en{font-size:25px!important;line-height:1.15}.card.mean .opts{margin-top:5px;gap:6px}.card.mean .opt{padding:5px!important}.card.mean>.say{margin-top:2px!important}
@@ -150,6 +153,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 <div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:#6d28d9;font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px;line-height:1.45"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">לאוסף! 💜</button></div></div>
 <div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
 
+<script src="../../sqsound.js?v=1"></script>
 <script src="../../track.js?v=2"></script>
 <script>
 // הכתבה ואוצר מילים לדני. מפתחות: dani_sp (התקדמות), dani_sp_sq (אוסף סקווישים), dani_sp_mute.
@@ -199,20 +203,8 @@ function osc(type,t0,d,pts,vol,lp,lfo){const a=ac();if(!a||MUTE)return;const T=a
   let n=o;if(lp){const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=lp;o.connect(f);n=f}n.connect(g);g.connect(a.destination);o.start(T);o.stop(T+d+.02)}
 function noise(t0,d,vol,lp){const a=ac();if(!a||MUTE)return;const T=a.currentTime+t0,b=a.createBuffer(1,Math.ceil(a.sampleRate*d),a.sampleRate),x=b.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1;
   const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=b;f.type='lowpass';f.frequency.value=lp;g.gain.setValueAtTime(vol,T);g.gain.linearRampToValueAtTime(0,T+d);s.connect(f);f.connect(g);g.connect(a.destination);s.start(T)}
-const SQSND={
- peach(){osc('sine',0,.45,[[0,180],[.3,620],[.6,260],[1,420]],.3,0,[14,60])},// בוינג
- cat(){osc('triangle',0,.55,[[0,520],[.25,880],[.6,760],[1,430]],.22,2400)},// מיאו
- avo(){osc('square',0,.7,[[0,95],[.4,80],[1,62]],.22,420,[23,18]);noise(0,.7,.12,500)},// פלוץ
- panda(){osc('sawtooth',0,.6,[[0,120],[.5,95],[1,70]],.3,700,[9,14])},// גרפס
- donut(){[0,.12,.24,.36,.48].forEach((t,i)=>osc('sine',t,.1,[[0,700+i*60],[1,1100+i*60]],.18))},// צחקוק
- s_kimbap(){osc('sine',0,.6,[[0,300],[.5,1200],[1,500]],.25,0,[18,80])},// בוינג ענק
- s_tteok(){osc('square',0,1,[[0,110],[.5,85],[1,55]],.24,380,[30,22]);noise(0,1,.14,450)},// פלוץ ענק
- s_bingsu(){[0,.09,.18].forEach((t,i)=>osc('sine',t,.08,[[0,1600+i*200],[1,2400+i*200]],.15))},// צפצוף
- s_dalgona(){[0,.12,.24,.36].forEach((t,i)=>osc('square',t,.1,[[0,[440,660,330,880][i]],[1,[440,660,330,880][i]]],.1,1800))},// רובוט
- s_melona(){osc('sine',0,.7,[[0,500],[.5,1400],[1,700]],.22,0,[6,40])},// שריקת מגלשה
- s_choco(){osc('sawtooth',0,.5,[[0,105],[1,75]],.3,650,[10,16]);[.55,.67,.79].forEach((t,i)=>osc('sine',t,.1,[[0,800+i*80],[1,1150+i*80]],.16))},// גרפס וצחקוק
- mochi(){osc('sawtooth',0,.5,[[0,140],[.4,230],[1,110]],.26,900,[30,25]);osc('square',.05,.4,[[0,70],[1,55]],.12,300)}};// נהמת מפלצת קטנה
-let CURSQ=null;const sqSound=id=>{(SQSND[id]||SND.pop)()};
+// הצלילים של הסקווישים ב-study/sqsound.js: צליל שונה לכל אחד מ-12 (אורן 6.11.2026)
+let CURSQ=null;const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
 function speak(t){if(MUTE||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
 
 // ---------- סקווישים ----------
@@ -296,11 +288,11 @@ function next(){
   CUR={e,mode:S.w[e].s==='learn'?'mean':'dict'};render()}
 function render(){ANS=false;const e=CUR.e,c=$('card');c.classList.remove('ans');c.classList.toggle('mean',CUR.mode!=='dict');if(CUR.mode!=='dict'){StudyKB.attach(null,{enterLabel:null,onEnter:()=>{if(ANS)goNext()}});StudyKB.lock(true)}// המקלדת נשארת במקום גם במצב בחירה, כדי שהמסך לא יקפוץ
   if(CUR.mode==='dict'){
-    c.innerHTML=`${CUR.prac?'<span class="mode prac">🔁 תרגול</span>':''}<div class="he">${esc(HE[e])}</div>
+    c.innerHTML=`${CUR.prac?'<div class="pxr"><span class="mode prac">🔁 מצב תרגול</span><button class="pxb" id="pxit" type="button">✕ יציאה מהתרגול</button></div>':''}<div class="he">${esc(HE[e])}</div>
     <input id="ans" type="text" lang="en" dir="ltr" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="כתבי באנגלית" readonly inputmode="none">
     <div class="fb" id="fb"></div><div class="btns b3"><button class="btn soft" id="hint" type="button">💡 תני לי רמז</button><button class="btn" id="chk" type="button">צדקתי?</button><button class="btn soft" id="idk" type="button">🤷‍♀️ לא יודעת, הבאה</button></div>`;
     const inp=$('ans');CUR.h=0;StudyKB.attach(inp,{enterLabel:null,onEnter:v=>{if(!ANS)check(v);else goNext()},onKey:()=>tone(1500,0,.03,'sine',.03)});
-    $('chk').onclick=()=>{if(ANS)goNext();else check(inp.value)};$('idk').onclick=()=>check('');$('hint').onclick=hint;
+    $('chk').onclick=()=>{if(ANS)goNext();else check(inp.value)};if($('pxit'))$('pxit').onclick=exitPrac;$('idk').onclick=()=>check('');$('hint').onclick=hint;
   }else{
     const opts=shuf([e].concat(shuf(WORDS.map(w=>w[0]).filter(x=>x!==e)).slice(0,3)));
     c.innerHTML=`<div class="en">${esc(e)}</div><button class="say" id="say" type="button">🔊 לשמוע</button><div class="ask">בחרי את התרגום הנכון</div>
@@ -310,6 +302,7 @@ function render(){ANS=false;const e=CUR.e,c=$('card');c.classList.remove('ans');
   }
   if($('nx'))$('nx').onclick=goNext;LAST=e;}
 function goNext(){SND.click();next()}
+function exitPrac(){PRAC=null;CUR=null;SND.click();mon('hop','יצאנו מהתרגול 💜 חוזרות למשימה');next()}
 document.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ANS&&$('nx')&&$('nx').style.visibility==='visible'){ev.preventDefault();goNext()}});
 function showNext(){ANS=true;$('card').classList.add('ans');StudyKB.lock(true);const c=$('chk');if(c&&CUR.mode==='dict'){c.textContent='הבא ←';c.disabled=false;$('hint').style.visibility=$('idk').style.visibility='hidden'}const n=$('nx');if(n){n.style.visibility='visible'}}
 function streak(ok){if(ok){S.st.c++;if(S.st.c>S.st.b)S.st.b=S.st.c;if([3,5,10,15,20,30,50].includes(S.st.c)){popTxt('🔥 רצף של '+S.st.c+'!');mon('dance')}}else S.st.c=0}

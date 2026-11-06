@@ -3,6 +3,7 @@
 // 2. מבחן קרוב וההתקדמות נמוכה: התראה להורים לבדוק עם הילד (1-2 ימים: 08/14/19, 3-5 ימים: 19).
 // 3. הכל נכון לפני מבחן: מתנה לילד באפליקציה + התראה לילד ולהורים.
 // 4. תור תוכן חדש (study_notify) לילדים.
+// 5. בקשה או הצעה חדשה מילד (study_requests) → התראה להורים (אורן 6.11.2026).
 // שעות שקט: ילדים 21:00-07:00, הורים 22:00-07:00 (מה שלא נשלח נשלח אחר כך).
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -152,6 +153,20 @@ Deno.serve(async (req) => {
       const kids = m.kid ? [m.kid] : ["evyatar", "dani", "lia"];
       for (const k of kids) await push("kid", k, { title: m.title, body: m.body, tag: `new-${m.id}`, url: m.url || BASE + `${k}/` });
       await sb.from("study_notify").update({ sent_at: new Date().toISOString() }).eq("id", m.id);
+    }
+  }
+  // 5. בקשות והצעות חדשות מהילדים
+  if (!parQuiet) {
+    const KN: Record<string, string> = { evyatar: "אביתר", dani: "דני", lia: "ליה" };
+    const KK: Record<string, string> = { test: "📅 מבחן קרוב", quiz: "⏰ בוחן", hard: "🤔 לא הבנתי נושא", topic: "📚 נושא חדש ללימוד", idea: "💡 רעיון לאפליקציה", bug: "🐞 באג באפליקציה" };
+    const { data: rq } = await sb.from("study_requests").select("id,kid,kind,txt").is("notified_at", null).eq("hidden", false).order("id").limit(10);
+    for (const r of rq || []) {
+      const boy = r.kid === "evyatar";
+      await push("parent", null, {
+        title: `💬 ${KN[r.kid] || r.kid} ${boy ? "שלח" : "שלחה"} בקשה: ${KK[r.kind] || ""}`,
+        body: String(r.txt || "").slice(0, 140), tag: `req-${r.id}`, url: BASE + "parents/",
+      });
+      await sb.from("study_requests").update({ notified_at: new Date().toISOString() }).eq("id", r.id);
     }
   }
   return json({ ok: true, il, out });
