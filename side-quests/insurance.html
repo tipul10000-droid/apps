@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#16433C">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.4";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.5";</script>
 <script src="sq-db.js?v=9"></script>
 <title>הביטוחים שלנו</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -109,7 +109,7 @@ table.cov{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
 .cov td:first-child,.cov th:first-child{text-align:start;font-weight:700;position:sticky;right:0;background:var(--surface);z-index:1}
 .cov tr:last-child td{border-bottom:0}
 .st{display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:3px 6px;border-radius:999px;font-size:12.5px;font-weight:700;border:0;cursor:pointer}
-.st.ok{background:var(--ok-soft);color:var(--ok)} .st.partial{background:var(--mid-soft);color:var(--mid)} .st.gap{background:var(--bad-soft);color:var(--bad)} .st.unknown{background:var(--unk-soft);color:var(--unk)} .st.dup{background:var(--mid-soft);color:var(--mid)} .st.na{background:transparent;color:var(--muted);font-weight:500}
+.st.ok{background:var(--ok-soft);color:var(--ok)} .st.partial{background:var(--mid-soft);color:var(--mid)} .st.gap{background:var(--bad-soft);color:var(--bad)} .st.unknown{background:var(--unk-soft);color:var(--unk)} .st.dup{background:var(--mid-soft);color:var(--mid)} .st.dupok{background:var(--ok-soft);color:var(--ok)} .st.na{background:transparent;color:var(--muted);font-weight:500}
 .legend{display:flex;flex-wrap:wrap;gap:6px 12px;padding:10px 12px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
 .legend .st{min-width:0;cursor:default}
 .covnote{padding:0 12px 12px;font-size:13.5px;color:var(--ink)}
@@ -250,7 +250,7 @@ const CATS={health:{l:"בריאות",i:"🩺",c:"--c-health"},life:{l:"חיים 
 const WHO={all:"כולם",oren:"אורן",lior:"ליאור",kids:"ילדים",family:"משפחתי",cars:"רכבים",home:"דירה"};
 const WHO_TAG={oren:"אורן",lior:"ליאור",kids:"ילדים",family:"משפחה"};
 const STATUS={active:["פעיל","okk"],check:["לבדוק","mid"],ended:["הסתיים","low"],per_trip:["לפי נסיעה","low"],unknown:["לא ידוע","low"],cancel:["בביטול","mid"]};
-const COV={ok:"מכוסה",partial:"חלקי",gap:"חסר",unknown:"לא ידוע",dup:"כפל?",na:"—"};
+const COV={ok:"מכוסה",partial:"חלקי",gap:"חסר",unknown:"לא ידוע",dup:"כפל?",dupok:"כפל תקין",na:"—"};
 const LVL={high:"🔴",mid:"🟠",low:"⚪"};
 const TYPE_I={dup:"⧉",cost:"₪",gap:"⚠️",renew:"📅",check:"🔍",pay:"💳"};
 
@@ -341,7 +341,7 @@ function render(){
     const cols=(meta.cov_cols||["oren","lior","kids"]);
     h+=`<section id="s-cov"><div class="sh"><h2>מפת כיסוי</h2><span class="hint">כל אירוע משנה חיים: מכוסה?</span></div><div class="card"><div class="mx"><table class="cov"><thead><tr><th>סיכון</th>${cols.map(c=>`<th>${WHO_TAG[c]||c}</th>`).join("")}</tr></thead><tbody>`+
       cov.map((r,ri)=>`<tr><td>${esc(r.risk)}</td>${cols.map(c=>{const s=(r.s||{})[c]||"unknown";return `<td><button class="st ${s}" data-cov="${ri}">${COV[s]||s}</button></td>`;}).join("")}</tr>`).join("")+
-      `</tbody></table></div><div class="covnote" id="covnote"></div><div class="legend">${["ok","partial","dup","gap","unknown"].map(s=>`<span class="st ${s}">${COV[s]}</span>`).join("")}<span>לחיצה על תא מסבירה</span></div></div></section>`;
+      `</tbody></table></div><div class="covnote" id="covnote"></div><div class="legend">${["ok","partial","dup","dupok","gap","unknown"].map(s=>`<span class="st ${s}">${COV[s]}</span>`).join("")}<span>לחיצה על תא מסבירה</span></div></div></section>`;
   }
   // חיסכון ופנסיה: יתרות (שדה balance)
   const sv=V.filter(p=>p.cat==="pension"&&p.status!=="ended");
