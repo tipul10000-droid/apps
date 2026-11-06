@@ -365,6 +365,31 @@ grant execute on function public.study_parents_quiz(text,text,text) to anon, aut
 -- alter table public.study_quiz add constraint study_quiz_cmd_check check (cmd in ('unlock','lock','open','auto'));
 -- ב-study_parents_quiz: p_cmd not in ('unlock','lock','open','auto').
 
--- 6.11.2026 (ממתין לאישור אורן): אישור תוכן חדש (study/content.js)
--- create table public.study_content(id text primary key, approved_at timestamptz);  -- id = '<kid>/<app>'
--- study_content_get() → {items:[{id, approved_at}]} ; study_parents_content_approve(p_pin, p_id) → מאשר + שורה ב-study_notify לילד.
+-- 6.11.2026 (אורן אישר): אישור תוכן חדש (study/content.js). id = '<kid>/<app>'. האישור מוסיף שורה ל-study_notify לילד.
+create table if not exists public.study_content (
+  id text primary key check (id ~ '^(evyatar|dani|lia)/[a-z0-9_-]{1,30}$'),
+  approved_at timestamptz);
+alter table public.study_content enable row level security;
+revoke all on public.study_content from anon, authenticated;
+create or replace function public.study_content_get()
+returns jsonb language sql security definer set search_path to '' as $$
+  select jsonb_build_object('items', coalesce((select jsonb_agg(jsonb_build_object('id', id, 'approved_at', approved_at)) from public.study_content where approved_at is not null), '[]'::jsonb))
+$$;
+create or replace function public.study_parents_content_approve(p_pin text, p_id text)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare v text := public.study_parents_check(p_pin); k text;
+begin
+  if v <> 'ok' then return jsonb_build_object('ok', false, 'err', v); end if;
+  if p_id is null or p_id !~ '^(evyatar|dani|lia)/[a-z0-9_-]{1,30}$' then return jsonb_build_object('ok', false, 'err', 'arg'); end if;
+  k := split_part(p_id, '/', 1);
+  if exists (select 1 from public.study_content where id = p_id and approved_at is not null) then return jsonb_build_object('ok', true, 'already', true); end if;
+  insert into public.study_content(id, approved_at) values (p_id, now())
+  on conflict (id) do update set approved_at = now();
+  insert into public.study_notify(kid, title, body, url)
+  values (k, 'יש לך משהו חדש! ✨', 'אבא ואמא פתחו לך תוכן חדש ללמוד. בואו נתחיל!', 'https://tipul10000-droid.github.io/apps/study/' || k || '/');
+  return jsonb_build_object('ok', true);
+end $$;
+revoke all on function public.study_content_get() from public;
+revoke all on function public.study_parents_content_approve(text,text) from public;
+grant execute on function public.study_content_get() to anon, authenticated;
+grant execute on function public.study_parents_content_approve(text,text) to anon, authenticated;
