@@ -23,6 +23,7 @@
   window.fetch=function(u){var s=String(u&&u.url||u);
     if(/\/rpc\/(study_report|vocab_lb_upsert|study_parents_set_test)/.test(s))return Promise.resolve(new Response('true',{status:200,headers:{'Content-Type':'application/json'}}));
     return f.apply(this,arguments)};
+  var gs=document.createElement('style');gs.textContent='body{background-color:#f7efe2!important;background-image:linear-gradient(rgba(180,83,9,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(180,83,9,.07) 1px,transparent 1px)!important}';(document.head||document.documentElement).appendChild(gs);// רקע חם במצב אורח
   function bar(){if(document.getElementById('gbar'))return;var b=document.createElement('div');b.id='gbar';
     b.style.cssText='position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:8px;justify-content:center;background:#fff7e6;color:#9a3412;border-bottom:1px solid #fcd9a8;font:600 14px system-ui,Arial,sans-serif;padding:7px 10px;direction:rtl';
     b.innerHTML='🧪 מצב אורח: ההתקדמות כאן לא נשמרת לילדים <button type="button" style="font:inherit;font-size:13px;color:#9a3412;background:#fff;border:1px solid #fcd9a8;border-radius:14px;padding:2px 10px;cursor:pointer">יציאה</button>';
