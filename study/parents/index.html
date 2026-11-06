@@ -93,9 +93,9 @@ function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+
 function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה: זמן ותשובות מצטברים, התקדמות לפי המכשיר המתקדם ביותר
  const r={sec:0,att:0,ok:0,done:0,total:0,best:0,first:null,last:null,days:{},hard:{},dev:rows.length};
  rows.forEach(x=>{const d=x.data||{};r.sec+=+d.sec||0;r.att+=+d.att||0;r.ok+=+d.ok||0;
-  if((+d.done||0)>=r.done){r.done=+d.done||0;r.total=+d.total||r.total;r.learning=d.learning;r.pts=d.pts;r.first_ok=d.first}
+  const lv=+d.lvl||1;if(lv>(r.lvl||1)||(lv===(r.lvl||1)&&(+d.done||0)>=r.done)){r.lvl=lv;r.l1=d.l1;r.done=+d.done||0;r.total=+d.total||r.total;r.learning=d.learning;r.pts=d.pts;r.first_ok=d.first}
   r.best=Math.max(r.best,+d.best||0);const f=d.first||x.first_at;if(f&&(!r.first||f<r.first))r.first=f;const l=d.last||x.updated_at;if(l&&(!r.last||l>r.last))r.last=l;
-  for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)});
+  for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)});(d.hard1||[]).forEach(h=>{r.hard1=r.hard1||{};r.hard1[h.e]=Math.max(r.hard1[h.e]||0,h.n)});
   if(d.group)r.group=Math.max(r.group||0,+d.group);for(const g in d.tests||{}){const o=d.tests[g]||{};r.tests=r.tests||{};const c=r.tests[g]||{best:0};r.tests[g]={best:Math.max(c.best,+o.best||0),last:(!c.d||o.d>=c.d)?o.last:c.last,d:(!c.d||o.d>=c.d)?o.d:c.d}}});return r}
 const id0=(k,a)=>k.id+'_'+a.id;
 let TAB='dani',SAVED='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}
@@ -136,14 +136,15 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
   k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`+(window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<div class="cnt" id="cr_${id}" data-c="${k.id}/${a.id}" data-n="${k.n}"></div>`:'')+evBox(k,a,t,RS,id0(k,a));
    if(!rows.length)h+=`<div class="none">עוד לא התחיל${k.id==='evyatar'?'':'ה'} (או שעוד לא נכנס${k.id==='evyatar'?'':'ה'} מאז שהוספנו את המעקב)</div>`;
    else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null;
-    h+=`<div class="big"><b dir="ltr" style="unicode-bidi:isolate">${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>
+    h+=`${r.lvl>1?`<div class="hard">🚀 <b>שלב מתקדם</b> (רמז חלקי בלבד) · שלב 1 הושלם ✓</div>`:''}<div class="big"><b dir="ltr" style="unicode-bidi:isolate">${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>
     <div class="grid"><div class="st"><small>אחוז הצלחה</small><b>${sr==null?'-':sr+'%'}</b> <small>${r.ok} נכונות מתוך ${r.att}</small></div>
     <div class="st"><small>זמן באפליקציה</small><b>${fmtT(r.sec)}</b> <small>${Object.keys(r.days).length} ימים</small></div>
     <div class="st"><small>התחיל${k.id==='evyatar'?'':'ה'} ללמוד</small><b>${fmtD(r.first)}</b></div>
     <div class="st"><small>פעילות אחרונה</small><b>${ago(r.last)}</b></div>
     ${r.learning!=null?`<div class="st"><small>בתהליך לימוד</small><b>${r.learning}</b> <small>${a.unit}</small></div>`:''}<div class="st"><small>שיא רצף</small><b>${r.best}</b></div></div>`;
     h+=timeline(r,t,a,k);
-    const hd=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,8);if(hd.length)h+=`<div class="hard">מתקשה ב: ${hd.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`;
+    const hd=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,8);if(hd.length)h+=`<div class="hard">${r.lvl>1?'בשלב המתקדם מתקשה ב':'מתקשה ב'}: ${hd.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`;
+    if(r.lvl>1){const h1=Object.entries(r.hard1||{}).sort((x,y)=>y[1]-x[1]).slice(0,8);if(h1.length)h+=`<div class="hard">היה קשה בשלב 1 (חוזרות יותר במתקדם): ${h1.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`}
     // ליה, אותיות וצלילים: מבחני דקה (כמה צלילים נכונים בדקה) לכל קבוצה
     if(r.tests&&Object.keys(r.tests).length)h+=`<div class="hard">⏱️ מבחני דקה: ${Object.keys(r.tests).sort().map(g=>`<span>קבוצה ${esc(g.slice(1))}: ${r.tests[g].best} נכונים (שיא)</span>`).join('')}</div>`;
     if(r.group)h+=`<div class="none" style="margin-top:6px">עכשיו בקבוצה ${r.group} מתוך 6</div>`;
