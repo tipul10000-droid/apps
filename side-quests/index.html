@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.9";window.SQ_BUILD_AT="6.11.2026 12:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="10.0";window.SQ_BUILD_AT="6.11.2026 12:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -22,6 +22,7 @@ window.addEventListener("error",function(e){bar((e.message||"error")+(e.lineno?"
 window.addEventListener("unhandledrejection",function(e){var r=e.reason;bar("promise: "+((r&&(r.message||r))||""));});
 setTimeout(function(){var l=document.getElementById("list"),pin=document.getElementById("sq-pin");if(!pin&&l&&/טוען/.test(l.textContent)&&l.children.length<=1)bar("הנתונים לא הגיעו אחרי 20 שניות");},20000);})();</script>
 <script src="sq-db.js?v=9"></script>
+<script src="timegate.js?v=1"></script>
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -169,6 +170,18 @@ main .inner{display:flex;flex-direction:column;gap:26px}
 details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size:14px;padding:4px}
 .empty{border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--muted);text-align:center}
 .notice{background:var(--soon-soft);color:var(--soon);border-radius:10px;padding:10px 14px;font-size:14.5px}
+/* 9.9 "צא עד": tasks planned today whose place / call center closes. One frame, rows split by lines (9.4 rule) */
+#tgate{border:1.5px solid var(--due);border-radius:12px;overflow:hidden;background:var(--card,var(--bg))}
+#tgate[hidden]{display:none}
+#tgate .tg{display:flex;gap:10px;align-items:center;width:100%;text-align:right;background:none;border:0;border-top:1px solid var(--line);padding:10px 12px;font:inherit;color:var(--ink);cursor:pointer}
+#tgate .tg:first-child{border-top:0}
+#tgate .tg-t{flex:1;min-width:0}
+#tgate .tg-h{font-family:Rubik,sans-serif;font-weight:800;font-size:17px;line-height:1.25}
+#tgate .tg-s{font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tgate .tg-c{flex:none;font-family:Rubik,sans-serif;font-weight:700;font-size:13px;padding:3px 8px;border-radius:999px;background:var(--soon-soft);color:var(--soon)}
+#tgate .tg.late,#tgate .tg.soon{background:var(--due-soft)}
+#tgate .tg.late .tg-c,#tgate .tg.soon .tg-c{background:var(--due);color:#fff}
+#tgate .tg.closed .tg-h{color:var(--muted)}
 .toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:14px;z-index:30}
 /* AI assist: status lines, decisions inbox, offers and multiple-choice questions */
 .r-wait{font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1429,6 +1442,7 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
     <div class="fzgrid" id="funGrid"></div>
   </section>
   <section class="tvzone" id="tvSec" aria-label="אזור הטיולים"></section>
+  <section id="tgate" hidden aria-label="שעות סגירה היום"></section>
   <section id="mainSec" class="tasks-only"><div id="list"><div class="empty">טוען…</div></div></section>
   <section id="askSec" class="tasks-only" hidden></section>
   <section aria-labelledby="hProj" class="tasks-only ai-only">
@@ -1865,6 +1879,8 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
       // 9.3: deadline questions. {label, deadline:{d,l}} sets the countdown; {label, no_deadline:true} marks "no deadline"
       if(op.deadline&&/^\d{4}-\d{2}-\d{2}$/.test(op.deadline.d||""))extra.deadline={d:op.deadline.d,l:String(op.deadline.l||"")};
       if(op.no_deadline){extra.deadline=null;extra.deadline_none=true;}
+      // 10.0: hours questions. {label, fit:{open:{...}, hours_est:false}} merges into the task profile (timegate.js)
+      if(op.fit&&typeof op.fit==="object"){const f0=t.fit&&typeof t.fit==="object"?t.fit:{};extra.fit={...f0,...op.fit,open:op.fit.open?{...(f0.open||{}),...op.fit.open}:f0.open,hours_at:now};}
     }
     patch(t,{questions:qs,...extra,log:logPush(t,`ענית: ${q.q} → ${ans}`,now)},op&&op.close?"נסגר ✓":"התשובה נשמרה");
   }
@@ -2655,7 +2671,15 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   }
   window.addEventListener("hashchange",()=>{const q=questFromHash();if(qHidden(q)){setMode("home","🏠 עברתי לבית כדי לפתוח את "+QUESTS[q].name);return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
   applyQuest();
-  function renderAll(){renderQnav();renderCtx();renderStrip();renderList();renderFun();renderTravel();renderDash();}
+  // 9.9 (Oren 6.11.2026): "צא עד Y, סוגרים ב-X" for today's tasks that depend on opening hours (timegate.js; same math as the push)
+  function renderGate(){const el=document.getElementById("tgate");if(!el||!window.SQGate)return;
+    const n=ilNow(),G=window.SQGate,today=ilDate(),esc=v=>String(v==null?"":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+    const L=G.list(allTopics,today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past");
+    if(!L.length){el.hidden=true;el.innerHTML="";return;}
+    const left=g=>{const m=g.by-n.m;return m<=0?"עכשיו!":m<60?`עוד ${m} דק׳`:`עוד ${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} ש׳`;};
+    el.innerHTML=L.slice(0,4).map(g=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`;}).join("");
+    el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>openTask(b.dataset.id));}
+  function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderFun();renderTravel();renderDash();}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:""};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -2922,7 +2946,12 @@ body.q-side .wseg,body.q-side .ctxrow .toolrow .refr,body.q-side .ctxrow .toolro
   const bAll=(b,keys)=>{const seen=new Set(),r=[];keys.forEach(([k,e])=>(Array.isArray(b[k])?b[k]:[]).forEach(x=>{if(!x||!x.text)return;const key=x.id||x.text;if(seen.has(key))return;seen.add(key);r.push({...x,e:x.e||e});}));return r;};
   function briefKeys(md){return md==="eve"?[["critical","🚨"],["way","🛒"],["call","📞"],["news","🆕"],["night","🌙"]]
     :[["critical","🚨"],["now","📞"],["news","🆕"],...(errandsOn?[["errands","🛒"]]:[]),["work","⚡"],["evening","🛒"]];}
-  function briefTop(b,md){const own=(Array.isArray(b.top)?b.top:[]).filter(x=>x&&x.text);if(own.length)return own.slice(0,3);
+  // 10.0: today's "צא עד" deadlines always lead the brief (timegate.js)
+  function gateTop(){if(!window.SQGate)return [];const n=ilNow(),G=window.SQGate;
+    return G.list(allTopics,ilDate(),n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past").slice(0,2)
+      .map(g=>{const tx=G.text(g);return {text:`${tx.head.replace(/^\S+\s/,"")} · ${g.title}`,id:g.id,e:g.closed?"🚫":g.call?"📞":"🚗"};});}
+  function briefTop(b,md){const g=md==="eve"?[]:gateTop(),gi=new Set(g.map(x=>x.id));return [...g,...briefTop0(b,md).filter(x=>!x.id||!gi.has(x.id))].slice(0,3);}
+  function briefTop0(b,md){const own=(Array.isArray(b.top)?b.top:[]).filter(x=>x&&x.text);if(own.length)return own.slice(0,3);
     const crit=bAll(b,[["critical","🚨"]]).slice(0,1),news=bAll(b,[["news","🆕"]]).slice(0,1);
     const ids=new Set([...crit,...news].map(x=>x.id||x.text));
     const rest=bAll(b,briefKeys(md).filter(([k])=>k!=="critical"&&k!=="news")).filter(x=>!ids.has(x.id||x.text));
