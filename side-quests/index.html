@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.0";window.SQ_BUILD_AT="6.11.2026 09:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="9.1";window.SQ_BUILD_AT="6.11.2026 09:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -764,7 +764,8 @@ main,.sqmodal:not(.bpop) .sqpanel,.bpop:not(.car) .sqpanel{zoom:var(--tz,1)}
 .qlogo{display:block;margin-top:4px;flex:none}
 .qlogo[hidden]{display:none}
 .qb-army .qlogo{height:54px;width:auto;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
-.qb-work .qlogo{height:34px;width:auto;background:#fff;border-radius:8px;padding:4px 8px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+/* 9.0 (Oren 6.11): transparent PNG, no white box; a soft light outer glow keeps the blue text readable on the dark banner */
+.qb-work .qlogo{height:40px;width:auto;filter:drop-shadow(0 0 1.5px rgba(255,255,255,.9)) drop-shadow(0 0 7px rgba(170,215,255,.55))}
 .qb-in:has(.qlogo:not([hidden])) p{display:none}
 .qb-army .qb-in,.qb-work .qb-in{justify-content:center;gap:2px}
 /* ===== 3.5: cleaner quest buttons, buttons off the Dynamic Island, tighter spacing, voice input, simpler settings ===== */
