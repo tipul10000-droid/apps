@@ -22,7 +22,7 @@
   // פס עליון בגובה קבוע בכל דף ובשני המצבים (אורן 6.11.2026): במצב רגיל הוא ריק, במצב אורח מציג "מצב אורח" + יציאה, כך ששום דבר לא זז כשנכנסים או יוצאים.
   function bar(){if(document.getElementById('gbar'))return;var b=document.createElement('div');b.id='gbar';
     b.style.cssText='flex:none;height:32px;box-sizing:border-box;display:flex;align-items:center;gap:8px;justify-content:center;font:600 14px system-ui,Arial,sans-serif;padding:0 10px;direction:rtl;white-space:nowrap;'+(G?'background:#fff7e6;color:#9a3412;border-bottom:1px solid #fcd9a8':'');
-    if(G){b.innerHTML='🧪 מצב אורח: לא נשמר לילדים <button type="button" style="font:inherit;font-size:13px;color:#9a3412;background:#fff;border:1px solid #fcd9a8;border-radius:14px;padding:2px 10px;cursor:pointer">יציאה</button>';
+    if(G){b.innerHTML='👀 מצב אורח: לא נשמר לילדים <button type="button" style="font:inherit;font-size:13px;color:#9a3412;background:#fff;border:1px solid #fcd9a8;border-radius:14px;padding:2px 10px;cursor:pointer">יציאה</button>';
       var root=location.pathname.replace(/study\/.*$/,'study/');b.querySelector('button').onclick=function(){window.studyGuest(false,root)}}
     document.body.insertBefore(b,document.body.firstChild)}
   if(document.body)bar();else document.addEventListener('DOMContentLoaded',bar);
