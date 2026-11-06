@@ -29,7 +29,9 @@
   function restore(){if(off())return;var sk='study_rst_'+kid+'_'+app;
     try{if(sessionStorage.getItem(sk))return}catch(e){}
     var any=KEYS.some(has),lr=get('study_r_'+kid+'_'+app),la=(lr&&lr.data&&+lr.data.att)||0;
-    rpc('study_state_get',{p_kid:kid,p_app:app}).then(function(j){if(!j||!j.keys)return;if(any&&!((+j.score||0)>la+10))return;var n=0;
+    // גיבוי מ-2 הדקות שאחרי איפוס לא חוזר: זה הדיווח האחרון של מכשיר שעוד לא קלט את האיפוס (אחרת האיפוס מתבטל בפתיחה הבאה)
+    Promise.all([rpc('study_state_get',{p_kid:kid,p_app:app}),rpc('study_reset_get',{p_kid:kid,p_app:app})]).then(function(r){var j=r[0],rs=r[1];if(!j||!j.keys)return;
+      if(rs&&rs.at&&j.at&&new Date(j.at).getTime()<new Date(rs.at).getTime()+120000)return;if(any&&!((+j.score||0)>la+10))return;var n=0;
       for(var x in j.keys)if(KEYS.indexOf(x)>=0&&typeof j.keys[x]==='string'){try{localStorage.setItem(x,j.keys[x]);n++}catch(e){}}
       if(n){set('study_r_'+kid+'_'+app,{at:new Date().toISOString(),data:{att:+j.score||0}});try{sessionStorage.setItem(sk,'1')}catch(e){}stop=true;location.reload()}}).catch(function(){})}
   function send(keep){if(stop||off())return;var d=dev(),p=payload();putState(keep);set('study_r_'+kid+'_'+app,{at:new Date().toISOString(),data:p});dirty=false;
