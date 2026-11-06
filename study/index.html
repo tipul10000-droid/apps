@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="guest.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Study</title>
 <link rel="manifest" href="manifest.json">
@@ -23,13 +24,23 @@ h1{margin:0;font-size:24px;color:#1f2933}header p{margin:2px 0 0;font-size:15px;
 .kid small{display:block;font-size:15px;color:var(--mut);margin-top:3px}
 .kid .go{color:var(--ac);font-size:26px;padding-bottom:6px}
 .kid.soon small{color:#8a94a3}
-.par{display:block;text-align:center;margin:16px auto 4px;font-size:14px;color:var(--mut);text-decoration:none;padding:8px}
+.tops{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px}
+.tb{display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px;box-shadow:var(--sh);font:inherit;text-align:right;cursor:pointer}
+.tb:active{transform:scale(.98)}.tb svg{width:46px;height:36px;flex:none}.tb .gi{font-size:26px;width:40px;text-align:center;flex:none}
+.tb b{display:block;font-size:16px}.tb small{display:block;font-size:12px;color:var(--mut)}
 </style></head><body><main>
 <header><img src="icon.svg" alt=""><div><h1>מי לומד עכשיו?</h1><p>לוחצים על השם שלך</p></div></header>
+<div class="tops" id="tops">
+<a class="tb" href="parents/"><svg viewBox="0 0 64 48" aria-hidden="true"><circle cx="21" cy="22" r="13" fill="#7a4a2a"/><path d="M8 26c0 14 4 18 4 18h18s4-4 4-18" fill="#7a4a2a"/><circle cx="21" cy="24" r="10" fill="#ffd9bf"/><path d="M11 21c2-9 18-11 21-1-6-2-14-4-21 1z" fill="#7a4a2a"/><circle cx="17.5" cy="25" r="1.4" fill="#3b2a1f"/><circle cx="24.5" cy="25" r="1.4" fill="#3b2a1f"/><path d="M18.5 29q2.5 2 5 0" stroke="#c2410c" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="14.5" cy="28" r="1.8" fill="#fda4af" opacity=".7"/><circle cx="27.5" cy="28" r="1.8" fill="#fda4af" opacity=".7"/><path d="M9 48c1-7 6-10 12-10s11 3 12 10z" fill="#f472b6"/>
+<circle cx="44" cy="24" r="10.5" fill="#ffd9bf"/><path d="M33.5 22c0-8 5-11 10.5-11s11 3 10.5 11c-3-4-8-5-10.5-5s-7.5 1-10.5 5z" fill="#3b2a1f"/><circle cx="40" cy="25" r="3.2" fill="none" stroke="#334155" stroke-width="1.1"/><circle cx="48" cy="25" r="3.2" fill="none" stroke="#334155" stroke-width="1.1"/><path d="M43.2 25h1.6" stroke="#334155" stroke-width="1.1"/><circle cx="40" cy="25" r="1.2" fill="#3b2a1f"/><circle cx="48" cy="25" r="1.2" fill="#3b2a1f"/><path d="M41.5 30q2.5 2 5 0" stroke="#c2410c" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M32 48c1-7 6-10 12-10s11 3 12 10z" fill="#2f5d9e"/><path d="M32 8c-1.6-2.4-5-1-3.6 1.8L32 13l3.6-3.2C37 7 33.6 5.6 32 8z" fill="#f43f5e"/></svg><span><b>אזור הורים</b><small>ההתקדמות של כל ילד</small></span></a>
+<button class="tb" type="button" id="gst"><span class="gi">🧪</span><span><b>התנסות</b><small>לאורחים, בלי להשפיע</small></span></button>
+</div>
 <nav class="kids">
 <a class="kid" href="evyatar/"><img src="kids/evyatar.webp" alt=""><span class="tx"><b>אביתר</b><small>אוצר מילים באנגלית</small></span><span class="go">‹</span></a>
 <a class="kid" href="dani/"><img src="kids/dani.webp" alt=""><span class="tx"><b>דני</b><small>הכתבה ואוצר מילים באנגלית</small></span><span class="go">‹</span></a>
 <a class="kid soon" href="lia/"><img src="kids/lia.webp" alt=""><span class="tx"><b>ליה</b><small>בקרוב</small></span><span class="go">‹</span></a>
 </nav>
-<a class="par" href="parents/">🔒 אזור הורים</a>
+<script>
+(function(){var b=document.getElementById('gst');if(window.STUDY_GUEST){b.innerHTML='<span class="gi">🚪</span><span><b>יציאה ממצב אורח</b><small>חזרה לאפליקציה הרגילה</small></span>';b.onclick=function(){studyGuest(false,location.pathname)};document.querySelector('.top p, header p').textContent='מצב אורח: לוחצים על ילד ומתנסים'}else b.onclick=function(){studyGuest(true,location.pathname)}})();
+</script>
 </main></body></html>
