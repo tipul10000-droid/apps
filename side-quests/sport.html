@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=1"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0E6152">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SPORT_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<title>ספורט, כושר ותזונה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* דשבורד ספורט, כושר ותזונה: אימונים קבועים (עם תזכורות ב-Side Quests), הנתונים שלי, יעדי תזונה ונתונים מאפל הלת׳.
+   נתונים: sq_docs (app=sidequests, collection=sport): מסמך לכל אימון/פעילות + _meta (פרופיל, משקלים, יעד, נתוני אפל). */
+:root{
+  --bg:#F3F7F5; --surface:#FFFFFF; --sunk:#E6EEEA; --ink:#14221D; --muted:#5A6B64; --line:#D5E1DB;
+  --hero:#0E6152; --hero2:#2E9E6E; --art:url(img/art-sport.svg); --mark:#F2A93B; --hero-ink:#F1FBF6; --hero-muted:#BFE6D5; --accent:#FFD166; --accent-ink:#3A2700;
+  --good:#23855A; --good-soft:#DDF1E6; --warn:#B4610E; --warn-soft:#FBEAD3; --bad:#B83A2E; --link:#0E7A62; --hi:#E07A1F;
+  --z1:#8FB8DE; --z2:#4FB286; --z3:#F2C14E; --z4:#F08A3C; --z5:#D9483B;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1513; --surface:#18201D; --sunk:#212B27; --ink:#ECF3EF; --muted:#9FB0A8; --line:#2B3833;
+  --hero:#0A4239; --hero2:#17694A; --hero-ink:#EEFAF4; --hero-muted:#A6D8C2; --accent:#FFD166; --accent-ink:#3A2700;
+  --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --link:#6FD6B0; --hi:#F5A65B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1513; --surface:#18201D; --sunk:#212B27; --ink:#ECF3EF; --muted:#9FB0A8; --line:#2B3833;
+  --hero:#0A4239; --hero2:#17694A; --hero-ink:#EEFAF4; --hero-muted:#A6D8C2; --accent:#FFD166; --accent-ink:#3A2700;
+  --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --link:#6FD6B0; --hi:#F5A65B; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700;background:none;border:0;padding:0}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.hero .sub{color:var(--hero-muted);font-size:14px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{flex:1;border:0;background:none;padding:9px 4px;font-weight:800;font-size:15px;cursor:pointer;font-family:var(--f-display);white-space:nowrap}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}
+.sh small{color:var(--muted);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.45}
+.empty{color:var(--muted);text-align:center;padding:24px 12px;line-height:1.6}
+/* week strip */
+.week{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.week div{min-height:74px;padding:6px 2px;text-align:center;font-size:12.5px;font-weight:800;color:var(--muted);min-width:0}
+.week div+div{border-inline-start:1px solid var(--line)}
+.week div.today{background:var(--good-soft);color:var(--good)}
+.week .ev{display:block;margin-top:5px;font-size:20px;line-height:1.1}
+.week .ev small{display:block;font-size:11px;font-weight:800;color:var(--ink)}
+.week .ev.asp{opacity:.55}
+/* next */
+.next{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-inline-start:5px solid var(--hi);border-radius:14px;padding:12px 14px}
+.next .ic{font-size:30px}
+.next b{font-family:var(--f-display);font-size:17px;display:block;line-height:1.25}
+.next span{color:var(--muted);font-size:14px}
+/* activity cards */
+.acts{display:grid;gap:10px}
+.act{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.act .hd{display:flex;align-items:flex-start;gap:12px}
+.act .ic{flex:none;width:46px;height:46px;border-radius:13px;background:var(--sunk);display:grid;place-items:center;font-size:26px}
+.act .t{font-family:var(--f-display);font-weight:800;font-size:17px;line-height:1.3}
+.act .w{color:var(--muted);font-size:14px;margin-top:2px;line-height:1.35}
+.badge{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:1px 9px;margin-inline-start:6px;vertical-align:2px}
+.b-fixed{background:var(--good-soft);color:var(--good)}
+.b-aspire{background:var(--warn-soft);color:var(--warn)}
+.b-todo{background:var(--sunk);color:var(--muted)}
+.rem{list-style:none;margin:10px 0 0;padding:0}
+.rem li{display:flex;gap:8px;padding:6px 0;font-size:14.5px;line-height:1.35;border-top:1px solid var(--line)}
+.rem li span:first-child{flex:none}
+.act .lk{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:14px}
+.addcard{border:2px dashed var(--line);border-radius:16px;background:none;min-height:84px;cursor:pointer;font-weight:800;font-size:16px;color:var(--muted);padding:12px;width:100%}
+.addcard small{display:block;font-weight:600;font-size:13px;margin-top:4px}
+/* stats */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.nums div{padding:10px 8px;text-align:center;min-width:0}
+.nums div+div{border-inline-start:1px solid var(--line)}
+.nums b{display:block;font-family:var(--f-display);font-size:22px;line-height:1.15}
+.nums span{color:var(--muted);font-size:12.5px;font-weight:700}
+.gauge{position:relative;height:12px;border-radius:999px;margin:22px 0 6px;background:linear-gradient(90deg,var(--z1) 0 14%,var(--z2) 14% 46%,var(--z3) 46% 73%,var(--z5) 73% 100%)}
+.gauge i{position:absolute;top:-8px;width:4px;height:28px;border-radius:3px;background:var(--ink);transform:translateX(-50%)}
+.gauge em{position:absolute;top:-30px;transform:translateX(-50%);font-style:normal;font-weight:900;font-size:13px;white-space:nowrap}
+.gl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-weight:700;direction:ltr}
+.zones{width:100%;border-collapse:collapse;font-size:14.5px}
+.zones td{padding:7px 4px;border-top:1px solid var(--line)}
+.zones tr:first-child td{border-top:0}
+.zones .dot{display:inline-block;width:12px;height:12px;border-radius:4px;margin-inline-end:6px;vertical-align:-1px}
+.zones td:last-child{text-align:end;font-weight:800;white-space:nowrap;direction:ltr}
+.targets{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.tg{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;min-width:0}
+.tg b{display:block;font-family:var(--f-display);font-size:21px;line-height:1.2}
+.tg span{font-weight:800;font-size:14px}
+.tg small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35;margin-top:2px}
+.macro{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:10px 0 6px}
+.macro i{display:block;height:100%}
+.ml{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;font-weight:700;color:var(--muted)}
+.ml i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px}
+.est{display:inline-block;font-size:11.5px;font-weight:800;background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:0 8px;margin-inline-start:6px;vertical-align:2px}
+.ah{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.ah div{padding:9px 12px;border-top:1px solid var(--line);min-width:0}
+.ah div:nth-child(-n+2){border-top:0}
+.ah div:nth-child(even){border-inline-start:1px solid var(--line)}
+.ah span{display:block;color:var(--muted);font-size:12.5px;font-weight:700}
+.ah b{font-family:var(--f-display);font-size:17px}
+.ah b.na{color:var(--muted);font-weight:600;font-size:15px}
+.bar2{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);margin-top:10px}
+.bar2 button{flex:1;border:0;background:none;padding:10px 4px;font-weight:800;font-size:14px;cursor:pointer}
+.bar2 button+button{border-inline-start:1px solid var(--line)}
+.bar2 button.on{background:var(--good-soft);color:var(--good)}
+.wlog{list-style:none;margin:8px 0 0;padding:0;font-size:14px}
+.wlog li{display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--line)}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw}
+.toast.on{display:block}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.nums b{font-size:19px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=3">
+<script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const CHAT_FALLBACK="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCPYEJ2jyeGvj2cEaqCvFRgUc";
+const DAYS=["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"],DAYL=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
+const ST={fixed:["קבוע","b-fixed"],aspire:["בשאיפה","b-aspire"],todo:["לברר","b-todo"]};
+let items={},meta={},db=null,loaded=false;
+const UI_KEY="sq_sport_ui";let ui={sec:"train"};
+try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
+function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
+
+function acts(){return Object.entries(items).map(([id,v])=>({id,...v})).filter(x=>!x._deleted&&x.title&&(x.kind||"activity")==="activity")
+  .sort((a,b)=>(a.order||99)-(b.order||99));}
+const hm=s=>{const m=String(s||"").match(/^(\d{1,2}):(\d{2})$/);return m?(+m[1])*60+(+m[2]):null;};
+function ilNow(){const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Jerusalem",weekday:"short",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date());
+  const g=k=>(p.find(x=>x.type===k)||{}).value;const d={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[g("weekday")];return {d,m:(+g("hour")%24)*60+(+g("minute"))};}
+// the next fixed or aspired session from now
+function nextAct(){const n=ilNow();let best=null;
+  for(const a of acts()){if(a.status==="todo")continue;const t=hm(a.time);for(const d of a.days||[]){
+    let k=(d-n.d+7)%7;if(k===0&&t!=null&&t<=n.m)k=7;const score=k*1440+(t||0);if(!best||score<best.score)best={a,d,k,score};}}
+  return best;}
+function whenTxt(b){return (b.k===0?"היום":b.k===1?"מחר":"ב"+DAYL[b.d])+(b.a.time?" "+b.a.time:"");}
+
+// ---------- numbers ----------
+function prof(){const p=meta.profile||{};return {w:+p.weight||95,h:+p.height||189,age:+p.age||42,male:p.sex!=="f"};}
+function calc(){const p=prof(),hl=meta.health||{},g=meta.goal||{};
+  const bmi=p.w/Math.pow(p.h/100,2);
+  const bmr=Math.round(10*p.w+6.25*p.h-5*p.age+(p.male?5:-161));
+  const apple=+hl.tdee||((+hl.active_kcal&&+hl.rest_kcal)?(+hl.active_kcal)+(+hl.rest_kcal):0);
+  const tdee=apple||Math.round(bmr*1.45/10)*10;
+  const mode=g.mode||"cut",def=+g.deficit||500;
+  const kcal=mode==="cut"?Math.round((tdee-def)/10)*10:tdee;
+  const prot=Math.round(p.w*1.8/5)*5,fat=Math.round(p.w*0.8/5)*5;
+  const carb=Math.max(0,Math.round((kcal-prot*4-fat*9)/4/5)*5);
+  const hrmax=Math.round(208-0.7*p.age);
+  return {p,bmi,bmr,tdee,apple:!!apple,kcal,mode,def,prot,fat,carb,hrmax,
+    lo:Math.round(18.5*Math.pow(p.h/100,2)),hi:Math.floor(24.9*Math.pow(p.h/100,2)),
+    water:Math.round(p.w*35/100)/10,fiber:Math.round(kcal*14/1000)};}
+function bmiCat(b){return b<18.5?"תת משקל":b<25?"משקל תקין":b<30?"עודף משקל":"השמנה";}
+
+// ---------- hero ----------
+function hero(){const c=calc(),nx=nextAct(),A=acts().filter(a=>a.status!=="todo");
+  const perWeek=A.reduce((s,a)=>s+(a.days||[]).length,0);
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
+  <h1>🏃 ספורט, כושר ותזונה</h1><p class="sub">האימונים הקבועים שלי, תזכורות, הנתונים שלי ויעדי תזונה. מקום אחד לכל מה שאני רוצה לשפר.</p>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>עבודה עם הצ׳אט<small>אימון חדש, נתונים מאפל הלת׳, שאלה על תזונה</small></span></a>
+  <div class="kpis"><div class="kpi"><b>${nx?esc(nx.a.icon||"🏃")+" "+esc(whenTxt(nx)):"—"}</b><span>האימון הבא</span></div><div class="kpi"><b>${perWeek}</b><span>אימונים בשבוע</span></div><div class="kpi"><b>${c.bmi.toFixed(1)}</b><span>BMI · ${esc(c.p.w)} ק״ג</span></div></div>`;}
+
+// ---------- training ----------
+function weekStrip(){const n=ilNow(),A=acts().filter(a=>a.status!=="todo");
+  return `<div class="week">${DAYS.map((l,d)=>`<div class="${d===n.d?"today":""}">${l}${A.filter(a=>(a.days||[]).includes(d)).map(a=>`<span class="ev ${a.status==="aspire"?"asp":""}" title="${esc(a.title)}">${esc(a.icon||"🏃")}<small>${esc(a.time||"")}</small></span>`).join("")}</div>`).join("")}</div>`;}
+function actCard(a){const s=ST[a.status]||ST.fixed,days=(a.days||[]).map(d=>DAYL[d]).join(" / ");
+  const place=a.addr||(a.area?a.where:"");const map=safe(a.maps_url)||(place?"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(place):"");
+  const waze=place?"https://waze.com/ul?navigate=yes&q="+encodeURIComponent(place):"";
+  const when=[days?(a.days.length>1?"ימי ":"יום ")+days:"",a.time?(a.end?a.time+"-"+a.end:a.time):""].filter(Boolean).join(" · ");
+  return `<div class="act" id="a-${esc(a.id)}"><div class="hd"><div class="ic">${esc(a.icon||"🏃")}</div><div style="min-width:0;flex:1">
+    <div class="t">${esc(a.title)}<span class="badge ${s[1]}">${s[0]}</span></div>
+    <div class="w">${esc([when,a.where].filter(Boolean).join(" · "))}${a.with?"<br>עם "+esc(a.with):""}</div></div></div>
+    ${a.note?`<div class="note">${esc(a.note)}</div>`:""}
+    ${(a.reminders||[]).length?`<ul class="rem">${a.reminders.map(r=>`<li><span>⏰</span><span><b>${esc(r.when||"")}</b>${r.when?" · ":""}${esc(r.text||"")}</span></li>`).join("")}</ul>`:""}
+    ${map||(a.links||[]).length?`<div class="lk">${waze?`<a href="${esc(waze)}" target="_blank" rel="noopener">🚗 Waze</a>`:""}${map?`<a href="${esc(map)}" target="_blank" rel="noopener">📍 מפה</a>`:""}${(a.links||[]).filter(l=>safe(l.url)).map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div>`:""}
+  </div>`;}
+function renderTrain(){const A=acts();if(!loaded&&!A.length)return `<div class="empty">טוען…</div>`;
+  const nx=nextAct();let h=`<section><div class="sh"><h2>השבוע שלי</h2><small>חצי שקוף = בשאיפה</small></div>${weekStrip()}</section>`;
+  if(nx)h+=`<section><div class="next"><div class="ic">${esc(nx.a.icon||"🏃")}</div><div><b>הבא: ${esc(nx.a.title)}</b><span>${esc(whenTxt(nx))}${nx.a.leave?" · לצאת "+esc(nx.a.leave):""}</span></div></div></section>`;
+  const on=A.filter(a=>a.status!=="todo"),todo=A.filter(a=>a.status==="todo");
+  h+=`<section><div class="sh"><h2>האימונים הקבועים</h2><small>${on.length}</small></div><div class="acts">${on.map(actCard).join("")}</div></section>`;
+  h+=`<section><div class="sh"><h2>רוצה להוסיף</h2><small>${todo.length}</small></div><div class="acts">${todo.map(actCard).join("")}<button class="addcard" data-add>＋ אימון או רעיון חדש<small>אני מוסיף אותו עם תזכורות ב-Side Quests</small></button></div></section>`;
+  h+=`<div class="note">התזכורות הן משימות ב-Side Quests (חוזרות כל שבוע), עם התראה בטלפון. כשהיומן יחובר, האימונים ייכנסו גם ללוח.</div>`;
+  return h;}
+
+// ---------- stats & nutrition ----------
+function renderStats(){const c=calc(),p=c.p,hl=meta.health||{};let h="";
+  // me
+  const pos=Math.max(2,Math.min(98,(c.bmi-15)/(40-15)*100));
+  h+=`<section><div class="sh"><h2>הנתונים שלי</h2><small>${esc((meta.profile||{}).as_of||"")}</small></div>
+    <div class="nums"><div><b>${esc(p.w)}</b><span>ק״ג</span></div><div><b>${(p.h/100).toFixed(2)}</b><span>מטר</span></div><div><b>${esc(p.age)}</b><span>גיל</span></div></div>
+    <div class="card" style="margin-top:10px"><b style="font-family:var(--f-display);font-size:17px">BMI ${c.bmi.toFixed(1)}</b> · <span class="muted">${bmiCat(c.bmi)}</span>
+      <div class="gauge" aria-hidden="true"><i style="right:auto;left:${pos}%"></i><em style="left:${pos}%">${c.bmi.toFixed(1)}</em></div>
+      <div class="gl"><span>15</span><span>18.5</span><span>25</span><span>30</span><span>40</span></div>
+      <div class="note">טווח BMI תקין בגובה שלך: ${c.lo}-${c.hi} ק״ג. BMI לא מבחין בין שריר לשומן, אז היקף מותניים (יעד מתחת ל-94 ס״מ) ואחוז שומן מאפל/משקל חכם אומרים יותר.</div>
+      <div class="bar2"><button data-weight>⚖️ עדכון משקל</button></div>
+      ${(meta.weights||[]).length>1?`<ul class="wlog">${meta.weights.slice(-6).reverse().map(x=>`<li><span>${esc(x.d)}</span><b>${esc(x.kg)} ק״ג</b></li>`).join("")}</ul>`:""}
+    </div></section>`;
+  // heart
+  const Z=[["אזור 1 · התאוששות",.5,.6,"--z1"],["אזור 2 · שריפת שומן, סיבולת",.6,.7,"--z2"],["אזור 3 · אירובי",.7,.8,"--z3"],["אזור 4 · סף",.8,.9,"--z4"],["אזור 5 · מקסימום",.9,1,"--z5"]];
+  h+=`<section><div class="sh"><h2>❤️ דופק</h2><small>מקסימום ${c.hrmax}</small></div><div class="card">
+    <table class="zones">${Z.map(z=>`<tr><td><span class="dot" style="background:var(${z[3]})"></span>${z[0]}</td><td>${Math.round(c.hrmax*z[1])}-${Math.round(c.hrmax*z[2])}</td></tr>`).join("")}</table>
+    <div class="note">דופק מקסימלי משוער (נוסחת Tanaka: 208 פחות 0.7 × גיל; הנוסחה הישנה 220 פחות גיל נותנת ${220-p.age}). השעון יודע לדייק אותו מאימונים קשים.${hl.rhr?` דופק במנוחה ${esc(hl.rhr)}.`:""}</div></div></section>`;
+  // energy & targets
+  h+=`<section><div class="sh"><h2>🔥 אנרגיה ותזונה</h2><small>ליום</small></div>
+    <div class="seg" style="margin-bottom:10px"><button data-goal="cut" class="${c.mode==="cut"?"on":""}">ירידה במשקל (−${c.def})</button><button data-goal="keep" class="${c.mode==="keep"?"on":""}">שמירה</button></div>
+    <div class="nums"><div><b>${c.bmr}</b><span>BMR (מנוחה)</span></div><div><b>${c.tdee}</b><span>שריפה יומית${c.apple?" (אפל)":""}</span></div><div><b>${c.kcal}</b><span>יעד קלוריות</span></div></div>
+    ${c.apple?"":`<div class="note"><span class="est">הערכה</span> השריפה היומית מחושבת מ-BMR × 1.45 (עבודה משרדית + 3 אימונים בשבוע). כשתשלח נתונים מאפל הלת׳ היא תתעדכן לפי האמת.</div>`}
+    <div class="targets" style="margin-top:10px">
+      <div class="tg"><span>🥩 חלבון</span><b>${c.prot} ג׳</b><small>1.8 ג׳ לק״ג (טווח ${Math.round(p.w*1.6)}-${Math.round(p.w*2)}). שומר על שריר בירידה במשקל</small></div>
+      <div class="tg"><span>🥑 שומן</span><b>${c.fat} ג׳</b><small>0.8 ג׳ לק״ג, בעיקר שמן זית, אגוזים, טחינה, דגים</small></div>
+      <div class="tg"><span>🍚 פחמימות</span><b>${c.carb} ג׳</b><small>מה שנשאר מהקלוריות. יותר בימי כדורגל</small></div>
+      <div class="tg"><span>🥦 סיבים</span><b>${Math.max(30,c.fiber)} ג׳</b><small>ירקות, קטניות, דגנים מלאים</small></div>
+      <div class="tg"><span>💧 מים</span><b>${c.water} ל׳</b><small>35 מ״ל לק״ג, ועוד 0.5-1 ל׳ בכל שעת אימון</small></div>
+      <div class="tg"><span>⚖️ קצב</span><b>${c.mode==="cut"?"~0.5 ק״ג":"שמירה"}</b><small>${c.mode==="cut"?"בשבוע, בגירעון של "+c.def+" קלוריות ביום":"קלוריות כמו השריפה היומית"}</small></div>
+    </div>
+    <div class="macro" aria-hidden="true"><i style="width:${c.prot*4/c.kcal*100}%;background:var(--z4)"></i><i style="width:${c.fat*9/c.kcal*100}%;background:var(--z3)"></i><i style="flex:1;background:var(--z2)"></i></div>
+    <div class="ml"><span><i style="background:var(--z4)"></i>חלבון ${Math.round(c.prot*4/c.kcal*100)}%</span><span><i style="background:var(--z3)"></i>שומן ${Math.round(c.fat*9/c.kcal*100)}%</span><span><i style="background:var(--z2)"></i>פחמימות ${Math.round(c.carb*4/c.kcal*100)}%</span></div>
+    <div class="note">חישוב: Mifflin-St Jeor לגבר. ההמלצות כלליות לאדם בריא ולא תחליף לדיאטנית.</div></section>`;
+  // apple health
+  const AH=[["tdee","שריפה יומית כוללת","קל׳"],["active_kcal","אנרגיה פעילה (ממוצע)","קל׳"],["rest_kcal","אנרגיה במנוחה","קל׳"],["steps","צעדים ביום","" ],["exercise_min","דקות אימון ביום","דק׳"],["rhr","דופק במנוחה","bpm"],["hrv","HRV","ms"],["vo2max","VO2 max",""],["sleep_h","שינה בלילה","ש׳"],["walk_km","הליכה וריצה ביום","ק״מ"]];
+  h+=`<section><div class="sh"><h2>🍎 מאפל הלת׳</h2><small>${hl.as_of?"נכון ל-"+esc(hl.as_of):"עוד אין נתונים"}</small></div>
+    <div class="ah">${AH.map(([k,l,u])=>`<div><span>${l}</span>${hl[k]!=null&&hl[k]!==""?`<b>${esc(hl[k])}</b> <small class="muted">${u}</small>`:`<b class="na">—</b>`}</div>`).join("")}</div>
+    <div class="note">${hl.as_of?esc(hl.note||""):"שלח בצ׳אט צילומי מסך מאפל הלת׳ (ממוצע שבועי או חודשי): אנרגיה פעילה ובמנוחה, צעדים, דופק במנוחה, HRV, VO2 max ושינה. אני מכניס אותם לכאן והיעדים מתעדכנים."}</div></section>`;
+  return h;}
+
+function render(){$("hero").innerHTML=hero();
+  const secs=[["train","🗓️ אימונים"],["stats","📊 נתונים ותזונה"]];
+  $("bar").innerHTML=`<div class="seg">${secs.map(([k,l])=>`<button data-sec="${k}" class="${ui.sec===k?"on":""}">${l}</button>`).join("")}</div>`;
+  $("app").innerHTML=ui.sec==="stats"?renderStats():renderTrain();
+  $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד ספורט ${esc(window.SPORT_BUILD)}`;}
+let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
+async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
+async function updMeta(patch,msg){const prev=JSON.parse(JSON.stringify(meta));meta=Object.assign({},meta,patch);const y=scrollY;render();scrollTo(0,y);
+  if(!db){toast("אין חיבור, לא נשמר");return;}
+  try{await db.collection("sport").doc("_meta").update(patch);toast(msg||"נשמר");}catch(e){meta=prev;render();toast("לא נשמר, נסה שוב");}}
+document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
+  if(b=g("[data-sec]")){ui.sec=b.dataset.sec;saveUi();render();return;}
+  if(b=g("[data-goal]")){updMeta({goal:Object.assign({},meta.goal||{},{mode:b.dataset.goal})},"היעד עודכן");return;}
+  if(g("[data-weight]")){const v=parseFloat(String(prompt("המשקל היום (ק״ג)",String(prof().w))||"").replace(",","."));if(!(v>40&&v<250))return;
+    const d=new Intl.DateTimeFormat("he-IL",{timeZone:"Asia/Jerusalem",day:"numeric",month:"numeric",year:"numeric"}).format(new Date());
+    const w=(meta.weights||[]).filter(x=>x.d!==d).concat([{d,kg:v}]);
+    updMeta({profile:Object.assign({},meta.profile||{},{weight:v,as_of:d}),weights:w},"המשקל עודכן");return;}
+  if(g("[data-add]")){const t=(prompt("איזה אימון או רעיון? (מה, מתי, איפה)")||"").trim();if(!t)return;
+    const ok=await copy(`דשבורד ספורט: אימון/רעיון חדש: ${t}\nתוסיף אותו לדשבורד (אוסף sport) עם תזכורות ב-Side Quests אם צריך.`);
+    toast(ok?"הבקשה הועתקה, הדבק בשיחה":"פותח את השיחה");setTimeout(()=>window.open(safe(meta.chat_url)||CHAT_FALLBACK,"_blank","noopener"),600);return;}
+});
+render();
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("sport").onSnapshot(s=>{loaded=true;const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else n[x.id]=v;});items=n;render();},()=>{});
+});
+})();
+</script>
+</body>
+</html>

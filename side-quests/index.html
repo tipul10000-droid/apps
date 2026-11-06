@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.4";window.SQ_BUILD_AT="6.11.2026 17:27";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.5";window.SQ_BUILD_AT="6.11.2026 18:05";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -22,7 +22,7 @@ window.addEventListener("error",function(e){bar((e.message||"error")+(e.lineno?"
 window.addEventListener("unhandledrejection",function(e){var r=e.reason;bar("promise: "+((r&&(r.message||r))||""));});
 setTimeout(function(){var l=document.getElementById("list"),pin=document.getElementById("sq-pin");if(!pin&&l&&/טוען/.test(l.textContent)&&l.children.length<=1)bar("הנתונים לא הגיעו אחרי 20 שניות");},20000);})();</script>
 <script src="sq-db.js?v=9"></script>
-<script src="timegate.js?v=2"></script>
+<script src="timegate.js?v=3"></script>
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1948,7 +1948,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a||!isGmail(a.href))return;e.preventDefault();e.stopPropagation();openGmail(a.href);},true);
   function mailOf(t){const ls=linksOf(t).filter(l=>isGmail(l.url));const l=ls.find(l=>gmailId(l.url))||ls.find(l=>!/compose=|#drafts/.test(l.url));return l?safeUrl(l.url):null;}
   // ---- 5.0: levels and dashboards (collection "dashboards" in sq_docs) ----
-  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], carDocs=[], houseDocs=[], shopDocs=[], foodDocs=[], inDashCard=false;
+  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], carDocs=[], houseDocs=[], shopDocs=[], foodDocs=[], sportDocs=[], inDashCard=false;
   function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted);}
   function levelOf(t){const L=+t.level;if(L>=1&&L<=4)return L;if(t.project&&projById(t.project))return 4;if(t.dash&&dashById(t.dash))return 3;if(chatOf(t)||mailOf(t))return 2;return 1;}
   function levelRow(t){
@@ -2023,6 +2023,12 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
       const kpis=[{v:String(open.length),l:"קניות בבירור"},{v:String(open.filter(x=>x.status==="deciding").length),l:"מחכות להחלטה"},{v:String(qs.length),l:"שאלות אליך"}];
       const sugs=qs.slice(0,2).map(o=>({text:(o.x.icon||"🛒")+" "+o.x.title+": "+o.q.q,sub:(o.q.options||[]).join(" / ")}));
       return {kpis,sugs,live:true,line:open.length?"בבירור: "+open.map(x=>x.title).slice(0,3).join(", "):""};
+    }
+    if(d.source==="sport"&&sportDocs.length){ // 11.5: sport, fitness & nutrition (sport.html)
+      const A=sportDocs.filter(x=>x.id!=="_meta"&&x.title&&(x.kind||"activity")==="activity"),on=A.filter(x=>x.status!=="todo");
+      const m=sportDocs.find(x=>x.id==="_meta")||{},p=m.profile||{},w=+p.weight||0,hgt=(+p.height||0)/100;
+      const kpis=[{v:String(on.reduce((s,a)=>s+(a.days||[]).length,0)),l:"אימונים בשבוע"},{v:w?String(w):"—",l:"ק״ג"},{v:w&&hgt?(w/hgt/hgt).toFixed(1):"—",l:"BMI"}];
+      return {kpis,sugs:[],live:true,line:on.length?on.map(a=>(a.icon||"")+" "+a.title).slice(0,3).join(" · "):""};
     }
     if(d.source==="food"&&foodDocs.length){ // 10.5: food & restaurants (food.html)
       const R=foodDocs.filter(x=>x.id!=="_meta"&&x.title&&(x.kind||"recipe")==="recipe"),cart=R.filter(x=>x.cart);
@@ -2653,7 +2659,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   // background:true or fit.owner "claude" stays out of every quest; Claude opens a new task only when Oren must act, decide or know.
   function isBg(t){return t.background===true||(t.fit&&t.fit.owner==="claude");}
   // 9.2: recurring task. recur {dow: 0-6 (5 = Friday)}: a done task reopens on its next day (closed before that day's 00:00 = open again)
-  function recurOpen(t){const r=t.recur;if(!r||r.dow==null||t.status!=="done")return t;const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()-r.dow+7)%7));
+  function recurOpen(t){if(window.SQGate&&window.SQGate.recurOpen)return window.SQGate.recurOpen(t);const r=t.recur;if(!r||r.dow==null||t.status!=="done")return t;const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()-r.dow+7)%7));
     return new Date(t.done_at||0)<d?{...t,status:"active",done_at:"",next_date:d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}:t;}
   function splitTopics(){const tq=quest==="fun"?"side":quest;topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t)));funTopics=allTopics.filter(isFun);}
   function renderQnav(){
@@ -3724,6 +3730,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     db.collection("housing").onSnapshot(s=>{houseDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("shopping").onSnapshot(s=>{shopDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("food").onSnapshot(s=>{foodDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
+    db.collection("sport").onSnapshot(s=>{sportDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     initNotify();
   })();
 })();
