@@ -195,3 +195,95 @@ $$;
 grant execute on function public.study_parents_reset(text,text,text) to anon;
 grant execute on function public.study_reset_get(text,text) to anon;
 -- study_parents_get: progress רק אם updated_at מאוחר מהאיפוס, ומחזיר גם resets.
+
+-- 6.11.2026: בקשות והצעות מהילדים (מדף הילד) → אזור ההורים
+create table if not exists public.study_requests (
+  id bigserial primary key,
+  kid text not null check (kid in ('evyatar','dani','lia')),
+  kind text not null check (kind in ('test','quiz','hard','topic','idea')),
+  txt text not null check (char_length(txt) between 1 and 500),
+  done boolean not null default false,
+  hidden boolean not null default false,
+  created_at timestamptz not null default now()
+);
+alter table public.study_requests enable row level security;
+revoke all on public.study_requests from anon, authenticated;
+create or replace function public.study_request_add(p_kid text, p_kind text, p_txt text)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare t text := btrim(coalesce(p_txt, ''));
+begin
+  if p_kid not in ('evyatar','dani','lia') or p_kind not in ('test','quiz','hard','topic','idea') then return jsonb_build_object('ok', false, 'err', 'arg'); end if;
+  if t = '' then return jsonb_build_object('ok', false, 'err', 'empty'); end if;
+  if (select count(*) from public.study_requests where kid = p_kid and created_at > now() - interval '1 hour') >= 15
+     or (select count(*) from public.study_requests) >= 3000 then return jsonb_build_object('ok', false, 'err', 'limit'); end if;
+  insert into public.study_requests(kid, kind, txt) values (p_kid, p_kind, left(t, 500));
+  return jsonb_build_object('ok', true);
+end $$;
+create or replace function public.study_parents_requests(p_pin text, p_id bigint default null, p_set text default null)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare v text := public.study_parents_check(p_pin);
+begin
+  if v <> 'ok' then return jsonb_build_object('ok', false, 'err', v); end if;
+  if p_id is not null then
+    if p_set = 'done' then update public.study_requests set done = true where id = p_id;
+    elsif p_set = 'open' then update public.study_requests set done = false where id = p_id;
+    elsif p_set = 'hide' then update public.study_requests set hidden = true where id = p_id; end if;
+  end if;
+  return jsonb_build_object('ok', true, 'items', coalesce((select jsonb_agg(jsonb_build_object('id', id, 'kid', kid, 'kind', kind, 'txt', txt, 'done', done, 'at', created_at) order by done, created_at desc)
+    from (select * from public.study_requests where not hidden order by created_at desc limit 300) r), '[]'::jsonb));
+end $$;
+revoke all on function public.study_request_add(text,text,text) from public;
+revoke all on function public.study_parents_requests(text,bigint,text) from public;
+grant execute on function public.study_request_add(text,text,text) to anon, authenticated;
+grant execute on function public.study_parents_requests(text,bigint,text) to anon, authenticated;
+
+-- 6.11.2026: החומרים שלי (דפי נוסחאות, תמונות, PDF, פתקים) לאביתר: study/evyatar/notes/. הסתרה במקום מחיקה.
+create table if not exists public.study_materials (
+  id bigserial primary key,
+  kid text not null check (kid in ('evyatar','dani','lia')),
+  title text not null check (char_length(title) between 1 and 80),
+  kind text not null check (kind in ('img','pdf','note')),
+  mime text not null default '' check (char_length(mime) <= 60),
+  data text not null check (char_length(data) between 1 and 6000000),
+  thumb text check (char_length(thumb) <= 60000),
+  size int not null default 0,
+  hidden boolean not null default false,
+  created_at timestamptz not null default now()
+);
+alter table public.study_materials enable row level security;
+revoke all on public.study_materials from anon, authenticated;
+create or replace function public.study_material_add(p_kid text, p_title text, p_kind text, p_mime text, p_data text, p_thumb text default null)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare t text := btrim(coalesce(p_title, ''));
+begin
+  if p_kid not in ('evyatar','dani','lia') or p_kind not in ('img','pdf','note') or t = '' or coalesce(p_data,'') = '' then return jsonb_build_object('ok', false, 'err', 'arg'); end if;
+  if char_length(p_data) > 6000000 then return jsonb_build_object('ok', false, 'err', 'big'); end if;
+  if (select count(*) from public.study_materials where kid = p_kid and created_at > now() - interval '1 hour') >= 30
+     or (select count(*) from public.study_materials where kid = p_kid and not hidden) >= 300 then return jsonb_build_object('ok', false, 'err', 'limit'); end if;
+  insert into public.study_materials(kid, title, kind, mime, data, thumb, size)
+  values (p_kid, left(t, 80), p_kind, left(coalesce(p_mime, ''), 60), p_data, case when char_length(p_thumb) <= 60000 then p_thumb end, char_length(p_data));
+  return jsonb_build_object('ok', true);
+end $$;
+create or replace function public.study_material_list(p_kid text)
+returns jsonb language sql stable security definer set search_path to '' as $$
+  select coalesce(jsonb_agg(jsonb_build_object('id', id, 'title', title, 'kind', kind, 'mime', mime, 'thumb', thumb, 'size', size, 'at', created_at, 'note', case when kind = 'note' then left(data, 120) end) order by created_at desc), '[]'::jsonb)
+  from public.study_materials where kid = p_kid and not hidden;
+$$;
+create or replace function public.study_material_get(p_id bigint)
+returns jsonb language sql stable security definer set search_path to '' as $$
+  select coalesce((select jsonb_build_object('id', id, 'title', title, 'kind', kind, 'mime', mime, 'data', data) from public.study_materials where id = p_id and not hidden), '{}'::jsonb);
+$$;
+create or replace function public.study_material_hide(p_kid text, p_id bigint)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+begin
+  update public.study_materials set hidden = true where id = p_id and kid = p_kid;
+  return jsonb_build_object('ok', found);
+end $$;
+revoke all on function public.study_material_add(text,text,text,text,text,text) from public;
+revoke all on function public.study_material_list(text) from public;
+revoke all on function public.study_material_get(bigint) from public;
+revoke all on function public.study_material_hide(text,bigint) from public;
+grant execute on function public.study_material_add(text,text,text,text,text,text) to anon, authenticated;
+grant execute on function public.study_material_list(text) to anon, authenticated;
+grant execute on function public.study_material_get(bigint) to anon, authenticated;
+grant execute on function public.study_material_hide(text,bigint) to anon, authenticated;
