@@ -24,11 +24,14 @@
     try{fetch(SB_URL+'/rest/v1/rpc/study_state_put',{method:'POST',keepalive:!!keep,headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},
       body:JSON.stringify({p_kid:kid,p_app:app,p_keys:o,p_score:+data.att||0})}).catch(function(){})}catch(e){}}
   function has(x){return !!PRE[x]}
-  function restore(){if(off())return;if(KEYS.some(has))return;var sk='study_rst_'+kid+'_'+app;
+  // שחזור גם כשבמכשיר יש התקדמות, אבל הגיבוי גדול ממנה ביותר מ-10 תשובות (אורן 6.11.2026: ההתקדמות של ליה נמחקה במכשיר והגיבוי נשאר).
+  // הגיבוי שהשרת מחזיר תמיד מאוחר מהאיפוס האחרון, כך שאיפוס של ההורים לא מתבטל.
+  function restore(){if(off())return;var sk='study_rst_'+kid+'_'+app;
     try{if(sessionStorage.getItem(sk))return}catch(e){}
-    rpc('study_state_get',{p_kid:kid,p_app:app}).then(function(j){if(!j||!j.keys)return;var n=0;
+    var any=KEYS.some(has),lr=get('study_r_'+kid+'_'+app),la=(lr&&lr.data&&+lr.data.att)||0;
+    rpc('study_state_get',{p_kid:kid,p_app:app}).then(function(j){if(!j||!j.keys)return;if(any&&!((+j.score||0)>la+10))return;var n=0;
       for(var x in j.keys)if(KEYS.indexOf(x)>=0&&typeof j.keys[x]==='string'){try{localStorage.setItem(x,j.keys[x]);n++}catch(e){}}
-      if(n){try{sessionStorage.setItem(sk,'1')}catch(e){}stop=true;location.reload()}}).catch(function(){})}
+      if(n){set('study_r_'+kid+'_'+app,{at:new Date().toISOString(),data:{att:+j.score||0}});try{sessionStorage.setItem(sk,'1')}catch(e){}stop=true;location.reload()}}).catch(function(){})}
   function send(keep){if(stop||off())return;var d=dev(),p=payload();putState(keep);set('study_r_'+kid+'_'+app,{at:new Date().toISOString(),data:p});dirty=false;
     try{fetch(SB_URL+'/rest/v1/rpc/study_report',{method:'POST',keepalive:!!keep,headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},
       body:JSON.stringify({p_device:d.id,p_token:d.token,p_kid:kid,p_app:app,p_data:p})}).catch(function(){})}catch(e){}}
@@ -39,7 +42,7 @@
   function rpc(fn,body){return fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(body)}).then(function(r){return r.ok?r.json():null})}
   function checkReset(keys,old){if(off()||stop)return;var sk='study_rs_'+kid+'_'+app;
     try{rpc('study_reset_get',{p_kid:kid,p_app:app}).then(function(j){if(!j||!j.at)return;var at=new Date(j.at).getTime(),seen=get(sk);if(seen===j.at)return;
-      var has=keys.some(function(x){return localStorage.getItem(x)!=null}),before=!old||!old.first||new Date(old.first).getTime()<at;
+      var has=keys.some(function(x){return localStorage.getItem(x)!=null}),before=!!(old&&old.first)&&new Date(old.first).getTime()<at;
       set(sk,j.at);if(!(has&&before))return;
       stop=true;keys.concat(['study_t_'+kid+'_'+app,'study_r_'+kid+'_'+app]).forEach(function(x){try{localStorage.removeItem(x)}catch(e){}});try{sessionStorage.setItem('study_rst_'+kid+'_'+app,'1')}catch(e){}
       location.reload()}).catch(function(){})}catch(e){}}
