@@ -1,5 +1,14 @@
 // מצב אורח של study: כל ההתקדמות נשמרת בנפרד (מפתחות עם הקידומת "guest:"), ושום דבר לא נשלח לשרת
 // (לא לאזור ההורים ולא ללוח הדירוג). נטען ראשון בכל דף. הדגל: study_guest = "1".
+// גם: כל דף לימוד נכנס במסך אחד, בלי גלילה ובלי זום (אורן 6.11.2026). דף שצריך גלילה (אזור ההורים) לא טוען את הקובץ הזה.
+(function(){
+  var css='html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}body{height:100dvh;min-height:0!important;display:flex;flex-direction:column}main{flex:1 1 auto;min-height:0!important;width:100%;box-sizing:border-box;overflow:hidden}';
+  var st=document.createElement('style');st.textContent=css;(document.head||document.documentElement).appendChild(st);
+  var fixVp=function(){var m=document.querySelector('meta[name=viewport]');if(m)m.content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover'};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fixVp);else fixVp();
+  ['gesturestart','gesturechange'].forEach(function(e){document.addEventListener(e,function(ev){ev.preventDefault()},{passive:false})});
+  addEventListener('scroll',function(){if(scrollX||scrollY)scrollTo(0,0)});
+})();
 (function(){
   var G=false;try{G=localStorage.getItem('study_guest')==='1'}catch(e){}
   window.STUDY_GUEST=G;

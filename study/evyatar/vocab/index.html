@@ -28,8 +28,8 @@ main{max-width:560px;margin:0 auto;padding:14px}
 .lv{display:flex;gap:6px;margin:0 0 12px}.lv button{flex:1;padding:7px 4px;font:inherit;font-size:14px;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:10px;cursor:pointer}
 .pd{width:1.15em;height:1.15em;vertical-align:-.2em}
 .sk button{font:inherit;font-size:14px;color:inherit;background:var(--card);border:1px solid var(--ac);border-radius:20px;padding:3px 12px;cursor:pointer}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;z-index:9;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px;overflow:auto}
-.ov.on{display:flex}#nm{z-index:10}.pn{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;width:100%;max-width:520px;box-sizing:border-box}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px);overflow:auto;box-sizing:border-box}
+.ov.on{display:flex}#nm{z-index:41}.pn{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;width:100%;max-width:520px;max-height:100%;overflow:auto;box-sizing:border-box}
 .pn h2{margin:0 0 10px;font-size:20px}.pn input{width:100%;box-sizing:border-box;font:inherit;padding:12px;border:2px solid var(--bd);border-radius:10px;background:var(--bg);color:inherit}
 .pn .row{display:flex;gap:8px;margin-top:10px}.pn .row button{flex:1;padding:10px;font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:10px;cursor:pointer}
 .pn .row button.pri{background:var(--ac);border-color:var(--ac);color:#fff}.pn .note{font-size:13px;opacity:.7;margin-top:6px}
@@ -46,8 +46,9 @@ main{max-width:560px;margin:0 auto;padding:14px}
 @keyframes sad{30%{transform:scaleY(.8) rotate(-6deg)}60%{transform:scaleY(.85) rotate(6deg)}}
 @keyframes party{20%{transform:translateY(-16px) rotate(-15deg)}50%{transform:translateY(-16px) rotate(15deg)}80%{transform:translateY(0) scale(1.1)}}
 @media(prefers-reduced-motion:reduce){#gob{animation:none!important}}
+@media(max-height:760px){main{padding:10px 14px}.st{margin:4px 0 8px}.lv{margin:0 0 7px}.lv button{padding:5px 4px}.cr{margin-bottom:6px}#gob{width:52px;height:52px}.q{padding:12px}.w{font-size:28px}.o{padding:10px;margin-top:6px}.ft{margin-top:8px}.ft button{padding:7px}}
 </style></head><body><main>
-<a class="home" href="../">→ חזרה</a>
+<div style="display:flex;justify-content:space-between;align-items:center"><a class="home" href="../">→ חזרה</a><button id="mut" type="button" aria-label="צלילים" style="font-size:18px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:3px 10px;cursor:pointer">🔊</button></div>
 <div class="bar"><i id="pb"></i></div>
 <div class="st"><span id="s1"></span><span id="s2"></span></div>
 <div class="sk"><span id="sc"></span><span id="sb"></span><button id="lbb" style="display:none"><svg class="pd" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="12" width="6.5" height="10" rx="1.2" fill="#c3cad6" stroke="currentColor" stroke-width="1.3"/><rect x="8.8" y="5.5" width="6.5" height="16.5" rx="1.2" fill="#f5b301" stroke="currentColor" stroke-width="1.3"/><rect x="16" y="15" width="6.5" height="7" rx="1.2" fill="#cd7f32" stroke="currentColor" stroke-width="1.3"/><path d="M12 1.3l1 2 2.2.3-1.6 1.5.4 2.2-2-1.1-2 1.1.4-2.2L8.8 3.6 11 3.3z" fill="#f5b301" stroke="currentColor" stroke-width=".9" stroke-linejoin="round" transform="translate(0 -.4)"/></svg> דירוג</button></div>
@@ -2196,9 +2197,17 @@ let pcSure=0;$('pcl').onclick=()=>{const o=pcRead($('pct').value);if(!o){pcMsg('
 streak();gob(R.c>=3?'רצף של '+R.c+'! לא לשבור אותו 🔥':pick(['היי! אני גוֹשי. בוא נלמד מילים 👋','חזרת! התגעגעתי 🥹','מוכן? אני מוכן 🤪']),'hop');
 start();
 
+// צלילים (WebAudio, בלי קבצים). השתקה במפתח נפרד ev_mute.
+(function(){let M=false;try{M=localStorage.getItem('ev_mute')==='1'}catch(e){}let AC=null;const b=$('mut');
+ function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+ function tone(f,t0,d,ty,v,f2){const a=ac();if(!a||M)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+t0;o.type=ty||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.16,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.05)}
+ const ok=()=>{tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.2,'triangle')},bad=()=>tone(330,0,.25,'sine',.14,220),win=()=>[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.15));
+ b.textContent=M?'🔇':'🔊';b.onclick=()=>{M=!M;try{localStorage.setItem('ev_mute',M?'1':'0')}catch(e){}b.textContent=M?'🔇':'🔊';if(!M)tone(1800,0,.05,'square',.04)};
+ const _o=onStreak;onStreak=function(x){const b0=R.b;_o(x);if(!x)bad();else if(MILE[R.c]||R.b>b0&&b0>0&&R.c===b0+1)win();else ok()}})();
+
 // דיווח לאזור ההורים (track.js). ספירת תשובות במפתח נפרד study_ev_att; מפתחות vq1 לא משתנים.
 (function(){if(!window.StudyTrack)return;let A={a:0,o:0};try{A=JSON.parse(localStorage.getItem('study_ev_att'))||A}catch(e){}
  const _o=onStreak;onStreak=function(ok){A.a++;if(ok)A.o++;try{localStorage.setItem('study_ev_att',JSON.stringify(A))}catch(e){}_o(ok);rep()};
  function rep(){try{StudyTrack.report({total:W.length,done:S.L.filter(k=>K[k]).length,learning:Object.keys(S.P).length,att:A.a,ok:A.o,streak:R.c,best:R.b})}catch(e){}}
- StudyTrack.init('evyatar','vocab');rep()})();
+ StudyTrack.init('evyatar','vocab',['vq1','vq1streak','study_ev_att']);rep()})();
 </script></body></html>
