@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#3E2A6B">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.PAY_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.PAY_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <title>תשלומים חודשיים קבועים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,19 +16,19 @@
    והביטוחים נקראים חי מ-collection=insurance. נקרא דרך sq-db.js עם הקוד של Side Quests. */
 :root{
   --bg:#F4F2F7; --surface:#FFFFFF; --sunk:#ECE8F2; --ink:#1E1A26; --muted:#655E70; --line:#DCD6E4;
-  --hero:#3E2A6B; --hero-ink:#F6F3FB; --hero-muted:#C3B5E0; --accent:#F2B33D;
+  --hero:#3E2A6B; --hero2:#6A47B0; --art:url(img/art-payments.svg); --hero-ink:#F6F3FB; --hero-muted:#C3B5E0; --accent:#F2B33D;
   --ok:#22855A; --ok-soft:#E0F2E8; --mid:#B0640C; --mid-soft:#FBEBD3; --bad:#C23D4A; --bad-soft:#FBE2E4; --unk:#7A7385; --unk-soft:#ECEAF0;
   --c-digital:#5B5BD6; --c-streaming:#C2378B; --c-telecom:#2773B8; --c-housing:#2E8B57; --c-car:#D08419; --c-insurance:#16706A; --c-leisure:#8E4FC0; --c-kids:#E0663C; --c-finance:#6B6B6B; --c-other:#8A8494;
   --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#13111A; --surface:#1C1925; --sunk:#25212F; --ink:#ECE8F3; --muted:#A39BB0; --line:#332E3E;
-  --hero:#2A1D4A; --hero-ink:#F2EEF9; --hero-muted:#A898C9; --accent:#F4BD55;
+  --hero:#2A1D4A; --hero2:#4A3484; --hero-ink:#F2EEF9; --hero-muted:#A898C9; --accent:#F4BD55;
   --ok:#5FC08F; --ok-soft:#163024; --mid:#EBA74A; --mid-soft:#3A2A14; --bad:#EE7A84; --bad-soft:#3B1E22; --unk:#A39BB0; --unk-soft:#2A2633;
   --c-digital:#9A9AF0; --c-streaming:#E77DB9; --c-telecom:#6FAEE6; --c-housing:#62C08A; --c-car:#EBA74A; --c-insurance:#5FC2B9; --c-leisure:#BC8FE6; --c-kids:#F2946F; --c-finance:#B0B0B0; --c-other:#A39BB0; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#13111A; --surface:#1C1925; --sunk:#25212F; --ink:#ECE8F3; --muted:#A39BB0; --line:#332E3E;
-  --hero:#2A1D4A; --hero-ink:#F2EEF9; --hero-muted:#A898C9; --accent:#F4BD55;
+  --hero:#2A1D4A; --hero2:#4A3484; --hero-ink:#F2EEF9; --hero-muted:#A898C9; --accent:#F4BD55;
   --ok:#5FC08F; --ok-soft:#163024; --mid:#EBA74A; --mid-soft:#3A2A14; --bad:#EE7A84; --bad-soft:#3B1E22; --unk:#A39BB0; --unk-soft:#2A2633;
   --c-digital:#9A9AF0; --c-streaming:#E77DB9; --c-telecom:#6FAEE6; --c-housing:#62C08A; --c-car:#EBA74A; --c-insurance:#5FC2B9; --c-leisure:#BC8FE6; --c-kids:#F2946F; --c-finance:#B0B0B0; --c-other:#A39BB0; color-scheme:dark}
 *{box-sizing:border-box}
@@ -147,7 +147,7 @@ section{margin-bottom:26px;scroll-margin-top:70px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (prefers-reduced-motion:reduce){.sheet{transition:none}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=2">
+<link rel="stylesheet" href="dash-back.css?v=3">
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>

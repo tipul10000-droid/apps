@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#1F4A44">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="1.1";</script>
+<meta name="theme-color" content="#0E5F56">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="1.2";</script>
 <script src="sq-db.js?v=9"></script>
 <title>דשבורד משפחה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,19 +16,19 @@
    מסמך לכל ילד + _meta (פעולות, אירועים משותפים, צ'אט). נקרא דרך sq-db.js עם הקוד של Side Quests. */
 :root{
   --bg:#F3F5F2; --surface:#FFFFFF; --sunk:#E8EDE8; --ink:#17201D; --muted:#5D6B66; --line:#D6DED9;
-  --hero:#1F4A44; --hero-ink:#F2F7F5; --hero-muted:#A9C9C1; --accent:#F2B33D;
+  --hero:#0E5F56; --hero2:#18A08C; --art:url(img/art-family.svg); --hero-ink:#F2F7F5; --hero-muted:#A9C9C1; --accent:#F2B33D;
   --exam:#C23D4A; --exam-soft:#FBE2E4; --quiz:#B0640C; --quiz-soft:#FBEBD3; --sub:#5B5BD6; --sub-soft:#E5E5FA;
   --trip:#22855A; --trip-soft:#E0F2E8; --ev:#5D6B66; --ev-soft:#ECEFED;
   --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#101614; --surface:#18201D; --sunk:#202A27; --ink:#E8EFEC; --muted:#9DB0A9; --line:#2C3834;
-  --hero:#163631; --hero-ink:#EEF6F3; --hero-muted:#8FB3AA; --accent:#F4BD55;
+  --hero:#11433C; --hero2:#17695D; --hero-ink:#EEF6F3; --hero-muted:#8FB3AA; --accent:#F4BD55;
   --exam:#EE7A84; --exam-soft:#3B1E22; --quiz:#EBA74A; --quiz-soft:#3A2A14; --sub:#9A9AF0; --sub-soft:#26264A;
   --trip:#5FC08F; --trip-soft:#163024; --ev:#9DB0A9; --ev-soft:#242E2B; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#101614; --surface:#18201D; --sunk:#202A27; --ink:#E8EFEC; --muted:#9DB0A9; --line:#2C3834;
-  --hero:#163631; --hero-ink:#EEF6F3; --hero-muted:#8FB3AA; --accent:#F4BD55;
+  --hero:#11433C; --hero2:#17695D; --hero-ink:#EEF6F3; --hero-muted:#8FB3AA; --accent:#F4BD55;
   --exam:#EE7A84; --exam-soft:#3B1E22; --quiz:#EBA74A; --quiz-soft:#3A2A14; --sub:#9A9AF0; --sub-soft:#26264A;
   --trip:#5FC08F; --trip-soft:#163024; --ev:#9DB0A9; --ev-soft:#242E2B; color-scheme:dark}
 *{box-sizing:border-box}
@@ -123,7 +123,7 @@ select.clsel{border:1px solid var(--line);background:var(--surface);border-radiu
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.day{grid-template-columns:52px 1fr}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=2">
+<link rel="stylesheet" href="dash-back.css?v=3">
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
