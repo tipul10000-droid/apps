@@ -5,6 +5,8 @@
 // sq_open can never read (that app has no code in sq_secrets). The private key never leaves the server.
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import "./timegate.js"; // shared with the app: side-quests/timegate.js (copy it here on every change)
+const SQGate = (globalThis as any).SQGate;
 
 const APP = "sidequests";
 const SRV = "sq_push_srv";
@@ -193,6 +195,59 @@ async function criticalTick(p: any, t0: ReturnType<typeof il>) {
   return { critical: fresh.length };
 }
 
+// ---------- "צא עד" / "להתקשר עד" (10.0, Oren 6.11.2026 after missing the Kia test) ----------
+// Every open task planned for today with opening hours (fit.open / fit.at) gets up to 3 pushes:
+// ~90 min before the leave/call deadline, ~20 min before, and once it is late but the place is still open.
+// A task whose place is closed today gets one morning push. At 20:00 one push lists tomorrow's deadlines.
+const WD: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+function gateOk(x: any) {
+  return isTask(x) && OPEN.includes(x.status || "active") && x.status !== "waiting_other" && !x.background &&
+    !(x.fit && x.fit.owner === "claude") && !snoozed(x, Date.now());
+}
+async function gateTick(p: any, t: ReturnType<typeof il>) {
+  if (p.gates === false || p.abroadOn) return { gates: 0 };
+  const quiet = p.quiet_from > p.quiet_to ? (t.hour >= p.quiet_from || t.hour < p.quiet_to) : (t.hour >= p.quiet_from && t.hour < p.quiet_to);
+  if (quiet) return { gates: 0, quiet: true };
+  const all = await listColl(APP, "topics");
+  const st = (await getDoc(SRV, "state", "gates")) || {};
+  const sent: Record<string, number> = st.date === t.date ? (st.sent || {}) : {};
+  const dow = WD[t.wd] ?? new Date().getDay();
+  const gs = SQGate.list(all, t.date, dow, t.mins, gateOk);
+  const out: any[] = [];
+  let list: any[] | null = null;
+  for (const g of gs) {
+    // stage: 1 = heads-up (<=90 min), 2 = soon (<=20 min), 3 = late but still open; 9 = closed today
+    let stage = 0;
+    if (g.kind === "closed") stage = 9;
+    else if (g.state !== "past") {
+      const left = g.by - t.mins;
+      stage = left <= 0 ? 3 : left <= 20 ? 2 : left <= 90 ? 1 : 0;
+    }
+    if (!stage || (sent[g.id] || 0) >= stage) continue;
+    if (stage === 9 && t.hour >= 13) { sent[g.id] = 9; continue; } // only worth saying in the morning
+    const tx = SQGate.text(g);
+    const pre = stage === 3 ? "⚠️ עכשיו! " : "";
+    list = list || (await subs());
+    await sendTo(list, { title: `${pre}${tx.head} · ${short(g.title, 40)}`, body: short(tx.body + (g.est ? " (שעות משוערות)" : ""), 170), tag: "sq-gate-" + g.id, url: APP_URL + "#t=" + encodeURIComponent(g.id) });
+    sent[g.id] = stage; out.push({ id: g.id, stage });
+  }
+  // tomorrow, once at 20:00-21:59
+  let tom = st.tom || "";
+  if (t.hour >= 20 && t.hour < 22 && tom !== t.date) {
+    const d2 = new Date(Date.parse(t.date + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
+    const g2 = SQGate.list(all, d2, (dow + 1) % 7, 0, gateOk);
+    if (g2.length) {
+      const lines = g2.slice(0, 3).map((g: any) => g.kind === "closed" ? `${short(g.title, 26)}: סגור מחר` : `${short(g.title, 26)}: ${g.call ? "עד" : "צא עד"} ${SQGate.fmt(g.by)}`);
+      list = list || (await subs());
+      await sendTo(list, { title: "🗓️ מחר יש שעת סגירה", body: lines.join(" · "), tag: "sq-gate-tom", url: APP_URL });
+      out.push({ tomorrow: g2.length });
+    }
+    tom = t.date;
+  }
+  await putDoc(SRV, "state", "gates", { date: t.date, sent, tom });
+  return { gates: out };
+}
+
 async function tick() {
   const p = await prefs(), t = il();
   const out: any = { at: t };
@@ -216,6 +271,7 @@ async function tick() {
     out.eve = await eveNow("schedule");
   }
   out.crit = await criticalTick(p, t);
+  try { out.gates = await gateTick(p, t); } catch (e: any) { out.gates = { error: String(e?.message || e) }; }
   return out;
 }
 
