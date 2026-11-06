@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.6";window.SQ_BUILD_AT="6.11.2026 19:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.7";window.SQ_BUILD_AT="6.11.2026 19:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1563,6 +1563,19 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
 #aiTiles .ptile>*{flex-shrink:0}
 #aiTiles .ptile:active{background:var(--sunk)}
 #aiTiles .ptile:last-child:nth-child(odd){grid-column:1/-1}
+/* 11.7 (Oren 6.11): a row that opens into several tasks (group) must not look like a task. Tinted strip, stack icon
+   in the circle's column, smaller bold title, count pill. Same height open or closed: only the content below moves. */
+.fold>summary{background:var(--sunk);min-height:50px;padding:0 14px 0 14px;font-size:15px;font-weight:700;color:var(--ink);gap:10px}
+.fold>summary::before{content:"";flex:none;width:20px;height:20px;margin-inline:4px 6px;background:var(--muted);opacity:.85;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 2 8l10 5 10-5-10-5Z'/%3E%3Cpath d='m2 13 10 5 10-5'/%3E%3Cpath d='m2 17.5 10 5 10-5'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 2 8l10 5 10-5-10-5Z'/%3E%3Cpath d='m2 13 10 5 10-5'/%3E%3Cpath d='m2 17.5 10 5 10-5'/%3E%3C/svg%3E") center/contain no-repeat}
+.fold.ask>summary::before{background:var(--accent);opacity:1}
+.fold.hot>summary::before{background:var(--due);opacity:1}
+.fold .fn{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:0 9px;min-width:26px;line-height:22px;text-align:center;font-size:13.5px;font-weight:700;color:var(--muted)}
+.fold.ask .fn{border-color:var(--accent)}
+.fold .fc{opacity:.6}
+.fold[open]>summary{border-bottom:1px solid var(--line)}
+.fold:not([open])>summary{border-bottom:1px solid transparent}
 </style>
 </head>
 <body>
@@ -1790,8 +1803,8 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     counsel:{e:"💬",l:"טיפול זוגי",s:"",sub:"עם ליאור בתל אביב",acc:[]},
     football:{e:"⚽",l:"כדורגל",s:"",sub:"רק דחוף",acc:[]},
     light:{e:"🛋️",l:"ערב עם ליאור",s:"בערב",sub:"משימות משותפות עם ליאור ודברים בבית. לא יוצאים",acc:["lior","home","phone","pc"],eve:true},
-    deep:{e:"🌙",l:"זמן עומק",s:"בלילה",sub:"לבד, מחשב, 90 דק׳ עד 01:00",acc:["pc","phone","home"],eve:true},
-    solo:{e:"🦉",l:"לבד בלילה",s:"בלילה",sub:"כמו זמן עומק",acc:["pc","phone","home"],eve:true},
+    deep:{e:"🌙",l:"זמן לילה",s:"בלילה",sub:"לבד, מחשב, 90 דק׳ עד 01:00",acc:["pc","phone","home"],eve:true},
+    solo:{e:"🦉",l:"לבד בלילה",s:"בלילה",sub:"כמו זמן לילה",acc:["pc","phone","home"],eve:true},
     sleep:{e:"😴",l:"שינה",s:"",sub:"",acc:[]},
     fri:{e:"🛒",l:"שישי, סידורים",s:"שישי בבוקר",sub:"סידורים ותיקונים עד 13:00",acc:["place","call","phone","home"]},
     sat_am:{e:"🔧",l:"שבת בבוקר",s:"בשבת בבוקר",sub:"תיקונים בבית",ss:"תיקונים בבית",acc:["home"]},
