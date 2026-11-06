@@ -225,13 +225,13 @@ function payChart(){const m=mort(),pts=(m.pay_hist||[]).filter(x=>x.m&&+x.v).sor
   const gaps=(m.pay_gaps||[]);let segs=[],cur=[];pts.forEach((q,i)=>{if(i&&gaps.some(g=>pts[i-1].m<g.from&&q.m>g.to)){segs.push(cur);cur=[];}cur.push(i);});segs.push(cur);
   const line=ix=>ix.map((i,k)=>(k?"L":"M")+X(xs[i]).toFixed(1)+","+Y(ys[i]).toFixed(1)).join(" ");
   let g="";for(let k=1;k<segs.length;k++){const a=segs[k-1][segs[k-1].length-1],b=segs[k][0],mx=(X(xs[a])+X(xs[b]))/2;g+=`<path d="M${X(xs[a]).toFixed(1)},${Y(ys[a]).toFixed(1)} L${X(xs[b]).toFixed(1)},${Y(ys[b]).toFixed(1)}" stroke="currentColor" stroke-opacity=".35" stroke-width="2" stroke-dasharray="3 4" fill="none"/><text x="${mx.toFixed(1)}" y="${(Y(Math.min(ys[a],ys[b]))+16).toFixed(1)}" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".6">אין נתונים</text>`;}
-  const last=pts.length-1,mxI=ys.indexOf(Math.max(...ys.slice(1)));
+  const last=pts.length-1;let mxI=1;pts.forEach((q,i)=>{if(i&&!q.note&&ys[i]>ys[mxI])mxI=i;});
   const lab=(i,dy)=>`<circle cx="${X(xs[i]).toFixed(1)}" cy="${Y(ys[i]).toFixed(1)}" r="3.5" fill="var(--accent)"/><text x="${X(xs[i]).toFixed(1)}" y="${(Y(ys[i])+dy).toFixed(1)}" font-size="10" font-weight="700" text-anchor="middle" fill="currentColor">${ils(ys[i])}</text>`;
   return `<svg class="chart" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="התשלום החודשי למשכנתא לאורך השנים">
     ${yearTicks(x0,x1,X,Hh)}
     ${rt?`<line x1="${X(rt).toFixed(1)}" x2="${X(rt).toFixed(1)}" y1="10" y2="${Hh-16}" stroke="var(--good)" stroke-width="2"/><text x="${(X(rt)+4).toFixed(1)}" y="11" font-size="10" font-weight="700" text-anchor="end" fill="var(--good)">🔄 מחזור ${esc(my(rf.d))}</text>`:""}
     ${segs.map(ix=>`<path d="${line(ix)}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`).join("")}${g}
-    ${lab(1,16)}${lab(mxI,-8)}${lab(last,-8)}
+    ${lab(1,16)}${last-mxI>8?lab(mxI,-8):""}${lab(last,-8)}
   </svg>`;}
 function balChart(){const m=mort(),pts=(m.bal_hist||[]).filter(x=>x.d&&+x.v).sort((a,b)=>a.d<b.d?-1:1);if(pts.length<2)return "";
   const rf=m.refi||{},W=340,Hh=120,p=30,xs=pts.map(x=>parseD(x.d).getTime()),ys=pts.map(x=>+x.v),rt=rf.d?parseD(rf.d).getTime():null;
@@ -247,19 +247,19 @@ function balChart(){const m=mort(),pts=(m.bal_hist||[]).filter(x=>x.d&&+x.v).sor
     ${pts.map((q,i)=>`<circle cx="${X(xs[i]).toFixed(1)}" cy="${Y(ys[i]).toFixed(1)}" r="3.5" fill="var(--accent)"/>${show.has(i)?`<text x="${X(xs[i]).toFixed(1)}" y="${(Y(ys[i])-8).toFixed(1)}" font-size="10" font-weight="700" text-anchor="middle" fill="currentColor">${kk(ys[i])}</text>`:""}`).join("")}
   </svg>`;}
 function mortHistBlock(){const m=mort(),ph=m.pay_hist||[];if(!ph.length)return "";
-  const first=ph.find((x,i)=>i>0)||ph[0],peak=ph.reduce((a,b)=>+b.v>+a.v?b:a,ph[0]),last=ph[ph.length-1],sum=ph.reduce((a,b)=>a+(+b.v||0),0),gap=(m.pay_gaps||[])[0];
+  const first=ph.find((x,i)=>i>0)||ph[0],peak=ph.filter(x=>!x.note).reduce((a,b)=>+b.v>+a.v?b:a,ph[1]||ph[0]),last=ph[ph.length-1],sum=ph.reduce((a,b)=>a+(+b.v||0),0),gap=(m.pay_gaps||[])[0];
   return `<section><div class="sh"><h2>📉 המשכנתא לאורך הזמן</h2><small>מהאקסל ומהתזרים</small></div><div class="card">
     <div style="font-weight:800">כמה יצא כל חודש</div>
     ${payChart()}
     <div class="grid3" style="margin-top:6px"><div class="box"><span>בהתחלה (${esc(my(first.m))})</span><b class="num">${ils(+first.v)}</b></div><div class="box warn"><span>השיא (${esc(my(peak.m))})</span><b class="num">${ils(+peak.v)}</b></div><div class="box"><span>היום (${esc(my(last.m))})</span><b class="num">${ils(+last.v)}</b></div></div>
-    <div class="note">התשלום עלה עם המשיכות מהבנק (עד 3.2020), ואז עם עליית הריבית והמדד ב-2022. ${gap?esc(gap.note)+". ":""}סה״כ בחודשים שיש לנו: ${kk(sum)}.</div>
+    <div class="note">החיוב "לאומי למשכנתאות" בלבד. התשלום עלה עם המשיכות מהבנק (עד 3.2020), ואז עם עליית הריבית והמדד מ-2022. ${gap?esc(gap.note)+". ":""}סה״כ בחודשים שיש לנו: ${kk(sum)}.</div>
     <div style="font-weight:800;margin-top:12px">כמה נשאר לבנק</div>
     ${balChart()}
     <div class="note">${(m.bal_hist||[]).map(x=>`${dm(x.d)}: ${kk(+x.v)} (${esc(x.n)})`).join(" · ")}</div>
   </div></section>`;}
 function refiBlock(){const rf=mort().refi;if(!rf)return "";const diff=(+rf.before||0)-(+rf.after||0),tot=(rf.tracks||[]).reduce((a,b)=>a+(+b.v||0),0);
   return `<section><div class="sh"><h2>🔄 מחזור משכנתא</h2><small>${esc(dm(rf.d))}</small></div><div class="card">
-    <div class="grid3"><div class="box"><span>לפני (חודש)</span><b class="num">${ils(+rf.before)}</b></div><div class="box"><span>אחרי (חודש)</span><b class="num">${ils(+rf.after)}</b></div><div class="box ${diff>0?"hi":"warn"}"><span>${diff>=0?"חוסכים בחודש":"יותר בחודש"}</span><b class="num">${ils(Math.abs(diff))}</b></div></div>
+    <div class="grid3"><div class="box"><span>לפני (חודש)</span><b class="num">${ils(+rf.before)}</b></div><div class="box"><span>אחרי (חודש)</span><b class="num">${ils(+rf.after)}</b></div>${Math.abs(diff)<50?`<div class="box"><span>ההפרש בחודש</span><b class="num">כמעט 0</b></div>`:`<div class="box ${diff>0?"hi":"warn"}"><span>${diff>0?"חוסכים בחודש":"יותר בחודש"}</span><b class="num">${ils(Math.abs(diff))}</b></div>`}</div>
     <table class="steps">${(rf.tracks||[]).map(t=>`<tr><td>${esc(t.l)}</td><td class="num">${ils(+t.v)}</td></tr>`).join("")}<tr class="now"><td>סה״כ ההלוואה החדשה</td><td class="num">${ils(tot||+rf.amount||0)}</td></tr></table>
     <div class="note">עם ${esc(rf.advisor||"")} · ${esc(rf.bank||"")} · דמי פתיחת תיק ${ils(+rf.fee||0)}. חוזה ייעוץ ${esc(dm(rf.contract))}, דוח הלוואות ${esc(dm(rf.report))}, שיחת סיכום ${esc(dm(rf.call))}. לפני: ${esc(rf.before_note||"")}, אחרי: ${esc(rf.after_note||"")}. ${esc(rf.note||"")}</div>
   </div></section>`;}
