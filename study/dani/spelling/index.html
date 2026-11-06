@@ -146,7 +146,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 </div></div>
 <div class="ov" id="lst"><div class="pn"><h2>מילים שטעיתי בהן</h2><div id="lstb" class="wl"></div><button class="btn" id="lstp" type="button">תרגול של המילים האלה ✏️</button><button class="btn soft" style="width:100%;margin-top:8px" id="lstx" type="button">סגירה</button></div></div>
 <div class="ov" id="sqcol"><div class="pn"><h2>🎁 סקווישי מתנה!</h2><p style="margin:0 0 6px">על כל <b>6 תשובות נכונות</b> מקבלים סקווישי מתנה. אספי את כולם! מה מסתתר מאחורי ה-❓? רק כשתזכי תגלי 😉</p><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
-<div class="ov" id="sqov"><div class="pn"><div style="font-size:15px;color:#6d28d9;font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p style="margin:0;color:var(--mut)">לחצי עליו כדי למעוך 😆</p><button class="btn" id="sqok" type="button">לאוסף! 💜</button></div></div>
+<div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:#6d28d9;font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p style="margin:0;color:var(--mut)">לחצי עליו כדי למעוך 😆</p><button class="btn" id="sqok" type="button">לאוסף! 💜</button></div></div>
 <div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
 
 <script src="../../track.js"></script>
@@ -326,7 +326,7 @@ function squishy(){let s=SQS.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s
   $('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
   $('sqov').classList.add('on');SND.pop();upd()}
 $('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');SND.pop()};
-$('sqok').onclick=()=>{$('sqov').classList.remove('on');SND.click()};
+$('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click()};
 $('sqb').onclick=()=>{const left=SQ_EVERY-(S.cc||0);$('sqct').textContent=`אספת ${SQ.length} מתוך ${SQS.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} למתנה הבאה`;$('sqpb').style.width=((S.cc||0)/SQ_EVERY*100)+'%';$('sqg').innerHTML=SQS.map(s=>SQ.includes(s.id)?`<div>${sqSvg(s)}${esc(s.n)}</div>`:`<div class="lock"><b>❓</b></div>`).join('');$('sqcol').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
@@ -345,7 +345,7 @@ $('lstx').onclick=()=>$('lst').classList.remove('on');$('lstp').onclick=()=>{$('
 $('rs').onclick=()=>$('rsov').classList.add('on');$('rsn').onclick=()=>$('rsov').classList.remove('on');
 $('rsy').onclick=()=>{const keep={started:S.started,intro:1};S=fresh();S.started=keep.started;S.intro=1;save();$('rsov').classList.remove('on');PRAC=null;LAST=null;upd();mon('hop','מתחילות מחדש! 💜');next()};
 
-if(window.StudyTrack){StudyTrack.init('dani','spelling',['dani_sp','dani_sp_sq']);StudyTrack.test(j=>{const d=Math.ceil((new Date(j.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);if(d>=0){const t=$('tst');t.style.display='';t.textContent='📅 '+(j.note||'הכתבה')+(d===0?' היום!':d===1?' מחר!':' בעוד '+d+' ימים')}})}
+if(window.StudyTrack){StudyTrack.init('dani','spelling',['dani_sp','dani_sp_sq']);StudyTrack.gift(()=>{squishy();$('sqtt').textContent='🎁 מתנה! ענית נכון על הכל לפני ההכתבה';mon('dance','מתנה מיוחדת בשבילך! 🎁');confetti(60)});StudyTrack.test(j=>{const d=Math.ceil((new Date(j.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);if(d>=0){const t=$('tst');t.style.display='';t.textContent='📅 '+(j.note||'הכתבה')+(d===0?' היום!':d===1?' מחר!':' בעוד '+d+' ימים')}})}
 upd();
 const d0=done();mon('hop',d0?`היי דני! כבר ענית נכון על ${d0===1?'מילה אחת':d0+' מילים'}. ממשיכות? 💜`:'היי דני! אני מוצ׳י, ואני פה לעזור לך עם ההכתבה 💜');
 if(!S.intro)$('intro').classList.add('on');

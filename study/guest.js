@@ -30,7 +30,7 @@
   P.removeItem=function(x){return ri.call(this,k(x))};
   var f=window.fetch;
   window.fetch=function(u){var s=String(u&&u.url||u);
-    if(/\/rpc\/(study_report|vocab_lb_upsert|study_parents_set_test|study_request_add|study_material_add|study_material_hide)/.test(s))return Promise.resolve(new Response('true',{status:200,headers:{'Content-Type':'application/json'}}));
+    if(/\/rpc\/(study_report|vocab_lb_upsert|study_parents_set_test|study_request_add|study_material_add|study_material_hide|study_state_put|study_push_save|study_push_off|study_gift_take)/.test(s))return Promise.resolve(new Response('true',{status:200,headers:{'Content-Type':'application/json'}}));
     return f.apply(this,arguments)};
   var gs=document.createElement('style');gs.textContent='body{background-color:#f7efe2!important;background-image:linear-gradient(rgba(180,83,9,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(180,83,9,.08) 1px,transparent 1px)!important}';(document.head||document.documentElement).appendChild(gs);// רקע חם במצב אורח
 })();

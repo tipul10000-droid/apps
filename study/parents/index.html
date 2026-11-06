@@ -43,6 +43,7 @@
 </style></head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
 <div id="v"></div>
+<script src="../push.js"></script>
 <script>
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
 // הקוד נבדק בשרת (study_parents_get). אחרי קוד נכון הוא נשמר במכשיר (study_par_pin); קוד שגוי מוחק אותו.
@@ -74,7 +75,7 @@ function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה
   r.best=Math.max(r.best,+d.best||0);const f=d.first||x.first_at;if(f&&(!r.first||f<r.first))r.first=f;const l=d.last||x.updated_at;if(l&&(!r.last||l>r.last))r.last=l;
   for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)})});return r}
 function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/'+t.app]=t);
- let h=`<div class="head"><h1 style="margin:0 0 12px;font-size:22px">אזור הורים</h1><span><button class="b s" id="rf" type="button">רענון</button> <button class="b s" id="lo" type="button">יציאה</button></span></div>`;
+ let h=`<div class="head"><h1 style="margin:0 0 12px;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button> <button class="b s" id="rf" type="button">רענון</button> <button class="b s" id="lo" type="button">יציאה</button></span></div>`;
  KIDS.forEach(k=>{h+=`<div class="kid"><div class="kh"><img src="../kids/${k.id}.webp" alt=""><b>${k.n}</b></div>`;
   if(!k.apps.length)h+=`<div class="none">עוד אין תכנים</div>`;
   k.apps.forEach(a=>{const rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`;
@@ -104,7 +105,7 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
    h+=`<div class="rst"><button class="lnk" type="button" data-z="${k.id}|${a.id}|${a.n}|${k.n}">↺ איפוס ההתקדמות</button>${RZ?`<small>אופס לאחרונה ${fmtD(RZ.at)}</small>`:''}</div></div>`})
   h+=`<div class="rqs" id="rq_${k.id}"></div></div>`});
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
- V.innerHTML=h;loadReq();$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem('study_par_pin')}catch(e){}PIN='';pinView()};
+ V.innerHTML=h;loadReq();if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem('study_par_pin')}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
  V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const [k,a]=b.dataset.t.split('|'),id=k+'_'+a;b.textContent='...';
   done(b,rpc('study_parents_set_test',{p_pin:PIN,p_kid:k,p_app:a,p_d:$('d_'+id).value||null,p_note:''}))});
