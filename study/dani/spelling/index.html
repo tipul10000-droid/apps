@@ -87,12 +87,11 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 #sqimg.squish{animation:squish .5s}
 @keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
 @keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
-.sqg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;max-width:300px;margin-inline:auto}
-.sqg div{background:#faf7ff;border:1px solid #ece4fb;border-radius:14px;padding:4px;text-align:center;font-size:11px;color:var(--mut)}
-.sqg svg{width:100%;height:auto;display:block}.sqg span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:15px}.sqg .own{cursor:pointer}
-.sqtab{display:flex;border:1px solid #e4d9fb;border-radius:12px;overflow:hidden;margin:2px 0 8px}.sqtab button{flex:1;font:inherit;font-size:14px;padding:7px 4px;border:0;background:#fff;color:#6d28d9;cursor:pointer}.sqtab button+button{border-right:1px solid #e4d9fb}.sqtab button.on{background:#7c3aed;color:#fff;font-weight:700}
+.sqg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px;max-width:360px;margin-inline:auto}
+.sqg div{background:#faf7ff;border:1px solid #ece4fb;border-radius:10px;padding:2px;text-align:center;font-size:10.5px;color:var(--mut)}
+.sqg svg{width:100%;height:auto;display:block}.sqg span{display:none}.sqg .own{cursor:pointer}
 .sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
-.sqg .lock{background:#f3f4f6;border-style:dashed}.sqg .lock b{display:grid;place-items:center;aspect-ratio:1;font-size:26px;opacity:.6}
+.sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}.sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:#6d28d9;text-align:right;margin-top:4px}.sqg .sqhd{background:none;border:0;padding:0;text-align:right}
 .ib.gift{background:#fff1f7;border-color:#f9a8d4;color:#9d174d;font-weight:700;font-size:13px;white-space:nowrap;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;width:38px;text-align:center;direction:ltr;background:#db2777;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
 @keyframes gw{0%,88%,100%{transform:none}91%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}97%{transform:rotate(-3deg)}}
 .conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:20;pointer-events:none;animation:fall linear forwards}
@@ -147,7 +146,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 <button class="btn" id="go" type="button">יאללה, מתחילות! 🚀</button><button class="lk" id="rs" type="button">↺ להתחיל מההתחלה</button>
 </div></div>
 <div class="ov" id="lst"><div class="pn"><h2>מילים שטעיתי בהן</h2><div id="lstb" class="wl"></div><button class="btn" id="lstp" type="button">תרגול של המילים האלה ✏️</button><button class="btn soft" style="width:100%;margin-top:8px" id="lstx" type="button">סגירה</button></div></div>
-<div class="ov" id="sqcol"><div class="pn"><h2>💜 לומדים ואוספים סקווישי דיגיטלי</h2><div class="sqtab" id="sqtab"><button type="button" data-t="0">💜 הלהקה</button><button type="button" data-t="1">⭐ סופר סקווישים</button></div><p id="sqtx" style="margin:0 0 6px;height:4.4em;overflow:hidden;line-height:1.45"></p><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>💜 לומדים ואוספים סקווישי דיגיטלי</h2><p id="sqtx" style="margin:0 0 6px;height:4.4em;overflow:hidden;line-height:1.45"></p><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
 <div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:#6d28d9;font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px;line-height:1.45"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">לאוסף! 💜</button></div></div>
 <div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
 
@@ -363,13 +362,12 @@ function squishy(){const L=baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id
   $('sqov').classList.add('on');SND.pop();upd()}
 $('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
 $('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click()};
-let SQT=0;function sqRender(){const sup=SQT===1,L=sup?SQS2:SQS,ev=sqEvery(),left=ev-(S.cc||0);
-  $('sqtab').querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.t===SQT));
-  $('sqtx').innerHTML=sup?(baseDone()?'רמה למתקדמות! על כל <b>12 תשובות נכונות</b> זוכים בסופר סקווישי נוצץ ⭐':'הסופר סקווישים נפתחים אחרי שאוספים את כל 6 הסקווישים של הלהקה 🔒'):'על כל <b>6 תשובות נכונות</b> זוכים בסקווישי: להקת קיי-פופ של מאכלים! לחצי על סקווישי כדי להכיר אותו.';
-  $('sqct').textContent=`אספת ${L.filter(x=>SQ.includes(x.id)).length} מתוך ${L.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${baseDone()?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
-  $('sqg').innerHTML=L.map(s=>SQ.includes(s.id)?`<div class="own${s.sup?' sup':''}" data-id="${s.id}">${sqSvg(s)}<span>${esc(s.n)}</span></div>`:`<div class="lock"><b>${sup&&!baseDone()?'🔒':'❓'}</b><span>???</span></div>`).join('')}
-$('sqtab').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;SQT=+b.dataset.t;SND.click();sqRender()};
-$('sqb').onclick=()=>{SQT=baseDone()?1:0;sqRender();$('sqcol').classList.add('on')};
+function sqRender(){const ev=sqEvery(),left=ev-(S.cc||0),bd=baseDone();
+  $('sqtx').innerHTML=bd?'כל הלהקה אצלך! עכשיו <b>סופר סקווישים</b>: כל אחד על <b>12 תשובות נכונות</b> ⭐':'על כל <b>6 תשובות נכונות</b> מצטרף סקווישי ללהקה. אחרי 6 נפתחים 6 סופר סקווישים ⭐ לחצי על סקווישי כדי להכיר אותו.';
+  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${bd?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
+  const tile=s=>SQ.includes(s.id)?`<div class="own${s.sup?' sup':''}" data-id="${s.id}">${sqSvg(s)}<span>${esc(s.n)}</span></div>`:`<div class="lock${s.sup?' sup':''}">${sqSvg({svg:s.svg.split(aura).join('')})}<span>???</span></div>`;
+  $('sqg').innerHTML='<div class="sqhd">💜 הלהקה</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')}
+$('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
 $('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 💜';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
