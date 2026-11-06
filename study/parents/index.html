@@ -26,6 +26,7 @@
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .st{background:#f6f8fb;border-radius:10px;padding:8px 10px}.st small{display:block;color:var(--mut);font-size:12px}.st b{font-size:17px}
 .qzc{margin-top:16px;padding-top:12px;border-top:1px solid var(--bd,#e3e8ef)}.qzc h3{margin:0 0 6px}.qzc .qs{height:64px;box-sizing:border-box;overflow:hidden;line-height:1.35;font-size:14px;border-radius:10px;padding:6px 8px;background:#f6f8fc;transition:background .4s}.qzc .qs.fl{background:#e9f7ef}.qzc .qs small{color:var(--mut)}.qzc .pd{color:#c2410c;font-size:13px}.qzc .qb{display:flex;gap:8px;margin-top:8px}.qzc .qb .b{flex:1 1 0;margin:0;padding:10px 6px;white-space:nowrap}.qzc .qb .b:not(.soft){background:var(--ac);color:#fff}.qzc .qb .soft{background:#fff;color:var(--ac);border:1.5px solid var(--ac)}
+.cnt{border:1.5px dashed #f0a35e;background:#fff7ed;border-radius:12px;padding:10px;margin:6px 0 10px;font-size:14px}.cnt .cl{line-height:1.45}.cnt .cb{display:flex;gap:8px;margin-top:8px}.cnt .cb .b{flex:1 1 0;margin:0;padding:11px 6px;white-space:nowrap;text-align:center;text-decoration:none}.cnt .cb button.b{background:#16a34a;color:#fff;font-size:16px}.cnt .cb .soft{background:#fff;color:var(--ac);border:1.5px solid var(--ac)}.cnt .cm{height:18px;font-size:13px;color:#c2410c;margin-top:4px}
 /* ציר הלימוד (אורן 6.11.2026): מימין לשמאל, מהיום הראשון ועד יום המבחן */
 .tl{margin-top:12px;border:1px solid #e3e8ef;border-radius:14px;padding:10px 10px 8px;background:#fafbfd}
 .tl .tt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px;margin-bottom:6px}.tl .tt b{color:var(--ac)}.tl .tt small{color:var(--mut);font-size:12px;white-space:nowrap}
@@ -63,6 +64,7 @@ html,body,*{touch-action:manipulation}
 </style></head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
 <div id="v"></div>
+<script src="../content.js?v=1"></script>
 <script src="../push.js?v=2"></script>
 <script>
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
@@ -130,7 +132,7 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
  let h=`<div class="stk"><a class="back" href="../">→ כל הילדים</a><div class="head"><h1 style="margin:0;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button><button class="b s" id="rf" type="button">רענון</button><button class="b s" id="lo" type="button">יציאה</button></span></div><div class="tabs" id="tabs">${KIDS.map(k=>`<button type="button" data-k="${k.id}"${k.id===TAB?' class="on"':''}><img src="../kids/${k.id}.webp" alt="">${k.n}<i class="dot" id="dot_${k.id}"></i></button>`).join('')}</div></div>`;
  KIDS.forEach(k=>{h+=`<div class="kid${k.id===TAB?'':' off'}" id="kd_${k.id}">`;
   if(!k.apps.length)h+=`<div class="none">עוד אין תכנים</div>`;
-  k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`+evBox(k,a,t,RS,id0(k,a));
+  k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`+(window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<div class="cnt" id="cr_${id}" data-c="${k.id}/${a.id}" data-n="${k.n}"></div>`:'')+evBox(k,a,t,RS,id0(k,a));
    if(!rows.length)h+=`<div class="none">עוד לא התחיל${k.id==='evyatar'?'':'ה'} (או שעוד לא נכנס${k.id==='evyatar'?'':'ה'} מאז שהוספנו את המעקב)</div>`;
    else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null;
     h+=`<div class="big"><b dir="ltr" style="unicode-bidi:isolate">${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>
@@ -151,7 +153,7 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
    h+=`<div class="rst"><button class="lnk" type="button" data-z="${k.id}|${a.id}|${a.n}|${k.n}">↺ איפוס ההתקדמות</button>${RZ?`<small>אופס לאחרונה ${fmtD(RZ.at)}</small>`:''}</div></div>`})
   h+=`<div class="qzc" id="qz_${k.id}"></div><div class="rqs" id="rq_${k.id}"></div></div>`});
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
- V.innerHTML=h;SAVED='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);const d=$('dot_'+k.id);if(d)d.classList.toggle('on',NG[k.id])});loadReq();loadQz();
+ V.innerHTML=h;SAVED='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);const d=$('dot_'+k.id);if(d)d.classList.toggle('on',NG[k.id])});loadReq();loadQz();drawCnt();StudyContent.refresh(drawCnt);
  V.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{TAB=b.dataset.k;try{localStorage.setItem('study_par_tab',TAB)}catch(e){}V.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));KIDS.forEach(k=>$('kd_'+k.id).classList.toggle('off',k.id!==TAB));scrollTo(0,0)});
  V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':'✏️ עריכה'});if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem('study_par_pin')}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
@@ -165,6 +167,12 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
   done(b,rpc('study_parents_reset',{p_pin:PIN,p_kid:k,p_app:a}))});
  V.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{if(!confirm('למחוק את הציון? אפשר יהיה להזין אותו מחדש.'))return;
   done(b,rpc('study_parents_result',{p_pin:PIN,p_kid:null,p_app:null,p_d:null,p_note:null,p_score:null,p_hide_id:+b.dataset.h}))})}
+// תוכן בבדיקה (אורן 6.11.2026): תוכן חדש פתוח קודם רק כאן. "👀 לפתוח ולבדוק" נכנס עם ?review=1, ו"✓ התוכן אושר" פותח אותו לילד עם סרט "חדש!".
+function drawCnt(){V.querySelectorAll('.cnt').forEach(b=>{const id=b.dataset.c,kn=b.dataset.n,ok=StudyContent.ok(id),boy=id.startsWith('evyatar');
+ b.innerHTML=ok?`<div class="cl">✅ התוכן אושר. ${kn} ${boy?'רואה':'רואה'} אותו עכשיו עם סרט "חדש!" ✨</div>`
+  :`<div class="cl">🧪 <b>בבדיקה:</b> ${kn} עוד לא ${boy?'רואה':'רואה'} את זה (${boy?'אצלו':'אצלה'} מופיע "בקרוב"). אפשר לבדוק ואז לאשר.</div><div class="cb"><a class="b s soft" href="../${id}/?review=1">👀 לפתוח ולבדוק</a><button class="b s" type="button" data-ca="${id}">✓ התוכן אושר</button></div><div class="cm" id="cm_${id.replace('/','_')}"></div>`});
+ V.querySelectorAll('[data-ca]').forEach(x=>x.onclick=()=>{const id=x.dataset.ca,m=$('cm_'+id.replace('/','_'));if(!confirm('לאשר את התוכן? מעכשיו הילד יראה אותו.'))return;m.textContent='שומר...';
+  rpc('study_parents_content_approve',{p_pin:PIN,p_id:id}).then(j=>{if(j&&j.ok)StudyContent.refresh(drawCnt);else m.textContent=j&&j.err==='bad'?'צריך להיכנס שוב עם הקוד':'לא הצלחנו לשמור. נסו שוב'}).catch(()=>{m.textContent='האישור עוד לא מחובר לשרת. אני מחכה לאישור שלך להוסיף אותו.'})})}
 // חידון כניסה: שחרור או נעילה ידנית (אורן 6.11.2026). החלטה רכה מעל החוק האוטומטי (4 שעות / 20 דקות לימוד).
 // המסך הראשי במכשיר של הילד מדווח מצב (study_quiz_sync) ומבצע את הפקודה האחרונה. הכפתורים קבועים, רק שורת המצב מתחלפת.
 let QZF='';
