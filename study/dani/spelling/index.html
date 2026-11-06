@@ -90,7 +90,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 @keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
 .donebox{text-align:center}.donebox .he{font-size:26px}
 body.skb-on #chk{display:none}body.skb-on .btns{justify-content:center}body.skb-on #idk{flex:none;padding:8px 18px;font-size:15px}
-@media(max-height:760px){.card{padding:12px}.opt{padding:9px;margin-top:6px}.en{font-size:28px}.mode{margin-bottom:6px}.ask{margin:4px 0 8px}.chips .chip{padding:2px 8px;font-size:13px}.pb{margin:6px 0}.fb{margin-top:8px}body.skb-on .stage,body.skb-on .foot{display:none}body.skb-on .prog{padding:6px 10px}body.skb-on .chips{display:none}body.skb-on .pb{margin:6px 0 2px}}
+@media(max-height:760px){.card.ans .mode{display:none}.card{padding:12px}.opt{padding:9px;margin-top:6px}.en{font-size:28px}.mode{margin-bottom:6px}.ask{margin:4px 0 8px}.chips .chip{padding:2px 8px;font-size:13px}.pb{margin:6px 0}.fb{margin-top:8px}body.skb-on .stage,body.skb-on .foot{display:none}body.skb-on .prog{padding:6px 10px}body.skb-on .chips{display:none}body.skb-on .pb{margin:6px 0 2px}}
 @media(prefers-reduced-motion:reduce){#mon,#sqimg,.stick,#lid1,#lid2{animation:none!important}}
 </style></head><body><main>
 <div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="sqb" type="button">🧸 <span id="sqn">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
@@ -126,10 +126,9 @@ body.skb-on #chk{display:none}body.skb-on .btns{justify-content:center}body.skb-
 <p><b>המטרה:</b> לדעת לכתוב באנגלית, באיות מדויק, את כל 36 המילים של ההכתבה.</p>
 <ul>
 <li>אני מראה לך מילה בעברית, ואת כותבת אותה באנגלית.</li>
-<li>כתבת נכון כבר בפעם הראשונה? מעולה, את יודעת אותה ✅</li>
+<li>כל מילה צריך לכתוב נכון <b>פעמיים</b> (בפעמים נפרדות), ואז היא שלך ✅</li>
 <li>טעית רק בכמה אותיות? אראה לך בדיוק איפה, והמילה תחזור בהמשך.</li>
 <li>לא ידעת מה המילה? נלמד אותה קודם: פעמיים "מה זה אומר", ואז שוב הכתבה.</li>
-<li>מילה שטעית בה צריך לכתוב נכון <b>פעמיים</b>, ואז היא שלך.</li>
 </ul>
 <p>כל תשובה נכונה נותנת נקודות ⭐, תשובות ברצף מדליקות 🔥, ומדי פעם קופץ סקווישי לאוסף 🧸</p>
 <button class="btn" id="go" type="button">יאללה, מתחילות! 🚀</button>
@@ -157,9 +156,10 @@ const N=WORDS.length,HE={};WORDS.forEach(w=>HE[w[0]]=w[1]);
 const $=id=>document.getElementById(id);
 const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 let S=LS.get('dani_sp');
-function fresh(){const w={};WORDS.forEach(x=>w[x[0]]={s:'new',need:0,m:0,due:0,err:0});return{v:1,T:0,pts:0,st:{c:0,b:0},att:0,okc:0,first:0,w,cc:0,intro:0,started:new Date().toISOString()}}
+function fresh(){const w={};WORDS.forEach(x=>w[x[0]]={s:'new',need:0,m:0,due:0,err:0});return{v:2,T:0,pts:0,st:{c:0,b:0},att:0,okc:0,first:0,w,cc:0,intro:0,started:new Date().toISOString()}}
 if(!S||!S.w)S=fresh();WORDS.forEach(x=>{if(!S.w[x[0]])S.w[x[0]]={s:'new',need:0,m:0,due:0,err:0}});
-const save=()=>LS.set('dani_sp',S);
+if((S.v||1)<2){for(const k in S.w){const x=S.w[k];if(x.s==='done'&&!x.err){x.s='dict';x.need=1;x.due=S.T||0}}S.v=2}// מ-6.11.2026: כל מילה נכתבת נכון פעמיים
+const save=()=>LS.set('dani_sp',S);save();
 let SQ=LS.get('dani_sp_sq')||[];let MUTE=!!LS.get('dani_sp_mute');
 
 // ---------- צלילים (WebAudio, בלי קבצים) ----------
@@ -231,7 +231,7 @@ function next(){
   if(!e&&fresh.length&&act.length<8)e=pick(fresh.filter(x=>x!==LAST).length?fresh.filter(x=>x!==LAST):fresh);
   if(!e){const r=act.filter(x=>x!==LAST).sort((a,b)=>S.w[a].due-S.w[b].due);e=r[0]||(fresh.length?pick(fresh):act[0])}
   CUR={e,mode:S.w[e].s==='learn'?'mean':'dict'};render()}
-function render(){ANS=false;const e=CUR.e,c=$('card');StudyKB.hide();
+function render(){ANS=false;const e=CUR.e,c=$('card');c.classList.remove('ans');StudyKB.hide();
   if(CUR.mode==='dict'){
     c.innerHTML=`<span class="mode${CUR.prac?' prac':''}">${CUR.prac?'🔁 תרגול':'✏️ הכתבה'}</span><div class="he">${esc(HE[e])}</div><div class="ask">איך כותבים את זה באנגלית?</div>
     <input id="ans" type="text" lang="en" dir="ltr" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="type here..." readonly inputmode="none">
@@ -252,12 +252,12 @@ function showNext(){ANS=true;const n=$('nx');n.style.display='block';setTimeout(
 function streak(ok){if(ok){S.st.c++;if(S.st.c>S.st.b)S.st.b=S.st.c;if([3,5,10,15,20,30,50].includes(S.st.c)){popTxt('🔥 רצף של '+S.st.c+'!');mon('dance')}}else S.st.c=0}
 function addPts(p){if(p>0){S.pts+=p;popTxt('+'+p+' ⭐')}}
 function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=6||(S.cc>=3&&Math.random()<.18)){S.cc=0;setTimeout(squishy,900)}}
-function check(raw){if(ANS)return;StudyKB.hide();{const bt=document.querySelector('#card .btns');if(bt)bt.style.display='none'}const e=CUR.e,w=S.w[e],r=classify(raw,e),fb=$('fb');$('chk').disabled=$('idk').disabled=true;$('ans').readOnly=true;
+function check(raw){if(ANS)return;StudyKB.hide();{const bt=document.querySelector('#card .btns');if(bt)bt.style.display='none';$('card').classList.add('ans')}const e=CUR.e,w=S.w[e],r=classify(raw,e),fb=$('fb');$('chk').disabled=$('idk').disabled=true;$('ans').readOnly=true;
   if(CUR.prac){ if(r.k==='ok'){SND.ok();mon('hop',pick(OK));addPts(2);fb.innerHTML=`<div class="t ok">נכון! 🎉</div>`;streak(true);maybeSquishy()}
     else{SND.mid();mon('sad',pick(MID));fb.innerHTML=diffHtml(raw,e,r);streak(false);speak(e)} save();upd();return showNext()}
   S.att++;S.T++;
   if(r.k==='ok'){S.okc++;SND.ok();streak(true);
-    if(w.s==='new'){w.s='done';S.first++;addPts(15);mon('dance','ידעת מהפעם הראשונה! '+pick(['😍','🤩','💜']));fb.innerHTML=`<div class="t ok">מושלם! ✅ את יודעת את המילה</div>`;confetti(18)}
+    if(w.s==='new'){w.s='dict';w.need=1;w.due=S.T+4;S.first++;addPts(15);mon('dance','ידעת מהפעם הראשונה! '+pick(['😍','🤩','💜']));fb.innerHTML=`<div class="t ok">מושלם! ✅ עוד פעם אחת בהמשך, והמילה שלך</div>`;confetti(18)}
     else{w.need=Math.max(0,(w.need||1)-1);addPts(10);
       if(w.need<=0){w.s='done';mon('dance','המילה '+esc(e)+' שלך! 🏆');fb.innerHTML=`<div class="t ok">כתבת נכון פעמיים! ✅ המילה שלך</div>`;confetti(26)}
       else{w.due=S.T+4;mon('hop',pick(OK));fb.innerHTML=`<div class="t ok">נכון! 🎉</div><div class="ask">עוד פעם אחת נכון והיא שלך</div>`}}
@@ -315,7 +315,7 @@ $('rsy').onclick=()=>{const keep={started:S.started,intro:1};S=fresh();S.started
 
 if(window.StudyTrack){StudyTrack.init('dani','spelling',['dani_sp','dani_sp_sq']);StudyTrack.test(j=>{const d=Math.ceil((new Date(j.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);if(d>=0){const t=$('tst');t.style.display='';t.textContent='📅 '+(j.note||'הכתבה')+(d===0?' היום!':d===1?' מחר!':' בעוד '+d+' ימים')}})}
 upd();
-const d0=done();mon('hop',d0?`היי דני! כבר יודעת ${d0} מילים, ממשיכות? 💜`:'היי דני! אני מוצ׳י, ואני פה לעזור לך עם ההכתבה 💜');
+const d0=done();mon('hop',d0?`היי דני! כבר ענית נכון על ${d0===1?'מילה אחת':d0+' מילים'}. ממשיכות? 💜`:'היי דני! אני מוצ׳י, ואני פה לעזור לך עם ההכתבה 💜');
 if(!S.intro)$('intro').classList.add('on');
 next();
 </script>
