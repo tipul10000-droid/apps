@@ -87,10 +87,12 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 #sqimg.squish{animation:squish .5s}
 @keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
 @keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
-.sqg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.sqg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
 .sqg div{background:#faf7ff;border:1px solid #ece4fb;border-radius:14px;padding:4px;text-align:center;font-size:11px;color:var(--mut)}
 .sqg svg{width:100%;height:auto;display:block}
-.sqg .lock svg{filter:grayscale(1) brightness(1.6);opacity:.35}
+.sqg .lock{background:#f3f4f6;border-style:dashed}.sqg .lock b{display:grid;place-items:center;aspect-ratio:1;font-size:26px;opacity:.6}
+.ib.gift{background:#fff1f7;border-color:#f9a8d4;color:#9d174d;font-weight:700;font-size:13px;white-space:nowrap;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;width:38px;text-align:center;direction:ltr;background:#db2777;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
+@keyframes gw{0%,88%,100%{transform:none}91%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}97%{transform:rotate(-3deg)}}
 .conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:20;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:26px;font-weight:900;color:#6d28d9;z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap}
@@ -100,7 +102,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 @media(max-height:760px){.chips{display:none}.prog{padding:6px 10px}.pb{margin:6px 0 2px!important}.stage{margin:5px 0 4px;align-items:center}#mon{width:36px;height:38px}.bub{font-size:14px;padding:5px 10px;margin-bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bub:before{display:none}.he{font-size:25px}.big{font-size:23px}.fb .t{font-size:16px}.say{margin-top:2px}#nx{padding:10px}.card{padding:10px 12px}.opt{padding:7px;margin-top:5px}.en{font-size:26px}.mode{margin-bottom:4px}.card>.ask{display:none}.card>.fb{margin:4px 0}.stage{display:none}.dif{margin:6px auto 2px;gap:3px 10px}.hints{font-size:13px;margin:4px 0 0}.hints div{margin:1px 0}.fb .ask{font-size:13px;margin:2px 0}}
 @media(prefers-reduced-motion:reduce){#mon,#sqimg,.stick,#lid1,#lid2{animation:none!important}}
 </style></head><body><main>
-<div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="bl" type="button" aria-label="מילים שטעיתי בהן">📋</button><button class="ib" id="hw" type="button" aria-label="איך זה עובד">❓</button><button class="ib" id="sqb" type="button">🧸 <span id="sqn">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
+<div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="bl" type="button" aria-label="מילים שטעיתי בהן">📋</button><button class="ib" id="hw" type="button" aria-label="איך זה עובד">❓</button><button class="ib gift" id="sqb" type="button">🎁 סקווישי מתנה! <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
 <div class="prog">
   <div class="row"><span><b id="dn">0</b> מתוך <span id="tt">36</span> מילים</span><span class="chips"><span class="chip test" id="tst" style="display:none"></span><span class="chip" id="pts">⭐ 0</span><span class="chip" id="stc">🔥 0</span></span></div>
   <div class="pb"><i id="pbi"></i></div>
@@ -135,11 +137,11 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 <li>טעית רק בכמה אותיות? אראה לך בדיוק איפה, והמילה תחזור בהמשך.</li>
 <li>לא ידעת מה המילה? נלמד אותה קודם: פעמיים "מה זה אומר", ואז שוב הכתבה.</li>
 </ul>
-<p>כל תשובה נכונה נותנת נקודות ⭐, תשובות ברצף מדליקות 🔥, ומדי פעם קופץ סקווישי לאוסף 🧸</p>
+<p>כל תשובה נכונה נותנת נקודות ⭐, תשובות ברצף מדליקות 🔥, ועל כל 6 תשובות נכונות מקבלים סקווישי מתנה 🎁</p>
 <button class="btn" id="go" type="button">יאללה, מתחילות! 🚀</button><button class="lk" id="rs" type="button">↺ להתחיל מההתחלה</button>
 </div></div>
 <div class="ov" id="lst"><div class="pn"><h2>מילים שטעיתי בהן</h2><div id="lstb" class="wl"></div><button class="btn" id="lstp" type="button">תרגול של המילים האלה ✏️</button><button class="btn soft" style="width:100%;margin-top:8px" id="lstx" type="button">סגירה</button></div></div>
-<div class="ov" id="sqcol"><div class="pn"><h2>🧸 אוסף הסקווישים שלי</h2><p id="sqct" style="color:var(--mut);margin-top:0"></p><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>🎁 סקווישי מתנה!</h2><p style="margin:0 0 6px">על כל <b>6 תשובות נכונות</b> מקבלים סקווישי מתנה. אספי את כולם! מה מסתתר מאחורי ה-❓? רק כשתזכי תגלי 😉</p><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
 <div class="ov" id="sqov"><div class="pn"><div style="font-size:15px;color:#6d28d9;font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p style="margin:0;color:var(--mut)">לחצי עליו כדי למעוך 😆</p><button class="btn" id="sqok" type="button">לאוסף! 💜</button></div></div>
 <div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
 
@@ -192,6 +194,15 @@ const SQS=[
 {id:'dump',n:'דאמפלינג',svg:`<path d="M14 66c0-20 16-34 36-34s36 14 36 34c-8 10-64 10-72 0z" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/><path d="M30 38q4 8 8-2q4 8 8-4q4 8 8 0q4 8 8-2q4 8 8 4" stroke="#ca8a04" stroke-width="1.6" fill="none"/>${face(50,58)}`},
 {id:'donut',n:'דונאטי',svg:`<circle cx="50" cy="54" r="34" fill="#f5c78e" stroke="#b45309" stroke-width="2"/><path d="M18 50c2-18 18-30 32-30s30 12 32 30c-6 8-10 0-16 6s-10-2-16 2-12-4-18 0-10-6-14-8z" fill="#f9a8d4" stroke="#db2777" stroke-width="1.5"/><circle cx="50" cy="54" r="8" fill="#fff" stroke="#b45309" stroke-width="1.5"/>${[[30,36,'#60a5fa'],[66,34,'#facc15'],[42,28,'#34d399'],[72,46,'#a78bfa']].map(p=>`<rect x="${p[0]}" y="${p[1]}" width="6" height="2.4" rx="1.2" fill="${p[2]}"/>`).join('')}${face(50,72,.8)}`},
 {id:'star',n:'כוכבית',svg:`<path d="M50 10l11 24 26 3-20 18 6 26-23-13-23 13 6-26-20-18 26-3z" fill="#fde047" stroke="#ca8a04" stroke-width="2" stroke-linejoin="round"/>${face(50,52,.85)}`},
+/* מאכלים (אורן 6.11.2026) */
+{id:'icecream',n:'גלידית',svg:`<path d="M34 54l16 38 16-38z" fill="#fcd34d" stroke="#b45309" stroke-width="2"/><path d="M38 60l20 10M42 70l14 8M58 60l-18 12" stroke="#d97706" stroke-width="1.4"/><circle cx="50" cy="40" r="22" fill="#fbcfe8" stroke="#db2777" stroke-width="2"/><circle cx="50" cy="17" r="5" fill="#ef4444"/>${face(50,42,.85)}`},
+{id:'pizza',n:'פיצי',svg:`<path d="M50 90L14 22q36-14 72 0z" fill="#fde68a" stroke="#d97706" stroke-width="2"/><path d="M14 22q36-14 72 0l-4 8q-32-12-64 0z" fill="#f59e0b"/><circle cx="36" cy="40" r="4.5" fill="#ef4444"/><circle cx="62" cy="38" r="4.5" fill="#ef4444"/><circle cx="50" cy="66" r="4" fill="#ef4444"/>${face(50,50,.8)}`},
+{id:'sushi',n:'סושיקו',svg:`<rect x="16" y="46" width="68" height="34" rx="14" fill="#fff" stroke="#94a3b8" stroke-width="2"/><path d="M14 46c4-16 18-22 36-22s32 6 36 22c-12 6-60 6-72 0z" fill="#fb923c" stroke="#ea580c" stroke-width="2"/><path d="M28 34l6 8M44 30l4 9M60 30l-2 9M72 34l-6 8" stroke="#fed7aa" stroke-width="3" stroke-linecap="round"/><rect x="44" y="46" width="12" height="34" fill="#1f2937"/>${face(50,62,.8)}`},
+{id:'cupcake',n:'קאפי',svg:`<path d="M24 54h52l-8 36H32z" fill="#93c5fd" stroke="#2563eb" stroke-width="2"/><path d="M34 56l2 32M50 56v32M66 56l-2 32" stroke="#60a5fa" stroke-width="1.5"/><path d="M20 56c-4-14 8-20 14-18 0-12 12-18 20-12 8-8 22-2 20 10 8-2 14 10 6 20z" fill="#f9a8d4" stroke="#db2777" stroke-width="2"/><circle cx="50" cy="16" r="5" fill="#ef4444"/>${face(50,44,.8)}`},
+{id:'onigiri',n:'אוניגירי',svg:`<path d="M50 12C30 12 12 62 16 76c3 10 13 12 34 12s31-2 34-12c4-14-14-64-34-64z" fill="#fff" stroke="#94a3b8" stroke-width="2"/><rect x="34" y="64" width="32" height="24" rx="3" fill="#1f2937"/>${face(50,48)}`},
+{id:'taco',n:'טאקוטי',svg:`<path d="M10 74c0-26 18-44 40-44s40 18 40 44z" fill="#fcd34d" stroke="#d97706" stroke-width="2"/><path d="M18 52c6-4 10 2 16-2s10 2 16-2 10 2 16-2 10 2 16 2" stroke="#22c55e" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="34" cy="48" r="3.5" fill="#ef4444"/><circle cx="64" cy="46" r="3.5" fill="#ef4444"/>${face(50,62,.85)}`},
+{id:'pancake',n:'פנקייקי',svg:`<ellipse cx="50" cy="78" rx="36" ry="9" fill="#fbbf24" stroke="#b45309" stroke-width="2"/><ellipse cx="50" cy="66" rx="36" ry="9" fill="#fcd34d" stroke="#b45309" stroke-width="2"/><ellipse cx="50" cy="54" rx="36" ry="9" fill="#fde68a" stroke="#b45309" stroke-width="2"/><path d="M26 50c8 6 40 6 48 0-4 10-2 16-8 18-2-6-6-8-8-2-6-4-20-4-24-6z" fill="#92400e" opacity=".75"/><rect x="44" y="40" width="12" height="9" rx="2" fill="#fef9c3" stroke="#ca8a04"/>${face(50,64,.8)}`},
+{id:'melon',n:'אבטיחי',svg:`<path d="M10 40h80c0 26-18 44-40 44S10 66 10 40z" fill="#fb7185" stroke="#16a34a" stroke-width="6"/>${[[30,52],[50,58],[70,52],[40,68],[60,68]].map(p=>`<ellipse cx="${p[0]}" cy="${p[1]}" rx="2" ry="3" fill="#1f2937"/>`).join('')}${face(50,48,.8)}`},
 {id:'mochi',n:'מוצ׳י לב',svg:`<path d="M50 88C20 68 12 50 16 36c4-14 24-18 34-4 10-14 30-10 34 4 4 14-4 32-34 52z" fill="#e9d5ff" stroke="#9333ea" stroke-width="2"/>${face(50,52)}`}];
 const sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
 
@@ -256,7 +267,8 @@ document.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ANS&&$('nx')&&$('n
 function showNext(){ANS=true;$('card').classList.add('ans');StudyKB.lock(true);const c=$('chk');if(c&&CUR.mode==='dict'){c.textContent='הבא ←';c.disabled=false;$('hint').disabled=$('idk').disabled=true}const n=$('nx');if(n){n.style.visibility='visible'}}
 function streak(ok){if(ok){S.st.c++;if(S.st.c>S.st.b)S.st.b=S.st.c;if([3,5,10,15,20,30,50].includes(S.st.c)){popTxt('🔥 רצף של '+S.st.c+'!');mon('dance')}}else S.st.c=0}
 function addPts(p){if(p>0){S.pts+=p;popTxt('+'+p+' ⭐')}}
-function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=6||(S.cc>=3&&Math.random()<.18)){S.cc=0;setTimeout(squishy,900)}}
+const SQ_EVERY=6;// כל 6 תשובות נכונות = סקווישי מתנה
+function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=SQ_EVERY){S.cc=0;setTimeout(squishy,900)}upd()}
 // רמז (אורן 6.11.2026): כל לחיצה חושפת עוד אות מההתחלה. נחשפה כל המילה = טעות שלמדו ממנה, עוברים לבאה. נכון עם רמז לא נחשב כתיבה נכונה.
 function hint(){if(ANS)return;const e=CUR.e,inp=$('ans');let h=(CUR.h||0)+1;while(h<e.length&&e[h-1]===' ')h++;CUR.h=h;SND.click();
   if(h>=e.length){inp.value=e;return revealed()}
@@ -311,12 +323,12 @@ function squishy(){let s=SQS.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s
   $('sqov').classList.add('on');SND.pop();upd()}
 $('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');SND.pop()};
 $('sqok').onclick=()=>{$('sqov').classList.remove('on');SND.click()};
-$('sqb').onclick=()=>{$('sqct').textContent=`אספת ${SQ.length} מתוך ${SQS.length}`;$('sqg').innerHTML=SQS.map(s=>`<div class="${SQ.includes(s.id)?'':'lock'}">${sqSvg(s)}${SQ.includes(s.id)?esc(s.n):'?'}</div>`).join('');$('sqcol').classList.add('on')};
+$('sqb').onclick=()=>{const left=SQ_EVERY-(S.cc||0);$('sqct').textContent=`אספת ${SQ.length} מתוך ${SQS.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} למתנה הבאה`;$('sqpb').style.width=((S.cc||0)/SQ_EVERY*100)+'%';$('sqg').innerHTML=SQS.map(s=>SQ.includes(s.id)?`<div>${sqSvg(s)}${esc(s.n)}</div>`:`<div class="lock"><b>❓</b></div>`).join('');$('sqcol').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
 // ---------- ממשק ----------
 function upd(){const d=done();$('dn').textContent=d;$('tt').textContent=N;$('pbi').style.width=(d/N*100)+'%';
-  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('sqn').textContent=SQ.length;
+  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('sqn').textContent=SQ.length+'/'+SQS.length;
   const hard=WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0).sort((a,b)=>S.w[b].err-S.w[a].err).slice(0,8).map(e=>({e,n:S.w[e].err}));
   if(window.StudyTrack)StudyTrack.report({total:N,done:d,learning:WORDS.filter(w=>{const s=S.w[w[0]].s;return s==='learn'||s==='dict'}).length,att:S.att,ok:S.okc,first:S.first,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:SQ.length,hard,started:S.started})}
 $('mute').onclick=()=>{MUTE=!MUTE;LS.set('dani_sp_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.click()};$('mute').textContent=MUTE?'🔇':'🔊';
