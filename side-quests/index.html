@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.2";window.SQ_BUILD_AT="6.11.2026 17:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.3";window.SQ_BUILD_AT="6.11.2026 17:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2260,6 +2260,8 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     const p2=$("pg2"),p3=$("pg3"),pD=$("pgD");
     for(const p of [p2,p3,pD]){p.style.transform="";p.style.transition="";}
     p2.hidden=true;p3.hidden=n.lvl<3;pD.hidden=!n.dash;$("pgShade").style.opacity="0";
+    // 11.3: a page on top freezes the screen under it, so a swipe on a short page doesn't scroll the hidden list
+    if(n.lvl>=3||n.dash)lockScroll("pg");else unlockScroll("pg");
     if(n.lvl>=2&&!(n.dash&&wasD))renderNav();
     if(n.dash){if(n.dash!==dashPg.id)renderDashPg();}else if(dashPg.id){dashPg={id:null,frame:false};pD.replaceChildren();}
     if(n.lvl===3&&(was!==3||(anim&&!wasD)))p3.scrollTop=0;
@@ -3276,9 +3278,10 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   }
   function setNotify(fields){notify={...notify,...fields};if("abroad" in fields||"abroad_until" in fields)setTimeout(()=>refreshMode(),0);if(db&&canWrite)db.collection("settings").doc("notify").update({...fields,updated_at:new Date().toISOString()}).catch(()=>toast("השמירה נכשלה"));renderSettings();}
   function renderSetDot(){const d=$("setDot");if(d)d.hidden=pushOn||!pushSupported()||!standalone()||Notification.permission==="denied";}
-  let lockY=null;
-  function lockScroll(){if(lockY!==null)return;lockY=window.scrollY;document.body.style.top=-lockY+"px";document.documentElement.classList.add("sqlock");}
-  function unlockScroll(){if(lockY===null)return;const y=lockY;lockY=null;document.documentElement.classList.remove("sqlock");document.body.style.top="";window.scrollTo(0,y);}
+  // 11.3: one lock, many holders ("m" = a sheet, "pg" = a project/dashboard page on top), so closing a sheet over a page keeps the page lock
+  let lockY=null;const lockBy=new Set();
+  function lockScroll(k){lockBy.add(k||"m");if(lockY!==null)return;lockY=window.scrollY;document.body.style.top=-lockY+"px";document.documentElement.classList.add("sqlock");}
+  function unlockScroll(k){lockBy.delete(k||"m");if(lockBy.size||lockY===null)return;const y=lockY;lockY=null;document.documentElement.classList.remove("sqlock");document.body.style.top="";window.scrollTo(0,y);}
   function showHere(sample){
     if(sample){if(!loc.on){loc.on=true;saveLoc();}locHook=()=>{updLocBtn();renderAll();if(document.getElementById("locM"))fillHere();};sampleLoc(true);updLocBtn();}
     const body=h("div",{class:"lbody",id:"locBody"});
