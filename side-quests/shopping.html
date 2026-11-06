@@ -163,6 +163,7 @@ table.cmp td.pk{background:var(--pick-soft)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.offer .ph{width:72px;height:86px}.facts div{padding:6px 8px;font-size:13px}}
 </style>
+<link rel="stylesheet" href="dash-back.css?v=1">
 </head>
 <body>
 <header class="hero"><div class="in" id="hero"></div></header>
@@ -198,7 +199,7 @@ function ytId(u){const m=String(u||"").match(/(?:v=|youtu\.be\/|shorts\/)([\w-]{
 
 // ---------- hero ----------
 function heroHome(L){const open=L.filter(isOpen),dec=open.filter(x=>x.status==="deciding"),qs=open.reduce((s,x)=>s+(x.questions||[]).filter(q=>!q.answer&&!q.superseded).length,0);
-  return `<div class="top"><a class="back" href="./">→ Side Quests</a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
   <h1>🛍️ קניות ורכישות</h1><p class="sub">כל דבר שאני שוקל לקנות: אפשרויות, מחירים, איפה הכי זול, ביקורות, יוטיוב, והחלטה.</p>
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>נושא קנייה חדש או שאלה<small>״אני רוצה לקנות X, תבדוק״ · ״כדאי לקנות באמזון איטליה?״</small></span></a>
   <div class="kpis"><div class="kpi"><b>${open.length}</b><span>בבירור</span></div><div class="kpi"><b>${dec.length}</b><span>מחכים להחלטה</span></div><div class="kpi"><b>${qs}</b><span>שאלות אליך</span></div></div>`;}
