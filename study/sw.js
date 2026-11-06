@@ -4,7 +4,7 @@ self.addEventListener("activate", function (e) { e.waitUntil(self.clients.claim(
 self.addEventListener("push", function (e) {
   var d = {};
   try { d = e.data.json(); } catch (err) { d = {body: e.data ? e.data.text() : ""}; }
-  e.waitUntil(self.registration.showNotification(d.title || "📚 Study", {
+  e.waitUntil(self.registration.showNotification(d.title || "📚 Study Monster", {
     body: d.body || "", icon: "icon-192.png", badge: "icon-192.png", tag: d.tag, lang: "he", dir: "rtl",
     data: {url: d.url || self.registration.scope}
   }));

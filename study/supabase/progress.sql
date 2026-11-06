@@ -200,7 +200,7 @@ grant execute on function public.study_reset_get(text,text) to anon;
 create table if not exists public.study_requests (
   id bigserial primary key,
   kid text not null check (kid in ('evyatar','dani','lia')),
-  kind text not null check (kind in ('test','quiz','hard','topic','idea')),
+  kind text not null check (kind in ('test','quiz','hard','topic','idea','bug')),
   txt text not null check (char_length(txt) between 1 and 500),
   done boolean not null default false,
   hidden boolean not null default false,
@@ -212,7 +212,7 @@ create or replace function public.study_request_add(p_kid text, p_kind text, p_t
 returns jsonb language plpgsql security definer set search_path to '' as $$
 declare t text := btrim(coalesce(p_txt, ''));
 begin
-  if p_kid not in ('evyatar','dani','lia') or p_kind not in ('test','quiz','hard','topic','idea') then return jsonb_build_object('ok', false, 'err', 'arg'); end if;
+  if p_kid not in ('evyatar','dani','lia') or p_kind not in ('test','quiz','hard','topic','idea','bug') then return jsonb_build_object('ok', false, 'err', 'arg'); end if;
   if t = '' then return jsonb_build_object('ok', false, 'err', 'empty'); end if;
   if (select count(*) from public.study_requests where kid = p_kid and created_at > now() - interval '1 hour') >= 15
      or (select count(*) from public.study_requests) >= 3000 then return jsonb_build_object('ok', false, 'err', 'limit'); end if;

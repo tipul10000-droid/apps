@@ -1,4 +1,4 @@
-// בקשות והצעות מהילד להורים (אורן 6.11.2026): כפתור בדף הילד ← חלון עם 5 סוגים + טקסט ← study_request_add ← אזור ההורים.
+// בקשות והצעות מהילד להורים (אורן 6.11.2026): כפתור בדף הילד ← חלון עם 6 סוגים (כולל 🐞 באג) + טקסט ← study_request_add ← אזור ההורים.
 // החלון קבוע למעלה (לא ממורכז), כדי שהמקלדת של הטלפון לא תכסה אותו ושום כפתור לא יזוז כשמקלידים.
 // שימוש: <div id="rqm"></div><script src="../req.js"></script><script>StudyReq.mount('lia',false)</script> (false = בת, true = בן)
 (function(){
@@ -9,7 +9,7 @@
     '#rq.on{display:flex}#rq{align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 56px)}#rq .pn{background:#fff;border-radius:18px;padding:16px;width:100%;max-width:440px;box-sizing:border-box;box-shadow:0 10px 40px rgba(0,0,0,.3)}'+
     '#rq h2{margin:0 0 4px;font-size:20px}#rq p{margin:0 0 10px;font-size:14px;color:#5b6675}#rq .ks{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}'+
     '#rq .k{height:42px;box-sizing:border-box;font:600 14px system-ui,Arial,sans-serif;border:1.5px solid #d3d9e2;background:#fff;color:#1f2933;border-radius:12px;padding:0 6px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}'+
-    '#rq .k.on{border-color:#2f5d9e;background:#e8eef7;color:#2f5d9e}#rq .k:last-child{grid-column:1/-1}'+
+    '#rq .k.on{border-color:#2f5d9e;background:#e8eef7;color:#2f5d9e}'+
     '#rq textarea{display:block;width:100%;height:96px;box-sizing:border-box;resize:none;font:16px system-ui,Arial,sans-serif;border:1.5px solid #d3d9e2;border-radius:12px;padding:10px;color:#1f2933}#rq textarea:focus{outline:none;border-color:#2f5d9e}'+
     '#rq .m{height:20px;font-size:14px;margin:6px 0;color:#2f5d9e;text-align:center}#rq .bs{display:grid;grid-template-columns:2fr 1fr;gap:8px}'+
     '#rq .bs button{height:46px;font:600 16px system-ui,Arial,sans-serif;border-radius:12px;border:1px solid #d3d9e2;background:#fff;color:#1f2933;cursor:pointer}#rq .bs .go{background:#2f5d9e;border-color:#2f5d9e;color:#fff}#rq .bs .go:disabled{opacity:.5}';
@@ -19,9 +19,9 @@
     var Y=boy?'':'י';
     var K=[['test','📅 יש מבחן קרוב','באיזה מקצוע, ומתי? מה צריך לדעת למבחן?'],['quiz','⏰ יש בוחן עוד מעט','באיזה מקצוע, ומתי?'],
       ['hard','🤔 לא הבנתי נושא','מה לא ברור? אבא יעזור לך להבין'],['topic','📚 נושא חדש ללימוד','מה תרצ'+(boy?'ה':'י')+' שאבא יכין לך ללמוד?'],
-      ['idea','💡 רעיון חדש לאפליקציה','מה היה כיף להוסיף או לשנות באפליקציה?']];
+      ['idea','💡 רעיון לאפליקציה','מה היה כיף להוסיף או לשנות באפליקציה?'],['bug','🐞 מצאתי באג','מה קרה? באיזה מסך? מה לחצת רגע לפני?']];
     var host=where||document.getElementById('rqm');
-    var b=el('<button type="button" class="rqb"><span class="ic">💬</span><span><b>הצעות ובקשות לאבא ואמא!</b><small>מבחן קרוב, נושא קשה, נושא ללימוד או רעיון</small></span></button>');host.appendChild(b);
+    var b=el('<button type="button" class="rqb"><span class="ic">💬</span><span><b>הצעות ובקשות לאבא ואמא!</b><small>מבחן קרוב, נושא קשה, רעיון או באג</small></span></button>');host.appendChild(b);
     var o=el('<div id="rq" role="dialog" aria-modal="true"><div class="pn"><h2>💬 מה תרצ'+(boy?'ה':'י')+' לבקש?</h2><p>הצעות ובקשות לאבא ואמא! הם יראו את זה באזור ההורים</p><div class="ks">'+
       K.map(function(k){return '<button type="button" class="k" data-k="'+k[0]+'">'+k[1]+'</button>'}).join('')+
       '</div><textarea maxlength="500" placeholder="קוד'+'ם בחר'+Y+' למעלה מה תרצ'+(boy?'ה':'י')+' לבקש"></textarea><div class="m"></div><div class="bs"><button type="button" class="go">שליחה לאבא ולאמא 💌</button><button type="button" class="no">סגירה</button></div></div></div>');
