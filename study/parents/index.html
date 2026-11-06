@@ -39,6 +39,7 @@
 .res{margin-top:8px;font-size:14px}.res>div{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #dde5f1}
 .res .sc{font-size:17px;color:var(--ac)}.res .x{font:inherit;font-size:12px;color:var(--mut);background:none;border:0;cursor:pointer;padding:2px 6px}
 .head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+/* הסרגל העליון נשאר קבוע למעלה, והגלילה רק מתחתיו (אורן 6.11.2026) */.stk{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);margin:-4px -16px 12px;padding:4px 16px 10px;border-bottom:1px solid var(--bd);box-shadow:0 -80px 0 var(--bg),0 4px 10px rgba(31,41,51,.05)}.stk .back{margin:0 0 4px}body:has(.stk)>main>a.back{display:none}
 html,body,*{touch-action:manipulation}
 </style></head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
@@ -75,7 +76,7 @@ function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה
   r.best=Math.max(r.best,+d.best||0);const f=d.first||x.first_at;if(f&&(!r.first||f<r.first))r.first=f;const l=d.last||x.updated_at;if(l&&(!r.last||l>r.last))r.last=l;
   for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)})});return r}
 function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/'+t.app]=t);
- let h=`<div class="head"><h1 style="margin:0 0 12px;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button> <button class="b s" id="rf" type="button">רענון</button> <button class="b s" id="lo" type="button">יציאה</button></span></div>`;
+ let h=`<div class="stk"><a class="back" href="../">→ כל הילדים</a><div class="head"><h1 style="margin:0;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button> <button class="b s" id="rf" type="button">רענון</button> <button class="b s" id="lo" type="button">יציאה</button></span></div></div>`;
  KIDS.forEach(k=>{h+=`<div class="kid"><div class="kh"><img src="../kids/${k.id}.webp" alt=""><b>${k.n}</b></div>`;
   if(!k.apps.length)h+=`<div class="none">עוד אין תכנים</div>`;
   k.apps.forEach(a=>{const rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`;
@@ -125,7 +126,7 @@ function loadReq(id,set){rpc('study_parents_requests',{p_pin:PIN,p_id:id||null,p
  V.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const [i,s]=b.dataset.q.split('|');if(s==='hide'&&!confirm('להסתיר את הבקשה?'))return;b.textContent='...';loadReq(+i,s)})}).catch(()=>{})}
 ['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,ev=>ev.preventDefault(),{passive:false}));
 // דאבל-טאפ: באייפון user-scalable=no לא עובד. touch-action:manipulation מבטל זום בהקשה כפולה, ולמקרה שלא: הקשה שנייה מהירה לא מגיעה לזום, והלחיצה נשלחת ידנית.
-var lastT=0;document.addEventListener('touchend',function(ev){var n=Date.now(),t=ev.target;if(n-lastT<350&&ev.cancelable&&!(t.closest&&t.closest('input,textarea,select,[contenteditable]'))){ev.preventDefault();if(t.click)t.click()}lastT=n},{passive:false});
+var lastT=0;document.addEventListener('touchend',function(ev){var n=Date.now(),t=ev.target;if(n-lastT<350&&ev.cancelable&&!(t.closest&&t.closest('input,textarea,select,[contenteditable]'))){ev.preventDefault();if(t.click)t.click();else if(t.dispatchEvent)t.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))}lastT=n},{passive:false});
 document.addEventListener('touchstart',function(ev){if(ev.touches.length>1)ev.preventDefault()},{passive:false});
 document.addEventListener('dblclick',function(ev){ev.preventDefault()},{passive:false});
 
