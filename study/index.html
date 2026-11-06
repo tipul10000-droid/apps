@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
-<script src="guest.js?v=2"></script>
+<script src="guest.js?v=3"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster</title>
 <link rel="manifest" href="manifest.json">
@@ -67,7 +67,7 @@ h1{margin:0;font-size:0;line-height:0}header{flex:none;display:block!important}@
 <circle cx="44" cy="24" r="10.5" fill="#ffd9bf"/><path d="M33.5 22c0-8 5-11 10.5-11s11 3 10.5 11c-3-4-8-5-10.5-5s-7.5 1-10.5 5z" fill="#3b2a1f"/><circle cx="40" cy="25" r="3.2" fill="none" stroke="#334155" stroke-width="1.1"/><circle cx="48" cy="25" r="3.2" fill="none" stroke="#334155" stroke-width="1.1"/><path d="M43.2 25h1.6" stroke="#334155" stroke-width="1.1"/><circle cx="40" cy="25" r="1.2" fill="#3b2a1f"/><circle cx="48" cy="25" r="1.2" fill="#3b2a1f"/><path d="M41.5 30q2.5 2 5 0" stroke="#c2410c" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M32 48c1-7 6-10 12-10s11 3 12 10z" fill="#2f5d9e"/><path d="M32 8c-1.6-2.4-5-1-3.6 1.8L32 13l3.6-3.2C37 7 33.6 5.6 32 8z" fill="#f43f5e"/></svg><span><b>אזור הורים</b><small>התקדמות הילדים</small></span></a>
 <button class="tb" type="button" id="gst"><span class="gi">👀</span><span><b>מצב אורח</b><small>בלי להשפיע</small></span></button>
 </div></div>
-<script src="qbank.js?v=2"></script>
+<script src="qbank.js?v=3"></script>
 <script>
 (function(){var b=document.getElementById('gst');if(window.STUDY_GUEST){b.innerHTML='<span class="gi">🚪</span><span><b>יציאה מאורח</b><small>חזרה לרגיל</small></span>';b.onclick=function(){studyGuest(false,location.pathname)}}else b.onclick=function(){studyGuest(true,location.pathname)}})();
 </script>
@@ -91,10 +91,11 @@ h1{margin:0;font-size:0;line-height:0}header{flex:none;display:block!important}@
   [].forEach.call($('qzd').children,function(d,i){d.className=i<qi?'on':i===qi?'cur':''});
   $('qzo').innerHTML='';shuf(q[1]).forEach(function(o){var b=document.createElement('button');b.type='button';b.className='qb';b.textContent=o;
    b.onclick=function(){if(lock)return;lock=true;if(o===q[1][0]){b.classList.add('y');qi++;
-     if(qi>=3){[].forEach.call($('qzd').children,function(d){d.className='on'});$('qzm').textContent=(kid==='evyatar'?'ידעתי שזה אתה':'ידעתי שזו את')+'! נכנסים... 🎉';if(REP){var r=qget(kid);r.n=(r.n||0)+1;if(r.n>=2){r.until=Date.now()+4*36e5;r.act=0;r.n=0}qset(kid,r)}try{if(!window.STUDY_GUEST)localStorage.setItem('study_ok_'+kid,'1')}catch(e){}setTimeout(function(){location.href=go},700)}
+     if(qi>=3){[].forEach.call($('qzd').children,function(d){d.className='on'});$('qzm').textContent=(kid==='evyatar'?'ידעתי שזה אתה':'ידעתי שזו את')+'! נכנסים... 🎉';if(REP||(window.STUDY_GUEST&&ok(kid))){var r=qget(kid);r.n=(r.n||0)+1;if(r.perm)r.n=0;if(r.n>=2){r.until=Date.now()+4*36e5;r.act=0;r.n=0}qset(kid,r)}try{if(!window.STUDY_GUEST)localStorage.setItem('study_ok_'+kid,'1')}catch(e){}setTimeout(function(){location.href=go},700)}
      else{$('qzm').textContent='נכון! ✨';setTimeout(ask,450)}}
     else{b.classList.add('n');$('qzm').textContent='אופס, זו לא התשובה. מתחילים מההתחלה 🙃';if(window.STUDY_GUEST)$('qzskip').classList.add('glow');setTimeout(function(){qi=0;pickQ();ask()},1100)}};$('qzo').appendChild(b)})}
- function quiz(rep){REP=!!rep;qi=0;pickQ();var k=K[kid];$('qzi').src='kids/'+kid+'.webp';$('qzt').textContent='רק '+k.n+' יודע'+(kid==='evyatar'?'':'ת')+' את התשובות!';$('qzs').textContent=k.t;
+ function quiz(rep){if(window.STUDY_GUEST&&left(kid)>0)return showLock(kid); // אורח באותו מכשיר לא עוקף נעילה קיימת (אורן 6.11.2026)
+  REP=!!rep;qi=0;pickQ();var k=K[kid];$('qzi').src='kids/'+kid+'.webp';$('qzt').textContent='רק '+k.n+' יודע'+(kid==='evyatar'?'':'ת')+' את התשובות!';$('qzs').textContent=k.t;
   $('qzskip').style.display=window.STUDY_GUEST?'':'none';$('qzskip').classList.remove('glow');ov.classList.remove('on');qz.classList.add('on');ask()}
  document.querySelectorAll('a.kid').forEach(function(a){a.addEventListener('click',function(ev){var id=a.getAttribute('href').replace('/',''),k=K[id];if(!k)return;go=a.href;kid=id;
   if(window.STUDY_GUEST){ev.preventDefault();return quiz()}
@@ -107,23 +108,24 @@ h1{margin:0;font-size:0;line-height:0}header{flex:none;display:block!important}@
  var REP=false;
  function qget(k){try{return JSON.parse(localStorage.getItem('study_qz_'+k))||{}}catch(e){return{}}}
  function qset(k,v){try{localStorage.setItem('study_qz_'+k,JSON.stringify(v))}catch(e){}}
- function left(k){return Math.max(0,(qget(k).until||0)-Date.now())}
+ function left(k){var r=qget(k);return r.perm?0:Math.max(0,(r.until||0)-Date.now())} // perm = ההורה פתח קבוע: אין נעילה בכלל
  function hms(ms,sec){var t=Math.ceil(ms/1000),h=Math.floor(t/3600),m=Math.floor(t%3600/60),x=t%60;return h+':'+(m<10?'0':'')+m+(sec?':'+(x<10?'0':'')+x:'')}
  // שליטה ידנית מאזור ההורים (אורן 6.11.2026): ההורה משחרר או נועל את החידון. החוק האוטומטי נשאר, וזו החלטה רכה מעליו:
  // unlock = פתוח מיד; lock = נעול ל-4 שעות מרגע ההחלטה (גם אז 20 דקות לימוד משחררות). המכשיר מדווח את מצב הנעילה כדי שההורים יראו אותו.
  var QSB='https://emgtyfksnofzzlutngbf.supabase.co',QKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
  function qsync(k,again){var r=qget(k);
-  return fetch(QSB+'/rest/v1/rpc/study_quiz_sync',{method:'POST',headers:{'Content-Type':'application/json',apikey:QKEY,Authorization:'Bearer '+QKEY},body:JSON.stringify({p_kid:k,p_until:left(k)>0?r.until:0,p_act:r.act||0,p_applied:r.pa||null})})
+  return fetch(QSB+'/rest/v1/rpc/study_quiz_sync',{method:'POST',headers:{'Content-Type':'application/json',apikey:QKEY,Authorization:'Bearer '+QKEY},body:JSON.stringify({p_kid:k,p_until:r.perm?-1:(left(k)>0?r.until:0),p_act:r.act||0,p_applied:r.pa||null})})
    .then(function(x){return x.ok?x.json():null}).then(function(j){if(!j||!j.cmd_at)return;var r=qget(k),at=Date.parse(j.cmd_at);if(r.pa&&at<=Date.parse(r.pa))return;
-    if(j.cmd==='unlock'){if(!(r.until&&at<r.until-4*36e5)){r.until=0;r.act=0;r.n=0}}else if(j.cmd==='lock'){r.until=at+4*36e5;r.act=0;r.n=0}r.pa=j.cmd_at;qset(k,r);tick();if(!again)qsync(k,1)}).catch(function(){})}
+    if(j.cmd==='unlock'){r.perm=0;if(!(r.until&&at<r.until-4*36e5)){r.until=0;r.act=0;r.n=0}}else if(j.cmd==='lock'){r.perm=0;r.until=at+4*36e5;r.act=0;r.n=0}else if(j.cmd==='open'){r.perm=1;r.until=0;r.act=0;r.n=0}else if(j.cmd==='auto'){r.perm=0}r.pa=j.cmd_at;qset(k,r);tick();if(!again)qsync(k,1)}).catch(function(){})}
  function qsyncAll(){if(window.STUDY_GUEST)return;['evyatar','dani','lia'].forEach(function(k){if(ok(k))qsync(k)})}
  var LK=null;
  function tick(){document.querySelectorAll('.rq').forEach(function(b){var k=b.dataset.k,w=b.parentNode,l=left(k);w.classList.toggle('hq',!window.STUDY_GUEST&&ok(k));b.classList.toggle('lk',l>0);b.querySelector('.rt').textContent=l>0?'⏳ '+hms(l+59e3):'חידון!'});
   if(LK){var l=left(LK);if(l<=0){$('qlk').classList.remove('on');LK=null}else{$('qlkc').textContent=hms(l,1);var m=Math.floor((qget(LK).act||0)/60);$('qlkm').textContent='למדת כבר '+m+' מתוך 20 דקות';$('qlkp').style.width=Math.min(100,m*5)+'%'}}}
  tick();setInterval(tick,1000);qsyncAll();setInterval(qsyncAll,6e4);document.addEventListener('visibilitychange',function(){if(!document.hidden)qsyncAll()});
  document.querySelectorAll('.rq').forEach(function(b){b.onclick=function(){var a=b.parentNode.querySelector('a.kid'),k=b.dataset.k;kid=k;go=a.href;
-  if(left(k)>0){var boy=k==='evyatar';LK=k;$('qlkt').innerHTML='חידון הכניסה נפתח שוב בעוד 4 שעות, <b>או</b> אחרי <b>20 דקות של לימוד</b> (עם תשובות, לא רק לפתוח את האפליקציה).<br>עכשיו הזמן ללמוד, אז '+(boy?'תיכנס ותלמד':'תיכנסי ותלמדי')+' עם חיוך 😊';$('qlkg').textContent=(boy?'נכנס':'נכנסת')+' ללמוד ←';tick();$('qlk').classList.add('on');return}
+  if(left(k)>0)return showLock(k);
   quiz(true)}});
+ function showLock(k){var boy=k==='evyatar';LK=k;ov.classList.remove('on');$('qlkt').innerHTML='חידון הכניסה נפתח שוב בעוד 4 שעות, <b>או</b> אחרי <b>20 דקות של לימוד</b> (עם תשובות, לא רק לפתוח את האפליקציה).<br>עכשיו הזמן ללמוד, אז '+(boy?'תיכנס ותלמד':'תיכנסי ותלמדי')+' עם חיוך 😊';$('qlkg').textContent=(boy?'נכנס':'נכנסת')+' ללמוד ←';tick();$('qlk').classList.add('on')}
  $('qlkg').onclick=function(){qset(kid,Object.assign(qget(kid),{n:0}));location.href=go};
  $('qlkb').onclick=function(){$('qlk').classList.remove('on');LK=null};
  $('whogb').onclick=function(){studyGuest(true,location.pathname+'?gq='+kid)};

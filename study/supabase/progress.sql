@@ -359,3 +359,12 @@ revoke all on function public.study_quiz_sync(text,bigint,int,timestamptz) from 
 revoke all on function public.study_parents_quiz(text,text,text) from public;
 grant execute on function public.study_quiz_sync(text,bigint,int,timestamptz) to anon, authenticated;
 grant execute on function public.study_parents_quiz(text,text,text) to anon, authenticated;
+
+-- 6.11.2026 (ממתין לאישור אורן): פתיחה קבועה של החידון. 'open' = בלי נעילה עד 'auto' (חזרה לכללים).
+-- alter table public.study_quiz drop constraint if exists study_quiz_cmd_check;
+-- alter table public.study_quiz add constraint study_quiz_cmd_check check (cmd in ('unlock','lock','open','auto'));
+-- ב-study_parents_quiz: p_cmd not in ('unlock','lock','open','auto').
+
+-- 6.11.2026 (ממתין לאישור אורן): אישור תוכן חדש (study/content.js)
+-- create table public.study_content(id text primary key, approved_at timestamptz);  -- id = '<kid>/<app>'
+-- study_content_get() → {items:[{id, approved_at}]} ; study_parents_content_approve(p_pin, p_id) → מאשר + שורה ב-study_notify לילד.
