@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="../../theme.css">
 <style>
 :root{--pu:#4f46e5;--pk:#f97316;--pl:#eef0ff;--ok:#16a34a;--no:#e11d48;--sm:#5b21b6}
-main{padding:10px 14px 10px;display:flex;flex-direction:column}
+main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;flex-direction:column;justify-content:safe center}
 .nav{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex:none}.nav .back{margin:0;flex:1}
 .ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 9px;cursor:pointer;white-space:nowrap}
 .ib.gift{background:#fff4e8;border-color:#fdba74;color:#9a3412;font-weight:700;font-size:13px;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;width:38px;text-align:center;direction:ltr;background:#ea580c;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
@@ -25,20 +25,20 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 .grp span{height:24px;border-radius:8px;background:#f1f3f7;color:var(--mut);font:600 12px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;direction:ltr;overflow:hidden;white-space:nowrap;position:relative}
 .grp span i{position:absolute;inset:0 auto 0 0;background:rgba(79,70,229,.16);width:0}
 .grp span.cur{background:#e0e7ff;color:#3730a3;outline:2px solid #818cf8}.grp span.ok{background:#dcfce7;color:#166534}
-.card{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px;box-shadow:var(--sh);text-align:center;margin-top:8px}
+.card{flex:0 1 490px;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px;box-shadow:var(--sh);text-align:center;margin-top:10px}
 .top2{display:flex;align-items:center;justify-content:space-between;height:26px;flex:none}
 .mode{font-size:13px;font-weight:700;color:#3730a3;background:var(--pl);border-radius:20px;padding:2px 10px}.mode.new{color:#9a3412;background:#fff1e6}.mode.tst{color:#0f766e;background:#ccfbf1}
 .pxb{font:inherit;font-size:13px;color:var(--mut);background:none;border:1px solid var(--bd);border-radius:14px;padding:2px 9px;cursor:pointer}
 .ask{font-size:16px;color:var(--fg);font-weight:600;margin:6px 0 4px;flex:none}
-.mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:6px}
 .big{font:800 64px/1 system-ui,Arial,sans-serif;direction:ltr;color:var(--fg)}.big small{font-size:.62em;color:var(--mut);font-weight:700;margin-left:6px}
 .pic{font-size:54px;line-height:1}
 .word{font:800 28px system-ui,Arial,sans-serif;direction:ltr}.word u{text-decoration:none;color:var(--pk)}
 .say{font:inherit;font-size:15px;background:var(--pl);color:#3730a3;border:0;border-radius:20px;padding:6px 14px;cursor:pointer}
 .say.lg{font-size:30px;width:92px;height:92px;border-radius:50%;padding:0;box-shadow:0 3px 0 #c7d2fe}
 .says{display:flex;gap:8px;justify-content:center}
-.heb{border-radius:14px;padding:7px 10px;font-size:15px;line-height:1.45;max-width:360px;flex:none}
-.heb b{display:block;font-size:13px;margin-bottom:1px}.heb.same{background:#ecfdf5;color:#065f46}.heb.near{background:#fffbeb;color:#92400e}.heb.new{background:#fdf2f8;color:#9d174d}
+.heb{border-radius:14px;padding:8px 12px;font-size:19px;line-height:1.45;width:100%;max-width:380px;flex:none}.heb .hl{display:block;font:800 36px/1.1 system-ui,Arial,sans-serif;margin:2px 0}
+.heb b{display:block;font-size:15px;margin-bottom:1px}.heb.same{background:#ecfdf5;color:#065f46}.heb.near{background:#fffbeb;color:#92400e}.heb.new{background:#fdf2f8;color:#9d174d}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:none}
 .opt{font:700 26px system-ui,Arial,sans-serif;color:inherit;background:#fff;border:2px solid var(--bd);border-radius:14px;padding:6px;cursor:pointer;height:58px;direction:ltr}
 .opt.he{direction:rtl;font-size:28px}.opt.snd{font-size:20px}.opt.sel{border-color:#818cf8;background:#eef2ff}
@@ -77,8 +77,8 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 .pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:26px;font-weight:900;color:var(--pu);z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap}
 @keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
 .cr{font-size:12px;color:var(--mut);line-height:1.4}
-@media(max-height:700px){.big{font-size:52px}.pic{font-size:44px}.word{font-size:24px}.say.lg{width:76px;height:76px;font-size:26px}.opt{height:50px;font-size:23px}.heb{font-size:14px;padding:5px 9px}.btn{height:46px;padding:9px}.chips{display:none}.ask{margin:4px 0 2px;font-size:15px}.tiles button{height:44px}.slots span{height:46px;font-size:28px}}
-@media(max-height:640px){.grp span{height:20px}.big{font-size:44px}.pic{font-size:36px}.mid{gap:4px}.fb{height:40px}.heb{font-size:13px}}
+@media(max-height:700px){.big{font-size:52px}.pic{font-size:44px}.word{font-size:24px}.say.lg{width:76px;height:76px;font-size:26px}.opt{height:50px;font-size:23px}.heb{font-size:17px;padding:6px 10px}.heb .hl{font-size:30px}.btn{height:46px;padding:9px}.chips{display:none}.ask{margin:4px 0 2px;font-size:15px}.tiles button{height:44px}.slots span{height:46px;font-size:28px}}
+@media(max-height:640px){.grp span{height:20px}.big{font-size:44px}.pic{font-size:36px}.mid{gap:4px}.fb{height:40px}.heb{font-size:16px}.heb .hl{font-size:26px}}
 @media(prefers-reduced-motion:reduce){#sqimg,.ib.gift{animation:none!important}}
 </style></head><body><main>
 <div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="hw" type="button" aria-label="איך זה עובד">❓</button><button class="ib gift" id="sqb" type="button">🪐 סקווישים <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
@@ -94,7 +94,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 <ul>
 <li>כל אות חדשה: שומעים את הצליל ואת המילה, ורואים אם יש צליל כזה בעברית.</li>
 <li>אחר כך משחקים: מה שמעת? איזה צליל עושה האות? באיזו אות מתחילה המילה?</li>
-<li>כל צליל צריך לענות נכון <b>פעמיים</b> (בפעמים נפרדות), ואז הוא שלך ✅</li>
+<li>על כל צליל עונים נכון <b>פעמיים</b>, בתרגילים שונים, ואז הוא שלך ✅</li>
 <li>6 קבוצות. בסוף כל קבוצה: ⏱️ מבחן של דקה, כמו בבתי ספר באמריקה.</li>
 </ul>
 <p>על כל 6 תשובות נכונות מצטרף סקווישי חדש לאוסף 🪐</p>
@@ -187,7 +187,7 @@ function render(){ANS=false;SEL=null;const c=$('card'),m=CUR.mode,it=CUR.it;let 
   if(m==='learn'){const w=it.word.replace(new RegExp('^('+(it.id.includes('_')?it.id[0]:it.id)+')','i'),'<u>$1</u>');
     h=head('✨ צליל חדש','new')+`<div class="mid"><div class="big">${esc(it.show)}</div><div class="pic">${it.pic}</div><div class="word">${it.g===5?esc(it.word):w}</div>
     <div class="says"><button class="say" id="ps" type="button">🔊 הצליל</button><button class="say" id="pw" type="button">🔊 המילה</button></div>
-    <div class="heb ${it.tier}"><b>${it.tier==='same'?'✅ יש כזה בעברית':it.tier==='near'?'🟡 דומה, אבל לא אותו דבר':'⭐ צליל חדש, אין בעברית'}</b>${it.htx}</div></div>
+    <div class="heb ${it.tier}"><b>${it.tier==='same'?'✅ יש כזה בעברית':it.tier==='near'?'🟡 דומה לעברית, אבל לא בדיוק':'⭐ צליל חדש, אין כזה בעברית'}</b>${it.he?`<span class="hl" dir="ltr">${esc(lbl(it))} = ${esc(it.he)}</span>`:''}${it.htx}</div></div>
     <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button">הבנתי, בואי נתרגל ←</button></div>`;
     c.innerHTML=h;$('ps').onclick=()=>sound(it);$('pw').onclick=()=>word(it.word);$('nx').onclick=()=>{S.w[it.id].s='learn';S.w[it.id].due=S.T+1;S.T++;save();upd();goNext()};
     setTimeout(()=>sound(it,()=>word(it.word)),250);LAST=it.id;return}
@@ -226,9 +226,9 @@ function answer(ok,b){const it=CUR.it,w=S.w[it.id],fb=$('fb'),c=$('card');ANS=tr
   if(TEST){TEST.n++;if(ok){TEST.ok++;SND.ok()}else{b.classList.add('no');SND.bad()}setTimeout(testNext,ok?350:900);return}
   S.att++;S.T++;
   if(ok){S.okc++;SND.ok();streak(true);addPts(w.s==='done'?2:5);
-    if(w.s!=='done'){w.c=(w.c||0)+1;if(w.c>=2){w.s='done';fb.innerHTML=`<div class="t ok">נכון פעמיים! ✅ הצליל ${esc(lbl(it))} שלך</div>`;confetti(24);
+    if(w.s!=='done'){w.c=(w.c||0)+1;if(w.c>=2){w.s='done';fb.innerHTML=`<div class="t ok">✅ הצליל ${esc(lbl(it))} שלך!</div><div>ענית עליו נכון פעמיים</div>`;confetti(24);
       if(gDone(it.g)&&!S.gd[it.g]){S.gd[it.g]=1;setTimeout(()=>groupDone(it.g),1300)}}
-      else{w.due=S.T+3;fb.innerHTML=`<div class="t ok">${pick(OK)}</div><div>עוד פעם אחת נכון והוא שלך</div>`}}
+      else{w.due=S.T+3;fb.innerHTML=`<div class="t ok">${pick(OK)}</div><div>עוד תשובה נכונה אחת, והצליל שלך</div>`}}
     else{w.due=S.T+20;fb.innerHTML=`<div class="t ok">${pick(OK)}</div>`}
     maybeSquishy()}
   else{b.classList.add('no');SND.bad();streak(false);w.err++;if(w.s==='done'){w.s='learn';w.c=1}else w.c=Math.max(0,(w.c||0)-1);w.due=S.T+2;
