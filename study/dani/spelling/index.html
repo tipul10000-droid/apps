@@ -9,12 +9,14 @@
 <meta name="apple-mobile-web-app-title" content="Study">
 <meta name="theme-color" content="#eef1f5">
 <link rel="stylesheet" href="../../theme.css">
+<script src="../../kb.js"></script>
 <style>
 :root{--pu:#8b5cf6;--pu2:#c084fc;--pk:#ec4899;--pl:#f3edff;--ok:#16a34a;--no:#e11d48}
-main{padding-bottom:28px}
+main{padding:10px 14px 10px;display:flex;flex-direction:column}
+.card{flex:1 1 auto;min-height:0;overflow:auto;display:flex;flex-direction:column;justify-content:safe center}
 .nav{display:flex;align-items:center;gap:8px;margin-bottom:8px}.nav .back{margin:0;flex:1}
 .ib{font:inherit;font-size:15px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:5px 12px;cursor:pointer}
-.prog{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px 14px;box-shadow:var(--sh)}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:8px 12px;flex:none;box-shadow:var(--sh)}
 .prog .row{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;color:var(--mut)}
 .prog .row b{color:var(--fg);font-size:20px}
 .pb{height:12px;background:#ece7f8;border-radius:8px;overflow:hidden;margin:8px 0 10px}
@@ -23,8 +25,8 @@ main{padding-bottom:28px}
 .chip{font-size:14px;background:var(--pl);color:#5b21b6;border-radius:20px;padding:3px 10px;white-space:nowrap}
 .chip.hot{background:#fff1e6;color:#c2410c}
 .chip.test{background:#e8eef7;color:var(--ac)}
-.stage{display:flex;align-items:flex-end;gap:8px;margin:14px 0 10px;min-height:96px}
-#mon{width:92px;height:96px;flex:none;transform-origin:50% 100%;animation:bob 2.6s ease-in-out infinite}
+.stage{display:flex;align-items:flex-end;gap:8px;margin:8px 0 6px;min-height:0;flex:none}
+#mon{width:64px;height:66px;flex:none;transform-origin:50% 100%;animation:bob 2.6s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-3px)}}
 #mon.hop{animation:hop .6s}#mon.sad{animation:sad .8s}#mon.dance{animation:dance 1.1s}
 @keyframes hop{30%{transform:translateY(-16px) scale(1.04,1.08)}60%{transform:translateY(0) scale(1.1,.88)}80%{transform:scale(.97,1.03)}}
@@ -34,7 +36,7 @@ main{padding-bottom:28px}
 @keyframes blink{0%,94%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
 .stick{transform-box:fill-box;transform-origin:50% 100%;animation:wave 1.6s ease-in-out infinite}
 @keyframes wave{50%{transform:rotate(14deg)}}
-.bub{position:relative;flex:1;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 12px;font-size:16px;box-shadow:var(--sh);margin-bottom:18px}
+.bub{position:relative;flex:1;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 12px;font-size:16px;box-shadow:var(--sh);margin-bottom:10px}
 .bub:before{content:"";position:absolute;right:-8px;bottom:14px;border:8px solid transparent;border-left-color:var(--card);border-right:0;filter:drop-shadow(1px 0 0 var(--bd))}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px 16px;box-shadow:var(--sh);text-align:center}
 .mode{display:inline-block;font-size:13px;font-weight:700;color:#6d28d9;background:var(--pl);border-radius:20px;padding:3px 12px;margin-bottom:10px}
@@ -64,10 +66,10 @@ main{padding-bottom:28px}
 .say{font:inherit;font-size:14px;background:var(--pl);color:#6d28d9;border:0;border-radius:20px;padding:4px 12px;cursor:pointer;margin-top:6px}
 .big{font-size:28px;font-weight:800;direction:ltr;unicode-bidi:isolate;color:#6d28d9;margin:6px 0 0}
 #nx{display:none;margin-top:14px}
-.foot{display:flex;gap:8px;margin-top:14px}.foot button{flex:1;padding:11px 6px;font:inherit;font-size:15px;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:12px;cursor:pointer}
-.ov{position:fixed;inset:0;background:rgba(31,41,51,.5);display:none;align-items:flex-start;justify-content:center;z-index:9;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 14px;overflow:auto}
+.foot{display:flex;gap:8px;margin-top:8px;flex:none}.foot button{flex:1;padding:8px 6px;font:inherit;font-size:15px;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:12px;cursor:pointer}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 14px);box-sizing:border-box}
 .ov.on{display:flex}
-.pn{background:var(--card);border-radius:20px;padding:18px 16px;width:100%;max-width:500px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.pn{background:var(--card);border-radius:20px;padding:18px 16px;width:100%;max-width:500px;max-height:100%;overflow:auto;box-sizing:border-box;box-shadow:0 10px 40px rgba(0,0,0,.3)}
 .pn h2{margin:0 0 10px;font-size:22px}.pn p{margin:8px 0;line-height:1.5}.pn ul{margin:8px 0;padding-right:20px;line-height:1.55}
 .pn .btn{width:100%;margin-top:10px}
 .wl div{display:flex;justify-content:space-between;gap:10px;padding:8px 2px;border-bottom:1px solid #eef0f4}
@@ -87,6 +89,8 @@ main{padding-bottom:28px}
 .pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:26px;font-weight:900;color:#6d28d9;z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap}
 @keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
 .donebox{text-align:center}.donebox .he{font-size:26px}
+body.skb-on #chk{display:none}body.skb-on .btns{justify-content:center}body.skb-on #idk{flex:none;padding:8px 18px;font-size:15px}
+@media(max-height:760px){.card{padding:12px}.opt{padding:9px;margin-top:6px}.en{font-size:28px}.mode{margin-bottom:6px}.ask{margin:4px 0 8px}.chips .chip{padding:2px 8px;font-size:13px}.pb{margin:6px 0}.fb{margin-top:8px}body.skb-on .stage,body.skb-on .foot{display:none}body.skb-on .prog{padding:6px 10px}body.skb-on .chips{display:none}body.skb-on .pb{margin:6px 0 2px}}
 @media(prefers-reduced-motion:reduce){#mon,#sqimg,.stick,#lid1,#lid2{animation:none!important}}
 </style></head><body><main>
 <div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="sqb" type="button">🧸 <span id="sqn">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
@@ -139,13 +143,13 @@ main{padding-bottom:28px}
 <script>
 // הכתבה ואוצר מילים לדני. מפתחות: dani_sp (התקדמות), dani_sp_sq (אוסף סקווישים), dani_sp_mute.
 const WORDS=[
-['across','מעבר / ממול'],['amazing','מדהים'],['hill','גבעה'],['little','קטן'],['narrow','צר'],['over','מעל'],
-['road','כביש / דרך'],['side','צד'],['village','כפר'],['whole','שלם'],['wide','רחב'],['dining room','חדר אוכל'],
-['downstairs','קומה למטה'],['floor','רצפה / קומה'],['front','חזית'],['inside','בתוך / מבפנים'],['roof','גג'],['stairs','מדרגות'],
-['swimming pool','בריכת שחייה'],['upstairs','קומה למעלה'],['come home','לחזור הביתה'],['ground floor','קומת קרקע'],
-['on the left','משמאל'],['on the right','מימין'],['glasses','משקפיים'],['hole','חור'],['jeans',"ג'ינס"],['pair','זוג'],
-['pocket','כיס'],['raincoat','מעיל גשם'],['suit','חליפה'],['top','חולצה / חלק עליון'],['watch','שעון'],
-['comfortable','נוח'],['pretty','יפה'],['throw','לזרוק']];
+['across','מֵעֵבֶר / מִמּוּל'],['amazing','מַדְהִים'],['hill','גִּבְעָה'],['little','קָטָן'],['narrow','צַר'],['over','מֵעַל'],
+['road','כְּבִישׁ / דֶּרֶךְ'],['side','צַד'],['village','כְּפָר'],['whole','שָׁלֵם'],['wide','רָחָב'],['dining room','חֲדַר אוֹכֶל'],
+['downstairs','קוֹמָה לְמַטָּה'],['floor','רִצְפָּה / קוֹמָה'],['front','חֲזִית'],['inside','בְּתוֹךְ / מִבִּפְנִים'],['roof','גַּג'],['stairs','מַדְרֵגוֹת'],
+['swimming pool','בְּרֵיכַת שְׂחִיָּיה'],['upstairs','קוֹמָה לְמַעְלָה'],['come home','לַחֲזוֹר הַבַּיְתָה'],['ground floor','קוֹמַת קַרְקַע'],
+['on the left','מִשְּׂמֹאל'],['on the right','מִיָּמִין'],['glasses','מִשְׁקָפַיִים'],['hole','חוֹר'],['jeans',"גִ'ינְס"],['pair','זוּג'],
+['pocket','כִּיס'],['raincoat','מְעִיל גֶּשֶׁם'],['suit','חֲלִיפָה'],['top','חוּלְצָה / חֵלֶק עֶלְיוֹן'],['watch','שָׁעוֹן'],
+['comfortable','נוֹחַ'],['pretty','יָפֶה'],['throw','לִזְרוֹק']];
 const ALT={little:['small','tiny'],road:['street','way'],wide:['broad'],whole:['all','entire'],pretty:['beautiful','cute','nice'],amazing:['wonderful','awesome','great'],
 comfortable:['comfy','cozy'],watch:['clock'],top:['shirt','t-shirt','tshirt'],pair:['couple'],raincoat:['coat'],inside:['in'],over:['above'],across:['opposite'],
 village:['town'],hill:['mountain'],'come home':['go home','return home'],floor:['story','storey'],throw:['toss']};
@@ -227,14 +231,13 @@ function next(){
   if(!e&&fresh.length&&act.length<8)e=pick(fresh.filter(x=>x!==LAST).length?fresh.filter(x=>x!==LAST):fresh);
   if(!e){const r=act.filter(x=>x!==LAST).sort((a,b)=>S.w[a].due-S.w[b].due);e=r[0]||(fresh.length?pick(fresh):act[0])}
   CUR={e,mode:S.w[e].s==='learn'?'mean':'dict'};render()}
-function render(){ANS=false;const e=CUR.e,c=$('card');
+function render(){ANS=false;const e=CUR.e,c=$('card');StudyKB.hide();
   if(CUR.mode==='dict'){
     c.innerHTML=`<span class="mode${CUR.prac?' prac':''}">${CUR.prac?'🔁 תרגול':'✏️ הכתבה'}</span><div class="he">${esc(HE[e])}</div><div class="ask">איך כותבים את זה באנגלית?</div>
-    <input id="ans" type="text" lang="en" dir="ltr" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="type here...">
+    <input id="ans" type="text" lang="en" dir="ltr" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="type here..." readonly inputmode="none">
     <div class="btns"><button class="btn" id="chk" type="button">בדיקה ✓</button><button class="btn soft" id="idk" type="button">לא יודעת 🤷‍♀️</button></div><div class="fb" id="fb"></div><button class="btn" id="nx" type="button" style="width:100%">הבא ←</button>`;
-    const inp=$('ans');inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();ev.stopPropagation();if(!ANS)check(inp.value)}});
+    const inp=$('ans');StudyKB.attach(inp,{enterLabel:'בדיקה ✓',onEnter:v=>{if(!ANS)check(v)},onKey:()=>tone(1500,0,.03,'sine',.03)});
     $('chk').onclick=()=>check(inp.value);$('idk').onclick=()=>check('');
-    setTimeout(()=>{try{inp.focus({preventScroll:true})}catch(_){}},60);
   }else{
     const opts=shuf([e].concat(shuf(WORDS.map(w=>w[0]).filter(x=>x!==e)).slice(0,3)));
     c.innerHTML=`<span class="mode">💭 מה זה אומר?</span><div class="en">${esc(e)}</div><button class="say" id="say" type="button">🔊 לשמוע</button><div class="ask">בחרי את התרגום הנכון</div>
@@ -249,7 +252,7 @@ function showNext(){ANS=true;const n=$('nx');n.style.display='block';setTimeout(
 function streak(ok){if(ok){S.st.c++;if(S.st.c>S.st.b)S.st.b=S.st.c;if([3,5,10,15,20,30,50].includes(S.st.c)){popTxt('🔥 רצף של '+S.st.c+'!');mon('dance')}}else S.st.c=0}
 function addPts(p){if(p>0){S.pts+=p;popTxt('+'+p+' ⭐')}}
 function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=6||(S.cc>=3&&Math.random()<.18)){S.cc=0;setTimeout(squishy,900)}}
-function check(raw){if(ANS)return;const e=CUR.e,w=S.w[e],r=classify(raw,e),fb=$('fb');$('chk').disabled=$('idk').disabled=true;$('ans').readOnly=true;
+function check(raw){if(ANS)return;StudyKB.hide();{const bt=document.querySelector('#card .btns');if(bt)bt.style.display='none'}const e=CUR.e,w=S.w[e],r=classify(raw,e),fb=$('fb');$('chk').disabled=$('idk').disabled=true;$('ans').readOnly=true;
   if(CUR.prac){ if(r.k==='ok'){SND.ok();mon('hop',pick(OK));addPts(2);fb.innerHTML=`<div class="t ok">נכון! 🎉</div>`;streak(true);maybeSquishy()}
     else{SND.mid();mon('sad',pick(MID));fb.innerHTML=diffHtml(raw,e,r);streak(false);speak(e)} save();upd();return showNext()}
   S.att++;S.T++;
@@ -310,7 +313,7 @@ $('lstx').onclick=()=>$('lst').classList.remove('on');$('lstp').onclick=()=>{$('
 $('rs').onclick=()=>$('rsov').classList.add('on');$('rsn').onclick=()=>$('rsov').classList.remove('on');
 $('rsy').onclick=()=>{const keep={started:S.started,intro:1};S=fresh();S.started=keep.started;S.intro=1;save();$('rsov').classList.remove('on');PRAC=null;LAST=null;upd();mon('hop','מתחילות מחדש! 💜');next()};
 
-if(window.StudyTrack){StudyTrack.init('dani','spelling');StudyTrack.test(j=>{const d=Math.ceil((new Date(j.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);if(d>=0){const t=$('tst');t.style.display='';t.textContent='📅 '+(j.note||'הכתבה')+(d===0?' היום!':d===1?' מחר!':' בעוד '+d+' ימים')}})}
+if(window.StudyTrack){StudyTrack.init('dani','spelling',['dani_sp','dani_sp_sq']);StudyTrack.test(j=>{const d=Math.ceil((new Date(j.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);if(d>=0){const t=$('tst');t.style.display='';t.textContent='📅 '+(j.note||'הכתבה')+(d===0?' היום!':d===1?' מחר!':' בעוד '+d+' ימים')}})}
 upd();
 const d0=done();mon('hop',d0?`היי דני! כבר יודעת ${d0} מילים, ממשיכות? 💜`:'היי דני! אני מוצ׳י, ואני פה לעזור לך עם ההכתבה 💜');
 if(!S.intro)$('intro').classList.add('on');

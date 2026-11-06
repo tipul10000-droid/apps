@@ -169,3 +169,29 @@ end $$;
 -- (ההגדרות העדכניות של שתיהן כמו בפרויקט; ראו migrations: study_auto_test_skip_graded, study_results).
 revoke all on function public.study_parents_result(text, text, text, date, text, numeric, bigint) from public;
 grant execute on function public.study_parents_result(text, text, text, date, text, numeric, bigint) to anon, authenticated;
+
+-- 6.11.2026: מבחן שבוצע / בלי ניחוש אוטומטי
+alter table public.study_tests add column if not exists done boolean not null default false, add column if not exists noauto boolean not null default false;
+-- study_test_get: תאריך ידני (לא done) → אחרת '{}' אם יש שורה עם noauto או done → אחרת study_auto_test.
+-- study_parents_set_test: שמירה מגדירה done=false, noauto=true.
+
+-- 6.11.2026: איפוס התקדמות מאזור ההורים
+create table if not exists public.study_resets(kid text not null, app text not null, at timestamptz not null default now(), primary key(kid, app));
+alter table public.study_resets enable row level security;
+revoke all on public.study_resets from anon, authenticated;
+create or replace function public.study_parents_reset(p_pin text, p_kid text, p_app text)
+returns jsonb language plpgsql security definer set search_path to '' as $$
+declare v text := public.study_parents_check(p_pin);
+begin
+  if v <> 'ok' then return jsonb_build_object('ok', false, 'err', v); end if;
+  if p_kid not in ('evyatar','dani','lia') or coalesce(p_app,'') !~ '^[a-z_]{1,30}$' then return jsonb_build_object('ok', false, 'err', 'arg'); end if;
+  insert into public.study_resets(kid, app, at) values (p_kid, p_app, now()) on conflict (kid, app) do update set at = now();
+  return jsonb_build_object('ok', true);
+end $$;
+create or replace function public.study_reset_get(p_kid text, p_app text)
+returns jsonb language sql stable security definer set search_path to '' as $$
+  select coalesce((select jsonb_build_object('at', at) from public.study_resets where kid = p_kid and app = p_app), '{}'::jsonb);
+$$;
+grant execute on function public.study_parents_reset(text,text,text) to anon;
+grant execute on function public.study_reset_get(text,text) to anon;
+-- study_parents_get: progress רק אם updated_at מאוחר מהאיפוס, ומחזיר גם resets.
