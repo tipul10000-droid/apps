@@ -44,7 +44,7 @@ h1{margin:0;font-size:0;line-height:0}header{flex:none;height:96px;display:block
 .qb.y{background:#dcfce7;border-color:#16a34a}.qb.n{background:#fee2e2;border-color:#dc2626}
 .qm{height:24px;margin:8px 0 0;font-size:15px;font-weight:600;color:var(--ac);flex:none}
 .qpn .bt{flex:none}
-</style></head><body><main>
+@keyframes qzg{0%,100%{box-shadow:0 0 0 2px #f59e0b,0 0 8px 2px rgba(245,158,11,.45)}50%{box-shadow:0 0 0 2px #f59e0b,0 0 18px 6px rgba(245,158,11,.75)}}#qzskip.glow{animation:qzg 1.3s ease-in-out infinite}</style></head><body><main>
 <header><h1><img src="logo.png?v=1" alt="Study Monster" width="900" height="312"></h1></header>
 <div class="grp"><nav class="kids">
 <a class="kid" href="evyatar/"><img src="kids/evyatar.webp" alt=""><span class="tx"><b>אביתר</b><small>אוצר מילים באנגלית</small></span><span class="go">‹</span></a>
@@ -89,19 +89,22 @@ h1{margin:0;font-size:0;line-height:0}header{flex:none;height:96px;display:block
    b.onclick=function(){if(lock)return;lock=true;if(o===q[1][0]){b.classList.add('y');qi++;
      if(qi>=3){[].forEach.call($('qzd').children,function(d){d.className='on'});$('qzm').textContent=(kid==='evyatar'?'ידעתי שזה אתה':'ידעתי שזו את')+'! נכנסים... 🎉';try{if(!window.STUDY_GUEST)localStorage.setItem('study_ok_'+kid,'1')}catch(e){}setTimeout(function(){location.href=go},700)}
      else{$('qzm').textContent='נכון! ✨';setTimeout(ask,450)}}
-    else{b.classList.add('n');$('qzm').textContent='אופס, זו לא התשובה. מתחילים מההתחלה 🙃';setTimeout(function(){qi=0;ask()},1100)}};$('qzo').appendChild(b)})}
+    else{b.classList.add('n');$('qzm').textContent='אופס, זו לא התשובה. מתחילים מההתחלה 🙃';if(window.STUDY_GUEST)$('qzskip').classList.add('glow');setTimeout(function(){qi=0;ask()},1100)}};$('qzo').appendChild(b)})}
  function quiz(){qi=0;var k=K[kid];$('qzi').src='kids/'+kid+'.webp';$('qzt').textContent='רק '+k.n+' יודע'+(kid==='evyatar'?'':'ת')+' את התשובות!';$('qzs').textContent=k.t;
-  $('qzskip').style.display=window.STUDY_GUEST?'':'none';ov.classList.remove('on');qz.classList.add('on');ask()}
+  $('qzskip').style.display=window.STUDY_GUEST?'':'none';$('qzskip').classList.remove('glow');ov.classList.remove('on');qz.classList.add('on');ask()}
  document.querySelectorAll('a.kid').forEach(function(a){a.addEventListener('click',function(ev){var id=a.getAttribute('href').replace('/',''),k=K[id];if(!k)return;go=a.href;kid=id;
   if(window.STUDY_GUEST){ev.preventDefault();return quiz()}
   if(ok(id))return;ev.preventDefault();var n=k.n;$('whoi').src='kids/'+id+'.webp';
   $('whot').textContent='האזור של '+n+' בלבד';$('whop').innerHTML='כל התקדמות מכאן תירשם בהישגים של <b>'+n+'</b>.';
   $('whog').textContent='לא '+n+'? אפשר להיכנס במצב אורח, בלי להשפיע.';$('whoy').textContent='אני '+n+', להמשיך ←';ov.classList.add('on')})});
  $('whoy').onclick=quiz;
- $('whogb').onclick=function(){studyGuest(true,location.pathname)};
+ $('whogb').onclick=function(){studyGuest(true,location.pathname+'?gq='+kid)};
  $('whob').onclick=function(){ov.classList.remove('on')};
  $('qzb').onclick=function(){qz.classList.remove('on')};
  $('qzskip').onclick=function(){if(go)location.href=go};
- [ov,qz].forEach(function(o){o.addEventListener('click',function(ev){if(ev.target===o)o.classList.remove('on')})})})();
+ [ov,qz].forEach(function(o){o.addEventListener('click',function(ev){if(ev.target===o)o.classList.remove('on')})});
+ // כניסה כאורח מחלון "האזור של X": נטען מחדש במצב אורח וישר לשאלות של אותו ילד
+ (function(){var m=/[?&]gq=([a-z]+)/.exec(location.search);if(!m)return;try{history.replaceState(null,'',location.pathname)}catch(e){}
+  var a=document.querySelector('a.kid[href="'+m[1]+'/"]');if(!window.STUDY_GUEST||!a||!K[m[1]])return;kid=m[1];go=a.href;quiz()})()})();
 </script>
 </main></body></html>
