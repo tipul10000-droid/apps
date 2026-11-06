@@ -6,28 +6,28 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Study">
+<meta name="theme-color" content="#eef1f5">
 <style>
-:root{--bg:#f4f6fb;--fg:#1b1f2a;--card:#fff;--bd:#d6dbe7;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161c;--fg:#eceff5;--card:#1e222b;--bd:#343a48}}
-:root[data-theme="dark"]{--bg:#14161c;--fg:#eceff5;--card:#1e222b;--bd:#343a48}
-body{margin:0;background:var(--bg);color:var(--fg);font:18px system-ui,Arial,sans-serif}
-main{max-width:560px;margin:0 auto;padding:18px 16px}
-header{display:flex;align-items:center;gap:12px;margin:4px 0 20px}
-header img{width:56px;height:56px;border-radius:14px}
-h1{margin:0;font-size:26px}header p{margin:2px 0 0;font-size:15px;opacity:.75}
-.kids{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.kid{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:inherit;background:var(--card);border:3px solid var(--c);border-radius:20px;padding:10px 6px 12px;overflow:hidden;position:relative}
-.kid:before{content:"";position:absolute;inset:auto 0 0 0;height:55%;background:var(--c);opacity:.18}
-.kid:active{transform:scale(.97)}
-.kid img{height:190px;max-width:100%;object-fit:contain;position:relative}
-.kid b{font-size:21px;margin-top:8px;position:relative}
-.kid small{font-size:13px;opacity:.75;position:relative;margin-top:2px;text-align:center}
-@media(max-width:360px){.kid img{height:150px}.kid b{font-size:18px}}
+:root{--bg:#eef1f5;--fg:#1f2933;--mut:#5b6675;--card:#fff;--bd:#d3d9e2;--ac:#2f5d9e;--sh:0 1px 2px rgba(31,41,51,.06),0 4px 14px rgba(31,41,51,.06);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;min-height:100vh;color:var(--fg);font:18px system-ui,Arial,sans-serif;background-color:var(--bg);background-image:linear-gradient(rgba(47,93,158,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(47,93,158,.05) 1px,transparent 1px);background-size:24px 24px}
+main{max-width:560px;margin:0 auto;padding:18px 16px;min-height:calc(100vh - 36px);display:flex;flex-direction:column;box-sizing:border-box}
+header{display:flex;align-items:center;gap:12px;margin:4px 0 18px}
+header img{width:52px;height:52px;border-radius:14px}
+h1{margin:0;font-size:24px;color:#1f2933}header p{margin:2px 0 0;font-size:15px;color:var(--mut)}
+.kids{flex:1;display:flex;flex-direction:column;gap:12px}
+.kid{flex:1;min-height:120px;max-height:190px;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:6px 16px 0 12px;box-shadow:var(--sh);overflow:hidden}
+.kid:active{transform:scale(.985);background:#f6f8fb}
+.kid img{height:100%;max-height:180px;width:100px;object-fit:cover;object-position:top;align-self:flex-end}
+.kid .tx{flex:1;min-width:0;padding-bottom:6px}
+.kid b{display:block;font-size:24px}
+.kid small{display:block;font-size:15px;color:var(--mut);margin-top:3px}
+.kid .go{color:var(--ac);font-size:26px;padding-bottom:6px}
+.kid.soon small{color:#8a94a3}
 </style></head><body><main>
 <header><img src="icon.svg" alt=""><div><h1>מי לומד עכשיו?</h1><p>לוחצים על השם שלך</p></div></header>
 <nav class="kids">
-<a class="kid" href="evyatar/" style="--c:#4d9bff"><img src="kids/evyatar.webp" alt=""><b>אביתר</b><small>אוצר מילים באנגלית</small></a>
-<a class="kid" href="dani/" style="--c:#ff6fb5"><img src="kids/dani.webp" alt=""><b>דני</b><small>בקרוב</small></a>
-<a class="kid" href="lia/" style="--c:#8fe04a"><img src="kids/lia.webp" alt=""><b>ליה</b><small>בקרוב</small></a>
+<a class="kid" href="evyatar/"><img src="kids/evyatar.webp" alt=""><span class="tx"><b>אביתר</b><small>אוצר מילים באנגלית</small></span><span class="go">‹</span></a>
+<a class="kid soon" href="dani/"><img src="kids/dani.webp" alt=""><span class="tx"><b>דני</b><small>בקרוב</small></span><span class="go">‹</span></a>
+<a class="kid soon" href="lia/"><img src="kids/lia.webp" alt=""><span class="tx"><b>ליה</b><small>בקרוב</small></span><span class="go">‹</span></a>
 </nav>
 </main></body></html>
