@@ -144,7 +144,7 @@ let PL=null;
 function tts(t,rate){if(MUTE||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=rate||.8;const v=speechSynthesis.getVoices().find(v=>/en-US/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
 function playFile(f,fb,then){if(MUTE)return;try{speechSynthesis.cancel()}catch(e){}if(PL){PL.pause();PL=null}
   if(!AUD.has(f)){fb();if(then)setTimeout(then,1100);return}
-  const a=new Audio('audio/'+f+'.mp3');PL=a;a.onended=()=>{if(then&&PL===a)setTimeout(then,250)};a.onerror=()=>{fb();if(then)setTimeout(then,1100)};a.play().catch(()=>{})}
+  const a=new Audio('audio/'+f+'.mp3?v=2');PL=a;a.onended=()=>{if(then&&PL===a)setTimeout(then,250)};a.onerror=()=>{fb();if(then)setTimeout(then,1100)};a.play().catch(()=>{})}
 // צליל של פריט: הקלטה של הצליל לבד; אין? הקראה של צליל ממושך (sss) או של המילה
 function sound(it,then){const k=it.snd;if(/^[AEIOU]$/.test(k))return playFile('s-long'+k.toLowerCase(),()=>tts(k,.75),then);playFile('s-'+k,()=>tts(it.tt||it.word,.7),then)}
 function word(w,then){playFile('w-'+w,()=>tts(w,.75),then)}
