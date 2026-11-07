@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=1"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2E3A87">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<title>ידע ותחומי עניין</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* דשבורד ידע ותחומי עניין (Knowledge & Interests): פיסות ידע שאורן שולח (לינקים, כתבות, פוסטים) נשמרות כטיקטים לפי תחום,
+   עם הטקסט המלא באנגלית ובעברית, תובנות ומה לעשות עם זה. נושא גדול עם הרבה ידע = דשבורד פנימי (hub).
+   נתונים: sq_docs (app=sidequests, collection=knowledge): מסמך לכל טיקט / hub + _meta. לא משימות. */
+:root{
+  --bg:#F5F5FA; --surface:#FFFFFF; --sunk:#ECECF5; --ink:#1D1F2E; --muted:#5E6278; --line:#DDDEEA;
+  --hero:#2E3A87; --hero2:#6A58C9; --art:url(img/art-knowledge.svg); --mark:#6A58C9; --hero-ink:#F4F2FF; --hero-muted:#CFC8F5; --accent:#FFC857; --accent-ink:#3A2200;
+  --good:#2E8A4E; --good-soft:#E1F2E6; --warn:#A35A0C; --warn-soft:#FBEAD3; --link:#4B3FB8; --en:#3C4A9E; --hi:#6A58C9; --hi-soft:#ECE8FB;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12131C; --surface:#1B1C28; --sunk:#242536; --ink:#ECEDF6; --muted:#A4A7BE; --line:#2F3145;
+  --hero:#1F275E; --hero2:#43378A; --hero-ink:#F4F2FF; --hero-muted:#C2BAEE; --accent:#FFC857; --accent-ink:#3A2200;
+  --good:#5CC27E; --good-soft:#173022; --warn:#EBA654; --warn-soft:#3A2814; --link:#B2A6FF; --en:#AEB8FF; --hi:#B2A6FF; --hi-soft:#2A2550; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12131C; --surface:#1B1C28; --sunk:#242536; --ink:#ECEDF6; --muted:#A4A7BE; --line:#2F3145;
+  --hero:#1F275E; --hero2:#43378A; --hero-ink:#F4F2FF; --hero-muted:#C2BAEE; --accent:#FFC857; --accent-ink:#3A2200;
+  --good:#5CC27E; --good-soft:#173022; --warn:#EBA654; --warn-soft:#3A2814; --link:#B2A6FF; --en:#AEB8FF; --hi:#B2A6FF; --hi-soft:#2A2550; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{flex:1;border:0;background:none;padding:9px 4px;font-weight:800;font-size:15px;cursor:pointer;font-family:var(--f-display);white-space:nowrap}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.chipsel{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-top:8px}
+.chipsel::-webkit-scrollbar{display:none}
+.chipsel button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-weight:700;font-size:14px;cursor:pointer}
+.chipsel button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.search{width:100%;margin-top:8px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:9px 12px;font:inherit;font-size:16px;color:var(--ink)}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}
+.sh small{color:var(--muted);font-size:13px}
+.sh h2::before{content:"";display:inline-block;width:5px;height:.9em;border-radius:3px;background:var(--mark);margin-inline-end:8px;vertical-align:-.08em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.45}
+.empty{color:var(--muted);text-align:center;padding:24px 12px;line-height:1.6}
+/* hubs (big inner dashboards) */
+.hubs{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.hub{border:0;border-radius:16px;padding:14px;text-align:start;cursor:pointer;color:#fff;min-height:104px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(135deg,var(--c1,#3a3f7a),var(--c2,#6a58c9))}
+.hub .i{font-size:28px;line-height:1}
+.hub .t{font-family:var(--f-display);font-weight:800;font-size:17px;line-height:1.25;margin-top:8px}
+.hub .s{font-size:12.5px;opacity:.85;font-weight:600}
+.hubadd{border:2px dashed var(--line);border-radius:16px;background:none;min-height:104px;padding:12px;color:var(--muted);font-weight:700;font-size:14px;line-height:1.4;text-align:center}
+/* tickets */
+.tlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--line);gap:1px}
+.tk{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:0;padding:12px 14px;text-align:start;cursor:pointer;width:100%}
+.tk .i{flex:none;width:40px;height:40px;border-radius:12px;background:var(--hi-soft);display:grid;place-items:center;font-size:21px}
+.tk .b{flex:1;min-width:0}
+.tk .t{font-family:var(--f-display);font-weight:800;font-size:16.5px;line-height:1.3}
+.tk .s{color:var(--muted);font-size:13.5px;margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tk .m{font-size:12px;color:var(--muted);font-weight:700;margin-top:4px}
+.tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:800;background:var(--hi-soft);color:var(--hi);margin-inline-end:4px}
+.tag.new{background:var(--warn-soft);color:var(--warn)}
+.addrow{width:100%;border:2px dashed var(--line);border-radius:16px;background:none;padding:14px;margin-top:10px;cursor:pointer;font-weight:800;font-size:15.5px;color:var(--muted)}
+.addrow small{display:block;font-weight:600;font-size:13px;margin-top:2px}
+/* ticket page */
+.src{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.1);color:var(--hero-ink)!important;font-weight:800}
+.src small{display:block;color:var(--hero-muted);font-weight:600;font-size:12.5px}
+.acts{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);margin-bottom:14px}
+.acts button{flex:1;border:0;background:none;padding:10px 4px;font-weight:800;font-size:14.5px;cursor:pointer;min-height:44px;white-space:nowrap}
+.acts button+button{border-inline-start:1px solid var(--line)}
+.acts .on{background:var(--good-soft);color:var(--good)}
+.tldr{background:var(--hi-soft);border-radius:14px;padding:12px 14px;font-size:16.5px;font-weight:700;line-height:1.5;margin-bottom:14px}
+.tldr b{display:block;font-family:var(--f-display);font-size:13px;color:var(--hi);margin-bottom:2px}
+.ins{list-style:none;margin:0;padding:0}
+.ins li{padding:11px 2px}
+.ins li+li{border-top:1px solid var(--line)}
+.ins h3{font-size:16.5px;line-height:1.35;display:flex;gap:8px;align-items:baseline}
+.ins h3 .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:14px;display:grid;place-items:center}
+.ins p{margin:4px 0 0;font-size:15.5px;line-height:1.55;padding-inline-start:34px}
+.todo{list-style:none;margin:0;padding:0}
+.todo li{display:flex;gap:10px;padding:9px 2px;font-size:15.5px;line-height:1.5}
+.todo li+li{border-top:1px solid var(--line)}
+.todo li::before{content:"→";flex:none;color:var(--hi);font-weight:900}
+.warnbox{background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:10px 12px;font-size:14.5px;font-weight:600;line-height:1.5}
+.warnbox ul{margin:4px 0 0;padding-inline-start:18px}
+.warnbox li{margin:4px 0}
+.lang{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);margin-bottom:12px}
+.lang button{flex:1;border:0;background:none;padding:8px 4px;font-weight:800;font-size:14px;cursor:pointer}
+.lang button+button{border-inline-start:1px solid var(--line)}
+.lang button.on{background:var(--hi);color:#fff}
+.part{padding:12px 2px}
+.part+.part{border-top:1px solid var(--line)}
+.part .hd{font-family:var(--f-display);font-weight:800;font-size:13px;color:var(--hi);margin-bottom:4px}
+.part .he{font-size:16px;line-height:1.6;white-space:pre-line}
+.part .en{direction:ltr;text-align:left;font-size:15px;line-height:1.55;color:var(--en);white-space:pre-line;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.part .he+.en{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.glos{list-style:none;margin:0;padding:0}
+.glos li{padding:8px 2px;font-size:15px;line-height:1.5}
+.glos li+li{border-top:1px solid var(--line)}
+.glos b{font-family:var(--f-display)}
+.hsec{padding:10px 2px}
+.hsec+.hsec{border-top:1px solid var(--line)}
+.hsec h3{font-size:16.5px;margin-bottom:4px}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw}
+.toast.on{display:block}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=4">
+<script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const CHAT_FALLBACK="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCP8PxHfsHUsPUT2rYVhCcMkF";
+// default topics; _meta.topics [{id,label,icon}] can add more
+const TOPICS0=[["health","בריאות","🩺"],["mind","פסיכולוגיה ונפש","🧠"],["relations","זוגיות ומשפחה","💞"],["parenting","הורות","🧸"],["tech","טכנולוגיה","💻"],["ai","AI","✨"],["money","כסף","💰"],["work","עבודה וניהול","📈"],["science","מדע","🔬"],["history","היסטוריה","🏛️"],["life","חיים","🌱"],["other","אחר","📌"]];
+const PLAT={x:"X (טוויטר)",web:"אתר",youtube:"יוטיוב",instagram:"אינסטגרם",tiktok:"טיקטוק",facebook:"פייסבוק",article:"כתבה",book:"ספר",podcast:"פודקאסט",linkedin:"לינקדאין"};
+let items={},meta={},db=null,loaded=false;
+const UI_KEY="sq_kn_ui";let ui={topic:"all",lang:"both",tab:"ins",q:""};
+try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
+ui.q="";
+function saveUi(){try{const {q,...r}=ui;localStorage.setItem(UI_KEY,JSON.stringify(r));}catch(e){}}
+const EMB=window.self!==window.top;function goHash(x){if(EMB)location.replace(location.pathname+location.search+"#"+x);else location.hash=x;}
+function route(){const m=location.hash.match(/^#(t|h)=(.+)$/);return m?{k:m[1],id:decodeURIComponent(m[2])}:null;}
+
+function topics(){const extra=(Array.isArray(meta.topics)?meta.topics:[]).filter(t=>t&&t.id).map(t=>[t.id,t.label||t.id,t.icon||"📌"]);
+  const ids=new Set(extra.map(t=>t[0]));return [...extra,...TOPICS0.filter(t=>!ids.has(t[0]))];}
+function topicOf(id){return topics().find(t=>t[0]===id)||["other","אחר","📌"];}
+function all(kind){return Object.entries(items).map(([id,v])=>({id,...v})).filter(x=>!x._deleted&&x.title&&(x.kind||"ticket")===kind);}
+const byNew=(a,b)=>(!!b.fav-!!a.fav)||String(b.created_at||"").localeCompare(String(a.created_at||""));
+function plat(x){const s=x.source||{};if(s.platform)return s.platform;const u=s.url||"";return /(^|\/\/)(www\.)?(x|twitter)\.com/.test(u)?"x":/youtu/.test(u)?"youtube":/instagram/.test(u)?"instagram":/tiktok/.test(u)?"tiktok":/facebook/.test(u)?"facebook":/linkedin/.test(u)?"linkedin":"web";}
+function fmtD(s){if(!s)return "";const d=new Date(s);return isNaN(d)?String(s):d.getDate()+"."+(d.getMonth()+1)+"."+d.getFullYear();}
+function match(x,q){if(!q)return true;q=q.toLowerCase();return [x.title,x.summary,x.tldr,(x.tags||[]).join(" "),(x.source||{}).author].join(" ").toLowerCase().includes(q);}
+
+// ---------- hero ----------
+function heroHome(){const T=all("ticket"),H=all("hub"),tp=new Set(T.map(x=>x.topic||"other"));
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
+  <h1>🧠 ידע ותחומי עניין</h1><p class="sub">כל פיסת ידע ששווה לשמור: הטקסט המלא בעברית ובאנגלית, תובנות ומה עושים עם זה. לפי תחומים.</p>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שלח פיסת ידע<small>לינק, כתבה, פוסט, צילום מסך או סתם רעיון. אני מסכם ומוציא תובנות</small></span></a>
+  <div class="kpis"><div class="kpi"><b>${T.length}</b><span>פיסות ידע</span></div><div class="kpi"><b>${tp.size}</b><span>תחומים</span></div><div class="kpi"><b>${H.length}</b><span>דשבורדים פנימיים</span></div></div>`;}
+function heroTicket(x){const s=x.source||{},u=safe(s.url),tp=topicOf(x.topic),hub=x.hub&&items[x.hub];
+  const back=hub?`<button class="sqhome sqsub" type="button" data-goh="${esc(x.hub)}"><span class="ar">→</span><span class="em">${esc(hub.icon||"📚")}</span><span>${esc(hub.title)}</span></button>`:`<button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button>`;
+  return `<div class="top">${back}<span class="back">${tp[2]} ${esc(tp[1])}</span></div>
+  <h1>${esc(x.icon||"💡")} ${esc(x.title)}</h1><p class="sub">${esc(x.summary||"")}</p>
+  ${u?`<a class="src" href="${esc(u)}" target="_blank" rel="noopener"><span style="font-size:22px">🔗</span><span>למקור${s.author?": "+esc(s.author):""}${s.handle?" "+esc(s.handle):""}<small>${esc([PLAT[plat(x)],s.date?fmtD(s.date):"",s.label].filter(Boolean).join(" · "))}</small></span></a>`:""}`;}
+function heroHub(h){return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button><span class="back">${esc(topicOf(h.topic)[1])}</span></div>
+  <h1>${esc(h.icon||"📚")} ${esc(h.title)}</h1><p class="sub">${esc(h.summary||"")}</p>`;}
+
+// ---------- home ----------
+function renderHome(){$("hero").innerHTML=heroHome();
+  const T=all("ticket"),used=new Set(T.map(x=>x.topic||"other"));
+  const chips=[["all","הכול",""],...topics().filter(t=>used.has(t[0]))];
+  $("bar").innerHTML=`<div class="chipsel" style="padding-top:0">${chips.map(([k,l,i])=>`<button data-topic="${esc(k)}" class="${ui.topic===k?"on":""}">${i?i+" ":""}${esc(l)}${k==="all"?"":" "+T.filter(x=>(x.topic||"other")===k).length}</button>`).join("")}</div>`
+    +(T.length>6?`<input class="search" id="q" type="search" placeholder="🔍 חיפוש בידע" value="${esc(ui.q)}">`:"");
+  $("app").innerHTML=renderList();bindSearch();}
+function bindSearch(){const q=$("q");if(!q)return;q.oninput=()=>{ui.q=q.value;$("app").innerHTML=renderList();};}
+function ticketRow(x){const tp=topicOf(x.topic);
+  return `<button class="tk" data-got="${esc(x.id)}"><span class="i">${esc(x.icon||tp[2])}</span><span class="b">
+    <span class="t">${esc(x.title)}</span><span class="s">${esc(x.summary||"")}</span>
+    <span class="m">${x.status==="new"?`<span class="tag new">⏳ בעבודה</span>`:""}<span class="tag">${tp[2]} ${esc(tp[1])}</span>${esc([x.fav?"⭐":"",(x.source||{}).author,fmtD(x.created_at)].filter(Boolean).join(" · "))}</span></span></button>`;}
+function renderList(){const H=all("hub").sort((a,b)=>(a.order||99)-(b.order||99));
+  const T=all("ticket").filter(x=>(ui.topic==="all"||(x.topic||"other")===ui.topic)&&match(x,ui.q)).sort(byNew);
+  let h="";
+  const Hs=H.filter(x=>ui.topic==="all"||x.topic===ui.topic);
+  h+=`<section><div class="sh"><h2>📚 דשבורדים פנימיים</h2><small>נושא גדול עם הרבה ידע</small></div><div class="hubs">${Hs.map(x=>{const n=all("ticket").filter(t=>t.hub===x.id).length;
+    return `<button class="hub" data-goh="${esc(x.id)}" style="--c1:${esc(x.c1||"#3a3f7a")};--c2:${esc(x.c2||"#6a58c9")}"><span class="i">${esc(x.icon||"📚")}</span><span><span class="t">${esc(x.title)}</span><span class="s">${n} פיסות ידע</span></span></button>`;}).join("")}
+    <div class="hubadd">כשנושא יגדל (כמה פיסות באותו תחום), הוא יקבל כאן דשבורד משלו</div></div></section>`;
+  h+=`<section><div class="sh"><h2>🎫 פיסות ידע</h2><small>${T.length}</small></div>${T.length?`<div class="tlist">${T.map(ticketRow).join("")}</div>`:`<div class="card empty">${loaded?(ui.q?"לא נמצא":"עוד אין כאן כלום. שלח לי משהו מעניין 🙂"):"טוען…"}</div>`}
+    <button class="addrow" data-add>＋ פיסת ידע מלינק<small>מדביקים לינק, ואני משלים טקסט מלא, תרגום ותובנות</small></button></section>`;
+  return h;}
+
+// ---------- ticket ----------
+function tabIns(x){let h="";
+  if(x.tldr)h+=`<div class="tldr"><b>בשורה אחת</b>${esc(x.tldr)}</div>`;
+  if((x.insights||[]).length)h+=`<section><div class="sh"><h2>💡 תובנות</h2></div><div class="card"><ul class="ins">${x.insights.map((i,n)=>`<li><h3><span class="n">${n+1}</span><span>${esc(i.h||"")}</span></h3>${i.text?`<p>${esc(i.text)}</p>`:""}</li>`).join("")}</ul></div></section>`;
+  if((x.actions||[]).length)h+=`<section><div class="sh"><h2>🛠️ מה אפשר לעשות עם זה</h2></div><div class="card"><ul class="todo">${x.actions.map(a=>`<li><span>${esc(typeof a==="string"?a:a.text)}</span></li>`).join("")}</ul></div></section>`;
+  if((x.caveats||[]).length)h+=`<section><div class="sh"><h2>⚖️ לקחת בעירבון מוגבל</h2></div><div class="warnbox"><ul>${x.caveats.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div></section>`;
+  if((x.glossary||[]).length)h+=`<section><div class="sh"><h2>📖 מונחים</h2></div><div class="card"><ul class="glos">${x.glossary.map(g=>`<li><b>${esc(g.term)}</b>${g.en?` <span class="muted" dir="ltr">(${esc(g.en)})</span>`:""}: ${esc(g.text)}</li>`).join("")}</ul></div></section>`;
+  if((x.links||[]).length)h+=`<section><div class="sh"><h2>🔗 עוד מקורות</h2></div><div class="card">${x.links.filter(l=>safe(l.url)).map(l=>`<div style="padding:4px 0"><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>${l.note?` <span class="muted">· ${esc(l.note)}</span>`:""}</div>`).join("")}</div></section>`;
+  return h||`<div class="empty">${x.status==="new"?"אני עובד על זה. התובנות יופיעו כאן.":"אין עדיין תובנות."}</div>`;}
+function tabText(x){const P=x.parts||[];if(!P.length)return `<div class="empty">${x.status==="new"?"הטקסט המלא בדרך.":"אין טקסט מלא."}</div>`;
+  const L=ui.lang;
+  return `<div class="lang">${[["he","עברית"],["both","שתיהן"],["en","English"]].map(([k,l])=>`<button data-lang="${k}" class="${L===k?"on":""}">${l}</button>`).join("")}</div>
+  <div class="card">${P.map(p=>`<div class="part">${p.n?`<div class="hd">${esc(p.n)}</div>`:""}${L!=="en"&&p.he?`<div class="he">${esc(p.he)}</div>`:""}${L!=="he"&&p.en?`<div class="en" dir="ltr">${esc(p.en)}</div>`:""}</div>`).join("")}</div>
+  ${x.text_note?`<div class="note">${esc(x.text_note)}</div>`:""}`;}
+function renderTicket(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
+  $("hero").innerHTML=heroTicket(x);
+  $("bar").innerHTML=`<div class="seg"><button data-tab="ins" class="${ui.tab!=="text"?"on":""}">💡 תובנות</button><button data-tab="text" class="${ui.tab==="text"?"on":""}">📜 הטקסט המלא</button></div>`;
+  const acts=`<div class="acts"><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button data-share>📤 לשתף</button></div>`;
+  $("app").innerHTML=acts+(ui.tab==="text"?tabText(x):tabIns(x));}
+function shareText(x){const s=x.source||{};
+  return [`${x.icon||"💡"} ${x.title}`,x.tldr||x.summary||"",...(x.insights||[]).slice(0,5).map((i,n)=>`${n+1}. ${i.h}`),safe(s.url)?"\nמקור: "+s.url:""].filter(Boolean).join("\n");}
+
+// ---------- hub ----------
+function renderHub(id){const h={id,...(items[id]||{})};if(!h.title){$("app").innerHTML=`<div class="empty">${loaded?"לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
+  $("hero").innerHTML=heroHub(h);$("bar").innerHTML="";
+  const T=all("ticket").filter(t=>t.hub===id).sort(byNew);let o="";
+  if((h.sections||[]).length)o+=`<section><div class="sh"><h2>🧭 מה שלמדנו</h2></div><div class="card">${h.sections.map(s=>`<div class="hsec"><h3>${esc(s.h)}</h3><div>${esc(s.text)}</div></div>`).join("")}</div></section>`;
+  o+=`<section><div class="sh"><h2>🎫 פיסות ידע</h2><small>${T.length}</small></div>${T.length?`<div class="tlist">${T.map(ticketRow).join("")}</div>`:`<div class="card empty">עוד אין</div>`}</section>`;
+  $("app").innerHTML=o;}
+
+function render(){const r=route();if(r&&r.k==="t")renderTicket(r.id);else if(r&&r.k==="h")renderHub(r.id);else renderHome();
+  $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד ידע ${esc(window.KN_BUILD)}`;}
+let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
+async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
+async function upd(id,patch,msg){const prev=JSON.parse(JSON.stringify(items[id]||{}));items[id]=Object.assign({},items[id],patch);const y=scrollY;render();scrollTo(0,y);
+  if(!db){toast("אין חיבור, לא נשמר");return;}
+  try{await db.collection("knowledge").doc(id).update(patch);toast(msg||"נשמר");}catch(e){items[id]=prev;render();toast("לא נשמר, נסה שוב");}}
+window.addEventListener("hashchange",()=>{render();scrollTo(0,0);});
+function keepPut(sel,fn){/* a tapped button stays put (rule 6.11) */const b=document.querySelector(sel),top=b?b.getBoundingClientRect().top:0;fn();const nb=document.querySelector(sel);if(b&&nb)scrollBy(0,nb.getBoundingClientRect().top-top);}
+document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
+  if(b=g("[data-topic]")){ui.topic=b.dataset.topic;saveUi();render();return;}
+  if(b=g("[data-got]")){ui.tab="ins";goHash("t="+encodeURIComponent(b.dataset.got));return;}
+  if(b=g("[data-goh]")){goHash("h="+encodeURIComponent(b.dataset.goh));return;}
+  if(g("[data-home]")){EMB?goHash(""):history.length>1&&route()?history.back():(location.hash="");return;}
+  if(b=g("[data-tab]")){const k=b.dataset.tab;keepPut(`[data-tab="${k}"]`,()=>{ui.tab=k;saveUi();render();});return;}
+  if(b=g("[data-lang]")){const k=b.dataset.lang;keepPut(`[data-lang="${k}"]`,()=>{ui.lang=k;saveUi();render();});return;}
+  const now=new Date().toISOString();
+  if(g("[data-fav]")){const id=route().id;upd(id,{fav:!(items[id]||{}).fav,updated_at:now});return;}
+  if(g("[data-share]")){const id=route().id;const t=shareText({id,...items[id]});
+    if(navigator.share){try{await navigator.share({text:t});return;}catch(err){if(err&&err.name==="AbortError")return;}}
+    toast(await copy(t)?"הסיכום הועתק, אפשר להדביק בוואטסאפ":"לא הצלחתי להעתיק");return;}
+  if(g("[data-add]")){const u=(prompt("הדבק לינק או טקסט (פוסט, כתבה, סרטון)")||"").trim();if(!u)return;if(!db){toast("אין חיבור");return;}
+    const m=u.match(/https:\/\/\S+/);const url=m?m[0]:"";const id="k"+Date.now().toString(36);
+    try{await db.collection("knowledge").doc(id).set({kind:"ticket",title:url?"פיסת ידע חדשה":u.slice(0,100),icon:"💡",topic:ui.topic==="all"?"other":ui.topic,status:"new",source:{url},parts:[],insights:[],created_at:now,updated_at:now,log:[{at:now,text:"נפתח מהדשבורד"}]});
+      const ok=await copy(`פיסת ידע חדשה בדשבורד הידע (id ${id}): ${u}\nתקרא את כל המקור, תביא את הטקסט המלא באנגלית ובעברית בצורה סדורה, תסכם, תוציא תובנות ומה אפשר לעשות עם זה, ותמלא את הטיקט.`);
+      toast(ok?"נוסף. הבקשה הועתקה, הדבק בשיחה":"נוסף");setTimeout(()=>window.open(safe(meta.chat_url)||CHAT_FALLBACK,"_blank","noopener"),700);goHash("t="+encodeURIComponent(id));}catch(err){toast("לא נשמר");}return;}
+});
+render();
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("knowledge").onSnapshot(s=>{loaded=true;const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else n[x.id]=v;});items=n;render();},()=>{});
+});
+})();
+</script>
+</body>
+</html>
