@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.7";window.SQ_BUILD_AT="7.11.2026 17:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.8";window.SQ_BUILD_AT="7.11.2026 17:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1354,6 +1354,10 @@ details.more[open]>summary{margin-bottom:10px}
 .pgback:active{background:rgba(255,255,255,.22)}
 .pgback .ar{font-size:18px;opacity:.85;flex:none}
 .pgback img{width:34px;height:34px;border-radius:9px;display:block;flex:none;pointer-events:none}
+/* 12.8: the dashboard bar's back has a fixed width (its label changes between Side Quests and the sub back, it never moves) */
+.dpg .pgback{width:min(56vw,206px);max-width:none}
+.pgback .em{display:none;width:34px;height:34px;border-radius:9px;flex:none;align-items:center;justify-content:center;background:rgba(255,255,255,.16);font-size:20px;line-height:1}
+.pgback.sub img{display:none}.pgback.sub .em{display:flex}
 .pgback span:last-child{overflow:hidden;text-overflow:ellipsis}
 .pgtitle{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;text-align:center;opacity:.92}
 .pgbody{padding:16px max(16px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
@@ -2238,7 +2242,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     if(d.source==="shopping"&&shopDocs.length){ // 9.6: purchases research (shopping.html)
       const its=shopDocs.filter(x=>x.id!=="_meta"&&x.title),open=its.filter(x=>!["bought","dropped"].includes(x.status));
       const qs=open.flatMap(x=>(x.questions||[]).filter(q=>!q.answer&&!q.superseded).map(q=>({x,q})));
-      const kpis=[{v:String(open.length),l:"קניות בבירור"},{v:String(open.filter(x=>x.status==="deciding").length),l:"מחכות להחלטה"},{v:String(qs.length),l:"שאלות אליך"}];
+      const kpis=[{v:String(open.length),l:"קניות פתוחות"},{v:String(its.length-open.length),l:"בארכיון"},{v:String(qs.length),l:"שאלות אליך"}];
       const sugs=qs.slice(0,2).map(o=>({text:(o.x.icon||"🛒")+" "+o.x.title+": "+o.q.q,sub:(o.q.options||[]).join(" / ")}));
       return {kpis,sugs,live:true,line:open.length?"בבירור: "+open.map(x=>x.title).slice(0,3).join(", "):""};
     }
@@ -2509,11 +2513,11 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     const cu=d&&secUrl("dash_"+d.id,d.chat,chatOf(allTopics.find(x=>x.id===d.id)||{}),proj&&proj.claude_url);
     const chat=d?h("a",{class:"pgchat",href:cu||SQ_CHAT,target:"_blank",rel:"noopener","aria-label":"עבודה עם הצ׳אט על הדשבורד",html:ICON.chat,onclick:e=>{if(!cu){try{navigator.clipboard&&navigator.clipboard.writeText("לגבי הדשבורד "+(d.title||"")+" ב-Side Quests");toast("אין עדיין שיחה לדשבורד. השם הועתק, הדבק בשיחה");}catch(x){}}}}):h("span");
     const bar=h("div",{class:"pgbar",style:d?`--hero:${d.c1||"#1F1E1D"}`:""},h("div",{class:"pgbar-in"},
-      pgBack(back),
+      pgBack(back,()=>dashBack()),
       h("div",{class:"pgtitle"},d?((d.icon?d.icon+" ":"")+(d.short||d.title||"")):""),chat));
     const edge=h("div",{class:"pgedge","aria-hidden":"true"});
     let body;
-    if(fr){body=h("iframe",{class:"dfr",src:fr,title:d.title||"דשבורד",allow:"clipboard-write"});dashPg={id,frame:true};}
+    if(fr){body=h("iframe",{class:"dfr",src:fr,title:d.title||"דשבורד",allow:"clipboard-write"});dashPg={id,frame:true,back,sub:null};}
     else if(d&&u){body=h("div",{class:"dscroll"},h("div",{class:"pgbody"},h("a",{class:"dz-go",href:u,target:"_blank",rel:"noopener"},"פתח את הדשבורד ←")));dashPg={id,frame:false};}
     else{const y=pD.querySelector(".dscroll")?pD.querySelector(".dscroll").scrollTop:0;
       body=h("div",{class:"dscroll"},h("div",{class:"pgbody"},d?dashCard(d,true):h("div",{class:"empty"},dashes.length?"הדשבורד לא נמצא.":"טוען…")));dashPg={id:d?id:null,frame:false};
@@ -2529,8 +2533,16 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   function projWaiting(pid){return allTopics.filter(t=>t.project===pid&&t.status==="waiting_me"&&!isBg(t)&&!isFun(t)).length;}
   function projCounts(ts){const o=ts.filter(t=>isOpen(t)&&!isBg(t)&&!isFun(t));return {open:o.length,me:o.filter(t=>t.status==="waiting_me").length,asks:o.reduce((n,t)=>n+openAsks(t),0)};}
   function genTasks(){return allTopics.filter(t=>!isFun(t)&&questOf(t)==="ai"&&!isProjTask(t)&&!isBg(t));}
-  function pgBack(back){return h("button",{class:"pgback",type:"button","aria-label":"חזרה ל"+back,onclick:()=>navBack()},
-    h("span",{class:"ar","aria-hidden":"true"},"→"),h("img",{src:"icon-192.png?v=2",alt:""}),h("span",null,back));}
+  function pgBack(back,fn){return h("button",{class:"pgback",type:"button","aria-label":"חזרה ל"+back,onclick:()=>fn?fn():navBack()},
+    h("span",{class:"ar","aria-hidden":"true"},"→"),h("img",{src:"icon-192.png?v=2",alt:""}),h("span",{class:"em","aria-hidden":"true"}),h("span",{class:"lb"},back));}
+  // 12.8 (Oren 7.11.2026): one dynamic back. A dashboard frame on a sub view (product, recipe, hub) tells us (dash-sub.js,
+  // sq-sub) and the app bar's back shows that sub back and steps back inside the page (sq-back); on its home it closes it.
+  function dashFrameEl(){return dashPg.frame?$("pgD").querySelector("iframe.dfr"):null;}
+  function dashBack(){const f=dashFrameEl();if(f&&dashPg.sub){try{f.contentWindow.postMessage({type:"sq-back"},"*");return;}catch(e){}}navBack();}
+  function dashSubShow(){const b=$("pgD").querySelector(".pgback");if(!b)return;const s=dashPg.sub,lb=s?s.label:(dashPg.back||"Side Quests");
+    b.classList.toggle("sub",!!s);b.querySelector(".em").textContent=s?(s.icon||"↩"):"";b.querySelector(".lb").textContent=lb;b.setAttribute("aria-label","חזרה ל"+lb);}
+  window.addEventListener("message",e=>{const d=e.data;if(!d||d.type!=="sq-sub")return;const f=dashFrameEl();if(!f||e.source!==f.contentWindow)return;
+    const s=d.sub&&typeof d.sub.label==="string"?{label:d.sub.label.slice(0,40),icon:String(d.sub.icon||"").slice(0,8)}:null;dashPg.sub=s;dashSubShow();});
   function pgBar(back,title){return h("div",{class:"pgbar"},h("div",{class:"pgbar-in"},
     pgBack(back),
     h("div",{class:"pgtitle"},title),h("span")));}
@@ -2601,8 +2613,9 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
       st.el.style.transform=`translateX(${x}px)`;if(st.under)st.under.style.transform=`translateX(${-(1-x/W)*W*.28}px)`;
       $("pgShade").style.opacity=String(.22*(1-x/W));},{passive:false});
     const end=()=>{if(!st)return;const s=st;st=null;if(!s.on)return;const W=window.innerWidth;
-      if(s.dx>W/3||(s.v>.5&&s.dx>30)){pgSlide(s.el,1,()=>navBack(true));}
-      else{const tr="transform .22s cubic-bezier(.2,.8,.2,1)";s.el.style.transition=tr;s.el.style.transform="translateX(0)";if(s.under){s.under.style.transition=tr;s.under.style.transform=`translateX(${-W*.28}px)`;}
+      const inSub=s.el===$("pgD")&&dashPg.sub;
+      if(!inSub&&(s.dx>W/3||(s.v>.5&&s.dx>30))){pgSlide(s.el,1,()=>navBack(true));}
+      else{if(inSub&&(s.dx>W/3||(s.v>.5&&s.dx>30)))dashBack();const tr="transform .22s cubic-bezier(.2,.8,.2,1)";s.el.style.transition=tr;s.el.style.transform="translateX(0)";if(s.under){s.under.style.transition=tr;s.under.style.transform=`translateX(${-W*.28}px)`;}
         $("pgShade").style.transition="opacity .22s";$("pgShade").style.opacity=".22";
         setTimeout(()=>{s.el.style.transform="";s.el.style.transition="";if(s.under){s.under.style.transform="";s.under.style.transition="";}$("pgShade").style.opacity="0";},240);}};
     document.addEventListener("touchend",end);document.addEventListener("touchcancel",end);})();
