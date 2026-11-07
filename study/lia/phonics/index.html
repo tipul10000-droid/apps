@@ -21,8 +21,8 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 .prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px}
 .prog .row b{color:var(--fg);font-size:17px}
 .chips{display:flex;gap:5px}.chip{font-size:13px;background:var(--pl);color:#3730a3;border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
-.grp{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px}
-.grp span{height:24px;border-radius:8px;background:#f1f3f7;color:var(--mut);font:600 12px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;direction:ltr;overflow:hidden;white-space:nowrap;position:relative}
+.grp{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px}
+.grp span{height:24px;border-radius:8px;background:#f1f3f7;color:var(--mut);font:600 11px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;direction:ltr;overflow:hidden;white-space:nowrap;position:relative}
 .grp span i{position:absolute;inset:0 auto 0 0;background:rgba(79,70,229,.16);width:0}
 .grp span.cur{background:#e0e7ff;color:#3730a3;outline:2px solid #818cf8}.grp span.ok{background:#dcfce7;color:#166534}
 .card{flex:0 1 490px;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px;box-shadow:var(--sh);text-align:center;margin-top:10px}
@@ -121,10 +121,12 @@ const G=[
 [['g','Gg','g','goat','🐐','same','ג','כְּמוֹ ג׳ בְּ<u>גָּ</u>מָל',null],['o','Oo','o','octopus','🐙','near',null,'אָ פְּתוּחָה, פֶּה פָּתוּחַ לְמַטָּה (hot = הָאט)',null],['u','Uu','u','umbrella','☂️','near',null,'אַ קְצָרָה וַעֲמֻקָּה (cup = קַפּ)',null],['l','Ll','l','lion','🦁','same','ל','כְּמוֹ ל׳ בְּ<u>לִ</u>ימוֹן','lll'],['f','Ff','f','fish','🐟','same','פ','כְּמוֹ פ׳ בְּיָ<u>פֶה</u>','fff'],['b','Bb','b','ball','⚽','same','בּ','כְּמוֹ בּ בְּ<u>בַּ</u>יִת',null]],
 [['j','Jj','j','juice','🧃','same','ג׳','כְּמוֹ ג׳ בְּ<u>גִ׳י</u>רָפָה',null],['z','Zz','z','zebra','🦓','same','ז','כְּמוֹ ז׳ בְּ<u>זֶ</u>בְּרָה','zzz'],['w','Ww','w','watermelon','🍉','new',null,'אֵין בְּעִבְרִית! שְׂפָתַיִים עֲגֻלּוֹת כְּמוֹ וּ, וּמִיָּד פּוֹתְחִים. לֹא ו׳',null],['v','Vv','v','van','🚐','same','ו','כְּמוֹ ו׳ בְּ<u>וֶ</u>רֶד','vvv'],['y','Yy','y','yo-yo','🪀','same','י','כְּמוֹ י׳ בְּ<u>יֶ</u>לֶד',null],['x','Xx','x','box','📦','same',null,'ק׳ וְס׳ בְּיַחַד: קְס, כְּמוֹ בְּטֶ<u>קְס</u>ְט',null],['qu','Qu qu','qu','queen','👑','near',null,'ק׳ וּמִיָּד w: קְוְ',null]],
 [['sh','sh','sh','ship','🚢','same','שׁ','כְּמוֹ שׁ בְּ<u>שֶׁ</u>מֶשׁ','shh'],['ch','ch','ch','chair','🪑','same','צ׳','כְּמוֹ צ׳ בְּ<u>צִ׳י</u>פְּס',null],['th','th','th','thumb','👍','new',null,'אֵין בְּעִבְרִית! קְצֵה הַלָּשׁוֹן בֵּין הַשִּׁנַּיִים, וְנוֹשְׁפִים',null],['ng','ng','ng','ring','💍','near',null,'נ׳ מֵהַגָּרוֹן, בְּלִי ג׳ בַּסּוֹף (sing)',null]],
-[['a_e','a_e','A','cake','🎂','same',null,'הַ-e בַּסּוֹף שְׁקֵטָה, וְ-a אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אֵיי',null],['ee','ee','E','bee','🐝','same',null,'אוֹמֶרֶת אֶת הַשֵּׁם שֶׁל e: אִי אֲרֻכָּה',null],['i_e','i_e','I','bike','🚲','same',null,'הַ-e שְׁקֵטָה, וְ-i אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אַיי',null],['o_e','o_e','O','home','🏠','same',null,'הַ-e שְׁקֵטָה, וְ-o אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אוֹ',null],['u_e','u_e','U','cute','🐱','same',null,'הַ-e שְׁקֵטָה, וְ-u אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: יוּ',null]]];
+[['a_e','a_e','A','cake','🎂','same',null,'הַ-e בַּסּוֹף שְׁקֵטָה, וְ-a אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אֵיי',null],['ee','ee','E','bee','🐝','same',null,'אוֹמֶרֶת אֶת הַשֵּׁם שֶׁל e: אִי אֲרֻכָּה',null],['i_e','i_e','I','bike','🚲','same',null,'הַ-e שְׁקֵטָה, וְ-i אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אַיי',null],['o_e','o_e','O','home','🏠','same',null,'הַ-e שְׁקֵטָה, וְ-o אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אוֹ',null],['u_e','u_e','U','cute','🐱','same',null,'הַ-e שְׁקֵטָה, וְ-u אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: יוּ',null]],
+// קבוצה 7 (אורן 6.11.2026): שתי אותיות, צליל אחד. ai/oa = אותו צליל כמו a_e/o_e
+[['ai','ai','A','rain','🌧️','same',null,'שְׁתֵּי אוֹתִיּוֹת, צְלִיל אֶחָד: <u>אֵיי</u>, כְּמוֹ בַּמִּלָּה cake',null],['oa','oa','O','boat','⛵','same',null,'שְׁתֵּי אוֹתִיּוֹת, צְלִיל אֶחָד: <u>אוֹ</u>, כְּמוֹ בַּמִּלָּה home',null],['oo','oo','oo','moon','🌙','same',null,'אוּ אֲרֻכָּה, כְּמוֹ בְּ<u>אוּ</u>לָם (moon = מוּן)',null],['ar','ar','ar','car','🚗','near',null,'אַר, עִם ר׳ אֲמֶרִיקָאִית (car = קַאר)',null],['or','or','or','fork','🍴','near',null,'אוֹר, עִם ר׳ אֲמֶרִיקָאִית (fork = פוֹרְק)',null],['er','er','er','fern','🌿','new',null,'אֵין בְּעִבְרִית! צְלִיל עָמֹק בְּלִי תְּנוּעָה בְּרוּרָה, הַלָּשׁוֹן מִתְגַּלְגֶּלֶת אָחוֹרָה (her)',null],['ou','ou','ou','cloud','☁️','near',null,'<u>אַאוּ</u>, כְּמוֹ כְּשֶׁמַּשֶּׁהוּ כּוֹאֵב (cloud = קְלַאוּד)',null],['oi','oi','oi','coin','🪙','same',null,'כְּמוֹ <u>אוֹי</u> בְּעִבְרִית (coin = קוֹיְן)',null]]];
 // מילים לבנייה (תרגיל "הרכיבי את המילה"), לכל קבוצה. יחידות מופרדות ב-|
-const BW=[['p|a|t','p|i|n','t|a|p','s|i|p','p|i|t','p|a|n','n|a|p'],['c|a|t','h|a|t','t|e|n','h|e|n','k|i|d','m|a|n','r|a|t','n|e|t'],['d|o|g','b|u|g','s|u|n','c|u|p','l|e|g','h|o|p','b|u|s','t|o|p'],['j|e|t','z|i|p','w|e|t','v|a|n','y|u|m','b|o|x','f|o|x','j|u|g'],['sh|i|p','ch|i|p','th|i|n','s|i|ng','f|i|sh','sh|o|p','b|a|th','k|i|ng'],['c|a|k|e','b|i|k|e','h|o|m|e','c|u|t|e','r|i|d|e','r|o|d|e','m|u|l|e','k|i|t|e']];
-const GN=['s a t p i n','c k e h r m d','g o u l f b','j z w v y x','sh ch th ng','a_e ee'];
+const BW=[['p|a|t','p|i|n','t|a|p','s|i|p','p|i|t','p|a|n','n|a|p'],['c|a|t','h|a|t','t|e|n','h|e|n','k|i|d','m|a|n','r|a|t','n|e|t'],['d|o|g','b|u|g','s|u|n','c|u|p','l|e|g','h|o|p','b|u|s','t|o|p'],['j|e|t','z|i|p','w|e|t','v|a|n','y|u|m','b|o|x','f|o|x','j|u|g'],['sh|i|p','ch|i|p','th|i|n','s|i|ng','f|i|sh','sh|o|p','b|a|th','k|i|ng'],['c|a|k|e','b|i|k|e','h|o|m|e','c|u|t|e','r|i|d|e','r|o|d|e','m|u|l|e','k|i|t|e'],['r|ai|n','t|r|ai|n','s|n|ai|l','t|ai|l','b|oa|t','c|oa|t','s|oa|p','r|oa|d','m|oo|n','s|p|oo|n','z|oo','r|oo|f','c|ar','s|t|ar','f|ar|m','p|ar|k','f|or|k','c|or|n','h|or|n','h|er','f|er|n','c|l|ou|d','l|ou|d','ou|t','c|oi|n','oi|l','s|oi|l','j|oi|n']];
+const GN=['s a t p i n','c k e h r m d','g o u l f b','j z w v y x','sh ch th ng','a_e ee','ai oa oo ar'];
 const IT=[],BY={};G.forEach((g,gi)=>g.forEach(r=>{const o={id:r[0],show:r[1],snd:r[2],word:r[3],pic:r[4],tier:r[5],he:r[6],htx:r[7],tt:r[8],g:gi};IT.push(o);BY[o.id]=o}));
 const N=IT.length;
 // הקלטות שיש (נוצר בבנייה מתוך תיקיית audio). חסר = הקראה של הדפדפן בהגייה אמריקאית.
@@ -185,7 +187,7 @@ function next(){if(TEST)return;const g=curG();
 // כל צליל שנלמד צריך עוד MS תשובות נכונות (w.m) בשאלות מגוונות ובהכתבה כדי להיות "בשליטה ⭐". טעות מורידה 2.
 const MS=4,allL=()=>IT.every(x=>S.w[x.id].s==='done'),mst=x=>(S.w[x.id].m||0)>=MS,mastered=()=>IT.filter(mst).length;
 // מילים מוקלטות לשאלות על מילה: CVC מאותיות בודדות, ומילים עם תמונה לקריאה
-const EMO={cat:'🐱',hat:'🎩',hen:'🐔',dog:'🐶',bug:'🐛',sun:'☀️',cup:'☕',bus:'🚌',jet:'✈️',van:'🚐',box:'📦',fox:'🦊',pig:'🐷',pin:'📌',man:'👨',rat:'🐀',leg:'🦵',net:'🥅',ten:'🔟',kid:'🧒',tap:'🚰',nap:'😴',yum:'😋',pan:'🍳',ship:'🚢',fish:'🐟',king:'🤴',ring:'💍',cake:'🎂',bike:'🚲',home:'🏠',kite:'🪁',bath:'🛁',chip:'🍟'};
+const EMO={cat:'🐱',hat:'🎩',hen:'🐔',dog:'🐶',bug:'🐛',sun:'☀️',cup:'☕',bus:'🚌',jet:'✈️',van:'🚐',box:'📦',fox:'🦊',pig:'🐷',pin:'📌',man:'👨',rat:'🐀',leg:'🦵',net:'🥅',ten:'🔟',kid:'🧒',tap:'🚰',nap:'😴',yum:'😋',pan:'🍳',ship:'🚢',fish:'🐟',king:'🤴',ring:'💍',cake:'🎂',bike:'🚲',home:'🏠',kite:'🪁',bath:'🛁',chip:'🍟',rain:'🌧️',train:'🚆',snail:'🐌',boat:'⛵',coat:'🧥',soap:'🧼',road:'🛣️',moon:'🌙',spoon:'🥄',car:'🚗',star:'⭐',farm:'🚜',fork:'🍴',corn:'🌽',horn:'📯',fern:'🌿',cloud:'☁️',coin:'🪙'};
 const ALLW=[...new Set(BW.flat().concat(['p|i|g','r|i|ng']))].filter(w=>AUD.has('w-'+w.split('|').join(''))||!AUD.size);
 const CVC=ALLW.map(w=>w.split('|')).filter(u=>u.length===3&&u.every(x=>x.length===1));
 const VOW=['a','e','i','o','u'];
@@ -203,7 +205,7 @@ function nextM(){S.mt=(S.mt||0)+1;
 // מילה להכתבה: מתוך 6 אקראיות, זו עם הצלילים הכי פחות חזקים
 function pickWord(){const L=shuf(ALLW.filter(w=>w!==S.lw)).slice(0,6);if(!L.length)return null;const sc=w=>w.split('|').reduce((a,x)=>a+((S.w[x]&&S.w[x].m)||0),0)+Math.random()*2;const w=L.sort((a,b)=>sc(a)-sc(b))[0];S.lw=w;return w}
 // רמות בהכתבה: 1 = אותיות אקראיות, 2 = אותיות מבלבלות (תנועות, b/d, m/n...), 3 = גם sh/ch/th ו-ng באותיות בודדות. 6 נכונות ברצף = עולים, 2 טעויות ברצף = יורדים.
-const CONF={a:'eiou',e:'aiu',i:'eau',o:'uaa',u:'aoe',b:'dp',d:'bt',p:'bt',m:'n',n:'m',f:'v',v:'fw',s:'z',z:'s',g:'jk',j:'g',t:'d',h:'',r:'lw',l:'r',w:'v',y:'j',k:'g',c:'g',x:'z',sh:'ch',ch:'sh',th:'f',ng:'n'};
+const CONF={a:'eiou',e:'aiu',i:'eau',o:'uaa',u:'aoe',b:'dp',d:'bt',p:'bt',m:'n',n:'m',f:'v',v:'fw',s:'z',z:'s',g:'jk',j:'g',t:'d',h:'',r:'lw',l:'r',w:'v',y:'j',k:'g',c:'g',x:'z',sh:['ch'],ch:['sh'],th:['f'],ng:['n'],ai:['oa','a'],oa:['ai','o'],oo:['ou','u'],ar:['or','er'],or:['ar','oa'],er:['ar','or'],ou:['oo','oi'],oi:['or','oa']};
 function bLevel(ok){S.bl=S.bl||1;S.bh=(S.bh||[]).concat(ok?1:0).slice(-6);
   if(ok&&S.bl<3&&S.bh.length>=6&&S.bh.every(Boolean)){S.bl++;S.bh=[];setTimeout(()=>popTxt('🚀 עלית לרמה '+S.bl+' בהכתבה!'),600)}
   else if(!ok&&S.bl>1&&S.bh.slice(-2).join('')==='00'){S.bl--;S.bh=[]}}
@@ -217,14 +219,14 @@ const lbl=x=>x.id.includes('_')?x.id:x.id;
 function head(tag,cls){return `<div class="top2"><span class="mode ${cls||''}">${tag}</span>${TEST?'<button class="pxb" id="tx" type="button">✕ יציאה מהמבחן</button>':'<span></span>'}</div>`}
 function render(){ANS=false;SEL=null;const c=$('card'),m=CUR.mode,it=CUR.it;let h='';
   if(m==='learn'){const w=it.word.replace(new RegExp('^('+(it.id.includes('_')?it.id[0]:it.id)+')','i'),'<u>$1</u>');
-    h=head('✨ צליל חדש','new')+`<div class="mid"><div class="big">${esc(it.show)}</div><div class="pic">${it.pic}</div><div class="word">${it.g===5?esc(it.word):w}</div>
+    h=head('✨ צליל חדש','new')+`<div class="mid"><div class="big">${esc(it.show)}</div><div class="pic">${it.pic}</div><div class="word">${it.g===5?esc(it.word):it.g>=6?esc(it.word).replace(it.id,'<u>'+it.id+'</u>'):w}</div>
     <div class="says"><button class="say" id="ps" type="button">🔊 הצליל</button><button class="say" id="pw" type="button">🔊 המילה</button></div>
     <div class="heb ${it.tier}"><b>${it.tier==='same'?'✅ יש כזה בעברית':it.tier==='near'?'🟡 דומה לעברית, אבל לא בדיוק':'⭐ צליל חדש, אין כזה בעברית'}</b>${it.he?`<span class="hl" dir="ltr">${esc(lbl(it))} = ${esc(it.he)}</span>`:''}${it.htx}</div></div>
     <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button">הבנתי, בואי נתרגל ←</button></div>`;
     c.innerHTML=h;$('ps').onclick=()=>sound(it);$('pw').onclick=()=>word(it.word);$('nx').onclick=()=>{S.w[it.id].s='learn';S.w[it.id].due=S.T+1;S.T++;save();upd();goNext()};
     setTimeout(()=>sound(it,()=>word(it.word)),250);LAST=it.id;return}
   if(m==='build'){const lv=S.bl||1,u0=CUR.w.split('|'),w=u0.join(''),u=lv>=3?w.split(''):u0;const SAME={c:'k',k:'c'},okx=x=>!x.includes('_')&&!u.includes(x)&&!u.some(l=>SAME[l]===x)&&(lv<3||x.length===1);
-    let cf=lv>=2?shuf([...new Set(u0.flatMap(l=>(CONF[l]||'').split('').filter(Boolean)))]).filter(okx):[];
+    let cf=lv>=2?shuf([...new Set(u0.flatMap(l=>(Array.isArray(CONF[l])?CONF[l]:(CONF[l]||'').split('')).filter(Boolean)))]).filter(okx):[];
     const ex=[...new Set(cf.concat(shuf(IT.filter(x=>x.g<=curG()).map(x=>x.id)).filter(okx)))].slice(0,Math.max(0,7-u.length));
     CUR.u=u;CUR.got=[];CUR.tiles=shuf(u.concat(ex));
     h=head('🧩 הכתבה'+(allL()||(S.bl||1)>1?' · רמה '+(S.bl||1):''))+`<div class="ask">הרכיבי את המילה ששמעת</div><div class="mid"><button class="say lg" id="pw" type="button">🔊</button><div class="slots" id="sl">${u.map(()=>'<span></span>').join('')}</div></div>
@@ -320,7 +322,7 @@ $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
 // ---------- ממשק ----------
 function upd(){const d=done(),g=curG(),ph=allL();$('dn').textContent=ph?mastered():d;$('tt').textContent=N;$('un').textContent=ph?'עם ⭐':'צלילים';
-  $('grp').innerHTML=G.map((gr,i)=>{const n=gr.filter(r=>ph?mst(BY[r[0]]):S.w[r[0]].s==='done').length;return `<span class="${n===gr.length?'ok':i===g?'cur':''}"><i style="width:${n/gr.length*100}%"></i>${n===gr.length?'✓ ':''}${esc(GN[i].split(' ').slice(0,3).join(' '))}</span>`}).join('');
+  $('grp').innerHTML=G.map((gr,i)=>{const n=gr.filter(r=>ph?mst(BY[r[0]]):S.w[r[0]].s==='done').length;return `<span class="${n===gr.length?'ok':i===g?'cur':''}"><i style="width:${n/gr.length*100}%"></i>${n===gr.length?'✓ ':''}${esc(GN[i].split(' ').slice(0,2).join(' '))}</span>`}).join('');
   $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('sqn').textContent=sqN()+'/'+ALLSQ.length;
   const hard=IT.filter(x=>S.w[x.id].err>0).sort((a,b)=>S.w[b.id].err-S.w[a.id].err).slice(0,8).map(x=>({e:x.id+' ('+x.word+')',n:S.w[x.id].err}));
   if(window.StudyTrack)StudyTrack.report({total:N,done:d,learning:IT.filter(x=>S.w[x.id].s==='learn').length,att:S.att,ok:S.okc,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:sqN(),hard,group:Math.min(g+1,G.length),tests:S.tests,built:S.bw||0,mastered:mastered(),dict:{ok:S.bw||0,n:S.bn||0,lvl:S.bl||1},lv:ph?2:1,lvn:ph?'שלב 2: חיזוק ⭐ (צלילים בשליטה)':'שלב 1: לומדת צלילים',prog:ph?mastered():d,pmax:N,grp:G.map((g,gi)=>{const l=IT.filter(x=>x.g===gi);return[l.reduce((t,x)=>t+(S.w[x.id].err||0),0),l.length]}),started:S.started})}
