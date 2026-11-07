@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.8";window.SQ_BUILD_AT="6.11.2026 23:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.9";window.SQ_BUILD_AT="7.11.2026 11:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1879,7 +1879,26 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     const r=[];for(const c of ctxOf(t)){const x=HOW_OF_CTX[c];if(x&&!r.includes(x))r.push(x);}
     if(!r.length&&sizeOf(t)==="trip")r.push("place");return r;}
   function minsOf(t){const f=fitOf(t);if(f.mins)return +f.mins;const s=sizeOf(t);return s==="quick"?15:60;}
-  function fitsWin(t,id){const W=WINS[id];if(!W||!W.acc.length)return false;const f=fitOf(t);if(f.owner==="claude")return false; // Claude's own checks never ask for a window
+  // 11.9 (Oren 7.11.2026): Army quest tasks come in three kinds (fit.army):
+  //  sys    = admin vs the army system itself (commander ranking, army mail, forms): only Sun 10:00 to Thu 18:00, never on the weekend
+  //  people = talking to army-related people: the regular windows up to 22:00, plus Friday morning and Motzash (Sat 18:00-22:00)
+  //  ops    = operational: the only Army tasks that may show on the weekend (Fri afternoon, Saturday)
+  // Missing = inferred: needs people (with / people / call) = people, otherwise sys.
+  function armyCls(t){const f=fitOf(t);if(["sys","people","ops"].includes(f.army))return f.army;
+    const wd=Array.isArray(f.with)?f.with:[];return f.people||wd.length||howOf(t).includes("call")?"people":"sys";}
+  const ARMY_SPAN={sys:{0:[600,1440],1:[0,1440],2:[0,1440],3:[0,1440],4:[0,1080]},people:{0:[420,1320],1:[420,1320],2:[420,1320],3:[420,1320],4:[420,1320],5:[420,780],6:[1080,1320]}};
+  // the minutes [s,e) of window id on day d (all its pieces that day)
+  function winSpans(id,d){const L=dayWins(d,null),r=[];for(let j=0;j<L.length;j++)if(L[j][1]===id)r.push([L[j][0],j+1<L.length?L[j+1][0]:1440]);return r;}
+  // at = {d, s, e}: when the window is (day, minutes). Without it: the current window = now, other windows = by id only.
+  function armyOk(t,id,at){const c=armyCls(t);if(c==="ops")return true;const SP=ARMY_SPAN[c];
+    if(!at&&id===curWin().id){const n=ilNow();at={d:n.d,s:n.m,e:n.m+1};}
+    if(!at||at.d==null)return c==="people"?!["weekend","sat_am"].includes(id):!["fri","weekend","sat_am"].includes(id);
+    const spans=at.s!=null?[[at.s,at.e!=null?at.e:at.s+1]]:winSpans(id,at.d),R=SP[at.d];if(!R)return false;
+    return spans.some(([s,e])=>Math.max(s,R[0])<Math.min(e,R[1]));}
+  function fitsWin(t,id,at){const W=WINS[id];if(!W||!W.acc.length)return false;const f=fitOf(t);if(f.owner==="claude")return false; // Claude's own checks never ask for a window
+    let A=W.acc;
+    if(t.quest==="army"){if(!armyOk(t,id,at))return false;
+      if(id==="weekend"||id==="sat_am")A=armyCls(t)==="ops"?["call","phone","pc","place","home"]:["call","phone","pc"];} // ops all weekend; people only at Motzash (armyOk)
     if(W.ov){const hw=howOf(t);return hw.some(x=>W.need.includes(x))&&hw.every(x=>W.acc.includes(x));} // 11.6: out / pc override
     const wd=Array.isArray(f.with)?f.with:[];if(wd.some(p=>WITH_OK[p]&&!WITH_OK[p].includes(id)))return false; // the person it needs isn't available then
     if(W.nopeople&&(f.people===true||(Array.isArray(f.people)&&f.people.some(p=>p!=="lior"))||wd.some(p=>p!=="lior")||howOf(t).includes("call")))return false; // no messages or calls to others before 08:00; Lior is right there (Oren 5.11)
@@ -1888,13 +1907,13 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     if(W.max&&minsOf(t)>W.max)return false;const hw=howOf(t);
     if(!hw.length)return id==="deep"; // not profiled yet: only the deep window (Claude asks about it)
     if(W.eve&&f.day_only&&hw.every(x=>x==="call"||x==="place"))return false; // a call center / office that closes before evening
-    return Array.isArray(f.how)&&f.how.length?hw.every(x=>W.acc.includes(x)):hw.some(x=>W.acc.includes(x));} // a profile needs all of its means; old context tags are alternatives
+    return Array.isArray(f.how)&&f.how.length?hw.every(x=>A.includes(x)):hw.some(x=>A.includes(x));} // a profile needs all of its means; old context tags are alternatives
   // next window (from now on, up to a week) where the task fits, as a short chip: "🌙 הלילה", "🛒 שישי בבוקר", "🚗 בנסיעה מחר"
   function nextWinLabel(t){const n=ilNow(),base=ilDate();
     for(let k=0;k<7;k++){const d=(n.d+k)%7,L=dayWins(d,planFor(addDays(base,k)));
       for(let i=0;i<L.length;i++){const end=i+1<L.length?L[i+1][0]:1440;if(k===0&&end<=n.m)continue;if(k===0&&L[i][0]<=n.m)continue;
-        const id=L[i][1];if(!fitsWin(t,id))continue;const W=WINS[id];let l;
-        if(id==="fri")l="שישי בבוקר";else if(id==="weekend")l=d===6?"בשבת":"שישי אחה״צ";
+        const id=L[i][1];if(!fitsWin(t,id,{d,s:k===0?Math.max(L[i][0],n.m):L[i][0],e:end}))continue;const W=WINS[id];let l;
+        if(id==="fri")l="שישי בבוקר";else if(id==="weekend")l=d===6?(t.quest==="army"&&armyCls(t)==="people"?"במוצ״ש":"בשבת"):"שישי אחה״צ";
         else if(id==="deep"&&L[i][0]<120)l=k<=1?"הלילה":k===2?"מחר בלילה":"בלילה של "+HE_DAYS[(d+6)%7]; // 00:00-01:00 belongs to the night before
         else if(k===0)l=id==="deep"?"הלילה":id==="light"?"הערב":W.s;
         else if(k===1)l=id==="deep"?"מחר בלילה":W.s+" מחר";
@@ -2674,7 +2693,8 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   function runCard(run,cur,pool,urg,next,startLbl){const G=GROUP_WIN[run.g],seen=new Set(),parts=[],L=[];
     for(const sg of run.segs){if(seen.has(sg.id))continue;seen.add(sg.id);const W=WINS[sg.id];
       const sort=(a,b)=>(isOwn(b)-isOwn(a))||(returned(b)-returned(a))||byDate(a,b)||(minsOf(a)-minsOf(b));
-      const it=[...urg.filter(t=>!L.includes(t)&&fitsWin(t,sg.id)),...pool.filter(t=>!L.includes(t)&&fitsWin(t,sg.id)).sort(sort)];
+      const at={d:(ilNow().d+sg.k)%7,s:sg.s,e:sg.e};
+      const it=[...urg.filter(t=>!L.includes(t)&&fitsWin(t,sg.id,at)),...pool.filter(t=>!L.includes(t)&&fitsWin(t,sg.id,at)).sort(sort)];
       L.push(...it);const now=!next&&sg.k===0&&sg.s<=ilNow().m;
       parts.push({now,it,t:W.e+" "+(now?"עכשיו":W.l+" · "+atLbl(sg.k,sg.s)+"-"+hhmm(sg.e))+" · "+(W.ss||W.sub)});}
     const P=parts.filter(x=>x.it.length);const d6=(ilNow().d+(run.segs[0]?run.segs[0].k:0))%7===6;
@@ -2708,7 +2728,8 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
       else top.push(winCard(W,w.end?"עד "+w.end:"",L,W.acc.length?"אין כרגע משימה לחלון הזמן הזה":"זמן חסום. רק דחוף"));
       // 8.3 (Oren 6.11): and what comes next (e.g. Friday 07:30 home morning → Friday errands from 08:00)
       const nx=nextWin(w),NW=nx&&WINS[nx.id];
-      const nU=nx?urgAll.filter(t=>!L.includes(t)&&fitsWin(t,nx.id)):[],nF=nx?live.filter(t=>!L.includes(t)&&fitsWin(t,nx.id)).sort((a,b)=>ord(a,b)||(minsOf(a)-minsOf(b))):[];
+      const nAt=nx&&{d:(ilNow().d+nx.k)%7,s:nx.m,e:((winSpans(nx.id,(ilNow().d+nx.k)%7).find(x=>x[0]===nx.m)||[])[1])};
+      const nU=nx?urgAll.filter(t=>!L.includes(t)&&fitsWin(t,nx.id,nAt)):[],nF=nx?live.filter(t=>!L.includes(t)&&fitsWin(t,nx.id,nAt)).sort((a,b)=>ord(a,b)||(minsOf(a)-minsOf(b))):[];
       let NL=[...nU,...nF];
       const nrun=nx&&winRun(nx.id,nx.k,nx.m);
       if(nrun){const c=runCard(nrun,null,live.filter(t=>!L.includes(t)),urgAll.filter(t=>!L.includes(t)),true,nx.at);NL=c.L;top.push(c.el);}
@@ -3469,7 +3490,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   // tasks that fit at least one of the windows on day iso (strict window match, see fitsWin), best first
   // at = minute of that day when he would do it: a place / call center already closed then is dropped (timegate.js)
   function openAt(t,iso,at){if(at==null||!window.SQGate)return true;const g=window.SQGate.gate(t,iso,new Date(iso+"T12:00:00").getDay(),at);return !g||g.kind==="unknown"||(g.kind!=="closed"&&g.state!=="past");}
-  function bFit(iso,wins,at){return allTopics.filter(t=>bOk(t,iso)&&!bCrit(t)&&wins.some(w=>fitsWin(t,w))&&openAt(t,iso,at)).sort((a,b)=>bRank(a,iso)-bRank(b,iso));}
+  function bFit(iso,wins,at){return allTopics.filter(t=>bOk(t,iso)&&!bCrit(t)&&wins.some(w=>fitsWin(t,w,{d:new Date(iso+"T12:00:00").getDay(),s:at!=null?at:undefined}))&&openAt(t,iso,at)).sort((a,b)=>bRank(a,iso)-bRank(b,iso));}
   // a row written earlier (by Claude at 07:38 or by the app) whose task is closed / paused / snoozed since then disappears
   function liveItem(x){if(!x||!x.text)return false;if(!x.id)return true;const t=allTopics.find(z=>z.id===x.id);if(!t)return true;return isOpen(t)&&t.status!=="paused"&&!snoozed(t);}
   const cut=(s,n)=>{s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s;};
@@ -3519,7 +3540,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
       head=crit.length?cut(crit[0].title,32):out.length?"לשישי: "+out.slice(0,2).map(t=>cut(t.title,18)).join(" · "):"שישי פנוי, בלי סידורים";}
     else if(kind==="wkend"){const iso=addDays(date,1); // Friday 13:00 to Saturday night: family, home, small things. No offices.
       const atHome=t=>{const f=fitOf(t),h0=how(t);if(Array.isArray(f.when)&&f.when.length)return ["weekend","sat_am","light","deep","family"].some(w=>fitsWin(t,w));
-        return h0.length>0&&h0.every(x=>["home","phone","lior","family","pc"].includes(x))&&t.quest!=="work"&&t.quest!=="army";};
+        return h0.length>0&&h0.every(x=>["home","phone","lior","family","pc"].includes(x))&&t.quest!=="work"&&(t.quest!=="army"||armyCls(t)==="ops");}; // 11.9: only operational Army tasks on the weekend
       const L=allTopics.filter(t=>bOk(t,iso)&&!bCrit(t)&&atHome(t)).sort((a,b)=>bRank(a,iso)-bRank(b,iso));
       const fam=take(L.filter(t=>t.dash==="family"||how(t).some(x=>x==="family"||x==="lior")||(Array.isArray(fitOf(t).with)&&fitOf(t).with.some(p=>p==="lior"||p==="parents"))),3);
       const home=take(L.filter(t=>how(t).includes("home")),3);
