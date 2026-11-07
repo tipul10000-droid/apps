@@ -214,23 +214,23 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 .nodup>summary{cursor:pointer;padding:11px 0;font-weight:700;color:var(--muted)}
 .nodup p{margin:0 0 9px;font-size:14px}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=4">
+<link rel="stylesheet" href="dash-back.css?v=5">
+<script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
 <header class="hero"><div class="in">
   <div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back" id="upd"></span></div>
   <h1>🛡️ הביטוחים שלנו</h1>
-  <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span style="font-size:24px">💬</span><span>המשך בשיחה עם Claude<small>שינוי, עדכון, שאלה או בקשה</small></span></a>
-  <a class="docsbtn" id="docs" target="_blank" rel="noopener" hidden>📁 כל המסמכים (Google Drive)</a>
-  <p class="sub" id="sub">כל הפוליסות של המשפחה במקום אחד: מה יש, כמה עולה, מתי מתחדש, ואיפה יש בעיה.</p>
+  <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span>💬</span><span>צ׳אט</span></a>
+  <a class="docsbtn" id="docs" target="_blank" rel="noopener" hidden>📁 מסמכים</a>
   <div class="stages" id="stages"></div>
-  <p class="snote" id="snote"></p>
+  <p class="snote fold" id="snote"></p>
   <div class="kpis">
-    <div class="kpi"><b id="k-month">…</b><span>לחודש (משוער)</span></div>
+    <div class="kpi"><b id="k-month">…</b><span>לחודש</span></div>
     <div class="kpi"><b id="k-year">…</b><span>לשנה</span></div>
-    <div class="kpi"><b id="k-count">…</b><span>פוליסות פעילות</span></div>
-    <div class="kpi warn"><b id="k-alerts">…</b><span>דורשות בדיקה</span></div>
+    <div class="kpi"><b id="k-count">…</b><span>פוליסות</span></div>
+    <div class="kpi warn"><b id="k-alerts">…</b><span>לבדיקה</span></div>
   </div>
 </div></header>
 
@@ -303,12 +303,12 @@ function render(){
   // מחכה לך: משימות פתוחות שמתחילות בשם של מי שצריך לפעול
   const mine=T.filter(t=>!t.done&&/^(אורן|ליאור|פיננסי|ילדים)[:：]/.test(t.text||""));
   if(mine.length){
-    h+=`<section id="s-mine"><div class="sh"><h2>מחכה לכם</h2><span class="hint">${mine.length} דברים לשלוח או לבדוק</span></div><div class="mine">`+
+    h+=`<section id="s-mine"><div class="sh"><h2>מחכה לכם</h2><span class="hint">${mine.length}</span></div><div class="mine">`+
       mine.map(t=>{const m=(t.text||"").match(/^([^:：]+)[:：]\s*(.*)$/);return `<div class="task"><span class="who-ic">${esc(m?m[1]:"")}</span><span><b>${esc(m?m[2]:t.text)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:""}</span></div>`;}).join("")+`</div></section>`;
   }
   // alerts
   if(flags.length){
-    h+=`<section id="s-flags"><div class="sh"><h2>דורש תשומת לב</h2><span class="hint">${flags.length} ממצאים</span></div><div class="alerts">`+
+    h+=`<section id="s-flags"><div class="sh"><h2>דורש תשומת לב</h2><span class="hint">${flags.length}</span></div><div class="alerts">`+
       flags.slice(0,showAll?99:5).map((f,i)=>`<button class="al ${f.lvl||"low"}" ${f.p?`data-p="${esc(f.p.id)}"`:""}><span class="dot">${TYPE_I[f.type]||LVL[f.lvl]||"•"}</span><span><b>${esc(f.text)}</b><small>${esc(f.sub||(f.p?f.p.title:""))}</small></span>${f.save?`<span class="save">${esc(f.save)}</span>`:"<span></span>"}</button>`).join("")+(flags.length>5?`<button class="more" id="more">${showAll?"פחות":"עוד "+(flags.length-5)+" ממצאים"}</button>`:"")+`</div></section>`;
   }
   // סקירת כפילויות: הנתונים ב-_meta.dups {note, items[{id,title,who,verdict,vlvl,rec,rec_l,cost,save,pids,q1,q2[],q3,q4,decision}], nodup[{t,d}]}
@@ -319,7 +319,7 @@ function render(){
     const open=it.filter(x=>!x.decision).length;
     h+=`<section id="s-dup"><div class="sh"><h2>סקירת כפילויות</h2><span class="hint">${open?open+" מחכות להחלטה":"הכול הוחלט"}</span></div>`+
       (DP.sum?`<div class="dupsum">${DP.sum.map(k=>`<div><b>${esc(k.v)}</b><span>${esc(k.l)}</span></div>`).join("")}</div>`:"")+
-      (DP.note?`<p class="dupnote">${esc(DP.note)}</p>`:"")+
+      (DP.note?`<p class="dupnote fold">${esc(DP.note)}</p>`:"")+
       it.map(x=>`<details class="dup ${esc(x.rec||"")}"><summary><span class="dt">${esc(x.title)}</span><span class="dc">${esc(x.cost||"")}</span><span class="dm"><span class="tag ${esc(x.vlvl||"mid")}">${esc(x.verdict||"")}</span><span class="tag ${x.rec==="keep"?"okk":x.rec==="wait"?"low":"mid"}">${esc(x.rec_l||REC[x.rec]||"")}</span>${x.save?`<span class="tag okk">חיסכון: ${esc(x.save)}</span>`:""}</span></summary><div class="db">`+
         `<div class="dq"><h5><span class="n">1</span>זה באמת כפל?</h5>${esc(x.q1)}</div>`+
         `<div class="dq"><h5><span class="n">2</span>כמה זה עולה</h5><ul>${(x.q2||[]).map(l=>`<li>${esc(l)}</li>`).join("")}</ul></div>`+
@@ -336,13 +336,13 @@ function render(){
   const mx=Math.max(1,...Object.values(byCat));
   const bars=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<div class="brow"><span>${CATS[c]?.i||""} ${CATS[c]?.l||c}</span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;background:var(${CATS[c]?.c||"--c-other"})"></span></span><span class="v">${ils(v)}</span></div>`).join("");
   const ren=act.filter(p=>p.renew).map(p=>({p,d:daysTo(p.renew)})).sort((a,b)=>a.d-b.d).slice(0,7);
-  h+=`<section class="two" id="s-cost"><div><div class="sh"><h2>לאן הולך הכסף</h2><span class="hint">ממוצע חודשי</span></div><div class="card bars">${bars||'<div class="empty">אין נתוני עלות</div>'}<div class="bnote">${esc(meta.cost_note||"")}</div></div></div>`+
+  h+=`<section class="two" id="s-cost"><div><div class="sh"><h2>לאן הולך הכסף</h2><span class="hint">ממוצע חודשי</span></div><div class="card bars">${bars||'<div class="empty">אין נתוני עלות</div>'}<div class="bnote fold">${esc(meta.cost_note||"")}</div></div></div>`+
      `<div><div class="sh"><h2>חידושים ותפוגות</h2></div><div class="card ren">${ren.map(r=>`<div class="rrow" data-p="${esc(r.p.id)}" style="cursor:pointer"><span class="d ${r.d<0?"past":r.d<60?"soon":""}">${fmtD(r.p.renew)}</span><span><b>${esc(r.p.title)}</b><small>${esc(r.p.renew_note||"")}${r.d!=null?` · ${r.d<0?"עבר לפני "+(-r.d)+" ימים":"בעוד "+r.d+" ימים"}`:""}</small></span></div>`).join("")||'<div class="empty">אין תאריכים</div>'}</div></div></section>`;
   // coverage matrix
   const cov=meta.coverage||[];
   if(cov.length){
     const cols=(meta.cov_cols||["oren","lior","kids"]);
-    h+=`<section id="s-cov"><div class="sh"><h2>מפת כיסוי</h2><span class="hint">כל אירוע משנה חיים: מכוסה?</span></div><div class="card"><div class="mx"><table class="cov"><thead><tr><th>סיכון</th>${cols.map(c=>`<th>${WHO_TAG[c]||c}</th>`).join("")}</tr></thead><tbody>`+
+    h+=`<section id="s-cov"><div class="sh"><h2>מפת כיסוי</h2></div><div class="card"><div class="mx"><table class="cov"><thead><tr><th>סיכון</th>${cols.map(c=>`<th>${WHO_TAG[c]||c}</th>`).join("")}</tr></thead><tbody>`+
       cov.map((r,ri)=>`<tr><td>${esc(r.risk)}</td>${cols.map(c=>{const s=(r.s||{})[c]||"unknown";return `<td><button class="st ${s}" data-cov="${ri}">${COV[s]||s}</button></td>`;}).join("")}</tr>`).join("")+
       `</tbody></table></div><div class="covnote" id="covnote"></div><div class="legend">${["ok","partial","dup","dupok","gap","unknown"].map(s=>`<span class="st ${s}">${COV[s]}</span>`).join("")}<span>לחיצה על תא מסבירה</span></div></div></section>`;
   }
@@ -379,7 +379,7 @@ function render(){
   $("jump").innerHTML=J.map(([i,l])=>`<a href="#${i}">${l}</a>`).join("");
   $("app").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openPol(b.dataset.p));
   $("app").querySelectorAll("[data-cov]").forEach(b=>b.onclick=()=>{const r=cov[+b.dataset.cov];$("covnote").innerHTML=`<b>${esc(r.risk)}:</b> ${esc(r.note||"")}`;$("covnote").scrollIntoView({block:"nearest",behavior:"smooth"});});
-  $("foot").innerHTML=esc(meta.sources||"")+(meta.sources?"<br>":"")+"Side Quests · ביטוח · גרסה "+window.INS_BUILD;
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}ביטוח ${esc(window.INS_BUILD)}`;
 }
 
 function openPol(id){

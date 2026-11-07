@@ -165,20 +165,20 @@ section{margin-bottom:26px;scroll-margin-top:70px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (prefers-reduced-motion:reduce){.sheet{transition:none}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=4">
+<link rel="stylesheet" href="dash-back.css?v=5">
+<script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
 <header class="hero"><div class="in">
   <div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back" id="upd"></span></div>
-  <h1>💳 תשלומים חודשיים קבועים</h1>
-  <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span style="font-size:24px">💬</span><span>עבודה עם הצ'אט<small>שאלה, בדיקה, תוספת או שינוי</small></span></a>
-  <p class="sub" id="sub">כל מה שיורד כל חודש, מכל מקור: כרטיסים, בנק, חשבונות ומנויים. למעלה: מה אפשר להוזיל.</p>
+  <h1>💳 תשלומים קבועים</h1>
+  <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis">
-    <button class="kpi" type="button" data-go="s-cost"><b id="k-month">…</b><span>בחודש (ידוע)</span></button>
+    <button class="kpi" type="button" data-go="s-cost"><b id="k-month">…</b><span>בחודש</span></button>
     <button class="kpi" type="button" data-go="s-cost"><b id="k-year">…</b><span>בשנה</span></button>
-    <button class="kpi save" type="button" data-go="s-save"><b id="k-save">…</b><span>אפשר לחסוך בחודש</span></button>
-    <button class="kpi" type="button" data-go="s-unk"><b id="k-unk">…</b><span>בלי סכום עדיין</span></button>
+    <button class="kpi save" type="button" data-go="s-save"><b id="k-save">…</b><span>לחסוך</span></button>
+    <button class="kpi" type="button" data-go="s-unk"><b id="k-unk">…</b><span>בלי סכום</span></button>
   </div>
 </div></header>
 
@@ -231,7 +231,7 @@ function insRow(){
   const m=pol.reduce((s,x)=>s+(x.monthly!=null?+x.monthly||0:x.annual!=null?(+x.annual||0)/12:0),0);
   if(!pol.length)return null;
   return {id:"_insurance",name:"כל הביטוחים (חי מדשבורד הביטוחים)",cat:"insurance",amt:Math.round(m),cur:"ILS",cycle:"m",status:"active",src:"insurance",
-    note:`${pol.filter(x=>+x.monthly>0||+x.annual>0).length} פוליסות בתשלום. הפירוט, הכפלים והחיסכון נמצאים בדשבורד הביטוחים.`,link:"insurance.html",virtual:true};
+    note:`${pol.filter(x=>+x.monthly>0||+x.annual>0).length} פוליסות בתשלום`,link:"insurance.html",virtual:true};
 }
 function allItems(){const r=insRow();return [...data.items,...(r?[r]:[])];}
 function live(){return allItems().filter(p=>p.status!=="ended");}
@@ -281,13 +281,13 @@ function render(){
   if(T.length){
     const me=T.filter(p=>p.todo.who!=="claude"),cl=T.filter(p=>p.todo.who==="claude");
     h+=`<section id="s-todo"><div class="sh"><h2>▶️ פעולות פתוחות</h2><span class="hint">${me.length} עליך · ${cl.length} על Claude</span></div>`+
-      (me.length?`<div class="sub2">עליך (או שנינו)</div>`+me.map(tRow).join(""):"")+
-      (cl.length?`<div class="sub2">Claude מטפל, אתה רק עוקב</div>`+cl.map(tRow).join(""):"")+`</section>`;
+      (me.length?`<div class="sub2">עליך</div>`+me.map(tRow).join(""):"")+
+      (cl.length?`<div class="sub2">Claude</div>`+cl.map(tRow).join(""):"")+`</section>`;
   }
   // 2. החלטות פתוחות: רק מה שעוד לא נענה. תשובה = משימה חדשה או סגירה
   const Q=V.filter(openQ).sort((a,b)=>saveOf(b)-saveOf(a));
   if(Q.length){
-    h+=`<section id="s-q"><div class="sh"><h2>❓ החלטות פתוחות</h2><span class="hint">כל תשובה הופכת למשימה</span></div><div class="opt">`+
+    h+=`<section id="s-q"><div class="sh"><h2>❓ החלטות פתוחות</h2></div><div class="opt">`+
       Q.map(p=>{const c=CATS[p.cat]||CATS.other,v=monthly(p);return `<article class="oc" style="--cc:var(${c.c})">
         <div class="hd"><span class="ic">${esc(p.icon||c.i)}</span><span class="tt"><b>${esc(p.opt_title||p.name)}</b><small>${esc(p.why||"")}${v!=null?` · היום ${ils(v)} ${p.cycle==="var"?"בממוצע":"לחודש"}`:""}</small></span>${saveOf(p)>0?`<span class="pill">עד ${ils(saveOf(p))}/חודש</span>`:""}</div>
         ${qBlock(p)}</article>`;}).join("")+`</div></section>`;
@@ -308,15 +308,15 @@ function render(){
   const byCat={};L.forEach(p=>{const v=monthly(p);if(v>0)byCat[p.cat]=(byCat[p.cat]||0)+v;});
   const mx=Math.max(1,...Object.values(byCat));
   const bars=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<button class="brow" data-cat="${c}"><span>${CATS[c]?.i||""} ${esc((CATS[c]?.l||c).split(":")[0])}</span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;background:var(${CATS[c]?.c||"--c-other"})"></span></span><span class="v">${ils(v)}</span></button>`).join("");
-  if(fCat==="all")h+=`<section id="s-cost"><div class="sh"><h2>לאן הולך הכסף</h2><span class="hint">ממוצע חודשי, רק מה שידוע</span></div><div class="card bars">${bars||'<div class="empty">אין עדיין סכומים</div>'}<div class="bnote">${esc(meta.cost_note||"")}</div></div></section>`;
+  if(fCat==="all")h+=`<section id="s-cost"><div class="sh"><h2>לאן הולך הכסף</h2><span class="hint">לחודש</span></div><div class="card bars">${bars||'<div class="empty">אין עדיין סכומים</div>'}<div class="bnote fold">${esc(meta.cost_note||"")}</div></div></section>`;
 
   // חסר סכום
   const U=L.filter(p=>monthly(p)==null&&(fCat==="all"||p.cat===fCat));
-  if(U.length)h+=`<section id="s-unk"><div class="sh"><h2>בלי סכום עדיין</h2><span class="hint">${U.length} תשלומים</span></div><div class="card unk" style="padding:2px 12px">${U.map(p=>`<button data-p="${esc(p.id)}"><span>${esc(p.name)}<br><small>${openT(p)?esc((WHO[p.todo.who]||"")+": "+p.todo.text):esc(p.note||"")}</small></span><span>‹</span></button>`).join("")}</div></section>`;
+  if(U.length)h+=`<section id="s-unk"><div class="sh"><h2>בלי סכום עדיין</h2><span class="hint">${U.length}</span></div><div class="card unk" style="padding:2px 12px">${U.map(p=>`<button data-p="${esc(p.id)}"><span>${esc(p.name)}<br><small>${openT(p)?esc((WHO[p.todo.who]||"")+": "+p.todo.text):esc(p.note||"")}</small></span><span>‹</span></button>`).join("")}</div></section>`;
 
   // 3. כל התשלומים לפי קטגוריה
   const groups={};V.forEach(p=>{(groups[p.cat]=groups[p.cat]||[]).push(p);});
-  h+=`<section id="s-list"><div class="sh"><h2>כל התשלומים</h2><span class="hint">לחיצה פותחת פרטים</span></div>`;
+  h+=`<section id="s-list"><div class="sh"><h2>כל התשלומים</h2></div>`;
   if(!V.length)h+=`<div class="card empty">אין תשלומים בסינון הזה</div>`;
   Object.keys(CATS).filter(c=>groups[c]).forEach(c=>{
     const g=groups[c].sort((a,b)=>(monthly(b)??-1)-(monthly(a)??-1)), sum=g.reduce((s,p)=>s+(monthly(p)||0),0);
@@ -328,11 +328,11 @@ function render(){
 
   // 4. מה עוד חסר בתמונה
   const miss=meta.missing||[];
-  if(miss.length&&fCat==="all")h+=`<section id="s-miss"><div class="sh"><h2>מה עוד חסר בתמונה</h2><span class="hint">יגיע מהתזרים ומפירוטי האשראי</span></div><div class="card miss">${miss.map(x=>`<div><span>○</span><span>${esc(x)}</span></div>`).join("")}</div></section>`;
+  if(miss.length&&fCat==="all")h+=`<section id="s-miss"><details class="more"><summary>חסר בתמונה (${miss.length})</summary><div class="card miss">${miss.map(x=>`<div><span>○</span><span>${esc(x)}</span></div>`).join("")}</div></details></section>`;
 
   // 5. בוטלו לאחרונה
   const E=data.items.filter(p=>p.status==="ended"&&(fCat==="all"||p.cat===fCat));
-  if(E.length)h+=`<section id="s-ended"><div class="sh"><h2>בוטלו או הוזלו לאחרונה</h2><span class="hint">כדי לזכור שזה כבר טופל</span></div><div class="card ended" style="padding:6px 12px">${E.map(p=>`<div><s>${esc(p.name)}</s><span>${esc(p.note||"")}</span></div>`).join("")}</div></section>`;
+  if(E.length)h+=`<section id="s-ended"><div class="sh"><h2>בוטלו או הוזלו לאחרונה</h2></div><div class="card ended" style="padding:6px 12px">${E.map(p=>`<div><s>${esc(p.name)}</s><span>${esc(p.note||"")}</span></div>`).join("")}</div></section>`;
 
   $("app").innerHTML=h;
   const J=[["s-todo","פעולות"],["s-q","החלטות"],["s-save","חיסכון"],["s-cost","לאן הולך"],["s-unk","בלי סכום"],["s-list","כל התשלומים"],["s-miss","חסר"],["s-ended","בוטלו"]].filter(([i])=>$(i));
@@ -344,7 +344,7 @@ function render(){
   $("app").querySelectorAll("[data-copy]").forEach(b=>b.onclick=e=>{e.stopPropagation();copyMail(b.dataset.copy);});
   $("app").querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>markDone(b.dataset.done));
   $("app").querySelectorAll(".acts a").forEach(a=>a.onclick=e=>e.stopPropagation());
-  $("foot").innerHTML=esc(meta.sources||"")+(meta.sources?"<br>":"")+"Side Quests · תשלומים קבועים · גרסה "+window.PAY_BUILD;
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}תשלומים ${esc(window.PAY_BUILD)}`;
 }
 function fmtD(d){if(!d)return "";const [y,m,dd]=String(d).split("-");return dd?`${+dd}.${+m}`:`${+m}.${(y||"").slice(2)}`;}
 

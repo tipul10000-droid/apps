@@ -134,7 +134,8 @@ section{margin-bottom:22px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.nums b{font-size:19px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=4">
+<link rel="stylesheet" href="dash-back.css?v=5">
+<script src="fold.js?v=1" defer></script>
 <script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -191,8 +192,8 @@ function bmiCat(b){return b<18.5?"תת משקל":b<25?"משקל תקין":b<30?"
 function hero(){const c=calc(),nx=nextAct(),A=acts().filter(a=>a.status!=="todo");
   const perWeek=A.reduce((s,a)=>s+(a.days||[]).length,0);
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
-  <h1>🏃 ספורט, כושר ותזונה</h1><p class="sub">האימונים הקבועים שלי, תזכורות, הנתונים שלי ויעדי תזונה. מקום אחד לכל מה שאני רוצה לשפר.</p>
-  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>עבודה עם הצ׳אט<small>אימון חדש, נתונים מאפל הלת׳, שאלה על תזונה</small></span></a>
+  <h1>🏃 ספורט ותזונה</h1>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis"><div class="kpi"><b>${nx?esc(nx.a.icon||"🏃")+" "+esc(whenTxt(nx)):"—"}</b><span>האימון הבא</span></div><div class="kpi"><b>${perWeek}</b><span>אימונים בשבוע</span></div><div class="kpi"><b>${c.bmi.toFixed(1)}</b><span>BMI · ${esc(c.p.w)} ק״ג</span></div></div>`;}
 
 // ---------- training ----------
@@ -214,8 +215,7 @@ function renderTrain(){const A=acts();if(!loaded&&!A.length)return `<div class="
   if(nx)h+=`<section><div class="next"><div class="ic">${esc(nx.a.icon||"🏃")}</div><div><b>הבא: ${esc(nx.a.title)}</b><span>${esc(whenTxt(nx))}${nx.a.leave?" · לצאת "+esc(nx.a.leave):""}</span></div></div></section>`;
   const on=A.filter(a=>a.status!=="todo"),todo=A.filter(a=>a.status==="todo");
   h+=`<section><div class="sh"><h2>האימונים הקבועים</h2><small>${on.length}</small></div><div class="acts">${on.map(actCard).join("")}</div></section>`;
-  h+=`<section><div class="sh"><h2>רוצה להוסיף</h2><small>${todo.length}</small></div><div class="acts">${todo.map(actCard).join("")}<button class="addcard" data-add>＋ אימון או רעיון חדש<small>אני מוסיף אותו עם תזכורות ב-Side Quests</small></button></div></section>`;
-  h+=`<div class="note">התזכורות הן משימות ב-Side Quests (חוזרות כל שבוע), עם התראה בטלפון. כשהיומן יחובר, האימונים ייכנסו גם ללוח.</div>`;
+  h+=`<section><div class="sh"><h2>רוצה להוסיף</h2><small>${todo.length}</small></div><div class="acts">${todo.map(actCard).join("")}<button class="addcard" data-add>＋ אימון חדש</button></div></section>`;
   return h;}
 
 // ---------- stats & nutrition ----------
@@ -227,7 +227,7 @@ function renderStats(){const c=calc(),p=c.p,hl=meta.health||{};let h="";
     <div class="card" style="margin-top:10px"><b style="font-family:var(--f-display);font-size:17px">BMI ${c.bmi.toFixed(1)}</b> · <span class="muted">${bmiCat(c.bmi)}</span>
       <div class="gauge" aria-hidden="true"><i style="right:auto;left:${pos}%"></i><em style="left:${pos}%">${c.bmi.toFixed(1)}</em></div>
       <div class="gl"><span>15</span><span>18.5</span><span>25</span><span>30</span><span>40</span></div>
-      <div class="note">טווח BMI תקין בגובה שלך: ${c.lo}-${c.hi} ק״ג. BMI לא מבחין בין שריר לשומן, אז היקף מותניים (יעד מתחת ל-94 ס״מ) ואחוז שומן מאפל/משקל חכם אומרים יותר.</div>
+      <div class="note">משקל תקין: ${c.lo}-${c.hi} ק״ג</div>
       <div class="bar2"><button data-weight>⚖️ עדכון משקל</button></div>
       ${(meta.weights||[]).length>1?`<ul class="wlog">${meta.weights.slice(-6).reverse().map(x=>`<li><span>${esc(x.d)}</span><b>${esc(x.kg)} ק״ג</b></li>`).join("")}</ul>`:""}
     </div></section>`;
@@ -235,35 +235,34 @@ function renderStats(){const c=calc(),p=c.p,hl=meta.health||{};let h="";
   const Z=[["אזור 1 · התאוששות",.5,.6,"--z1"],["אזור 2 · שריפת שומן, סיבולת",.6,.7,"--z2"],["אזור 3 · אירובי",.7,.8,"--z3"],["אזור 4 · סף",.8,.9,"--z4"],["אזור 5 · מקסימום",.9,1,"--z5"]];
   h+=`<section><div class="sh"><h2>❤️ דופק</h2><small>מקסימום ${c.hrmax}</small></div><div class="card">
     <table class="zones">${Z.map(z=>`<tr><td><span class="dot" style="background:var(${z[3]})"></span>${z[0]}</td><td>${Math.round(c.hrmax*z[1])}-${Math.round(c.hrmax*z[2])}</td></tr>`).join("")}</table>
-    <div class="note">דופק מקסימלי משוער (נוסחת Tanaka: 208 פחות 0.7 × גיל; הנוסחה הישנה 220 פחות גיל נותנת ${220-p.age}). השעון יודע לדייק אותו מאימונים קשים.${hl.rhr?` דופק במנוחה ${esc(hl.rhr)}.`:""}</div></div></section>`;
+    ${hl.rhr?`<div class="note">דופק במנוחה ${esc(hl.rhr)}</div>`:""}<details class="more"><summary>פירוט</summary><div>נוסחת Tanaka: 208 פחות 0.7 × גיל (220 פחות גיל = ${220-p.age}). השעון מדייק מאימונים קשים.</div></details></div></section>`;
   // energy & targets
   h+=`<section><div class="sh"><h2>🔥 אנרגיה ותזונה</h2><small>ליום</small></div>
     <div class="seg" style="margin-bottom:10px"><button data-goal="cut" class="${c.mode==="cut"?"on":""}">ירידה במשקל (−${c.def})</button><button data-goal="keep" class="${c.mode==="keep"?"on":""}">שמירה</button></div>
     <div class="nums"><div><b>${c.bmr}</b><span>BMR (מנוחה)</span></div><div><b>${c.tdee}</b><span>שריפה יומית${c.apple?" (אפל)":""}</span></div><div><b>${c.kcal}</b><span>יעד קלוריות</span></div></div>
-    ${c.apple?"":`<div class="note"><span class="est">הערכה</span> השריפה היומית מחושבת מ-BMR × 1.45 (עבודה משרדית + 3 אימונים בשבוע). כשתשלח נתונים מאפל הלת׳ היא תתעדכן לפי האמת.</div>`}
+    ${c.apple?"":`<div class="note"><span class="est">הערכה</span> BMR × 1.45</div>`}
     <div class="targets" style="margin-top:10px">
-      <div class="tg"><span>🥩 חלבון</span><b>${c.prot} ג׳</b><small>1.8 ג׳ לק״ג (טווח ${Math.round(p.w*1.6)}-${Math.round(p.w*2)}). שומר על שריר בירידה במשקל</small></div>
-      <div class="tg"><span>🥑 שומן</span><b>${c.fat} ג׳</b><small>0.8 ג׳ לק״ג, בעיקר שמן זית, אגוזים, טחינה, דגים</small></div>
-      <div class="tg"><span>🍚 פחמימות</span><b>${c.carb} ג׳</b><small>מה שנשאר מהקלוריות. יותר בימי כדורגל</small></div>
-      <div class="tg"><span>🥦 סיבים</span><b>${Math.max(30,c.fiber)} ג׳</b><small>ירקות, קטניות, דגנים מלאים</small></div>
-      <div class="tg"><span>💧 מים</span><b>${c.water} ל׳</b><small>35 מ״ל לק״ג, ועוד 0.5-1 ל׳ בכל שעת אימון</small></div>
-      <div class="tg"><span>⚖️ קצב</span><b>${c.mode==="cut"?"~0.5 ק״ג":"שמירה"}</b><small>${c.mode==="cut"?"בשבוע, בגירעון של "+c.def+" קלוריות ביום":"קלוריות כמו השריפה היומית"}</small></div>
+      <div class="tg"><span>🥩 חלבון</span><b>${c.prot} ג׳</b><small>1.8 ג׳/ק״ג</small></div>
+      <div class="tg"><span>🥑 שומן</span><b>${c.fat} ג׳</b><small>0.8 ג׳/ק״ג</small></div>
+      <div class="tg"><span>🍚 פחמימות</span><b>${c.carb} ג׳</b><small>השאר</small></div>
+      <div class="tg"><span>🥦 סיבים</span><b>${Math.max(30,c.fiber)} ג׳</b></div>
+      <div class="tg"><span>💧 מים</span><b>${c.water} ל׳</b><small>+0.5-1 ל׳ לשעת אימון</small></div>
+      <div class="tg"><span>⚖️ קצב</span><b>${c.mode==="cut"?"~0.5 ק״ג":"שמירה"}</b><small>${c.mode==="cut"?"בשבוע":""}</small></div>
     </div>
     <div class="macro" aria-hidden="true"><i style="width:${c.prot*4/c.kcal*100}%;background:var(--z4)"></i><i style="width:${c.fat*9/c.kcal*100}%;background:var(--z3)"></i><i style="flex:1;background:var(--z2)"></i></div>
-    <div class="ml"><span><i style="background:var(--z4)"></i>חלבון ${Math.round(c.prot*4/c.kcal*100)}%</span><span><i style="background:var(--z3)"></i>שומן ${Math.round(c.fat*9/c.kcal*100)}%</span><span><i style="background:var(--z2)"></i>פחמימות ${Math.round(c.carb*4/c.kcal*100)}%</span></div>
-    <div class="note">חישוב: Mifflin-St Jeor לגבר. ההמלצות כלליות לאדם בריא ולא תחליף לדיאטנית.</div></section>`;
+    <div class="ml"><span><i style="background:var(--z4)"></i>חלבון ${Math.round(c.prot*4/c.kcal*100)}%</span><span><i style="background:var(--z3)"></i>שומן ${Math.round(c.fat*9/c.kcal*100)}%</span><span><i style="background:var(--z2)"></i>פחמימות ${Math.round(c.carb*4/c.kcal*100)}%</span></div></section>`;
   // apple health
   const AH=[["tdee","שריפה יומית כוללת","קל׳"],["active_kcal","אנרגיה פעילה (ממוצע)","קל׳"],["rest_kcal","אנרגיה במנוחה","קל׳"],["steps","צעדים ביום","" ],["exercise_min","דקות אימון ביום","דק׳"],["rhr","דופק במנוחה","bpm"],["hrv","HRV","ms"],["vo2max","VO2 max",""],["sleep_h","שינה בלילה","ש׳"],["walk_km","הליכה וריצה ביום","ק״מ"]];
   h+=`<section><div class="sh"><h2>🍎 מאפל הלת׳</h2><small>${hl.as_of?"נכון ל-"+esc(hl.as_of):"עוד אין נתונים"}</small></div>
     <div class="ah">${AH.map(([k,l,u])=>`<div><span>${l}</span>${hl[k]!=null&&hl[k]!==""?`<b>${esc(hl[k])}</b> <small class="muted">${u}</small>`:`<b class="na">—</b>`}</div>`).join("")}</div>
-    <div class="note">${hl.as_of?esc(hl.note||""):"שלח בצ׳אט צילומי מסך מאפל הלת׳ (ממוצע שבועי או חודשי): אנרגיה פעילה ובמנוחה, צעדים, דופק במנוחה, HRV, VO2 max ושינה. אני מכניס אותם לכאן והיעדים מתעדכנים."}</div></section>`;
+    ${hl.as_of&&hl.note?`<div class="note">${esc(hl.note)}</div>`:""}</section>`;
   return h;}
 
 function render(){$("hero").innerHTML=hero();
   const secs=[["train","🗓️ אימונים"],["stats","📊 נתונים ותזונה"]];
   $("bar").innerHTML=`<div class="seg">${secs.map(([k,l])=>`<button data-sec="${k}" class="${ui.sec===k?"on":""}">${l}</button>`).join("")}</div>`;
   $("app").innerHTML=ui.sec==="stats"?renderStats():renderTrain();
-  $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד ספורט ${esc(window.SPORT_BUILD)}`;}
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}ספורט ${esc(window.SPORT_BUILD)}`;}
 let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
 async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
 async function updMeta(patch,msg){const prev=JSON.parse(JSON.stringify(meta));meta=Object.assign({},meta,patch);const y=scrollY;render();scrollTo(0,y);

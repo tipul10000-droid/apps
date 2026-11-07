@@ -180,7 +180,8 @@ table.cmp td.pk{background:var(--pick-soft)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.offer .ph{width:72px;height:86px}.facts div{padding:6px 8px;font-size:13px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=4">
+<link rel="stylesheet" href="dash-back.css?v=5">
+<script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -221,8 +222,8 @@ const FIN=x=>isOpen(x)?`<div class="fin"><button type="button" data-fin="bought"
 // ---------- hero ----------
 function heroHome(L){const open=L.filter(isOpen),dec=open.filter(x=>x.status==="deciding"),qs=open.reduce((s,x)=>s+(x.questions||[]).filter(q=>!q.answer&&!q.superseded).length,0);
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
-  <h1>🛍️ קניות ורכישות</h1><p class="sub">כל דבר שאני שוקל לקנות: אפשרויות, מחירים, איפה הכי זול, ביקורות, יוטיוב, והחלטה.</p>
-  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>נושא קנייה חדש או שאלה<small>״אני רוצה לקנות X, תבדוק״ · ״כדאי לקנות באמזון איטליה?״</small></span></a>
+  <h1>🛍️ קניות ורכישות</h1>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis"><div class="kpi"><b>${open.length}</b><span>בבירור</span></div><div class="kpi"><b>${dec.length}</b><span>מחכים להחלטה</span></div><div class="kpi"><b>${qs}</b><span>שאלות אליך</span></div></div>`;}
 function heroItem(x){const p=pickOf(x),c=cheapest(x),img=safe(x.img)||(p&&safe(p.img));
   return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🛍️</span><span>כל הקניות</span></button><span class="back">${esc(ST[x.status]||"")}</span></div>
@@ -245,13 +246,13 @@ function renderHome(){const L=list();$("hero").innerHTML=heroHome(L);
   if(done.length)h+=`<details class="arch"${ui.arch?" open":""}><summary>📦 ארכיון: נקנו או אין צורך · ${done.length}</summary><div class="grid">${done.sort((a,b)=>String(b.archived_at||"").localeCompare(String(a.archived_at||""))).map(card).join("")}</div></details>`;
   $("app").innerHTML=loaded||L.length?h:`<div class="empty">טוען…</div>`;}
 function guideBlock(){const g=meta.guide;if(!Array.isArray(g)||!g.length)return "";
-  return `<section><div class="sh"><h2>📚 ידע קבוע לקניות</h2><small>מתעדכן מכל בירור</small></div><div class="card guide">${g.map(s=>`<h3>${esc(s.h)}</h3><ul>${(s.items||[]).map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`).join("")}${meta.guide_note?`<div class="note">${esc(meta.guide_note)}</div>`:""}</div></section>`;}
+  return `<section><div class="sh"><h2>📚 ידע קבוע לקניות</h2></div><div class="card guide">${g.map(s=>`<h3>${esc(s.h)}</h3><ul>${(s.items||[]).map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`).join("")}${meta.guide_note?`<div class="note">${esc(meta.guide_note)}</div>`:""}</div></section>`;}
 
 // ---------- item tabs ----------
 function tabOver(x){const p=pickOf(x),v=x.verdict||{};let h="";
   if(v.text)h+=`<section><div class="verdict"><div class="l">ההכרעה${v.conf?" · ביטחון "+esc(v.conf):""}</div><h3>${esc(p?p.name:v.title||"")}</h3><p>${esc(v.text)}</p>${v.alt?`<p class="small" style="margin-top:6px">${esc(v.alt)}</p>`:""}</div></section>`;
   const qs=(x.questions||[]).filter(q=>!q.superseded);
-  if(qs.length)h+=`<section><div class="sh"><h2>❓ שאלות אליך</h2><small>תשובה אחת בלחיצה</small></div><div class="card">${qs.map(q=>`<div class="q"><div class="qt">${esc(q.q)}</div><div class="opts">${(q.options||[]).map(o=>`<button class="opt ${q.answer===o?"on":""}" data-ans="${esc(q.id)}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div></div>`).join("")}</div></section>`;
+  if(qs.length)h+=`<section><div class="sh"><h2>❓ שאלות אליך</h2></div><div class="card">${qs.map(q=>`<div class="q"><div class="qt">${esc(q.q)}</div><div class="opts">${(q.options||[]).map(o=>`<button class="opt ${q.answer===o?"on":""}" data-ans="${esc(q.id)}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div></div>`).join("")}</div></section>`;
   if((x.insights||[]).length)h+=`<section><div class="sh"><h2>💡 מה חשוב לדעת</h2></div><ul class="ins">${x.insights.map(i=>`<li class="${esc(i.lvl||"")}">${i.h?`<b>${esc(i.h)}: </b>`:""}${esc(i.text)}</li>`).join("")}</ul></section>`;
   if((x.need||[]).length)h+=`<section><div class="sh"><h2>🎯 מה אני מחפש</h2></div><div class="card"><ul class="req">${x.need.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div></section>`;
   if((x.links||[]).length)h+=`<section><div class="sh"><h2>🔗 קישורים</h2></div><div class="card links">${x.links.filter(l=>safe(l.url)).map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div></section>`;
@@ -263,17 +264,17 @@ function offerCard(x,o){const pk=(x.verdict||{}).pick===o.id;const f=(o.facts||[
     ${f.length?`<div class="facts">${f.map(([k,v])=>`<div><span>${esc(k)}</span>${esc(v)}</div>`).join("")}</div>`:""}
     ${(o.pros||[]).length||(o.cons||[]).length?`<div class="pc"><ul class="p">${(o.pros||[]).map(t=>`<li>${esc(t)}</li>`).join("")}</ul><ul class="n">${(o.cons||[]).map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`:""}
     ${(o.links||[]).length?`<div class="olinks">${o.links.filter(l=>safe(l.url)).map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div>`:""}</div>`;}
-function tabOpts(x){const o=x.offers||[];if(!o.length)return `<div class="empty">עוד אין אפשרויות. ספר לי בשיחה מה אתה מחפש.</div>`;
+function tabOpts(x){const o=x.offers||[];if(!o.length)return `<div class="empty">עוד אין אפשרויות</div>`;
   const pk=(x.verdict||{}).pick;const s=[...o].sort((a,b)=>(b.id===pk)-(a.id===pk));return s.map(y=>offerCard(x,y)).join("");}
 function tabCmp(x){const o=(x.offers||[]).filter(y=>!y.no_cmp);const rows=x.cmp_rows||[];if(!o.length||!rows.length)return `<div class="empty">אין עדיין טבלת השוואה.</div>`;
   const pk=(x.verdict||{}).pick;
-  return `<div class="tblw"><table class="cmp"><thead><tr><th></th>${o.map(y=>`<th>${esc(y.short||y.name)}</th>`).join("")}</tr></thead><tbody>${rows.map(([k,l])=>`<tr><td>${esc(l)}</td>${o.map(y=>`<td class="${y.id===pk?"pk":""}">${esc((y.cmp||{})[k]??"—")}</td>`).join("")}</tr>`).join("")}</tbody></table></div><div class="note">${esc(x.cmp_note||"")}</div>`;}
+  return `<div class="tblw"><table class="cmp"><thead><tr><th></th>${o.map(y=>`<th>${esc(y.short||y.name)}</th>`).join("")}</tr></thead><tbody>${rows.map(([k,l])=>`<tr><td>${esc(l)}</td>${o.map(y=>`<td class="${y.id===pk?"pk":""}">${esc((y.cmp||{})[k]??"—")}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${x.cmp_note?`<div class="note">${esc(x.cmp_note)}</div>`:""}`;}
 function tabWhere(x){const w=(x.where||[]).map(r=>({...r,ils:+r.price?+r.price*rate(r.cur):0}));if(!w.length)return `<div class="empty">אין עדיין מחירים.</div>`;
   const byOffer={};w.forEach(r=>{(byOffer[r.offer||""]=byOffer[r.offer||""]||[]).push(r);});
   const offers=x.offers||[];const name=id=>(offers.find(o=>o.id===id)||{}).name||"";
   return Object.entries(byOffer).map(([oid,rs])=>{rs.sort((a,b)=>(a.ils||9e9)-(b.ils||9e9));const best=rs.find(r=>r.ils);
     return `<section><div class="sh"><h2>${esc(name(oid)||"מחירים")}</h2></div><div class="card"><ul class="where">${rs.map(r=>`<li class="${r===best&&rs.length>1?"best":""}"><div class="w1"><b>${safe(r.url)?`<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.store)}</a>`:esc(r.store)}</b><span>${esc(r.note||"")}</span></div><div class="w2">${r.ils?`${esc(money(r.price,r.cur))}${r.cur&&r.cur!=="ILS"?`<small>≈ ${ils(r.ils)}</small>`:""}`:`<small>${esc(r.price_txt||"לבדוק")}</small>`}</div></li>`).join("")}</ul></div></section>`;}).join("")
-    +`<div class="note">${esc(x.where_note||"")} שערים משוערים: €1≈₪${rate("EUR")}, $1≈₪${rate("USD")}, £1≈₪${rate("GBP")}.</div>`;}
+    +`${x.where_note?`<div class="note">${esc(x.where_note)}</div>`:""}<details class="more"><summary>שערים</summary><div>€1≈₪${rate("EUR")} · $1≈₪${rate("USD")} · £1≈₪${rate("GBP")}</div></details>`;}
 function tabRevs(x){let h="";const v=x.videos||[];
   if(v.length)h+=`<section><div class="sh"><h2>▶️ סקירות ביוטיוב</h2><small>${v.length}</small></div><div class="vids">${v.filter(y=>safe(y.url)).map(y=>{const id=ytId(y.url);
     return `<a class="vid" href="${esc(y.url)}" target="_blank" rel="noopener"><div class="th" ${id?`style="background-image:url('https://i.ytimg.com/vi/${id}/mqdefault.jpg')"`:""}></div><div class="vt">${esc(y.title)}<small>${esc(y.for||"")}${y.ch?" · "+esc(y.ch):""}</small></div></a>`;}).join("")}</div></section>`;
@@ -284,9 +285,8 @@ function councilPrompt(x){const o=(x.offers||[]).filter(y=>!y.no_cmp).map(y=>`- 
   const ans=(x.questions||[]).filter(q=>q.answer).map(q=>`${q.q} → ${q.answer}`).join("\n");
   return `council this: החלטת קנייה, "${x.title}" (דשבורד הקניות ב-Side Quests, נושא ${x.id}).\n\nמה אני מחפש:\n${(x.need||[]).map(n=>"- "+n).join("\n")}\n${ans?"\nתשובות שלי:\n"+ans+"\n":""}\nהמועמדים:\n${o}\n\nההמלצה הנוכחית: ${(pickOf(x)||{}).name||"אין"}. תן הכרעה אחת, והכנס את התוצאה לשדה council של הנושא בדשבורד.`;}
 function tabCouncil(x){const c=x.council||{};
-  return `<section><div class="council"><h3>🧠 מועצת 5 המומחים</h3><p>5 יועצים בודקים את הקנייה בנפרד, מבקרים זה את זה באנונימיות, ויוצאת הכרעה אחת. הכפתור מעתיק את כל הבירור ופותח את השיחה; מדביקים ושולחים.</p>
-    <button class="btn big" data-council>הרץ מועצה על הקנייה הזאת</button>
-    ${c.verdict?`<div class="res"><b>${esc(c.at?"הכרעת המועצה ("+c.at+")":"הכרעת המועצה")}:</b> ${esc(c.verdict)}${c.summary?`<div style="margin-top:6px;opacity:.9">${esc(c.summary)}</div>`:""}${safe(c.url)?`<div style="margin-top:6px"><a href="${esc(c.url)}" target="_blank" rel="noopener" style="color:#FFE3A3">הדוח המלא</a></div>`:""}</div>`:`<div class="res">עוד לא רצה מועצה על הקנייה הזאת.</div>`}
+  return `<section><div class="council"><h3 style="display:flex;align-items:center;justify-content:space-between;gap:8px">🧠 מועצת המומחים <button class="btn" data-council style="flex:none;padding:7px 14px;font-size:14px">▶ הרץ</button></h3>
+    ${c.verdict?`<div class="res"><b>${esc(c.at?"הכרעת המועצה ("+c.at+")":"הכרעת המועצה")}:</b> ${esc(c.verdict)}${c.summary?`<div style="margin-top:6px;opacity:.9">${esc(c.summary)}</div>`:""}${safe(c.url)?`<div style="margin-top:6px"><a href="${esc(c.url)}" target="_blank" rel="noopener" style="color:#FFE3A3">הדוח המלא</a></div>`:""}</div>`:""}
   </div></section>`;}
 function renderItem(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"הנושא לא נמצא":"טוען…"}</div>`;return;}
   $("hero").innerHTML=heroItem(x);
@@ -294,7 +294,7 @@ function renderItem(id){const x={id,...(items[id]||{})};if(!x.title){$("app").in
   const t=ui.tab;$("app").innerHTML=t==="opts"?tabOpts(x):t==="cmp"?tabCmp(x):t==="where"?tabWhere(x):t==="revs"?tabRevs(x):t==="council"?tabCouncil(x):tabOver(x);}
 
 function render(){const id=curId();if(id)renderItem(id);else renderHome();
-  $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד קניות ${esc(window.SHOP_BUILD)} · לא קונים כלום אוטומטית, רק מחקר`;}
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}קניות ${esc(window.SHOP_BUILD)}`;}
 let tt,undoFn=null;function toast(t,undo){const el=$("toast");el.innerHTML=`<span>${esc(t)}</span>${undo?'<button class="un" type="button" data-undo>ביטול</button>':""}`;undoFn=undo||null;el.className="toast on";clearTimeout(tt);tt=setTimeout(()=>{el.className="toast";undoFn=null;},undo?5000:3500);}
 async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
 async function upd(id,patch,msg,undo){const prev=JSON.parse(JSON.stringify(items[id]||{}));items[id]=Object.assign({},items[id],patch);const y=scrollY;render();scrollTo(0,y);

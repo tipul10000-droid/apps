@@ -133,7 +133,8 @@ section{margin-bottom:22px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=4">
+<link rel="stylesheet" href="dash-back.css?v=5">
+<script src="fold.js?v=1" defer></script>
 <script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -174,8 +175,8 @@ function match(x,q){if(!q)return true;q=q.toLowerCase();return [x.title,x.summar
 // ---------- hero ----------
 function heroHome(){const T=all("ticket"),H=all("hub"),tp=new Set(T.map(x=>x.topic||"other"));
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
-  <h1>🧠 ידע ותחומי עניין</h1><p class="sub">כל פיסת ידע ששווה לשמור: הטקסט המלא בעברית ובאנגלית, תובנות ומה עושים עם זה. לפי תחומים.</p>
-  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שלח פיסת ידע<small>לינק, כתבה, פוסט, צילום מסך או סתם רעיון. אני מסכם ומוציא תובנות</small></span></a>
+  <h1>🧠 ידע ותחומי עניין</h1>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis"><div class="kpi"><b>${T.length}</b><span>פיסות ידע</span></div><div class="kpi"><b>${tp.size}</b><span>תחומים</span></div><div class="kpi"><b>${H.length}</b><span>דשבורדים פנימיים</span></div></div>`;}
 function heroTicket(x){const tp=topicOf(x.topic),hub=x.hub&&items[x.hub];
   const back=hub?`<button class="sqhome sqsub" type="button" data-goh="${esc(x.hub)}"><span class="ar">→</span><span class="em">${esc(hub.icon||"📚")}</span><span>${esc(hub.title)}</span></button>`:`<button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button>`;
@@ -202,11 +203,10 @@ function renderList(){const H=all("hub").sort((a,b)=>(a.order||99)-(b.order||99)
   const T=all("ticket").filter(x=>(ui.topic==="all"||(x.topic||"other")===ui.topic)&&match(x,ui.q)).sort(byNew);
   let h="";
   const Hs=H.filter(x=>ui.topic==="all"||x.topic===ui.topic);
-  h+=`<section><div class="sh"><h2>📚 דשבורדים פנימיים</h2><small>נושא גדול עם הרבה ידע</small></div><div class="hubs">${Hs.map(x=>{const n=all("ticket").filter(t=>t.hub===x.id).length;
-    return `<button class="hub" data-goh="${esc(x.id)}" style="--c1:${esc(x.c1||"#3a3f7a")};--c2:${esc(x.c2||"#6a58c9")}"><span class="i">${esc(x.icon||"📚")}</span><span><span class="t">${esc(x.title)}</span><span class="s">${n} פיסות ידע</span></span></button>`;}).join("")}
-    <div class="hubadd">כשנושא יגדל (כמה פיסות באותו תחום), הוא יקבל כאן דשבורד משלו</div></div></section>`;
-  h+=`<section><div class="sh"><h2>🎫 פיסות ידע</h2><small>${T.length}</small></div>${T.length?`<div class="tlist">${T.map(ticketRow).join("")}</div>`:`<div class="card empty">${loaded?(ui.q?"לא נמצא":"עוד אין כאן כלום. שלח לי משהו מעניין 🙂"):"טוען…"}</div>`}
-    <button class="addrow" data-add>＋ פיסת ידע מלינק<small>מדביקים לינק, ואני משלים טקסט מלא, תרגום ותובנות</small></button></section>`;
+  if(Hs.length)h+=`<section><div class="sh"><h2>📚 דשבורדים פנימיים</h2></div><div class="hubs">${Hs.map(x=>{const n=all("ticket").filter(t=>t.hub===x.id).length;
+    return `<button class="hub" data-goh="${esc(x.id)}" style="--c1:${esc(x.c1||"#3a3f7a")};--c2:${esc(x.c2||"#6a58c9")}"><span class="i">${esc(x.icon||"📚")}</span><span><span class="t">${esc(x.title)}</span><span class="s">${n} פיסות ידע</span></span></button>`;}).join("")}</div></section>`;
+  h+=`<section><div class="sh"><h2>🎫 פיסות ידע</h2><small>${T.length}</small></div>${T.length?`<div class="tlist">${T.map(ticketRow).join("")}</div>`:`<div class="card empty">${loaded?(ui.q?"לא נמצא":"עוד אין"):"טוען…"}</div>`}
+    <button class="addrow" data-add>＋ מלינק</button></section>`;
   return h;}
 
 // ---------- ticket ----------
@@ -217,7 +217,7 @@ function tabIns(x){let h="";
   if((x.caveats||[]).length)h+=`<section><div class="sh"><h2>⚖️ לקחת בעירבון מוגבל</h2></div><div class="warnbox"><ul>${x.caveats.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div></section>`;
   if((x.glossary||[]).length)h+=`<section><div class="sh"><h2>📖 מונחים</h2></div><div class="card"><ul class="glos">${x.glossary.map(g=>`<li><b>${esc(g.term)}</b>${g.en?` <span class="muted" dir="ltr">(${esc(g.en)})</span>`:""}: ${esc(g.text)}</li>`).join("")}</ul></div></section>`;
   if((x.links||[]).length)h+=`<section><div class="sh"><h2>🔗 עוד מקורות</h2></div><div class="card">${x.links.filter(l=>safe(l.url)).map(l=>`<div style="padding:4px 0"><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>${l.note?` <span class="muted">· ${esc(l.note)}</span>`:""}</div>`).join("")}</div></section>`;
-  return h||`<div class="empty">${x.status==="new"?"אני עובד על זה. התובנות יופיעו כאן.":"אין עדיין תובנות."}</div>`;}
+  return h||`<div class="empty">${x.status==="new"?"⏳ בעבודה":"אין עדיין תובנות."}</div>`;}
 function tabText(x){const P=x.parts||[];if(!P.length)return `<div class="empty">${x.status==="new"?"הטקסט המלא בדרך.":"אין טקסט מלא."}</div>`;
   const L=ui.lang;
   return `<div class="lang">${[["he","עברית"],["both","שתיהן"],["en","English"]].map(([k,l])=>`<button data-lang="${k}" class="${L===k?"on":""}">${l}</button>`).join("")}</div>
@@ -240,7 +240,7 @@ function renderHub(id){const h={id,...(items[id]||{})};if(!h.title){$("app").inn
   $("app").innerHTML=o;}
 
 function render(){const r=route();if(r&&r.k==="t")renderTicket(r.id);else if(r&&r.k==="h")renderHub(r.id);else renderHome();
-  $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד ידע ${esc(window.KN_BUILD)}`;}
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}ידע ${esc(window.KN_BUILD)}`;}
 let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
 async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
 async function upd(id,patch,msg){const prev=JSON.parse(JSON.stringify(items[id]||{}));items[id]=Object.assign({},items[id],patch);const y=scrollY;render();scrollTo(0,y);

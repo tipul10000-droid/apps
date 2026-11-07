@@ -25,3 +25,62 @@ button.sqhome{width:auto;flex:none;justify-content:flex-start;cursor:pointer;fon
 .embed .hero::before{top:calc(env(safe-area-inset-top,0px) + 22px)}
 .hero>.in{position:relative;z-index:1}
 .sh h2::before{content:"";display:inline-block;width:5px;height:.9em;border-radius:3px;background:var(--mark,var(--accent));margin-inline-end:8px;vertical-align:-.08em}
+
+/* 12.4 (Oren 7.11.2026): compact top on every dashboard. No description line, a small chat pill (💬 צ׳אט) at the top-left,
+   smaller title and KPIs, the topic art beside the title. */
+.hero{padding:10px 16px 12px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.embed .hero{padding-top:8px}
+.hero::before{display:none}
+.hero>.in{position:relative}
+.hero .top{min-height:30px;margin-top:0;padding-inline-end:84px}
+.hero .back{font-size:12.5px;font-weight:600}
+.sqhome{height:36px;padding:0 12px 0 5px;font-size:15px;border-radius:12px;gap:8px}
+.sqhome img,.sqhome .em{width:26px;height:26px;border-radius:7px;font-size:16px}
+button.sqhome{font-size:15px}
+.hero h1{position:relative;font-size:21px;line-height:1.25;margin:6px 0 0;padding-inline-end:58px;min-height:40px;display:flex;align-items:center;gap:8px}
+.hero h1::after{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:44px;height:44px;background:var(--art,none) no-repeat center/contain;opacity:.9;pointer-events:none}
+.hero .sub{padding-inline-end:0;font-size:13px;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero .chatbtn{position:absolute;left:0;top:0;margin:0;height:30px;padding:0 11px;gap:5px;border-radius:999px;font-size:13.5px;font-weight:800;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.2);display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;text-decoration:none;z-index:2}
+.hero .chatbtn[hidden]{display:none}
+.hero .chatbtn small{display:none}
+.hero .chatbtn>span:first-child{font-size:15px!important}
+.hero .kpis{margin-top:8px;gap:6px}
+.hero .kpi{padding:6px 9px;border-radius:11px}
+.hero .kpi b{font-size:17px}
+.hero .kpi span{font-size:11.5px;line-height:1.3}
+@media (display-mode: standalone){
+  html:not(.embed) .hero{padding-top:calc(env(safe-area-inset-top,0px) + 36px)}
+}
+/* 12.4: long text folds into a small "פירוט" drawer (closed by default, opens smoothly downward) */
+details.more{margin-top:6px;font-size:13px;color:var(--muted)}
+details.more>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:12.5px;color:var(--muted);padding:2px 0;-webkit-tap-highlight-color:transparent}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"ⓘ";font-size:13px}
+details.more>summary::after{content:"▾";font-size:11px;transition:transform .2s}
+details.more[open]>summary::after{transform:rotate(180deg)}
+details.more>div{margin-top:4px;line-height:1.45;animation:moreIn .22s ease-out}
+@keyframes moreIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.hero .sub.open{-webkit-line-clamp:unset;display:block}
+.tabs .tab{white-space:nowrap;font-size:14px;padding:7px 4px;overflow:hidden;text-overflow:ellipsis}
+/* fold.js: long text = 2 lines + ▾, tap opens downward */
+.fz{display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.fz::before{content:"▾ ";color:var(--accent,#888);font-weight:800}
+.fz.fzo{display:block!important;-webkit-line-clamp:unset;animation:moreIn .2s ease-out}
+.fz.fzo::before{content:"▴ "}
+/* insurance & payments: 4 KPIs in one row on the phone */
+@media (max-width:600px){.hero .kpis:not(.k2){grid-template-columns:repeat(4,minmax(0,1fr))}.hero .kpi b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+.hero .kpis:not(.k2):has(> :nth-child(3):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}
+.hero .stages{margin-top:8px;gap:6px}
+.hero .stg{padding:6px 8px}
+.hero .snote{font-size:12.5px;margin:6px 0 0}
+.hero .docsbtn{display:inline-block;margin-top:6px;padding:4px 12px;font-size:13px;border-radius:999px}
+.hero .docsbtn[hidden]{display:none}
+.hero .stg span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero .stg .pb{margin-top:4px}
+.hero .kpi:after{left:5px;top:4px;font-size:13px}
+/* inside the app (embed): the app bar already has back + title, so the dashboard's own top row goes away
+   (sub-page back buttons stay) and the chat pill sits on the title row, the art beside it */
+.embed .hero .top:not(:has(.sqsub)){display:none}
+.embed .hero .in:not(:has(.sqsub)) .chatbtn{top:11px}
+.embed .hero .in:not(:has(.sqsub)):has(.chatbtn:not([hidden])) h1{padding-inline-end:136px}
+.embed .hero .in:not(:has(.sqsub)):has(.chatbtn:not([hidden])) h1::after{left:84px}
