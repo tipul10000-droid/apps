@@ -14,7 +14,8 @@ button.sqhome{width:auto;flex:none;justify-content:flex-start;cursor:pointer;fon
 }
 
 /* 10.3: inside the Side Quests app (frame) the app bar holds the back button (sub-page backs stay) */
-.embed .sqhome:not(.sqsub){display:none}
+.embed .sqhome{display:none}
+/* 12.8: sub-page backs too: the app bar's back becomes the sub back (dash-sub.js) */
 
 /* 11.4: ערכת עיצוב לכל דשבורד (60-30-10): רקע בהיר (60), צבע הנושא בכותרת (30), הדגשה (10).
    כל דף מגדיר --hero, --hero2 (מעבר צבע), --accent ו---art (איור קטן לנושא). */
@@ -80,7 +81,7 @@ details.more>div{margin-top:4px;line-height:1.45;animation:moreIn .22s ease-out}
 .hero .kpi:after{left:5px;top:4px;font-size:13px}
 /* inside the app (embed): the app bar already has back + title, so the dashboard's own top row goes away
    (sub-page back buttons stay) and the chat pill sits on the title row, the art beside it */
-.embed .hero .top:not(:has(.sqsub)){display:none}
-.embed .hero .in:not(:has(.sqsub)) .chatbtn{top:11px}
-.embed .hero .in:not(:has(.sqsub)):has(.chatbtn:not([hidden])) h1{padding-inline-end:136px}
-.embed .hero .in:not(:has(.sqsub)):has(.chatbtn:not([hidden])) h1::after{left:84px}
+.embed .hero .top{display:none}
+.embed .hero .chatbtn{top:11px}
+.embed .hero .in:has(.chatbtn:not([hidden])) h1{padding-inline-end:136px}
+.embed .hero .in:has(.chatbtn:not([hidden])) h1::after{left:84px}

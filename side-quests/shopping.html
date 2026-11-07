@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#8E1F57">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.2";</script>
+<meta name="theme-color" content="#25272D">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.3";</script>
 <script src="sq-db.js?v=9"></script>
 <title>קניות ורכישות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,18 +15,18 @@
 /* דשבורד קניות ורכישות: כרטיסייה לכל קנייה (אפשרויות, השוואה, איפה הכי זול, ביקורות, יוטיוב, מועצת 5 המומחים).
    נתונים: sq_docs (app=sidequests, collection=shopping): מסמך לכל קנייה + _meta. אין כאן נתונים אישיים בקוד. */
 :root{
-  --bg:#F7F4F6; --surface:#FFFFFF; --sunk:#EFE8EC; --ink:#24161D; --muted:#6E5C66; --line:#E6DAE0;
-  --hero:#8E1F57; --hero2:#D2457A; --art:url(img/art-shopping.svg); --hero-ink:#FFF3F8; --hero-muted:#F5C6D8; --accent:#F2B544; --accent-ink:#2B1D02;
+  --bg:#F5F5F2; --surface:#FFFFFF; --sunk:#ECECE7; --ink:#1E1F23; --muted:#62656E; --line:#E2E2DC;
+  --hero:#25272D; --hero2:#4A4F5C; --art:url(img/art-shopping.svg); --hero-ink:#FFFFFF; --hero-muted:#D6D9E0; --accent:#F2B544; --accent-ink:#2B1D02;
   --good:#1E8A52; --good-soft:#DFF2E7; --warn:#B26A00; --warn-soft:#FBEBCF; --bad:#C2384A; --bad-soft:#FBE1E4; --link:#1F63C9; --pick:#0F7B6C; --pick-soft:#DDF3EE;
   --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#161015; --surface:#1F171D; --sunk:#2A1F27; --ink:#F3E9EE; --muted:#B8A3AE; --line:#3A2C35;
-  --hero:#5A1338; --hero2:#8E1F57; --hero-ink:#FCEFF5; --hero-muted:#E7AFC5; --accent:#F4C062; --accent-ink:#2B1D02;
+  --bg:#131416; --surface:#1C1D21; --sunk:#26282D; --ink:#EEEFF2; --muted:#A9ACB5; --line:#33363C;
+  --hero:#1E2025; --hero2:#3A3E48; --hero-ink:#FFFFFF; --hero-muted:#C9CCD4; --accent:#F4C062; --accent-ink:#2B1D02;
   --good:#4CC384; --good-soft:#163024; --warn:#E9A945; --warn-soft:#3A2A12; --bad:#EE7A88; --bad-soft:#3B1E24; --link:#8CB4F5; --pick:#4FD1B8; --pick-soft:#123029; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#161015; --surface:#1F171D; --sunk:#2A1F27; --ink:#F3E9EE; --muted:#B8A3AE; --line:#3A2C35;
-  --hero:#5A1338; --hero2:#8E1F57; --hero-ink:#FCEFF5; --hero-muted:#E7AFC5; --accent:#F4C062; --accent-ink:#2B1D02;
+  --bg:#131416; --surface:#1C1D21; --sunk:#26282D; --ink:#EEEFF2; --muted:#A9ACB5; --line:#33363C;
+  --hero:#1E2025; --hero2:#3A3E48; --hero-ink:#FFFFFF; --hero-muted:#C9CCD4; --accent:#F4C062; --accent-ink:#2B1D02;
   --good:#4CC384; --good-soft:#163024; --warn:#E9A945; --warn-soft:#3A2A12; --bad:#EE7A88; --bad-soft:#3B1E24; --link:#8CB4F5; --pick:#4FD1B8; --pick-soft:#123029; color-scheme:dark}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -150,7 +150,7 @@ table.cmp td.pk{background:var(--pick-soft)}
 .btn{border:0;background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 16px;font-weight:800;cursor:pointer;display:inline-block}
 .btn.big{width:100%;padding:13px 16px;font-size:16px;font-family:var(--f-display)}
 .btn.ghost{background:var(--sunk);color:var(--ink)}
-.council{background:linear-gradient(135deg,#4A1D6E,#8E1F57);color:#fff;border-radius:16px;padding:14px}
+.council{background:linear-gradient(135deg,#25272D,#4A4F5C);color:#fff;border-radius:16px;padding:14px}
 .council h3{font-size:18px}
 .council p{margin:6px 0 10px;font-size:14px;opacity:.9}
 .council .btn{background:var(--accent);color:var(--accent-ink)}
@@ -180,7 +180,8 @@ table.cmp td.pk{background:var(--pick-soft)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.offer .ph{width:72px;height:86px}.facts div{padding:6px 8px;font-size:13px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=5">
+<link rel="stylesheet" href="dash-back.css?v=6">
+<script src="dash-sub.js?v=1" defer></script>
 <script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
@@ -199,7 +200,8 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const safe=u=>/^https:\/\//.test(u||"")?u:"";
 const CHAT_FALLBACK="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCPW9sB2rCbKzvKLip49DqLq9";
 const CATS=[["all","הכול"],["travel","🧳 טיולים ונסיעות"],["tech","💻 טכנולוגיה"],["electronics","🔌 אלקטרוניקה"],["clothing","👕 ביגוד"],["outdoor","🏕️ ציוד שטח"],["home","🏠 בית"],["other","🛒 אחר"]];
-const ST={idea:"💡 רעיון",research:"🔎 בבירור",deciding:"⚖️ בהחלטה",waiting:"⏳ מחכה",bought:"✅ נקנה",dropped:"✖️ אין צורך"};
+// 1.3 (Oren 7.11.2026): no status. A purchase is open or archived (bought / not needed), nothing in between.
+const ARCH={bought:"✅ נקנה",dropped:"✖️ אין צורך"};
 const TABS=[["over","סקירה"],["opts","אפשרויות"],["cmp","השוואה"],["where","איפה לקנות"],["revs","ביקורות"],["council","🧠 מועצה"]];
 let items={},meta={},db=null,loaded=false;
 const UI_KEY="sq_shop_ui";let ui={cat:"all",tab:"over",view:"open"};
@@ -218,15 +220,15 @@ function pickOf(x){const o=(x.offers||[]);return o.find(y=>y.id===(x.verdict||{}
 function cheapest(x){const w=(x.where||[]).filter(r=>+r.price&&(!r.offer||!(x.verdict||{}).pick||r.offer===(x.verdict||{}).pick));if(!w.length)return null;return w.map(r=>({...r,ils:+r.price*rate(r.cur)})).sort((a,b)=>a.ils-b.ils)[0];}
 function ytId(u){const m=String(u||"").match(/(?:v=|youtu\.be\/|shorts\/)([\w-]{11})/);return m?m[1]:"";}
 
-const FIN=x=>isOpen(x)?`<div class="fin"><button type="button" data-fin="bought" data-id="${esc(x.id)}">✅ נרכש</button><button type="button" data-fin="dropped" data-id="${esc(x.id)}">✖️ אין צורך</button></div>`:`<div class="fin"><button type="button" data-fin="back" data-id="${esc(x.id)}">↩ להחזיר לבירור</button></div>`;
+const FIN=x=>isOpen(x)?`<div class="fin"><button type="button" data-fin="bought" data-id="${esc(x.id)}">✅ נרכש</button><button type="button" data-fin="dropped" data-id="${esc(x.id)}">✖️ אין צורך</button></div>`:`<div class="fin"><button type="button" data-fin="back" data-id="${esc(x.id)}">↩ להחזיר לפתוחים</button></div>`;
 // ---------- hero ----------
-function heroHome(L){const open=L.filter(isOpen),dec=open.filter(x=>x.status==="deciding"),qs=open.reduce((s,x)=>s+(x.questions||[]).filter(q=>!q.answer&&!q.superseded).length,0);
+function heroHome(L){const open=L.filter(isOpen),qs=open.reduce((s,x)=>s+(x.questions||[]).filter(q=>!q.answer&&!q.superseded).length,0);
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
   <h1>🛍️ קניות ורכישות</h1>
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
-  <div class="kpis"><div class="kpi"><b>${open.length}</b><span>בבירור</span></div><div class="kpi"><b>${dec.length}</b><span>מחכים להחלטה</span></div><div class="kpi"><b>${qs}</b><span>שאלות אליך</span></div></div>`;}
+  <div class="kpis"><div class="kpi"><b>${open.length}</b><span>פתוחות</span></div><div class="kpi"><b>${L.length-open.length}</b><span>בארכיון</span></div><div class="kpi"><b>${qs}</b><span>שאלות אליך</span></div></div>`;}
 function heroItem(x){const p=pickOf(x),c=cheapest(x),img=safe(x.img)||(p&&safe(p.img));
-  return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🛍️</span><span>כל הקניות</span></button><span class="back">${esc(ST[x.status]||"")}</span></div>
+  return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🛍️</span><span>כל הקניות</span></button></div>
   <div class="ihead" style="margin-top:10px">${img?`<div class="pic" style="background-image:url('${esc(img)}')"></div>`:""}<div style="min-width:0"><h1 style="margin:0">${esc(x.icon||"🛒")} ${esc(x.title)}</h1><p class="sub">${esc(x.summary||"")}</p></div></div>
   <div class="kpis"><div class="kpi"><b>${(x.offers||[]).length}</b><span>אפשרויות</span></div><div class="kpi"><b>${c?ils(c.ils):"—"}</b><span>${c?"הכי זול: "+esc(c.store):"מחיר"}</span></div><div class="kpi"><b style="font-size:16px">${p?esc(p.short||p.brand||""):"—"}</b><span>ההמלצה</span></div></div>
   ${FIN(x).replace('class="fin"','class="fin solo"')}`;}
@@ -237,11 +239,11 @@ function renderHome(){const L=list();$("hero").innerHTML=heroHome(L);
   const vis=L.filter(x=>(ui.cat==="all"||x.cat===ui.cat));const open=vis.filter(isOpen),done=vis.filter(x=>!isOpen(x));
   const card=x=>{const p=pickOf(x),c=cheapest(x),img=safe(x.img)||(p&&safe(p.img));const nq=(x.questions||[]).filter(q=>!q.answer&&!q.superseded).length;
     return `<button class="tcard" data-open="${esc(x.id)}"><div class="img" ${img?`style="background-image:url('${esc(img)}')"`:""}>${img?"":`<span class="ic">${esc(x.icon||"🛒")}</span>`}</div><div class="bd">
-      <span class="st ${esc(x.status||"")}">${esc(ST[x.status]||"")}</span>${nq?` <span class="st deciding">? ${nq}</span>`:""}
-      <div class="t" style="margin-top:6px">${esc(x.icon||"")} ${esc(x.title)}</div>
+      ${ARCH[x.status]?`<span class="st ${esc(x.status)}">${ARCH[x.status]}</span> `:""}${nq?`<span class="st deciding">? ${nq} שאלות</span>`:""}
+      <div class="t"${ARCH[x.status]||nq?' style="margin-top:6px"':""}>${esc(x.icon||"")} ${esc(x.title)}</div>
       <div class="s">${p?"ההמלצה: "+esc(p.name):esc(x.summary||"")}${c?" · מ-"+ils(c.ils):""}</div></div></button>`;};
   const ocard=x=>`<div class="tcw">${card(x)}${FIN(x)}</div>`;
-  let h=`<section><div class="sh"><h2>בבירור עכשיו</h2><small>${open.length}</small></div><div class="grid">${open.map(ocard).join("")}<button class="addcard" data-add>＋ נושא קנייה חדש</button></div></section>`;
+  let h=`<section><div class="sh"><h2>הקניות שלי</h2><small>${open.length}</small></div><div class="grid">${open.map(ocard).join("")}<button class="addcard" data-add>＋ נושא קנייה חדש</button></div></section>`;
   h+=guideBlock();
   if(done.length)h+=`<details class="arch"${ui.arch?" open":""}><summary>📦 ארכיון: נקנו או אין צורך · ${done.length}</summary><div class="grid">${done.sort((a,b)=>String(b.archived_at||"").localeCompare(String(a.archived_at||""))).map(card).join("")}</div></details>`;
   $("app").innerHTML=loaded||L.length?h:`<div class="empty">טוען…</div>`;}
@@ -304,9 +306,9 @@ window.addEventListener("hashchange",()=>{ui.tab="over";render();scrollTo(0,0);}
 document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
   if(g("[data-undo]")){const f=undoFn;undoFn=null;$("toast").className="toast";if(f)f();return;}
   if(b=g("[data-fin]")){const id=b.dataset.id,x=items[id]||{},k=b.dataset.fin,now=new Date().toISOString();if(b.classList.contains("on"))return;b.classList.add("on");
-    const prev={status:x.status||"research",archived_at:x.archived_at||null,log:x.log||[]};
+    const prev={status:x.status||"open",archived_at:x.archived_at||null,log:x.log||[]};
     const txt=k==="bought"?"סומן נרכש, עבר לארכיון":k==="dropped"?"סומן אין צורך, עבר לארכיון":"הוחזר לבירור";
-    const patch=k==="back"?{status:x.prev_status&&isOpen({status:x.prev_status})?x.prev_status:"research",archived_at:null,updated_at:now,log:[...prev.log,{at:now,text:txt}]}
+    const patch=k==="back"?{status:"open",archived_at:null,updated_at:now,log:[...prev.log,{at:now,text:txt}]}
       :{status:k,prev_status:prev.status,archived_at:now,updated_at:now,log:[...prev.log,{at:now,text:txt+" (מהדשבורד)"}]};
     setTimeout(()=>{if(k!=="back"&&curId()===id)goHash("");upd(id,patch,txt,()=>upd(id,{status:prev.status,archived_at:prev.archived_at,updated_at:new Date().toISOString(),log:prev.log},"בוטל"));},300);return;}
   if(b=g(".arch>summary")){setTimeout(()=>{ui.arch=b.parentElement.open;saveUi();},0);}
@@ -321,7 +323,7 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
     toast(ok?"הועתק. מדביקים בשיחה ושולחים":"לא הצלחתי להעתיק");setTimeout(()=>window.open(safe(x.chat_url)||safe(meta.chat_url)||CHAT_FALLBACK,"_blank","noopener"),600);return;}
   if(g("[data-add]")){const t=(prompt("מה אתה רוצה לקנות?")||"").trim();if(!t)return;if(!db){toast("אין חיבור");return;}
     const id="p"+Date.now().toString(36),now=new Date().toISOString();
-    try{await db.collection("shopping").doc(id).set({title:t.slice(0,120),icon:"🛒",cat:ui.cat==="all"?"other":ui.cat,status:"idea",created_at:now,updated_at:now,offers:[],log:[{at:now,text:"נפתח מהדשבורד"}]});
+    try{await db.collection("shopping").doc(id).set({title:t.slice(0,120),icon:"🛒",cat:ui.cat==="all"?"other":ui.cat,status:"open",created_at:now,updated_at:now,offers:[],log:[{at:now,text:"נפתח מהדשבורד"}]});
       const ok=await copy(`נושא קנייה חדש בדשבורד הקניות (id ${id}): "${t}". תבדוק אפשרויות, מחירים (כולל אמזון איטליה), ביקורות ויוטיוב, ותמלא את הכרטיסייה.`);
       toast(ok?"נפתח. הבקשה הועתקה, הדבק בשיחה":"נפתח");goHash("i="+encodeURIComponent(id));}catch(err){toast("לא נשמר");}return;}
 });
