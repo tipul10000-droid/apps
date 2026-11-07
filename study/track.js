@@ -50,9 +50,10 @@
       location.reload()}).catch(function(){})}catch(e){}}
   // גרף שיפור לאזור ההורים (אורן 7.11.2026): T.tl = [[בלוק, תשובות מצטבר, נכונות מצטבר], ...], בלוק = 20 דקות של זמן פעילות.
   // הרשומה הראשונה היא נקודת ההתחלה של המעקב: מה שנענה לפניה מוצג כבלוק אחד ("עד דקה X"). ירידה במונה (איפוס) מתחילה מחדש.
-  function tl(){var a=+data.att,k=+data.ok;if(!T||!isFinite(a)||!isFinite(k))return;var L=T.tl||(T.tl=[]),b=Math.floor((T.sec||0)/1200),z=L[L.length-1];
+  // מ-7.11.2026 גם [3] = כמה הילד יודע ברמה הנוכחית (data.prog), [4] = רמת הקושי (data.lv), [5] = דקות לימוד. נקודה חדשה כשמשתנה הבלוק או הרמה.
+  function tl(){var a=+data.att,k=+data.ok;if(!T||!isFinite(a)||!isFinite(k))return;var L=T.tl||(T.tl=[]),b=Math.floor((T.sec||0)/1200),z=L[L.length-1],pg=isFinite(+data.prog)?+data.prog:null,lv=+data.lv||1,m=Math.round((T.sec||0)/60);
     if(z&&(a<z[1]||k<z[2])){L=T.tl=[];z=null}
-    if(z&&z[0]===b&&L.length>1){z[1]=a;z[2]=k}else if(!z||z[1]!==a||z[0]!==b)L.push([b,a,k]);
+    if(z&&z[0]===b&&L.length>1&&(z[4]||1)===lv){z[1]=a;z[2]=k;z[3]=pg;z[5]=m}else if(!z||z[1]!==a||z[0]!==b||(z[4]||1)!==lv)L.push([b,a,k,pg,lv,m]);
     if(L.length>80)L.splice(1,L.length-80);set('study_t_'+kid+'_'+app,T)}
   window.StudyTrack={
     init:function(k,a,keys){kid=k;app=a;KEYS=keys||[];var key='study_t_'+k+'_'+a,old=get(key);if(KEYS.length){checkReset(KEYS,old);restore()}T=old||{first:new Date().toISOString(),sec:0,days:{}};T.days=T.days||{};

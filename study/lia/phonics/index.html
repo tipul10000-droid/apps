@@ -110,7 +110,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 <script src="audio/list.js?v=1"></script>
 <script src="../squishies.js?v=2"></script>
 <script src="../../sqsound.js?v=4"></script>
-<script src="../../track.js?v=7"></script>
+<script src="../../track.js?v=8"></script>
 <script>
 // אותיות וצלילים באנגלית לליה (אורן 6.11.2026). פוניקס שיטתי: צליל ← אות ← קריאה, 6 קבוצות לפי סדר Jolly Phonics, השוואה לעברית, הגייה אמריקאית.
 // מפתחות: lia_ph (התקדמות), lia_ph_sq (אוסף סקווישים), lia_ph_mute.
@@ -323,7 +323,7 @@ function upd(){const d=done(),g=curG(),ph=allL();$('dn').textContent=ph?mastered
   $('grp').innerHTML=G.map((gr,i)=>{const n=gr.filter(r=>ph?mst(BY[r[0]]):S.w[r[0]].s==='done').length;return `<span class="${n===gr.length?'ok':i===g?'cur':''}"><i style="width:${n/gr.length*100}%"></i>${n===gr.length?'✓ ':''}${esc(GN[i].split(' ').slice(0,3).join(' '))}</span>`}).join('');
   $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('sqn').textContent=sqN()+'/'+ALLSQ.length;
   const hard=IT.filter(x=>S.w[x.id].err>0).sort((a,b)=>S.w[b.id].err-S.w[a.id].err).slice(0,8).map(x=>({e:x.id+' ('+x.word+')',n:S.w[x.id].err}));
-  if(window.StudyTrack)StudyTrack.report({total:N,done:d,learning:IT.filter(x=>S.w[x.id].s==='learn').length,att:S.att,ok:S.okc,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:sqN(),hard,group:Math.min(g+1,G.length),tests:S.tests,built:S.bw||0,mastered:mastered(),dict:{ok:S.bw||0,n:S.bn||0,lvl:S.bl||1},grp:G.map((g,gi)=>{const l=IT.filter(x=>x.g===gi);return[l.reduce((t,x)=>t+(S.w[x.id].err||0),0),l.length]}),started:S.started})}
+  if(window.StudyTrack)StudyTrack.report({total:N,done:d,learning:IT.filter(x=>S.w[x.id].s==='learn').length,att:S.att,ok:S.okc,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:sqN(),hard,group:Math.min(g+1,G.length),tests:S.tests,built:S.bw||0,mastered:mastered(),dict:{ok:S.bw||0,n:S.bn||0,lvl:S.bl||1},lv:ph?2:1,lvn:ph?'שלב 2: חיזוק ⭐ (צלילים בשליטה)':'שלב 1: לומדת צלילים',prog:ph?mastered():d,pmax:N,grp:G.map((g,gi)=>{const l=IT.filter(x=>x.g===gi);return[l.reduce((t,x)=>t+(S.w[x.id].err||0),0),l.length]}),started:S.started})}
 $('mute').onclick=()=>{MUTE=!MUTE;LS.set('lia_ph_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(MUTE){try{speechSynthesis.cancel()}catch(e){}if(PL)PL.pause()}else SND.click()};$('mute').textContent=MUTE?'🔇':'🔊';
 $('hw').onclick=()=>$('intro').classList.add('on');
 $('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();if(!S.intro){S.intro=1;save()}if(CUR&&!TEST)render();else if(!TEST)next()};
