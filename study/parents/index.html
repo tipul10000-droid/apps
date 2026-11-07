@@ -46,6 +46,7 @@
 .imr{display:flex;gap:2px;align-items:flex-end;direction:rtl}.imc{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center}
 .imt{height:90px;width:100%;max-width:26px;display:flex;align-items:flex-end;border-bottom:1px solid #cbd5e1}.imt i{display:block;width:100%;background:#2f5d9e;border-radius:4px 4px 0 0}
 .imc.old .imt i{background:#9db3d4}.imc.few .imt i{opacity:.45}.imv{font-size:11px;color:#1f2937;height:15px;direction:ltr}.imx{font-size:10px;color:#64748b;direction:ltr;white-space:nowrap}.ima{font-size:9px;color:#94a3b8}
+.ixx{margin-top:10px;padding-top:8px;border-top:1px solid #e3e8f0}.ixh{font-size:12px;color:#475569;margin:8px 0 3px}.ixr{display:flex;align-items:center;gap:6px;font-size:12px;margin:3px 0}.ixl{width:92px;flex:none;color:#334155}.ixb{flex:1;height:10px;background:#eef2f7;border-radius:5px;overflow:hidden}.ixb i{display:block;height:100%;background:#2f5d9e;border-radius:5px}.ixv{width:96px;flex:none;direction:ltr;text-align:left;color:#1f2937}.ixn{font-size:12px;color:#475569;margin-top:6px;line-height:1.5}
 .imn{display:block;color:#475569;margin-top:6px;line-height:1.5}
 .hard{margin-top:10px;font-size:14px}.hard span{display:inline-block;background:#fff1f2;color:#9f1239;border-radius:14px;padding:2px 9px;margin:3px 2px;direction:ltr}
 .test{margin-top:10px;background:#eef3fb;border-radius:10px;padding:9px 10px;font-size:15px}
@@ -100,7 +101,7 @@ function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה
  rows.forEach(x=>{const d=x.data||{};r.sec+=+d.sec||0;r.att+=+d.att||0;r.ok+=+d.ok||0;
   const lv=+d.lvl||1;if(lv>(r.lvl||1)||(lv===(r.lvl||1)&&(+d.done||0)>=r.done)){r.lvl=lv;r.l1=d.l1;r.done=+d.done||0;r.total=+d.total||r.total;r.learning=d.learning;r.pts=d.pts;r.first_ok=d.first}
   r.best=Math.max(r.best,+d.best||0);const f=d.first||x.first_at;if(f&&(!r.first||f<r.first))r.first=f;const l=d.last||x.updated_at;if(l&&(!r.last||l>r.last))r.last=l;
-  for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)});if(Array.isArray(d.tl)&&d.tl.length)(r.tls=r.tls||[]).push(d.tl);(d.hard1||[]).forEach(h=>{r.hard1=r.hard1||{};r.hard1[h.e]=Math.max(r.hard1[h.e]||0,h.n)});
+  for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)});if(Array.isArray(d.tl)&&d.tl.length)(r.tls=r.tls||[]).push(d.tl);(r.devs=r.devs||[]).push({f:d.first||x.first_at,a:+d.att||0,o:+d.ok||0});if((+d.att||0)>=(r.xa||0)){r.xa=+d.att||0;r.ph=d.ph;r.grp=d.grp;r.top=d.top}(d.hard1||[]).forEach(h=>{r.hard1=r.hard1||{};r.hard1[h.e]=Math.max(r.hard1[h.e]||0,h.n)});
   if(d.group)r.group=Math.max(r.group||0,+d.group);for(const g in d.tests||{}){const o=d.tests[g]||{};r.tests=r.tests||{};const c=r.tests[g]||{best:0};r.tests[g]={best:Math.max(c.best,+o.best||0),last:(!c.d||o.d>=c.d)?o.last:c.last,d:(!c.d||o.d>=c.d)?o.d:c.d}}});return r}
 const id0=(k,a)=>k.id+'_'+a.id;
 let TAB='dani',SAVED='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}
@@ -118,17 +119,26 @@ function evBox(k,a,t,RS,id){const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')
 // וביום המבחן אפשר ללמוד בבוקר. יותר מ-21 ימים: היום הראשון, נקודות, ו-19 הימים האחרונים.
 // גרף שיפור (אורן 7.11.2026): אחוז הצלחה לכל 20 דקות של זמן פעילות, מימין (ההתחלה) לשמאל (עכשיו).
 // הנתונים מ-track.js (data.tl). מה שנענה לפני תחילת המעקב מוצג כעמודה אחת "עד דקה X".
-function improve(r,k){if(!r.tls)return'';const B={};let lump={a:0,o:0,to:0};
+// ניתוח מהנתונים שכבר נשמרו (אורן 7.11.2026): סשנים לפי מכשיר, שלבים (דני), טעויות לצליל לפי סדר הקבוצות (ליה), ריכוז הטעויות במילים.
+function impX(r,k){let h='';const pc=(o,a)=>a?Math.round(o/a*100):0,hb=(l,v,max,txt)=>`<div class="ixr"><span class="ixl">${l}</span><span class="ixb"><i style="width:${Math.max(2,Math.round(v/max*100))}%"></i></span><span class="ixv">${txt}</span></div>`;
+ const dv=(r.devs||[]).filter(d=>d.a>0).sort((x,y)=>String(x.f).localeCompare(String(y.f)));
+ if(dv.length>1)h+=`<div class="ixh">לפי סשן (מכשיר), מהראשון לאחרון</div>`+dv.map(d=>hb(new Date(d.f).toLocaleDateString('he-IL',{day:'numeric',month:'numeric'})+' '+new Date(d.f).toTimeString().slice(0,5),pc(d.o,d.a),100,pc(d.o,d.a)+'% ('+d.o+'/'+d.a+')')).join('');
+ if(Array.isArray(r.ph)&&r.ph.length>1)h+=`<div class="ixh">לפי שלב</div>`+r.ph.map((x,i)=>hb(i?'🚀 מתקדם':'שלב 1',pc(x[1],x[0]),100,pc(x[1],x[0])+'% ('+x[1]+'/'+x[0]+')')).join('')+`<div class="ixn">בשלב המתקדם המילים הכי קשות באות ראשונות, ובלי רמז מלא, ולכן האחוז בהתחלה נמוך.</div>`;
+ if(Array.isArray(r.grp)&&r.grp.some(g=>g[0]>0)){const v=r.grp.map(g=>g[1]?g[0]/g[1]:0),mx=Math.max(...v,.1);
+  h+=`<div class="ixh">טעויות לצליל, לפי סדר הלימוד (פחות = טוב יותר)</div>`+v.map((x,i)=>hb('קבוצה '+(i+1),x,mx,x.toFixed(1))).join('')+`<div class="ixn">הקבוצות נלמדות לפי הסדר, אז הירידה מראה שיפור לאורך הזמן (חלק מהטעויות בצלילים הראשונים היו בשלב החיזוק).</div>`}
+ if(r.top&&r.top.of>0)h+=`<div class="ixn">🎯 ${pc(r.top.n,r.top.of)}% מהטעויות (${r.top.n} מתוך ${r.top.of}) היו ב-${r.top.w.length} מילים:<br><bdi dir="ltr">${r.top.w.map(esc).join(', ')}</bdi>${r.top.z?`<br>${r.top.z} מילים בלי אף טעות.`:''}</div>`;
+ return h?`<div class="ixx"><div class="imh">🔎 מה רואים עד עכשיו</div>${h}</div>`:''}
+function improve(r,k){const X=impX(r,k);if(!r.tls)return X?`<div class="imp"><div class="imh">📈 גרף שיפור</div><small class="imn">הגרף לפי 20 דקות לימוד מתמלא מעכשיו (מהכניסה הבאה).</small>${X}</div>`:'';const B={};let lump={a:0,o:0,to:0};
  r.tls.forEach(L=>{const b0=L[0];if(b0[0]===0){B[0]=B[0]||{a:0,o:0};B[0].a+=b0[1];B[0].o+=b0[2]}else{lump.a+=b0[1];lump.o+=b0[2];lump.to=Math.max(lump.to,b0[0]*20)}
   for(let i=1;i<L.length;i++){const x=L[i],p=L[i-1],k=x[0];B[k]=B[k]||{a:0,o:0};B[k].a+=x[1]-p[1];B[k].o+=x[2]-p[2]}});
- let ks=Object.keys(B).map(Number).filter(k=>B[k].a>0).sort((x,y)=>x-y);if(!ks.length&&!lump.a)return`<div class="imp"><div class="imh">📈 גרף שיפור</div><small class="imn">הגרף מתמלא מעכשיו: כל 20 דקות של לימוד יקבלו עמודה עם אחוז ההצלחה.</small></div>`;
+ let ks=Object.keys(B).map(Number).filter(k=>B[k].a>0).sort((x,y)=>x-y);if(!ks.length&&!lump.a)return`<div class="imp"><div class="imh">📈 גרף שיפור</div><small class="imn">הגרף מתמלא מעכשיו: כל 20 דקות של לימוד יקבלו עמודה עם אחוז ההצלחה.</small>${X}</div>`;
  const step=ks.length?Math.max(1,Math.ceil((ks[ks.length-1]-ks[0]+1)/10)):1,G={};ks.forEach(k=>{const g=Math.floor(k/step);G[g]=G[g]||{a:0,o:0,k:g*step};G[g].a+=B[k].a;G[g].o+=B[k].o});
  const bars=[];if(lump.a>0)bars.push({l:'עד '+lump.to+'′',a:lump.a,o:lump.o,old:1});
  Object.keys(G).map(Number).sort((x,y)=>x-y).forEach(g=>{const x=G[g];bars.push({l:(x.k*20)+'′',a:x.a,o:x.o})});
  bars.forEach(b=>b.p=Math.min(100,Math.max(0,Math.round(b.o/b.a*100))));const f=bars[0],l=bars[bars.length-1];
  const cols=bars.map((b,i)=>{const lab=bars.length<=7||i===0||i===bars.length-1;return`<div class="imc${b.old?' old':''}${b.a<5?' few':''}" title="${b.l}: ${b.p}% (${b.o} מתוך ${b.a})"><span class="imv">${lab?b.p+'%':''}</span><div class="imt"><i style="height:${Math.max(2,b.p)}%"></i></div><span class="imx">${b.l}</span><span class="ima">${b.a}</span></div>`}).join('');
  const d=l.p-f.p,sum=bars.length>1?`בהתחלה <b>${f.p}%</b> ← עכשיו <b>${l.p}%</b> ${d>=5?(k.id==='evyatar'?'📈 השתפר':'📈 השתפרה'):d<=-5?'📉 ירידה, כדאי לבדוק':'≈ יציב'}`:'אחוז ההצלחה עד עכשיו. מעכשיו תתווסף עמודה לכל 20 דקות לימוד.';
- return`<div class="imp"><div class="imh">📈 גרף שיפור: אחוז הצלחה לפי זמן לימוד</div><div class="imr">${cols}</div><small class="imn">${sum}<br>כל עמודה = 20 דקות לימוד${step>1?' (כאן '+step*20+' דק׳)':''}, המספר למטה = כמה תשובות. עמודה בהירה = פחות מ-5 תשובות.</small></div>`}
+ return`<div class="imp"><div class="imh">📈 גרף שיפור: אחוז הצלחה לפי זמן לימוד</div><div class="imr">${cols}</div><small class="imn">${sum}<br>כל עמודה = 20 דקות לימוד${step>1?' (כאן '+step*20+' דק׳)':''}, המספר למטה = כמה תשובות. עמודה בהירה = פחות מ-5 תשובות.</small>${X}</div>`}
 function timeline(r,t,a,k){const D0=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x},today=D0(new Date()),dk=Object.keys(r.days).sort();
  let st=r.first?D0(r.first):today;if(dk[0]){const f=D0(dk[0]+'T00:00:00');if(f<st)st=f}if(st>today)st=today;
  const ex=t&&t.d&&!t.done?D0(t.d+'T00:00:00'):null,end=ex&&ex>=st?ex:today,N=Math.round((end-st)/864e5)+1;
