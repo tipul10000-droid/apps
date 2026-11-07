@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.8";window.SQ_BUILD_AT="7.11.2026 17:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.9";window.SQ_BUILD_AT="7.11.2026 23:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1946,10 +1946,21 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   // "08:00", "מחר 08:00", "שבת 08:00"; the end of Saturday (23:00) is מוצ״ש
   function atLbl(k,m,isEnd){if(k===0)return hhmm(m);const d=(ilNow().d+k)%7;return (isEnd&&d===6&&m>=1080?"מוצ״ש":k===1?"מחר":HE_DAYS[d])+" "+hhmm(m);}
   let plan=null; // settings/plan {date, errands_min, office}: tonight's answer for tomorrow morning
-  function planFor(iso){return plan&&plan.date===iso?plan:null;}
+  // 12.9 (Oren 7.11.2026, "I answered, closed the app, opened it again and it asked again"): the answer lives in settings/plan
+  // (Supabase) and a copy on the device (sq_plan), so the question never comes back before the data arrives.
+  try{const c=JSON.parse(localStorage.getItem("sq_plan")||"null");if(c&&c.date)plan=c;}catch(e){}
+  // 12.9 (Oren 7.11.2026, Italy Tue 10.11 early morning to Thu 12.11 late night): days away from home. settings/away {trips:[{from, to, place}]}.
+  // A day inside a trip is one "abroad" window all day, and nobody asks about errands for it.
+  let away=[];
+  function awayOn(iso){return away.find(x=>x&&x.from&&x.to&&iso>=x.from&&iso<=x.to)||null;}
+  function planFor(iso){const a=awayOn(iso);if(a)return {date:iso,abroad:true,place:a.place||"חו״ל"};return plan&&plan.date===iso?plan:null;}
+  // what tomorrow morning looks like, as a short tag: "שעתיים סידורים", "בלי סידורים", "✈️ איטליה"
+  function planTag(iso){const p=planFor(iso);if(!p)return "";if(p.abroad)return "✈️ "+p.place;if(p.office===false)return "לא נוסע לעבודה";
+    const E=+p.errands_min||0;return E?({30:"חצי שעה",60:"שעה",120:"שעתיים"}[E]||E+" דק׳")+" סידורים":"בלי סידורים";}
   // the windows of one day: [[start minute, window id], ...]. p = that day's plan (or null = defaults).
   // 00:00-01:00 is still the night before (deep). Fri 13:00 to Sat 23:00 is the weekend.
   function dayWins(d,p){
+    if(p&&p.abroad)return [[0,"abroad"]];
     const E=p&&p.errands_min!=null?+p.errands_min:30, office=!p||p.office!==false;
     if(d===5)return [[0,"deep"],[60,"sleep"],[420,"home_am"],[480,"fri"],[780,"weekend"]];
     if(d===6)return [[0,"weekend"],[60,"sleep"],[480,"sat_am"],[720,"weekend"],[1380,"deep"]];
@@ -1965,7 +1976,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   const hhmm=m=>String(Math.floor(m/60)%24).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
   function curWin(){const n=ilNow(),today=ilDate();
     if(winOv&&winOv.until>Date.now()&&WINS[winOv.id])return {id:winOv.id,end:winOv.end||"",manual:true};
-    if(mode==="abroad")return {id:"abroad",end:""};
+    if(mode==="abroad"||awayOn(today))return {id:"abroad",end:""};
     const L=dayWins(n.d,planFor(today));let i=0;for(let k=0;k<L.length;k++)if(L[k][0]<=n.m)i=k;
     let end=i+1<L.length?hhmm(L[i+1][0]):"00:00";
     if(i+1>=L.length){const T=dayWins((n.d+1)%7,planFor(addDays(today,1)));if(T[0]&&T[0][1]===L[i][1]&&T[1])end=hhmm(T[1][0]);}
@@ -1992,7 +2003,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     const wd=Array.isArray(f.with)?f.with:[];return f.people||wd.length||howOf(t).includes("call")?"people":"sys";}
   const ARMY_SPAN={sys:{0:[600,1440],1:[0,1440],2:[0,1440],3:[0,1440],4:[0,1080]},people:{0:[420,1320],1:[420,1320],2:[420,1320],3:[420,1320],4:[420,1320],5:[420,780],6:[1080,1320]}};
   // the minutes [s,e) of window id on day d (all its pieces that day)
-  function winSpans(id,d){const L=dayWins(d,null),r=[];for(let j=0;j<L.length;j++)if(L[j][1]===id)r.push([L[j][0],j+1<L.length?L[j+1][0]:1440]);return r;}
+  function winSpans(id,d){const L=dayWins(d,planFor(addDays(ilDate(),(d-ilNow().d+7)%7))),r=[];for(let j=0;j<L.length;j++)if(L[j][1]===id)r.push([L[j][0],j+1<L.length?L[j+1][0]:1440]);return r;}
   // at = {d, s, e}: when the window is (day, minutes). Without it: the current window = now, other windows = by id only.
   function armyOk(t,id,at){const c=armyCls(t);if(c==="ops")return true;const SP=ARMY_SPAN[c];
     if(!at&&id===curWin().id){const n=ilNow();at={d:n.d,s:n.m,e:n.m+1};}
@@ -2082,7 +2093,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   function planAsk(){const n=ilNow(),today=ilDate();let iso=null,dd=null,when="";
     if(n.m>=1200){iso=addDays(today,1);dd=(n.d+1)%7;when="מחר בבוקר";}else if(n.m<480){iso=today;dd=n.d;when="הבוקר";}
     if(!iso||dd>4||planFor(iso))return null;return {iso,when};}
-  function savePlan(iso,fields){plan={date:iso,...fields,at:new Date().toISOString()};
+  function savePlan(iso,fields){plan={date:iso,...fields,at:new Date().toISOString()};try{localStorage.setItem("sq_plan",JSON.stringify(plan));}catch(e){}
     if(db&&canWrite)db.collection("settings").doc("plan").set(plan).catch(()=>toast("השמירה נכשלה"));
     renderCtx();renderList();if($("briefM"))showBrief(briefMd);
     toast(fields.office===false?"מחר לא נוסע, הבוקר כולו לסידורים":fields.errands_min?"נשמר: "+fields.errands_min+" דק׳ סידורים":"נשמר: בלי סידורים, ישר לעבודה");}
@@ -2842,10 +2853,16 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     const so=x=>Math.min(99,...x.items.map(t=>dayOrd(t)??99));if(S.some(x=>so(x)<99)){S.sort((a,b)=>so(a)-so(b));S.forEach((x,i)=>{if(i&&x.items===home)x.t=atH?"🏠 בבית":"📱 מהנייד";});} // stable: unplanned keep the fixed order
     return S;}
   // 9.2: Oren's own order for one day: day_plan {date, n} (n = 1 first). Wins over home-first and distance on that date only.
-  function dayOrd(t){const p=t.day_plan;return p&&p.date===ilDate()&&p.n!=null?+p.n:null;}
+  let ordIso=null; // 12.9: the "next" card for tomorrow morning follows tomorrow's day_plan order
+  function dayOrd(t){const p=t.day_plan;return p&&p.date===(ordIso||ilDate())&&p.n!=null?+p.n:null;}
   function sameArea(t){const g=geoOf(t);if(!g.area)return [];return allTopics.filter(x=>x.id!==t.id&&isOpen(x)&&!isFun(x)&&geoOf(x).area===g.area&&!geoOf(x).any);}
   // the next window that can take tasks (skips sleep and blocked windows); today, else tomorrow
   function nextWin(cur){if(WINS[cur.id]&&WINS[cur.id].ov)return null;const n=ilNow(),base=ilDate();
+    // 12.9 (Oren 7.11.2026): from 20:00 the next window that matters is tomorrow morning (he already knows how it looks),
+    // not the rest of tonight. Its card says what tomorrow morning is ("מחר מ-08:00 · שעתיים סידורים").
+    if(!cur.manual&&n.m>=1200){const iso=addDays(base,1),L=dayWins((n.d+1)%7,planFor(iso)),g=WIN_GROUP[cur.id];
+      for(let j=0;j<L.length;j++){const [m,id]=L[j];if(m>720)break;if((m<480&&id!=="abroad")||!WINS[id].acc.length||(g&&WIN_GROUP[id]===g))continue;
+        return {id,k:1,m,at:id==="abroad"?"מחר · "+planFor(iso).place:"מחר "+hhmm(m)+(L[j+1]?"-"+hhmm(L[j+1][0]):"")};}}
     for(let k=0;k<2;k++){const L=dayWins((n.d+k)%7,planFor(addDays(base,k)));let start=0;
       if(k===0){let i=0;for(let j=0;j<L.length;j++)if(L[j][0]<=n.m)i=j;if(cur.manual){const m=L.findIndex(x=>x[1]===cur.id&&x[0]>=n.m-240);if(m>=0)i=m;}start=i+1;}
       const g=!cur.manual&&WIN_GROUP[cur.id];
@@ -2900,7 +2917,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
       let NL=[...nU,...nF];
       const nrun=nx&&winRun(nx.id,nx.k,nx.m);
       if(nrun){const c=runCard(nrun,null,live.filter(t=>!L.includes(t)),urgAll.filter(t=>!L.includes(t)),true,nx.at);NL=c.L;top.push(c.el);}
-      else if(nx)top.push(winCard(NW,"הבא · "+nx.at,NL,"אין משימות לחלון הזמן הבא",true));
+      else if(nx){ordIso=addDays(ilDate(),nx.k);try{top.push(winCard(NW,"הבא · "+nx.at,NL,"אין משימות לחלון הזמן הבא",true));}finally{ordIso=null;}}
       const uOut=urgAll.filter(t=>!L.includes(t)&&!NL.includes(t));
       if(uOut.length)top.push(foldRows("uout","❗ דחוף לחלון זמן אחר",uOut,{hot:true}));
       const others=live.filter(t=>!L.includes(t)&&!NL.includes(t));
@@ -3742,8 +3759,23 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
       const L=allTopics.filter(t=>bOk(t,to)&&!bCrit(t)&&!used.has(t.id));
       const dated=L.filter(t=>planDay(t)&&planDay(t)<=to).sort((a,b)=>planDay(a)<planDay(b)?-1:planDay(a)>planDay(b)?1:bRank(a,planDay(a))-bRank(b,planDay(b))).slice(0,10);
       dated.forEach(t=>used.add(t.id));
-      const late=dated.filter(t=>planDay(t)<from);sec("⏮️ נשאר מהשבוע שעבר","⏮️",late);
-      for(let k=1;k<=5;k++){const iso=addDays(date,k),ts=dated.filter(t=>planDay(t)===iso),dd=new Date(iso+"T12:00:00");sec(`📅 ${HE_DAYS[dd.getDay()]} ${dd.getDate()}.${dd.getMonth()+1}`,"📅",ts);}
+      // 12.9 (Oren 7.11.2026): the week opens with what is urgent for Sunday morning, not with a big weekend thing.
+      // A task that only fits the weekend (squash with Evyatar) does not carry over into the week.
+      const wkOnly=t=>{const w=fitOf(t).when;return Array.isArray(w)&&w.length>0&&w.every(x=>["weekend","sat_am"].includes(x));};
+      const late=dated.filter(t=>planDay(t)<from&&!wkOnly(t));
+      const lbl=iso=>{const dd=new Date(iso+"T12:00:00");return `${HE_DAYS[dd.getDay()]} ${dd.getDate()}.${dd.getMonth()+1}`;};
+      // days away (settings/away): one line for the trip, and what must be done before it (deadlines up to the return day)
+      const trip=[1,2,3,4,5].map(k=>addDays(date,k)).map(iso=>({iso,a:awayOn(iso)})).filter(x=>x.a);
+      for(let k=1;k<=5;k++){const iso=addDays(date,k);if(awayOn(iso))continue;const ts=dated.filter(t=>planDay(t)===iso);
+        if(k===1){const ab=bFit(iso,["errands","drive_am"],480).filter(t=>ts.includes(t)||late.includes(t)).map(t=>t.id); // Sunday: the morning things first
+          const dn=t=>t.day_plan&&t.day_plan.date===iso&&t.day_plan.n!=null?+t.day_plan.n:99;
+          ts.sort((x,y)=>dn(x)-dn(y)||(ab.includes(x.id)?0:1)-(ab.includes(y.id)?0:1));sec("🌅 "+lbl(iso)+(planTag(iso)?" · "+planTag(iso):""),"🌅",[...ts,...late]);}
+        else sec("📅 "+lbl(iso),"📅",ts);
+        if(trip.length&&iso===addDays(trip[0].iso,-1)){const before=take(L.filter(t=>{const dl=dlOf(t);return dl&&dl.d<=trip[trip.length-1].iso;}),3);
+          sec("✈️ לפני הטיסה ("+trip[0].a.place+")","✈️",before);}}
+      if(trip.length){const a=trip[0].a,end=trip[trip.length-1].iso; // a deadline before the return = mark it, so Sun-Mon get it done
+        for(const x of S)for(const it of x.items){const t=allTopics.find(z=>z.id===it.id),dl=t&&dlOf(t);if(dl&&dl.d<=end)it.sub="⏳ לפני הטיסה";}
+        S.push({h:"✈️ "+a.place+": "+lbl(trip[0].iso)+" עד "+lbl(trip[trip.length-1].iso),e:"✈️",items:[{text:"בחו״ל, רק מהנייד",e:"✈️"}]});}
       const dls=take(L.filter(t=>{const dl=dlOf(t);return dl&&dl.d>=from&&dl.d<=addDays(date,14);}).sort((a,b)=>dlOf(a).d<dlOf(b).d?-1:1),3);
       sec("⏳ מועדים בשבועיים הקרובים","⏳",dls);
       const n=dated.length-late.length;head=crit.length?cut(crit[0].title,32):n?`השבוע: ${n} דברים עם יום קבוע`:"שבוע בלי מועדים קבועים";}
@@ -4000,10 +4032,13 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   $("sunBtn").onclick=()=>showBrief();
   $("locBtn").onclick=()=>showHere(true);
   function initNotify(){
-    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan");plan=pl?pl.data():null;morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
+    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan"),aw=s.docs.find(x=>x.id==="away");
+      const plOld=JSON.stringify([plan,away]);if(pl){plan=pl.data();try{localStorage.setItem("sq_plan",JSON.stringify(plan));}catch(e){}}
+      away=aw&&Array.isArray(aw.data().trips)?aw.data().trips:[];const plChg=plOld!==JSON.stringify([plan,away]);morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
       xBriefs={};for(const k of ["fri","wkend","week"]){const d0=s.docs.find(x=>x.id===BKD[k].doc);if(d0)xBriefs[k]=d0.data();}
       notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;refreshMode();
-      if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}else if($("briefM"))showBrief(briefMd);else renderSettings();renderSunDot();},()=>{});
+      if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}else if($("briefM"))showBrief(briefMd);else renderSettings();renderSunDot();
+      if(plChg&&allTopics.length){renderCtx();renderList();}},()=>{});
     db.collection("topics").onSnapshot(()=>{if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}},()=>{});
     syncPush();
   }
