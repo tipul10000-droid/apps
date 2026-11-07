@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.4";window.SQ_BUILD_AT="7.11.2026 15:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.5";window.SQ_BUILD_AT="7.11.2026 16:05";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1075,6 +1075,11 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 .tz-abroad .tz-txt{right:12px;top:10px;color:#fff;background:rgba(8,59,65,.55)}
 .tz-abroad .tz-txt p{color:#FFE3A3}
 .tz-ab-z{margin-top:10px}
+.tv-ideas{margin-top:6px}.tv-ideas>summary{padding:8px 0;margin:0}.tv-ideas[open]>summary{margin-bottom:2px}.tv-ideas ul{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;animation:sqgrowA .18s ease-out}
+.tv-ideas li+li{border-top:1px solid var(--line)}
+.tv-ideas li>a,.tv-ideas li>div{display:flex;align-items:center;gap:8px;padding:8px 10px;min-height:38px;color:var(--ink);text-decoration:none;font-size:13.5px}
+.tv-ideas .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}.tv-ideas i{font-style:normal}.tv-ideas small{color:var(--muted);font-size:11.5px;flex:none}
+@keyframes sqgrowA{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .tv-fold>summary{list-style:none;cursor:pointer;font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.3px;margin-bottom:6px}
 .tv-fold>summary::-webkit-details-marker{display:none}
 .tv-fold>summary::after{content:" ▾"}
@@ -3268,6 +3273,14 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     modal("ilAllM",h("div",{class:"lhd"},h("h2",null,"🇮🇱 כל הטיולים בארץ",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),
       h("div",{class:"ilsum"},`${T.length} מקומות · ${vis} ביקורים · לפי אזורים`+(I.as_of?` · נכון ל-${I.as_of}`:"")),body,
       h("div",{class:"lft"},h("button",{type:"button",onclick:closeModal},"✓ סגור")));}
+  // 12.5 (Oren 7.11.2026): saved ideas for future Israel trips (travel_hub israel.ideas [{t few words, url, src fb|ig|tiktok|yt|web|note, at YYYY-MM-DD, area}]), newest first
+  function tvIdeas(list){const L=(Array.isArray(list)?list:[]).filter(x=>x&&!x._deleted&&(x.t||x.url));if(!L.length)return null;
+    const IC={fb:"📘",ig:"📸",tiktok:"🎵",yt:"▶️",web:"🔗",note:"📝"};
+    const dd=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(d||"");return m?`${+m[3]}.${+m[2]}`:"";};
+    L.sort((a,b)=>(b.at||"").localeCompare(a.at||""));
+    return h("details",{class:"tv-fold tv-ideas"},h("summary",null,`💡 רעיונות לטיולים (${L.length})`),
+      h("ul",null,L.map(x=>{const u=safeUrl(x.url||"");const kids=[h("i",{"aria-hidden":"true"},IC[x.src]||(u?"🔗":"📝")),h("span",{class:"nm"},x.t||"לינק"),x.area?h("small",null,x.area):null,x.at?h("small",{dir:"ltr"},dd(x.at)):null];
+        return h("li",null,u?h("a",{href:u,target:"_blank",rel:"noopener"},...kids):h("div",null,...kids));})));}
   function zoneHead(z,title,sub,svg){return h("div",{class:"tz-hero tz-"+z,id:tvZone[z]},h("div",{class:"tz-art",html:svg}),h("div",{class:"tz-txt"},h("h2",null,title),h("p",null,sub)));}
   function renderTravel(){
     const sec=$("tvSec");if(!sec)return;
@@ -3290,6 +3303,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
         regs.length?h("details",{class:"tv-fold",open:true},h("summary",null,"לפי אזורים"+(I.as_of?` · נכון ל-${I.as_of}`:"")),h("ul",{class:"tv-regs"},regs.map(r=>h("li",{class:"tv-reg"},h("i",{"aria-hidden":"true"},r.icon||"📍"),h("span",{class:"nm"},r.name),
           h("span",{class:"tv-bar"},h("u",{style:`width:${Math.round((+r.n||0)/max*100)}%`})),h("span",{class:"n",html:`<b>${+r.n||0}</b> טיולים`}))))):null,
         Array.isArray(I.trips)&&I.trips.length?h("button",{class:"tv-btn tv-all",type:"button",onclick:showIlTrips},`📋 כל הטיולים לפי אזורים (${I.trips.length})`):null,
+        tvIdeas(I.ideas),
         Array.isArray(I.recent)&&I.recent.length?h("p",{class:"tv-sub"},"חדשים לאחרונה"):null,
         Array.isArray(I.recent)&&I.recent.length?h("div",{class:"tv-new"},I.recent.map(x=>h("span",null,"🌿 "+x.name,x.date?h("small",null,x.date):null))):null,
         I.next?h("div",{class:"tv-next"},I.next):null,
