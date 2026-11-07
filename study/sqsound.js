@@ -54,8 +54,20 @@
   var POOL=['f_wet','f_tiny','f_three','b_burp','b_loud','v_omg','v_omg2','v_wow','v_yay','c_boing','c_squeak','c_fall','c_dizzy','c_kiss','c_blbl','v_faaa','v_faaa','v_aaah','v_woui','v_scream'];
   var ULT={u_ramyeon:'v_omg',u_hotteok:'c_boing',u_bungeo:'c_kiss',u_corndog:'b_burp',u_mandu:'f_wet',u_banana:'v_wow',
     u_hole:'c_fall',u_astro:'v_yay',u_donut:'c_squeak',u_meteor:'b_loud',u_robot:'c_dizzy',u_starfruit:'f_three'};
-  var CUR=null,LAST=null;
-  function file(n){try{if(CUR){CUR.pause()}CUR=new Audio(BASE+n+'.mp3');CUR.volume=.9;var p=CUR.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+  // בלי דיליי (אורן 7.11.2026): כל ההקלטות נטענות מראש לזיכרון (WebAudio) במגע הראשון בדף, ומתנגנות מיד ובלי השקט שבתחילת הקובץ.
+  // עד שהן נטענות (או אם אין WebAudio) מנגנים כמו קודם עם Audio.
+  var CUR=null,SRC=null,LAST=null,BUF={},PRE=false;
+  function names(){var o={};POOL.forEach(function(n){o[n]=1});for(var k in ULT)o[ULT[k]]=1;return Object.keys(o)}
+  function lead(b){var x=b.getChannelData(0),r=b.sampleRate,i=0;while(i<x.length&&Math.abs(x[i])<.02)i++;return Math.max(0,i/r-.01)}
+  function preload(){if(PRE||!ac()||!window.fetch)return;PRE=true;
+    names().forEach(function(n){fetch(BASE+n+'.mp3').then(function(r){return r.arrayBuffer()}).then(function(ab){
+      AC.decodeAudioData(ab,function(b){BUF[n]={b:b,o:lead(b)}},function(){})}).catch(function(){})})}
+  function unlock(){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}ac();preload()}
+  ['touchend','pointerdown','click','keydown'].forEach(function(ev){document.addEventListener(ev,unlock,{capture:true,passive:true})});
+  function stop(){try{if(CUR)CUR.pause()}catch(e){}try{if(SRC)SRC.stop()}catch(e){}CUR=SRC=null}
+  function file(n){stop();var B=BUF[n];
+    if(B&&ac()){try{var s=AC.createBufferSource(),g=AC.createGain();g.gain.value=.9;s.buffer=B.b;s.connect(g);g.connect(AC.destination);s.start(0,B.o);SRC=s;return}catch(e){}}
+    preload();try{CUR=new Audio(BASE+n+'.mp3');CUR.volume=.9;var p=CUR.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
   function mix(){var n;do{n=POOL[Math.floor(Math.random()*POOL.length)]}while(n===LAST&&POOL.length>1);LAST=n;return n}
   window.SqSound={has:function(id){return !!(S[id]||ULT[id])},ids:Object.keys(S).concat(Object.keys(ULT)),
     play:function(id,muted){if(muted)return false;if(ULT[id]){file(ULT[id]);return true}if(!S[id]||!ac())return false;
