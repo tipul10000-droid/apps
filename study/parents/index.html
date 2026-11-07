@@ -46,6 +46,11 @@
 .imr{display:flex;gap:2px;align-items:flex-end;direction:rtl}.imc{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center}
 .imt{height:90px;width:100%;max-width:26px;display:flex;align-items:flex-end;border-bottom:1px solid #cbd5e1}.imt i{display:block;width:100%;background:#2f5d9e;border-radius:4px 4px 0 0}
 .imc.old .imt i{background:#9db3d4}.imc.few .imt i{opacity:.45}.imv{font-size:11px;color:#1f2937;height:15px;direction:ltr}.imx{font-size:10px;color:#64748b;direction:ltr;white-space:nowrap}.ima{font-size:9px;color:#94a3b8}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}.kp>div{background:#f5f8fc;border-radius:12px;padding:8px 6px;text-align:center;min-width:0}.kp small{display:block;font-size:11px;color:#64748b;line-height:1.35}.kp b{display:block;font-size:clamp(15px,4.4vw,20px);margin:2px 0;color:#0f172a;line-height:1.2}
+.lnw{margin-top:10px;border:1px solid #e3e8f0;border-radius:14px;padding:10px;background:#fff}.lc{margin-top:6px}.lc+.lc{border-top:1px solid #eef2f7;padding-top:8px}.lct{font-size:13px;font-weight:700;color:#2f5d9e}
+.lcs{width:100%;height:auto;display:block;margin-top:4px;direction:ltr}.lcs .g{stroke:#e5eaf1;stroke-width:1}.lcs .g0{stroke:#cbd5e1;stroke-width:1}.lcs .ls{fill:none;stroke:#2f5d9e;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.lcs .ld{fill:none;stroke:#2f5d9e;stroke-width:2;stroke-dasharray:5 4;stroke-linecap:round;opacity:.8}.lcs .pt{fill:#2f5d9e;stroke:#fff;stroke-width:2}.lcs text{font-size:10px;fill:#64748b}.lcs .vl{font-size:12px;font-weight:700;fill:#0f172a}
+.ins{margin-top:10px;background:#f5f8fc;border-radius:12px;padding:8px 10px;font-size:14px;line-height:1.6}.hw{display:inline-block;background:#fff1f2;color:#9f1239;border-radius:12px;padding:0 8px;margin:1px;direction:ltr}
+details.more{margin-top:10px}details.more summary{cursor:pointer;color:#2f5d9e;font-weight:700;font-size:14px;padding:6px 0;list-style:none}details.more summary::-webkit-details-marker{display:none}details.more[open] summary{margin-bottom:4px}details.more summary::after{content:' ▾'}details.more[open] summary::after{content:' ▴'}
 .ixx{margin-top:10px;padding-top:8px;border-top:1px solid #e3e8f0}.ixh{font-size:12px;color:#475569;margin:8px 0 3px}.ixr{display:flex;align-items:center;gap:6px;font-size:12px;margin:3px 0}.ixl{width:92px;flex:none;color:#334155}.ixb{flex:1;height:10px;background:#eef2f7;border-radius:5px;overflow:hidden}.ixb i{display:block;height:100%;background:#2f5d9e;border-radius:5px}.ixv{width:96px;flex:none;direction:ltr;text-align:left;color:#1f2937}.ixn{font-size:12px;color:#475569;margin-top:6px;line-height:1.5}
 .imn{display:block;color:#475569;margin-top:6px;line-height:1.5}
 .hard{margin-top:10px;font-size:14px}.hard span{display:inline-block;background:#fff1f2;color:#9f1239;border-radius:14px;padding:2px 9px;margin:3px 2px;direction:ltr}
@@ -101,7 +106,7 @@ function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה
  rows.forEach(x=>{const d=x.data||{};r.sec+=+d.sec||0;r.att+=+d.att||0;r.ok+=+d.ok||0;
   const lv=+d.lvl||1;if(lv>(r.lvl||1)||(lv===(r.lvl||1)&&(+d.done||0)>=r.done)){r.lvl=lv;r.l1=d.l1;r.done=+d.done||0;r.total=+d.total||r.total;r.learning=d.learning;r.pts=d.pts;r.first_ok=d.first}
   r.best=Math.max(r.best,+d.best||0);const f=d.first||x.first_at;if(f&&(!r.first||f<r.first))r.first=f;const l=d.last||x.updated_at;if(l&&(!r.last||l>r.last))r.last=l;
-  for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)});if(Array.isArray(d.tl)&&d.tl.length)(r.tls=r.tls||[]).push(d.tl);(r.devs=r.devs||[]).push({f:d.first||x.first_at,a:+d.att||0,o:+d.ok||0});if((+d.att||0)>=(r.xa||0)){r.xa=+d.att||0;r.ph=d.ph;r.grp=d.grp;r.top=d.top}(d.hard1||[]).forEach(h=>{r.hard1=r.hard1||{};r.hard1[h.e]=Math.max(r.hard1[h.e]||0,h.n)});
+  for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)});if(Array.isArray(d.tl)&&d.tl.length)(r.tls=r.tls||[]).push(d.tl);(r.devs=r.devs||[]).push({f:d.first||x.first_at,a:+d.att||0,o:+d.ok||0});if((+d.att||0)>=(r.xa||0)){r.xa=+d.att||0;r.ph=d.ph;r.grp=d.grp;r.top=d.top;r.hist=d.hist;r.tlm=d.tl;r.lv=d.lv;r.lvn=d.lvn;r.prog=d.prog;r.pmax=d.pmax}(d.hard1||[]).forEach(h=>{r.hard1=r.hard1||{};r.hard1[h.e]=Math.max(r.hard1[h.e]||0,h.n)});
   if(d.group)r.group=Math.max(r.group||0,+d.group);for(const g in d.tests||{}){const o=d.tests[g]||{};r.tests=r.tests||{};const c=r.tests[g]||{best:0};r.tests[g]={best:Math.max(c.best,+o.best||0),last:(!c.d||o.d>=c.d)?o.last:c.last,d:(!c.d||o.d>=c.d)?o.d:c.d}}});return r}
 const id0=(k,a)=>k.id+'_'+a.id;
 let TAB='dani',SAVED='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}
@@ -119,6 +124,28 @@ function evBox(k,a,t,RS,id){const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')
 // וביום המבחן אפשר ללמוד בבוקר. יותר מ-21 ימים: היום הראשון, נקודות, ו-19 הימים האחרונים.
 // גרף שיפור (אורן 7.11.2026): אחוז הצלחה לכל 20 דקות של זמן פעילות, מימין (ההתחלה) לשמאל (עכשיו).
 // הנתונים מ-track.js (data.tl). מה שנענה לפני תחילת המעקב מוצג כעמודה אחת "עד דקה X".
+// אחוז הצלחה ב-20 דקות הלימוד האחרונות שנמדדו (מ-tl של המכשיר הראשי)
+function recent(r){const L=r.tlm;if(!L||L.length<2)return null;const z=L[L.length-1];let i=L.length-2;while(i>0&&L[i][0]===z[0])i--;const p=L[i],a=z[1]-p[1],o=z[2]-p[2];return a>=5?Math.round(o/a*100):null}
+// גרף שיפור (אורן 7.11.2026): קו "כמה יודע/ת" לאורך זמן הלימוד, גרף נפרד לכל רמת קושי (כי כשהרמה עולה האחוזים יורדים בלי קשר לשיפור).
+// data.hist = [{lv, name, max, start, est, pts:[[דקה, ערך]]}] (שחזור מהנתונים, מקווקו); tl[3..5] = [ערך, רמה, דקה] (מדידה, קו מלא).
+function lines(r,k,a){const S={};
+ (r.hist||[]).forEach(x=>{S[x.lv]={lv:x.lv,name:x.name,max:x.max,start:x.start,pts:x.pts.map(p=>({m:p[0],v:p[1],e:!!x.est}))}});
+ (r.tlm||[]).forEach(e=>{if(e[3]==null||e[5]==null)return;const lv=e[4]||1,o=S[lv]||(S[lv]={lv,name:lv===r.lv?r.lvn:'רמה '+lv,max:r.pmax||r.total,pts:[]});o.pts.push({m:e[5],v:e[3],e:false})});
+ const L=Object.values(S).sort((x,y)=>x.lv-y.lv);if(!L.length)return'';
+ return`<div class="lnw"><div class="imh">📈 גרף שיפור</div>${L.map(x=>chart(x,a,k)).join('')}${L.some(x=>x.pts.some(p=>p.e))?'<small class="imn">קו מקווקו = שחזור מהנתונים שנשמרו (הזמנים משוערים). קו מלא = נמדד.</small>':''}</div>`}
+function chart(x,a,k){const P=x.pts.slice().sort((p,q)=>p.m-q.m);if(!P.length)return'';const m0=P[0].m,span=Math.max(1,P[P.length-1].m-m0),max=Math.max(1,x.max||Math.max(...P.map(p=>p.v)));
+ const W=300,H=120,l=14,rr=30,tp=12,bt=20,pw=W-l-rr,ph=H-tp-bt,X=m=>W-rr-(m-m0)/span*pw,Y=v=>tp+ph-v/max*ph;
+ let d='',dd='';P.forEach((p,i)=>{const c=`${X(p.m).toFixed(1)},${Y(p.v).toFixed(1)}`;if(!i)return;const q=P[i-1],seg=`M${X(q.m).toFixed(1)},${Y(q.v).toFixed(1)}L${c}`;if(p.e)dd+=seg;else d+=seg});
+ const f=P[0],z=P[P.length-1],tt=x.start?new Date(x.start):null,st=tt?tt.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'})+' '+tt.toTimeString().slice(0,5):'';
+ const one=P.length<2;
+ return`<div class="lc"><div class="lct">${esc(x.name||'')}</div>${one?`<small class="imn">${z.v} מתוך ${max}. הקו יתחיל מהתרגול הבא.</small>`:`<svg viewBox="0 0 ${W} ${H}" class="lcs" role="img" aria-label="${esc(x.name||'')}: מ-${f.v} ל-${z.v}">
+ <line x1="${l}" x2="${W-rr}" y1="${Y(max)}" y2="${Y(max)}" class="g"/><line x1="${l}" x2="${W-rr}" y1="${Y(0)}" y2="${Y(0)}" class="g0"/>
+ <text x="${W-rr+4}" y="${Y(max)+4}" class="yl">${max}</text><text x="${W-rr+4}" y="${Y(0)+4}" class="yl">0</text>
+ <path d="${dd}" class="ld"/><path d="${d}" class="ls"/>
+ <circle cx="${X(f.m)}" cy="${Y(f.v)}" r="4" class="pt"><title>התחלה: ${f.v}</title></circle><circle cx="${X(z.m)}" cy="${Y(z.v)}" r="4.5" class="pt"><title>עכשיו: ${z.v}</title></circle>
+ <text x="${X(z.m)}" y="${Math.max(10,Y(z.v)-8)}" class="vl" text-anchor="start">${z.v}</text>
+ <text x="${W-rr}" y="${H-5}" class="xl" text-anchor="end">התחלה</text><text x="${l}" y="${H-5}" class="xl" text-anchor="start">אחרי ${span} דק׳</text></svg>
+ <small class="imn">${st?st+' · ':''}מ-<b>${f.v}</b> ל-<b>${z.v}</b> ${esc(a.unit)} מתוך ${max}, ב-${span} דקות לימוד</small>`}</div>`}
 // ניתוח מהנתונים שכבר נשמרו (אורן 7.11.2026): סשנים לפי מכשיר, שלבים (דני), טעויות לצליל לפי סדר הקבוצות (ליה), ריכוז הטעויות במילים.
 function impX(r,k){let h='';const pc=(o,a)=>a?Math.round(o/a*100):0,hb=(l,v,max,txt)=>`<div class="ixr"><span class="ixl">${l}</span><span class="ixb"><i style="width:${Math.max(2,Math.round(v/max*100))}%"></i></span><span class="ixv">${txt}</span></div>`;
  const dv=(r.devs||[]).filter(d=>d.a>0).sort((x,y)=>String(x.f).localeCompare(String(y.f)));
@@ -128,17 +155,17 @@ function impX(r,k){let h='';const pc=(o,a)=>a?Math.round(o/a*100):0,hb=(l,v,max,
   h+=`<div class="ixh">טעויות לצליל, לפי סדר הלימוד (פחות = טוב יותר)</div>`+v.map((x,i)=>hb('קבוצה '+(i+1),x,mx,x.toFixed(1))).join('')+`<div class="ixn">הקבוצות נלמדות לפי הסדר, אז הירידה מראה שיפור לאורך הזמן (חלק מהטעויות בצלילים הראשונים היו בשלב החיזוק).</div>`}
  if(r.top&&r.top.of>0)h+=`<div class="ixn">🎯 ${pc(r.top.n,r.top.of)}% מהטעויות (${r.top.n} מתוך ${r.top.of}) היו ב-${r.top.w.length} מילים:<br><bdi dir="ltr">${r.top.w.map(esc).join(', ')}</bdi>${r.top.z?`<br>${r.top.z} מילים בלי אף טעות.`:''}</div>`;
  return h?`<div class="ixx"><div class="imh">🔎 מה רואים עד עכשיו</div>${h}</div>`:''}
-function improve(r,k){const X=impX(r,k);if(!r.tls)return X?`<div class="imp"><div class="imh">📈 גרף שיפור</div><small class="imn">הגרף לפי 20 דקות לימוד מתמלא מעכשיו (מהכניסה הבאה).</small>${X}</div>`:'';const B={};let lump={a:0,o:0,to:0};
+function improve(r,k){const X=impX(r,k);if(!r.tls)return X?`<div class="imp"><div class="imh">🎯 אחוז הצלחה לפי זמן</div><small class="imn">החלוקה ל-20 דקות לימוד מתמלא מעכשיו (מהכניסה הבאה).</small>${X}</div>`:'';const B={};let lump={a:0,o:0,to:0};
  r.tls.forEach(L=>{const b0=L[0];if(b0[0]===0){B[0]=B[0]||{a:0,o:0};B[0].a+=b0[1];B[0].o+=b0[2]}else{lump.a+=b0[1];lump.o+=b0[2];lump.to=Math.max(lump.to,b0[0]*20)}
   for(let i=1;i<L.length;i++){const x=L[i],p=L[i-1],k=x[0];B[k]=B[k]||{a:0,o:0};B[k].a+=x[1]-p[1];B[k].o+=x[2]-p[2]}});
- let ks=Object.keys(B).map(Number).filter(k=>B[k].a>0).sort((x,y)=>x-y);if(!ks.length&&!lump.a)return`<div class="imp"><div class="imh">📈 גרף שיפור</div><small class="imn">הגרף מתמלא מעכשיו: כל 20 דקות של לימוד יקבלו עמודה עם אחוז ההצלחה.</small>${X}</div>`;
+ let ks=Object.keys(B).map(Number).filter(k=>B[k].a>0).sort((x,y)=>x-y);if(!ks.length&&!lump.a)return`<div class="imp"><div class="imh">🎯 אחוז הצלחה לפי זמן</div><small class="imn">מתמלא מעכשיו: כל 20 דקות של לימוד יקבלו עמודה עם אחוז ההצלחה.</small>${X}</div>`;
  const step=ks.length?Math.max(1,Math.ceil((ks[ks.length-1]-ks[0]+1)/10)):1,G={};ks.forEach(k=>{const g=Math.floor(k/step);G[g]=G[g]||{a:0,o:0,k:g*step};G[g].a+=B[k].a;G[g].o+=B[k].o});
  const bars=[];if(lump.a>0)bars.push({l:'עד '+lump.to+'′',a:lump.a,o:lump.o,old:1});
  Object.keys(G).map(Number).sort((x,y)=>x-y).forEach(g=>{const x=G[g];bars.push({l:(x.k*20)+'′',a:x.a,o:x.o})});
  bars.forEach(b=>b.p=Math.min(100,Math.max(0,Math.round(b.o/b.a*100))));const f=bars[0],l=bars[bars.length-1];
  const cols=bars.map((b,i)=>{const lab=bars.length<=7||i===0||i===bars.length-1;return`<div class="imc${b.old?' old':''}${b.a<5?' few':''}" title="${b.l}: ${b.p}% (${b.o} מתוך ${b.a})"><span class="imv">${lab?b.p+'%':''}</span><div class="imt"><i style="height:${Math.max(2,b.p)}%"></i></div><span class="imx">${b.l}</span><span class="ima">${b.a}</span></div>`}).join('');
  const d=l.p-f.p,sum=bars.length>1?`בהתחלה <b>${f.p}%</b> ← עכשיו <b>${l.p}%</b> ${d>=5?(k.id==='evyatar'?'📈 השתפר':'📈 השתפרה'):d<=-5?'📉 ירידה, כדאי לבדוק':'≈ יציב'}`:'אחוז ההצלחה עד עכשיו. מעכשיו תתווסף עמודה לכל 20 דקות לימוד.';
- return`<div class="imp"><div class="imh">📈 גרף שיפור: אחוז הצלחה לפי זמן לימוד</div><div class="imr">${cols}</div><small class="imn">${sum}<br>כל עמודה = 20 דקות לימוד${step>1?' (כאן '+step*20+' דק׳)':''}, המספר למטה = כמה תשובות. עמודה בהירה = פחות מ-5 תשובות.</small>${X}</div>`}
+ return`<div class="imp"><div class="imh">🎯 אחוז הצלחה לכל 20 דקות לימוד</div><div class="imr">${cols}</div><small class="imn">${sum}<br>כל עמודה = 20 דקות לימוד${step>1?' (כאן '+step*20+' דק׳)':''}, המספר למטה = כמה תשובות. עמודה בהירה = פחות מ-5 תשובות.</small>${X}</div>`}
 function timeline(r,t,a,k){const D0=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x},today=D0(new Date()),dk=Object.keys(r.days).sort();
  let st=r.first?D0(r.first):today;if(dk[0]){const f=D0(dk[0]+'T00:00:00');if(f<st)st=f}if(st>today)st=today;
  const ex=t&&t.d&&!t.done?D0(t.d+'T00:00:00'):null,end=ex&&ex>=st?ex:today,N=Math.round((end-st)/864e5)+1;
@@ -163,21 +190,27 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
   if(!k.apps.length)h+=`<div class="none">עוד אין תכנים</div>`;
   k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`+(window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<div class="cnt" id="cr_${id}" data-c="${k.id}/${a.id}" data-n="${k.n}"></div>`:'')+evBox(k,a,t,RS,id0(k,a));
    if(!rows.length)h+=`<div class="none">עוד לא התחיל${k.id==='evyatar'?'':'ה'} (או שעוד לא נכנס${k.id==='evyatar'?'':'ה'} מאז שהוספנו את המעקב)</div>`;
-   else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null;
-    h+=`${r.lvl>1?`<div class="hard">🚀 <b>שלב מתקדם</b> (רמז חלקי בלבד) · שלב 1 הושלם ✓</div>`:''}<div class="big"><b dir="ltr" style="unicode-bidi:isolate">${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>
-    <div class="grid"><div class="st"><small>אחוז הצלחה</small><b>${sr==null?'-':sr+'%'}</b> <small>${r.ok} נכונות מתוך ${r.att}</small></div>
-    <div class="st"><small>זמן באפליקציה</small><b>${fmtT(r.sec)}</b> <small>${Object.keys(r.days).length} ימים</small></div>
-    <div class="st"><small>התחיל${k.id==='evyatar'?'':'ה'} ללמוד</small><b>${fmtD(r.first)}</b></div>
-    <div class="st"><small>פעילות אחרונה</small><b>${ago(r.last)}</b></div>
+   else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null,she=k.id==='evyatar'?'':'ה';
+    // אורן 7.11.2026: למעלה רק מה שמעניין (זמן, איפה עומדים, דיוק, גרף שיפור לכל רמת קושי ומה לחזק), וכל השאר מקופל ב"עוד נתונים".
+    const td=r.days[new Date().toISOString().slice(0,10)]||0,nd=Object.keys(r.days).length,rec=recent(r);
+    h+=`<div class="kp"><div><small>⏱️ זמן לימוד</small><b>${fmtT(r.sec)}</b><small>${nd} ${nd===1?'יום':'ימים'} · היום ${td?fmtT(td):'עוד לא'}</small></div>
+    <div><small>📚 איפה עומד${she}</small><b dir="ltr" style="unicode-bidi:isolate">${r.prog!=null&&r.pmax?r.prog+' / '+r.pmax:r.done+' / '+r.total}</b><small>${esc(r.lvn||a.unit)}</small></div>
+    <div><small>🎯 דיוק</small><b>${sr==null?'-':sr+'%'}</b><small>${rec?'לאחרונה '+rec+'%':r.ok+' מתוך '+r.att}</small></div></div>`;
+    h+=lines(r,k,a);
+    const ins=[];if(r.last)ins.push(`פעילות אחרונה ${ago(r.last)}.`);
+    const hd=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,4);if(hd.length)ins.push(`כדאי לחזק: ${hd.map(x=>`<span class="hw">${esc(x[0])}</span>`).join(' ')}`);
+    if(t&&t.d&&r.total){const dl=Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5),left=r.total-r.done;if(dl>0&&left>0)ins.push(`נשארו ${left} ${a.unit} ו-${dl} ימים: בערך ${Math.ceil(left/dl)} ביום.`)}
+    if(ins.length)h+=`<div class="ins">${ins.map(x=>`<div>${x}</div>`).join('')}</div>`;
+    let m=`<div class="big"><b dir="ltr" style="unicode-bidi:isolate">${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>
+    <div class="grid"><div class="st"><small>תשובות</small><b>${r.att}</b> <small>${r.ok} נכונות</small></div>
+    <div class="st"><small>התחיל${she} ללמוד</small><b>${fmtD(r.first)}</b></div>
     ${r.learning!=null?`<div class="st"><small>בתהליך לימוד</small><b>${r.learning}</b> <small>${a.unit}</small></div>`:''}<div class="st"><small>שיא רצף</small><b>${r.best}</b></div></div>`;
-    h+=timeline(r,t,a,k);h+=improve(r,k);
-    const hd=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,8);if(hd.length)h+=`<div class="hard">${r.lvl>1?'בשלב המתקדם מתקשה ב':'מתקשה ב'}: ${hd.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`;
-    if(r.lvl>1){const h1=Object.entries(r.hard1||{}).sort((x,y)=>y[1]-x[1]).slice(0,8);if(h1.length)h+=`<div class="hard">היה קשה בשלב 1 (חוזרות יותר במתקדם): ${h1.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`}
-    // ליה, אותיות וצלילים: מבחני דקה (כמה צלילים נכונים בדקה) לכל קבוצה
-    if(r.tests&&Object.keys(r.tests).length)h+=`<div class="hard">⏱️ מבחני דקה: ${Object.keys(r.tests).sort().map(g=>`<span>קבוצה ${esc(g.slice(1))}: ${r.tests[g].best} נכונים (שיא)</span>`).join('')}</div>`;
-    if(r.group)h+=`<div class="none" style="margin-top:6px">עכשיו בקבוצה ${r.group} מתוך 6</div>`;
-    if(t&&t.d&&r.total){const dl=Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5),left=r.total-r.done;
-     if(dl>0&&left>0)h+=`<div class="none" style="margin-top:8px">נשארו ${left} ${a.unit} ו-${dl} ימים: בערך ${Math.ceil(left/dl)} ביום.</div>`}}
+    m+=timeline(r,t,a,k)+improve(r,k);
+    const hd8=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,8);if(hd8.length)m+=`<div class="hard">${r.lvl>1?'בשלב המתקדם מתקשה ב':'מתקשה ב'}: ${hd8.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`;
+    if(r.lvl>1){const h1=Object.entries(r.hard1||{}).sort((x,y)=>y[1]-x[1]).slice(0,8);if(h1.length)m+=`<div class="hard">היה קשה בשלב 1: ${h1.map(x=>`<span>${esc(x[0])}</span>`).join('')}</div>`}
+    if(r.tests&&Object.keys(r.tests).length)m+=`<div class="hard">⏱️ מבחני דקה: ${Object.keys(r.tests).sort().map(g=>`<span>קבוצה ${esc(g.slice(1))}: ${r.tests[g].best} נכונים (שיא)</span>`).join('')}</div>`;
+    if(r.group)m+=`<div class="none" style="margin-top:6px">עכשיו בקבוצה ${r.group} מתוך 6</div>`;
+    h+=`<details class="more"><summary>📊 עוד נתונים</summary>${m}</details>`}
    if(a.id==='vocab'){const L=(j.lb||[]).filter(x=>LBN.includes(String(x.name).trim().toLowerCase()));
     if(L.length)h+=`<div class="lbx">🏅 מלוח הדירוג באפליקציה: ${L.map(x=>`הכינוי <b>${esc(x.name)}</b>: נלמדו ${x.learned}, שיא רצף ${x.best}, עדכון אחרון ${fmtD(x.updated_at)}`).join('<br>')}</div>`}
    h+=`<div class="rst"><button class="lnk" type="button" data-z="${k.id}|${a.id}|${a.n}|${k.n}">↺ איפוס ההתקדמות</button>${RZ?`<small>אופס לאחרונה ${fmtD(RZ.at)}</small>`:''}</div></div>`})

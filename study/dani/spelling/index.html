@@ -154,7 +154,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 <div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
 
 <script src="../../sqsound.js?v=4"></script>
-<script src="../../track.js?v=7"></script>
+<script src="../../track.js?v=8"></script>
 <script>
 // הכתבה ואוצר מילים לדני. מפתחות: dani_sp (התקדמות), dani_sp_sq (אוסף סקווישים), dani_sp_mute.
 const WORDS=[
@@ -433,7 +433,7 @@ $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 function upd(){const d=ADV()?advDone():done();$('lvl').textContent=ADV()?'🚀 מתקדם: ':'';$('dn').textContent=d;$('tt').textContent=N;$('pbi').style.width=(d/N*100)+'%';
   $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('sqn').textContent=sqN()+'/'+ALLSQ.length;
   const WS=ADV()?S.adv.w:S.w,hard=WORDS.map(w=>w[0]).filter(e=>WS[e].err>0).sort((a,b)=>WS[b].err-WS[a].err).slice(0,8).map(e=>({e,n:WS[e].err}));
-  if(window.StudyTrack)StudyTrack.report({total:N,done:d,lvl:ADV()?2:1,l1:done(),learning:WORDS.filter(w=>{const s=WS[w[0]].s;return s==='learn'||s==='dict'}).length,att:S.att,ok:S.okc,first:S.first,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:sqN(),hard,ph:(()=>{const aa=ADV()?S.adv.att:0,ao=ADV()?S.adv.okc:0;return ADV()?[[S.att-aa,S.okc-ao],[aa,ao]]:[[S.att,S.okc]]})(),top:(()=>{const l=WORDS.map(w=>w[0]).sort((a,b)=>S.w[b].err-S.w[a].err),of=l.reduce((t,e)=>t+S.w[e].err,0);return{w:l.slice(0,4),n:l.slice(0,4).reduce((t,e)=>t+S.w[e].err,0),of,z:l.filter(e=>!S.w[e].err).length}})(),hard1:ADV()?WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0).sort((a,b)=>S.w[b].err-S.w[a].err).slice(0,8).map(e=>({e,n:S.w[e].err})):undefined,started:S.started})}
+  if(window.StudyTrack)StudyTrack.report({total:N,done:d,lvl:ADV()?2:1,l1:done(),learning:WORDS.filter(w=>{const s=WS[w[0]].s;return s==='learn'||s==='dict'}).length,att:S.att,ok:S.okc,first:S.first,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:sqN(),hard,lv:ADV()?2:1,lvn:ADV()?'🚀 שלב מתקדם (רמז חלקי)':'שלב 1 (עם רמזים)',prog:d,pmax:N,ph:(()=>{const aa=ADV()?S.adv.att:0,ao=ADV()?S.adv.okc:0;return ADV()?[[S.att-aa,S.okc-ao],[aa,ao]]:[[S.att,S.okc]]})(),top:(()=>{const l=WORDS.map(w=>w[0]).sort((a,b)=>S.w[b].err-S.w[a].err),of=l.reduce((t,e)=>t+S.w[e].err,0);return{w:l.slice(0,4),n:l.slice(0,4).reduce((t,e)=>t+S.w[e].err,0),of,z:l.filter(e=>!S.w[e].err).length}})(),hard1:ADV()?WORDS.map(w=>w[0]).filter(e=>S.w[e].err>0).sort((a,b)=>S.w[b].err-S.w[a].err).slice(0,8).map(e=>({e,n:S.w[e].err})):undefined,started:S.started})}
 $('mute').onclick=()=>{MUTE=!MUTE;LS.set('dani_sp_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.click()};$('mute').textContent=MUTE?'🔇':'🔊';
 $('hw').onclick=()=>$('intro').classList.add('on');
 $('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();if(!S.intro){S.intro=1;save()}if(CUR)render();else next()};
