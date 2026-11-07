@@ -124,7 +124,8 @@ section{margin-bottom:22px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=4">
+<link rel="stylesheet" href="dash-back.css?v=5">
+<script src="fold.js?v=1" defer></script>
 <script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -164,8 +165,8 @@ function leftToBuy(x){return shopOf(x).filter(s=>!chk[s.key]).length;}
 // ---------- hero ----------
 function heroHome(){const R=list("recipe"),cart=R.filter(x=>x.cart);
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
-  <h1>🍽️ אוכל ומסעדות</h1><p class="sub">מתכונים שראיתי ברשת, עם רשימת קניות לסופר ומתכון מסודר. ובהמשך גם מסעדות.</p>
-  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שלח לינק למתכון או מסעדה<small>רילס, טיקטוק, יוטיוב או אתר. אני מוציא קניות ומתכון</small></span></a>
+  <h1>🍽️ אוכל ומסעדות</h1>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis"><div class="kpi"><b>${R.length}</b><span>מתכונים</span></div><div class="kpi"><b>${R.filter(x=>(x.made_count||0)>0).length}</b><span>כבר הכנתי</span></div><div class="kpi"><b>${cart.length}</b><span>ברשימת הקניות</span></div></div>`;}
 function heroRecipe(x){const s=x.source||{},u=safe(s.url),im=imgSrc(x.img);
   return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🍳</span><span>כל המתכונים</span></button><span class="back">${x.fav?"⭐ מועדף":""}</span></div>
@@ -185,11 +186,11 @@ function card(x){const img=imgSrc(x.img),t=x.time||{},n=leftToBuy(x);
     <div class="s">${[(x.source||{}).author,t.total,x.made_count?"הכנתי ×"+x.made_count:"",x.cart&&n?"🛒 "+n+" לקנות":""].filter(Boolean).map(esc).join(" · ")}</div></div></button>`;}
 function renderRecipes(){const R=list("recipe").filter(x=>ui.cat==="all"||x.cat===ui.cat);const cart=list("recipe").filter(x=>x.cart);
   let h="";
-  if(cart.length)h+=`<section><button class="chatbtn" data-cart style="width:100%;border:0;cursor:pointer;text-align:start;margin:0"><span style="font-size:24px">🛒</span><span>רשימת קניות משולבת<small>${cart.length} מתכונים: ${esc(cart.map(x=>x.title).join(", "))}</small></span></button></section>`;
-  h+=`<section><div class="sh"><h2>המתכונים שלי</h2><small>${R.length}</small></div><div class="grid">${R.map(card).join("")}<button class="addcard" data-add>＋ מתכון מלינק<small>מדביקים לינק, ואני משלים קניות ומתכון</small></button></div></section>`;
+  if(cart.length)h+=`<section><button class="chatbtn" data-cart style="width:100%;border:0;cursor:pointer;text-align:start;margin:0"><span style="font-size:18px">🛒</span><span>רשימת קניות · ${cart.length} מתכונים</span></button></section>`;
+  h+=`<section><div class="sh"><h2>המתכונים שלי</h2><small>${R.length}</small></div><div class="grid">${R.map(card).join("")}<button class="addcard" data-add>＋ מלינק</button></div></section>`;
   return loaded||R.length?h:`<div class="empty">טוען…</div>`;}
 function renderRest(){const L=list("restaurant");
-  if(!L.length)return `<div class="card soon"><div class="ic">🍽️</div><h3>מסעדות, בקרוב</h3><div class="muted">שולחים לי מסעדה או לינק מאפליקציית ההמלצות, והיא נכנסת לכאן עם מיקום, סגנון, מחירים ומה כדאי להזמין.</div></div>`;
+  if(!L.length)return `<div class="card soon"><div class="ic">🍽️</div><h3>עוד אין מסעדות</h3></div>`;
   return `<div class="grid">${L.map(x=>`<div class="rcard" style="cursor:default"><div class="img">${esc(x.icon||"🍽️")}</div><div class="bd"><div class="t">${esc(x.title)}</div><div class="s">${esc([x.city,x.style,x.price].filter(Boolean).join(" · "))}</div>${safe(x.url)?`<a href="${esc(x.url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px">לפרטים</a>`:""}</div></div>`).join("")}</div>`;}
 
 // ---------- recipe ----------
@@ -201,7 +202,7 @@ function shopList(items2,showFrom){
   return items2.length?`<section><div class="sh"><h2>🛒 רשימת מצרכים</h2><small>${items2.filter(s=>!chk[s.key]).length} נשארו</small></div><div class="card">${group(items2)}</div></section>`:"";}
 function shopText(title,arr){const ln=s=>"• "+s.item+(s.qty?" ("+s.qty+")":"");
   return `🛒 ${title}\n\n${arr.map(ln).join("\n")}`;}
-function tabShop(x){const s=shopOf(x);if(!s.length)return `<div class="empty">${x.status==="new"?"אני עובד על המתכון הזה. רשימת הקניות תופיע כאן.":"אין עדיין רשימת קניות."}</div>`;
+function tabShop(x){const s=shopOf(x);if(!s.length)return `<div class="empty">${x.status==="new"?"⏳ בעבודה":"אין עדיין רשימת קניות."}</div>`;
   return shopList(s)+`<div class="bar2"><button data-copy>📋 העתק רשימה</button><button data-clear>↺ נקה סימונים</button></div>`;}
 function tabRecipe(x){const t=x.time||{};let h="";
   if(x.accuracy)h+=`<div class="warnbox">${esc(x.accuracy)}</div>`;
@@ -215,16 +216,16 @@ function tabRecipe(x){const t=x.time||{};let h="";
 function renderRecipe(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"המתכון לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
   $("hero").innerHTML=heroRecipe(x);
   $("bar").innerHTML=`<div class="seg"><button data-tab="shop" class="${ui.tab!=="recipe"?"on":""}">🛒 מצרכים</button><button data-tab="recipe" class="${ui.tab==="recipe"?"on":""}">👨‍🍳 מתכון</button></div>`;
-  const acts=`<div class="acts"><button data-tcart class="${x.cart?"on":""}">${x.cart?"✓ ברשימה":"🛒 לרשימה המשולבת"}</button><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button class="pm" data-made="1" aria-label="הכנתי עוד פעם">＋</button><div class="mk ${x.made_count?"on":""}">${x.made_count?"✓ הכנתי × "+x.made_count:"עוד לא הכנתי"}</div><button class="pm ${x.made_count?"":"off"}" data-made="-1" aria-label="להוריד אחד">−</button></div>`;
+  const acts=`<div class="acts"><button data-tcart class="${x.cart?"on":""}">${x.cart?"✓ ברשימה":"🛒 לרשימה"}</button><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button class="pm" data-made="1" aria-label="הכנתי עוד פעם">＋</button><div class="mk ${x.made_count?"on":""}">${x.made_count?"✓ הכנתי × "+x.made_count:"עוד לא הכנתי"}</div><button class="pm ${x.made_count?"":"off"}" data-made="-1" aria-label="להוריד אחד">−</button></div>`;
   $("app").innerHTML=acts+(ui.tab==="recipe"?tabRecipe(x):tabShop(x));}
 function cartItems(){return list("recipe").filter(x=>x.cart).flatMap(x=>shopOf(x).map(s=>({...s,from:x.title})));}
 function renderCart(){const C=list("recipe").filter(x=>x.cart);
   $("hero").innerHTML=`<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🍳</span><span>כל המתכונים</span></button></div><h1>🛒 רשימת קניות משולבת</h1><p class="sub">${esc(C.map(x=>x.title).join(" · ")||"אין מתכונים ברשימה")}</p>`;
   $("bar").innerHTML="";const s=cartItems();
-  $("app").innerHTML=s.length?shopList(s,true)+`<div class="bar2"><button data-copy>📋 העתק רשימה</button><button data-clear>↺ נקה סימונים</button></div><div class="note">מוציאים מתכון מהרשימה מתוך דף המתכון.</div>`:`<div class="empty">אין עדיין מתכונים ברשימה. בדף מתכון לוחצים "🛒 לרשימה המשולבת".</div>`;}
+  $("app").innerHTML=s.length?shopList(s,true)+`<div class="bar2"><button data-copy>📋 העתק רשימה</button><button data-clear>↺ נקה סימונים</button></div>`:`<div class="empty">הרשימה ריקה</div>`;}
 
 function render(){if(isCart())renderCart();else{const id=curId();if(id)renderRecipe(id);else renderHome();}
-  $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד אוכל ${esc(window.FOOD_BUILD)} · סימוני הקניות נשמרים רק במכשיר הזה`;}
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}אוכל ${esc(window.FOOD_BUILD)}`;}
 let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
 async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
 async function upd(id,patch,msg){const prev=JSON.parse(JSON.stringify(items[id]||{}));items[id]=Object.assign({},items[id],patch);const y=scrollY;render();scrollTo(0,y);

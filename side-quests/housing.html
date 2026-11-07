@@ -137,15 +137,15 @@ svg.chart{width:100%;height:auto;display:block;margin-top:6px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.box b{font-size:15.5px}.box span{font-size:12px}.grid3{gap:6px}.box{padding:7px 8px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=4">
+<link rel="stylesheet" href="dash-back.css?v=5">
+<script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
 <header class="hero"><div class="in">
   <div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back" id="upd"></span></div>
   <h1>🏠 דיור</h1>
-  <p class="sub">הדירה שלנו במוצקין, האם למכור אותה, והבית השכור בכפר סבא.</p>
-  <a class="chatbtn" id="chat" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שאל על הדיור<small>״כמה יישאר לנו אם נמכור ב-2.1?״ · ״מתי להודיע לשוכר?״</small></span></a>
+  <a class="chatbtn" id="chat" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis k2">
     <div class="kpi"><b id="k-eq">…</b><span>ההון שלנו בדירה</span></div>
     <div class="kpi"><b id="k-net">…</b><span>נטו בחודש מהשכירות</span></div>
@@ -248,11 +248,11 @@ function balChart(){const m=mort(),pts=(m.bal_hist||[]).filter(x=>x.d&&+x.v).sor
   </svg>`;}
 function mortHistBlock(){const m=mort(),ph=m.pay_hist||[];if(!ph.length)return "";
   const first=ph.find((x,i)=>i>0)||ph[0],peak=ph.filter(x=>!x.note).reduce((a,b)=>+b.v>+a.v?b:a,ph[1]||ph[0]),last=ph[ph.length-1],sum=ph.reduce((a,b)=>a+(+b.v||0),0),gap=(m.pay_gaps||[])[0];
-  return `<section><div class="sh"><h2>📉 המשכנתא לאורך הזמן</h2><small>מהאקסל ומהתזרים</small></div><div class="card">
+  return `<section><div class="sh"><h2>📉 המשכנתא לאורך הזמן</h2></div><div class="card">
     <div style="font-weight:800">כמה יצא כל חודש</div>
     ${payChart()}
     <div class="grid3" style="margin-top:6px"><div class="box"><span>בהתחלה (${esc(my(first.m))})</span><b class="num">${ils(+first.v)}</b></div><div class="box warn"><span>השיא (${esc(my(peak.m))})</span><b class="num">${ils(+peak.v)}</b></div><div class="box"><span>היום (${esc(my(last.m))})</span><b class="num">${ils(+last.v)}</b></div></div>
-    <div class="note">החיוב "לאומי למשכנתאות" בלבד. התשלום עלה עם המשיכות מהבנק (עד 3.2020), ואז עם עליית הריבית והמדד מ-2022. ${gap?esc(gap.note)+". ":""}סה״כ בחודשים שיש לנו: ${kk(sum)}.</div>
+    <div class="note">סה״כ: ${kk(sum)}. ${gap?esc(gap.note)+". ":""}עלה עם המשיכות (עד 3.2020) ואז עם הריבית והמדד מ-2022.</div>
     <div style="font-weight:800;margin-top:12px">כמה נשאר לבנק</div>
     ${balChart()}
     <div class="note">${(m.bal_hist||[]).map(x=>`${dm(x.d)}: ${kk(+x.v)} (${esc(x.n)})`).join(" · ")}</div>
@@ -292,7 +292,7 @@ function renderMotz(){
     <div class="grid3" style="margin-top:10px"><div class="box"><span>נכנס מהשוכר</span><b class="num">${ils(r)}</b></div><div class="box"><span>יוצא למשכנתא</span><b class="num">${ils(+m.monthly||0)}</b></div><div class="box ${net>=0?"hi":"warn"}"><span>נשאר בחודש</span><b class="num">${ils(net)}</b></div></div>
     <div class="note">${esc(m.note||"")}. השווי: ${esc(v.src||"")}.</div>
     <div class="inrow"><button class="btn ghost" data-open="val">✏️ עדכן שווי</button></div>
-    <div class="more${ui.open==="val"?" on":""}" id="m-val"><div class="inrow"><input id="val-in" inputmode="numeric" placeholder="למשל 2100000" aria-label="שווי משוער בשקלים"><button class="btn" data-save="val">שמור</button></div><div class="note">אחרי בדיקה במדלן או ב-nadlan.gov.il. נשמר עם התאריך של היום.</div></div>
+    <div class="more${ui.open==="val"?" on":""}" id="m-val"><div class="inrow"><input id="val-in" inputmode="numeric" placeholder="למשל 2100000" aria-label="שווי משוער בשקלים"><button class="btn" data-save="val">שמור</button></div></div>
   </div></section>`;
   h+=mortHistBlock()+refiBlock();
   h+=`<section><div class="sh"><h2>📈 שווי לאורך השנים</h2><small>הערכות, לא שמאות</small></div><div class="card">${valChart()}
@@ -312,8 +312,8 @@ const DIRS=[["sell_empty","למכור כשהשוכר יוצא"],["sell_tenant","
 function renderSell(){
   const E=est(),P=ui.price||Math.round(E/25000)*25000||2000000,c=saleCalc(P),c0=costs(),r=rentNow(),m=mort(),net=r-(+m.monthly||0),paid=+((M.bought||{}).paid)||0;
   const dep=c.hand*DEPOSIT_RATE/100/12,dir=(meta.ans||{}).direction||"";
-  let h=`<section><div class="card"><div class="q"><div class="qt">מה הכיוון עם הדירה?<small>עוזר לי לדעת מה להכין ומתי</small></div><div class="opts">${DIRS.map(([k2,l])=>`<button class="opt${dir===k2?" on":""}" data-dir="${k2}">${esc(l)}</button>`).join("")}</div></div></div></section>`;
-  h+=`<section><div class="sh"><h2>🧮 כמה יישאר ביד</h2><small>גרור את המחיר</small></div><div class="card">
+  let h=`<section><div class="card"><div class="q"><div class="qt">מה הכיוון עם הדירה?</div><div class="opts">${DIRS.map(([k2,l])=>`<button class="opt${dir===k2?" on":""}" data-dir="${k2}">${esc(l)}</button>`).join("")}</div></div></div></section>`;
+  h+=`<section><div class="sh"><h2>🧮 כמה יישאר ביד</h2></div><div class="card">
     <div class="rng"><input type="range" id="price" min="1600000" max="2600000" step="25000" value="${P}" aria-label="מחיר מכירה"><b class="num" id="pv">${kk(P)}</b></div>
     <div class="muted small">השווי האחרון שלנו: ${kk(E)} (${esc(((M.val||{}).src)||"")})</div>
     <ul class="calc" id="calc">${calcRows(P)}</ul>
@@ -323,9 +323,9 @@ function renderSell(){
       <div class="inrow"><label class="small" style="min-width:150px">עו״ד (% לפני מע״מ)</label><input id="c-lawyer" inputmode="decimal" value="${esc(c0.lawyer_pct)}"></div>
       <div class="inrow"><label class="small" style="min-width:150px">עמלת פירעון מוקדם (₪)</label><input id="c-prepay" inputmode="numeric" value="${esc(c0.prepay)}"></div>
       <div class="inrow"><button class="btn" data-save="costs">שמור</button></div>
-      <div class="note">תיווך 1.5% כולל מע״מ זה מה שסוכם עם המתווך ב-2023. עמלת הפירעון היא הערכה עד שלאומי יגידו מספר.</div></div>
-    <div class="note">בלי מס שבח: כנראה פטור כדירה יחידה (אין לכם דירה אחרת). חייבים לאמת עם רו״ח או עו״ד לפני החלטה.</div></div></section>`;
-  h+=`<section><div class="sh"><h2>⚖️ למכור או להשכיר</h2><small>השוואה גסה, בחודש</small></div><div class="card">
+      <div class="note">תיווך 1.5% (סוכם ב-2023). עמלת פירעון: הערכה.</div></div>
+    <div class="note">בלי מס שבח (כנראה פטור, לאמת עם רו״ח)</div></div></section>`;
+  h+=`<section><div class="sh"><h2>⚖️ למכור או להשכיר</h2><small>בחודש</small></div><div class="card">
     <div class="grid2"><div class="box ${net>=0?"":"warn"}"><span>להשכיר: נשאר אחרי המשכנתא</span><b class="num" id="cmp-keep">${ils(net)}</b></div><div class="box hi"><span>למכור: הכסף בפיקדון ${DEPOSIT_RATE}%</span><b class="num" id="cmp-sell">${ils(dep)}</b></div></div>
     <div class="note">שכירות ${ils(r)} בחודש זה כ-${E?(r*12/E*100).toFixed(1):"?"}% בשנה מהשווי. בהשכרה הדירה גם יכולה לעלות או לרדת בערך, וזה לא בחשבון. מאז הקנייה (${kk(paid)}) הדירה עלתה בערך ב-<span class="num">${kk(E-paid)}</span>.</div></div></section>`;
   h+=`<section><div class="sh"><h2>🗓️ ציר זמן</h2></div><div class="card"><ul class="tl">${(meta.timeline||[]).slice().sort((a,b)=>a.d<b.d?-1:1).map(x=>`<li class="${x.done?"done":x.now?"now":""}"><span class="d">${esc(dm(x.d))}${!x.done&&!x.now?" · "+esc(until(x.d)):""}</span>${esc(x.t)}</li>`).join("")}</ul></div></section>`;
@@ -336,8 +336,7 @@ function renderSell(){
     <li>מס שבח: לוודא פטור דירה יחידה עם רו״ח או עו״ד</li>
     <li>אם קונים דירה אחרת לפני המכירה: לבדוק כמה זמן יש למכור כדי לשלם מס רכישה של דירה יחידה</li>
     <li>השוכר: למכור איתו (למשקיע) או לחכות לסוף החוזה ב-${esc(dm((M.tenant||{}).end))}</li></ol>
-    <div class="links"><a href="https://www.nadlan.gov.il/" target="_blank" rel="noopener">עסקאות באתר הממשלתי</a><a href="https://www.madlan.co.il/" target="_blank" rel="noopener">מדלן</a><a href="https://www.gov.il/he/service/real-estate-taxation-calculator" target="_blank" rel="noopener">סימולטור מיסוי מקרקעין</a></div>
-    <div class="note">מחקר בלבד: אין פנייה למתווכים, לקונים או לבנק בלי אישור שלך.</div></div></section>`;
+    <div class="links"><a href="https://www.nadlan.gov.il/" target="_blank" rel="noopener">עסקאות באתר הממשלתי</a><a href="https://www.madlan.co.il/" target="_blank" rel="noopener">מדלן</a><a href="https://www.gov.il/he/service/real-estate-taxation-calculator" target="_blank" rel="noopener">סימולטור מיסוי מקרקעין</a></div></div></section>`;
   const s23=M.sale_2023||{};if(s23.ask)h+=`<section><div class="sh"><h2>⏪ הניסיון ב-2023</h2></div><div class="card small">${esc(dm(s23.d))}: ביקשנו ${kk(+s23.ask)} דרך ${esc(s23.broker||"")}, עמלה ${esc(s23.fee||"")}. ${esc(s23.result||"")}.</div></section>`;
   return tasksBlock()+h;
 }
@@ -368,7 +367,7 @@ function render(){
   $("k-eq").textContent=kk(E-bal);$("k-net").textContent=ils(net);
   $("k-next").textContent=nx?dm(nx.d):"-";$("k-next-in").textContent=nx?inDays(daysTo(nx.d)):"";$("k-next-l").textContent=nx?nx.t:"אין אירוע קרוב";
   $("app").innerHTML=ui.tab==="sell"?renderSell():ui.tab==="home"?renderHome():renderMotz();
-  $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד דיור ${esc(window.HOUSING_BUILD)}`;
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}דיור ${esc(window.HOUSING_BUILD)}`;
 }
 let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
 async function upd(id,patch,msg){const tgt=id==="_meta"?meta:id==="home"?H:M;const prev=JSON.parse(JSON.stringify(tgt));Object.assign(tgt,patch);const y=scrollY;render();scrollTo(0,y);

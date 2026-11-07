@@ -176,15 +176,15 @@ svg.chart{width:100%;height:auto;display:block;margin-top:8px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.val b{font-size:17px}.pc{grid-template-columns:1fr}.dt b{font-size:14px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=4">
+<link rel="stylesheet" href="dash-back.css?v=5">
+<script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
 <header class="hero"><div class="in">
   <div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back" id="upd"></span></div>
   <h1>🚗 רכבים</h1>
-  <p class="sub">כמה שווים הרכבים שלנו היום ובעתיד, מה צריך לטפל בהם, ואיזה רכב גדול ונוח לקנות.</p>
-  <a class="chatbtn" id="chat" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שאל על הרכבים<small>״כמה אקבל על הקיה בקיץ?״ · ״ג׳אקו 8 או סורנטו יד 2?״</small></span></a>
+  <a class="chatbtn" id="chat" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis k2">
     <div class="kpi"><b id="k-now">…</b><span>שווים היום (משוקלל)</span></div>
     <div class="kpi"><b id="k-loss">…</b><span>ירידה בשנה הקרובה</span></div>
@@ -304,7 +304,7 @@ function carCard(c){
   const myTasks=topics.filter(t=>(t.car===c.id||(c.task_ids||[]).includes(t.id))&&t.status!=="done"&&t.status!=="archived");
   const links=(c.links||[]).filter(l=>safe(l.url)).map(l=>`<a href="${esc(safe(l.url))}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("");
   return `<article class="card car" style="--cc:${esc(cc)}" id="car-${esc(c.id)}">
-    <div class="ph" style="background-image:url('${esc(c.img||"")}')"><span class="tag">${esc(c.img_note||"תמונה להמחשה: אותו דגם וצבע")}</span></div>
+    <div class="ph" style="background-image:url('${esc(c.img||"")}')"><span class="tag">${esc(c.img_note||"להמחשה")}</span></div>
     <div class="bd">
       <h3>${esc(c.emoji||"🚗")} ${esc(c.name)}</h3>
       <div class="chipsr"><span>${esc(c.year)}</span><span>${esc(c.trim||"")}</span><span>${esc(c.color||"")}</span><span>יד ${esc(c.hand||"?")}</span><span>${esc(c.engine||"")}</span>${c.owner?`<span>${esc(c.owner)}</span>`:""}</div>
@@ -316,7 +316,7 @@ function carCard(c){
       </div>
       <details style="margin-top:6px"><summary class="small" style="cursor:pointer;font-weight:700;color:var(--link)">איך חושב המשוקלל</summary>
         <ul class="iss">${adjs||"<li>אין עדיין התאמות</li>"}</ul>
-        <div class="note">מחיר שוק = ממוצע מודעות אמיתיות ביד2 לרכבים דומים (${esc(((c.val||{}).market||{}).note||"")}). מחירון = מחירון יד2 לרכב ממוצע מאותו דגם ושנה (${esc((c.val||{}).as_of||"")}). משוקלל = המחירון אחרי ק״מ, יד, מקור, תאונות ומצב. ${esc((c.val||{}).note||"")} בפועל ב${esc((ROUTE[(meta.ans||{}).route]||ROUTE.private).l)}: <b class="num">${ils(inHand(c,m))}</b>.</div>
+        <div class="note">בפועל ב${esc((ROUTE[(meta.ans||{}).route]||ROUTE.private).l)}: <b class="num">${ils(inHand(c,m))}</b></div><details class="more"><summary>מקור המחירים</summary><div>שוק: ממוצע מודעות יד2 (${esc(((c.val||{}).market||{}).note||"")}). מחירון יד2 (${esc((c.val||{}).as_of||"")}). משוקלל: אחרי ק״מ, יד, מקור, תאונות ומצב. ${esc((c.val||{}).note||"")}</div></details>
       </details>
       <div class="dates">
         ${dateBox("ביטוח",lic.insurance,lic.insurance_note)}
@@ -361,16 +361,15 @@ function mineTop(){
 function mineCars(){return cars.map(carCard).join("");}
 function renderMine(){
   const m=ui.m;
-  let h=`<section><div class="sh"><h2>💰 כמה כסף יש לי ברכבים</h2><small>גרור כדי לראות בעתיד</small></div><div class="card">
+  let h=`<section><div class="sh"><h2>💰 כמה כסף יש לי ברכבים</h2></div><div class="card">
     <div class="tl"><input type="range" min="0" max="36" step="1" value="${m}" id="slider" aria-label="חודשים מהיום"><span class="when" id="when">${esc(whenTxt(m))}</span></div>
     <div class="marks">${[[0,"היום"],[1,"חודש"],[6,"חצי שנה"],[12,"שנה"],[24,"שנתיים"],[36,"3 שנים"]].map(([v,l])=>`<button data-m="${v}">${l}</button>`).join("")}</div>
     <div id="mtop">${mineTop()}</div>
-    <div class="q" style="margin-top:8px"><div class="qt">איך תמכור?<small>משנה כמה כסף נכנס בפועל</small></div><div class="opts">${Object.entries(ROUTE).map(([v,o])=>`<button class="opt${((meta.ans||{}).route||"private")===v?" on":""}" data-route="${v}">${esc(o.l)}${o.f?" ("+Math.round(o.f*100)+"%)":""}</button>`).join("")}</div></div>
+    <div class="q" style="margin-top:8px"><div class="qt">איך תמכור?</div><div class="opts">${Object.entries(ROUTE).map(([v,o])=>`<button class="opt${((meta.ans||{}).route||"private")===v?" on":""}" data-route="${v}">${esc(o.l)}${o.f?" ("+Math.round(o.f*100)+"%)":""}</button>`).join("")}</div></div>
   </div></section>`;
-  h+=`<section><div class="sh"><h2>🚙 הרכבים</h2><small>תמונות להמחשה</small></div><div style="display:grid;gap:14px" id="mcars">${mineCars()}</div></section>`;
+  h+=`<section><div class="sh"><h2>🚙 הרכבים</h2></div><div style="display:grid;gap:14px" id="mcars">${mineCars()}</div></section>`;
   const open=cars.reduce((s,c)=>s+Object.keys(QO).filter(k2=>!(k2==="origin"&&c.bought_new)&&!(c.ans||{})[k2]).length,0);
-  h+=`<section><div class="sh"><h2>🎯 לדייק את השווי המשוקלל</h2><small>${open?open+" שאלות פתוחות":"הכל נענה"}</small></div><div style="display:grid;gap:12px">${cars.map(questionsFor).join("")}</div>
-    <div class="note">כל תשובה נשמרת ומעדכנת את המשוקלל מיד. הבסיס: מחירון יד2 ומודעות יד2 (${esc(meta.val_as_of||"")}). ביד2 אין מחשבון ק״מ ויד, ולכן המשוקלל מחושב כאן.</div></section>`;
+  h+=`<section><div class="sh"><h2>🎯 לדייק את השווי המשוקלל</h2><small>${open?open+" שאלות פתוחות":"הכל נענה"}</small></div><div style="display:grid;gap:12px">${cars.map(questionsFor).join("")}</div></section>`;
   if((meta.links||[]).length)h+=`<section><div class="sh"><h2>🔗 איפה להתעדכן</h2></div><div class="card"><div class="links" style="margin:0">${meta.links.filter(l=>safe(l.url)).map(l=>`<a href="${esc(safe(l.url))}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div></div></section>`;
   return h;
 }
@@ -413,7 +412,7 @@ function ranked(){
 function renderBuy(){
   const T=tradeVal(),r=ranked();
   const wl={space:"מרחב",comfort:"נוחות",rel:"אמינות",resale:"שמירת ערך",cost:"עלות",tech:"טכנולוגיה וחיסכון"};
-  let h=`<section><div class="sh"><h2>⚙️ מה חשוב לך</h2><small>הכל דינמי</small></div><div class="card ctrl">
+  let h=`<section><div class="sh"><h2>⚙️ מה חשוב לך</h2></div><div class="card ctrl">
     <div class="seg">${[["all","הכל"],["new","חדש"],["used","יד שנייה"]].map(([v,l])=>`<button class="opt${ui.kind===v?" on":""}" data-set="kind|${v}">${l}</button>`).join("")}<button class="opt${ui.seven?" on":""}" data-set="seven|${ui.seven?0:1}">רק 7 מקומות</button></div>
     <div class="wt"><span>תקציב עד</span><input type="range" min="140000" max="400000" step="10000" value="${ui.budget}" data-range="budget"><b class="num small">${ilsK(ui.budget)}</b></div>
     ${Object.entries(wl).map(([key,l])=>`<div class="wt"><span>${l}</span><input type="range" min="0" max="40" step="5" value="${ui.w[key]}" data-w="${key}"><b class="num small">${ui.w[key]}</b></div>`).join("")}
@@ -426,16 +425,16 @@ function renderBuy(){
     <div class="seg"><button class="opt${ui.sellKia?" on":""}" data-set="sellKia|${ui.sellKia?0:1}">מוכרים את הקיה</button><button class="opt${ui.sellFord?" on":""}" data-set="sellFord|${ui.sellFord?0:1}">מוכרים את הפורד</button></div>
     <div class="small">מהרכבים שלנו: <b class="num">${ils(T)}</b> ${T?"(הולך למקדמה)":""}</div>
   </div></section>`;
-  if(!r.length){h+=`<div class="card empty">אין רכב שמתאים לסינון. נסה להגדיל תקציב.</div>`;return h;}
+  if(!r.length){h+=`<div class="card empty">אין רכב שמתאים</div>`;return h;}
   const L=r[0],lp=priceOf(L.o),lf=finance(L.o,ui.path,lp),bp=bestPath(L.o,lp);
   h+=`<section><div class="card lead"><div class="lbl">⭐ האופציה המובילה לפי מה שבחרת</div><h3>${esc(L.o.name)}${L.o.name.includes(L.o.trims[ui.trim[L.o.id]||0].n)?"":` <span style="font-size:15px;opacity:.8">${esc(L.o.trims[ui.trim[L.o.id]||0].n)}</span>`}</h3>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px">
       <div class="kpi"><b class="num">${ilsK(lp)}</b><span>מחיר</span></div><div class="kpi"><b class="num">${ils(lf.mon)}</b><span>תשלום חודשי (${esc(lf.label)})</span></div><div class="kpi"><b class="num">${ils(lf.total/(ui.years*12))}</b><span>עלות אמיתית לחודש</span></div></div>
     <p>${esc(L.o.verdict||"")} המסלול הכי זול לרכב הזה: <b style="color:var(--hero-ink)">${esc(bp.label)}</b>.</p></div></section>`;
-  h+=`<section><div class="sh"><h2>📋 כל האפשרויות</h2><small>לחיצה פותחת פרטים ומימון</small></div><div class="card">${r.map((x,i)=>{
+  h+=`<section><div class="sh"><h2>📋 כל האפשרויות</h2></div><div class="card">${r.map((x,i)=>{
     const o=x.o,open=ui.open===o.id;
     return `<button class="opt-row" data-open="${esc(o.id)}" aria-expanded="${open}"><span class="rk">${i+1}</span><span class="nm">${esc(o.name)}<span class="fuel f-${esc(o.fuel)}">${{EV:"חשמלי",PHEV:"פלאג-אין",HEV:"היברידי",ICE:"בנזין"}[o.fuel]}</span><small>${esc(o.sub)} · ${o.kind==="used"?"יד 2 · ":""}מ-${ilsK(o.trims[0].price)}</small><span class="sbar"><i style="width:${Math.round(x.score*10)}%"></i></span></span><span class="sc"><b class="num">${(Math.round(x.score*10)/10).toFixed(1)}</b><span class="num">${ilsK(x.cost)}/ח׳</span></span></button>${open?detail(o):""}`;}).join("")}</div>
-    <div class="note">ציון = ממוצע משוקלל לפי מה שבחרת למעלה. ״לחודש״ = עלות אמיתית: כל התשלומים, ביטוח, רישוי, טיפולים ואנרגיה, פחות מה שהרכב שווה בסוף, חלקי מספר החודשים. מחירי חדש: מחירון 2026 (אוטו). יד שנייה: הערכה, לבדוק מודעות.</div></section>`;
+    <details class="more"><summary>איך מחושב</summary><div>ציון: ממוצע משוקלל לפי מה שבחרת. ״לחודש״: כל התשלומים, ביטוח, רישוי, טיפולים ואנרגיה, פחות השווי בסוף, חלקי החודשים. חדש: מחירון 2026 (אוטו). יד שנייה: הערכה.</div></details></section>`;
   return h;
 }
 function detail(o){
@@ -449,7 +448,7 @@ function detail(o){
     <div class="fin"><b>מסלולי מימון ל-${ui.years} שנים</b> <span class="small muted">(${k(ui.kmY)} ק״מ בשנה)</span>
       <table><tr><th>מסלול</th><th>מקדמה</th><th>בחודש</th><th>אמיתי לחודש</th></tr>
       ${rows.map(f=>`<tr class="${f===best?"best":""}"><td>${esc(f.label)}${f===best?" ✓":""}</td><td><span class="num">${f.down>0?ilsK(f.down):"0"}</span></td><td><span class="num">${ilsK(f.mon)}</span></td><td><b class="num">${ils(f.total/(ui.years*12))}</b></td></tr>`).join("")}</table>
-      <div class="note">${rows.map(f=>`<b>${esc(f.label)}:</b> ${esc(f.note)}`).join("<br>")}<br>שווי משוער בסוף התקופה: <b class="num">${ils(resale(o,P,+ui.years))}</b>.</div></div>
+      <div class="note">שווי בסוף: <b class="num">${ils(resale(o,P,+ui.years))}</b></div><details class="more"><summary>על המסלולים</summary><div>${rows.map(f=>`<b>${esc(f.label)}:</b> ${esc(f.note)}`).join("<br>")}</div></details></div>
     <div class="links">${(o.links||[]).filter(l=>safe(l.u)).map(l=>`<a href="${esc(safe(l.u))}" target="_blank" rel="noopener">${esc(l.l)}</a>`).join("")}</div>
   </div>`;
 }
@@ -460,8 +459,8 @@ function renderExp(){
   return `<section><div class="sh"><h2>🧠 התייעצות מומחים</h2><small>5 נקודות מבט</small></div><div class="card">
     ${ex.map(e=>`<div class="exp"><span class="ic">${esc(e.ic)}</span><div><div class="w">${esc(e.who)}</div><div class="small">${esc(e.take)}</div><div class="p">בוחר: <b>${esc(name(e.pick))}</b></div></div></div>`).join("")}
   </div>
-  <div class="card" style="margin-top:10px"><b>מה עולה מכולם</b><p class="small" style="margin:4px 0 0">אין הסכמה על דגם אחד, וזה אומר שההחלטה תלויה בשני דברים: כמה חשובה לך שמירת ערך (קיה/טויוטה/סקודה) מול כמה רכב תקבל לשקל (ג׳אקו 8). הכיוון שחוזר: <b>סורנטו היברידי יד 2 בן שנתיים</b> אם רוצים שקט, <b>ג׳אקו 8</b> אם יש טעינה בבית ומתכננים להחזיק 6+ שנים.</p></div>
-  <a class="chatbtn" style="background:var(--hero);color:var(--hero-ink)" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener" data-copy="${esc(prompt)}"><span style="font-size:24px">🎙️</span><span>הרץ מועצת מומחים מלאה<small>פותח את הצ׳אט ומעתיק את השאלה, להדביק ולשלוח</small></span></a>
+  <div class="card" style="margin-top:10px"><b>מה עולה מכולם:</b> סורנטו היברידי יד 2 לשקט, ג׳אקו 8 אם יש טעינה ומחזיקים 6+ שנים.<details class="more"><summary>פירוט</summary><div>אין הסכמה על דגם אחד, וזה אומר שההחלטה תלויה בשני דברים: כמה חשובה לך שמירת ערך (קיה/טויוטה/סקודה) מול כמה רכב תקבל לשקל (ג׳אקו 8). הכיוון שחוזר: <b>סורנטו היברידי יד 2 בן שנתיים</b> אם רוצים שקט, <b>ג׳אקו 8</b> אם יש טעינה בבית ומתכננים להחזיק 6+ שנים.</div></details></div>
+  <a class="chatbtn" style="background:var(--hero);color:var(--hero-ink);display:inline-flex;padding:8px 14px;font-size:15px;margin-top:10px" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener" data-copy="${esc(prompt)}"><span>🎙️</span><span>הרץ מועצה</span></a>
   </section>
   <section><div class="sh"><h2>✅ לפני שקונים</h2></div><div class="card"><ul class="check" style="margin:0;padding-inline-start:18px">
     <li>נסיעת מבחן עם כל המשפחה: 3 ילדים בשורה השנייה, תא מטען עם עגלה/מזוודות.</li>
@@ -470,7 +469,7 @@ function renderExp(){
     <li>להשוות הצעת מימון של היבואן להלוואה מהבנק לפי <b>עלות כוללת</b>, לא לפי החזר חודשי.</li>
     <li>ליסינג תפעולי: לבדוק מגבלת ק״מ, השתתפות עצמית ומה קורה ביציאה מוקדמת.</li>
     <li>למכור את הישנים לפני הקנייה או בטרייד-אין: הפרש של כ-10% לטובת מכירה פרטית.</li>
-  </ul><div class="note">אני לא פונה לסוכנויות, לא מבקש הצעות ולא לוקח הלוואה בשמך. רק מחקר והשוואה.</div></div></section>`;
+  </ul></div></section>`;
 }
 
 function render(){
@@ -486,7 +485,7 @@ function render(){
   if(!cars.length){$("app").innerHTML=`<div class="empty">טוען…</div>`;return;}
   $("app").innerHTML=ui.tab==="buy"?renderBuy():ui.tab==="exp"?renderExp():renderMine();
   syncSummary(t0,t12);
-  $("foot").innerHTML=`${esc(meta.sources||"")}<br>מחקר שוק: ${esc(M.as_of||"")} · דשבורד רכבים ${esc(window.CARS_BUILD)}`;
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}רכבים ${esc(window.CARS_BUILD)}${M.as_of?" · מחקר שוק "+esc(M.as_of):""}`;
 }
 let sumT=0;function syncSummary(t0,t12){if(!db||!t0)return;const sm=meta.summary||{};if(sm.now&&Math.abs(sm.now-t0)/t0<.01)return;clearTimeout(sumT);
   sumT=setTimeout(()=>{meta.summary={now:Math.round(t0),y1:Math.round(t12),at:ds(today())};db.collection("cars").doc("_meta").update({summary:meta.summary}).catch(()=>{});},1500);}

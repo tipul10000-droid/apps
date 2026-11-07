@@ -123,15 +123,15 @@ select.clsel{border:1px solid var(--line);background:var(--surface);border-radiu
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.day{grid-template-columns:52px 1fr}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=4">
+<link rel="stylesheet" href="dash-back.css?v=5">
+<script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
 <header class="hero"><div class="in">
   <div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back" id="upd"></span></div>
   <h1>👨‍👩‍👧‍👦 משפחה</h1>
-  <p class="sub">בית הספר והעולם של אביתר, דניאלה וליה: מבחנים, הגשות, טיולים, מה להכין ומה לחתום.</p>
-  <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span style="font-size:24px">💬</span><span>שאל על הילדים<small>״מתי המבחן הבא של דניאלה?״ · ״מה יש לאביתר השבוע?״</small></span></a>
+  <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis k2">
     <div class="kpi"><b id="k-ex">…</b><span>מבחנים ב-14 יום</span></div>
     <div class="kpi"><b id="k-act">…</b><span>לפעולה</span></div>
@@ -210,9 +210,9 @@ function kidCard(k){
     ${r("מחנך/ת",hr)}${r("מורים",teach)}${r("צוות",staff)}${r("קבוע בשבוע",weekly)}${r("מערכת",schTxt)}
     ${(k.equipment||[]).length?`<details><summary>🎒 רשימת ציוד (${k.equipment.length})</summary><ul class="prep">${k.equipment.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`:""}
     ${fut.length?`<details><summary>📅 כל הלוח מהיום (${fut.length})</summary>${timeline(fut.map(e=>({...e,kid:k,maybe:applies(k,e)==="maybe"})))}</details>`:""}
-    ${(k.unknown||[]).length?`<div class="unk"><b>עוד לא יודעים</b><ul>${k.unknown.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+    ${(k.unknown||[]).length?`<details class="more"><summary>עוד לא יודעים (${k.unknown.length})</summary><div><ul>${k.unknown.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></details>`:""}
     ${(k.links||[]).length?`<div class="links">${k.links.filter(l=>safe(l.url)).map(l=>`<a href="${esc(safe(l.url))}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div>`:""}
-    ${k.src?`<div style="color:var(--muted);font-size:12.5px;margin-top:8px">מקור: ${esc(k.src)}</div>`:""}
+    ${k.src?`<details class="more"><summary>מקור</summary><div>${esc(k.src)}</div></details>`:""}
   </article>`;
 }
 function render(){
@@ -234,14 +234,14 @@ function render(){
   const later=fut.filter(e=>diff(e.d)>14&&(e.big||e.type==="trip"));
   const prep=prepList();
   let h="";
-  if(open.length||actions().length)h+=`<section><div class="sh"><h2>✍️ לפעולה</h2><small>מהמיילים של בית הספר</small></div><div class="card">${actions().sort((a,b)=>(a.status==="done")-(b.status==="done")).map(a=>`<div class="act${a.status==="done"?" done":""}"><button class="ck" data-act="${esc(a.id)}" aria-label="${a.status==="done"?"בטל סימון":"סמן שבוצע"}">${a.status==="done"?"✓":""}</button><div style="flex:1;min-width:0"><div class="t">${(a.kids||[]).map(id=>kidTag(kidOf(id))).join("")}${esc(a.text)}</div>${a.sub?`<div class="s">${esc(a.sub)}${a.due?" · עד "+dm(a.due):""}</div>`:""}</div>${safe(a.url)?`<a class="go" href="${esc(safe(a.url))}" target="_blank" rel="noopener">פתח</a>`:""}</div>`).join("")}</div></section>`;
+  if(open.length||actions().length)h+=`<section><div class="sh"><h2>✍️ לפעולה</h2></div><div class="card">${actions().sort((a,b)=>(a.status==="done")-(b.status==="done")).map(a=>`<div class="act${a.status==="done"?" done":""}"><button class="ck" data-act="${esc(a.id)}" aria-label="${a.status==="done"?"בטל סימון":"סמן שבוצע"}">${a.status==="done"?"✓":""}</button><div style="flex:1;min-width:0"><div class="t">${(a.kids||[]).map(id=>kidTag(kidOf(id))).join("")}${esc(a.text)}</div>${a.sub?`<div class="s">${esc(a.sub)}${a.due?" · עד "+dm(a.due):""}</div>`:""}</div>${safe(a.url)?`<a class="go" href="${esc(safe(a.url))}" target="_blank" rel="noopener">פתח</a>`:""}</div>`).join("")}</div></section>`;
   if(prep.length)h+=`<section><div class="sh"><h2>🎒 מה להכין השבוע</h2></div><div class="card"><ul class="prep">${prep.map(x=>`<li>${x}</li>`).join("")}</ul></div></section>`;
-  h+=`<section><div class="sh"><h2>📅 השבועיים הקרובים</h2><small>★ מבחן גדול${kids.some(k=>k.class_n==null&&(k.events||[]).some(e=>e.cls))?" · שורה קטנה = לא בטוח שזו הכיתה שלו":""}</small></div><div class="card">${soon.length?timeline(soon):`<div class="empty">אין כלום בלוח בשבועיים הקרובים</div>`}</div></section>`;
-  if(later.length)h+=`<section><div class="sh"><h2>🔭 בהמשך</h2><small>מבחנים גדולים וטיולים</small></div><div class="card">${timeline(later.slice(0,12))}</div></section>`;
+  h+=`<section><div class="sh"><h2>📅 השבועיים הקרובים</h2><small>★ מבחן גדול${kids.some(k=>k.class_n==null&&(k.events||[]).some(e=>e.cls))?" · קטן = לא בטוח":""}</small></div><div class="card">${soon.length?timeline(soon):`<div class="empty">אין כלום בלוח בשבועיים הקרובים</div>`}</div></section>`;
+  if(later.length)h+=`<section><div class="sh"><h2>🔭 בהמשך</h2></div><div class="card">${timeline(later.slice(0,12))}</div></section>`;
   h+=`<section><div class="sh"><h2>👧🧑 הילדים</h2></div><div class="kids">${kids.filter(k=>fKid==="all"||k.id===fKid).map(kidCard).join("")}</div></section>`;
-  if((meta.missing||[]).length&&fKid==="all")h+=`<section><div class="unk"><b>מה עוד חסר בדשבורד</b><ul>${meta.missing.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></section>`;
+  if((meta.missing||[]).length&&fKid==="all")h+=`<section><details class="more"><summary>חסר בדשבורד (${meta.missing.length})</summary><div><ul>${meta.missing.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></details></section>`;
   $("app").innerHTML=h;
-  $("foot").innerHTML=`${esc(meta.sources||"")}<br>דשבורד משפחה ${esc(window.FAM_BUILD)}`;
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}משפחה ${esc(window.FAM_BUILD)}`;
 }
 let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
 document.addEventListener("click",async e=>{
