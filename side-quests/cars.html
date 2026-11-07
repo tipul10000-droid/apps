@@ -6,9 +6,9 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#16233A">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CARS_BUILD="1.3";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CARS_BUILD="1.4";</script>
 <script src="sq-db.js?v=9"></script>
-<script src="cars-market.js?v=1"></script>
+<script src="cars-market.js?v=2"></script>
 <title>רכבים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
@@ -151,6 +151,14 @@ svg.chart{width:100%;height:auto;display:block;margin-top:8px}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .f-EV{background:#163024;color:#7FD9A6}:root:not([data-theme="light"]) .f-PHEV{background:#1A2A4A;color:#9CB8F5}:root:not([data-theme="light"]) .f-HEV{background:#261F45;color:#B9A6F2}:root:not([data-theme="light"]) .f-ICE{background:#2A2F38;color:#BBB}}
 .sbar{height:6px;border-radius:3px;background:var(--sunk);margin-top:3px;overflow:hidden}
 .sbar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.orow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border-top:1px solid var(--line)}
+.orow:first-child{border-top:0}.orow .opt-row{border-top:0}
+.orow.off .opt-row{opacity:.45}
+.inc{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:5px 10px;font-weight:800;font-size:12.5px;cursor:pointer;white-space:nowrap;min-height:32px}
+.inc.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rv h4{margin:10px 0 4px;font-size:15px}.rv ul{margin:4px 0 0;padding-inline-start:18px;font-size:14px}.rv p{margin:6px 0;font-size:14.5px}
+.rv .gen{background:var(--sunk);border-radius:12px;padding:10px 12px;margin-top:8px}
+.rv .chk{background:color-mix(in srgb,var(--accent) 16%,transparent);border-radius:10px;padding:8px 10px;font-size:14px;font-weight:600}
 .det{background:var(--sunk);border-radius:14px;padding:12px;margin:2px 0 10px}
 .det img{width:100%;border-radius:10px;display:block;margin-bottom:8px;aspect-ratio:16/9;object-fit:cover}
 .pc{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px}
@@ -212,7 +220,7 @@ const CHAT_FALLBACK="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQ
 const NORM_KM_MONTH=1250; // ממוצע שהמחירונים מניחים (~15 אלף בשנה)
 let cars=[],meta={},topics=[],db=null;
 // per-viewer UI state (sq_ prefix)
-const UI_KEY="sq_cars_ui";let ui={tab:"mine",m:0,kind:"all",seven:false,budget:400000,open:null,trim:{},path:"loan",years:4,kmY:18000,sellKia:true,sellFord:true,buyIn:0,
+const UI_KEY="sq_cars_ui";let ui={tab:"mine",m:0,kind:"all",seven:false,budget:400000,open:null,trim:{},path:"loan",years:4,kmY:18000,sellKia:true,sellFord:true,buyIn:0,excl:{},rev:null,
   w:{space:25,comfort:20,rel:20,resale:10,cost:15,tech:10}};
 try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
 function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
@@ -402,8 +410,10 @@ function finance(o,path,P){
 }
 const PATHS=[["cash","מזומן"],["loan","הלוואה מהבנק"],["dealer","מימון יבואן"],["lease","ליסינג תפעולי"]];
 function bestPath(o,P){return PATHS.map(([p])=>finance(o,p,P)).sort((a,b)=>a.total-b.total)[0];}
+function shown(){return M.options.filter(o=>(ui.kind==="all"||o.kind===ui.kind)&&(!ui.seven||o.seats>=7)&&priceOf(o)<=ui.budget);}
+const isIn=o=>!(ui.excl||{})[o.id];
 function ranked(){
-  const list=M.options.filter(o=>(ui.kind==="all"||o.kind===ui.kind)&&(!ui.seven||o.seats>=7)&&priceOf(o)<=ui.budget);
+  const list=shown().filter(isIn);if(!list.length)return [];
   const costs=list.map(o=>finance(o,ui.path,priceOf(o)).total/(ui.years*12));const minC=Math.min(...costs);
   const W=ui.w,sw=Object.values(W).reduce((a,b)=>a+b,0)||1;
   return list.map((o,i)=>{const cost=costs[i],costSc=10*minC/cost;const s=o.sc;
@@ -415,7 +425,7 @@ function renderBuy(){
   const wl={space:"מרחב",comfort:"נוחות",rel:"אמינות",resale:"שמירת ערך",cost:"עלות",tech:"טכנולוגיה וחיסכון"};
   let h=`<section><div class="sh"><h2>⚙️ מה חשוב לך</h2></div><div class="card ctrl">
     <div class="seg">${[["all","הכל"],["new","חדש"],["used","יד שנייה"]].map(([v,l])=>`<button class="opt${ui.kind===v?" on":""}" data-set="kind|${v}">${l}</button>`).join("")}<button class="opt${ui.seven?" on":""}" data-set="seven|${ui.seven?0:1}">רק 7 מקומות</button></div>
-    <div class="wt"><span>תקציב עד</span><input type="range" min="140000" max="400000" step="10000" value="${ui.budget}" data-range="budget"><b class="num small">${ilsK(ui.budget)}</b></div>
+    <div class="wt"><span>תקציב עד</span><input type="range" min="60000" max="400000" step="10000" value="${ui.budget}" data-range="budget"><b class="num small">${ilsK(ui.budget)}</b></div>
     ${Object.entries(wl).map(([key,l])=>`<div class="wt"><span>${l}</span><input type="range" min="0" max="40" step="5" value="${ui.w[key]}" data-w="${key}"><b class="num small">${ui.w[key]}</b></div>`).join("")}
   </div></section>`;
   h+=`<section><div class="sh"><h2>💳 איך קונים</h2></div><div class="card ctrl">
@@ -426,17 +436,38 @@ function renderBuy(){
     <div class="seg"><button class="opt${ui.sellKia?" on":""}" data-set="sellKia|${ui.sellKia?0:1}">מוכרים את הקיה</button><button class="opt${ui.sellFord?" on":""}" data-set="sellFord|${ui.sellFord?0:1}">מוכרים את הפורד</button></div>
     <div class="small">מהרכבים שלנו: <b class="num">${ils(T)}</b> ${T?"(הולך למקדמה)":""}</div>
   </div></section>`;
-  if(!r.length){h+=`<div class="card empty">אין רכב שמתאים</div>`;return h;}
+  h+=renderReviews();
+  const sh=shown(),out=sh.filter(o=>!isIn(o));
+  if(!sh.length){h+=`<div class="card empty">אין רכב שמתאים</div>`;return h;}
+  if(!r.length){h+=`<div class="card empty">לא נבחר אף רכב לשקלול. סמן ״בשקלול״ ליד רכב</div>`+allList(r,out);return h;}
   const L=r[0],lp=priceOf(L.o),lf=finance(L.o,ui.path,lp),bp=bestPath(L.o,lp);
   h+=`<section><div class="card lead"><div class="lbl">⭐ האופציה המובילה לפי מה שבחרת</div><h3>${esc(L.o.name)}${L.o.name.includes(L.o.trims[ui.trim[L.o.id]||0].n)?"":` <span style="font-size:15px;opacity:.8">${esc(L.o.trims[ui.trim[L.o.id]||0].n)}</span>`}</h3>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px">
       <div class="kpi"><b class="num">${ilsK(lp)}</b><span>מחיר</span></div><div class="kpi"><b class="num">${ils(lf.mon)}</b><span>תשלום חודשי (${esc(lf.label)})</span></div><div class="kpi"><b class="num">${ils(lf.total/(ui.years*12))}</b><span>עלות אמיתית לחודש</span></div></div>
     <p>${esc(L.o.verdict||"")} המסלול הכי זול לרכב הזה: <b style="color:var(--hero-ink)">${esc(bp.label)}</b>.</p></div></section>`;
-  h+=`<section><div class="sh"><h2>📋 כל האפשרויות</h2></div><div class="card">${r.map((x,i)=>{
-    const o=x.o,open=ui.open===o.id;
-    return `<button class="opt-row" data-open="${esc(o.id)}" aria-expanded="${open}"><span class="rk">${i+1}</span><span class="nm">${esc(o.name)}<span class="fuel f-${esc(o.fuel)}">${{EV:"חשמלי",PHEV:"פלאג-אין",HEV:"היברידי",ICE:"בנזין"}[o.fuel]}</span><small>${esc(o.sub)} · ${o.kind==="used"?"יד 2 · ":""}מ-${ilsK(o.trims[0].price)}</small><span class="sbar"><i style="width:${Math.round(x.score*10)}%"></i></span></span><span class="sc"><b class="num">${(Math.round(x.score*10)/10).toFixed(1)}</b><span class="num">${ilsK(x.cost)}/ח׳</span></span></button>${open?detail(o):""}`;}).join("")}</div>
-    <details class="more"><summary>איך מחושב</summary><div>ציון: ממוצע משוקלל לפי מה שבחרת. ״לחודש״: כל התשלומים, ביטוח, רישוי, טיפולים ואנרגיה, פחות השווי בסוף, חלקי החודשים. חדש: מחירון 2026 (אוטו). יד שנייה: הערכה.</div></details></section>`;
+  h+=allList(r,out);
   return h;
+}
+function optRow(o,i,x){const open=ui.open===o.id,on=!!x;const cost=x?x.cost:finance(o,ui.path,priceOf(o)).total/(ui.years*12),score=x?x.score:0;
+  return `<div class="orow${on?"":" off"}"><button class="opt-row" data-open="${esc(o.id)}" aria-expanded="${open}"><span class="rk">${on?i+1:"–"}</span><span class="nm">${esc(o.name)}<span class="fuel f-${esc(o.fuel)}">${{EV:"חשמלי",PHEV:"פלאג-אין",HEV:"היברידי",ICE:"בנזין"}[o.fuel]}</span><small>${esc(o.sub)} · ${o.kind==="used"?"יד 2 · ":""}מ-${ilsK(o.trims[0].price)}</small>${on?`<span class="sbar"><i style="width:${Math.round(score*10)}%"></i></span>`:""}</span><span class="sc">${on?`<b class="num">${(Math.round(score*10)/10).toFixed(1)}</b>`:`<b class="small muted">לא בשקלול</b>`}<span class="num">${ilsK(cost)}/ח׳</span></span></button><button class="inc${on?" on":""}" data-inc="${esc(o.id)}" aria-pressed="${on}">${on?"✓ בשקלול":"+ לשקלול"}</button></div>${open?detail(o):""}`;}
+function allList(r,out){
+  const nIn=r.length,nAll=nIn+out.length;
+  return `<section><div class="sh"><h2>📋 כל האפשרויות</h2><small>${nIn} מתוך ${nAll} בשקלול</small></div>
+    <div class="seg" style="margin-bottom:8px"><button class="opt" data-incall="1">הכל לשקלול</button><button class="opt" data-incall="0">נקה הכל</button></div>
+    <div class="card">${r.map((x,i)=>optRow(x.o,i,x)).join("")}${out.map(o=>optRow(o,0,null)).join("")}</div>
+    <details class="more"><summary>איך מחושב</summary><div>ציון: ממוצע משוקלל לפי מה שבחרת, רק בין הרכבים שבשקלול. ״לחודש״: כל התשלומים, ביטוח, רישוי, טיפולים ואנרגיה, פחות השווי בסוף, חלקי החודשים. חדש: מחירון 2026 (אוטו). יד שנייה: ממוצע מודעות (קארזון/יד2) או הערכה.</div></details></section>`;
+}
+function renderReviews(){
+  const R=M.reviews||[];if(!R.length)return "";
+  return `<section><div class="sh"><h2>🔎 סקירות דגם</h2></div>${R.map(v=>{const open=ui.rev===v.id;
+    return `<div class="card rv"><button class="opt-row" style="grid-template-columns:1fr auto" data-rev="${esc(v.id)}" aria-expanded="${open}"><span class="nm">${esc(v.title)}<small>${esc(v.verdict)}</small></span><span class="small muted">${open?"סגור ▲":"פתח ▼"}</span></button>
+    ${open?`<div class="chk">✅ ${esc(v.check)}</div>
+    ${v.gens.map(g=>`<div class="gen"><b>${esc(g.n)}</b><p class="small">${esc(g.eng)}</p><h4>💰 מחירי שוק (יד שנייה, 11.2026)</h4><p>${esc(g.price)}</p><h4>🔧 בעיות נפוצות</h4><ul>${g.issues.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><h4>🛡️ אמינות</h4><p>${esc(g.rel)}</p><h4>🗣️ מה אומר השוק</h4><p>${esc(g.market)}</p></div>`).join("")}
+    <h4>📈 סחירות</h4><p>${esc(v.resale)}</p>
+    <h4>✅ לפני שקונים</h4><ul>${v.tips.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+    <div class="seg" style="margin-top:10px"><button class="opt" data-revonly="${esc(v.id)}">להשוות רק סורנטו במחשבון</button></div>
+    <p class="small muted">מחירים: ממוצע מודעות לפי שנתון (קארזון), טווח = הערכה. לבדוק מול מחירון יד2 לפני החלטה.</p>
+    <div class="links">${(v.src||[]).filter(l=>safe(l.u)).map(l=>`<a href="${esc(safe(l.u))}" target="_blank" rel="noopener">${esc(l.l)}</a>`).join("")}</div>`:""}</div>`;}).join("")}</section>`;
 }
 function detail(o){
   const ti=ui.trim[o.id]||0,P=o.trims[ti].price,rows=PATHS.map(([p])=>finance(o,p,P)),best=rows.slice().sort((a,b)=>a.total-b.total)[0];
@@ -506,6 +537,10 @@ document.addEventListener("click",e=>{const g=s=>e.target.closest(s);let b;
   if(b=g(".tab")){ui.tab=b.dataset.tab;saveUi();render();scrollTo(0,0);return;}
   if(b=g("[data-m]")){ui.m=+b.dataset.m;saveUi();$("slider").value=ui.m;$("when").textContent=whenTxt(ui.m);$("mtop").innerHTML=mineTop();$("mcars").innerHTML=mineCars();return;}
   if(b=g("[data-set]")){const [key,v]=b.dataset.set.split("|");ui[key]=/^\d+$/.test(v)?(key==="years"?+v:v==="1"?true:v==="0"?false:+v):v;saveUi();const y=scrollY;render();scrollTo(0,y);return;}
+  if(b=g("[data-inc]")){const id=b.dataset.inc;ui.excl=ui.excl||{};if(ui.excl[id])delete ui.excl[id];else ui.excl[id]=true;saveUi();const y=scrollY;render();scrollTo(0,y);return;}
+  if(b=g("[data-incall]")){ui.excl={};if(b.dataset.incall==="0")shown().forEach(o=>ui.excl[o.id]=true);saveUi();const y=scrollY;render();scrollTo(0,y);return;}
+  if(b=g("[data-rev]")){ui.rev=ui.rev===b.dataset.rev?null:b.dataset.rev;saveUi();const y=scrollY;render();scrollTo(0,y);return;}
+  if(b=g("[data-revonly]")){const v=(M.reviews||[]).find(x=>x.id===b.dataset.revonly);if(!v)return;ui.excl={};M.options.forEach(o=>{if(!v.opts.includes(o.id))ui.excl[o.id]=true;});ui.kind="all";ui.budget=Math.max(ui.budget,330000);saveUi();render();toast("בשקלול עכשיו רק סורנטו. ״הכל לשקלול״ מחזיר את כולם");return;}
   if(b=g("[data-open]")){ui.open=ui.open===b.dataset.open?null:b.dataset.open;saveUi();const y=scrollY;render();scrollTo(0,y);return;}
   if(b=g("[data-trim]")){const [id,i]=b.dataset.trim.split("|");ui.trim[id]=+i;saveUi();const y=scrollY;render();scrollTo(0,y);return;}
   if(b=g("[data-ans]")){const [id,key,v]=b.dataset.ans.split("|");const c=cars.find(x=>x.id===id);if(!c)return;const y=scrollY;upd(id,{ans:{...(c.ans||{}),[key]:v}},"נשמר. המשוקלל עודכן");scrollTo(0,y);return;}
