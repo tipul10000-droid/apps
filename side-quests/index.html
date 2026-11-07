@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.9";window.SQ_BUILD_AT="7.11.2026 23:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="13.0";window.SQ_BUILD_AT="7.11.2026 23:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -404,6 +404,8 @@ body.fun-on .tasks-only{display:none!important}
 .sr-mv button{width:30px;height:24px;border-radius:7px;border:1px solid #3A3A44;background:transparent;color:var(--ink);font-size:12px;cursor:pointer;padding:0}
 .sr-mv button:disabled{opacity:.3}
 .sr-mv button.go{background:var(--sa,#F5C518);color:var(--sa-ink,#1B1200);border-color:var(--sa,#F5C518);height:26px}
+.sr-h.sub{margin-top:12px;font-size:12.5px;color:var(--muted);font-weight:800}
+.sr-sel{font:inherit;font-size:12px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:2px 4px}
 .sr-q{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:#C4B5FD}
 .sr-q .sr-b{padding:3px 10px;font-size:12px}
 .sr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
@@ -438,6 +440,11 @@ body.fun-on .tasks-only{display:none!important}
 .sp-logo svg{width:34px;height:34px;fill:#1DB954}
 .sp-head .fc-h{margin-inline-start:auto;text-align:left}
 .sp-head .fc-h p{font-size:13px}
+/* 13.0 (Oren 7.11): one header layout for every Fun zone: area name on the right, logo on the left, no subtitle */
+.zhead{display:flex;align-items:center;gap:12px;direction:rtl}
+.zhead .fc-h{order:0;margin:0!important;text-align:right!important;min-width:0}
+.zhead .fc-h h3{font-size:22px;font-weight:800;letter-spacing:0;margin:0;line-height:1.2}
+.zhead .zlogo{order:1;margin-inline-start:auto!important}
 .sp-taste{font-size:13px;color:var(--muted);line-height:1.5}
 .sp-taste b{color:#1DB954;font-weight:700}
 .sp-sec{font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.3px;margin-top:2px}
@@ -3091,14 +3098,14 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
         :h("div",{class:"sp-next"},h("h4",null,`✨ הסשן הבא: סשן ${nextN}`),...body);
     }
     return h("article",{class:"fcard sp","data-id":t.id},
-      h("div",{class:"sp-head"},h("a",{class:"sp-logo",href:"https://open.spotify.com/",target:"_blank",rel:"noopener","aria-label":"Spotify",html:SPOT_SVG+"<span>Spotify</span>"}),
-        h("div",{class:"fc-h"},h("h3",null,t.title||"המוזיקה שלי"),t.stand?h("p",null,t.stand):null)),
-      pages.length?h("div",{class:"fc-links"},pages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
+      h("div",{class:"sp-head zhead"},h("div",{class:"fc-h"},h("h3",null,"מוזיקה")),h("a",{class:"sp-logo zlogo",href:"https://open.spotify.com/",target:"_blank",rel:"noopener","aria-label":"Spotify",html:SPOT_SVG+"<span>Spotify</span>"})),
       live.length?h("div",{class:"fc-rounds"},live.map((s,i)=>sessBlock(t,s,i===0))):null,
       next,
       arch.length?(()=>{const k=t.id+":arch",d=h("details",{class:"sp-arch",open:funFold[k]||null},h("summary",null,"📦 ארכיון · "+(arch.length===1?"סשן אחד":arch.length+" סשנים")),h("div",{class:"fc-rounds"},arch.map(s=>sessBlock(t,s,false))));d.addEventListener("toggle",()=>{funFold[k]=d.open;});return d;})():null,
       // 10.1 (Oren 6.11): what I liked sits at the bottom, collapsed
       liked.length?(()=>{const k=t.id+":liked",d=h("details",{class:"sp-arch",open:funFold[k]||null},h("summary",null,"👍 מה אהבתי · "+liked.length),h("div",{class:"sp-taste"},h("b",null,liked.join(" · "))));d.addEventListener("toggle",()=>{funFold[k]=d.open;});return d;})():null,
+      // 13.0 (Oren 7.11): "my music taste" and other pages sit at the bottom with the history
+      pages.length?h("div",{class:"fc-links"},pages.map(l=>h("a",{class:"fbtn ghost",href:safeUrl(l.url),target:"_blank",rel:"noopener"},"🎧 "+(l.label||"פתח")))):null,
       contBtn(t,"cont"));
   }
   // Movies zone: topic zone "movies" (the external list), topics with zone "games" (one per game) and the Frame Horizon project,
@@ -3152,7 +3159,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
       s.at?h("div",{class:"sr-sub"},s.at):null,
       h("div",{class:"sr-acts"},
         cur&&n&&cur<n?h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{season:cur+1,at:""},"עברת לעונה "+(cur+1))},"עונה "+(cur+1)+" ›"):null,
-        h("button",{class:"sr-b p",type:"button",onclick:()=>serPatch(s,{status:"done",done_at:new Date().toISOString().slice(0,10)},"🏆 נכנס להישגים")},"✓ סיימתי"),
+        h("button",{class:"sr-b p",type:"button",onclick:()=>serPatch(s,{status:"done",done_at:new Date().toISOString().slice(0,10)},"🏁 עבר ל\"סיימתי צפייה\"")},"✓ סיימתי"),
         h("button",{class:"sr-b",type:"button",onclick:()=>serPatch(s,{status:"queue",order:0},"חזר לראש הרשימה")},"להמשך"))));
   }
   function nextChip(s){const c=tvm[s.id];
@@ -3172,9 +3179,11 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
         h("div",{class:"sr-chips"},
           s.fresh?h("span",{class:"sr-c new"},"🆕 "+s.fresh):null,
           SHOW[s.show]?h("span",{class:"sr-c "+SHOW[s.show][1]},SHOW[s.show][0]):null,
-          n?h("span",{class:"sr-c"},cur&&started?("עונה "+cur+"/"+n):(heN(n,"עונה אחת","עונות"))):null,
+          n?h("span",{class:"sr-c"},cur&&started?("עד עונה "+cur+" מתוך "+n):(heN(n,"עונה אחת","עונות"))):null,
           !started?h("span",{class:"sr-c no"},"חדשה בשבילי"):null,
-          s.binge?h("span",{class:"sr-c"},"בינג' ארוך"):null)),
+          s.binge?h("span",{class:"sr-c"},"בינג' ארוך"):null),
+        // 13.0: started but the season is unknown: ask inline
+        started&&!cur&&n&&canWrite?h("div",{class:"sr-q"},"❓ עד איזו עונה ראית?",h("select",{class:"sr-sel","aria-label":"עד איזו עונה ראית",onchange:e=>{const v=+e.target.value;if(v)serPatch(s,{season:v,check:""},"נשמר: עד עונה "+v);}},h("option",{value:""},"בחר"),...Array.from({length:n},(_,k)=>h("option",{value:String(k+1)},"עונה "+(k+1))))):null),
       h("div",{class:"sr-mv"},h("button",{type:"button",class:"go","aria-label":"להתחיל עכשיו",title:"להתחיל עכשיו",onclick:()=>{const mx=Math.max(0,...seriesAll.filter(x=>x.status==="now").map(x=>x.order||0));serPatch(s,{status:"now",order:mx+1,season:cur||1},"▶️ עבר ל\"רואה עכשיו\"");}},"▶"),h("button",{type:"button","aria-label":"למעלה",disabled:i===0||null,onclick:()=>swap(-1)},"▲"),h("button",{type:"button","aria-label":"למטה",disabled:i===arr.length-1||null,onclick:()=>swap(1)},"▼")));
   }
   function serDetail(s){const ex=Array.isArray(s.extras)?s.extras:[];
@@ -3189,28 +3198,34 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   function serTile(s){const on=serSel===s.id;
     return h("button",{class:"sr-t"+(s.status==="dropped"?" off":""),type:"button","aria-pressed":on?"true":"false",onclick:()=>{serSel=on?null:s.id;renderFun();}},
       poster(s),h("span",null,s.name),s.check?h("em",null,"❓"):(Array.isArray(s.extras)&&s.extras.some(x=>x.seen===true))?h("em",null,"🎬"):null);}
+  // 13.0 (Oren 7.11): 3 tabs. ▶️ watching now (now + up_next), 📋 to complete (waiting for a new season / finish episodes / not started / maybe),
+  // 🏁 finished watching (all seasons = done, started and stopped = dropped). up_next:true marks "next in line".
   function seriesHub(){
     const all=seriesAll.filter(s=>!s._deleted),of=st=>all.filter(s=>s.status===st).sort(byOrder);
     const now=of("now"),wait=of("waiting"),q=of("queue"),done=of("done"),drop=of("dropped");
-    const qMain=q.filter(s=>!s.maybe),qMaybe=q.filter(s=>s.maybe);
+    const isNew=s=>/לא התחלתי/.test(s.at||"");
+    let up=q.filter(s=>s.up_next);if(!up.length&&q.length)up=[q.filter(s=>!s.maybe)[0]].filter(Boolean);
+    const rest=q.filter(s=>!up.includes(s));
+    const qMain=rest.filter(s=>!s.maybe&&!isNew(s)),qNew=rest.filter(s=>!s.maybe&&isNew(s)),qMaybe=rest.filter(s=>s.maybe);
     if(!all.length)return [h("div",{class:"mv-empty"},"עוד אין סדרות.")];
     const tab=(id,ic,lbl,n)=>h("button",{class:"sr-tab",type:"button","aria-pressed":serTab===id?"true":"false",onclick:()=>{serTab=id;serSel=null;try{localStorage.setItem("sq_sertab",id);}catch(e){}renderFun();}},h("b",null,String(n)),ic+" "+lbl);
-    const out=[h("div",{class:"sr-tabs"},tab("now","▶️","עכשיו",now.length+wait.length),tab("queue","📋","להשלים",q.length),tab("done","🏆","הישגים",done.length))];
+    if(!["now","queue","done"].includes(serTab))serTab="now";
+    const out=[h("div",{class:"sr-tabs"},tab("now","▶️","צופה עכשיו",now.length+up.length),tab("queue","📋","להשלים",wait.length+rest.length),tab("done","🏁","סיימתי צפייה",done.length+drop.length))];
+    const grp=(title,arr,row)=>arr.length?[h("div",{class:"sr-h sub"},title,h("small",null,String(arr.length))),h("div",null,arr.map(row))]:[];
     if(serTab==="queue"){
-      out.push(h("div",null,qMain.map((s,i,a)=>queueRow(s,i,a))));
-      if(qMaybe.length)out.push(h("div",{class:"sr-h"},"🤔 אולי",),h("div",null,qMaybe.map((s,i,a)=>queueRow(s,i,a))));
+      out.push(...grp("📅 ראיתי הכול, מחכה לעונה חדשה",wait,waitRow));
+      out.push(...grp("⏯ להשלים פרקים",qMain,(s,i,a)=>queueRow(s,i,a)));
+      out.push(...grp("🆕 עוד לא התחלתי",qNew,(s,i,a)=>queueRow(s,i,a)));
+      out.push(...grp("🤔 אולי",qMaybe,(s,i,a)=>queueRow(s,i,a)));
     }else if(serTab==="done"){
-      const seasons=done.reduce((n,s)=>n+(+s.seasons||0),0),films=done.reduce((n,s)=>n+(Array.isArray(s.extras)?s.extras.filter(x=>x.seen===true).length:0),0);
-      out.push(h("div",{class:"sr-stats"},h("div",null,h("b",null,String(done.length)),"סדרות עד הסוף"),h("div",null,h("b",null,String(seasons)),"עונות"),h("div",null,h("b",null,String(films)),"סרטי המשך")));
       const sel=all.find(s=>s.id===serSel);
-      out.push(h("div",{class:"sr-grid"},done.map(serTile)));
+      out.push(h("div",{class:"sr-h sub"},"✓ ראיתי את כל העונות",h("small",null,String(done.length))),h("div",{class:"sr-grid"},done.map(serTile)));
       if(sel&&sel.status==="done")out.push(serDetail(sel));
-      if(drop.length){out.push(h("div",{class:"sr-h"},"◐ ראיתי חלק ועזבתי",h("small",null,String(drop.length))),h("div",{class:"sr-grid"},drop.map(serTile)));
+      if(drop.length){out.push(h("div",{class:"sr-h sub"},"◐ התחלתי ולא סיימתי",h("small",null,String(drop.length))),h("div",{class:"sr-grid"},drop.map(serTile)));
         if(sel&&sel.status==="dropped")out.push(serDetail(sel));}
     }else{
-      out.push(h("div",{class:"sr-h"},"▶️ רואה עכשיו"),...(now.length?now.map(nowCard):[h("div",{class:"mv-empty"},"שום דבר. בחר מ\"להשלים\".")]));
-      if(qMain[0])out.push(h("div",{class:"sr-sub"},"הבא בתור: ",h("bdi",{dir:"ltr"},qMain[0].name)));
-      if(wait.length)out.push(h("div",{class:"sr-h"},"📅 מחכה לעונה חדשה",),h("div",null,wait.map(waitRow)));
+      out.push(h("div",{class:"sr-h"},"▶️ צופה עכשיו"),...(now.length?now.map(nowCard):[h("div",{class:"mv-empty"},"שום דבר. בחר מ\"להשלים\".")]));
+      out.push(...grp("⏭ הבאים בתור",up,(s,i,a)=>queueRow(s,i,a)));
     }
     setTimeout(tvmPump,50);
     return out;
@@ -3228,8 +3243,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     const app=fh&&safeUrl(fh.app_url||""),cl=fh&&safeUrl(fh.claude_url||"");
     const mvPages=mv?linksOf(mv).filter(l=>linkType(l)!=="chat"):[];
     return h("article",{class:"fcard mv"},
-      h("div",{class:"mv-head"},h("a",{class:"imdb",href:"https://www.imdb.com/",target:"_blank",rel:"noopener","aria-label":"IMDb"},"IMDb"),
-        h("div",{class:"fc-h"},h("h3",null,"סרטים"),h("p",null,"מה לראות"))),
+      h("div",{class:"mv-head zhead"},h("div",{class:"fc-h"},h("h3",null,"סרטים")),h("a",{class:"imdb zlogo",href:"https://www.imdb.com/",target:"_blank",rel:"noopener","aria-label":"IMDb"},"IMDb")),
       fh?sec(1,"FRAME HORIZON",
         h("a",{class:"fh-logo",href:app||cl||"#",target:"_blank",rel:"noopener","aria-label":"פתח את Frame Horizon"},h("img",{src:"fh-logo.png",alt:"Frame Horizon",width:"560",height:"178"})),
         h("p",null,"ערבי סרטים שהופכים למסע"),
@@ -3243,33 +3257,33 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   // 6.8: series in their own Netflix-style card (was sub-area 3 of the cinema card)
   const NF_SVG='<svg viewBox="0 0 22 40" aria-hidden="true"><path d="M1 0h6.2v40C5 39.6 3 39.5 1 39.5z" fill="#B1060F"/><path d="M14.8 0H21v39.5c-2 0-4 .1-6.2.5z" fill="#B1060F"/><path d="M1 0h6.2L21 39.5c-2.1 0-4.2.2-6.2.5z" fill="#E50914"/></svg>';
   function seriesCard(){
-    const lg=h("a",{class:"nf-logo",href:"https://www.netflix.com/",target:"_blank",rel:"noopener","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
+    const lg=h("a",{class:"nf-logo zlogo",href:"https://www.netflix.com/",target:"_blank",rel:"noopener","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
     return h("article",{class:"fcard nf"},
-      h("div",{class:"nf-head"},lg,h("div",{class:"fc-h"},h("h3",null,"סדרות"),h("p",null,"מה רואים עכשיו ומה הבא בתור"))),
+      h("div",{class:"nf-head zhead"},h("div",{class:"fc-h"},h("h3",null,"סדרות")),lg),
       ...seriesHub(),
       secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן"));
   }
   const STEAM_SVG='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#fff"/><circle cx="16" cy="16" r="13.2" fill="#1B2838"/><circle cx="20.6" cy="12.4" r="4.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="20.6" cy="12.4" r="2.2" fill="#fff"/><path d="M3 18.2 L10.6 21.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M11.2 21.6 L18 15.2" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="11.2" cy="21.6" r="3.1" fill="#1B2838" stroke="#fff" stroke-width="1.8"/></svg>';
-  const PAD_SVG='<svg viewBox="0 0 54 38" aria-hidden="true"><path d="M14 6h26c6.5 0 10 4 11.5 11l2 10c1 5.5-3.5 9.5-8 7.5-2.5-1.1-4.5-4-6.5-6.5H15c-2 2.5-4 5.4-6.5 6.5-4.5 2-9-2-8-7.5l2-10C4 10 7.5 6 14 6z" fill="#2A475E" stroke="#66C0F4" stroke-width="1.5"/><rect x="11" y="13" width="3.4" height="11" rx="1" fill="#E6EEF5"/><rect x="7.2" y="16.8" width="11" height="3.4" rx="1" fill="#E6EEF5"/><circle cx="38" cy="14.5" r="2.3" fill="#66C0F4"/><circle cx="43" cy="18.5" r="2.3" fill="#F5C518"/><circle cx="33" cy="18.5" r="2.3" fill="#A4D007"/><circle cx="38" cy="22.5" r="2.3" fill="#E84D4D"/></svg>';
   function gamesCard(games){
-    const steam=h("a",{class:"steam",href:"https://store.steampowered.com/",target:"_blank",rel:"noopener","aria-label":"Steam"});steam.innerHTML=STEAM_SVG+"STEAM";
-    const pad=h("span",{class:"gm-pad"});pad.innerHTML=PAD_SVG;
+    const steam=h("a",{class:"steam zlogo",href:"https://store.steampowered.com/",target:"_blank",rel:"noopener","aria-label":"Steam"});steam.innerHTML=STEAM_SVG+"STEAM";
     return h("article",{class:"fcard gm"},
-      h("div",{class:"gm-head"},steam,h("div",{class:"fc-h"},h("h3",null,"Gaming"),h("p",null,"משחקים שרוצה לנסות")),pad),
+      h("div",{class:"gm-head zhead"},h("div",{class:"fc-h"},h("h3",null,"משחקים")),steam),
       games.length?h("div",{class:"fc-rounds"},games.map(gameRow)):h("div",{class:"mv-empty"},"עוד אין משחקים."),
-      secChat(secUrl("games",...games.map(chatOf)),"המשחקים (Gaming)","הוסף משחק · שאל · תקן"));
+      secChat(secUrl("games",...games.map(chatOf)),"המשחקים","הוסף משחק · שאל · תקן"));
   }
   function renderFun(){
     const live=funTopics.filter(t=>t.status!=="archived");
     const list=live.filter(t=>t.status!=="done"&&!isMovieZone(t)).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
-    const cards=list.map((t,i)=>t.zone==="spotify"?spotifyCard(t):funCard(t,i));
+    // 13.0 (Oren 7.11): fixed order: music, series, movies, games, then any other fun card
+    const sp=list.filter(t=>t.zone==="spotify"),rest=list.filter(t=>t.zone!=="spotify");
+    const cards=sp.map(spotifyCard),tail=rest.map((t,i)=>funCard(t,i));
     // movies zone keeps finished games (shown struck through) so the list grows as a record
     const mz=live.filter(t=>isMovieZone(t)&&(t.zone==="games"||t.zone==="series"||t.status!=="done")),fh=projById("frame-horizon");
-    if(mz.some(t=>t.zone==="movies")||fh){const mc=moviesCard(mz,fh),ord=Math.min(99,...mz.filter(t=>t.zone==="movies").map(t=>t.fun_order||99));
-      const at=list.findIndex(t=>(t.fun_order||99)>ord);cards.splice(at<0?cards.length:at,0,mc);}
+    cards.push(seriesCard());
+    if(mz.some(t=>t.zone==="movies")||fh)cards.push(moviesCard(mz,fh));
     const games=mz.filter(t=>t.zone==="games").sort((a,b)=>(a.status==="done")-(b.status==="done")||(a.fun_order||99)-(b.fun_order||99));
-    {const ci=cards.findIndex(c=>c.classList&&c.classList.contains("mv"));cards.splice(ci<0?cards.length:ci+1,0,seriesCard());}
-    if(games.length){const ci=cards.findIndex(c=>c.classList&&c.classList.contains("nf"));cards.splice(ci<0?cards.length:ci+1,0,gamesCard(games));}
+    if(games.length)cards.push(gamesCard(games));
+    cards.push(...tail);
     $("funGrid").replaceChildren(...(cards.length?cards:[h("div",{class:"empty"},"עוד אין")]));
   }
 
