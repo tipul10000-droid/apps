@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.0";window.SQ_BUILD_AT="7.11.2026 11:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.1";window.SQ_BUILD_AT="7.11.2026 12:05";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1527,7 +1527,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
 /* 10.6 (Oren 6.11.2026): slim top. One thin banner row with icons in one frame, 6 quests in one row, floating + */
 .qband,body .qband{height:calc(58px + env(safe-area-inset-top,0px))!important;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box}
 .qband .qb-in{padding-block:0!important;justify-content:center!important;gap:0!important;padding-inline-end:220px}
-.qband .qb-in>p,.qband .qb-in>span,.qband .fz-title>p,.qband .fz-title>span,.qband .qlogo,.sb-compass,.ab-radar{display:none!important}
+.qband .qb-in>p,.qband .fz-title>p{display:none!important}
 .qband h2,.qband .fz-title h2{font-size:clamp(18px,5.5vw,23px)!important;line-height:1!important;margin:0!important;max-width:none!important;white-space:nowrap;letter-spacing:-.3px}
 .qband h2 br{display:none}.qband .fz-title h2 i,.qband h2 i{margin-inline-start:.22em}
 .topbtns{top:calc(env(safe-area-inset-top,0px) + 10px)!important;left:max(12px,env(safe-area-inset-left,0px))!important;gap:0!important;border:1.5px solid rgba(255,255,255,.4);border-radius:12px;overflow:hidden;background:rgba(17,17,17,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
@@ -1602,70 +1602,140 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
 .fold .fc{opacity:.6}
 .fold[open]>summary{border-bottom:1px solid var(--line)}
 .fold:not([open])>summary{border-bottom:1px solid transparent}
+
+/* 11.9 (Oren 7.11.2026): banner art redrawn for the slim top. Canvas = the 102px under the safe area:
+   a free strip on top (44px, clear of the status bar) + the title row (58px). The buttons sit bottom-left of the row
+   (12-128px, Side 12-166px), so every drawing lives in the top strip or in the gap between the buttons and the title.
+   Fixed pixel geometry (viewBox 390x102, no scaling) so it matches the fixed-size buttons on every phone. */
+.qa-art{position:absolute;left:0;bottom:0;width:390px;height:102px;z-index:0;overflow:visible;pointer-events:none}
+.qband .qb-in{flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;padding-inline-end:16px!important}
+.qband .qa-tag{display:block!important;position:absolute;right:max(16px,env(safe-area-inset-right,0px));left:auto;bottom:calc(100% + 12px);margin:0;font-size:9.5px;line-height:1;white-space:nowrap}
+.qb-fun .fz-title{position:static;flex-direction:row;align-items:center}
+.qb-fun .fz-press{font-size:8px}
+.qband .qlogo{flex:none;margin:0!important}
+.qband .qlogo[hidden]{display:none!important}
+/* side: route through three pins, X marks the spot between the buttons and the title */
+.qb-side .sb-coast{stroke:rgba(0,0,0,.16)}
+.qb-side .sb-hill{stroke:rgba(0,0,0,.55);stroke-width:1.8}
+.qb-side .sb-route{stroke-width:2.6}
+.qb-side .sb-pin circle{stroke-width:1.8}
+/* fun: the sun sits on the horizon, equalizer next to it, all left of the title */
+.qb-fun.fz-head{background:radial-gradient(1.5px 1.5px at 12% 14%,#fff,transparent),radial-gradient(1px 1px at 30% 8%,#fff,transparent),radial-gradient(1.5px 1.5px at 48% 22%,#fff,transparent),radial-gradient(1px 1px at 62% 10%,#fff,transparent),radial-gradient(1.5px 1.5px at 80% 18%,#fff,transparent),radial-gradient(1px 1px at 92% 8%,#fff,transparent),radial-gradient(1px 1px at 4% 36%,#fff,transparent),radial-gradient(1px 1px at 56% 34%,#fff,transparent),
+  linear-gradient(180deg,#0B0322 0%,#2A0A4E calc(100% - 64px),#7A1460 calc(100% - 28px),#0B0322 calc(100% - 27.6px))!important}
+.qb-fun .fz-sun{width:78px!important;height:78px!important;left:30px!important;bottom:20px!important;top:auto!important;filter:drop-shadow(0 0 14px rgba(255,61,127,.6))}
+.qb-fun .fz-floor{height:28px!important}
+.qb-fun .fz-eq{left:124px!important;right:auto!important;bottom:30px!important;height:24px!important;gap:3px}
+.qb-fun .fz-eq i{width:5px}
+/* army: radar in the top strip, a dotted patrol line to a flag, the unit emblem left of the title */
+.qa-radar{position:absolute;z-index:1;left:16px;bottom:62px;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(170,230,110,.6);
+  background:repeating-radial-gradient(circle,transparent 0 30%,rgba(170,230,110,.35) 30% calc(30% + 1px)),linear-gradient(90deg,transparent calc(50% - .5px),rgba(170,230,110,.35) 0 calc(50% + .5px),transparent 0),linear-gradient(0deg,transparent calc(50% - .5px),rgba(170,230,110,.35) 0 calc(50% + .5px),transparent 0),radial-gradient(circle,#1E3214,#0F1A0A);box-shadow:0 0 12px rgba(140,220,80,.3)}
+.qa-radar::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(150,255,90,.6),rgba(150,255,90,0) 70deg,transparent);animation:abspin 3.2s linear infinite}
+.qa-radar i{position:absolute;width:4px;height:4px;border-radius:50%;background:#B8FF6A;box-shadow:0 0 6px #B8FF6A;animation:abblip 3.2s linear infinite}
+.qa-radar i:nth-child(1){top:24%;left:60%}.qa-radar i:nth-child(2){top:62%;left:28%;animation-delay:-1.4s}.qa-radar i:nth-child(3){top:38%;left:20%;animation-delay:-2.3s}
+.ab-path{fill:none;stroke:rgba(201,184,102,.75);stroke-width:2;stroke-linecap:round;stroke-dasharray:1 6;animation:sbroute 1.6s linear infinite}
+.ab-flag path{stroke:#C9B866;stroke-width:1.6;stroke-linecap:round;fill:none}.ab-flag path.f{fill:#C9B866;stroke:none}
+.qb-army .ab-tag{color:#9EE05A}
+.qb-army .qlogo{height:46px;width:auto;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+/* work: a live mini chart between the buttons and the title, a ticker line in the strip, the Elbit logo above the title */
+.wb-tick{fill:none;stroke:rgba(140,211,255,.45);stroke-width:1.6;stroke-linejoin:round;stroke-dasharray:420;stroke-dashoffset:420;animation:wbtick 5s ease-in-out infinite}
+@keyframes wbtick{0%{stroke-dashoffset:420}55%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:-420}}
+.qa-chart{position:absolute;z-index:1;left:140px;bottom:10px;width:44px;height:38px;display:flex;align-items:flex-end;gap:3px;padding:0 2px;border-bottom:1.5px solid rgba(160,210,255,.6);border-left:1.5px solid rgba(160,210,255,.6)}
+.qa-chart b{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(180deg,#8CD3FF,#2F7DD6);box-shadow:0 0 6px rgba(110,190,255,.45);animation:wbbar 2.4s ease-in-out infinite alternate;height:40%}
+.qa-chart b:nth-child(2){animation-delay:-.6s}.qa-chart b:nth-child(3){animation-delay:-1.2s}.qa-chart b:nth-child(4){animation-delay:-.3s}.qa-chart b:nth-child(5){animation-delay:-1.8s}
+.qa-chart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.qa-chart path{fill:none;stroke:#FFD166;stroke-width:2;stroke-linecap:round;stroke-dasharray:260;stroke-dashoffset:260;animation:wbline 3.2s ease-in-out infinite;filter:drop-shadow(0 0 3px rgba(255,209,102,.7))}
+.qb-work .qlogo{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(100% + 6px);height:26px;width:auto;filter:drop-shadow(0 0 1.5px rgba(255,255,255,.95)) drop-shadow(0 0 6px rgba(170,215,255,.5))}
+.qb-work:has(.qlogo:not([hidden])) .wb-tag{display:none!important}
+/* travel: the plane flies from the strip down to the Israel Trail rock in the gap, hills along the bottom */
+.qb-travel .tb-cloud.c1{animation:qacloud 16s linear infinite}
+.qb-travel .tb-cloud.c2{animation:qacloud2 21s linear infinite;opacity:.7}
+@keyframes qacloud{from{transform:translate(-30px,12px)}to{transform:translate(460px,12px)}}
+@keyframes qacloud2{from{transform:translate(460px,6px)}to{transform:translate(-30px,6px)}}
+.qb-travel .tb-sun{filter:drop-shadow(0 0 8px rgba(255,200,87,.7))}
+/* AI: a small Claude Code terminal on the left of the row, twinkling sparks */
+.qa-term{position:absolute;z-index:1;left:16px;bottom:9px;width:122px;border-radius:9px;border:1.5px solid rgba(217,119,87,.7);background:#0F0E0D;box-shadow:0 0 14px rgba(217,119,87,.3);overflow:hidden;direction:ltr}
+.qa-term .ai-bar{padding:4px 6px;gap:3px}.qa-term .ai-bar i{width:5px;height:5px}
+.qa-trow{display:flex;align-items:center;gap:7px;padding:5px 8px 6px}
+.qa-trow .ai-clawd{width:26px;margin:0;flex:none}
+.qa-trow .ai-line{padding:0;font-size:11px}
+.ai-spark path{stroke:#D97757;stroke-width:1.6;stroke-linecap:round}
+.ai-spark{animation:aispark 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.ai-spark.s2{animation-delay:-.9s}.ai-spark.s3{animation-delay:-1.7s}
+@keyframes aispark{0%,100%{opacity:.2}50%{opacity:1}}
+.qb-ai .ai-tag{color:#D97757}
+@media (prefers-reduced-motion:reduce){.qa-radar::before,.qa-radar i,.ab-path,.wb-tick,.qa-chart b,.qa-chart path,.qb-travel .tb-cloud,.ai-spark{animation:none}.wb-tick,.qa-chart path{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
 
 <div class="qband qb-side">
-  <svg class="sb-map" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <path class="sb-coast" d="M-10 150 C40 120 70 160 110 135 S170 90 200 120 S260 170 300 140 S360 100 410 130"/>
-    <path class="sb-hill" d="M120 52 l12 -16 l12 16 M146 58 l9 -12 l9 12 M30 150 l10 -13 l10 13"/>
-    <path class="sb-route" d="M100 172 C125 160 120 128 146 118 S170 80 196 70 S225 100 212 128"/>
-    <g class="sb-pin" transform="translate(100 172)"><circle r="5"/></g>
-    <g class="sb-pin p2" transform="translate(146 118)"><circle r="5"/></g>
-    <g class="sb-pin p3" transform="translate(196 70)"><circle r="5"/></g>
-    
-    <g class="sb-x" transform="translate(212 128)"><path d="M-7 -7 L7 7 M7 -7 L-7 7"/></g>
+  <svg class="qa-art" viewBox="0 0 390 102" aria-hidden="true">
+    <path class="sb-coast" d="M-4 96 C30 84 52 100 86 90 S150 70 190 84 S260 104 300 92 S360 74 410 84 S520 100 600 88 S760 76 900 90"/>
+    <path class="sb-hill" d="M226 30 l9 -12 l9 12 M246 33 l7 -9 l7 9"/>
+    <path class="sb-route" d="M22 36 C30 10 60 6 80 18 S112 40 134 28 S182 22 190 64"/>
+    <g class="sb-pin" transform="translate(22 36)"><circle r="4.5"/></g>
+    <g class="sb-pin p2" transform="translate(80 18)"><circle r="4.5"/></g>
+    <g class="sb-pin p3" transform="translate(134 28)"><circle r="4.5"/></g>
+    <g class="sb-x" transform="translate(191 75)"><path d="M-7 -7 L7 7 M7 -7 L-7 7"/></g>
   </svg>
-  <div class="sb-compass" aria-hidden="true"><i></i></div>
-  <div class="qb-in gut"><span class="sb-tag" aria-hidden="true">NEXT STOP</span><h2>SIDE <i>QUESTS</i></h2><p>העוזר האישי: בית, כסף, משפחה וסידורים.</p></div>
+  <div class="qb-in gut"><span class="sb-tag qa-tag" aria-hidden="true">NEXT STOP</span><h2>SIDE <i>QUESTS</i></h2><p>העוזר האישי: בית, כסף, משפחה וסידורים.</p></div>
 </div>
 <div class="qband qb-fun fz-head">
   <div class="fz-sun" aria-hidden="true"></div>
   <div class="fz-floor" aria-hidden="true"></div>
   <div class="qb-in gut"><div class="fz-title">
-    <span class="fz-press" aria-hidden="true">PRESS START</span>
+    <span class="fz-press qa-tag" aria-hidden="true">PRESS START</span>
     <h2>FUN <br>QUEST</h2>
     <p>מוזיקה, סרטים ותחביבים. רק כיף.</p>
   </div></div>
   <div class="fz-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 </div>
 <div class="qband qb-army">
-  <div class="ab-radar" aria-hidden="true"><i></i><i></i><i></i></div>
-  <div class="qb-in gut"><span class="ab-tag" aria-hidden="true">MISSION BRIEFING</span><h2>ARMY <i>QUEST</i></h2><img class="qlogo" id="logo-army" alt="9122" hidden><p>משימות של הצבא והמילואים.</p></div>
+  <div class="qa-radar" aria-hidden="true"><i></i><i></i><i></i></div>
+  <svg class="qa-art" viewBox="0 0 390 102" aria-hidden="true">
+    <path class="ab-path" d="M60 22 C92 8 116 32 146 20 S186 14 200 28"/>
+    <g class="ab-flag" transform="translate(200 28)"><path d="M0 0 V-16"/><path class="f" d="M0 -16 L11 -12 L0 -8 Z"/></g>
+  </svg>
+  <div class="qb-in gut"><span class="ab-tag qa-tag" aria-hidden="true">MISSION BRIEFING</span><h2>ARMY <i>QUEST</i></h2><img class="qlogo" id="logo-army" alt="9122" hidden><p>משימות של הצבא והמילואים.</p></div>
 </div>
 <div class="qband qb-work">
-  <div class="wb-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 82 L22 64 L40 70 L60 38 L78 46 L98 12"/></svg></div>
-  <div class="qb-in gut"><span class="wb-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><img class="qlogo" id="logo-work" alt="Elbit" hidden><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
+  <svg class="qa-art" viewBox="0 0 390 102" aria-hidden="true">
+    <path class="wb-tick" d="M0 34 L22 28 L40 32 L62 18 L84 24 L104 12 L128 20 L150 8 L172 16 L196 6 L224 14 L250 4"/>
+  </svg>
+  <div class="qa-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 84 L24 66 L44 72 L64 40 L82 48 L98 14"/></svg></div>
+  <div class="qb-in gut"><span class="wb-tag qa-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><img class="qlogo" id="logo-work" alt="Elbit" hidden><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
 </div>
 <div class="qband qb-travel">
-  <svg class="tb-sky" viewBox="0 0 400 200" preserveAspectRatio="xMinYMid slice" aria-hidden="true">
-    <circle class="tb-sun" cx="168" cy="62" r="17"/>
-    <g class="tb-cloud c1"><ellipse cx="0" cy="0" rx="26" ry="9"/><ellipse cx="-10" cy="-6" rx="13" ry="10"/><ellipse cx="8" cy="-8" rx="11" ry="9"/></g>
-    <g class="tb-cloud c2"><ellipse cx="0" cy="0" rx="20" ry="7"/><ellipse cx="-6" cy="-5" rx="10" ry="8"/></g>
-    <path class="tb-hills" d="M-10 200 L-10 168 C30 150 60 160 90 146 S150 150 180 160 S240 150 260 165 L260 200 Z"/>
-    <path class="tb-green d" d="M-10 200 L-10 150 C20 136 50 142 78 132 S130 140 160 150 S220 146 250 156 L250 200 Z"/>
-    <path class="tb-green" d="M-10 200 L-10 160 C25 150 60 156 95 150 S160 158 200 162 S240 160 262 166 L262 200 Z"/>
-    <g class="tb-tree"><path d="M40 146 C36 132 38 118 42 108 C46 118 48 132 44 146 Z"/><path d="M52 148 C49 138 50 128 53 121 C56 128 57 138 55 148 Z"/><path d="M242 158 C238 146 240 134 244 126 C248 134 250 146 246 158 Z"/></g>
-    <g transform="translate(150 132)"><circle class="tb-tree" cx="0" cy="0" r="9"/><circle class="tb-tree" cx="8" cy="3" r="7"/><rect class="tb-trunk" x="2" y="6" width="2.5" height="10"/></g>
-    <g transform="translate(204 150) scale(1.25)"><path class="tb-rock" d="M-16 14 L-14 -4 Q-10 -12 0 -13 Q12 -12 15 -3 L17 14 Z"/>
-      <rect x="-8" y="-8" width="4" height="13" rx="1" fill="#F08A24"/><rect x="-2" y="-8.5" width="4" height="13.5" rx="1" fill="#2F6FD6"/><rect x="4" y="-8" width="4" height="13" rx="1" fill="#fff"/></g>
-    <circle class="tb-flower" cx="72" cy="160" r="2.2"/><circle class="tb-flower r" cx="184" cy="164" r="2.2"/><circle class="tb-flower" cx="226" cy="162" r="1.8"/><circle class="tb-flower r" cx="64" cy="164" r="1.8"/>
-    <path id="tbRoute" class="tb-route" d="M22 104 C34 52 110 36 186 92"/>
-    <g class="tb-pin" transform="translate(22 104)"><circle r="5"/></g>
-    <g class="tb-pin" transform="translate(186 92)"><circle r="5"/></g>
-    <g class="tb-plane"><path d="M-11 -1.6 L4 -1.6 L-3 -11 L1 -11 L10 -1.6 L14 -1.6 Q17 0 14 1.6 L10 1.6 L1 11 L-3 11 L4 1.6 L-11 1.6 L-14 6 L-16 6 L-14 0 L-16 -6 L-14 -6 Z"/>
+  <svg class="qa-art" viewBox="0 0 390 102" aria-hidden="true">
+    <circle class="tb-sun" cx="222" cy="17" r="9"/>
+    <g class="tb-cloud c1"><ellipse cx="0" cy="0" rx="15" ry="5"/><ellipse cx="-6" cy="-4" rx="8" ry="6"/><ellipse cx="5" cy="-5" rx="7" ry="5.5"/></g>
+    <g class="tb-cloud c2"><ellipse cx="0" cy="0" rx="12" ry="4"/><ellipse cx="-4" cy="-3" rx="6" ry="5"/></g>
+    <path class="tb-green d" d="M-4 102 L-4 90 C30 82 60 88 96 84 S160 80 200 88 S280 84 320 90 S370 86 410 88 S520 82 600 88 S760 84 900 88 L900 102 Z"/>
+    <path class="tb-green" d="M-4 102 L-4 96 C40 90 80 96 120 93 S190 92 230 97 S320 92 410 95 S560 92 660 96 S800 92 900 95 L900 102 Z"/>
+    <g class="tb-tree"><path d="M188 94 C185 86 186 78 189 72 C192 78 193 86 191 94 Z"/><path d="M197 95 C195 89 196 83 198 79 C200 83 201 89 199 95 Z"/></g>
+    <g transform="translate(164 87)"><path class="tb-rock" d="M-12 9 L-11 -3 Q-8 -9 0 -10 Q9 -9 11 -2 L13 9 Z"/>
+      <rect x="-6.5" y="-6" width="3.4" height="10" rx=".8" fill="#fff"/><rect x="-1.7" y="-6.5" width="3.4" height="10.5" rx=".8" fill="#2F6FD6"/><rect x="3.1" y="-6" width="3.4" height="10" rx=".8" fill="#F08A24"/></g>
+    <circle class="tb-flower" cx="142" cy="95" r="1.8"/><circle class="tb-flower r" cx="210" cy="96" r="1.8"/><circle class="tb-flower" cx="180" cy="97" r="1.5"/>
+    <path id="tbRoute" class="tb-route" d="M22 42 C40 4 128 -6 164 66"/>
+    <g class="tb-pin" transform="translate(22 42)"><circle r="4"/></g>
+    <g class="tb-pin" transform="translate(164 66)"><circle r="4"/></g>
+    <g class="tb-plane"><path d="M-11 -1.6 L4 -1.6 L-3 -11 L1 -11 L10 -1.6 L14 -1.6 Q17 0 14 1.6 L10 1.6 L1 11 L-3 11 L4 1.6 L-11 1.6 L-14 6 L-16 6 L-14 0 L-16 -6 L-14 -6 Z" transform="scale(.8)"/>
       <animateMotion dur="5s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .55 1"><mpath href="#tbRoute"/></animateMotion></g>
   </svg>
-  <div class="qb-in gut"><span class="tv-tag" aria-hidden="true">NOW BOARDING ✈</span><h2>TRAVEL <i>QUEST</i></h2><p>טיולים בארץ ובחו״ל.</p></div>
+  <div class="qb-in gut"><span class="tv-tag qa-tag" aria-hidden="true">NOW BOARDING ✈</span><h2>TRAVEL <i>QUEST</i></h2><p>טיולים בארץ ובחו״ל.</p></div>
 </div>
 <div class="qband qb-ai">
-  <div class="ai-term" aria-hidden="true">
+  <svg class="qa-art" viewBox="0 0 390 102" aria-hidden="true">
+    <g class="ai-spark s1" transform="translate(150 20)"><path d="M0 -7 V7 M-7 0 H7 M-5 -5 L5 5 M5 -5 L-5 5"/></g>
+    <g class="ai-spark s2" transform="translate(196 34)"><path d="M0 -5 V5 M-5 0 H5 M-3.5 -3.5 L3.5 3.5 M3.5 -3.5 L-3.5 3.5"/></g>
+    <g class="ai-spark s3" transform="translate(176 72)"><path d="M0 -4 V4 M-4 0 H4 M-3 -3 L3 3 M3 -3 L-3 3"/></g>
+  </svg>
+  <div class="qa-term" aria-hidden="true">
     <div class="ai-bar"><i></i><i></i><i></i></div>
-    <svg class="ai-clawd" viewBox="0 0 22 16" shape-rendering="crispEdges"><path d="M4 1h14v4h2v4h-2v4h-1v3h-2v-3h-1v3h-2v-3H10v3H8v-3H7v3H5v-3H4V9H2V5h2z"/><rect class="ai-eye" x="7" y="4" width="2" height="3"/><rect class="ai-eye" x="13" y="4" width="2" height="3"/></svg>
-    <div class="ai-line"><b>&gt;</b> claude<span class="ai-cur"></span></div>
+    <div class="qa-trow"><svg class="ai-clawd" viewBox="0 0 22 16" shape-rendering="crispEdges"><path d="M4 1h14v4h2v4h-2v4h-1v3h-2v-3h-1v3h-2v-3H10v3H8v-3H7v3H5v-3H4V9H2V5h2z"/><rect class="ai-eye" x="7" y="4" width="2" height="3"/><rect class="ai-eye" x="13" y="4" width="2" height="3"/></svg>
+    <div class="ai-line"><b>&gt;</b> claude<span class="ai-cur"></span></div></div>
   </div>
-  <div class="qb-in gut"><span class="ai-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
+  <div class="qb-in gut"><span class="ai-tag qa-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
 <button class="tfind fab" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tadd fab" id="addBtn" type="button" aria-label="משימה חדשה" aria-expanded="false">+</button>
 <div class="topbtns"><a class="tb tchat" id="tchat" aria-label="עדכונים בצ׳אט" href="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
