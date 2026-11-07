@@ -19,7 +19,7 @@
   var kid,app,KEYS=[],T,data={},lastAct=Date.now(),dirty=false,timer=null,stop=false;
   function dev(){var d=get('study_dev');if(!d||!d.id||!d.token){d={id:uuid(),token:rid()+rid()};set('study_dev',d)}return d}
   function payload(){var days={},ks=Object.keys(T.days).sort().slice(-60);ks.forEach(function(k){days[k]=T.days[k]});
-    var o={};for(var k in data)o[k]=data[k];o.first=T.first;o.sec=T.sec;o.last=T.last;o.days=days;o.v=1;return o}
+    var o={};for(var k in data)o[k]=data[k];o.first=T.first;o.sec=T.sec;o.last=T.last;o.days=days;if(T.tl&&T.tl.length)o.tl=T.tl;o.v=1;return o}
   function putState(keep){if(off()||!KEYS.length)return;var o={},n=0;KEYS.forEach(function(x){var v=localStorage.getItem(x);if(v!=null){o[x]=v;n++}});if(!n)return;
     try{fetch(SB_URL+'/rest/v1/rpc/study_state_put',{method:'POST',keepalive:!!keep,headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},
       body:JSON.stringify({p_kid:kid,p_app:app,p_keys:o,p_score:+data.att||0})}).catch(function(){})}catch(e){}}
@@ -48,6 +48,12 @@
       set(sk,j.at);if(!(has&&before))return;
       stop=true;keys.concat(['study_t_'+kid+'_'+app,'study_r_'+kid+'_'+app]).forEach(function(x){try{localStorage.removeItem(x)}catch(e){}});
       location.reload()}).catch(function(){})}catch(e){}}
+  // גרף שיפור לאזור ההורים (אורן 7.11.2026): T.tl = [[בלוק, תשובות מצטבר, נכונות מצטבר], ...], בלוק = 20 דקות של זמן פעילות.
+  // הרשומה הראשונה היא נקודת ההתחלה של המעקב: מה שנענה לפניה מוצג כבלוק אחד ("עד דקה X"). ירידה במונה (איפוס) מתחילה מחדש.
+  function tl(){var a=+data.att,k=+data.ok;if(!T||!isFinite(a)||!isFinite(k))return;var L=T.tl||(T.tl=[]),b=Math.floor((T.sec||0)/1200),z=L[L.length-1];
+    if(z&&(a<z[1]||k<z[2])){L=T.tl=[];z=null}
+    if(z&&z[0]===b&&L.length>1){z[1]=a;z[2]=k}else if(!z||z[1]!==a||z[0]!==b)L.push([b,a,k]);
+    if(L.length>80)L.splice(1,L.length-80);set('study_t_'+kid+'_'+app,T)}
   window.StudyTrack={
     init:function(k,a,keys){kid=k;app=a;KEYS=keys||[];var key='study_t_'+k+'_'+a,old=get(key);if(KEYS.length){checkReset(KEYS,old);restore()}T=old||{first:new Date().toISOString(),sec:0,days:{}};T.days=T.days||{};
       ['pointerdown','keydown','touchstart'].forEach(function(e){addEventListener(e,act,{passive:true})});
@@ -58,7 +64,7 @@
       addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&dirty)send(true)});
       addEventListener('pagehide',function(){if(dirty)send(true)});
       T.last=new Date().toISOString();set(key,T)},
-    report:function(o){data=o||{};later()},
+    report:function(o){data=o||{};tl();later()},
     gift:function(cb){if(off())return;try{rpc('study_gift_take',{p_kid:kid,p_app:app}).then(function(j){if(j&&j.kind)cb(j)}).catch(function(){})}catch(e){}},
     test:function(cb){try{rpc('study_test_get',{p_kid:kid,p_app:app}).then(function(j){if(j&&j.d)cb(j)}).catch(function(){})}catch(e){}}
   };
