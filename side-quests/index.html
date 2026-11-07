@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.8";window.SQ_BUILD_AT="6.11.2026 23:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="11.9";window.SQ_BUILD_AT="7.11.2026 11:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -724,6 +724,25 @@ html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 #locM .lft button{flex:1;min-height:52px;font-weight:700;font-size:15px;background:none;border:0;color:inherit}
 #locM .lft button+button{border-inline-start:1px solid var(--line,rgba(0,0,0,.14))}
 @keyframes sqgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+/* 11.9 (Oren 7.11.2026): every Israel trip, grouped by region, in a fixed-height sheet with its own scroll */
+.tv-all{width:100%;justify-content:center;margin-top:10px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+#ilAllM .sqpanel{height:calc(80vh / var(--tz,1));max-height:none;display:flex;flex-direction:column;padding:0}
+@supports (height:1dvh){#ilAllM .sqpanel{height:calc(80dvh / var(--tz,1))}}
+#ilAllM .lhd{display:flex;align-items:center;gap:8px;padding:14px 16px 4px;flex:none}
+#ilAllM .lhd h2{flex:1}
+#ilAllM .lhd .px{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;margin-inline-end:-8px}
+#ilAllM .ilsum{flex:none;padding:0 16px 10px;font-size:13px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line,rgba(0,0,0,.12))}
+#ilAllM .lbody{flex:1;overflow:auto;padding:4px 16px 12px;animation:sqgrow .22s ease-out}
+#ilAllM .ilrh{display:flex;align-items:center;gap:8px;margin:14px 0 6px;font-weight:800;font-size:15px}
+#ilAllM .ilrh small{margin-inline-start:auto;font-size:12.5px;color:var(--muted);font-weight:700}
+#ilAllM .ilfr{list-style:none;margin:0;padding:0;border:1px solid var(--line,rgba(0,0,0,.14));border-radius:14px;overflow:hidden}
+#ilAllM .ilfr li{display:flex;align-items:center;gap:8px;padding:9px 12px;border-top:1px solid var(--line,rgba(0,0,0,.12));font-size:14.5px}
+#ilAllM .ilfr li:first-child{border-top:0}
+#ilAllM .ilfr .nm{flex:1;min-width:0}
+#ilAllM .ilfr .x{flex:none;font-size:12px;font-weight:800;color:#2F6B3A;background:rgba(139,195,74,.18);border-radius:999px;padding:1px 8px}
+#ilAllM .ilfr .dt{flex:none;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+#ilAllM .lft{flex:none;display:flex;border-top:1px solid var(--line,rgba(0,0,0,.14));padding-bottom:env(safe-area-inset-bottom,0px)}
+#ilAllM .lft button{flex:1;min-height:52px;font-weight:700;font-size:15px;background:none;border:0;color:inherit}
 body:not(.q-side) .tb.tsun{display:none}
 /* 5.9: the brief is a short popup, not a page (Oren 3.11): only what is new to him, critical, and what fits this morning */
 .sqmodal.bpop{align-items:center;background:rgba(10,8,4,.62);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);padding:16px}
@@ -3138,6 +3157,21 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   function zoneDash(z){const all=travelDashes(z),act=all.filter(d=>!d.archived).sort((a,b)=>(a.order||99)-(b.order||99));
     if(!act.length)return null;
     return h("div",{class:"tv-dash"},h("p",{class:"tv-sub"},"דשבורדים"),act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null);}
+  // 11.9: the full list of Israel trips (settings/travel_hub israel.trips [{n, r (region name as in israel.regions), v visits, d last date}])
+  function showIlTrips(){const I=(travelHub||{}).israel||{},T=(Array.isArray(I.trips)?I.trips:[]).filter(t=>t&&t.n);
+    const regs=(Array.isArray(I.regions)?I.regions:[]).filter(r=>r&&r.name),names=regs.map(r=>r.name);
+    T.map(t=>t.r).forEach(r=>{if(r&&!names.includes(r))names.push(r);});if(T.some(t=>!t.r))names.push("");
+    const dd=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(d||"");return m?`${+m[3]}.${+m[2]}.${m[1].slice(2)}`:"";};
+    const body=h("div",{class:"lbody"},names.map(nm=>{const L=T.filter(t=>(t.r||"")===nm);if(!L.length)return null;
+      L.sort((a,b)=>(b.d||"").localeCompare(a.d||"")||a.n.localeCompare(b.n,"he"));const rg=regs.find(r=>r.name===nm)||{};
+      const vis=L.reduce((s,t)=>s+(+t.v||1),0);
+      return h("section",null,h("div",{class:"ilrh"},h("span",{"aria-hidden":"true"},rg.icon||"📍"),h("span",null,nm||"בלי אזור"),
+          h("small",null,heN(L.length,"מקום אחד","מקומות")+(vis>L.length?` · ${vis} ביקורים`:""))),
+        h("ul",{class:"ilfr"},L.map(t=>h("li",null,h("span",{class:"nm"},t.n),(+t.v||1)>1?h("span",{class:"x",dir:"ltr",title:"ביקורים"},"×"+t.v):null,t.d?h("span",{class:"dt",dir:"ltr"},dd(t.d)):null))));}));
+    const vis=T.reduce((s,t)=>s+(+t.v||1),0);
+    modal("ilAllM",h("div",{class:"lhd"},h("h2",null,"🇮🇱 כל הטיולים בארץ",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),
+      h("div",{class:"ilsum"},`${T.length} מקומות · ${vis} ביקורים · לפי אזורים`+(I.as_of?` · נכון ל-${I.as_of}`:"")),body,
+      h("div",{class:"lft"},h("button",{type:"button",onclick:closeModal},"✓ סגור")));}
   function zoneHead(z,title,sub,svg){return h("div",{class:"tz-hero tz-"+z,id:tvZone[z]},h("div",{class:"tz-art",html:svg}),h("div",{class:"tz-txt"},h("h2",null,title),h("p",null,sub)));}
   function renderTravel(){
     const sec=$("tvSec");if(!sec)return;
@@ -3159,6 +3193,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
           h("div",{class:"tv-kpi"},h("b",null,I.per_year!=null?String(I.per_year):"—"),h("span",null,"בשנה"))),
         regs.length?h("details",{class:"tv-fold",open:true},h("summary",null,"לפי אזורים"+(I.as_of?` · נכון ל-${I.as_of}`:"")),h("ul",{class:"tv-regs"},regs.map(r=>h("li",{class:"tv-reg"},h("i",{"aria-hidden":"true"},r.icon||"📍"),h("span",{class:"nm"},r.name),
           h("span",{class:"tv-bar"},h("u",{style:`width:${Math.round((+r.n||0)/max*100)}%`})),h("span",{class:"n",html:`<b>${+r.n||0}</b> טיולים`}))))):null,
+        Array.isArray(I.trips)&&I.trips.length?h("button",{class:"tv-btn tv-all",type:"button",onclick:showIlTrips},`📋 כל הטיולים לפי אזורים (${I.trips.length})`):null,
         Array.isArray(I.recent)&&I.recent.length?h("p",{class:"tv-sub"},"חדשים לאחרונה"):null,
         Array.isArray(I.recent)&&I.recent.length?h("div",{class:"tv-new"},I.recent.map(x=>h("span",null,"🌿 "+x.name,x.date?h("small",null,x.date):null))):null,
         I.next?h("div",{class:"tv-next"},I.next):null,
