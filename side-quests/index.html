@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.5";window.SQ_BUILD_AT="7.11.2026 16:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.6";window.SQ_BUILD_AT="7.11.2026 17:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1989,7 +1989,54 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     if(!at||at.d==null)return c==="people"?!["weekend","sat_am"].includes(id):!["fri","weekend","sat_am"].includes(id);
     const spans=at.s!=null?[[at.s,at.e!=null?at.e:at.s+1]]:winSpans(id,at.d),R=SP[at.d];if(!R)return false;
     return spans.some(([s,e])=>Math.max(s,R[0])<Math.min(e,R[1]));}
-  function fitsWin(t,id,at){const W=WINS[id];if(!W||!W.acc.length)return false;const f=fitOf(t);if(f.owner==="claude")return false; // Claude's own checks never ask for a window
+  // 12.6 (Oren 7.11.2026, Saturday 16:40 in Kfar Saba, "מחוץ לבית" showed calls to closed offices, a car test, the key shop and a
+  // pickup in Netanya): RELEVANCE. In auto or any chosen window a task shows only if it can really be done then: the place / call
+  // centre is open (fit.open, fit.appt, fit.alts via SQGate), the person on the other side is reachable (fit.party), and the place is
+  // near where he is (GPS when on, else home). Shabbat, Friday afternoon, nights and after office hours count. "בלי חלונות" ignores all this.
+  // fit.rel {"0".. "6" | all: "HH:MM-HH:MM"}: hours it is relevant (leisure, visits) without the closing-time pushes of fit.open.
+  // fit.party: office (Sun-Thu 08-16) | person (not family: Sun-Thu 08-21, Fri 08-14, Motzash 18:30-21) | shop (place without
+  // its own hours: Sun-Thu 09-20, Fri 08:30-14, Sat closed) | friend (Yaniv: also Shabbat, not 14-16) | family | lior | self (= no limit).
+  // Missing = inferred below.
+  const PARTY_HRS={office:{0:[480,960],1:[480,960],2:[480,960],3:[480,960],4:[480,960]},
+    person:{0:[480,1260],1:[480,1260],2:[480,1260],3:[480,1260],4:[480,1260],5:[480,840],6:[1110,1260]},
+    shop:{0:[540,1200],1:[540,1200],2:[540,1200],3:[540,1200],4:[540,1200],5:[510,840]},
+    friend:{0:[480,1320],1:[480,1320],2:[480,1320],3:[480,1320],4:[480,1320],5:[480,1380],6:[600,840,960,1320]}};
+  const FAMILY=["lior","parents","evyatar","dani","lia","kids"];
+  function partyOf(t){const f=fitOf(t);if(f.party)return f.party;const hw=howOf(t);if(hw.includes("work")||t.quest==="work")return "self";
+    const wd=(Array.isArray(f.with)?f.with:[]).filter(p=>!FAMILY.includes(p)),pp=f.people===true||(Array.isArray(f.people)&&f.people.some(p=>!FAMILY.includes(p)));
+    if(f.day_only&&(hw.includes("call")||hw.includes("place")))return "office";
+    if(wd.length)return wd.every(p=>p==="yaniv")?"friend":"person";if(hw.includes("place"))return "shop";if(hw.includes("call")||pp)return "person";return "self";}
+  // can it be done on day d (0 = Sunday, iso = that date) at minute m?
+  function relAt(t,d,m,iso){const f=fitOf(t),G=window.SQGate;
+    if(f.appt){const a=G?G.hm(f.appt):null;if(a!=null)return G.dayOf(t)===iso&&m<a;}
+    if(G&&(f.open||(Array.isArray(f.alts)&&f.alts.length))){const g=G.gate(t,iso,d,m);
+      if(g&&g.kind!=="unknown"){if(g.kind==="closed")return false;if(g.kind!=="open")return true;
+        if(g.state==="past"||g.state==="late")return false;if(g.before&&g.open-m>60)return false;return true;}}
+    if(f.rel&&G){const rs=G.ranges(f.rel,d);if(rs!=null)return rs.some(r=>m>=r[0]-60&&m<r[1]-30);} // fit.rel: when it makes sense, without "צא עד" pushes
+    const P=PARTY_HRS[partyOf(t)];if(P){const r=P[d];let ok=false;if(r)for(let i=0;i+1<r.length;i+=2)if(m>=r[i]&&m<r[i+1])ok=true;if(!ok)return false;}
+    return true;}
+  // anywhere in [s,e) of day d (hourly steps); the date is the next such weekday from today
+  function relSpan(t,d,s,e,iso){if(e==null||e<=s)e=s+1;for(let m=s;m<e;m+=60)if(relAt(t,d,m,iso))return true;return relAt(t,d,Math.max(s,e-30),iso);}
+  // 12.6 (Oren 7.11): every window has a default place, because GPS can't tell inside the house from next to it.
+  // home = in the house (can sit at the computer) | out = out in Kfar Saba | road = driving | work = Netanya office | tlv | abroad.
+  // GPS (when on and away from home) wins for distances; a manual "מחוץ לבית" says he is out.
+  const WIN_AT={home_am:"home",errands:"out",drive_am:"road",work:"work",drive_pm:"road",near_home:"out",family:"home",counsel:"tlv",football:"out",
+    light:"home",deep:"home",solo:"home",sleep:"home",fri:"out",sat_am:"home",weekend:"home",abroad:"abroad",out:"out",pc:"home"};
+  const AT_CITY={work:"נתניה",tlv:"תל אביב"};
+  // how far a window may send him from where he is (km); null = no limit (errands on the way to Netanya, work)
+  const FAR={home_am:3,near_home:6,light:6,deep:6,solo:6,family:6,weekend:12,sat_am:12,out:12,pc:3,fri:20};
+  function kmNow(t,id){const f=fitOf(t),g=geoOf(t);if(geoOff)return 0;const p=here(),away=p&&locPlace()!=="home";
+    if(away){const k=kmHere(f);if(k!=null)return k;if(g.km!=null&&loc.home)return Math.round(distM(p,loc.home)/100)/10+g.km;return null;}
+    const ac=AT_CITY[WIN_AT[id]];if(ac){const a=cityOf(ac),c=cityOf(f.area);if(c)return Math.round(distM(a,c)/100)/10;if(g.km!=null)return g.km+Math.round(distM(a,cityOf("כפר סבא"))/100)/10;return null;}
+    if(g.km!=null)return g.km;const c=cityOf(f.area);if(c&&loc.home)return Math.round(distM(loc.home,c)/100)/10;if(c)return c.name==="כפר סבא"?2:null;return null;}
+  function nearOk(t,id){const lim=FAR[id];if(lim==null)return true;const f=fitOf(t),hw=howOf(t);
+    if(!hw.includes("place")||f.anywhere||(Array.isArray(f.alts)&&f.alts.length))return true;const k=kmNow(t,id);return k!=null&&k<=lim;}
+  function fitsWin(t,id,at){if(!fitsWin0(t,id,at))return false;if(t.status==="waiting_other")return true;const n=ilNow(),base=ilDate();
+    if(!at||at.d==null){if(id!==curWin().id)return true;return relAt(t,n.d,n.m,base)&&nearOk(t,id);}
+    const k=(at.d-n.d+7)%7,iso=addDays(base,k);
+    if(at.s!=null){if(k===0&&at.s<=n.m&&(at.e==null||n.m<at.e)&&id===curWin().id)return relAt(t,n.d,n.m,base)&&nearOk(t,id);return relSpan(t,at.d,at.s,at.e,iso);}
+    return winSpans(id,at.d).some(([s,e])=>relSpan(t,at.d,s,e,iso));}
+  function fitsWin0(t,id,at){const W=WINS[id];if(!W||!W.acc.length)return false;const f=fitOf(t);if(f.owner==="claude")return false; // Claude's own checks never ask for a window
     let A=W.acc;
     if(t.quest==="army"){if(!armyOk(t,id,at))return false;
       if(id==="weekend"||id==="sat_am")A=armyCls(t)==="ops"?["call","phone","pc","place","home"]:["call","phone","pc"];} // ops all weekend; people only at Motzash (armyOk)
@@ -2017,7 +2064,8 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   // ?w=drive|work|home... from an iPhone Shortcut (CarPlay connected, arrived at work), ?car=1 = big text in the brief
   (function(){try{const q=new URLSearchParams(location.search);let w=q.get("w");if(!w&&!q.get("car"))return;
     if(w){const m=ilNow().m;if(w==="drive")w=m<780?"drive_am":"drive_pm";if(w==="home")w=m<1170?"near_home":"light";
-      if(WINS[w]){winOv={id:w,until:Date.now()+(w.startsWith("drive")?45:120)*60000,end:""};localStorage.setItem("sq_win",JSON.stringify(winOv));}}
+      if(w==="auto"||w==="in"){winOv=null;localStorage.removeItem("sq_win");} // 12.6: iPhone Shortcut on home Wi-Fi connect
+      else if(WINS[w]){const ms=(WINS[w].ov?240:w.startsWith("drive")?45:120)*60000;winOv={id:w,until:Date.now()+ms,end:WINS[w].ov?hhmm((m+ms/60000)%1440):""};localStorage.setItem("sq_win",JSON.stringify(winOv));}}
     if(q.get("car")==="1")localStorage.setItem("sq_car","1");else if(q.get("car")==="0")localStorage.removeItem("sq_car");
     q.delete("w");q.delete("car");const s=q.toString();history.replaceState(null,"",location.pathname+(s?"?"+s:"")+location.hash);}catch(e){}})();
   // tonight: "how much errand time tomorrow morning?" (Sun-Thu). Asked after 20:00, and in the morning before 08:00 if not answered.
@@ -2769,10 +2817,10 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
       const a=A[k]=A[k]||{k,km:999,items:[]};a.items.push(t);if(g.km!=null)a.km=Math.min(a.km,g.km);}
     const hc=hereCity();if(here())for(const a of Object.values(A)){const k=kmHere({area:a.k});if(k!=null){a.km=k;a.here=hc&&normCity(a.k).includes(hc);}}
     const AQ=Object.values(A).sort((a,b)=>(b.here?1:0)-(a.here?1:0)||a.km-b.km);for(const a of AQ)a.items.sort((x,y)=>(geoOf(x).km??999)-(geoOf(y).km??999));AR.push(...AQ);
-    const S=[];if(home.length)S.push({t:"🏠 קודם בבית",items:home});if(call.length)S.push({t:"📞 שיחות, אפשר בדרך",items:call});
+    const atH=WIN_AT[curWin().id]==="home",S=[];if(home.length)S.push({t:atH?"🏠 קודם בבית":"📱 מהנייד",items:home});if(call.length)S.push({t:"📞 שיחות, אפשר בדרך",items:call});
     if(any.length){if(AR.length)AR[0].items.push(...any);else S.push({t:"🛒 בחוץ, בכל מקום",items:any});}
     AR.forEach((a,i)=>S.push({t:(a.here?"📍 אתה כאן: ":"📍 ")+a.k+(a.km<999?" · "+a.km+" ק״מ":"")+(AR.length>1?(i?" · אחר כך":" · קודם"):""),items:a.items}));
-    const so=x=>Math.min(99,...x.items.map(t=>dayOrd(t)??99));if(S.some(x=>so(x)<99)){S.sort((a,b)=>so(a)-so(b));S.forEach((x,i)=>{if(i&&x.items===home)x.t="🏠 בבית";});} // stable: unplanned keep the fixed order
+    const so=x=>Math.min(99,...x.items.map(t=>dayOrd(t)??99));if(S.some(x=>so(x)<99)){S.sort((a,b)=>so(a)-so(b));S.forEach((x,i)=>{if(i&&x.items===home)x.t=atH?"🏠 בבית":"📱 מהנייד";});} // stable: unplanned keep the fixed order
     return S;}
   // 9.2: Oren's own order for one day: day_plan {date, n} (n = 1 first). Wins over home-first and distance on that date only.
   function dayOrd(t){const p=t.day_plan;return p&&p.date===ilDate()&&p.n!=null?+p.n:null;}
@@ -2801,7 +2849,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     const tag=(next?"הבא · "+startLbl+" ":"")+(run.end?"עד "+atLbl(run.end.k,run.end.m,true):"");
     const el=h("div",{class:"wcard"+(next?" next":"")},
       h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},G.e),h("b",null,d6&&G.l6?G.l6:G.l),tag?h("small",null,tag):null),
-      !P.length?h("div",{class:"wc-empty"},next?"אין משימות לחלון הזמן הבא":"אין משימות עכשיו"):
+      !P.length?h("div",{class:"wc-empty"},next?"אין משימות לחלון הזמן הבא":"אין משימות רלוונטיות עכשיו"):
       P.length===1&&P[0].now?h("div",{class:"glist"},P[0].it.map(row)):
       P.map(x=>h("div",{class:"wc-part"},h("div",{class:"wc-sec"},x.t),h("div",{class:"glist"},x.it.map(row)))));
     return {el,L};}
@@ -2825,7 +2873,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
       let L=[...uIn,...fit];
       const run=!w.manual&&winRun(w.id,0,ilNow().m);
       if(run){const c=runCard(run,w,live.filter(t=>!uIn.includes(t)),urgAll,false);L=c.L;top.push(c.el);}
-      else top.push(winCard(W,w.end?"עד "+w.end:"",L,W.acc.length?"אין משימות עכשיו":"זמן חסום. רק דחוף"));
+      else top.push(winCard(W,w.end?"עד "+w.end:"",L,W.acc.length?"אין משימות רלוונטיות עכשיו":"זמן חסום. רק דחוף"));
       // 8.3 (Oren 6.11): and what comes next (e.g. Friday 07:30 home morning → Friday errands from 08:00)
       const nx=nextWin(w),NW=nx&&WINS[nx.id];
       const nAt=nx&&{d:(ilNow().d+nx.k)%7,s:nx.m,e:((winSpans(nx.id,(ilNow().d+nx.k)%7).find(x=>x[0]===nx.m)||[])[1])};
