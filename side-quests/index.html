@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.6";window.SQ_BUILD_AT="7.11.2026 17:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="12.7";window.SQ_BUILD_AT="7.11.2026 17:05";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1244,6 +1244,12 @@ main .inner{gap:14px}
 .row.is-open .r-chev{transform:rotate(-90deg)}
 .row.is-open{background:var(--surface)}
 .row.is-open .r-title{white-space:normal;font-weight:600}
+/* 12.7 (Oren 7.11, car mode): big text = the title wraps to up to 3 lines instead of being cut; normal text stays one slim line */
+html.bigtx .r-title{white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25;margin:8px 0;flex:1 1 0;min-width:0;overflow-wrap:anywhere}
+html.bigtx .row .r-body{column-gap:6px;min-width:0}
+html.bigtx .rc{font-size:13px}
+html.bigtx .r-chev{display:none}
+html.bigtx #tgate .tg-s,html.bigtx .r-wait{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .r-later{grid-column:1/-1;margin:0 12px 12px}
 /* opened task */
 .drawer{grid-column:1/-1;border-top:1px solid var(--line);background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:12px;font-size:15.5px}
@@ -2085,7 +2091,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
   // text size: follows the iPhone text size (Settings > Display > Text Size, also his car automation), or a fixed size
   let tsPref="auto";try{tsPref=localStorage.getItem("sq_ts")||"auto";}catch(e){}
   function sysScale(){try{if(!(window.CSS&&CSS.supports("font","-apple-system-body")))return 1;const s=document.createElement("span");s.style.font="-apple-system-body";s.style.position="absolute";s.style.visibility="hidden";s.textContent="א";document.body.append(s);const fs=parseFloat(getComputedStyle(s).fontSize)||17;s.remove();return Math.min(1.6,Math.max(.9,fs/17));}catch(e){return 1;}}
-  function applyTs(){const z=tsPref==="auto"?sysScale():(+tsPref||1);document.documentElement.style.setProperty("--tz",String(Math.round(z*100)/100));}
+  function applyTs(){const z=tsPref==="auto"?sysScale():(+tsPref||1);document.documentElement.style.setProperty("--tz",String(Math.round(z*100)/100));document.documentElement.classList.toggle("bigtx",z>=1.12);}
   function setTs(v){tsPref=v;try{v==="auto"?localStorage.removeItem("sq_ts"):localStorage.setItem("sq_ts",v);}catch(e){}applyTs();renderSettings();}
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")applyTs();});
   function setMode(m,why,manual){const a=autoMode();modeOv=manual?{m,manual:true}:m===a?null:{m,auto:a,day:ilDate()};try{modeOv?localStorage.setItem("sq_mode",JSON.stringify(modeOv)):localStorage.removeItem("sq_mode");}catch(e){}ctxMenu=false;refreshMode(true);if(why)toast(why);}
