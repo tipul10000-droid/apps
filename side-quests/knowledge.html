@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2E3A87">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ידע ותחומי עניין</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -114,6 +114,9 @@ section{margin-bottom:22px}
 .lang button.on{background:var(--hi);color:#fff}
 .part{padding:12px 2px}
 .part+.part{border-top:1px solid var(--line)}
+.srch{margin:6px -14px 0;padding:8px 14px;background:var(--hi-soft);color:var(--hi);font-weight:800;font-size:14px;font-family:var(--f-display)}
+.srch:first-child{margin-top:-12px;border-radius:16px 16px 0 0}
+.src+.src{margin-top:8px}
 .part .hd{font-family:var(--f-display);font-weight:800;font-size:13px;color:var(--hi);margin-bottom:4px}
 .part .he{font-size:16px;line-height:1.6;white-space:pre-line}
 .part .en{direction:ltr;text-align:left;font-size:15px;line-height:1.55;color:var(--en);white-space:pre-line;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -163,9 +166,10 @@ function topics(){const extra=(Array.isArray(meta.topics)?meta.topics:[]).filter
 function topicOf(id){return topics().find(t=>t[0]===id)||["other","אחר","📌"];}
 function all(kind){return Object.entries(items).map(([id,v])=>({id,...v})).filter(x=>!x._deleted&&x.title&&(x.kind||"ticket")===kind);}
 const byNew=(a,b)=>(!!b.fav-!!a.fav)||String(b.created_at||"").localeCompare(String(a.created_at||""));
-function plat(x){const s=x.source||{};if(s.platform)return s.platform;const u=s.url||"";return /(^|\/\/)(www\.)?(x|twitter)\.com/.test(u)?"x":/youtu/.test(u)?"youtube":/instagram/.test(u)?"instagram":/tiktok/.test(u)?"tiktok":/facebook/.test(u)?"facebook":/linkedin/.test(u)?"linkedin":"web";}
+function srcs(x){return Array.isArray(x.sources)&&x.sources.length?x.sources:(x.source&&(x.source.url||x.source.label)?[x.source]:[]);}
+function plat(x){const s=x.url!==undefined||x.platform?x:(x.source||{});if(s.platform)return s.platform;const u=s.url||"";return /(^|\/\/)(www\.)?(x|twitter)\.com/.test(u)?"x":/youtu/.test(u)?"youtube":/instagram/.test(u)?"instagram":/tiktok/.test(u)?"tiktok":/facebook/.test(u)?"facebook":/linkedin/.test(u)?"linkedin":"web";}
 function fmtD(s){if(!s)return "";const d=new Date(s);return isNaN(d)?String(s):d.getDate()+"."+(d.getMonth()+1)+"."+d.getFullYear();}
-function match(x,q){if(!q)return true;q=q.toLowerCase();return [x.title,x.summary,x.tldr,(x.tags||[]).join(" "),(x.source||{}).author].join(" ").toLowerCase().includes(q);}
+function match(x,q){if(!q)return true;q=q.toLowerCase();return [x.title,x.summary,x.tldr,(x.tags||[]).join(" "),srcs(x).map(s=>s.author).join(" ")].join(" ").toLowerCase().includes(q);}
 
 // ---------- hero ----------
 function heroHome(){const T=all("ticket"),H=all("hub"),tp=new Set(T.map(x=>x.topic||"other"));
@@ -173,11 +177,12 @@ function heroHome(){const T=all("ticket"),H=all("hub"),tp=new Set(T.map(x=>x.top
   <h1>🧠 ידע ותחומי עניין</h1><p class="sub">כל פיסת ידע ששווה לשמור: הטקסט המלא בעברית ובאנגלית, תובנות ומה עושים עם זה. לפי תחומים.</p>
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span style="font-size:24px">💬</span><span>שלח פיסת ידע<small>לינק, כתבה, פוסט, צילום מסך או סתם רעיון. אני מסכם ומוציא תובנות</small></span></a>
   <div class="kpis"><div class="kpi"><b>${T.length}</b><span>פיסות ידע</span></div><div class="kpi"><b>${tp.size}</b><span>תחומים</span></div><div class="kpi"><b>${H.length}</b><span>דשבורדים פנימיים</span></div></div>`;}
-function heroTicket(x){const s=x.source||{},u=safe(s.url),tp=topicOf(x.topic),hub=x.hub&&items[x.hub];
+function heroTicket(x){const tp=topicOf(x.topic),hub=x.hub&&items[x.hub];
   const back=hub?`<button class="sqhome sqsub" type="button" data-goh="${esc(x.hub)}"><span class="ar">→</span><span class="em">${esc(hub.icon||"📚")}</span><span>${esc(hub.title)}</span></button>`:`<button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button>`;
   return `<div class="top">${back}<span class="back">${tp[2]} ${esc(tp[1])}</span></div>
   <h1>${esc(x.icon||"💡")} ${esc(x.title)}</h1><p class="sub">${esc(x.summary||"")}</p>
-  ${u?`<a class="src" href="${esc(u)}" target="_blank" rel="noopener"><span style="font-size:22px">🔗</span><span>למקור${s.author?": "+esc(s.author):""}${s.handle?" "+esc(s.handle):""}<small>${esc([PLAT[plat(x)],s.date?fmtD(s.date):"",s.label].filter(Boolean).join(" · "))}</small></span></a>`:""}`;}
+  ${srcs(x).map((s,i,a)=>{const u=safe(s.url),inner=`<span style="font-size:22px">${u?"🔗":"📚"}</span><span>${a.length>1?"מקור "+(i+1):"למקור"}${s.author?": "+esc(s.author):""}${s.handle?" "+esc(s.handle):""}<small>${esc([PLAT[plat(s)],s.date?fmtD(s.date):"",s.label].filter(Boolean).join(" · "))}</small></span>`;
+    return u?`<a class="src" href="${esc(u)}" target="_blank" rel="noopener">${inner}</a>`:`<div class="src">${inner}</div>`;}).join("")}`;}
 function heroHub(h){return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button><span class="back">${esc(topicOf(h.topic)[1])}</span></div>
   <h1>${esc(h.icon||"📚")} ${esc(h.title)}</h1><p class="sub">${esc(h.summary||"")}</p>`;}
 
@@ -192,7 +197,7 @@ function bindSearch(){const q=$("q");if(!q)return;q.oninput=()=>{ui.q=q.value;$(
 function ticketRow(x){const tp=topicOf(x.topic);
   return `<button class="tk" data-got="${esc(x.id)}"><span class="i">${esc(x.icon||tp[2])}</span><span class="b">
     <span class="t">${esc(x.title)}</span><span class="s">${esc(x.summary||"")}</span>
-    <span class="m">${x.status==="new"?`<span class="tag new">⏳ בעבודה</span>`:""}<span class="tag">${tp[2]} ${esc(tp[1])}</span>${esc([x.fav?"⭐":"",(x.source||{}).author,fmtD(x.created_at)].filter(Boolean).join(" · "))}</span></span></button>`;}
+    <span class="m">${x.status==="new"?`<span class="tag new">⏳ בעבודה</span>`:""}<span class="tag">${tp[2]} ${esc(tp[1])}</span>${esc([x.fav?"⭐":"",srcs(x).length>1?srcs(x).length+" מקורות":(srcs(x)[0]||{}).author,fmtD(x.created_at)].filter(Boolean).join(" · "))}</span></span></button>`;}
 function renderList(){const H=all("hub").sort((a,b)=>(a.order||99)-(b.order||99));
   const T=all("ticket").filter(x=>(ui.topic==="all"||(x.topic||"other")===ui.topic)&&match(x,ui.q)).sort(byNew);
   let h="";
@@ -216,15 +221,15 @@ function tabIns(x){let h="";
 function tabText(x){const P=x.parts||[];if(!P.length)return `<div class="empty">${x.status==="new"?"הטקסט המלא בדרך.":"אין טקסט מלא."}</div>`;
   const L=ui.lang;
   return `<div class="lang">${[["he","עברית"],["both","שתיהן"],["en","English"]].map(([k,l])=>`<button data-lang="${k}" class="${L===k?"on":""}">${l}</button>`).join("")}</div>
-  <div class="card">${P.map(p=>`<div class="part">${p.n?`<div class="hd">${esc(p.n)}</div>`:""}${L!=="en"&&p.he?`<div class="he">${esc(p.he)}</div>`:""}${L!=="he"&&p.en?`<div class="en" dir="ltr">${esc(p.en)}</div>`:""}</div>`).join("")}</div>
+  <div class="card">${P.map((p,i)=>{const S=srcs(x),k=p.src||0,head=S.length>1&&(i===0||(P[i-1].src||0)!==k)?`<div class="srch">📎 מקור ${k+1}: ${esc([S[k]&&S[k].author,S[k]&&S[k].label].filter(Boolean).join(" · "))}</div>`:"";return head+`<div class="part">${p.n?`<div class="hd">${esc(p.n)}</div>`:""}${L!=="en"&&p.he?`<div class="he">${esc(p.he)}</div>`:""}${L!=="he"&&p.en?`<div class="en" dir="ltr">${esc(p.en)}</div>`:""}</div>`;}).join("")}</div>
   ${x.text_note?`<div class="note">${esc(x.text_note)}</div>`:""}`;}
 function renderTicket(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
   $("hero").innerHTML=heroTicket(x);
   $("bar").innerHTML=`<div class="seg"><button data-tab="ins" class="${ui.tab!=="text"?"on":""}">💡 תובנות</button><button data-tab="text" class="${ui.tab==="text"?"on":""}">📜 הטקסט המלא</button></div>`;
   const acts=`<div class="acts"><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button data-share>📤 לשתף</button></div>`;
   $("app").innerHTML=acts+(ui.tab==="text"?tabText(x):tabIns(x));}
-function shareText(x){const s=x.source||{};
-  return [`${x.icon||"💡"} ${x.title}`,x.tldr||x.summary||"",...(x.insights||[]).slice(0,5).map((i,n)=>`${n+1}. ${i.h}`),safe(s.url)?"\nמקור: "+s.url:""].filter(Boolean).join("\n");}
+function shareText(x){const U=srcs(x).map(s=>safe(s.url)).filter(Boolean);
+  return [`${x.icon||"💡"} ${x.title}`,x.tldr||x.summary||"",...(x.insights||[]).slice(0,5).map((i,n)=>`${n+1}. ${i.h}`),U.length?"\nמקורות: "+U.join(" "):""].filter(Boolean).join("\n");}
 
 // ---------- hub ----------
 function renderHub(id){const h={id,...(items[id]||{})};if(!h.title){$("app").innerHTML=`<div class="empty">${loaded?"לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
