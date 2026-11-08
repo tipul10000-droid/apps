@@ -20,6 +20,9 @@ const ils=v=>"₪"+(Math.round(v*100)/100).toLocaleString("he-IL");
 const feeOf=c=>c.fee&&c.fee.net!=null?+c.fee.net:(c.fee&&c.fee.m!=null?+c.fee.m:null);
 function fxTxt(c){const f=c.fx||{};if(f.pct!=null)return (f.est?"~":"")+f.pct+"%";return f.txt||"?";}
 function digits(c){return c.last4?"·"+c.last4:"";}
+const OWN={lior:"ליאור",oren:"אורן"};
+function expInfo(c){const m=String(c.exp||"").match(/^(\d{1,2})[.\/](\d{4})$/);if(!m)return null;const end=new Date(+m[2],+m[1],1),now=new Date(),d=(end-now)/864e5;return {txt:+m[1]+"."+m[2],gone:d<=0,soon:d>0&&d<=62};}
+function tags(c){let t="";if(c.owner&&c.owner!=="oren")t+=`<span class="pill p-hi">${esc(OWN[c.owner]||c.owner)}</span>`;const e=c.status!=="closed"&&expInfo(c);if(e&&e.gone)t+='<span class="pill p-bad">פג תוקף</span>';else if(e&&e.soon)t+=`<span class="pill p-warn">פג ב-${esc(e.txt)}</span>`;return t;}
 function chip(c){return `<span class="ic ${esc(ISS[c.issuer]?c.issuer:"other")}">${esc((ISS[c.issuer]||"").slice(0,4)||"💳")}</span>`;}
 
 // ---------- hero ----------
@@ -44,7 +47,7 @@ function tabCards(){const C=cards();let o="";
   const Q=openQs();
   if(Q.length)o+=`<section><div class="sh"><h2>❓ שאלות אליך</h2><small>${Q.length}</small></div><div style="display:grid;gap:10px">${Q.map(qBlock).join("")}</div></section>`;
   o+=`<section><div class="sh"><h2>💳 הכרטיסים</h2><small>${live().length} פעילים</small></div><div class="list">${C.map(c=>{const f=feeOf(c);
-    return `<button class="row${c.status==="closed"?" off":""}" data-goc="${esc(c.id)}">${chip(c)}<span class="b"><span class="t">${esc(c.name)} ${esc(c.last4||"")}${c.status==="closed"?'<span class="pill p-bad">נסגר</span>':c.status==="check"?'<span class="pill p-warn">לברר</span>':""}</span><span class="s">${esc(c.role||"")}</span></span><span class="v">${f==null?"?":f?ils(f):"₪0"}<small>חו״ל ${esc(fxTxt(c))}</small></span></button>`;}).join("")}</div></section>`;
+    return `<button class="row${c.status==="closed"?" off":""}" data-goc="${esc(c.id)}">${chip(c)}<span class="b"><span class="t">${esc(c.name)} ${esc(c.last4||"")}${c.status==="closed"?'<span class="pill p-bad">נסגר</span>':c.status==="check"?'<span class="pill p-warn">לברר</span>':""}</span><span class="s">${tags(c)}${esc(c.role||"")}</span></span><span class="v">${f==null?"?":f?ils(f):"₪0"}<small>חו״ל ${esc(fxTxt(c))}</small></span></button>`;}).join("")}</div></section>`;
   const L=live();
   o+=`<section><div class="sh"><h2>⚖️ השוואה</h2></div><table class="cmp"><tr><th>כרטיס</th><th>דמי כרטיס</th><th>עמלת מט״ח</th><th>ביטוח נסיעות</th></tr>${L.map(c=>{const f=feeOf(c),tr=(c.ins||{}).travel||{},s=ST[tr.s||"unknown"];
     return `<tr><td><b>${esc(c.short||c.name)}</b> ${esc(c.last4||"")}</td><td>${f==null?'<span class="unk">?</span>':f?ils(f):"₪0"}</td><td>${esc(fxTxt(c))}</td><td class="${s[1]}">${s[0]}</td></tr>`;}).join("")}</table>
@@ -69,7 +72,8 @@ function renderCard(id){const c=cards().find(x=>x.id===id);if(!c){goHash("");ret
   $("hero").innerHTML=heroCard(c);$("bar").innerHTML="";const f=c.fee||{},fx=c.fx||{},cf=c.cf||{};let o="";
   if(c.q&&c.q.q&&!c.q.answer)o+=`<section>${qBlock(c)}</section>`;
   if(c.todo&&c.todo.text&&c.todo.status!=="done")o+=`<section><div class="card"><div class="todo"><span class="w">${esc(WHO[c.todo.who]||"")}</span><span>${esc(c.todo.text)}</span></div></div></section>`;
-  const kv=[["חברה",ISS[c.issuer]||c.issuer],["סוג",c.net],["מועדון",c.club],["דמי כרטיס",f.m!=null?ils(+f.m)+(f.net!=null&&+f.net!==+f.m?" (בפועל "+ils(+f.net)+")":""):"לא ידוע"],["עמלת מט״ח",fxTxt(c)],["חיוב",c.billing]].filter(r=>r[1]);
+  const kv=[["חברה",ISS[c.issuer]||c.issuer],["סוג",c.net],["מועדון",c.club],["דמי כרטיס",f.m!=null?ils(+f.m)+(f.net!=null&&+f.net!==+f.m?" (בפועל "+ils(+f.net)+")":""):"לא ידוע"],["עמלת מט״ח",fxTxt(c)],["חיוב",c.billing],["בעלים",c.owner&&c.owner!=="oren"?(OWN[c.owner]||c.owner):""],["תוקף",c.exp?(()=>{const e=expInfo(c);return c.exp+(e&&e.gone?" (פג)":"");})():""],["מסגרת",c.limit!=null?ils(+c.limit):""]].filter(r=>r[1]);
+  if(c.note_oren)o+=`<section><div class="card"><p class="note">📝 ${esc(c.note_oren)}</p></div></section>`;
   o+=`<section><div class="card"><div class="kv">${kv.map(([k,v])=>`<div class="k">${esc(k)}</div><div>${esc(v)}</div>`).join("")}</div>${f.note?`<p class="note fold">💰 ${esc(f.note)}</p>`:""}${fx.note?`<p class="note fold">🌍 ${esc(fx.note)}</p>`:""}</div></section>`;
   o+=`<section><div class="sh"><h2>🛡️ ביטוחים בכרטיס</h2></div><div class="card"><ul class="ins">${INS.map(([k,ic,l])=>{const x=(c.ins||{})[k]||{},s=ST[x.s||"unknown"];return `<li>${ic} ${l}: <span class="${s[1]}">${s[0]}</span>${x.note?`<div class="note">${esc(x.note)}</div>`:""}</li>`;}).join("")}</ul></div></section>`;
   if((c.perks||[]).length)o+=`<section><div class="sh"><h2>🎁 הטבות</h2></div><div class="card"><ul class="ins">${c.perks.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div></section>`;
