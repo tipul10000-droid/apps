@@ -28,6 +28,7 @@ function heroHome(){const L=live(),fees=L.map(feeOf).filter(v=>v!=null).reduce((
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
   <h1>💳 כרטיסי אשראי</h1>
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
+  ${safe(meta.collect_url)?`<a class="docsbtn" href="${esc(meta.collect_url)}" target="_blank" rel="noopener">📥 שליפת מסמכים</a>`:""}
   <div class="kpis"><div class="kpi"><b>${L.length}</b><span>כרטיסים פעילים</span></div><div class="kpi"><b>${ils(fees)}</b><span>דמי כרטיס בחודש</span></div><div class="kpi"><b>${best?esc(best.last4||best.short||best.name):"—"}</b><span>הכי זול בחו״ל</span></div></div>`;}
 function heroCard(c){return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">💳</span><span>כל הכרטיסים</span></button><span class="back">${esc(ISS[c.issuer]||"")}</span></div>
   <h1>${esc(c.name)} ${esc(c.last4?"· "+c.last4:"")}</h1>${c.role?`<p class="sub">${esc(c.role)}</p>`:""}`;}
