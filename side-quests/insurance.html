@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.7";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.8";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ביטוחים ופנסיה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -455,7 +455,7 @@ function retHTML(R){
       <span class="step"><button data-ra="${esc(p.id)}" data-d="-1">−</button>גיל ${p.ret}<button data-ra="${esc(p.id)}" data-d="1">+</button></span></h4>
       ${p.funds.map(f=>`<div class="rf"><span>${esc(f.l)}${f.est?' <span class="est">הערכה</span>':""}</span><span class="v">${ils(f.fv)}</span><span class="m">${f.kind==="pension"?ils(f.mo)+"/ח׳":"הון"}</span></div>`).join("")}
       <div class="rsum"><span>קצבה ברוטו</span><span>${ils(p.gross)}</span></div>
-      ${p.proj_agent?`<div class="rf"><span style="color:var(--muted)">תחזית הסוכן (לא בכסף של היום)</span><span></span><span class="m">${ils(p.proj_agent)}</span></div>`:""}
+      ${p.proj_agent?`<div class="rf"><span style="color:var(--muted)">תחזית מבטח סימון (ברוטו)</span><span></span><span class="m">${ils(p.proj_agent)}</span></div>`:""}
     </div>`).join("")}</div>
   <div class="rsum" style="margin-top:10px"><span>כל החיסכון ביום הפרישה</span><span>${ils(C.cap)}</span></div>
   <details class="more"><summary>הנחות${anyEst?" · יש הערכות":""}</summary><div>
