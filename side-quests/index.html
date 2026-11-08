@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="13.7";window.SQ_BUILD_AT="8.11.2026 13:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="13.8";window.SQ_BUILD_AT="8.11.2026 13:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2072,6 +2072,21 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     if(!at||at.d==null)return c==="people"?!["weekend","sat_am"].includes(id):!["fri","weekend","sat_am"].includes(id);
     const spans=at.s!=null?[[at.s,at.e!=null?at.e:at.s+1]]:winSpans(id,at.d),R=SP[at.d];if(!R)return false;
     return spans.some(([s,e])=>Math.max(s,R[0])<Math.min(e,R[1]));}
+  // 13.8 (Oren 8.11.2026): every task belongs to one place mode, fit.loc:
+  //  walk  = on foot, a few hundred meters from home (bakery, supermarket, pharmacy next door, anything doable anywhere nearby)
+  //  car   = by car in Kfar Saba, Raanana or Hod Hasharon
+  //  house = at home without the computer (phone, calls, things in the house, with Lior)
+  //  pc    = at home at the computer
+  //  none  = none of these (Netanya, the parents, abroad, work, fun)
+  // The wider mode includes the narrower one: car shows walk too, at the computer shows house too. Missing = inferred from the profile.
+  const LOC_INC={walk:["walk"],out:["walk","car"],house:["house"],pc:["pc","house"]};
+  const LOC_CITIES=["כפר סבא","רעננה","הוד השרון"];
+  function locOf(t){const f=fitOf(t);if(["walk","car","house","pc","none"].includes(f.loc))return f.loc;
+    const hw=howOf(t);if(!hw.length||t.quest==="work"||hw.includes("work"))return "none";
+    if(hw.includes("place")){const km=f.km!=null&&f.km!==""?+f.km:null,a=String(f.area||"");
+      if(km!=null&&km<=0.8)return "walk";if(f.anywhere)return "walk";
+      if(LOC_CITIES.some(c=>a.startsWith(c))||(km!=null&&km<=8))return "car";return "none";}
+    if(hw.includes("pc"))return "pc";return "house";}
   // 12.6 (Oren 7.11.2026, Saturday 16:40 in Kfar Saba, "מחוץ לבית" showed calls to closed offices, a car test, the key shop and a
   // pickup in Netanya): RELEVANCE. In auto or any chosen window a task shows only if it can really be done then: the place / call
   // centre is open (fit.open, fit.appt, fit.alts via SQGate), the person on the other side is reachable (fit.party), and the place is
@@ -2107,12 +2122,12 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     light:"home",deep:"home",solo:"home",sleep:"home",fri:"out",sat_am:"home",weekend:"home",abroad:"abroad",walk:"out",out:"out",house:"home",pc:"home"};
   const AT_CITY={work:"נתניה",tlv:"תל אביב"};
   // how far a window may send him from where he is (km); null = no limit (errands on the way to Netanya, work)
-  const FAR={home_am:3,near_home:6,light:6,deep:6,solo:6,family:6,weekend:12,sat_am:12,walk:1.5,out:8,house:0.5,pc:0.5,fri:20};
+  const FAR={home_am:3,near_home:6,light:6,deep:6,solo:6,family:6,weekend:12,sat_am:12,walk:0.8,out:9,house:0.5,pc:0.5,fri:20};
   function kmNow(t,id){const f=fitOf(t),g=geoOf(t);if(geoOff)return 0;const p=here(),away=p&&locPlace()!=="home";
     if(away){const k=kmHere(f);if(k!=null)return k;if(g.km!=null&&loc.home)return Math.round(distM(p,loc.home)/100)/10+g.km;return null;}
     const ac=AT_CITY[WIN_AT[id]];if(ac){const a=cityOf(ac),c=cityOf(f.area);if(c)return Math.round(distM(a,c)/100)/10;if(g.km!=null)return g.km+Math.round(distM(a,cityOf("כפר סבא"))/100)/10;return null;}
     if(g.km!=null)return g.km;const c=cityOf(f.area);if(c&&loc.home)return Math.round(distM(loc.home,c)/100)/10;if(c)return c.name==="כפר סבא"?2:null;return null;}
-  function nearOk(t,id){const lim=FAR[id];if(lim==null)return true;const f=fitOf(t),hw=howOf(t);
+  function nearOk(t,id){const lim=FAR[id];if(lim==null)return true;const f=fitOf(t),hw=howOf(t);if(WINS[id]&&WINS[id].ov&&f.loc)return true; // 13.8: a classified task was placed by hand
     if(!hw.includes("place")||f.anywhere||(Array.isArray(f.alts)&&f.alts.length))return true;const k=kmNow(t,id);return k!=null&&k<=lim;}
   function fitsWin(t,id,at){if(!fitsWin0(t,id,at))return false;if(t.status==="waiting_other")return true;const n=ilNow(),base=ilDate();
     if(!at||at.d==null){if(id!==curWin().id)return true;return relAt(t,n.d,n.m,base)&&nearOk(t,id);}
@@ -2123,7 +2138,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     let A=W.acc;
     if(t.quest==="army"){if(!armyOk(t,id,at))return false;
       if(id==="weekend"||id==="sat_am")A=armyCls(t)==="ops"?["call","phone","pc","place","home"]:["call","phone","pc"];} // ops all weekend; people only at Motzash (armyOk)
-    if(W.ov){const hw=howOf(t);return hw.some(x=>W.need.includes(x))&&hw.every(x=>W.acc.includes(x));} // 11.6: out / pc override
+    if(W.ov)return (LOC_INC[id]||[]).includes(locOf(t)); // 13.8: the four place modes go by fit.loc (walk ⊂ car, house ⊂ pc)
     const wd=Array.isArray(f.with)?f.with:[];if(wd.some(p=>WITH_OK[p]&&!WITH_OK[p].includes(id)))return false; // the person it needs isn't available then
     if(W.nopeople&&(f.people===true||(Array.isArray(f.people)&&f.people.some(p=>p!=="lior"))||wd.some(p=>p!=="lior")||howOf(t).includes("call")))return false; // no messages or calls to others before 08:00; Lior is right there (Oren 5.11)
     if(Array.isArray(f.when)&&f.when.length){const wh=f.when.map(x=>x==="solo"?"deep":x);return wh.includes(id==="solo"?"deep":id)||(id==="abroad"&&wh.includes("work"));}
