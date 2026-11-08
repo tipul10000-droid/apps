@@ -1,0 +1,107 @@
+// Credit cards dashboard (credit.html). Data: sq_docs collection "credit": one doc per card (kind:"card") + _meta.
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const CHAT_FALLBACK="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD?thread=cmsg_01BSiCy73LfhTPuMwCS8XKQDX3veq2jQKRpts5F4go29AT";
+const ISS={cal:"כאל",isracard:"ישראכרט",max:"מקס",leumi:"לאומי",other:"אחר"};
+const INS=[["travel","✈️","ביטוח נסיעות לחו״ל"],["accident","🩹","תאונות אישיות"],["car","🚗","רכב שכור בחו״ל"],["purchase","🛍️","הגנת רכישות"]];
+const ST={yes:["כלול","yes"],no:["אין","no"],partial:["חלקי","unk"],unknown:["לא ידוע","unk"]};
+const WHO={oren:"עליך",claude:"Claude",both:"שנינו"};
+let items={},meta={},db=null;
+const UI_KEY="sq_cr_ui";let ui={tab:"cards"};
+try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
+function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
+const EMB=window.self!==window.top;function goHash(x){if(EMB)location.replace(location.pathname+location.search+"#"+x);else location.hash=x;}
+function route(){const m=location.hash.match(/^#c=(.+)$/);return m?decodeURIComponent(m[1]):null;}
+const cards=()=>Object.entries(items).map(([id,v])=>({id,...v})).filter(x=>!x._deleted&&x.name&&(x.kind||"card")==="card").sort((a,b)=>(a.status==="closed")-(b.status==="closed")||(a.order||99)-(b.order||99));
+const live=()=>cards().filter(c=>c.status!=="closed");
+const ils=v=>"₪"+(Math.round(v*100)/100).toLocaleString("he-IL");
+const feeOf=c=>c.fee&&c.fee.net!=null?+c.fee.net:(c.fee&&c.fee.m!=null?+c.fee.m:null);
+function fxTxt(c){const f=c.fx||{};if(f.pct!=null)return (f.est?"~":"")+f.pct+"%";return f.txt||"?";}
+function digits(c){return c.last4?"·"+c.last4:"";}
+function chip(c){return `<span class="ic ${esc(ISS[c.issuer]?c.issuer:"other")}">${esc((ISS[c.issuer]||"").slice(0,4)||"💳")}</span>`;}
+
+// ---------- hero ----------
+function heroHome(){const L=live(),fees=L.map(feeOf).filter(v=>v!=null).reduce((s,v)=>s+v,0);
+  const best=L.find(c=>c.fx&&c.fx.best)||L.filter(c=>c.fx&&c.fx.pct!=null).sort((a,b)=>a.fx.pct-b.fx.pct)[0];
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
+  <h1>💳 כרטיסי אשראי</h1>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
+  <div class="kpis"><div class="kpi"><b>${L.length}</b><span>כרטיסים פעילים</span></div><div class="kpi"><b>${ils(fees)}</b><span>דמי כרטיס בחודש</span></div><div class="kpi"><b>${best?esc(best.last4||best.short||best.name):"—"}</b><span>הכי זול בחו״ל</span></div></div>`;}
+function heroCard(c){return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">💳</span><span>כל הכרטיסים</span></button><span class="back">${esc(ISS[c.issuer]||"")}</span></div>
+  <h1>${esc(c.name)} ${esc(c.last4?"· "+c.last4:"")}</h1>${c.role?`<p class="sub">${esc(c.role)}</p>`:""}`;}
+
+// ---------- home tabs ----------
+function bar(){return `<div class="seg">${[["cards","💳 כרטיסים"],["ins","🛡️ ביטוחים"],["docs","📂 איסוף"]].map(([k,l])=>`<button data-tab="${k}" class="${ui.tab===k?"on":""}">${l}</button>`).join("")}</div>`;}
+function openQs(){return cards().filter(c=>c.q&&c.q.q&&!c.q.answer);}
+function openTodos(){return [...cards().filter(c=>c.todo&&c.todo.text&&c.todo.status!=="done").map(c=>({c,t:c.todo})),...(Array.isArray(meta.todos)?meta.todos:[]).filter(t=>t&&t.text&&t.status!=="done").map(t=>({c:null,t}))];}
+function qBlock(c){return `<div class="card q"><h3>${esc([c.short||c.name,c.last4].filter(Boolean).join(" "))}: ${esc(c.q.q)}</h3><div class="opts">${(c.q.options||[]).map((o,i)=>`<button data-ans="${esc(c.id)}" data-i="${i}">${esc(typeof o==="string"?o:o.label)}</button>`).join("")}</div></div>`;}
+function tabCards(){const C=cards();let o="";
+  const T=openTodos();
+  if(T.length)o+=`<section><div class="sh"><h2>▶️ פעולות פתוחות</h2><small>${T.length}</small></div><div class="card">${T.map(({c,t})=>`<div class="todo"><span class="w">${esc(WHO[t.who]||"")}</span><span>${c?`<b>${esc(c.short||c.name)} ${esc(digits(c))}:</b> `:""}${esc(t.text)}</span></div>`).join("")}</div></section>`;
+  const Q=openQs();
+  if(Q.length)o+=`<section><div class="sh"><h2>❓ שאלות אליך</h2><small>${Q.length}</small></div><div style="display:grid;gap:10px">${Q.map(qBlock).join("")}</div></section>`;
+  o+=`<section><div class="sh"><h2>💳 הכרטיסים</h2><small>${live().length} פעילים</small></div><div class="list">${C.map(c=>{const f=feeOf(c);
+    return `<button class="row${c.status==="closed"?" off":""}" data-goc="${esc(c.id)}">${chip(c)}<span class="b"><span class="t">${esc(c.name)} ${esc(c.last4||"")}${c.status==="closed"?'<span class="pill p-bad">נסגר</span>':c.status==="check"?'<span class="pill p-warn">לברר</span>':""}</span><span class="s">${esc(c.role||"")}</span></span><span class="v">${f==null?"?":f?ils(f):"₪0"}<small>חו״ל ${esc(fxTxt(c))}</small></span></button>`;}).join("")}</div></section>`;
+  const L=live();
+  o+=`<section><div class="sh"><h2>⚖️ השוואה</h2></div><table class="cmp"><tr><th>כרטיס</th><th>דמי כרטיס</th><th>עמלת מט״ח</th><th>ביטוח נסיעות</th></tr>${L.map(c=>{const f=feeOf(c),tr=(c.ins||{}).travel||{},s=ST[tr.s||"unknown"];
+    return `<tr><td><b>${esc(c.short||c.name)}</b> ${esc(c.last4||"")}</td><td>${f==null?'<span class="unk">?</span>':f?ils(f):"₪0"}</td><td>${esc(fxTxt(c))}</td><td class="${s[1]}">${s[0]}</td></tr>`;}).join("")}</table>
+    ${meta.cmp_note?`<p class="note fold">${esc(meta.cmp_note)}</p>`:""}</section>`;
+  return o;}
+function tabIns(){const L=live();let o="";
+  if(meta.ins_summary)o+=`<section><div class="card"><p class="note fold" style="margin:0;color:var(--ink);font-size:15px">${esc(meta.ins_summary)}</p></div></section>`;
+  INS.forEach(([k,ic,l])=>{o+=`<section><div class="sh"><h2>${ic} ${l}</h2></div><div class="card"><ul class="ins">${L.map(c=>{const x=(c.ins||{})[k]||{},s=ST[x.s||"unknown"];
+    return `<li><b>${esc(c.short||c.name)} ${esc(c.last4||"")}</b> <span class="${s[1]}">${s[0]}</span>${x.note?`<div class="note">${esc(x.note)}</div>`:""}</li>`;}).join("")}</ul></div></section>`;});
+  return o;}
+function tabDocs(){let o="";const G=Array.isArray(meta.gather)?meta.gather:[];
+  G.forEach(g=>{o+=`<section><div class="sh"><h2>${esc(g.icon||"📂")} ${esc(g.h)}</h2><small>${(g.items||[]).filter(i=>i.s==="done").length}/${(g.items||[]).length}</small></div><div class="list">${(g.items||[]).map(i=>{const u=safe(i.url);const inner=`<span class="b"><span class="t">${i.s==="done"?"✓ ":""}${esc(i.t)}</span>${i.sub?`<span class="s">${esc(i.sub)}</span>`:""}</span><span class="v">${u?"↗":""}</span>`;
+    return u?`<a class="row${i.s==="done"?" off":""}" href="${esc(u)}" target="_blank" rel="noopener" style="color:inherit;font-weight:inherit">${inner}</a>`:`<div class="row${i.s==="done"?" off":""}" style="cursor:default">${inner}</div>`;}).join("")}</div></section>`;});
+  const R=meta.request;
+  if(R&&R.body)o+=`<section><div class="sh"><h2>✉️ ${esc(R.title||"בקשת תנאי כרטיס")}</h2></div><div class="card"><pre class="req">${esc(R.body)}</pre>${R.where?`<p class="note">${esc(R.where)}</p>`:""}<div class="btns"><button data-copy>📋 העתקה</button></div></div></section>`;
+  return o||`<div class="card empty">עוד אין</div>`;}
+function renderHome(){$("hero").innerHTML=heroHome();$("bar").innerHTML=bar();
+  $("app").innerHTML=ui.tab==="ins"?tabIns():ui.tab==="docs"?tabDocs():tabCards();}
+
+// ---------- card page ----------
+function renderCard(id){const c=cards().find(x=>x.id===id);if(!c){goHash("");return;}
+  $("hero").innerHTML=heroCard(c);$("bar").innerHTML="";const f=c.fee||{},fx=c.fx||{},cf=c.cf||{};let o="";
+  if(c.q&&c.q.q&&!c.q.answer)o+=`<section>${qBlock(c)}</section>`;
+  if(c.todo&&c.todo.text&&c.todo.status!=="done")o+=`<section><div class="card"><div class="todo"><span class="w">${esc(WHO[c.todo.who]||"")}</span><span>${esc(c.todo.text)}</span></div></div></section>`;
+  const kv=[["חברה",ISS[c.issuer]||c.issuer],["סוג",c.net],["מועדון",c.club],["דמי כרטיס",f.m!=null?ils(+f.m)+(f.net!=null&&+f.net!==+f.m?" (בפועל "+ils(+f.net)+")":""):"לא ידוע"],["עמלת מט״ח",fxTxt(c)],["חיוב",c.billing]].filter(r=>r[1]);
+  o+=`<section><div class="card"><div class="kv">${kv.map(([k,v])=>`<div class="k">${esc(k)}</div><div>${esc(v)}</div>`).join("")}</div>${f.note?`<p class="note fold">💰 ${esc(f.note)}</p>`:""}${fx.note?`<p class="note fold">🌍 ${esc(fx.note)}</p>`:""}</div></section>`;
+  o+=`<section><div class="sh"><h2>🛡️ ביטוחים בכרטיס</h2></div><div class="card"><ul class="ins">${INS.map(([k,ic,l])=>{const x=(c.ins||{})[k]||{},s=ST[x.s||"unknown"];return `<li>${ic} ${l}: <span class="${s[1]}">${s[0]}</span>${x.note?`<div class="note">${esc(x.note)}</div>`:""}</li>`;}).join("")}</ul></div></section>`;
+  if((c.perks||[]).length)o+=`<section><div class="sh"><h2>🎁 הטבות</h2></div><div class="card"><ul class="ins">${c.perks.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div></section>`;
+  if(cf.n)o+=`<section><div class="sh"><h2>📊 מהתזרים</h2></div><div class="card"><div class="kv">${[["עסקאות",cf.n+(cf.first?" (מ-"+cf.first+")":"")],["בחו״ל",cf.fx_n!=null?cf.fx_n+" עסקאות"+(cf.fx_spend?", "+ils(cf.fx_spend):""):""],["פעילות אחרונה",cf.last],["לתשלום",cf.due]].filter(r=>r[1]).map(([k,v])=>`<div class="k">${esc(k)}</div><div>${esc(v)}</div>`).join("")}</div></div></section>`;
+  const links=(c.links||[]).filter(l=>safe(l.url));
+  if(links.length)o+=`<section><div class="list">${links.map(l=>`<a class="row" href="${esc(l.url)}" target="_blank" rel="noopener" style="color:inherit"><span class="b"><span class="t">${esc(l.label)}</span></span><span class="v">↗</span></a>`).join("")}</div></section>`;
+  if((c.log||[]).length)o+=`<details class="more"><summary>היסטוריה</summary><div>${[...c.log].reverse().map(l=>`${esc(String(l.at||"").slice(0,10))}: ${esc(l.text)}`).join("<br>")}</div></details>`;
+  $("app").innerHTML=o;}
+
+function render(){const r=route();if(r)renderCard(r);else renderHome();
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}אשראי ${esc(window.CR_BUILD)}`;}
+let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
+async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
+function keepPut(sel,fn){const b=document.querySelector(sel),top=b?b.getBoundingClientRect().top:0;fn();const nb=document.querySelector(sel);if(b&&nb)scrollBy(0,nb.getBoundingClientRect().top-top);}
+async function upd(id,patch,msg){const prev=JSON.parse(JSON.stringify(items[id]||{}));items[id]=Object.assign({},items[id],patch);const y=scrollY;render();scrollTo(0,y);
+  if(!db){toast("אין חיבור, לא נשמר");return;}
+  try{await db.collection("credit").doc(id).update(patch);toast(msg||"נשמר");}catch(e){items[id]=prev;render();toast("לא נשמר, נסה שוב");}}
+window.addEventListener("hashchange",()=>{render();scrollTo(0,0);});
+document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
+  if(b=g("[data-tab]")){const k=b.dataset.tab;keepPut(`[data-tab="${k}"]`,()=>{ui.tab=k;saveUi();render();});return;}
+  if(b=g("[data-goc]")){goHash("c="+encodeURIComponent(b.dataset.goc));return;}
+  if(g("[data-home]")){EMB?goHash(""):history.length>1&&route()?history.back():(location.hash="");return;}
+  if(g("[data-copy]")){toast(await copy((meta.request||{}).body||"")?"הועתק":"לא הצלחתי להעתיק");return;}
+  if(b=g("[data-ans]")){const id=b.dataset.ans,c=items[id];if(!c||!c.q)return;const o=(c.q.options||[])[+b.dataset.i];if(o==null)return;
+    const label=typeof o==="string"?o:o.label,now=new Date().toISOString();b.style.background="var(--hi-soft)";
+    // every answer becomes a next step (todo) or closes (rule 7.11)
+    const todo=o.todo?{...o.todo,status:"open",at:now}:o.close?null:{who:"claude",text:"להגדיר צעד הבא אחרי התשובה: "+label,status:"open",at:now};
+    const patch={q:{...c.q,answer:label,answered_at:now},updated_at:now,log:[...(c.log||[]),{at:now,text:"ענית: "+c.q.q+" → "+label}]};
+    if(todo)patch.todo=todo;if(o.set&&typeof o.set==="object")Object.assign(patch,o.set);
+    setTimeout(()=>upd(id,patch,"נשמר: "+label),300);return;}
+});
+render();
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("credit").onSnapshot(s=>{const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else n[x.id]=v;});items=n;render();},()=>{});
+});
+})();
