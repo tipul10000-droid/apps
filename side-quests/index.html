@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="13.5";window.SQ_BUILD_AT="8.11.2026 12:04";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="13.6";window.SQ_BUILD_AT="8.11.2026 12:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1699,9 +1699,16 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
    Bar at the bottom, the tasks stay visible behind it. Voice shows only a live sound wave; a second tap stops, transcribes and sends. */
 .imenu,.ibar,.ires{position:fixed;z-index:31;left:calc(max(18px,env(safe-area-inset-left,0px)) + 70px);right:max(12px,env(safe-area-inset-right,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px) + var(--kb,0px));transform-origin:left bottom;animation:iopen .18s ease-out}
 @keyframes iopen{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
-.imenu{display:grid;grid-template-columns:1fr 1fr;height:58px;border-radius:16px;overflow:hidden;background:#232323;border:1.5px solid rgba(255,255,255,.3);box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.imenu{display:grid;grid-template-rows:52px 52px;border-radius:16px;overflow:hidden;background:#232323;border:1.5px solid rgba(255,255,255,.3);box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.imenu .im-r{display:grid;grid-template-columns:1fr 56px 56px;align-items:stretch}
+.imenu .im-r+.im-r{border-top:1.5px solid rgba(255,255,255,.25)}
+.imenu .im-l{display:flex;align-items:center;gap:7px;padding:0 12px;color:#fff;font:600 15px/1.2 -apple-system,system-ui,sans-serif;border-inline-start:4px solid var(--ik)}
+.imenu .k-quick{--ik:#F28C38}.imenu .k-ins{--ik:#9B7BFF}
+.ibar.k-quick{border-color:#F28C38}.ibar.k-ins{border-color:#9B7BFF}
+.ibar.k-ins .isend{background:#9B7BFF;color:#fff}.ibar.k-quick .iwave canvas{filter:hue-rotate(-110deg)}
+.ibar .ikind{flex:0 0 auto;align-self:center;padding:0 0 0 2px;margin-inline-start:12px;font-size:18px}
 .imenu button{all:unset;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;font:600 16px/1 -apple-system,system-ui,sans-serif;cursor:pointer}
-.imenu button+button{border-inline-start:1.5px solid rgba(255,255,255,.25)}
+.imenu button{border-inline-start:1.5px solid rgba(255,255,255,.25);font-size:22px}
 .imenu button:active{background:rgba(255,255,255,.14)}
 .imenu .e{font-size:20px}
 .ibar{display:flex;align-items:flex-end;gap:0;min-height:58px;border-radius:16px;overflow:hidden;background:#232323;border:1.5px solid rgba(255,255,255,.3);box-shadow:0 6px 18px rgba(0,0,0,.45)}
@@ -1803,7 +1810,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   </div>
   <div class="qb-in gut"><span class="ai-tag qa-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
-<button class="tfind fab" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tadd fab" id="addBtn" type="button" aria-label="הוראה חדשה" aria-expanded="false">+</button><div class="imenu" id="imenu" hidden role="group" aria-label="הוראה חדשה"><button type="button" id="iText"><span class="e" aria-hidden="true">⌨️</span>כתיבה</button><button type="button" id="iVoice"><span class="e" aria-hidden="true">🎤</span>הקלטה</button></div><div class="ibar" id="ibar" hidden></div><div class="ires" id="ires" hidden role="status"></div>
+<button class="tfind fab" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tadd fab" id="addBtn" type="button" aria-label="הוראה חדשה" aria-expanded="false">+</button><div class="imenu" id="imenu" hidden role="group" aria-label="משימה או הוראה"><div class="im-r k-quick"><span class="im-l"><span class="e" aria-hidden="true">⚡</span>משימה מהירה</span><button type="button" id="qText" aria-label="משימה מהירה בכתיבה">⌨️</button><button type="button" id="qVoice" aria-label="משימה מהירה בהקלטה">🎤</button></div><div class="im-r k-ins"><span class="im-l"><span class="e" aria-hidden="true">🧠</span>הוראה חכמה</span><button type="button" id="iText" aria-label="הוראה בכתיבה">⌨️</button><button type="button" id="iVoice" aria-label="הוראה בהקלטה">🎤</button></div></div><div class="ibar" id="ibar" hidden></div><div class="ires" id="ires" hidden role="status"></div>
 <div class="topbtns"><a class="tb tchat" id="tchat" aria-label="All Arounder: העוזר האישי" href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
@@ -3535,29 +3542,31 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   // The text goes to sidequests/instructions and the sq-instruct function reads it against all tasks:
   // add a task, fix existing ones, priority, order of the day, hours... Undo restores every task it touched.
   const INS_FN="https://emgtyfksnofzzlutngbf.supabase.co/functions/v1/sq-instruct";
-  let iMode="",iRec=null,iAcc="",iSess="",iStopping=false,iStream=null,iAC=null,iRAF=0,iSpeak=0,iTimer=0,iResT=0;
+  let iKind="ins",iMode="",iRec=null,iAcc="",iSess="",iStopping=false,iStream=null,iAC=null,iRAF=0,iSpeak=0,iTimer=0,iResT=0;
   const iKey=()=>{try{return localStorage.getItem("sq_pin")||sessionStorage.getItem("sq_pin")||"";}catch(e){return "";}};
   function iFab(){const b=$("addBtn"),open=!!iMode||!$("imenu").hidden;b.setAttribute("aria-expanded",open?"true":"false");b.firstChild&&b.firstChild.nodeType===3?b.firstChild.nodeValue=open?"×":"+":b.prepend(open?"×":"+");}
   function iPend(){const b=$("addBtn");let n=0;try{n=allIns().filter(x=>x.status==="pending"||x.status==="working").length;}catch(e){}
     let p=b.querySelector(".ipend");if(!n){if(p)p.remove();return;}if(!p){p=h("span",{class:"ipend","aria-label":"הוראות שמחכות"});b.append(p);}p.textContent=n;}
   let iDocs=[];function allIns(){return iDocs;}
   function iMenu(on){$("imenu").hidden=!on;if(on){$("ires").hidden=true;showFind(false);}iFab();}
-  function iClose(){iCancelRec();iMode="";$("ibar").hidden=true;$("ibar").replaceChildren();$("ibar").classList.remove("busy");iMenu(false);}
+  function iClose(){iCancelRec();iMode="";const b=$("ibar");b.hidden=true;b.replaceChildren();b.classList.remove("busy","k-quick","k-ins");iMenu(false);}
+  function iBarKind(){const b=$("ibar");b.classList.remove("k-quick","k-ins");b.classList.add("k-"+iKind);return h("span",{class:"ikind","aria-hidden":"true"},iKind==="quick"?"⚡":"🧠");}
+  function iGo(v,via){if(iKind==="quick")qAdd(v,via);else iSend(v,via);}
   function iKb(){const vv=window.visualViewport;if(!vv)return;const kb=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);document.documentElement.style.setProperty("--kb",(kb>60?kb-10:0)+"px");}
   if(window.visualViewport){visualViewport.addEventListener("resize",iKb);visualViewport.addEventListener("scroll",iKb);}
-  function iTextOpen(){iMenu(false);iMode="text";const bar=$("ibar");bar.hidden=false;bar.classList.remove("busy");
-    const ta=h("textarea",{rows:"1",placeholder:"מה לעשות? משימה חדשה, תיקון למשימות, סדר…","aria-label":"הוראה",enterkeyhint:"send"});
+  function iTextOpen(k){if(k)iKind=k;iMenu(false);iMode="text";const bar=$("ibar");bar.hidden=false;bar.classList.remove("busy");const tag=iBarKind();
+    const ta=h("textarea",{rows:"1",placeholder:iKind==="quick"?"משימה (נסח בכמה מילים)":"מה לעשות? תיקון למשימות, סדר, כמה דברים…","aria-label":iKind==="quick"?"משימה מהירה":"הוראה",enterkeyhint:"send"});
     const go=h("button",{class:"isend",type:"button","aria-label":"שלח",disabled:""},"➤");
     const fit=()=>{ta.style.height="auto";ta.style.height=Math.min(120,ta.scrollHeight)+"px";go.disabled=!ta.value.trim();};
     ta.addEventListener("input",fit);
     ta.addEventListener("keydown",e=>{if(e.key==="Escape")iClose();if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();if(ta.value.trim())go.click();}});
-    go.onclick=()=>{const v=ta.value.trim();if(!v)return;iClose();iSend(v,"text");};
-    bar.replaceChildren(ta,go);iFab();setTimeout(()=>ta.focus(),30);}
+    go.onclick=()=>{const v=ta.value.trim();if(!v)return;iClose();iGo(v,"text");};
+    bar.replaceChildren(tag,ta,go);iFab();setTimeout(()=>ta.focus(),30);}
   // ---- voice ----
   function iWaveUI(){const bar=$("ibar");bar.hidden=false;bar.classList.remove("busy");
     const cv=h("canvas",{"aria-hidden":"true"});const stop=h("button",{class:"istop",type:"button","aria-label":"סיום ושליחה"},h("span",{class:"sq"}));
     stop.onclick=()=>iStop();
-    bar.replaceChildren(h("div",{class:"iwave"},h("span",{class:"dot","aria-hidden":"true"}),cv),stop);iFab();return cv;}
+    bar.replaceChildren(iBarKind(),h("div",{class:"iwave"},h("span",{class:"dot","aria-hidden":"true"}),cv),stop);iFab();return cv;}
   function iDraw(cv,an){const ctx=cv.getContext("2d");const buf=an?new Uint8Array(an.fftSize):null;let ph=0;
     const loop=()=>{iRAF=requestAnimationFrame(loop);const w=cv.clientWidth,hh=cv.clientHeight,dpr=window.devicePixelRatio||1;
       if(cv.width!==w*dpr){cv.width=w*dpr;cv.height=hh*dpr;}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,hh);
@@ -3577,7 +3586,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     r.onend=()=>{if(iRec!==r)return;iAcc=[iAcc,iSess].filter(Boolean).join(" ");iSess="";if(iStopping){iFinish();return;}
       try{const n=iNewRec();iRec=n;n.start();}catch(e){iFinish();}};
     return r;}
-  async function iVoiceOpen(){iMenu(false);
+  async function iVoiceOpen(k){if(k)iKind=k;iMenu(false);
     if(!SR){toast("ההקלטה לא נתמכת כאן. אפשר לכתוב, או ללחוץ על המיקרופון במקלדת");iTextOpen();return;}
     iMode="voice";iAcc="";iSess="";iStopping=false;const cv=iWaveUI();
     const r=iNewRec();iRec=r;try{r.start();if(navigator.vibrate)navigator.vibrate(15);}catch(e){iClose();toast("ההקלטה נכשלה, נסה שוב");return;}
@@ -3588,15 +3597,22 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
         const AC=window.AudioContext||window.webkitAudioContext;iAC=new AC();const src=iAC.createMediaStreamSource(iStream);an=iAC.createAnalyser();an.fftSize=1024;src.connect(an);}catch(e){iRelease();an=null;}}
     iDraw(cv,an);}
   function iStop(){if(!iRec||iStopping)return;iStopping=true;const bar=$("ibar");bar.classList.add("busy");
-    bar.replaceChildren(h("div",{class:"iwave"},"מתמלל ושולח…"));cancelAnimationFrame(iRAF);
+    bar.replaceChildren(h("div",{class:"iwave"},iKind==="quick"?"מתמלל ומוסיף…":"מתמלל ושולח…"));cancelAnimationFrame(iRAF);
     try{iRec.stop();}catch(e){}clearTimeout(iTimer);iTimer=setTimeout(iFinish,1500);}
   function iFinish(){if(iMode!=="voice")return;clearTimeout(iTimer);const txt=[iAcc,iSess].filter(Boolean).join(" ").replace(/\s+/g," ").trim();
     const r=iRec;iRec=null;if(r){try{r.onresult=r.onend=r.onerror=null;r.abort();}catch(e){}}iRelease();iClose();
-    if(!txt){toast("לא שמעתי כלום, נסה שוב");return;}iSend(txt,"voice");}
+    if(!txt){toast("לא שמעתי כלום, נסה שוב");return;}iGo(txt,"voice");}
   // ---- send + result ----
   function iShow(cls,title,items,acts){const box=$("ires");clearTimeout(iResT);box.className="ires"+(cls?" "+cls:"");box.hidden=false;
     box.replaceChildren(h("div",{class:"ir-h"},h("b",null,title),h("button",{class:"ir-x",type:"button","aria-label":"סגור",onclick:()=>{box.hidden=true;}},"×")),
       items&&items.length?h("ul",null,items.map(x=>h("li",null,x))):null,acts&&acts.length?h("div",{class:"ir-a"},acts):null);}
+  // ⚡ quick task (Oren 8.11.2026): straight in, no AI, like before; the card shows the words with "בטל" so a bad transcript can be undone
+  async function qAdd(text,via){
+    if(/^[\[{`]/.test(text)){$("qtitle").value=text;$("quick").requestSubmit();return;}
+    if(!db)return;const v=text.replace(/\s+/g," ").trim(),now=new Date().toISOString(),nid=newId();
+    try{await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:v.length>200?v:"",links:[],source:via==="voice"?"נוסף בהקלטה בדף":"נוסף ידנית בדף",size:"quick",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});}catch(e){fail(e);return;}
+    iShow("","⚡ נוספה משימה",[v.length>140?v.slice(0,140)+"…":v],[h("button",{type:"button",onclick:async()=>{try{await db.collection("topics").doc(nid).delete();$("ires").hidden=true;toast("בוטל");}catch(e){fail(e);}}},"↩︎ בטל")]);
+    clearTimeout(iResT);iResT=setTimeout(()=>{$("ires").hidden=true;},via==="voice"?7000:4000);}
   async function iSend(text,via){
     if(/^[\[{`]/.test(text)){$("qtitle").value=text;$("quick").requestSubmit();return;} // a JSON block pasted from a chat: the old path
     if(!db)return;const id="i-"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),at=new Date().toISOString();
@@ -3615,8 +3631,10 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     else{iShow("wait","✓ נשמר. All Arounder יבצע את זה בסבב הקרוב",null);iResT=setTimeout(()=>{$("ires").hidden=true;},5000);}
     iPend();}
   $("addBtn").onclick=()=>{if(iMode==="voice"){iStop();return;}if(iMode||!$("imenu").hidden){iClose();return;}showAdd(false);iMenu(true);};
-  $("iText").onclick=()=>iTextOpen();
-  $("iVoice").onclick=()=>iVoiceOpen();
+  $("iText").onclick=()=>iTextOpen("ins");
+  $("iVoice").onclick=()=>iVoiceOpen("ins");
+  $("qText").onclick=()=>iTextOpen("quick");
+  $("qVoice").onclick=()=>iVoiceOpen("quick");
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("imenu").hidden)iMenu(false);});
   const iWatch=setInterval(()=>{if(!db)return;clearInterval(iWatch);try{db.collection("instructions").onSnapshot(s=>{iDocs=(s.docs||[]).map(d=>({id:d.id,...d.data()}));iPend();},()=>{});}catch(e){}},500);
   // 4.1: search across all quests (titles and every text field, Hebrew or English); a tap opens the task in its own quest
