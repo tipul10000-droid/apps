@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="13.6";window.SQ_BUILD_AT="8.11.2026 12:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="13.7";window.SQ_BUILD_AT="8.11.2026 13:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1492,10 +1492,10 @@ details.more[open]>summary{margin-bottom:10px}
 .fp-act button{min-height:48px;font-size:15.5px;font-weight:700}
 .fp-act button.ok{background:var(--k-admin);color:#fff}.fp-act button.ok[disabled]{opacity:.45}
 /* 11.6: the two override windows (out / at the computer), bigger than the window chips */
-.wov{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:2px solid rgba(255,255,255,.6);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.06)}
-.wov button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 6px;border:0;background:transparent;color:var(--hero-ink);font-size:17px;font-weight:800;white-space:nowrap}
+.wov{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:2px solid rgba(255,255,255,.6);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.06)}
+.wov button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:60px;min-width:0;padding:0 2px;border:0;background:transparent;color:var(--hero-ink);font-size:14px;font-weight:800;white-space:nowrap;line-height:1.1}
 .wov button+button{border-inline-start:2px solid rgba(255,255,255,.6)}
-.wov button .e{font-size:22px}
+.wov button .e{font-size:22px;line-height:1}.wov button .l{overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .wov button[aria-pressed="true"]{background:#fff;color:#111}
 .ai .opts{gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;align-self:stretch}
 .ai .opts>.opt,.ai .opts>a.opt{flex:1 1 auto;border:0!important;border-radius:0!important;background:var(--surface);text-align:center;min-height:38px}
@@ -1536,6 +1536,7 @@ details.more[open]>summary{margin-bottom:10px}
 #setM .locst{min-height:2.9em}
 #setM .sqdone{display:flex;width:100%;margin-top:22px}
 #setM .sqtopchat{margin:14px 0 0}
+#setM .chtool{position:relative;display:inline-block;width:30px;height:26px;flex:none}#setM .chtool svg{width:28px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}#setM .chtool i{position:absolute;top:2px;left:5px;font-style:normal;font-size:13px;line-height:1}
 @keyframes sqgrow{from{max-height:0;opacity:0;transform:translateY(-6px)}70%{opacity:1}to{max-height:1400px;opacity:1;transform:none}}
 #setM .sqgrow{animation:sqgrow .34s ease-out both;overflow:hidden}
 @media (prefers-reduced-motion:reduce){#setM .sqgrow{animation:none}}
@@ -1981,8 +1982,11 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     abroad:{e:"✈️",l:"חו״ל",s:"בחו״ל",sub:"כמו יום עבודה בלי משפחה. במלון 22:00-02:00 זמן שלי",acc:["phone","pc","call"]},
     // 11.6 (Oren 6.11): two manual overrides that ignore the daily schedule and filter hard by the means alone.
     // A task shows only if it needs one of `need` and all of its means are in `acc` (no `when`, `with`, minutes or hours checks).
-    out:{e:"🚶",l:"מחוץ לבית",s:"מחוץ לבית",sub:"רק מה שעושים בחוץ: מקום, סידור, ושיחות בדרך",acc:["place","call","phone"],need:["place","call"],ov:true},
-    pc:{e:"💻",l:"על המחשב",s:"על המחשב",sub:"רק מה שצריך מחשב",acc:["pc","phone"],need:["pc"],ov:true}
+    // 13.7 (Oren 8.11): four places in one row: walking near home, by car in Kfar Saba, at home away from the computer, at the computer.
+    walk:{e:"🚶",l:"סמוך לבית",s:"סמוך לבית",sub:"ברגל: סידורים קרובים ושיחות",acc:["place","call","phone"],need:["place","call"],ov:true},
+    out:{e:"🚗",l:"בכפר סבא",s:"בכפר סבא",sub:"ברכב: סידורים בעיר ושיחות",acc:["place","call","phone"],need:["place","call"],ov:true},
+    house:{e:"🏠",l:"בבית",s:"בבית",sub:"בלי משימות מחשב",acc:["phone","home","lior","family","call"],need:["phone","home","lior","family","call"],ov:true},
+    pc:{e:"💻",l:"על המחשב",s:"על המחשב",sub:"משימות מחשב",acc:["pc","phone","home"],need:["pc"],ov:true}
   };
   // who a task needs, and in which windows that person is available (Lior: phone from 16:00, in person 21:30-23:00)
   const WITH_OK={lior:["home_am","drive_pm","near_home","light","weekend","sat_am","counsel"],parents:["light","deep","weekend","sat_am"],yaniv:["fri","weekend","sat_am"]};
@@ -2100,10 +2104,10 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   // home = in the house (can sit at the computer) | out = out in Kfar Saba | road = driving | work = Netanya office | tlv | abroad.
   // GPS (when on and away from home) wins for distances; a manual "מחוץ לבית" says he is out.
   const WIN_AT={home_am:"home",errands:"out",drive_am:"road",work:"work",drive_pm:"road",near_home:"out",family:"home",counsel:"tlv",football:"out",
-    light:"home",deep:"home",solo:"home",sleep:"home",fri:"out",sat_am:"home",weekend:"home",abroad:"abroad",out:"out",pc:"home"};
+    light:"home",deep:"home",solo:"home",sleep:"home",fri:"out",sat_am:"home",weekend:"home",abroad:"abroad",walk:"out",out:"out",house:"home",pc:"home"};
   const AT_CITY={work:"נתניה",tlv:"תל אביב"};
   // how far a window may send him from where he is (km); null = no limit (errands on the way to Netanya, work)
-  const FAR={home_am:3,near_home:6,light:6,deep:6,solo:6,family:6,weekend:12,sat_am:12,out:12,pc:3,fri:20};
+  const FAR={home_am:3,near_home:6,light:6,deep:6,solo:6,family:6,weekend:12,sat_am:12,walk:1.5,out:8,house:0.5,pc:0.5,fri:20};
   function kmNow(t,id){const f=fitOf(t),g=geoOf(t);if(geoOff)return 0;const p=here(),away=p&&locPlace()!=="home";
     if(away){const k=kmHere(f);if(k!=null)return k;if(g.km!=null&&loc.home)return Math.round(distM(p,loc.home)/100)/10+g.km;return null;}
     const ac=AT_CITY[WIN_AT[id]];if(ac){const a=cityOf(ac),c=cityOf(f.area);if(c)return Math.round(distM(a,c)/100)/10;if(g.km!=null)return g.km+Math.round(distM(a,cityOf("כפר סבא"))/100)/10;return null;}
@@ -2726,10 +2730,10 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
         const other=!ids.includes(w.id)&&!W.ov?w.id:null;
         const ovb=id=>h("button",{type:"button","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;if(w.id===id){setWin(null);toast("חזרה לחלונות הזמן של היום");return;}setWin(id);wMode="pick";try{localStorage.setItem("sq_wmode","pick");}catch(e){}toast(WINS[id].e+" "+WINS[id].l+": "+WINS[id].sub);}},
           h("span",{class:"e","aria-hidden":"true"},WINS[id].e),h("span",{class:"l"},WINS[id].l));
-        kids.push(h("div",{class:"wov",role:"group","aria-label":"עוקף את סדר היום"},ovb("out"),ovb("pc")));
+        kids.push(h("div",{class:"wov",role:"group","aria-label":"עוקף את סדר היום"},ovb("walk"),ovb("out"),ovb("house"),ovb("pc")));
         kids.push(h("div",{class:"wchips"},...trio.map(x=>chip(x[1],x[0])),
           h("button",{type:"button",class:"wchip more","aria-expanded":winMore?"true":"false","aria-pressed":other?"true":"false",onclick:()=>{winMore=!winMore;renderCtx();}},
-            h("span",{class:"e","aria-hidden":"true"},other?WINS[other].e:"⋯"),h("span",{class:"l"},other?WINS[other].l:"עוד"),h("small",null,winMore?"▲":"▼"))));
+            h("span",{class:"e","aria-hidden":"true"},other?WINS[other].e:"⋯"),h("span",{class:"l"},other?WINS[other].l:"עוד חלונות"),h("small",null,winMore?"▲":"▼"))));
         if(winMore)kids.push(h("div",{class:"wgrid"},...WIN_PICK.map(id=>chip(id,null))));
       }
     }
@@ -4135,7 +4139,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
           sw(loc.on,v=>{setGrow="loc";loc.on=v;locErr="";if(!v)loc.last=null;saveLoc();if(v)sampleLoc(true);refreshMode(true);renderSettings();},"לבדוק מיקום בכל כניסה")),
         ...locBody);
     const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
-      h("a",{class:"sqbtn ghost sqchat sqtopchat",href:SQ_CHAT,target:"_blank",rel:"noopener"},"🛠️ שיפורים ותיקונים במערכת"),
+      h("a",{class:"sqbtn ghost sqchat sqtopchat",href:SQ_CHAT,target:"_blank",rel:"noopener"},h("span",{class:"chtool","aria-hidden":"true",html:'<svg viewBox="0 0 24 24"><path d="M3.5 4.5h17v11.5H9.5l-6 4.5z"/></svg><i>🛠️</i>'}),"שיפורים ותיקונים במערכת"),
       grp("👁️ תצוגה"),
       placeSec,
       sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
