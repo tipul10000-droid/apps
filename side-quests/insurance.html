@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.8";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.9";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ביטוחים ופנסיה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -245,6 +245,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
   <h1>🛡️ ביטוחים ופנסיה</h1>
   <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span>💬</span><span>צ׳אט</span></a>
   <a class="docsbtn" id="docs" target="_blank" rel="noopener" hidden>📁 מסמכים</a>
+  <a class="docsbtn" id="collect" target="_blank" rel="noopener" hidden>📥 שליפת מסמכים</a>
   <div class="stages" id="stages"></div>
   <p class="snote fold" id="snote"></p>
   <div class="kpis">
@@ -314,6 +315,7 @@ function render(){
   // הלינק לשיחה נשמר בנתונים (_meta.chat_url), לא בקוד.
   const chat=safe(meta.chat_url);if(chat){$("chat").href=chat;$("chat").hidden=false;}
   const docs=safe(meta.docs_url);if(docs){$("docs").href=docs;$("docs").hidden=false;}
+  const col=safe(meta.collect_url);if(col){$("collect").href=col;$("collect").hidden=false;}
 
   // שלבים: התקדמות לפי המשימות ב-_meta.tasks
   const T=meta.tasks||[], cur=String(meta.stage||1);
