@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="13.3";window.SQ_BUILD_AT="8.11.2026 11:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="13.4";window.SQ_BUILD_AT="8.11.2026 12:05";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1535,6 +1535,7 @@ details.more[open]>summary{margin-bottom:10px}
 #setM .sqrow.wrap{flex-wrap:wrap;padding:8px 0}#setM .sqrow.wrap .lb{flex:1 1 100%}#setM .sqrow.wrap .sqsel{flex:1 1 100%}
 #setM .locst{min-height:2.9em}
 #setM .sqdone{display:flex;width:100%;margin-top:22px}
+#setM .sqtopchat{margin:14px 0 0}
 @keyframes sqgrow{from{max-height:0;opacity:0;transform:translateY(-6px)}70%{opacity:1}to{max-height:1400px;opacity:1;transform:none}}
 #setM .sqgrow{animation:sqgrow .34s ease-out both;overflow:hidden}
 @media (prefers-reduced-motion:reduce){#setM .sqgrow{animation:none}}
@@ -2361,7 +2362,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     if(!(t.project&&projById(t.project)))return h("span",{class:"ib ph","aria-hidden":"true"}); // level 1: no chat icon at all
     return h("a",{class:"ib go off",href:contUrl(t),target:"_blank",rel:"noopener",title:"אין עדיין שיחה למשימה הזו","aria-label":"אין עדיין שיחה למשימה הזו. שם המשימה יועתק",html:ICON.chat,onclick:e=>{e.stopPropagation();const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("אין עדיין שיחה למשימה הזו. שם המשימה הועתק, הדבק בשיחה");}catch(x){}}});}
   function contUrl(t){const p=t.project&&projById(t.project);return chatOf(t)||(p&&safeUrl(p.claude_url||""))||AA_CHAT;}
-  function contBtn(t,cls,label){const direct=!!chatOf(t);return h("a",{class:cls,href:contUrl(t),target:"_blank",rel:"noopener",html:cls==="cont"?ICON.chat:"",onclick:e=>{e.stopPropagation();if(!direct){const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("שם המשימה הועתק, הדבק בשיחה");}catch(x){}}}},label||"המשך בשיחה");}
+  function contBtn(t,cls,label){const direct=!!chatOf(t);return h("a",{class:cls,href:contUrl(t),target:"_blank",rel:"noopener",html:cls==="cont"?ICON.chat:"",onclick:e=>{e.stopPropagation();if(!direct){const txt=`לגבי המשימה ב-Side Quests: ${t.title} (${t.id})`;try{navigator.clipboard&&navigator.clipboard.writeText(txt);toast("שם המשימה הועתק, הדבק בשיחה");}catch(x){}}}},/^act\b/.test(cls)?h("span",{class:"ai-ic","aria-hidden":"true",html:ICON.chat}):null,label||"המשך בשיחה");}
   // 6.3: one chat button for every managed section (movies, series, games, travel, dashboards...). Dedicated chat per section:
   // settings/chats {movies, series, games, spotify, travel_il, travel_abroad, dash_<id>} wins, then a fallback from the data, then this project (title copied).
   let secChats={};
@@ -2732,7 +2733,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     if(!canWrite)return null;const open=isOpen(t),c=chatOf(t),m=!c&&mailOf(t);
     const a=(cls,ic,label,on)=>h("button",{class:"act "+cls,type:"button",onclick:on},h("span",{class:"ai-ic","aria-hidden":"true",html:ic}),label);
     return h("div",{class:"acts"+(open?" five":"")},
-      c?h("a",{class:"act go",href:c,target:"_blank",rel:"noopener"},h("span",{class:"ai-ic","aria-hidden":"true",html:ICON.chat}),"לשיחה"):m?h("a",{class:"act go",href:m,target:"_blank",rel:"noopener"},h("span",{class:"ai-ic","aria-hidden":"true",html:ICON.mail}),"למייל"):contBtn(t,"act go",ICON_TXT_CHAT),
+      c?h("a",{class:"act go",href:c,target:"_blank",rel:"noopener"},h("span",{class:"ai-ic","aria-hidden":"true",html:ICON.chat}),"שיחה"):m?h("a",{class:"act go",href:m,target:"_blank",rel:"noopener"},h("span",{class:"ai-ic","aria-hidden":"true",html:ICON.mail}),"למייל"):contBtn(t,"act go",ICON_TXT_CHAT),
       open?a("snz",ICON.snooze,"אחר כך",()=>{laterFor=laterFor==="r:"+t.id?null:"r:"+t.id;renderList();}):null,
       open?h("button",{class:"act urg",type:"button","aria-pressed":t.urgent?"true":"false",onclick:()=>setUrgent(t)},h("span",{class:"ai-ic bang","aria-hidden":"true"},"!"),t.urgent?"דחוף ✓":"דחוף"):null,
       open?h("button",{class:"act win",type:"button","aria-pressed":fitFor===t.id?"true":"false","aria-expanded":fitFor===t.id?"true":"false",onclick:()=>{if(fitFor===t.id){fitFor=null;}else{fitFor=t.id;fitDraft=null;}renderList();}},h("span",{class:"ai-ic","aria-hidden":"true",html:ICON.win}),"חלון זמן"):null,
@@ -2772,7 +2773,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
     const desc=D.how.map(k=>(FIT_HOW.find(y=>y[0]===k)||[])[2]).join(", ")+(D.when.length?" · "+D.when.map(id=>WINS[id].l).join(", "):"");
     fitFor=null;fitDraft=null;
     patch(t,{fit:nf,size:D.size,log:logPush(t,"שינוי ידני של חלון הזמן: "+desc,new Date().toISOString())},"נשמר"+(nl?". יופיע ב: "+nl:""));}
-  const ICON_TXT_CHAT="פתח שיחה";
+  const ICON_TXT_CHAT="שיחה";
   const WHO={claude:"Claude",lior:"ליאור",other:"מחכה"};
   function toggleStep(t,s){const now=new Date().toISOString();const steps=stepsOf(t).map(x=>x.id===s.id?{...x,done:!x.done,done_at:x.done?"":now}:x);
     patch(t,{steps,log:logPush(t,(s.done?"נפתח שוב: ":"בוצע: ")+s.text,now)},s.done?"נפתח שוב":"✓ "+s.text.slice(0,30));}
@@ -3991,6 +3992,7 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
           sw(loc.on,v=>{setGrow="loc";loc.on=v;locErr="";if(!v)loc.last=null;saveLoc();if(v)sampleLoc(true);refreshMode(true);renderSettings();},"לבדוק מיקום בכל כניסה")),
         ...locBody);
     const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
+      h("a",{class:"sqbtn ghost sqchat sqtopchat",href:SQ_CHAT,target:"_blank",rel:"noopener"},"🛠️ שיפורים ותיקונים במערכת"),
       grp("👁️ תצוגה"),
       placeSec,
       sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
@@ -4016,8 +4018,6 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
         h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"שקט 22:00-07:00")),sw(notify.critical,v=>setNotify({critical:v}),"התראות דחופות"))),
       sec("wk","🗓️ שישי, סופ״ש ושבוע",abroadOn()?"מושהה בחו״ל":notify.wk!==false?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"פעיל",h("small",null,"ה׳ 21:30 · ו׳ 13:00 · מוצ״ש 21:00")),sw(notify.wk!==false,v=>setNotify({wk:v}),"בריפים לשישי, לסופ״ש ולשבוע"))),
-      grp("🛠️ Side Quests"),
-      h("a",{class:"sqbtn ghost sqchat",href:SQ_CHAT,target:"_blank",rel:"noopener"},"💬 שיפורים ותיקונים במערכת"),
       grp("📦 ארכיון"),
       archSec(sec),
       h("button",{type:"button",class:"sqbtn ghost sqdone",onclick:closeModal},"✓ סגור"),
