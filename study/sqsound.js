@@ -1,7 +1,7 @@
 // צליל מצחיק ושונה לכל סקווישי (אורן 6.11.2026): כל מזהה = צליל אחר לגמרי, בלי חזרות (WebAudio), ובערבוב גם צלילים מוקלטים (sqfx, למטה).
 // דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco
 // ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi
-// לביא ושילו (9.11.2026): lv_* ו-sh_* (18 לכל אחד, כולל האולטרה). האולטרה שלהם תמיד מנגנים את הצליל שלהם, בלי ערבוב הקלטות.
+// לביא ושילה (9.11.2026): lv_* ו-sh_* (18 לכל אחד, כולל האולטרה). האולטרה שלהם תמיד מנגנים את הצליל שלהם, בלי ערבוב הקלטות.
 // שימוש: <script src="../../sqsound.js"></script>  SqSound.play(id, muted)
 (function(){
   var AC=null;
@@ -67,7 +67,7 @@
   lv_u_boat:function(){osc('square',0,1,[[0,55],[1,60]],.14,380,[16,0],2);noise(0,1,.1,'lowpass',500,300,1,16);noise(1,.5,.22,'highpass',1200,600)},// מנוע של סירה ושפריץ
   lv_u_matkot:function(){[0,.42,.74,.98,1.16,1.3,1.4].forEach(function(t){noise(t,.03,.4,'bandpass',1500,1500,3);beep(t,1100,.04,.12,'triangle')})},// טוק טוק טוק מאיץ
   lv_u_camel:function(){osc('sawtooth',0,1,[[0,140],[.2,90],[.5,160],[.8,80],[1,60]],.26,600,[9,25],4);noise(.2,.5,.12,'lowpass',400,200,2,40)},// נחרת גמל
-  // ---- שילו: לגו + ישראל + תאילנד (9.11.2026) ----
+  // ---- שילה: לגו + ישראל + תאילנד (9.11.2026) ----
   sh_brick:function(){noise(0,.025,.45,'highpass',3000);noise(.09,.025,.45,'highpass',3600);osc('sine',.2,.25,[[0,600],[1,900]],.15)},// קליק-קלאק של לגו
   sh_pita:function(){noise(0,.35,.3,'lowpass',2000,200,1);osc('sine',.3,.12,[[0,400],[1,1100]],.2)},// פוּף!
   sh_rimon:function(){for(var i=0;i<14;i++)noise(i*.045+Math.random()*.02,.015,.3,'bandpass',3000+Math.random()*2000,3000,5)},// גרגרים מתגלגלים
