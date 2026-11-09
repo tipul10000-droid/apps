@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2D4A2B">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IN_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IN_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <script src="dash-lock.js?v=1"></script>
 <title>שכר והכנסות</title>
@@ -169,8 +169,11 @@ function tabMil(){const m=mil(),mo=arr((m.mofet||{}).months),max=Math.max(1,...m
   const P=arr((m.elbit||{}).pays);
   if(P.length)o+=`<section><div class="sh"><h2>אלביט: התשלום השני</h2></div><div class="list">${P.slice().reverse().map(p=>`<div class="row"><span class="b"><span class="t">${esc(p[0].split("-").reverse().join("."))}</span></span><span class="v">${ils(p[1])}</span></div>`).join("")}</div></section>`;
   return o;}
+function returnsBlock(){const R=arr(meta.returns).slice().sort((a,b)=>(+b.y||0)-(+a.y||0));if(!R.length)return "";
+  const RS={filed:["הוגש","p-hi"],assessed:["שומה סופית","p-hi"],todo:["להגיש","p-warn"],late:["באיחור","p-bad"]};
+  return `<section><div class="sh"><h2>📑 דוחות שנתיים</h2><small>${esc(meta.returns_note||"")}</small></div><div class="list">${R.map(x=>row({who:x.who||"family",l:"דוח "+x.y+(x.when?" · "+x.when:""),note:x.note,v:x.v,pill:RS[x.s]},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
 function tabTax(){const T=arr(meta.tax);const ST={urgent:["דחוף","p-bad"],check:["לבדוק","p-warn"],plan:["מתוכנן","p-hi"]};
-  return `<section><div class="sh"><h2>מס, זיכויים והחזרים</h2></div><div class="list">${T.map(x=>row({...x,pill:ST[x.s]},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
+  return returnsBlock()+`<section><div class="sh"><h2>מס, זיכויים והחזרים</h2></div><div class="list">${T.map(x=>row({...x,pill:ST[x.s]},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
 function render(){if(!meta){return;}
   $("hero").innerHTML=hero();$("bar").innerHTML=bar();
   $("app").innerHTML=ui.tab==="year"?tabYear():ui.tab==="mil"?tabMil():ui.tab==="tax"?tabTax():tabMonth();
