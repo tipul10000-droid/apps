@@ -162,6 +162,8 @@ Deno.serve(async (req) => {
     const KK: Record<string, string> = { test: "📅 מבחן קרוב", quiz: "⏰ בוחן", hard: "🤔 לא הבנתי נושא", topic: "📚 נושא חדש ללימוד", idea: "💡 רעיון לאפליקציה", bug: "🐞 באג באפליקציה" };
     const { data: rq } = await sb.from("study_requests").select("id,kid,kind,txt").is("notified_at", null).eq("hidden", false).order("id").limit(10);
     for (const r of rq || []) {
+      // (9.11.2026) בקשות של בני הדודים (משפחה b) לא נשלחות להורים של משפחה a. הן מופיעות באזור ההורים של המשפחה שלהם.
+      if (!KN[r.kid]) { await sb.from("study_requests").update({ notified_at: new Date().toISOString() }).eq("id", r.id); continue; }
       const boy = r.kid === "evyatar";
       await push("parent", null, {
         title: `💬 ${KN[r.kid] || r.kid} ${boy ? "שלח" : "שלחה"} בקשה: ${KK[r.kind] || ""}`,
