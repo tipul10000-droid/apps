@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=4"></script>
+<script src="../../content.js?v=4"></script><script>StudyContent.guard('evyatar/past')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · Past Simple / Progressive</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css">
+<style>
+:root{--ok:#15803d;--okb:#dcfce7;--no:#be123c;--nob:#ffe4e6;--pl:#e8eef7}
+main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;flex-direction:column}
+.nav{display:flex;align-items:center;gap:6px;height:32px;flex:none}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh);margin-top:4px}
+.prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:22px}
+.prog .row b{color:var(--fg);font-size:16px}
+.chip{font-size:13px;background:var(--pl);color:#1e3a8a;border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
+.stg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:6px}
+.stg span{height:22px;border-radius:7px;background:#f1f3f7;color:var(--mut);font:600 11px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;white-space:nowrap}
+.stg span i{position:absolute;inset:0 0 0 auto;background:rgba(47,93,158,.16);width:0}
+.stg span em{position:relative;font-style:normal}
+.stg span.cur{background:#dbe7f7;color:#1e3a8a;outline:2px solid #93b4e0}.stg span.ok{background:var(--okb);color:#166534}
+.card{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px 12px;box-shadow:var(--sh);margin-top:8px;overflow:hidden}
+.tag{display:flex;justify-content:space-between;align-items:center;height:24px;flex:none;font-size:13px;color:var(--mut)}
+.tag b{font-weight:700;color:#1e3a8a;background:var(--pl);border-radius:20px;padding:2px 10px}
+.tag .rt{color:#c2410c;background:#fff1e6;border-radius:20px;padding:2px 8px;font-weight:700;visibility:hidden}.tag .rt.on{visibility:visible}
+.q{flex:1 1 auto;min-height:64px;display:flex;align-items:center;justify-content:center;direction:ltr;text-align:center;font:600 19px/1.4 system-ui,Arial,sans-serif;padding:4px 2px;overflow:hidden}
+.q u{text-decoration:none;display:inline-block;min-width:54px;border-bottom:2px solid #64748b;margin:0 2px}
+.opts{display:flex;flex-direction:column;gap:7px;flex:none}
+.op{font:600 16px/1.25 system-ui,Arial,sans-serif;direction:ltr;text-align:left;min-height:46px;padding:6px 12px;border-radius:12px;border:1.5px solid var(--bd);background:#f8fafc;color:var(--fg);cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px}
+.op .k{flex:none;width:24px;height:24px;border-radius:50%;background:#e2e8f0;color:#475569;font:700 12px/24px system-ui,Arial,sans-serif;text-align:center}
+.op:active{background:#eef2f7}
+.op.ok{border-color:#22c55e;background:var(--okb);color:#14532d}.op.ok .k{background:#22c55e;color:#fff}
+.op.no{border-color:#fb7185;background:var(--nob);color:#881337}.op.no .k{background:#fb7185;color:#fff}
+.op.dim{opacity:.55}
+.fb{height:84px;flex:none;margin-top:8px;border-radius:12px;padding:6px 10px;font-size:14px;line-height:1.4;overflow:hidden;background:#f1f5f9;color:var(--mut);display:flex;align-items:center;justify-content:center;text-align:center}
+.fb.ok{background:var(--okb);color:#14532d}.fb.no{background:var(--nob);color:#881337}
+.fb bdi{direction:ltr;font-weight:700}
+.nx{flex:none;margin-top:8px;height:48px;border:0;border-radius:14px;font:700 17px system-ui,Arial,sans-serif;background:var(--ac);color:#fff;cursor:pointer}
+.nx:disabled{background:#cbd5e1;color:#f8fafc;cursor:default}
+.end{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
+.end .big{font-size:54px;line-height:1}.end h2{margin:0;font-size:22px}.end p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
+.end .bt{width:100%;max-width:320px;height:46px;border-radius:14px;border:1.5px solid var(--bd);background:var(--card);font:700 16px system-ui,Arial,sans-serif;color:var(--fg);cursor:pointer}
+.end .bt.pr{background:var(--ac);color:#fff;border:0}
+.card.fin .tag,.card.fin .q,.card.fin .opts,.card.fin .fb,.card.fin .nx{display:none}.card.fin .end{display:flex}
+.ov{position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.ov.on{display:flex}
+.pop{background:var(--card);border-radius:18px;max-width:420px;width:100%;max-height:calc(100dvh - 70px);overflow:auto;padding:12px 14px;box-shadow:0 10px 40px rgba(0,0,0,.3);font-size:14.5px;line-height:1.45}
+.pop h3{margin:0 0 4px;font-size:18px}.pop h4{margin:8px 0 1px;font-size:15px;color:#1e3a8a}.pop p{margin:2px 0}
+.pop .en{direction:ltr;text-align:left;display:block;font-weight:500;color:#334155;background:#f1f5f9;border-radius:8px;padding:1px 8px;margin:2px 0}
+.pop .cl{margin-top:10px;width:100%;height:42px;border:0;border-radius:12px;background:var(--ac);color:#fff;font:700 16px system-ui,Arial,sans-serif}
+@media (max-height:700px){.q{min-height:52px}.op{min-height:40px;font-size:15px;padding:4px 10px}.opts{gap:6px}.fb{height:66px;font-size:13px;margin-top:6px}.nx{height:44px;margin-top:6px}.card{padding:8px 10px 10px;margin-top:6px}.stg{margin-top:4px}}
+</style>
+</head><body><main>
+<div class="nav"><a class="back" href="../">→ אביתר</a><button class="ib" id="rules" type="button">📘 הכללים</button></div>
+<div class="prog">
+ <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך 50 שאלות</span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span></span></div>
+ <div class="stg" id="stg"></div>
+</div>
+<div class="card" id="card">
+ <div class="tag"><b id="tg"></b><span class="rt" id="rt">↺ שוב</span></div>
+ <div class="q" id="q"></div>
+ <div class="opts" id="opts"></div>
+ <div class="fb" id="fb">בחר את התשובה הנכונה</div>
+ <button class="nx" id="nx" type="button" disabled>הבא ›</button>
+ <div class="end" id="end"></div>
+</div>
+</main>
+<div class="ov" id="ov"><div class="pop">
+ <h3>📘 הכללים בקצרה</h3>
+ <h4>Past Simple: פעולה שהתחילה ונגמרה</h4>
+ <p>פעולה שנגמרה, או כמה פעולות אחת אחרי השנייה.</p>
+ <span class="en">I <b>woke</b> up, <b>ate</b> and <b>left</b>.</span>
+ <p>אחרי <bdi>didn't</bdi> או <bdi>Did</bdi>: צורת בסיס.</p>
+ <span class="en">He <b>didn't go</b>. <b>Did</b> you <b>go</b>?</span>
+ <h4>Past Progressive: פעולה מתמשכת</h4>
+ <p>פעולה שהייתה <b>באמצע</b> ברגע מסוים בעבר, או "רקע" לסיפור.</p>
+ <span class="en">At 8 pm I <b>was</b> / they <b>were watching</b> TV.</span>
+ <h4>ביחד באותו משפט</h4>
+ <p>הארוכה ב-<bdi>progressive</bdi>, הקצרה שקטעה אותה ב-<bdi>simple</bdi>.</p>
+ <span class="en">I <b>was reading</b> when Mom <b>called</b>.</span>
+ <p>בדרך כלל <bdi>while</bdi> עם הארוכה, <bdi>when</bdi> עם הקצרה. פעולות אחת אחרי השנייה: כולן <bdi>simple</bdi>.</p>
+ <h4>⚠️ פעלי מצב בלי ing</h4>
+ <span class="en">know, want, like, need, understand, see</span>
+ <span class="en">I <b>knew</b> ✓ &nbsp; I was knowing ✗</span>
+ <button class="cl" id="cl" type="button">הבנתי</button>
+</div></div>
+<script src="../../track.js?v=8"></script>
+<script>
+// חזרה Past Simple / Past Progressive לאביתר (אורן 9.11.2026). כיתה י׳, הקבצה א׳. 50 שאלות אמריקאיות ב-5 שלבים, בקושי עולה.
+// מפתח: ev_past (התקדמות). שאלה = [שלב, משפט (___ = מקום ריק), [תשובה נכונה, מסיח, מסיח, מסיח], הסבר בעברית].
+// טעות: ההסבר מוצג והשאלה חוזרת אחרי כמה שאלות, עד שעונים נכון. שאלה "נלמדה" רק אחרי תשובה נכונה.
+const ST=['Past Simple','Past Progressive','מה מתאים?','משפטים משולבים','אתגר'];
+const QS=[
+// שלב 1: Past Simple
+[0,'Last summer we ___ to Eilat with my cousins.',['went','go','goes','going'],'<bdi>Last summer</bdi> = זמן שנגמר → past simple. <bdi>go → went</bdi> (פועל לא סדיר).'],
+[0,'Noa ___ her grandmother in Haifa yesterday.',['visited','visit','visits','was visit'],'<bdi>yesterday</bdi> → past simple. פועל סדיר: מוסיפים <bdi>-ed</bdi>.'],
+[0,'I ___ my keys this morning, so I was late for school.',['lost','lose','losed','losing'],'<bdi>lose → lost</bdi> (לא סדיר). פעולה קצרה שנגמרה הבוקר.'],
+[0,'Our team ___ the match on Saturday. The final score was 3–1.',['won','win','winned','wins'],'<bdi>win → won</bdi>. אין <bdi>winned</bdi>.'],
+[0,'He ___ to the party last night because he was sick.',['didn\'t come','didn\'t came','not came','doesn\'t come'],'שלילה בעבר: <bdi>didn\'t</bdi> + צורת בסיס. לא <bdi>didn\'t came</bdi>.'],
+[0,'___ you finish the science project on time?',['Did','Were','Do','Was'],'שאלה ב-past simple: <bdi>Did</bdi> + צורת בסיס (<bdi>finish</bdi>).'],
+[0,'Where ___ last weekend?',['did you go','did you went','you went','were you go'],'<bdi>did</bdi> כבר מסמן עבר, ולכן הפועל בצורת בסיס: <bdi>did you go</bdi>.'],
+[0,'She ___ a new phone two days ago.',['bought','buyed','buys','was buy'],'<bdi>ago</bdi> → past simple. <bdi>buy → bought</bdi>.'],
+[0,'The teacher ___ the questions on the board and ___ us ten minutes.',['wrote / gave','writed / gived','wrote / give','was write / gave'],'שתי פעולות שלמות אחת אחרי השנייה → שתיהן past simple. <bdi>write → wrote, give → gave</bdi>.'],
+[0,'Dan ___ his homework, so the teacher was angry.',['didn\'t do','didn\'t did','doesn\'t do','not did'],'<bdi>didn\'t</bdi> + צורת בסיס: <bdi>didn\'t do</bdi>.'],
+// שלב 2: Past Progressive
+[1,'At 8 o\'clock last night, I ___ TV.',['was watching','were watching','am watching','was watch'],'שעה מסוימת בעבר + פעולה שהייתה באמצע → <bdi>was/were + ing</bdi>. <bdi>I → was</bdi>.'],
+[1,'At 4 p.m. yesterday, the kids ___ football in the park.',['were playing','was playing','are playing','were play'],'<bdi>the kids</bdi> = רבים → <bdi>were playing</bdi>.'],
+[1,'It ___ when we left the house, so we took umbrellas.',['was raining','were raining','is raining','raining'],'הגשם כבר ירד והמשיך (רקע) → <bdi>was raining</bdi>. <bdi>it → was</bdi>.'],
+[1,'I ___ attention, so I didn\'t hear the question.',['wasn\'t paying','didn\'t paying','weren\'t paying','wasn\'t pay'],'שלילה ב-progressive: <bdi>wasn\'t/weren\'t + ing</bdi>. אין <bdi>didn\'t + ing</bdi>.'],
+[1,'What ___ at 10 p.m. yesterday? I called you twice!',['were you doing','was you doing','did you doing','you were doing'],'שאלה: <bdi>was/were</bdi> לפני הנושא. <bdi>you → were</bdi>.'],
+[1,'At midnight, my brother was still awake. He ___ for his math exam.',['was studying','were studying','is studying','studying'],'באמצע פעולה ברגע מסוים בעבר → <bdi>was studying</bdi>.'],
+[1,'Be careful! Yesterday a boy was ___ by the pool and he slipped.',['running','runing','runnig','run'],'כתיב: <bdi>run → running</bdi> (מכפילים את האות האחרונה אחרי תנועה קצרה).'],
+[1,'The baby was ___ all night, so nobody slept.',['crying','criing','cryeing','cry'],'כתיב: <bdi>cry → crying</bdi> (ה-<bdi>y</bdi> נשארת לפני <bdi>ing</bdi>).'],
+[1,'We ___ the game. We were doing homework in my room.',['weren\'t watching','wasn\'t watching','didn\'t watching','weren\'t watch'],'<bdi>we → were</bdi>, שלילה: <bdi>weren\'t + ing</bdi>.'],
+[1,'This time yesterday, Evyatar and his friends ___ on the beach in Herzliya.',['were sitting','was sitting','were siting','are sitting'],'<bdi>This time yesterday</bdi> = באמצע פעולה. רבים → <bdi>were</bdi>. כתיב: <bdi>sitting</bdi>.'],
+// שלב 3: Simple או Progressive? (לפי מילות זמן והקשר)
+[2,'I ___ all my homework yesterday and then I went out with friends.',['finished','was finishing','were finishing','finish'],'פעולה שנגמרה, ואחריה פעולה נוספת (<bdi>and then</bdi>) → past simple.'],
+[2,'At 7:30 this morning Dad was in the kitchen. He ___ coffee and reading the news.',['was drinking','drank','drinks','were drinking'],'<bdi>and reading</bdi> מראה שזו פעולה מתמשכת → <bdi>was drinking ... reading</bdi>.'],
+[2,'Shakespeare ___ "Romeo and Juliet" in the 1590s.',['wrote','was writing','writes','were writing'],'עובדה היסטורית, פעולה שלמה → past simple.'],
+[2,'Two days ago I ___ my old friend Tom at the mall.',['met','was meeting','meet','were meeting'],'פגישה = פעולה קצרה. <bdi>ago</bdi> → past simple. <bdi>meet → met</bdi>.'],
+[2,'I couldn\'t answer the phone because I ___ a shower.',['was taking','took','take','were taking'],'הייתי באמצע מקלחת כשהטלפון צלצל → progressive.'],
+[2,'Last year our class ___ a trip to Jerusalem.',['took','was taking','takes','were taking'],'טיול שלם שנגמר, <bdi>last year</bdi> → past simple.'],
+[2,'Sorry, I didn\'t hear you. I ___ to music on my headphones.',['was listening','listened','listen','were listening'],'הייתי באמצע לשמוע מוזיקה, ולכן לא שמעתי → progressive.'],
+[2,'Yesterday Maya ___ up at 6, ___ breakfast and left for school.',['woke / ate','was waking / was eating','woke / was eating','wakes / eats'],'רצף פעולות שלמות אחת אחרי השנייה → כולן past simple.'],
+[2,'Ten minutes ago someone ___ on the door. Who was it?',['knocked','was knocking','knocks','were knocking'],'דפיקה בדלת = פעולה קצרה שקרתה פעם אחת → past simple.'],
+[2,'The house was noisy last night: the baby ___, the dog ___ and my sister ___ the piano.',['was crying / was barking / was playing','were crying / were barking / were playing','cried / was barking / play','is crying / is barking / is playing'],'כמה דברים שקרו באותו זמן כ"רקע" לתיאור → כולם progressive, ועם נושא יחיד: <bdi>was</bdi>.'],
+// שלב 4: משפטים משולבים (simple + progressive)
+[3,'While I ___ home, I ___ an old friend.',['was walking / met','walked / was meeting','was walking / was meeting','walk / met'],'ההליכה = פעולה ארוכה (progressive). הפגישה קטעה אותה (simple).'],
+[3,'When the teacher ___ into the class, the students ___ loudly.',['came / were talking','was coming / talked','came / talk','was coming / were talking'],'התלמידים כבר דיברו (מתמשך), והמורה נכנסה באמצע (קצר).'],
+[3,'I ___ my finger while I ___ dinner.',['cut / was cooking','was cutting / cooked','cuts / cooks','was cut / was cooking'],'הבישול = מתמשך. החתך = רגע קצר באמצע. <bdi>cut</bdi> בעבר נשאר <bdi>cut</bdi>.'],
+[3,'The lights ___ out while we ___ the movie.',['went / were watching','were going / watched','go / watch','went / was watching'],'<bdi>while</bdi> + הפעולה הארוכה (<bdi>were watching</bdi>, כי <bdi>we</bdi>). החשמל נפל = קצר.'],
+[3,'What were you doing when the alarm ___?',['went off','was going off','goes off','were going off'],'האזעקה = אירוע קצר שקטע את מה שעשית → simple.'],
+[3,'Yesterday at 5 p.m., while Dad ___ the car, Mom ___ the garden.',['was washing / was watering','were washing / were watering','washes / waters','was wash / was water'],'שתי פעולות מתמשכות באותו זמן → שתיהן progressive. <bdi>Dad, Mom</bdi> = יחיד → <bdi>was</bdi>.'],
+[3,'Daniel ___ off his bike while he ___ to school.',['fell / was riding','was falling / rode','falls / rides','fell / were riding'],'הרכיבה = מתמשכת. הנפילה = רגע. <bdi>he → was</bdi>.'],
+[3,'When I ___ the window, it ___ heavily.',['opened / was raining','was opening / rained','open / rains','opened / were raining'],'הגשם כבר ירד (רקע), פתחתי את החלון (פעולה קצרה).'],
+[3,'Chelsea led 1–0. The fans ___ when Palmer ___ the second goal.',['were singing / scored','sang / was scoring','was singing / scored','sing / scores'],'האוהדים כבר שרו (מתמשך, <bdi>fans</bdi> = רבים → <bdi>were</bdi>), והגול = רגע.'],
+[3,'When the bell rang, everyone ___ their bags and ran out.',['took','was taking','were taking','takes'],'קודם הצלצול ואז הלקיחה והריצה: רצף של פעולות → הכול past simple.'],
+[3,'She ___ a strange noise while she ___ in bed.',['heard / was lying','was hearing / lay','heard / was laying','hears / lies'],'<bdi>hear</bdi> לא בא ב-ing כאן (קצר). לשכב: <bdi>lie → lying</bdi> (<bdi>laying</bdi> = להניח משהו).'],
+[3,'When my phone ___, I ___ it up and answered.',['rang / picked','was ringing / was picking','rang / was picking','rings / pick'],'צלצול ← הרמה ← מענה: אחד אחרי השני → כולם simple.'],
+// שלב 5: אתגר (זיהוי, טעויות, פעלי מצב, משמעות)
+[4,'"I was reading when Mom called." Which action was in progress (continuing)?',['reading','Mom calling','both actions','neither action'],'<bdi>was reading</bdi> = הפעולה המתמשכת. <bdi>called</bdi> = הפעולה הקצרה שקטעה אותה.'],
+[4,'Which sentence is correct?',['While I was sleeping, someone stole my bike.','While I sleeping, someone stole my bike.','While I was sleep, someone stole my bike.','While I was sleeping, someone was stole my bike.'],'<bdi>was + sleeping</bdi> לפעולה הארוכה, <bdi>stole</bdi> לפעולה הקצרה. אין <bdi>was stole</bdi>.'],
+[4,'I ___ the answer, but I didn\'t want to say it in class.',['knew','was knowing','were knowing','know'],'<bdi>know</bdi> = פועל מצב, לא בא ב-ing → <bdi>knew</bdi>.'],
+[4,'Which sentence has a mistake?',['I was wanting a pizza, so I ordered one.','We were walking when it started to rain.','He didn\'t call me yesterday.','Were you sleeping when I called?'],'<bdi>want</bdi> = פועל מצב → <bdi>I wanted a pizza</bdi>. שאר המשפטים נכונים.'],
+[4,'As I ___ the street, a car suddenly ___ very close to me.',['was crossing / stopped','crossed / was stopping','was crossing / was stopping','cross / stops'],'<bdi>As</bdi> = <bdi>while</bdi>: החצייה = מתמשכת, העצירה הפתאומית = רגע (<bdi>suddenly</bdi>).'],
+[4,'Which sentence means the movie started BEFORE we arrived?',['When we arrived, the movie was playing.','When we arrived, the movie started.','We arrived, and then the movie started.','The movie started after we arrived.'],'<bdi>was playing</bdi> = הסרט כבר היה באמצע כשהגענו. <bdi>when we arrived, it started</bdi> = התחיל רק אחרי שהגענו.'],
+[4,'It was a quiet evening. Grandpa ___ in his chair and the cat ___ on the sofa. Suddenly, the doorbell ___.',['was sleeping / was lying / rang','slept / lay / was ringing','was sleeping / lay / was ringing','sleeps / lies / rings'],'תיאור הרקע → progressive. <bdi>Suddenly</bdi> + אירוע קצר → <bdi>rang</bdi>.'],
+[4,'When I ___ Tom at the party, he ___ a blue shirt and ___ with Dana.',['saw / was wearing / was dancing','was seeing / was wearing / was dancing','saw / was wearing / were dancing','see / wears / dances'],'<bdi>see</bdi> (לראות) = פועל מצב → <bdi>saw</bdi>. מה שתום עשה באותו רגע → progressive, <bdi>he → was</bdi>.']
+];
+const N=QS.length,$=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+// S.d[i]=1 נלמדה, S.w[i]=מספר טעויות, S.f[i]=1 נכון בניסיון הראשון. S.rv = סבב חזרה על שאלות שטעו בהן.
+function fresh(){return{v:1,d:{},w:{},f:{},att:0,okc:0,st:{c:0,b:0},rv:null,rvd:{},started:new Date().toISOString()}}
+let S=LS.get('ev_past');if(!S||!S.d)S=fresh();S.rvd=S.rvd||{};
+const save=()=>LS.set('ev_past',S);
+const done=()=>Object.keys(S.d).length;
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+let Q=[],cur=-1,answered=false,first=true;
+function stageOf(){for(let s=0;s<ST.length;s++)if(QS.some((q,i)=>q[0]===s&&!S.d[i]))return s;return -1}
+function build(){if(S.rv){Q=shuf(S.rv.filter(i=>!S.rvd[i]));return}const s=stageOf();Q=s<0?[]:shuf(QS.map((q,i)=>i).filter(i=>QS[i][0]===s&&!S.d[i]))}
+function bar(){$('dn').textContent=done();$('acc').textContent='🎯 '+(S.att?Math.round(S.okc/S.att*100)+'%':'—');$('stk').textContent='🔥 '+S.st.c;
+ const sc=stageOf();$('stg').innerHTML=ST.map((n,s)=>{const t=QS.filter(q=>q[0]===s).length,d=QS.filter((q,i)=>q[0]===s&&S.d[i]).length;
+  return `<span class="${d===t?'ok':s===sc?'cur':''}"><i style="width:${d/t*100}%"></i><em>${d===t?'✓':'שלב '+(s+1)}</em></span>`}).join('')}
+// מקטינים גופן של השאלה והתשובות עד שהכול נכנס במסך אחד
+function fit(){const q=$('q'),c=$('card');let f=19;q.style.fontSize='';document.querySelectorAll('.op').forEach(o=>o.style.fontSize='');
+ while(f>13&&(q.scrollHeight>q.clientHeight+1||c.scrollHeight>c.clientHeight+1)){f--;q.style.fontSize=f+'px';if(f<16)document.querySelectorAll('.op').forEach(o=>o.style.fontSize=(f-1)+'px')}}
+const blank=t=>t.replace(/___/g,'<u>&nbsp;</u>');
+function show(){answered=false;$('nx').disabled=true;$('nx').textContent='הבא ›';
+ if(!Q.length)build();if(!Q.length)return finish();
+ cur=Q.shift();const q=QS[cur];first=!(S.w[cur]>0)||!!S.rv;
+ $('tg').textContent=S.rv?'🔁 חזרה על טעויות':'שלב '+(q[0]+1)+': '+ST[q[0]];
+ $('rt').classList.toggle('on',S.w[cur]>0&&!S.rv);
+ $('q').innerHTML='<span>'+blank(q[1])+'</span>';
+ const os=shuf(q[2].map((t,i)=>({t,i})));
+ $('opts').innerHTML=os.map((o,k)=>`<button class="op" type="button" data-i="${o.i}"><span class="k">${'ABCD'[k]}</span><span>${o.t}</span></button>`).join('');
+ $('fb').className='fb';$('fb').textContent='בחר את התשובה הנכונה';bar();fit()}
+$('opts').onclick=e=>{const b=e.target.closest('.op');if(!b||answered)return;answered=true;const ok=b.dataset.i==='0',q=QS[cur];S.att++;
+ document.querySelectorAll('.op').forEach(x=>{if(x.dataset.i==='0')x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
+ if(ok){S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);if(S.rv)S.rvd[cur]=1;else{S.d[cur]=1;if(!(S.w[cur]>0))S.f[cur]=1}
+  $('fb').className='fb ok';$('fb').innerHTML='✓ נכון! '+q[3]}
+ else{S.st.c=0;S.w[cur]=(S.w[cur]||0)+1;Q.splice(Math.min(3,Q.length),0,cur); // חוזרת אחרי 3 שאלות
+  $('fb').className='fb no';$('fb').innerHTML='✗ לא נכון. '+q[3]}
+ if(S.rv&&!Q.length&&ok){S.rv=null;S.rvd={}}
+ save();bar();$('nx').disabled=false;if(!Q.length&&(S.rv?false:stageOf()!==QS[cur][0]))$('nx').textContent=stageOf()<0?'לסיום 🎉':'לשלב הבא ›';report()};
+$('nx').onclick=()=>{if(answered)show()};
+function finish(){bar();const f=Object.keys(S.f).length,wr=QS.map((q,i)=>i).filter(i=>S.w[i]>0);$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">🏆</div><h2>סיימת את כל 50 השאלות!</h2><p><b>${f}</b> מתוך 50 נכונות בניסיון הראשון.<br>${wr.length?'יש '+wr.length+' שאלות שטעית בהן. שווה לעבור עליהן שוב לפני המבחן.':'בלי אף טעות, אלוף! 💪'}</p>`+
+ (wr.length?'<button class="bt pr" id="rvb" type="button">🔁 חזרה על השאלות שטעיתי</button>':'')+'<button class="bt" id="agb" type="button">↺ להתחיל מההתחלה</button>';
+ const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();$('card').classList.remove('fin');Q=[];show()};
+ $('agb').onclick=()=>{if(!confirm('להתחיל מההתחלה? ההתקדמות תתאפס.'))return;S=fresh();save();report();$('card').classList.remove('fin');Q=[];show()}}
+function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1})}
+$('rules').onclick=()=>$('ov').classList.add('on');$('cl').onclick=()=>$('ov').classList.remove('on');$('ov').onclick=e=>{if(e.target===$('ov'))$('ov').classList.remove('on')};
+if(window.StudyTrack)StudyTrack.init('evyatar','past',['ev_past']);
+if(!S.att)setTimeout(()=>$('ov').classList.add('on'),300); // פעם ראשונה: מציגים את הכללים
+addEventListener('resize',fit);
+show();
+</script>
+</body></html>

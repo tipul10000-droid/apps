@@ -9,13 +9,31 @@
 <meta name="apple-mobile-web-app-title" content="Study Monster">
 <meta name="theme-color" content="#eef1f5">
 <link rel="stylesheet" href="../theme.css">
+<script src="../content.js?v=4"></script>
+<style>
+/* תוכן בבדיקה = "בקרוב" (לא לחיץ). אחרי אישור ההורים: סרט "חדש!" */
+.item.soon{opacity:.6;pointer-events:none;border-style:dashed}.item.soon .go{visibility:hidden}
+.item{position:relative;overflow:hidden}.nwr{position:absolute;top:8px;left:-30px;width:110px;transform:rotate(-35deg);text-align:center;font:800 12px/20px system-ui,Arial,sans-serif;color:#fff;background:linear-gradient(90deg,#2f5d9e,#5b8fd6,#2f5d9e);background-size:200% 100%;animation:nwr 2.2s linear infinite;box-shadow:0 2px 6px rgba(47,93,158,.45);pointer-events:none}
+@keyframes nwr{to{background-position:200% 0}}
+/* שלושה תכנים: מצמצמים קצת במסכים נמוכים כדי שהכול ייכנס במסך אחד */
+@media (max-height:760px){.top{margin-bottom:10px}.list{gap:9px}.item{padding:11px 14px}.item .ic{width:46px;height:46px;font-size:25px}}
+</style>
 </head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
 <div class="top"><img src="../kids/evyatar.webp" alt=""><div><h1>היי אביתר!</h1><p>מה לומדים היום?</p></div></div>
 <div class="list">
 <a class="item" href="vocab/"><span class="ic">📚</span><span class="tx"><b>אוצר מילים באנגלית</b><small>בלוקים ורמות, לוח דירוג</small></span><span class="go">‹</span></a>
+<a class="item" id="psi" href="past/"><span class="ic">⏳</span><span class="tx"><b>זמני עבר: חזרה</b><small id="ps">50 שאלות, מהקל לקשה</small><div class="bar" id="psbr" style="display:none"><i id="psb" style="width:0"></i></div></span><span class="go">‹</span></a>
 <a class="item" href="notes/"><span class="ic">📎</span><span class="tx"><b>החומרים שלי</b><small id="nc">דפי נוסחאות, סיכומים ותמונות</small></span><span class="go">‹</span></a>
 </div>
+<script>
+// לפני אישור ההורים: "בקרוב". אחרי אישור: לחיץ, עם סרט "חדש!" עד הכניסה הראשונה (אורן 6.11.2026)
+function psGate(){var a=document.getElementById('psi'),ok=StudyContent.ok('evyatar/past');a.classList.toggle('soon',!ok);
+ if(!ok){document.getElementById('ps').textContent='בקרוב! 🚧';return}
+ if(StudyContent.isNew('evyatar/past')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
+ try{var s=JSON.parse(localStorage.getItem('ev_past'));if(s&&s.d&&s.att){var n=Object.keys(s.d).length;document.getElementById('ps').textContent=n+' מתוך 50 שאלות';document.getElementById('psbr').style.display='';document.getElementById('psb').style.width=(n/50*100)+'%'}}catch(e){}}
+psGate();StudyContent.refresh(function(){location.reload()});
+</script>
 <div id="rqm" style="margin-top:12px"></div>
 <div id="pbm" style="margin-top:10px"></div>
 <script src="../req.js?v=3"></script><script>StudyReq.mount('evyatar',true)</script>
