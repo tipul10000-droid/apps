@@ -79,9 +79,13 @@
     else if (lior) { out.party = "lior"; out.loc = "house"; }
     else if (out.how[0] === "home") { out.party = "self"; out.loc = "house"; }
 
+    // "להחזיר / להביא / לקחת X הביתה" = take something home from work (before leaving), not a shop errand
+    const takeHome = !kind && /(להחזיר|להביא|לקחת)\s.+\sהביתה\s*$/.test(body);
+    if (takeHome) { out.how = ["place"]; out.loc = "none"; out.party = "self"; out.anywhere = false; out.found.push("הביתה"); }
     // windows for the moment (place errands stop on the way; calls use the drive)
     let when = null;
-    if (kind === "am_road") when = buy ? ["errands", "drive_am"] : ["drive_am"];
+    if (takeHome) when = ["work", "drive_pm"];
+    else if (kind === "am_road") when = buy ? ["errands", "drive_am"] : ["drive_am"];
     else if (kind === "pm_road") when = buy ? ["drive_pm", "near_home"] : ["drive_pm"];
     else if (kind === "errands") when = ["errands"];
     else if (kind === "work") when = ["work"];
