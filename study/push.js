@@ -2,7 +2,7 @@
 // ילד: StudyPush.kid(host, 'dani', false)  (false = בת, true = בן) — כפתור "🔔 התראות" בדף הילד: הסבר איך מוסיפים למסך הבית, ואז הפעלה.
 //   הילד מקבל התראה על כל תוכן חדש (study_notify) ועל מתנות. רק אם רוצים.
 // הורה: StudyPush.parent(button) — באזור ההורים (הקוד נשמר ב-study_par_pin). מקבלים דוח אחרי כל תרגול, התראה כשמבחן קרוב וההתקדמות נמוכה,
-//   והודעה כשהילד יודע הכל. השרת: פונקציית study-push (כל 5 דקות). הסכמה: supabase/push.sql.
+//   והודעה כשהילד יודע הכל. כל הורה מקבל רק על ילדי המשפחה של הקוד שלו (9.11.2026). השרת: פונקציית study-push (כל 5 דקות). הסכמה: supabase/push.sql.
 // באייפון התראות עובדות רק מאפליקציה שנוספה למסך הבית ונפתחה מהאייקון (manifest: display standalone). ההתקדמות עוברת דרך study_state (track.js).
 (function(){
   var SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
@@ -66,7 +66,7 @@
         .then(function(j){if(!j||!j.ok)throw new Error(j&&j.err||'save');on=true;lsS(flag,'1');busy=false;state();draw();m.textContent='מעולה! מעכשיו יגיעו התראות 🎉'})
         .catch(function(e){busy=false;draw();m.textContent=e.message==='denied'?'ההתראות חסומות. מאשרים בהגדרות של הטלפון ← התראות ← Study Monster':e.message==='locked'?'יותר מדי ניסיונות קוד. נסו בעוד חצי שעה':e.message==='bad'?'צריך להיכנס שוב עם הקוד':'לא הצלחנו להפעיל. נסו שוב'})}
     function off(){if(busy)return;busy=true;go.disabled=true;
-      current().then(function(s){if(s)return rpc('study_push_off',{p_endpoint:s.endpoint,p_role:o.role,p_kid:o.kid||''}).catch(function(){})})
+      current().then(function(s){if(s)return rpc('study_push_off',{p_endpoint:s.endpoint,p_role:o.role,p_kid:o.role==='parent'?null:(o.kid||'')}).catch(function(){})})
         .then(function(){on=false;lsS(flag,null);busy=false;state();draw();m.textContent='ההתראות כובו'})
         .catch(function(){busy=false;draw();m.textContent='לא הצלחנו לכבות. נסו שוב'})}
     function state(){if(o.onState)o.onState(on)}
