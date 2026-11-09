@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.2";window.SQ_BUILD_AT="9.11.2026 15:35";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.3";window.SQ_BUILD_AT="9.11.2026 17:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -23,6 +23,7 @@ window.addEventListener("unhandledrejection",function(e){var r=e.reason;bar("pro
 setTimeout(function(){var l=document.getElementById("list"),pin=document.getElementById("sq-pin");if(!pin&&l&&/טוען/.test(l.textContent)&&l.children.length<=1)bar("הנתונים לא הגיעו אחרי 20 שניות");},20000);})();</script>
 <script src="sq-db.js?v=9"></script>
 <script src="timegate.js?v=3"></script>
+<script src="sqctx.js?v=1"></script>
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2130,6 +2131,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   function nearOk(t,id){const lim=FAR[id];if(lim==null)return true;const f=fitOf(t),hw=howOf(t);if(WINS[id]&&WINS[id].ov&&f.loc)return true; // 13.8: a classified task was placed by hand
     if(!hw.includes("place")||f.anywhere||(Array.isArray(f.alts)&&f.alts.length))return true;const k=kmNow(t,id);return k!=null&&k<=lim;}
   function fitsWin(t,id,at){if(!fitsWin0(t,id,at))return false;if(t.status==="waiting_other")return true;const n=ilNow(),base=ilDate();
+    if(t.ctx&&t.next_date&&t.next_date>(at&&at.d!=null?addDays(base,(at.d-n.d+7)%7):base))return false; // 14.3: "מחר בדרך לעבודה" waits for its day
     if(!at||at.d==null){if(id!==curWin().id)return true;return relAt(t,n.d,n.m,base)&&nearOk(t,id);}
     const k=(at.d-n.d+7)%7,iso=addDays(base,k);
     if(at.s!=null){if(k===0&&at.s<=n.m&&(at.e==null||n.m<at.e)&&id===curWin().id)return relAt(t,n.d,n.m,base)&&nearOk(t,id);return relSpan(t,at.d,at.s,at.e,iso);}
@@ -3560,6 +3562,12 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     }
     try{const nid=newId();await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:"",links:[],source:"נוסף ידנית בדף",size:"quick",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});$("qtitle").value="";showAdd(false);toast("נוסף",async()=>{try{await db.collection("topics").doc(nid).delete();toast("בוטל");}catch(e){fail(e);}});}catch(err){fail(err);}
   });
+  // 14.3 (Oren 9.11.2026): a new task said with its context ("מחר בדרך לעבודה לקנות עוגיות") is placed at once by sqctx.js:
+  // window (when), day (next_date), how / loc / party, and a title without the time words. sq-push does the same every 5 minutes.
+  const ctxBusy=new Set();
+  function ctxRun(all){const C=window.SQCtx;if(!C||!db)return;const n=ilNow(),now={date:ilDate(),mins:n.m};
+    for(const t of all){if(!C.wants(t)||ctxBusy.has(t.id))continue;const r=C.apply(t,now);if(!r)continue;ctxBusy.add(t.id);
+      db.collection("topics").doc(t.id).update(r.patch).catch(()=>ctxBusy.delete(t.id));}}
   setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
   function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"";}
   function showAdd(on){if(!on)micStop(true);if(on)showFind(false);$("quick").hidden=!on;if(on){$("qtitle").focus();$("quick").scrollIntoView({block:"nearest"});}}
@@ -4260,7 +4268,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
     if(!db){notice("חסר המפתח האישי. פתח את הלינק המלא עם המפתח (?k=...).");$("qbtn").disabled=true;$("list").replaceChildren();return;}
     try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"&&(await user.can("data.write"))===false){canWrite=false;$("qbtn").disabled=true;}}catch(e){}
-    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
+    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();ctxRun(all);},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
