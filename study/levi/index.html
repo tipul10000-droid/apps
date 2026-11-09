@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../guest.js?v=4"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · לוי</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../theme.css">
+<script src="../profiles.js?v=1"></script>
+<script src="../content.js?v=3"></script>
+<style>
+.kemo{width:64px;height:64px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:38px;line-height:1}
+/* תוכן בבדיקה = "בקרוב" (לא לחיץ). אחרי אישור ההורים: סרט "חדש!" חגיגי */
+.item.soon{opacity:.6;pointer-events:none;border-style:dashed}.item.soon .go{visibility:hidden}
+.item{position:relative;overflow:hidden}.nwr{position:absolute;top:8px;left:-30px;width:110px;transform:rotate(-35deg);text-align:center;font:800 12px/20px system-ui,Arial,sans-serif;color:#fff;background:linear-gradient(90deg,#ff5fa2,#ffb36b,#ff5fa2);background-size:200% 100%;animation:nwr 2.2s linear infinite;box-shadow:0 2px 6px rgba(255,95,162,.45);pointer-events:none}
+@keyframes nwr{to{background-position:200% 0}}
+</style>
+</head><body><main>
+<a class="back" href="../">→ כל הילדים</a>
+<div class="top"><span class="kemo" style="background:#e0ecff" aria-hidden="true">👦</span><div><h1>היי לוי! 🦁</h1><p>מה לומדים היום?</p></div></div>
+<div class="list">
+<a class="item" id="phi" href="phonics/"><span class="ic">🔤</span><span class="tx"><b>אותיות וצלילים באנגלית</b><small id="ph">43 צלילים, בהגייה אמריקאית</small><div class="bar"><i id="phb" style="width:0"></i></div></span><span class="go">‹</span></a>
+</div>
+<div id="rqm" style="margin-top:12px"></div>
+<div id="pbm" style="margin-top:10px"></div>
+<script>
+// לוי (9.11.2026): אותו שיעור צלילים של ליה, אחד לאחד, עם התקדמות משלו (levi_ph). אורן ביקש אותו ישירות, ולכן הוא פתוח (live).
+function phGate(){var a=document.getElementById('phi'),ok=StudyContent.ok('levi/phonics');a.classList.toggle('soon',!ok);
+ if(!ok){document.getElementById('ph').textContent='בקרוב! 🚧 אבא ואמא מכינים לך משהו מיוחד';return}
+ if(StudyContent.isNew('levi/phonics')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}}
+phGate();StudyContent.refresh(function(){location.reload()});
+</script>
+<script>if(StudyContent.ok('levi/phonics'))try{var s=JSON.parse(localStorage.getItem('levi_ph'));if(s&&s.w){var n=0,t=Object.keys(s.w).length;for(var k in s.w)if(s.w[k].s==='done')n++;if(s.T){document.getElementById('ph').textContent='אתה יודע '+n+' מתוך '+t+' צלילים';document.getElementById('phb').style.width=(n/t*100)+'%'}}}catch(e){}</script>
+<script src="../req.js?v=3"></script><script>StudyReq.mount('levi',true)</script>
+<script src="../push.js?v=2"></script><script>StudyPush.kid(document.getElementById('pbm'),'levi',true)</script>
+</main></body></html>

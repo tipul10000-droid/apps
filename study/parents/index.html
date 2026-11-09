@@ -64,6 +64,7 @@ details.more{margin-top:10px}details.more summary{cursor:pointer;color:#2f5d9e;f
 .lbx{margin-top:10px;font-size:14px;background:#f3f0ff;border-radius:10px;padding:8px 10px;line-height:1.5}
 .res{margin-top:8px;font-size:14px}.res>div{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #dde5f1}
 .res .sc{font-size:17px;color:var(--ac)}.res .x{font:inherit;font-size:12px;color:var(--mut);background:none;border:0;cursor:pointer;padding:2px 6px}
+.tabs .kemo{width:30px;height:30px;font-size:18px;border-radius:50%;display:grid;place-items:center;flex:none}
 .tabs{display:flex;gap:6px;margin-top:10px}.tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:48px;font:inherit;font-size:16px;font-weight:600;color:var(--fg);background:#fff;border:1px solid var(--bd);border-radius:12px;cursor:pointer;padding:0 6px;position:relative}.tabs button img{width:30px;height:30px;border-radius:8px;object-fit:contain;pointer-events:none}.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}.tabs .dot{position:absolute;top:5px;left:7px;width:9px;height:9px;border-radius:50%;background:#e11d48;display:none}.tabs .dot.on{display:block}
 .kid.off{display:none}
 .ev{margin:4px 0 10px;background:#eef3fb;border:1px solid #d6e2f3;border-radius:12px;padding:10px 12px;font-size:15px}.ev .l{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px}.ev .ok{color:#15803d;font-weight:700}.ev .pen{font:inherit;font-size:14px;background:#fff;border:1px solid var(--bd);border-radius:10px;width:84px;height:34px;cursor:pointer;flex:none}.ev .row{display:flex;gap:6px;margin-top:8px}.ev input{font:inherit;font-size:15px;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;flex:1;min-width:0}.ev .ed{display:none}.ev .ed.on{flex-wrap:wrap}.ev .gn{background:#fff;color:var(--ac);border:1px solid var(--bd);flex:1 1 100%}.ev .ed.on{display:flex;animation:grow .2s ease-out}.ev.fl{animation:flash 1.6s ease-out}.ev .sv{color:#15803d;font-size:13px;font-weight:700;margin-top:4px}
@@ -75,27 +76,35 @@ html,body,*{touch-action:manipulation}
 </style></head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
 <div id="v"></div>
-<script src="../content.js?v=2"></script>
+<script src="../profiles.js?v=1"></script>
+<script src="../content.js?v=3"></script>
 <script src="../push.js?v=2"></script>
 <script>
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
 // הקוד נבדק בשרת (study_parents_get). אחרי קוד נכון הוא נשמר במכשיר (study_par_pin); קוד שגוי מוחק אותו.
-const KIDS=[{id:'evyatar',n:'אביתר',apps:[{id:'vocab',n:'אוצר מילים באנגלית',unit:'מילים',test:'מבחן'}]},
+const KIDS_ALL=[{id:'evyatar',n:'אביתר',boy:1,apps:[{id:'vocab',n:'אוצר מילים באנגלית',unit:'מילים',test:'מבחן'}]},
 {id:'dani',n:'דני',apps:[{id:'spelling',n:'הכתבה ואוצר מילים באנגלית',unit:'מילים',test:'הכתבה'}]},
-{id:'lia',n:'ליה',apps:[{id:'phonics',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן',gen:1}]}];
+{id:'lia',n:'ליה',apps:[{id:'phonics',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן',gen:1}]},
+{id:'levi',n:'לוי',boy:1,noqz:1,apps:[{id:'phonics',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן',gen:1}]},
+{id:'shilo',n:'שילו',boy:1,noqz:1,apps:[]}];
+// אזור הורים לפי משפחה (אורן 9.11.2026): רק הילדים של המשפחה שנבחרה במכשיר (⚙️ במסך הראשי), וקוד הורים לכל משפחה.
+// השרת מחזיר רק את הילדים של המשפחה של הקוד (fam). הקוד נשמר במכשיר לכל משפחה בנפרד (study_par_pin / study_par_pin_<fam>).
+const FAM=StudyProfiles.cur(),FAMK=StudyProfiles.kidsOf(),PINK=FAM==='a'?'study_par_pin':'study_par_pin_'+FAM;
+const KIDS=KIDS_ALL.filter(k=>FAMK.includes(k.id));
 // הכינויים של אביתר בלוח הדירוג של אוצר המילים
 const LBN=['אביה','אביתר','evyatar','avia'];
 const $=id=>document.getElementById(id),V=$('v');
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let PIN='';try{PIN=localStorage.getItem('study_par_pin')||''}catch(e){}
+let PIN='';try{PIN=localStorage.getItem(PINK)||''}catch(e){}
 const rpc=(fn,b)=>fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(b)}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
-function pinView(msg){V.innerHTML=`<div class="pin"><h1>🔒 אזור הורים</h1><p>ההתקדמות של כל הילדים. הכניסה עם קוד.</p>
+function pinView(msg){V.innerHTML=`<div class="pin"><h1>🔒 אזור הורים</h1><p>ההתקדמות של ${esc(StudyProfiles.fam().n)}. הכניסה עם קוד.</p>
 <input id="pi" type="password" inputmode="numeric" autocomplete="off" maxlength="8"><br><button class="b" id="pb" type="button">כניסה</button><div class="msg" id="pm">${esc(msg||'')}</div></div>`;
  const go=()=>{const v=$('pi').value.trim();if(!v)return;PIN=v;load(true)};$('pb').onclick=go;$('pi').onkeydown=e=>{if(e.key==='Enter')go()};setTimeout(()=>$('pi').focus(),50)}
 function load(fromForm){if(fromForm&&$('pm'))$('pm').textContent='בודק...';
  rpc('study_parents_get',{p_pin:PIN}).then(j=>{
-  if(!j||!j.ok){try{if(j&&j.err==='bad')localStorage.removeItem('study_par_pin')}catch(e){}PIN='';return pinView(j&&j.err==='locked'?'יותר מדי ניסיונות. אפשר לנסות שוב בעוד חצי שעה.':'הקוד לא נכון')}
-  try{localStorage.setItem('study_par_pin',PIN)}catch(e){}show(j)})
+  if(j&&j.ok&&j.fam&&j.fam!==FAM){PIN='';return pinView('הקוד הזה שייך למשפחה אחרת. אפשר להחליף משפחה ב-⚙️ במסך הראשי.')}
+  if(!j||!j.ok){try{if(j&&j.err==='bad')localStorage.removeItem(PINK)}catch(e){}PIN='';return pinView(j&&j.err==='locked'?'יותר מדי ניסיונות. אפשר לנסות שוב בעוד חצי שעה.':'הקוד לא נכון')}
+  try{localStorage.setItem(PINK,PIN)}catch(e){}show(j)})
  .catch(()=>pinView('אין חיבור לשרת כרגע. נסו שוב עוד מעט.'))}
 const fmtT=s=>{s=Math.round(s/60);if(s<60)return s+' דק׳';return Math.floor(s/60)+' שע׳ '+(s%60?s%60+' דק׳':'')};
 const fmtD=d=>d?new Date(d).toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'2-digit'}):'-';
@@ -109,7 +118,7 @@ function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה
   for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)});if(Array.isArray(d.tl)&&d.tl.length)(r.tls=r.tls||[]).push(d.tl);(r.devs=r.devs||[]).push({f:d.first||x.first_at,a:+d.att||0,o:+d.ok||0});if((+d.att||0)>=(r.xa||0)){r.xa=+d.att||0;r.ph=d.ph;r.grp=d.grp;r.top=d.top;r.hist=d.hist;r.tlm=d.tl;r.lv=d.lv;r.lvn=d.lvn;r.prog=d.prog;r.pmax=d.pmax}(d.hard1||[]).forEach(h=>{r.hard1=r.hard1||{};r.hard1[h.e]=Math.max(r.hard1[h.e]||0,h.n)});
   if(d.group)r.group=Math.max(r.group||0,+d.group);for(const g in d.tests||{}){const o=d.tests[g]||{};r.tests=r.tests||{};const c=r.tests[g]||{best:0};r.tests[g]={best:Math.max(c.best,+o.best||0),last:(!c.d||o.d>=c.d)?o.last:c.last,d:(!c.d||o.d>=c.d)?o.d:c.d}}});return r}
 const id0=(k,a)=>k.id+'_'+a.id;
-let TAB='dani',SAVED='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}
+let TAB='dani',SAVED='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}if(!KIDS.some(k=>k.id===TAB))TAB=KIDS[KIDS.length>1&&FAM==='a'?1:0].id;
 // אירוע = תוכן לימוד עם מבחן/הכתבה אחד (אורן 6.11.2026): תאריך ← אחרי שעבר: ציון ← הציון. תאריך שנשמר מוצג עם ✓ ועיפרון לעריכה.
 function evBox(k,a,t,RS,id){const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null;
  const G=RS[0],DN=t&&t.done,PAST=t&&t.d&&dl!==null&&dl<=0,TN=esc(t&&t.note||a.test),fl=SAVED===id?' fl':'';
@@ -171,14 +180,14 @@ function improve(r,k){const X=impX(r,k);if(!r.tls)return X?`<div class="imp"><di
  Object.keys(G).map(Number).sort((x,y)=>x-y).forEach(g=>{const x=G[g];bars.push({l:(x.k*20)+'′',a:x.a,o:x.o})});
  bars.forEach(b=>b.p=Math.min(100,Math.max(0,Math.round(b.o/b.a*100))));const f=bars[0],l=bars[bars.length-1];
  const cols=bars.map((b,i)=>{const lab=bars.length<=7||i===0||i===bars.length-1;return`<div class="imc${b.old?' old':''}${b.a<5?' few':''}" title="${b.l}: ${b.p}% (${b.o} מתוך ${b.a})"><span class="imv">${lab?b.p+'%':''}</span><div class="imt"><i style="height:${Math.max(2,b.p)}%"></i></div><span class="imx">${b.l}</span><span class="ima">${b.a}</span></div>`}).join('');
- const d=l.p-f.p,sum=bars.length>1?`בהתחלה <b>${f.p}%</b> ← עכשיו <b>${l.p}%</b> ${d>=5?(k.id==='evyatar'?'📈 השתפר':'📈 השתפרה'):d<=-5?'📉 ירידה, כדאי לבדוק':'≈ יציב'}`:'אחוז ההצלחה עד עכשיו. מעכשיו תתווסף עמודה לכל 20 דקות לימוד.';
+ const d=l.p-f.p,sum=bars.length>1?`בהתחלה <b>${f.p}%</b> ← עכשיו <b>${l.p}%</b> ${d>=5?(!!k.boy?'📈 השתפר':'📈 השתפרה'):d<=-5?'📉 ירידה, כדאי לבדוק':'≈ יציב'}`:'אחוז ההצלחה עד עכשיו. מעכשיו תתווסף עמודה לכל 20 דקות לימוד.';
  return`<div class="imp"><div class="imh">🎯 אחוז הצלחה לכל 20 דקות לימוד</div><div class="imr">${cols}</div><small class="imn">${sum}<br>כל עמודה = 20 דקות לימוד${step>1?' (כאן '+step*20+' דק׳)':''}, המספר למטה = כמה תשובות. עמודה בהירה = פחות מ-5 תשובות.</small>${X}</div>`}
 function timeline(r,t,a,k){const D0=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x},today=D0(new Date()),dk=Object.keys(r.days).sort();
  let st=r.first?D0(r.first):today;if(dk[0]){const f=D0(dk[0]+'T00:00:00');if(f<st)st=f}if(st>today)st=today;
  const ex=t&&t.d&&!t.done?D0(t.d+'T00:00:00'):null,end=ex&&ex>=st?ex:today,N=Math.round((end-st)/864e5)+1;
  const all=[];for(let i=0;i<N;i++){const d=new Date(st);d.setDate(d.getDate()+i);all.push(d)}
  const cols=N>21?[all[0],null,...all.slice(-19)]:all,mx=Math.max(300,...dk.map(x=>r.days[x]));
- const dm=d=>d.getDate()+'.'+(d.getMonth()+1),T=esc(a.test),boy=k.id==='evyatar';
+ const dm=d=>d.getDate()+'.'+(d.getMonth()+1),T=esc(a.test),boy=!!k.boy;
  const studied=dk.filter(x=>r.days[x]>0&&D0(x+'T00:00:00')<=today).length;
  const cell=d=>{if(!d)return`<div class="c gap"><div class="tg"></div><div class="br"></div><div class="dl">…</div><div class="dn"></div></div>`;
   const s=r.days[iso(d)]||0,fut=d>today,now=+d===+today,isEx=ex&&+d===+ex,first=+d===+st;
@@ -192,12 +201,12 @@ function timeline(r,t,a,k){const D0=d=>{const x=new Date(d);x.setHours(0,0,0,0);
 function needsGrade(j,k){return k.apps.some(a=>{const t=(j.tests||[]).find(x=>x.kid===k.id&&x.app===a.id)||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null);if(!t)return false;
  if((j.results||[]).some(x=>x.kid===k.id&&x.app===a.id))return false;return t.done||(t.d&&new Date(t.d+'T00:00:00')<=new Date(new Date().toDateString()))})}
 function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/'+t.app]=t);
- let h=`<div class="stk"><a class="back" href="../">→ כל הילדים</a><div class="head"><h1 style="margin:0;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button><button class="b s" id="rf" type="button">רענון</button><button class="b s" id="lo" type="button">יציאה</button></span></div><div class="tabs" id="tabs">${KIDS.map(k=>`<button type="button" data-k="${k.id}"${k.id===TAB?' class="on"':''}><img src="../kids/${k.id}.webp" alt="">${k.n}<i class="dot" id="dot_${k.id}"></i></button>`).join('')}</div></div>`;
+ let h=`<div class="stk"><a class="back" href="../">→ כל הילדים</a><div class="head"><h1 style="margin:0;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button><button class="b s" id="rf" type="button">רענון</button><button class="b s" id="lo" type="button">יציאה</button></span></div><div class="tabs" id="tabs">${KIDS.map(k=>`<button type="button" data-k="${k.id}"${k.id===TAB?' class="on"':''}>${StudyProfiles.pic(k.id,'tpic')}${k.n}<i class="dot" id="dot_${k.id}"></i></button>`).join('')}</div></div>`;
  KIDS.forEach(k=>{h+=`<div class="kid${k.id===TAB?'':' off'}" id="kd_${k.id}">`;
-  if(!k.apps.length)h+=`<div class="none">עוד אין תכנים</div>`;
+  if(!k.apps.length)h+=`<div class="none">עוד אין תכנים. התכנים של ${k.n} יגיעו בהמשך 🎈</div>`;
   k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`+(window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<div class="cnt" id="cr_${id}" data-c="${k.id}/${a.id}" data-n="${k.n}"></div>`:'')+evBox(k,a,t,RS,id0(k,a));
-   if(!rows.length)h+=`<div class="none">עוד לא התחיל${k.id==='evyatar'?'':'ה'} (או שעוד לא נכנס${k.id==='evyatar'?'':'ה'} מאז שהוספנו את המעקב)</div>`;
-   else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null,she=k.id==='evyatar'?'':'ה';
+   if(!rows.length)h+=`<div class="none">עוד לא התחיל${!!k.boy?'':'ה'} (או שעוד לא נכנס${!!k.boy?'':'ה'} מאז שהוספנו את המעקב)</div>`;
+   else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null,she=!!k.boy?'':'ה';
     // אורן 7.11.2026: למעלה רק מה שמעניין (זמן, איפה עומדים, דיוק, גרף שיפור לכל רמת קושי ומה לחזק), וכל השאר מקופל ב"עוד נתונים".
     const td=r.days[new Date().toISOString().slice(0,10)]||0,nd=Object.keys(r.days).length,rec=recent(r);
     h+=`<div class="kp"><div><small>⏱️ זמן לימוד</small><b>${fmtT(r.sec)}</b><small>${nd} ${nd===1?'יום':'ימים'} · היום ${td?fmtT(td):'עוד לא'}</small></div>
@@ -221,11 +230,11 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
    if(a.id==='vocab'){const L=(j.lb||[]).filter(x=>LBN.includes(String(x.name).trim().toLowerCase()));
     if(L.length)h+=`<div class="lbx">🏅 מלוח הדירוג באפליקציה: ${L.map(x=>`הכינוי <b>${esc(x.name)}</b>: נלמדו ${x.learned}, שיא רצף ${x.best}, עדכון אחרון ${fmtD(x.updated_at)}`).join('<br>')}</div>`}
    h+=`<div class="rst"><button class="lnk" type="button" data-z="${k.id}|${a.id}|${a.n}|${k.n}">↺ איפוס ההתקדמות</button>${RZ?`<small>אופס לאחרונה ${fmtD(RZ.at)}</small>`:''}</div></div>`})
-  h+=`<div class="qzc" id="qz_${k.id}"></div><div class="rqs" id="rq_${k.id}"></div></div>`});
+  h+=`${k.noqz?'':`<div class="qzc" id="qz_${k.id}"></div>`}<div class="rqs" id="rq_${k.id}"></div></div>`});
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
  V.innerHTML=h;SAVED='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);const d=$('dot_'+k.id);if(d)d.classList.toggle('on',NG[k.id])});loadReq();loadQz();drawCnt();StudyContent.refresh(drawCnt);
  V.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{TAB=b.dataset.k;try{localStorage.setItem('study_par_tab',TAB)}catch(e){}V.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));KIDS.forEach(k=>$('kd_'+k.id).classList.toggle('off',k.id!==TAB));scrollTo(0,0)});
- V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':(b.dataset.l||'✏️ עריכה')});if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem('study_par_pin')}catch(e){}PIN='';pinView()};
+ V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':(b.dataset.l||'✏️ עריכה')});if(FAM!=='a'){const nb=$('nt');if(nb)nb.style.display='none'}else if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem(PINK)}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
  V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const [k,a]=b.dataset.t.split('|'),id=k+'_'+a;b.textContent='...';
   SAVED=id;done(b,rpc('study_parents_set_test',{p_pin:PIN,p_kid:k,p_app:a,p_d:$('d_'+id).value||null,p_note:''}))});
@@ -239,7 +248,7 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
  V.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{if(!confirm('למחוק את הציון? אפשר יהיה להזין אותו מחדש.'))return;
   done(b,rpc('study_parents_result',{p_pin:PIN,p_kid:null,p_app:null,p_d:null,p_note:null,p_score:null,p_hide_id:+b.dataset.h}))})}
 // תוכן בבדיקה (אורן 6.11.2026): תוכן חדש פתוח קודם רק כאן. "👀 לפתוח ולבדוק" נכנס עם ?review=1, ו"✓ התוכן אושר" פותח אותו לילד עם סרט "חדש!".
-function drawCnt(){V.querySelectorAll('.cnt').forEach(b=>{const id=b.dataset.c,kn=b.dataset.n,ok=StudyContent.ok(id),boy=id.startsWith('evyatar');
+function drawCnt(){V.querySelectorAll('.cnt').forEach(b=>{const id=b.dataset.c,kn=b.dataset.n,ok=StudyContent.ok(id),boy=!!(StudyProfiles.kids[id.split('/')[0]]||{}).boy;
  b.innerHTML=ok?`<div class="cl">✅ התוכן אושר. ${kn} ${boy?'רואה':'רואה'} אותו עכשיו עם סרט "חדש!" ✨</div>`
   :`<div class="cl">🧪 <b>בבדיקה:</b> ${kn} עוד לא ${boy?'רואה':'רואה'} את זה (${boy?'אצלו':'אצלה'} מופיע "בקרוב"). אפשר לבדוק ואז לאשר.</div><div class="cb"><a class="b s soft" href="../${id}/?review=1">👀 לפתוח ולבדוק</a><button class="b s" type="button" data-ca="${id}">✓ התוכן אושר</button></div><div class="cm" id="cm_${id.replace('/','_')}"></div>`});
  V.querySelectorAll('[data-ca]').forEach(x=>x.onclick=()=>{const id=x.dataset.ca,m=$('cm_'+id.replace('/','_'));if(!confirm('לאשר את התוכן? מעכשיו הילד יראה אותו.'))return;m.textContent='שומר...';
@@ -248,7 +257,7 @@ function drawCnt(){V.querySelectorAll('.cnt').forEach(b=>{const id=b.dataset.c,k
 // המסך הראשי במכשיר של הילד מדווח מצב (study_quiz_sync) ומבצע את הפקודה האחרונה. הכפתורים קבועים, רק שורת המצב מתחלפת.
 let QZF='';
 function loadQz(kid,cmd){rpc('study_parents_quiz',{p_pin:PIN,p_kid:kid||null,p_cmd:cmd||null}).then(j=>{if(!j||!j.ok)return;
- KIDS.forEach(k=>{const box=$('qz_'+k.id);if(!box)return;const q=(j.items||[]).find(x=>x.kid===k.id)||{},boy=k.id==='evyatar',now=Date.now();
+ KIDS.forEach(k=>{const box=$('qz_'+k.id);if(!box)return;const q=(j.items||[]).find(x=>x.kid===k.id)||{},boy=!!k.boy,now=Date.now();
   const lk=q.until_at&&Date.parse(q.until_at)>now,pend=q.cmd_at&&(!q.applied_at||Date.parse(q.applied_at)<Date.parse(q.cmd_at)),ms=lk?Date.parse(q.until_at)-now:0;
   const hm=Math.floor(ms/36e5)+':'+('0'+Math.floor(ms%36e5/6e4)).slice(-2);
   const perm=q.cmd==='open',CM={unlock:'השחרור יקרה',lock:'הנעילה תקרה',open:'הפתיחה תתחיל',auto:'החזרה לכללים תקרה'};
@@ -264,8 +273,8 @@ const ARC={},NG={};const RQK={test:'📅 מבחן קרוב',quiz:'⏰ בוחן',
 function loadReq(id,set){rpc('study_parents_requests',{p_pin:PIN,p_id:id||null,p_set:set||null}).then(j=>{if(!j||!j.ok)return;
  KIDS.forEach(k=>{const box=$('rq_'+k.id);if(!box)return;const L=j.items.filter(x=>x.kid===k.id),open=L.filter(x=>!x.done).length;
   const O=L.filter(x=>!x.done),D=L.filter(x=>x.done),row=x=>`<div class="rq${x.done?' dn':''}"><div class="t"><span>${RQK[x.kind]||''}</span><span>${ago(x.at)}</span></div><div class="tx">${esc(x.txt)}</div><div class="a">${x.done?`<span class="none" style="font-size:13px">✓ טופל ${x.done_at?ago(x.done_at):''}</span><button class="lnk" type="button" data-q="${x.id}|open">↩ לא טופל</button>`:`<button class="lnk" type="button" data-q="${x.id}|done">✓ טופל</button>`}<button class="lnk" type="button" data-q="${x.id}|hide">הסתרה</button></div></div>`;
-  box.innerHTML=`<h3>💬 בקשות והצעות${open?` (${open===1?"1 פתוחה":open+" פתוחות"})`:''}</h3>`+(O.length?O.slice(0,30).map(row).join(''):`<div class="none">${L.length?'אין בקשות פתוחות 👍':'עוד לא '+(k.id==='evyatar'?'שלח':'שלחה')+' בקשות'}</div>`)+
-   (D.length?`<details class="arc"${ARC[k.id]?' open':''} data-k="${k.id}"><summary>📦 ארכיון: טופלו (${D.length})</summary>${D.slice(0,30).map(row).join('')}<div class="none" style="font-size:12px;margin-top:6px">${k.id==='evyatar'?'הוא מקבל':'היא מקבלת'} הודעה "✅ אבא ואמא טיפלו בזה" כשנכנס${k.id==='evyatar'?'':'ת'} לדף ${k.id==='evyatar'?'שלו':'שלה'}.</div></details>`:'');
+  box.innerHTML=`<h3>💬 בקשות והצעות${open?` (${open===1?"1 פתוחה":open+" פתוחות"})`:''}</h3>`+(O.length?O.slice(0,30).map(row).join(''):`<div class="none">${L.length?'אין בקשות פתוחות 👍':'עוד לא '+(!!k.boy?'שלח':'שלחה')+' בקשות'}</div>`)+
+   (D.length?`<details class="arc"${ARC[k.id]?' open':''} data-k="${k.id}"><summary>📦 ארכיון: טופלו (${D.length})</summary>${D.slice(0,30).map(row).join('')}<div class="none" style="font-size:12px;margin-top:6px">${!!k.boy?'הוא מקבל':'היא מקבלת'} הודעה "✅ אבא ואמא טיפלו בזה" כשנכנס${!!k.boy?'':'ת'} לדף ${!!k.boy?'שלו':'שלה'}.</div></details>`:'');
   const dt=$('dot_'+k.id);if(dt)dt.classList.toggle('on',!!(NG[k.id]||O.length))});
  V.querySelectorAll('details.arc').forEach(d=>d.ontoggle=()=>{ARC[d.dataset.k]=d.open})
  V.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const [i,s]=b.dataset.q.split('|');if(s==='hide'&&!confirm('להסתיר את הבקשה?'))return;b.textContent='...';loadReq(+i,s)})}).catch(()=>{})}

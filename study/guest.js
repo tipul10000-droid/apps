@@ -29,7 +29,8 @@
   if(!G)return;
   var P=Storage.prototype,gi=P.getItem,si=P.setItem,ri=P.removeItem;
   // חידון הכניסה (אורן 6.11.2026): הנעילה (study_qz_*) וסימון 'עבר' (study_ok_*) משותפים לרגיל ולאורח, כדי שאורח באותו מכשיר לא יעקוף נעילה קיימת
-  function k(x){x=String(x);return (x==='study_guest'||/^study_(qz|ok)_/.test(x))?x:'guest:'+x}
+  // study_profile (המשפחה שנבחרה במכשיר, 9.11.2026) משותף גם הוא
+  function k(x){x=String(x);return (x==='study_guest'||x==='study_profile'||/^study_(qz|ok)_/.test(x))?x:'guest:'+x}
   P.getItem=function(x){return gi.call(this,k(x))};
   P.setItem=function(x,v){return si.call(this,k(x),v)};
   P.removeItem=function(x){return ri.call(this,k(x))};

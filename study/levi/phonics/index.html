@@ -1,0 +1,340 @@
+<!doctype html>
+<!-- נוצר אוטומטית מ-lia/phonics/index.html ע"י study/tools/build.py. לא לערוך כאן: לשנות אצל ליה ולהריץ שוב. -->
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=4"></script>
+<script src="../../content.js?v=3"></script><script>StudyContent.guard('levi/phonics')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · אותיות וצלילים</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css">
+<style>
+:root{--pu:#4f46e5;--pk:#f97316;--pl:#eef0ff;--ok:#16a34a;--no:#e11d48;--sm:#5b21b6}
+main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;flex-direction:column;justify-content:safe center}
+.nav{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex:none}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 9px;cursor:pointer;white-space:nowrap}
+.ib.gift{background:#fff4e8;border-color:#fdba74;color:#9a3412;font-weight:700;font-size:13px;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;width:38px;text-align:center;direction:ltr;background:#ea580c;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
+@keyframes gw{0%,88%,100%{transform:none}91%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}97%{transform:rotate(-3deg)}}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh)}
+.prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px}
+.prog .row b{color:var(--fg);font-size:17px}
+.chips{display:flex;gap:5px}.chip{font-size:13px;background:var(--pl);color:#3730a3;border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
+.grp{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px}
+.grp span{height:24px;border-radius:8px;background:#f1f3f7;color:var(--mut);font:600 11px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;direction:ltr;overflow:hidden;white-space:nowrap;position:relative}
+.grp span i{position:absolute;inset:0 auto 0 0;background:rgba(79,70,229,.16);width:0}
+.grp span.cur{background:#e0e7ff;color:#3730a3;outline:2px solid #818cf8}.grp span.ok{background:#dcfce7;color:#166534}
+.card{flex:0 1 490px;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px;box-shadow:var(--sh);text-align:center;margin-top:10px}
+.top2{display:flex;align-items:center;justify-content:space-between;height:26px;flex:none}
+.mode{font-size:13px;font-weight:700;color:#3730a3;background:var(--pl);border-radius:20px;padding:2px 10px}.mode.new{color:#9a3412;background:#fff1e6}.mode.tst{color:#0f766e;background:#ccfbf1}
+.pxb{font:inherit;font-size:13px;color:var(--mut);background:none;border:1px solid var(--bd);border-radius:14px;padding:2px 9px;cursor:pointer}
+.ask{font-size:16px;color:var(--fg);font-weight:600;margin:6px 0 4px;flex:none}
+.mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:6px}
+.big{font:800 64px/1 system-ui,Arial,sans-serif;direction:ltr;color:var(--fg)}.big small{font-size:.62em;color:var(--mut);font-weight:700;margin-left:6px}
+.pic{font-size:54px;line-height:1}
+.word{font:800 28px system-ui,Arial,sans-serif;direction:ltr}.word u{text-decoration:none;color:var(--pk)}
+.say{font:inherit;font-size:15px;background:var(--pl);color:#3730a3;border:0;border-radius:20px;padding:6px 14px;cursor:pointer}
+.say.lg{font-size:30px;width:92px;height:92px;border-radius:50%;padding:0;box-shadow:0 3px 0 #c7d2fe}
+.says{display:flex;gap:8px;justify-content:center}
+.heb{border-radius:14px;padding:8px 12px;font-size:19px;line-height:1.45;width:100%;max-width:380px;flex:none}.heb .hl{display:block;font:800 36px/1.1 system-ui,Arial,sans-serif;margin:2px 0}
+.heb b{display:block;font-size:15px;margin-bottom:1px}.heb.same{background:#ecfdf5;color:#065f46}.heb.near{background:#fffbeb;color:#92400e}.heb.new{background:#fdf2f8;color:#9d174d}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:none}.opts.o3{grid-template-columns:1fr 1fr 1fr}
+.opt{font:700 26px system-ui,Arial,sans-serif;color:inherit;background:#fff;border:2px solid var(--bd);border-radius:14px;padding:6px;cursor:pointer;height:58px;direction:ltr}
+.opt.he{direction:rtl;font-size:28px}.opt.snd{font-size:20px}.opt.sel{border-color:#818cf8;background:#eef2ff}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}.opt.no{background:var(--no);border-color:var(--no);color:#fff}
+.fb{height:46px;flex:none;display:flex;flex-direction:column;justify-content:center;font-size:15px;line-height:1.3;margin:4px 0}
+.fb .t{font-size:18px;font-weight:800}.fb .ok{color:var(--ok)}.fb .no{color:var(--no)}
+.btns{display:flex;gap:8px;flex:none}
+.btn{flex:1;font:inherit;font-weight:700;padding:12px;border:0;border-radius:14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pu),#7c3aed);box-shadow:0 3px 0 #3730a3;height:50px}
+.btn:disabled{opacity:.45}.btn.soft{color:var(--mut);background:#f1f3f7;box-shadow:none;font-weight:600}
+.slots{display:flex;gap:6px;justify-content:center;direction:ltr;min-height:52px}
+.slots span{min-width:44px;height:52px;border-bottom:3px solid #818cf8;font:800 32px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.slots.ok span{color:var(--ok);border-color:var(--ok)}.slots.no span{color:var(--no);border-color:var(--no)}.slots.no span.g{color:var(--ok);border-color:var(--ok)}.fb .mine{font-size:13px;color:var(--mut);line-height:1.2}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;direction:ltr;flex:none}
+.tiles button{font:700 24px system-ui,Arial,sans-serif;height:50px;border:2px solid var(--bd);background:#fff;border-radius:12px;cursor:pointer;color:inherit}
+.tiles button.used{visibility:hidden}.tiles .bk{font-size:20px;background:#f1f3f7}
+.tmr{font:800 34px system-ui,Arial,sans-serif;color:#0f766e;direction:ltr}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 14px)}
+.ov.on{display:flex}
+.pn{background:var(--card);border-radius:20px;padding:18px 16px;width:100%;max-width:500px;max-height:100%;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.pn h2{margin:0 0 10px;font-size:21px}.pn p{margin:8px 0;line-height:1.5;font-size:16px}.pn ul{margin:8px 0;padding-right:20px;line-height:1.5;font-size:16px}
+.pn .btn{width:100%;margin-top:10px}
+.lk{display:block;margin:10px auto 0;background:none;border:0;color:var(--mut);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer}
+#sqov .pn{text-align:center;overflow:hidden}
+#sqimg{width:150px;height:150px;margin:6px auto;display:block;animation:sqin .9s cubic-bezier(.2,1.6,.4,1)}#sqimg.squish{animation:squish .5s}
+@keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
+@keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
+.pb{height:8px;background:#e8eaf6;border-radius:8px;overflow:hidden}.pb i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--pu),var(--pk));transition:width .5s}
+.sqg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px;max-width:360px;margin-inline:auto}
+.sqg div{background:#f7f7ff;border:1px solid #e4e6fb;border-radius:10px;padding:2px}
+.sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}
+.sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
+.sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
+.sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
+.sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
+.conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:20;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:24px;font-weight:900;color:var(--pu);z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap;direction:rtl;unicode-bidi:isolate;background:#fff;border:2px solid #c7d2fe;border-radius:999px;padding:4px 16px;box-shadow:0 6px 18px rgba(55,48,163,.18)}
+@keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
+.cr{font-size:12px;color:var(--mut);line-height:1.4}
+@media(max-height:700px){.big{font-size:52px}.pic{font-size:44px}.word{font-size:24px}.say.lg{width:76px;height:76px;font-size:26px}.opt{height:50px;font-size:23px}.heb{font-size:17px;padding:6px 10px}.heb .hl{font-size:30px}.btn{height:46px;padding:9px}.chips{display:none}.ask{margin:4px 0 2px;font-size:15px}.tiles button{height:44px}.slots span{height:46px;font-size:28px}}
+@media(max-height:640px){.grp span{height:20px}.big{font-size:44px}.pic{font-size:36px}.mid{gap:4px}.fb{height:40px}.heb{font-size:16px}.heb .hl{font-size:26px}}
+@media(prefers-reduced-motion:reduce){#sqimg,.ib.gift{animation:none!important}}
+</style></head><body><main>
+<div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="hw" type="button" aria-label="איך זה עובד">❓</button><button class="ib gift" id="sqb" type="button">🧱 סקווישים <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
+<div class="prog">
+  <div class="row"><span><b id="dn">0</b> מתוך <span id="tt">35</span> <span id="un">צלילים</span></span><span class="chips"><span class="chip" id="pts">⭐ 0</span><span class="chip" id="stc">🔥 0</span></span></div>
+  <div class="grp" id="grp"></div>
+</div>
+<div class="card" id="card"></div>
+
+<div class="ov" id="intro"><div class="pn">
+<h2>היי לוי! 🚀 אותיות וצלילים באנגלית</h2>
+<p><b>המטרה:</b> לדעת איזה צליל עושה כל אות באנגלית, בהגייה אמריקאית, ולקרוא איתם מילים.</p>
+<ul>
+<li>כל אות חדשה: שומעים את הצליל ואת המילה, ורואים אם יש צליל כזה בעברית.</li>
+<li>אחר כך משחקים: מה שמעת? איזה צליל עושה האות? באיזו אות מתחילה המילה?</li>
+<li>על כל צליל עונים נכון <b>פעמיים</b>, בתרגילים שונים, ואז הוא שלך ✅</li>
+<li>7 קבוצות. בסוף כל קבוצה: ⏱️ מבחן של דקה, כמו בבתי ספר באמריקה.</li>
+</ul>
+<p>על כל 6 תשובות נכונות מצטרף סקווישי חדש לאוסף 🧱</p>
+<button class="btn" id="go" type="button">יאללה, מתחילים! 🚀</button><button class="lk" id="rs" type="button" style="display:none">↺ להתחיל מההתחלה</button><!-- איפוס רק מאזור ההורים (אורן 6.11.2026) -->
+<p class="cr">ההקלטות: Feed the Monster של Curious Learning ו-Wikimedia Commons (רישיונות חופשיים). פרטים בקובץ audio/CREDITS.txt</p>
+</div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>🧱 לומדים ואוספים סקווישי דיגיטלי</h2><p id="sqtx" style="margin:0 0 6px;height:4.4em;overflow:hidden"></p><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחץ עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">לאוסף! 🧱</button></div></div>
+<div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
+<div class="ov" id="gdov"><div class="pn" style="text-align:center"><div style="font-size:46px">🏅</div><h2 id="gdt"></h2><p id="gdp"></p><button class="btn" id="gdy" type="button">⏱️ למבחן של דקה</button><button class="btn soft" style="width:100%;margin-top:8px" id="gdn" type="button">אחר כך, ממשיכים</button></div></div>
+
+<script src="../../lia/phonics/audio/list.js?v=1"></script>
+<script src="../squishies.js?v=1"></script>
+<script src="../../sqsound.js?v=6"></script>
+<script src="../../track.js?v=8"></script>
+<script>
+// אותיות וצלילים באנגלית לליה (אורן 6.11.2026). פוניקס שיטתי: צליל ← אות ← קריאה, 6 קבוצות לפי סדר Jolly Phonics, השוואה לעברית, הגייה אמריקאית.
+// מפתחות: levi_ph (התקדמות), levi_ph_sq (אוסף סקווישים), levi_ph_mute.
+// פריט: [מזהה, תצוגה, מפתח-צליל, מילה, תמונה, דרגה (same|near|new), אות עברית / null, טקסט עברי, צליל-גיבוי ל-TTS או null]
+const G=[
+[['s','Ss','s','sun','☀️','same','ס','כְּמוֹ ס׳ בְּ<u>סַ</u>בְתָּא','sss'],['a','Aa','a','apple','🍎','new',null,'צְלִיל חָדָשׁ! בֵּין אֶ לְ-אַ, פֶּה פָּתוּחַ וְרָחָב',null],['t','Tt','t','tiger','🐯','same','ט','כְּמוֹ ט׳ בְּ<u>טִ</u>יּוּל',null],['p','Pp','p','pig','🐷','same','פּ','כְּמוֹ פּ בְּ<u>פִּ</u>יל',null],['i','Ii','i','insect','🐞','near',null,'אִ קְצָרָה מְאוֹד, קְצָת לְכִוּוּן אֶ',null],['n','Nn','n','nose','👃','same','נ','כְּמוֹ נ׳ בְּ<u>נָ</u>מֵר','nnn']],
+[['c','Cc','k','cat','🐱','same','ק','כְּמוֹ ק׳ בְּ<u>קוֹ</u>ף',null],['k','Kk','k','kite','🪁','same','ק','כְּמוֹ כּ בְּ<u>כַּ</u>דּוּר (גַּם c עוֹשָׂה אֶת זֶה)',null],['e','Ee','e','egg','🥚','same',null,'כְּמוֹ אֵ בְּ<u>אֵ</u>שׁ',null],['h','Hh','h','hat','🎩','same','ה','כְּמוֹ ה׳ בְּ<u>הַ</u>ר, נוֹשְׁפִים אֲוִויר',null],['r','Rr','r','rabbit','🐰','near',null,'דּוֹמֶה לְ-ר׳, אֲבָל הַלָּשׁוֹן מִתְגַּלְגֶּלֶת אָחוֹרָה וְלֹא נוֹגַעַת',null],['m','Mm','m','moon','🌙','same','מ','כְּמוֹ מ׳ בְּ<u>מַ</u>יִם','mmm'],['d','Dd','d','dog','🐶','same','ד','כְּמוֹ ד׳ בְּ<u>דָּ</u>ג',null]],
+[['g','Gg','g','goat','🐐','same','ג','כְּמוֹ ג׳ בְּ<u>גָּ</u>מָל',null],['o','Oo','o','octopus','🐙','near',null,'אָ פְּתוּחָה, פֶּה פָּתוּחַ לְמַטָּה (hot = הָאט)',null],['u','Uu','u','umbrella','☂️','near',null,'אַ קְצָרָה וַעֲמֻקָּה (cup = קַפּ)',null],['l','Ll','l','lion','🦁','same','ל','כְּמוֹ ל׳ בְּ<u>לִ</u>ימוֹן','lll'],['f','Ff','f','fish','🐟','same','פ','כְּמוֹ פ׳ בְּיָ<u>פֶה</u>','fff'],['b','Bb','b','ball','⚽','same','בּ','כְּמוֹ בּ בְּ<u>בַּ</u>יִת',null]],
+[['j','Jj','j','juice','🧃','same','ג׳','כְּמוֹ ג׳ בְּ<u>גִ׳י</u>רָפָה',null],['z','Zz','z','zebra','🦓','same','ז','כְּמוֹ ז׳ בְּ<u>זֶ</u>בְּרָה','zzz'],['w','Ww','w','watermelon','🍉','new',null,'אֵין בְּעִבְרִית! שְׂפָתַיִים עֲגֻלּוֹת כְּמוֹ וּ, וּמִיָּד פּוֹתְחִים. לֹא ו׳',null],['v','Vv','v','van','🚐','same','ו','כְּמוֹ ו׳ בְּ<u>וֶ</u>רֶד','vvv'],['y','Yy','y','yo-yo','🪀','same','י','כְּמוֹ י׳ בְּ<u>יֶ</u>לֶד',null],['x','Xx','x','box','📦','same',null,'ק׳ וְס׳ בְּיַחַד: קְס, כְּמוֹ בְּטֶ<u>קְס</u>ְט',null],['qu','Qu qu','qu','queen','👑','near',null,'ק׳ וּמִיָּד w: קְוְ',null]],
+[['sh','sh','sh','ship','🚢','same','שׁ','כְּמוֹ שׁ בְּ<u>שֶׁ</u>מֶשׁ','shh'],['ch','ch','ch','chair','🪑','same','צ׳','כְּמוֹ צ׳ בְּ<u>צִ׳י</u>פְּס',null],['th','th','th','thumb','👍','new',null,'אֵין בְּעִבְרִית! קְצֵה הַלָּשׁוֹן בֵּין הַשִּׁנַּיִים, וְנוֹשְׁפִים',null],['ng','ng','ng','ring','💍','near',null,'נ׳ מֵהַגָּרוֹן, בְּלִי ג׳ בַּסּוֹף (sing)',null]],
+[['a_e','a_e','A','cake','🎂','same',null,'הַ-e בַּסּוֹף שְׁקֵטָה, וְ-a אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אֵיי',null],['ee','ee','E','bee','🐝','same',null,'אוֹמֶרֶת אֶת הַשֵּׁם שֶׁל e: אִי אֲרֻכָּה',null],['i_e','i_e','I','bike','🚲','same',null,'הַ-e שְׁקֵטָה, וְ-i אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אַיי',null],['o_e','o_e','O','home','🏠','same',null,'הַ-e שְׁקֵטָה, וְ-o אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אוֹ',null],['u_e','u_e','U','cute','🐱','same',null,'הַ-e שְׁקֵטָה, וְ-u אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: יוּ',null]],
+// קבוצה 7 (אורן 6.11.2026): שתי אותיות, צליל אחד. ai/oa = אותו צליל כמו a_e/o_e
+[['ai','ai','A','rain','🌧️','same',null,'שְׁתֵּי אוֹתִיּוֹת, צְלִיל אֶחָד: <u>אֵיי</u>, כְּמוֹ בַּמִּלָּה cake',null],['oa','oa','O','boat','⛵','same',null,'שְׁתֵּי אוֹתִיּוֹת, צְלִיל אֶחָד: <u>אוֹ</u>, כְּמוֹ בַּמִּלָּה home',null],['oo','oo','oo','moon','🌙','same',null,'אוּ אֲרֻכָּה, כְּמוֹ בְּ<u>אוּ</u>לָם (moon = מוּן)',null],['ar','ar','ar','car','🚗','near',null,'אַר, עִם ר׳ אֲמֶרִיקָאִית (car = קַאר)',null],['or','or','or','fork','🍴','near',null,'אוֹר, עִם ר׳ אֲמֶרִיקָאִית (fork = פוֹרְק)',null],['er','er','er','fern','🌿','new',null,'אֵין בְּעִבְרִית! צְלִיל עָמֹק בְּלִי תְּנוּעָה בְּרוּרָה, הַלָּשׁוֹן מִתְגַּלְגֶּלֶת אָחוֹרָה (her)',null],['ou','ou','ou','cloud','☁️','near',null,'<u>אַאוּ</u>, כְּמוֹ כְּשֶׁמַּשֶּׁהוּ כּוֹאֵב (cloud = קְלַאוּד)',null],['oi','oi','oi','coin','🪙','same',null,'כְּמוֹ <u>אוֹי</u> בְּעִבְרִית (coin = קוֹיְן)',null]]];
+// מילים לבנייה (תרגיל "הרכב את המילה"), לכל קבוצה. יחידות מופרדות ב-|
+const BW=[['p|a|t','p|i|n','t|a|p','s|i|p','p|i|t','p|a|n','n|a|p'],['c|a|t','h|a|t','t|e|n','h|e|n','k|i|d','m|a|n','r|a|t','n|e|t'],['d|o|g','b|u|g','s|u|n','c|u|p','l|e|g','h|o|p','b|u|s','t|o|p'],['j|e|t','z|i|p','w|e|t','v|a|n','y|u|m','b|o|x','f|o|x','j|u|g'],['sh|i|p','ch|i|p','th|i|n','s|i|ng','f|i|sh','sh|o|p','b|a|th','k|i|ng'],['c|a|k|e','b|i|k|e','h|o|m|e','c|u|t|e','r|i|d|e','r|o|d|e','m|u|l|e','k|i|t|e'],['r|ai|n','t|r|ai|n','s|n|ai|l','t|ai|l','b|oa|t','c|oa|t','s|oa|p','r|oa|d','m|oo|n','s|p|oo|n','z|oo','r|oo|f','c|ar','s|t|ar','f|ar|m','p|ar|k','f|or|k','c|or|n','h|or|n','h|er','f|er|n','c|l|ou|d','l|ou|d','ou|t','c|oi|n','oi|l','s|oi|l','j|oi|n']];
+const GN=['s a t p i n','c k e h r m d','g o u l f b','j z w v y x','sh ch th ng','a_e ee','ai oa oo ar'];
+const IT=[],BY={};G.forEach((g,gi)=>g.forEach(r=>{const o={id:r[0],show:r[1],snd:r[2],word:r[3],pic:r[4],tier:r[5],he:r[6],htx:r[7],tt:r[8],g:gi};IT.push(o);BY[o.id]=o}));
+const N=IT.length;
+// הקלטות שיש (נוצר בבנייה מתוך תיקיית audio). חסר = הקראה של הדפדפן בהגייה אמריקאית.
+const AUD=new Set(window.LIA_AUD||[]);
+const $=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function fresh(){const w={};IT.forEach(x=>w[x.id]={s:'new',c:0,due:0,err:0});return{v:1,T:0,pts:0,st:{c:0,b:0},att:0,okc:0,w,cc:0,intro:0,bw:0,tests:{},gd:{},started:new Date().toISOString()}}
+let S=LS.get('levi_ph');if(!S||!S.w)S=fresh();IT.forEach(x=>{if(!S.w[x.id])S.w[x.id]={s:'new',c:0,due:0,err:0}});S.tests=S.tests||{};S.gd=S.gd||{};
+const save=()=>LS.set('levi_ph',S);save();
+let SQ=LS.get('levi_ph_sq')||[];let MUTE=!!LS.get('levi_ph_mute');
+
+// ---------- שמע ----------
+let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,t0,d,type,vol,f2){const a=ac();if(!a||MUTE)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t0+d);g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.16,a.currentTime+t0+.015);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
+const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.22,'triangle')},bad(){tone(330,0,.25,'sine',.14,220)},pop(){tone(220,0,.18,'sine',.25,880);tone(880,.16,.2,'sine',.15,440)},win(){[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.15))},click(){tone(1800,0,.04,'square',.04)}};
+let PL=null;
+function tts(t,rate){if(MUTE||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=rate||.8;const v=speechSynthesis.getVoices().find(v=>/en-US/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
+function playFile(f,fb,then){if(MUTE)return;try{speechSynthesis.cancel()}catch(e){}if(PL){PL.pause();PL=null}
+  if(!AUD.has(f)){fb();if(then)setTimeout(then,1100);return}
+  const a=new Audio('../../lia/phonics/audio/'+f+'.mp3?v=2');PL=a;a.onended=()=>{if(then&&PL===a)setTimeout(then,250)};a.onerror=()=>{fb();if(then)setTimeout(then,1100)};a.play().catch(()=>{})}
+// צליל של פריט: הקלטה של הצליל לבד; אין? הקראה של צליל ממושך (sss) או של המילה
+function sound(it,then){const k=it.snd;if(/^[AEIOU]$/.test(k))return playFile('s-long'+k.toLowerCase(),()=>tts(k,.75),then);playFile('s-'+k,()=>tts(it.tt||it.word,.7),then)}
+function word(w,then){playFile('w-'+w,()=>tts(w,.75),then)}
+const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
+
+// ---------- עזר ----------
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+// הודעות קופצות בתור: אחת בכל פעם, כדי שלא יעלו זו על זו
+const POPQ=[];let POPON=false;function popTxt(t){POPQ.push(t);if(!POPON)popNext()}
+function popNext(){const t=POPQ.shift();if(t===undefined){POPON=false;return}POPON=true;const p=document.createElement('div');p.className='pop';p.dir=/[\u0590-\u05FF]/.test(t)?'rtl':'ltr';p.style.direction=p.dir;p.textContent=t;document.body.appendChild(p);setTimeout(()=>{p.remove();popNext()},1050)}
+function confetti(n){const c=['#818cf8','#fb923c','#facc15','#60a5fa','#34d399'];for(let i=0;i<(n||40);i++){const e=document.createElement('i');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(c);e.style.animationDuration=(1.6+Math.random()*1.6)+'s';e.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3800)}}
+const OK=['מעולה! ✨','בדיוק! 🚀','אתה תותח!','אלוף! 🌟','יס! 🧱','האוזן שלך מושלמת 👂','כמו אמריקאי אמיתי 🇺🇸'];
+const BAD=['לא נורא, בשביל זה מתרגלים 🧱','עכשיו אתה כבר יודע 😉','הצליל הזה עוד יחזור'];
+
+// ---------- מצב ותור ----------
+const done=()=>IT.filter(x=>S.w[x.id].s==='done').length;
+const gDone=g=>G[g].every(r=>S.w[r[0]].s==='done');
+const curG=()=>{for(let g=0;g<G.length;g++)if(!gDone(g))return g;return G.length};
+const seen=()=>IT.filter(x=>S.w[x.id].s!=='new');
+let CUR=null,LAST=null,ANS=false,SEL=null,TEST=null;
+function next(){if(TEST)return;const g=curG();
+  if(allL()){if(mastered()===N&&!S.allm){S.allm=1;save();CUR=null;return renderDone()}if(!S.mph){S.mph=1;save();return renderPhase()}return nextM()}
+  const pool=IT.filter(x=>x.g<=g&&S.w[x.id].s!=='done');
+  const act=pool.filter(x=>S.w[x.id].s!=='new'),nw=pool.filter(x=>S.w[x.id].s==='new');
+  // כל 4 תורות, כשיש מילה שכל האותיות שלה כבר הוצגו: בונים מילה
+  if(S.T>0&&S.T%3===2){const bw=buildable();if(bw.length){CUR={mode:'build',w:pick(bw)};return render()}}
+  let due=act.filter(x=>S.w[x.id].due<=S.T&&x.id!==LAST).sort((a,b)=>S.w[a.id].due-S.w[b.id].due);
+  let it=due[0];
+  if(!it&&nw.length&&act.length<3)it=nw[0];
+  if(!it){const dn=IT.filter(x=>x.g<g&&S.w[x.id].s==='done'&&x.id!==LAST);if(dn.length&&Math.random()<.25)it=pick(dn);}
+  if(!it){const r=act.filter(x=>x.id!==LAST).sort((a,b)=>S.w[a.id].due-S.w[b.id].due);it=r[0]||nw[0]||act[0]}
+  if(S.w[it.id].s==='new'){CUR={mode:'learn',it};return render()}
+  const types=['hear','hear','see','pic'];if(it.he)types.push('heb','heb');if(it.g>=5||it.id==='x'||it.id==='ng')types.splice(types.indexOf('pic'),1);
+  CUR={mode:pick(types),it};render()}
+// ---------- שלב 2: חיזוק (אורן 6.11.2026: ליה עברה את 35 הצלילים מהר, צריך עוד תרגול והכתבות) ----------
+// כל צליל שנלמד צריך עוד MS תשובות נכונות (w.m) בשאלות מגוונות ובהכתבה כדי להיות "בשליטה ⭐". טעות מורידה 2.
+const MS=4,allL=()=>IT.every(x=>S.w[x.id].s==='done'),mst=x=>(S.w[x.id].m||0)>=MS,mastered=()=>IT.filter(mst).length;
+// מילים מוקלטות לשאלות על מילה: CVC מאותיות בודדות, ומילים עם תמונה לקריאה
+const EMO={cat:'🐱',hat:'🎩',hen:'🐔',dog:'🐶',bug:'🐛',sun:'☀️',cup:'☕',bus:'🚌',jet:'✈️',van:'🚐',box:'📦',fox:'🦊',pig:'🐷',pin:'📌',man:'👨',rat:'🐀',leg:'🦵',net:'🥅',ten:'🔟',kid:'🧒',tap:'🚰',nap:'😴',yum:'😋',pan:'🍳',ship:'🚢',fish:'🐟',king:'🤴',ring:'💍',cake:'🎂',bike:'🚲',home:'🏠',kite:'🪁',bath:'🛁',chip:'🍟',rain:'🌧️',train:'🚆',snail:'🐌',boat:'⛵',coat:'🧥',soap:'🧼',road:'🛣️',moon:'🌙',spoon:'🥄',car:'🚗',star:'⭐',farm:'🚜',fork:'🍴',corn:'🌽',horn:'📯',fern:'🌿',cloud:'☁️',coin:'🪙'};
+const ALLW=[...new Set(BW.flat().concat(['p|i|g','r|i|ng']))].filter(w=>AUD.has('w-'+w.split('|').join(''))||!AUD.size);
+const CVC=ALLW.map(w=>w.split('|')).filter(u=>u.length===3&&u.every(x=>x.length===1));
+const VOW=['a','e','i','o','u'];
+const endW=it=>CVC.filter(u=>u[2]===it.id),midW=it=>VOW.includes(it.id)?CVC.filter(u=>u[1]===it.id):[],readW=it=>ALLW.map(w=>w.split('|')).filter(u=>EMO[u.join('')]&&u.includes(it.id));
+function pickType(it){const m=S.w[it.id].m||0,easy=['hear','see'],hard=[];if(it.g<5&&it.id!=='x'&&it.id!=='ng')easy.push('pic');if(it.he)easy.push('heb');
+  if(endW(it).length)hard.push('end','end','end');if(midW(it).length)hard.push('mid','mid');if(readW(it).length)hard.push('read');
+  return pick(hard.length&&(m>=1||Math.random()<.6)?hard:easy)}
+function nextM(){S.mt=(S.mt||0)+1;
+  if(S.mt%40===0&&!$('sqov').classList.contains('on')){$('gdt').textContent='⏱️ זמן למבחן דקה!';$('gdp').innerHTML='כל הצלילים, 60 שניות. נראה אם השיא שלך עולה 🚀';$('gdov').classList.add('on');SND.win()}
+  if(S.mt%2===0){const w=pickWord();if(w){CUR={mode:'build',w};return render()}}
+  const c=IT.filter(x=>x.id!==LAST),due=c.filter(x=>(S.w[x.id].due||0)<=S.T);
+  const sc=x=>(S.w[x.id].m||0)*3-Math.min(S.w[x.id].err||0,3)+Math.random()*2;
+  const it=pick((due.length?due:c).sort((a,b)=>sc(a)-sc(b)).slice(0,4));
+  CUR={mode:pickType(it),it};render()}
+// מילה להכתבה: מתוך 6 אקראיות, זו עם הצלילים הכי פחות חזקים
+function pickWord(){const L=shuf(ALLW.filter(w=>w!==S.lw)).slice(0,6);if(!L.length)return null;const sc=w=>w.split('|').reduce((a,x)=>a+((S.w[x]&&S.w[x].m)||0),0)+Math.random()*2;const w=L.sort((a,b)=>sc(a)-sc(b))[0];S.lw=w;return w}
+// רמות בהכתבה: 1 = אותיות אקראיות, 2 = אותיות מבלבלות (תנועות, b/d, m/n...), 3 = גם sh/ch/th ו-ng באותיות בודדות. 6 נכונות ברצף = עולים, 2 טעויות ברצף = יורדים.
+const CONF={a:'eiou',e:'aiu',i:'eau',o:'uaa',u:'aoe',b:'dp',d:'bt',p:'bt',m:'n',n:'m',f:'v',v:'fw',s:'z',z:'s',g:'jk',j:'g',t:'d',h:'',r:'lw',l:'r',w:'v',y:'j',k:'g',c:'g',x:'z',sh:['ch'],ch:['sh'],th:['f'],ng:['n'],ai:['oa','a'],oa:['ai','o'],oo:['ou','u'],ar:['or','er'],or:['ar','oa'],er:['ar','or'],ou:['oo','oi'],oi:['or','oa']};
+function bLevel(ok){S.bl=S.bl||1;S.bh=(S.bh||[]).concat(ok?1:0).slice(-6);
+  if(ok&&S.bl<3&&S.bh.length>=6&&S.bh.every(Boolean)){S.bl++;S.bh=[];setTimeout(()=>popTxt('🚀 עלית לרמה '+S.bl+' בהכתבה!'),600)}
+  else if(!ok&&S.bl>1&&S.bh.slice(-2).join('')==='00'){S.bl--;S.bh=[]}}
+function credit(units,ok,got){if(!allL())return;units.forEach((x,i)=>{const w=S.w[x];if(!w)return;if(ok)w.m=Math.min(MS+2,(w.m||0)+1);else if(got&&got[i]!==x){w.m=Math.max(0,(w.m||0)-1);w.err=(w.err||0)+1;w.due=S.T+2}})}
+function renderPhase(){upd();$('card').innerHTML=head('⭐ שלב 2: חיזוק','new')+`<div class="mid"><div style="font-size:50px">💪</div><div style="font-size:21px;font-weight:800">למדת את כל ${N} הצלילים!</div><p style="margin:2px 0;font-size:15px">עכשיו מחזקים אותם: הרבה הכתבות, קריאת מילים ושאלות חדשות.<br>כל צליל צריך עוד ${MS} תשובות נכונות כדי לקבל ⭐</p></div>
+  <div class="fb"></div><div class="btns"><button class="btn" id="nx" type="button">יאללה! 🚀</button></div>`;$('nx').onclick=()=>{SND.click();next()};SND.win();confetti(40)}
+function buildable(){const ok=new Set(seen().map(x=>x.id));const out=[];BW.forEach((l,gi)=>{if(gi>curG())return;l.forEach(w=>{const u=w.split('|');const need=gi===5?[{a:'a_e',i:'i_e',o:'o_e',u:'u_e'}[u[1]]]:u;if(need.every(x=>ok.has(x)))out.push(w)})});return out}
+function distract(it,n,key){const g=Math.max(curG(),it.g);const c=shuf(IT.filter(x=>x.g<=Math.min(g,G.length-1)&&x.snd!==it.snd&&(key?x[key]:true)));const o=[];const seenK=new Set([key?it[key]:it.snd]);for(const x of c){const k=key?x[key]:x.snd;if(!seenK.has(k)){seenK.add(k);o.push(x)}if(o.length>=n)break}
+  if(o.length<n){for(const x of shuf(IT.filter(x=>x.snd!==it.snd))){const k=key?x[key]:x.snd;if(key&&!x[key])continue;if(!seenK.has(k)){seenK.add(k);o.push(x)}if(o.length>=n)break}}return o}
+const lbl=x=>x.id.includes('_')?x.id:x.id;
+function head(tag,cls){return `<div class="top2"><span class="mode ${cls||''}">${tag}</span>${TEST?'<button class="pxb" id="tx" type="button">✕ יציאה מהמבחן</button>':'<span></span>'}</div>`}
+function render(){ANS=false;SEL=null;const c=$('card'),m=CUR.mode,it=CUR.it;let h='';
+  if(m==='learn'){const w=it.word.replace(new RegExp('^('+(it.id.includes('_')?it.id[0]:it.id)+')','i'),'<u>$1</u>');
+    h=head('✨ צליל חדש','new')+`<div class="mid"><div class="big">${esc(it.show)}</div><div class="pic">${it.pic}</div><div class="word">${it.g===5?esc(it.word):it.g>=6?esc(it.word).replace(it.id,'<u>'+it.id+'</u>'):w}</div>
+    <div class="says"><button class="say" id="ps" type="button">🔊 הצליל</button><button class="say" id="pw" type="button">🔊 המילה</button></div>
+    <div class="heb ${it.tier}"><b>${it.tier==='same'?'✅ יש כזה בעברית':it.tier==='near'?'🟡 דומה לעברית, אבל לא בדיוק':'⭐ צליל חדש, אין כזה בעברית'}</b>${it.he?`<span class="hl" dir="ltr">${esc(lbl(it))} = ${esc(it.he)}</span>`:''}${it.htx}</div></div>
+    <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button">הבנתי, בוא נתרגל ←</button></div>`;
+    c.innerHTML=h;$('ps').onclick=()=>sound(it);$('pw').onclick=()=>word(it.word);$('nx').onclick=()=>{S.w[it.id].s='learn';S.w[it.id].due=S.T+1;S.T++;save();upd();goNext()};
+    setTimeout(()=>sound(it,()=>word(it.word)),250);LAST=it.id;return}
+  if(m==='build'){const lv=S.bl||1,u0=CUR.w.split('|'),w=u0.join(''),u=lv>=3?w.split(''):u0;const SAME={c:'k',k:'c'},okx=x=>!x.includes('_')&&!u.includes(x)&&!u.some(l=>SAME[l]===x)&&(lv<3||x.length===1);
+    let cf=lv>=2?shuf([...new Set(u0.flatMap(l=>(Array.isArray(CONF[l])?CONF[l]:(CONF[l]||'').split('')).filter(Boolean)))]).filter(okx):[];
+    const ex=[...new Set(cf.concat(shuf(IT.filter(x=>x.g<=curG()).map(x=>x.id)).filter(okx)))].slice(0,Math.max(0,7-u.length));
+    CUR.u=u;CUR.got=[];CUR.tiles=shuf(u.concat(ex));
+    h=head('🧩 הכתבה'+(allL()||(S.bl||1)>1?' · רמה '+(S.bl||1):''))+`<div class="ask">הרכב את המילה ששמעת</div><div class="mid"><button class="say lg" id="pw" type="button">🔊</button><div class="slots" id="sl">${u.map(()=>'<span></span>').join('')}</div></div>
+    <div class="tiles" id="tl">${CUR.tiles.map((t,i)=>`<button type="button" data-i="${i}">${esc(t)}</button>`).join('')}<button type="button" class="bk" id="bk">⌫</button></div>
+    <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button" disabled>בדיקה</button></div>`;
+    c.innerHTML=h;$('pw').onclick=()=>word(w);$('tl').querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>{if(ANS||CUR.got.length>=u.length)return;SND.click();b.classList.add('used');CUR.got.push(+b.dataset.i);slots()});
+    $('bk').onclick=()=>{if(ANS||!CUR.got.length)return;const i=CUR.got.pop();$('tl').querySelector(`[data-i="${i}"]`).classList.remove('used');slots()};
+    $('nx').onclick=()=>{if(ANS)return goNext();checkBuild()};setTimeout(()=>word(w),300);return}
+  // שאלות בחירה
+  let ask,mid,opts,cls='';
+  if(m==='end'||m==='mid'||m==='read'){const L=m==='end'?endW(it):m==='mid'?midW(it):readW(it);const u=pick(L);CUR.w=u.join('');}
+  if(m==='end'){ask='באיזו אות המילה נגמרת?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(IT.filter(x=>x.id.length===1&&!VOW.includes(x.id)&&x.id!=='x'&&x.snd!==it.snd)).slice(0,3)));}
+  else if(m==='mid'){ask='איזה צליל שומעים באמצע המילה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(VOW.filter(v=>v!==it.id)).slice(0,3).map(v=>BY[v])));}
+  else if(m==='read'){ask='קרא את המילה. מה היא?';mid=`<div class="big" dir="ltr" style="text-transform:none">${esc(CUR.w)}</div>`;
+    const oth=shuf(Object.keys(EMO).filter(x=>x!==CUR.w&&ALLW.some(w=>w.split('|').join('')===x))).sort((a,b)=>(b.length===CUR.w.length)-(a.length===CUR.w.length)).slice(0,2);
+    opts=shuf([CUR.w].concat(oth)).map(x=>({id:it.id,w:x}));}
+  else if(m==='hear'){ask='איזו אות עושה את הצליל הזה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(distract(it,3)));}
+  else if(m==='see'){ask='איזה צליל עושה האות? לחץ לשמוע ובחר';mid=`<div class="big">${esc(it.show)}</div>`;opts=shuf([it].concat(distract(it,2)));cls='snd'}
+  else if(m==='pic'){ask='באיזו אות מתחילה המילה?';mid=`<div class="pic" style="font-size:64px">${it.pic}</div><button class="say" id="rp" type="button">🔊 לשמוע שוב</button>`;opts=shuf([it].concat(distract(it,3)));}
+  else{ask='איזו אות בעברית עושה אותו צליל?';mid=`<div class="big">${esc(it.show)}</div><button class="say" id="rp" type="button">🔊 הצליל</button>`;opts=shuf([it].concat(distract(it,3,'he')));cls='he'}
+  h=head(TEST?'⏱️ <span id="tmr">60</span> · '+TEST.ok+' נכונות':allL()?'⭐ חיזוק':S.w[it.id].s==='done'?'🔁 חזרה':'🎯 תרגול',TEST?'tst':'')+`<div class="ask">${ask}</div><div class="mid">${mid}</div>
+  <div class="opts${opts.length===3?' o3':''}">${opts.map((o,i)=>`<button class="opt ${cls}" type="button" data-id="${o.id}"${o.w?` data-w="${o.w}" style="font-size:40px"`:''}>${o.w?EMO[o.w]:m==='see'?'🔊 '+(i+1):m==='heb'?esc(o.he):esc(lbl(o))}</button>`).join('')}</div>
+  <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button" style="visibility:${m==='see'?'visible':'hidden'}"${m==='see'?' disabled':''}>${m==='see'?'זה הצליל!':'הבא ←'}</button></div>`;
+  c.innerHTML=h;if($('tx'))$('tx').onclick=endTest;
+  const play=()=>{if(m==='pic')word(it.word);else if(CUR.w&&m!=='build')word(CUR.w);else sound(it)};if($('rp'))$('rp').onclick=play;
+  c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(ANS)return;const o=BY[b.dataset.id];
+    if(m==='see'){c.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));SEL=o;sound(o);$('nx').disabled=false;return}
+    answer(m==='read'?b.dataset.w===CUR.w:o.snd===it.snd,b)});
+  $('nx').onclick=()=>{if(ANS)return goNext();if(m==='see'&&SEL)answer(SEL.snd===it.snd,c.querySelector(`.opt[data-id="${SEL.id}"]`))};
+  if(m!=='see'&&m!=='read')setTimeout(play,250);LAST=it.id}
+function slots(){const u=CUR.u;$('sl').innerHTML=u.map((_,i)=>`<span>${CUR.got[i]!=null?esc(CUR.tiles[CUR.got[i]]):''}</span>`).join('');$('nx').disabled=CUR.got.length<u.length}
+function goNext(){SND.click();if(TEST)return testNext();next()}
+function streak(ok){if(ok){S.st.c++;if(S.st.c>S.st.b)S.st.b=S.st.c;if([3,5,10,15,20,30,50].includes(S.st.c))popTxt('🔥 רצף של '+S.st.c+'!')}else S.st.c=0}
+function addPts(p){S.pts+=p;popTxt('+'+p+' ⭐')}
+function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=sqEvery()){S.cc=0;setTimeout(squishy,900)}}
+function showNext(){ANS=true;const n=$('nx');n.style.visibility='visible';n.disabled=false;n.textContent='הבא ←'}
+function answer(ok,b){const it=CUR.it,w=S.w[it.id],fb=$('fb'),c=$('card');ANS=true;
+  const rd=CUR.mode==='read',wq=['end','mid','read'].includes(CUR.mode)?CUR.w:null;c.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(rd?x.dataset.w===CUR.w:BY[x.dataset.id].snd===it.snd)x.classList.add('ok')});
+  if(TEST){TEST.n++;if(ok){TEST.ok++;SND.ok()}else{b.classList.add('no');SND.bad()}setTimeout(testNext,ok?350:900);return}
+  S.att++;S.T++;
+  if(ok){S.okc++;SND.ok();streak(true);addPts(w.s==='done'?2:5);
+    if(w.s!=='done'){w.c=(w.c||0)+1;if(w.c>=2){w.s='done';fb.innerHTML=`<div class="t ok">✅ הצליל ${esc(lbl(it))} שלך!</div><div>ענית עליו נכון פעמיים</div>`;confetti(24);
+      if(gDone(it.g)&&!S.gd[it.g]){S.gd[it.g]=1;setTimeout(()=>groupDone(it.g),1300)}}
+      else{w.due=S.T+3;fb.innerHTML=`<div class="t ok">${pick(OK)}</div><div>עוד תשובה נכונה אחת, והצליל שלך</div>`}}
+    else{const was=mst(it);w.m=Math.min(MS+2,(w.m||0)+1);w.due=S.T+(mst(it)?25:3+w.m*2);
+      if(mst(it)&&!was){fb.innerHTML=`<div class="t ok">⭐ ${esc(lbl(it))} בשליטה!</div><div>${mastered()} מתוך ${N} צלילים עם ⭐</div>`;confetti(20)}
+      else fb.innerHTML=`<div class="t ok">${pick(OK)}</div>${allL()&&!mst(it)?`<div>עוד ${MS-w.m} ל-⭐ של <b dir="ltr">${esc(lbl(it))}</b></div>`:''}`}
+    if(wq)setTimeout(()=>word(wq),300);
+    maybeSquishy()}
+  else{b.classList.add('no');SND.bad();streak(false);w.err++;if(w.s==='done'&&allL())w.m=Math.max(0,(w.m||0)-2);else if(w.s==='done'){w.s='learn';w.c=1}else w.c=Math.max(0,(w.c||0)-1);w.due=S.T+2;
+    if(wq){fb.innerHTML=`<div class="t no">${pick(BAD)}</div><div>${CUR.mode==='end'?`<b dir="ltr">${esc(wq)}</b> נגמרת ב-<b dir="ltr">${esc(lbl(it))}</b>`:CUR.mode==='mid'?`באמצע <b dir="ltr">${esc(wq)}</b> שומעים <b dir="ltr">${esc(lbl(it))}</b>`:`זו המילה <b dir="ltr">${esc(wq)}</b> ${EMO[wq]||''}`}</div>`;setTimeout(()=>word(wq),500)}
+    else{fb.innerHTML=`<div class="t no">${pick(BAD)}</div><div>${esc(lbl(it))} = ${esc(it.word)} ${it.pic}</div>`;setTimeout(()=>sound(it,()=>word(it.word)),500)}}
+  save();upd();showNext()}
+function checkBuild(){const u=CUR.u,got=CUR.got.map(i=>CUR.tiles[i]),ok=got.join('')===u.join(''),fb=$('fb');ANS=true;S.att++;S.T++;S.bn=(S.bn||0)+1;bLevel(ok);credit(CUR.w.split('|'),ok,u.length===CUR.w.split('|').length?got:null);
+  $('sl').classList.add(ok?'ok':'no');
+  if(ok){S.okc++;S.bw=(S.bw||0)+1;SND.ok();streak(true);addPts(8);fb.innerHTML=`<div class="t ok">כתבת נכון! ✍️</div><div>${pick(OK)}</div>`;maybeSquishy()}
+  else{SND.bad();streak(false);fb.innerHTML=`<div class="t no">כמעט! המילה היא: <span dir="ltr">${esc(u.join(''))}</span></div><div class="mine">אתה בנית: <span dir="ltr">${esc(got.join(''))}</span></div>`;$('sl').innerHTML=got.map((x,i)=>`<span class="${x===u[i]?'g':''}">${esc(x)}</span>`).join('')}
+  word(u.join(''));save();upd();showNext()}
+let GDQ=null;function groupDone(g){if($('sqov').classList.contains('on')){GDQ=g;return}GDQ=null;SND.win();confetti(60);$('gdt').textContent=`סיימת את קבוצה ${g+1}! 🎉`;
+  $('gdp').innerHTML=`אתה יודע את הצלילים <b dir="ltr">${esc(G[g].map(r=>r[0]).join(' '))}</b>.<br>בוא נבדוק כמו בבית ספר באמריקה: כמה צלילים נכונים בדקה אחת?`;$('gdov').classList.add('on')}
+$('gdy').onclick=()=>{$('gdov').classList.remove('on');startTest()};$('gdn').onclick=()=>{$('gdov').classList.remove('on');next()};
+// ---------- מבחן דקה (בסגנון DIBELS): שומעים צליל ובוחרים אות, כמה שיותר נכונות ב-60 שניות ----------
+let TI=null;
+function startTest(){const L=IT.filter(x=>S.w[x.id].s==='done');if(L.length<4){next();return}const g=Math.min(curG(),G.length)-1;TEST={g:Math.max(0,g),L,n:0,ok:0,end:Date.now()+60000};testNext();
+  TI=setInterval(()=>{const s=Math.max(0,Math.ceil((TEST.end-Date.now())/1000));if($('tmr'))$('tmr').textContent=s;if(s<=0)endTest()},250)}
+function testNext(){if(!TEST)return;if(Date.now()>=TEST.end)return endTest();const it=pick(TEST.L.filter(x=>x.id!==LAST));CUR={mode:'hear',it};render()}
+function endTest(){if(!TEST)return;clearInterval(TI);const t=TEST;TEST=null;const k='g'+(t.g+1),o=S.tests[k]||{best:0,n:0};o.last=t.ok;o.n++;o.best=Math.max(o.best,t.ok);o.d=new Date().toISOString().slice(0,10);o.tot=t.n;S.tests[k]=o;save();upd();
+  const pct=t.n?Math.round(t.ok/t.n*100):0;SND.win();if(t.ok>=10)confetti(40);
+  $('card').innerHTML=head('⏱️ תוצאת המבחן','tst')+`<div class="mid"><div style="font-size:50px">${t.ok>=o.best&&t.ok>0?'🏆':'⭐'}</div><div class="tmr">${t.ok}</div><div>צלילים נכונים בדקה</div><div style="color:var(--mut)">ענית על ${t.n}, ו-${pct}% מהן נכונות</div><div style="color:var(--mut)">השיא שלך: ${o.best}</div></div>
+  <div class="fb"></div><div class="btns"><button class="btn soft" id="ta" type="button">⏱️ עוד פעם</button><button class="btn" id="nx" type="button">ממשיכים ←</button></div>`;
+  $('ta').onclick=startTest;$('nx').onclick=()=>{SND.click();next()}}
+function renderDone(){upd();$('card').innerHTML=head('🏆 סיימת הכל')+`<div class="mid"><div style="font-size:54px">🏆</div><div style="font-size:22px;font-weight:800">כל ${N} הצלילים עם ⭐! 🚀</div><p style="color:var(--mut);margin:4px 0">בא לך לחזק?</p></div>
+  <div class="fb"></div><div class="btns"><button class="btn soft" id="ta" type="button">⏱️ מבחן דקה</button><button class="btn" id="pa" type="button">תרגול חופשי</button></div>`;
+  $('ta').onclick=startTest;$('pa').onclick=()=>{SND.click();nextM()};SND.win();confetti(50)}
+
+// ---------- סקווישים (אותה שיטה כמו בהכתבה של דני) ----------
+const SQS=LeviSquishies.list,SQS2=LeviSquishies.list2,SQS3=LeviSquishies.list3,aura=LeviSquishies.aura,uaura=LeviSquishies.uaura,ALLSQ=LeviSquishies.all;
+const baseDone=()=>SQS.every(x=>SQ.includes(x.id)),supDone=()=>baseDone()&&SQS2.every(x=>SQ.includes(x.id)),sqEvery=()=>supDone()?50:baseDone()?12:6,sqN=()=>ALLSQ.filter(x=>SQ.includes(x.id)).length,sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
+let CURSQ=null;
+function squishy(){const L=supDone()?SQS3:baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(L);if(s.ult)$('sqtt').textContent=isNew?'💎 אולטרה סקווישי חדש! 💎':'💎 אולטרה סקווישי!';else if(s.sup)$('sqtt').textContent=isNew?'⭐ סופר סקווישי חדש! ⭐':'⭐ סופר סקווישי!';if(isNew){SQ.push(s.id);LS.set('levi_ph_sq',SQ)}
+  CURSQ=s.id;$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לאוסף! 🧱';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
+  $('sqov').classList.add('on');SND.pop();upd()}
+$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
+$('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click();if(GDQ!==null)setTimeout(()=>groupDone(GDQ),250)};
+function sqRender(){const ev=sqEvery(),left=ev-(S.cc||0),bd=baseDone();
+  $('sqtx').innerHTML=supDone()?'כל הסופר סקווישים אצלך! עכשיו <b>אולטרה סקווישים</b> 💎: כל אחד על <b>50 תשובות נכונות</b>. אלוף!':bd?'כל החבורה אצלך! עכשיו <b>סופר סקווישים</b>: כל אחד על <b>12 תשובות נכונות</b> ⭐':'על כל <b>6 תשובות נכונות</b> מצטרף סקווישי לחבורת הלגו. אחרי 6 נפתחים 6 סופר ⭐ ואחריהם 6 אולטרה 💎 לחץ על סקווישי כדי להכיר אותו.';
+  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${supDone()?'אולטרה ':bd?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
+  const cl=s=>s.ult?' ult':s.sup?' sup':'';const tile=s=>SQ.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}</div>`;
+  $('sqg').innerHTML='<div class="sqhd">🧱 חבורת הלגו</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')+'<div class="sqhd">💎 אולטרה סקווישים</div>'+SQS3.map(tile).join('')}
+$('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🧱';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+$('sqcx').onclick=()=>$('sqcol').classList.remove('on');
+
+// ---------- ממשק ----------
+function upd(){const d=done(),g=curG(),ph=allL();$('dn').textContent=ph?mastered():d;$('tt').textContent=N;$('un').textContent=ph?'עם ⭐':'צלילים';
+  $('grp').innerHTML=G.map((gr,i)=>{const n=gr.filter(r=>ph?mst(BY[r[0]]):S.w[r[0]].s==='done').length;return `<span class="${n===gr.length?'ok':i===g?'cur':''}"><i style="width:${n/gr.length*100}%"></i>${n===gr.length?'✓ ':''}${esc(GN[i].split(' ').slice(0,2).join(' '))}</span>`}).join('');
+  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);$('sqn').textContent=sqN()+'/'+ALLSQ.length;
+  const hard=IT.filter(x=>S.w[x.id].err>0).sort((a,b)=>S.w[b.id].err-S.w[a.id].err).slice(0,8).map(x=>({e:x.id+' ('+x.word+')',n:S.w[x.id].err}));
+  if(window.StudyTrack)StudyTrack.report({total:N,done:d,learning:IT.filter(x=>S.w[x.id].s==='learn').length,att:S.att,ok:S.okc,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:sqN(),hard,group:Math.min(g+1,G.length),tests:S.tests,built:S.bw||0,mastered:mastered(),dict:{ok:S.bw||0,n:S.bn||0,lvl:S.bl||1},lv:ph?2:1,lvn:ph?'שלב 2: חיזוק ⭐ (צלילים בשליטה)':'שלב 1: לומד צלילים',prog:ph?mastered():d,pmax:N,grp:G.map((g,gi)=>{const l=IT.filter(x=>x.g===gi);return[l.reduce((t,x)=>t+(S.w[x.id].err||0),0),l.length]}),started:S.started})}
+$('mute').onclick=()=>{MUTE=!MUTE;LS.set('levi_ph_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(MUTE){try{speechSynthesis.cancel()}catch(e){}if(PL)PL.pause()}else SND.click()};$('mute').textContent=MUTE?'🔇':'🔊';
+$('hw').onclick=()=>$('intro').classList.add('on');
+$('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();if(!S.intro){S.intro=1;save()}if(CUR&&!TEST)render();else if(!TEST)next()};
+$('rs').onclick=()=>$('rsov').classList.add('on');$('rsn').onclick=()=>$('rsov').classList.remove('on');
+$('rsy').onclick=()=>{const st=S.started;S=fresh();S.started=st;S.intro=1;save();$('rsov').classList.remove('on');$('intro').classList.remove('on');TEST=null;LAST=null;upd();next()};
+if(window.StudyTrack){StudyTrack.init('levi','phonics',['levi_ph','levi_ph_sq']);StudyTrack.gift(()=>{squishy();$('sqtt').textContent='🎁 מתנה מאבא ואמא!';confetti(60)})}
+upd();
+if(!S.intro)$('intro').classList.add('on');
+next();
+</script>
+</main></body></html>

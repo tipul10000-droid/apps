@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../guest.js?v=4"></script>
+<script src="../profiles.js?v=1"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · לוח התקדמות משפחתי</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../theme.css">
+<style>
+/* לוח התקדמות משפחתי (אורן 9.11.2026): לא לוח מנצחים. כוכבים מזמן לימוד ומתשובות נכונות, ואפשר להציץ בסקווישים של כולם. */
+main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.nav{display:flex;align-items:center;gap:8px;flex:none}.nav .back{margin:0;flex:1}
+.hw{font:inherit;font-size:14px;height:30px;width:34px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;cursor:pointer}
+h1{margin:4px 0 8px;font-size:22px;flex:none}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#e3e8ef;border-radius:14px;padding:4px;flex:none}
+.tg button{height:40px;font:inherit;font-size:15px;font-weight:700;border:0;border-radius:11px;background:none;color:var(--mut);cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;overflow:hidden}
+.tg button.on{background:#fff;color:var(--ac);box-shadow:var(--sh)}
+.tot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 8px;padding:8px 12px;background:linear-gradient(120deg,#fffbeb,#fff);border:1px solid #f3d48a;border-radius:14px;flex:none;height:52px;box-sizing:border-box}
+.tot b{font-size:16px;min-width:0}.tot small{flex:none;font-size:12px;color:var(--mut);text-align:left;line-height:1.3;white-space:nowrap}
+.lst{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.row{flex:0 1 72px;min-height:50px;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:6px 12px 6px 10px;box-shadow:var(--sh);font:inherit;color:inherit;text-align:right;cursor:pointer;width:100%;box-sizing:border-box;-webkit-tap-highlight-color:transparent;overflow:hidden}
+.row:active{background:#f1f4f8}.row *{pointer-events:none}
+.row.me{border-color:#9db4d6;background:#f6f9fe}
+.row .pp{width:46px;height:100%;max-height:60px;flex:none;display:grid;place-items:center}
+.row .pp img{height:100%;width:46px;object-fit:contain;object-position:center bottom}
+.kemo{border-radius:50%;display:grid;place-items:center;line-height:1}
+.row .pp .kemo{width:44px;height:44px;font-size:26px}
+.row .tx{flex:1;min-width:0}.row .tx b{display:block;font-size:18px;line-height:1.2}
+.row .bar{height:7px;background:#e8eef7;border-radius:5px;overflow:hidden;margin-top:5px}.row .bar i{display:block;height:100%;background:linear-gradient(90deg,#f59e0b,#facc15);border-radius:5px;width:0;transition:width .6s}
+.row .sq{font-size:12px;color:var(--mut);margin-top:3px;white-space:nowrap}
+.row .st{flex:none;min-width:58px;text-align:center;font-weight:800;font-size:19px;color:#b45309;direction:ltr}
+.row .st small{display:block;font-size:11px;font-weight:600;color:var(--mut)}
+.row .go{color:var(--ac);font-size:22px;flex:none}
+.note{flex:none;margin:8px 0 0;font-size:12px;color:var(--mut);text-align:center;height:16px}
+.ov{position:fixed;inset:0;z-index:40;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 14px) 12px calc(env(safe-area-inset-bottom,0px) + 14px)}.ov.on{display:flex}
+.pn{background:var(--card);border-radius:20px;padding:14px 14px;width:100%;max-width:480px;max-height:100%;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.3);text-align:center;display:flex;flex-direction:column}
+.pn h2{margin:2px 0 4px;font-size:20px}.pn p{margin:4px 0;font-size:15px;line-height:1.45;color:var(--mut)}.pn p b{color:var(--fg)}
+.bh{display:flex;align-items:center;gap:10px;justify-content:center;flex:none}.bh img{height:56px;width:40px;object-fit:contain}.bh .kemo{width:44px;height:44px;font-size:26px}
+.sqg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin:6px auto 0;width:100%;max-width:360px}
+.sqg div{background:#f7f7ff;border:1px solid #e4e6fb;border-radius:10px;padding:2px}
+.sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}.sqg .own *{pointer-events:none}
+.sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
+.sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
+.sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
+.sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:#5b21b6;text-align:right;background:none;border:0;padding:0;margin-top:4px}
+.bt{display:block;width:100%;margin-top:12px;padding:12px;font:inherit;font-size:16px;border-radius:14px;cursor:pointer;border:1px solid var(--bd);background:#f4f6f9;color:var(--fg);flex:none}
+.bt.pr{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
+#bigimg{width:150px;height:150px;margin:6px auto;cursor:pointer;animation:sqin .8s cubic-bezier(.2,1.6,.4,1)}#bigimg svg{width:100%;height:100%}#bigimg.squish{animation:squish .5s}
+@keyframes sqin{0%{transform:scale(.2)}60%{transform:scale(1.15,.85)}100%{transform:scale(1)}}
+@keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
+.emp{padding:18px 6px;color:var(--mut);font-size:15px;line-height:1.5}
+@media(max-height:700px){h1{font-size:19px;margin:2px 0 6px}.tg button{height:36px}.tot{height:46px;margin:8px 0 6px}.row .tx b{font-size:16px}.row .st{font-size:17px}.note{display:none}}
+@media(prefers-reduced-motion:reduce){#bigimg{animation:none!important}}
+</style>
+</head><body><main>
+<div class="nav"><a class="back" href="../">→ חזרה</a><button class="hw" id="hw" type="button" aria-label="איך מקבלים כוכבים">❓</button></div>
+<h1>🏆 לוח התקדמות משפחתי</h1>
+<div class="tg" id="tg"><button type="button" data-v="fam">🏠 המשפחה שלי</button><button type="button" data-v="all">🌍 כל בני הדודים</button></div>
+<div class="tot"><b id="tot">ביחד: ⭐ 0</b><small>⭐ כל 5 דק׳ לימוד<br>⭐ כל 10 תשובות נכונות</small></div>
+<div class="lst" id="lst"></div>
+<p class="note" id="note">לוחצים על מישהו כדי לראות את הסקווישים שלו</p>
+</main>
+<div class="ov" id="bov"><div class="pn"><div class="bh" id="bh"></div><p id="bs"></p><div class="sqg" id="bg"></div><button class="bt" id="bx" type="button">סגירה</button></div></div>
+<div class="ov" id="qov"><div class="pn"><div id="qt" style="font-size:14px;color:#5b21b6;font-weight:700"></div><div id="bigimg"></div><h2 id="qn"></h2><p id="qd"></p><p style="font-size:13px;margin:0">לוחצים עליו כדי למעוך ולשמוע 😆</p><button class="bt pr" id="qx" type="button">חזרה ללוח</button></div></div>
+<div class="ov" id="hov"><div class="pn" style="text-align:right"><h2 style="text-align:center">⭐ איך מקבלים כוכבים?</h2>
+<p>כל ילד אוסף כוכבים מהלימוד שלו:</p><p>⭐ <b>כל 5 דקות</b> של לימוד אמיתי (עם תשובות, לא רק לפתוח את האפליקציה)</p><p>⭐ <b>כל 10 תשובות נכונות</b></p>
+<p>זה לא מרוץ. כל אחד לומד משהו אחר ובקצב שלו, וביחד אנחנו אוספים המון כוכבים 💛</p><p>אפשר ללחוץ על כל אחד ולראות את הסקווישים שאסף, ולמעוך אותם.</p>
+<button class="bt pr" id="hx" type="button">הבנתי</button></div></div>
+<script src="../dani/squishies.js?v=1"></script>
+<script src="../lia/squishies.js?v=2"></script>
+<script src="../levi/squishies.js?v=1"></script>
+<script src="../shilo/squishies.js?v=1"></script>
+<script src="../sqsound.js?v=6"></script>
+<script>
+(function(){
+var P=StudyProfiles,$=function(i){return document.getElementById(i)};
+var SB='https://emgtyfksnofzzlutngbf.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
+var ROWS={lia:['🪐 צוות החלל','⭐ סופר סקווישים','💎 אולטרה סקווישים']};
+var VK='study_fam_view',VIEW='fam';try{VIEW=localStorage.getItem(VK)==='all'?'all':'fam'}catch(e){}
+var D={};// kid -> {sec, ok, sq:[]}
+function lj(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+function stars(d){return Math.floor((d.sec||0)/300)+Math.floor((d.ok||0)/10)}
+function SQ(id){var k=P.kids[id];return k&&k.sq?window[k.sq]:null}
+// מה שיש במכשיר הזה (גם בלי שרת): זמן ותשובות מ-track.js, הסקווישים מהמפתח של האפליקציה
+function local(){P.all().forEach(function(id){var d={sec:0,ok:0,sq:[]};
+  try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);k=k.replace(/^guest:/,'');
+    if(k.indexOf('study_t_'+id+'_')===0){var t=lj(k);if(t)d.sec+=+t.sec||0}
+    if(k.indexOf('study_r_'+id+'_')===0){var r=lj(k);if(r&&r.data)d.ok+=+r.data.ok||0}}}catch(e){}
+  var kk=P.kids[id];if(kk.sqk){var a=lj(kk.sqk);if(Array.isArray(a))d.sq=a}
+  merge(id,d)})}
+function merge(id,d){var o=D[id]||(D[id]={sec:0,ok:0,sq:[]});o.sec=Math.max(o.sec,+d.sec||0);o.ok=Math.max(o.ok,+d.ok||0);(d.sq||[]).forEach(function(x){if(o.sq.indexOf(x)<0)o.sq.push(x)})}
+function kidsNow(){return VIEW==='all'?P.all():P.kidsOf()}
+function draw(){var L=kidsNow().map(function(id){var d=D[id]||{sec:0,ok:0,sq:[]};return{id:id,d:d,s:stars(d)}});
+  L.sort(function(a,b){return b.s-a.s});var mx=Math.max(10,L.reduce(function(m,x){return Math.max(m,x.s)},0)),tot=L.reduce(function(t,x){return t+x.s},0),fam=P.kidsOf();
+  $('tot').textContent=(VIEW==='all'?'כל בני הדודים ביחד: ':'המשפחה ביחד: ')+'⭐ '+tot;
+  $('lst').innerHTML=L.map(function(x){var k=P.kids[x.id],S=SQ(x.id),n=S?S.all.filter(function(s){return x.d.sq.indexOf(s.id)>=0}).length:0;
+    return '<button type="button" class="row'+(VIEW==='all'&&fam.indexOf(x.id)>=0?' me':'')+'" data-k="'+x.id+'"><span class="pp">'+P.pic(x.id)+'</span><span class="tx"><b>'+k.n+'</b><span class="bar"><i style="width:'+Math.round(x.s/mx*100)+'%"></i></span>'+
+      '<span class="sq">'+(S?'🎁 '+n+' מתוך '+S.all.length+' סקווישים':'🎁 עוד אין לוח סקווישים')+'</span></span><span class="st">⭐ '+x.s+'<small>כוכבים</small></span><span class="go">‹</span></button>'}).join('');
+  [].forEach.call($('tg').children,function(b){b.classList.toggle('on',b.getAttribute('data-v')===VIEW)})}
+$('tg').onclick=function(e){var b=e.target.closest('button');if(!b)return;VIEW=b.getAttribute('data-v');try{localStorage.setItem(VK,VIEW)}catch(e){}draw()};
+// לוח הסקווישים של ילד: מה שאסף צבעוני (לוחצים ושומעים), מה שעוד לא: צללית אפורה
+var CUR=null;
+function board(id){var k=P.kids[id],S=SQ(id),d=D[id]||{sq:[]},boy=k.boy;
+  $('bh').innerHTML=P.pic(id)+'<h2>הסקווישים של '+k.n+'</h2>';
+  if(!S){$('bs').textContent='';$('bg').innerHTML='<div class="emp" style="grid-column:1/-1;background:none;border:0">ל'+k.n+' עוד אין לוח סקווישים.<br>יש לו מתנות אחרות באוצר המילים 🎁</div>';$('bov').classList.add('on');return}
+  var own=S.all.filter(function(s){return d.sq.indexOf(s.id)>=0}).length;
+  $('bs').innerHTML=own?(k.n+' '+(boy?'אסף':'אספה')+' <b>'+own+' מתוך '+S.all.length+'</b>. לוחצים על סקווישי צבעוני כדי למעוך אותו 😆'):(k.n+' עוד לא '+(boy?'אסף':'אספה')+' סקווישים. הם מחכים '+(boy?'לו':'לה')+' כאן בצללית 👀');
+  var rows=S.rows||ROWS[id]||['רגילים','⭐ סופר סקווישים','💎 אולטרה סקווישים'],cl=function(s){return s.ult?' ult':s.sup?' sup':''};
+  var tile=function(s){return d.sq.indexOf(s.id)>=0?'<div class="own'+cl(s)+'" data-id="'+s.id+'"><svg viewBox="0 0 100 100">'+s.svg+'</svg></div>':'<div class="lock'+cl(s)+'"><svg viewBox="0 0 100 100">'+s.svg.split(S.aura).join('').split(S.uaura).join('')+'</svg></div>'};
+  $('bg').innerHTML=[S.list,S.list2,S.list3].map(function(l,i){return '<div class="sqhd">'+rows[i]+'</div>'+l.map(tile).join('')}).join('');
+  $('bg').onclick=function(e){var t=e.target.closest('.own');if(!t)return;var s=S.all.filter(function(x){return x.id===t.getAttribute('data-id')})[0];if(!s)return;CUR=s.id;
+    $('qt').textContent=(s.ult?'💎 אולטרה סקווישי':s.sup?'⭐ סופר סקווישי':'סקווישי')+' של '+k.n;$('bigimg').innerHTML='<svg viewBox="0 0 100 100">'+s.svg+'</svg>';$('qn').textContent=s.n;$('qd').textContent=s.d;
+    var im=$('bigimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('qov').classList.add('on');if(window.SqSound)SqSound.play(s.id,false)};
+  $('bov').classList.add('on')}
+$('lst').onclick=function(e){var b=e.target.closest('.row');if(b)board(b.getAttribute('data-k'))};
+$('bigimg').onclick=function(){var im=$('bigimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');if(window.SqSound&&CUR)SqSound.play(CUR,false)};
+$('bx').onclick=function(){$('bov').classList.remove('on')};$('qx').onclick=function(){$('qov').classList.remove('on')};
+$('hw').onclick=function(){$('hov').classList.add('on')};$('hx').onclick=function(){$('hov').classList.remove('on')};
+['bov','qov','hov'].forEach(function(i){$(i).addEventListener('click',function(e){if(e.target===$(i))$(i).classList.remove('on')})});
+local();draw();
+// מהשרת: הכוכבים והסקווישים של כל הילדים מכל המכשירים (study_family_board, קריאה בלבד)
+fetch(SB+'/rest/v1/rpc/study_family_board',{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY,Authorization:'Bearer '+KEY},body:'{}'})
+  .then(function(r){return r.ok?r.json():null}).then(function(j){if(!j||!j.items)return;j.items.forEach(function(x){if(P.kids[x.kid])merge(x.kid,x)});draw()}).catch(function(){});
+})();
+</script>
+</body></html>
