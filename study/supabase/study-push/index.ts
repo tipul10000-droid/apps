@@ -4,6 +4,7 @@
 // 3. הכל נכון לפני מבחן: מתנה לילד באפליקציה + התראה לילד ולהורים.
 // 4. תור תוכן חדש (study_notify) לילדים.
 // 5. בקשה או הצעה חדשה מילד (study_requests) → התראה להורים (אורן 6.11.2026).
+// הורים מקבלים רק על ילדי המשפחה שלהם (9.11.2026): ב-study_push להורה kid = '' (משפחה a) או מזהה המשפחה ('b'), והמשפחה של כל ילד מ-study_kids.
 // שעות שקט: ילדים 21:00-07:00, הורים 22:00-07:00 (מה שלא נשלח נשלח אחר כך).
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -12,7 +13,9 @@ const BASE = "https://tipul10000-droid.github.io/apps/study/";
 const APPS = [
   { kid: "evyatar", app: "vocab", name: "אביתר", boy: true, what: "אוצר מילים באנגלית", unit: "מילים", test: "המבחן באנגלית" },
   { kid: "dani", app: "spelling", name: "דני", boy: false, what: "הכתבה באנגלית", unit: "מילים", test: "ההכתבה" },
-  { kid: "lia", app: "phonics", name: "ליה", boy: false, what: "אותיות וצלילים באנגלית", unit: "צלילים", test: "המבחן" },
+  // ליה עוד לא בדוחות התרגול (לא נפרס; לשאול את אורן לפני שמוסיפים):
+  // { kid: "lia", app: "phonics", name: "ליה", boy: false, what: "אותיות וצלילים באנגלית", unit: "צלילים", test: "המבחן" },
+  { kid: "levi", app: "phonics", name: "לביא", boy: true, what: "אותיות וצלילים באנגלית", unit: "צלילים", test: "המבחן" },
 ];
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json", ...CORS } });
@@ -53,10 +56,15 @@ Deno.serve(async (req) => {
   const now = Date.now(), il = israel(now);
   const kidQuiet = il.hour >= 21 || il.hour < 7, parQuiet = il.hour >= 22 || il.hour < 7;
   const { data: subs } = await sb.from("study_push").select("*").eq("active", true);
+  const { data: kidsRows } = await sb.from("study_kids").select("kid,fam");
+  const FAM: Record<string, string> = {};
+  (kidsRows || []).forEach((r: any) => (FAM[r.kid] = r.fam));
   const out: string[] = [];
 
+  // הורה: kid = הילד שההתראה עליו, וההתראה הולכת רק להורים של המשפחה שלו
   async function push(role: "kid" | "parent", kid: string | null, msg: any) {
-    const list = (subs || []).filter((s: any) => s.role === role && (role === "parent" || s.kid === kid));
+    const fam = FAM[kid || ""] || "a";
+    const list = (subs || []).filter((s: any) => s.role === role && (role === "parent" ? (s.kid || "a") === fam : s.kid === kid));
     const body = JSON.stringify(msg);
     let n = 0;
     await Promise.allSettled(list.map(async (s: any) => {
@@ -97,7 +105,7 @@ Deno.serve(async (req) => {
       if (dSec < 60 && dAtt < 3) continue;
       if (parQuiet) continue;
       const pct = dAtt ? Math.round((dOk / dAtt) * 100) : 0;
-      await push("parent", null, {
+      await push("parent", A.kid, {
         title: `📚 ${A.name} ${A.boy ? "תרגל" : "תרגלה"} ${A.what}`,
         body: `${mins(dSec)} · ${dAtt} תשובות, ${dOk} נכונות (${pct}%) · ${A.boy ? "יודע" : "יודעת"} ${d.done || 0}/${d.total || 0} ${A.unit}${tline}`,
         tag: `sess-${A.kid}-${A.app}`, url: BASE + "parents/",
@@ -118,7 +126,7 @@ Deno.serve(async (req) => {
     else if (!parQuiet && total > 0) {
       const slot = tdays <= 2 && pct < 80 ? [8, 14, 19] : tdays >= 3 && tdays <= 5 && pct < 60 ? [19] : [];
       if (slot.includes(il.hour) && (await once(`lag:${A.kid}:${A.app}:${il.date}:${il.hour}`))) {
-        await push("parent", null, {
+        await push("parent", A.kid, {
           title: `📅 ${A.name}: ${A.test} ${inDays(tdays)}`,
           body: `${A.boy ? "יודע" : "יודעת"} ${done}/${total} ${A.unit} (${pct}%), תרגול אחרון ${ago(last, now)}. כדאי לבדוק ${A.boy ? "איתו אם הוא עבד" : "איתה אם היא עבדה"} מספיק באפליקציה.`,
           tag: `lag-${A.kid}-${A.app}`, url: BASE + "parents/",
@@ -133,7 +141,7 @@ Deno.serve(async (req) => {
     const A = APPS.find((a) => a.kid === g.kid && a.app === g.app);
     if (!A) continue;
     if (!parQuiet && (await once(`giftpar:${g.id}`))) {
-      await push("parent", null, {
+      await push("parent", A.kid, {
         title: `🌟 ${A.name} ${A.boy ? "יודע" : "יודעת"} הכל!`,
         body: `${A.boy ? "ענה" : "ענתה"} נכון על כל ה${A.unit}. ${g.note || ""}, ו${A.boy ? "קיבל" : "קיבלה"} מתנה באפליקציה 🎁`,
         tag: `gift-${A.kid}`, url: BASE + "parents/",
@@ -158,14 +166,14 @@ Deno.serve(async (req) => {
   }
   // 5. בקשות והצעות חדשות מהילדים
   if (!parQuiet) {
-    const KN: Record<string, string> = { evyatar: "אביתר", dani: "דני", lia: "ליה" };
+    const KN: Record<string, string> = { evyatar: "אביתר", dani: "דני", lia: "ליה", levi: "לביא", shilo: "שילה" };
+    const BOY: Record<string, boolean> = { evyatar: true, levi: true, shilo: true };
     const KK: Record<string, string> = { test: "📅 מבחן קרוב", quiz: "⏰ בוחן", hard: "🤔 לא הבנתי נושא", topic: "📚 נושא חדש ללימוד", idea: "💡 רעיון לאפליקציה", bug: "🐞 באג באפליקציה" };
     const { data: rq } = await sb.from("study_requests").select("id,kid,kind,txt").is("notified_at", null).eq("hidden", false).order("id").limit(10);
     for (const r of rq || []) {
-      // (9.11.2026) בקשות של בני הדודים (משפחה b) לא נשלחות להורים של משפחה a. הן מופיעות באזור ההורים של המשפחה שלהם.
-      if (!KN[r.kid]) { await sb.from("study_requests").update({ notified_at: new Date().toISOString() }).eq("id", r.id); continue; }
-      const boy = r.kid === "evyatar";
-      await push("parent", null, {
+      // כל בקשה הולכת רק להורים של המשפחה של הילד (push לפי FAM)
+      const boy = !!BOY[r.kid];
+      await push("parent", r.kid, {
         title: `💬 ${KN[r.kid] || r.kid} ${boy ? "שלח" : "שלחה"} בקשה: ${KK[r.kind] || ""}`,
         body: String(r.txt || "").slice(0, 140), tag: `req-${r.id}`, url: BASE + "parents/",
       });

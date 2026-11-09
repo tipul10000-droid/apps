@@ -50,6 +50,7 @@
 .lnw{margin-top:10px;border:1px solid #e3e8f0;border-radius:14px;padding:10px;background:#fff}.lc{margin-top:6px}.lc+.lc{border-top:1px solid #eef2f7;padding-top:8px}.lct{font-size:13px;font-weight:700;color:#2f5d9e}
 .lcs{width:100%;height:auto;display:block;margin-top:4px;direction:ltr}.lcs .g{stroke:#e5eaf1;stroke-width:1}.lcs .g0{stroke:#cbd5e1;stroke-width:1}.lcs .ls{fill:none;stroke:#2f5d9e;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.lcs .ld{fill:none;stroke:#2f5d9e;stroke-width:2;stroke-dasharray:5 4;stroke-linecap:round;opacity:.8}.lcs .pt{fill:#2f5d9e;stroke:#fff;stroke-width:1.5}.lcs .ar{fill:#2f5d9e;opacity:.08}.lcs text{font-size:10px;fill:#64748b}.lcs .vl{font-size:10.5px;font-weight:700;fill:#0f172a}
 .ins{margin-top:10px;background:#f5f8fc;border-radius:12px;padding:8px 10px;font-size:14px;line-height:1.6}.hw{display:inline-block;background:#fff1f2;color:#9f1239;border-radius:12px;padding:0 8px;margin:1px;direction:ltr}
+.pgd{background:#fff;border:1.5px solid #f2c27a;border-radius:16px;padding:10px 14px;margin:10px 0 12px}.pgd summary{cursor:pointer;font-weight:800;font-size:16px;color:#9a5b00;list-style:none;padding:4px 0}.pgd summary::-webkit-details-marker{display:none}.pgd summary::after{content:' ▾'}.pgd[open] summary::after{content:' ▴'}.pgb{font-size:15px;line-height:1.6}.pgb p{margin:8px 0 4px}.pgb ul,.pgb ol{margin:4px 0;padding-inline-start:22px}.pgb li{margin:3px 0}.pgb .sm{font-size:13px;color:var(--mut)}.pgb .b{width:100%;margin-top:10px}
 details.more{margin-top:10px}details.more summary{cursor:pointer;color:#2f5d9e;font-weight:700;font-size:14px;padding:6px 0;list-style:none}details.more summary::-webkit-details-marker{display:none}details.more[open] summary{margin-bottom:4px}details.more summary::after{content:' ▾'}details.more[open] summary::after{content:' ▴'}
 .ixx{margin-top:10px;padding-top:8px;border-top:1px solid #e3e8f0}.ixh{font-size:12px;color:#475569;margin:8px 0 3px}.ixr{display:flex;align-items:center;gap:6px;font-size:12px;margin:3px 0}.ixl{width:92px;flex:none;color:#334155}.ixb{flex:1;height:10px;background:#eef2f7;border-radius:5px;overflow:hidden}.ixb i{display:block;height:100%;background:#2f5d9e;border-radius:5px}.ixv{width:96px;flex:none;direction:ltr;text-align:left;color:#1f2937}.ixn{font-size:12px;color:#475569;margin-top:6px;line-height:1.5}
 .imn{display:block;color:#475569;margin-top:6px;line-height:1.5}
@@ -78,7 +79,7 @@ html,body,*{touch-action:manipulation}
 <div id="v"></div>
 <script src="../profiles.js?v=4"></script>
 <script src="../content.js?v=4"></script>
-<script src="../push.js?v=2"></script>
+<script src="../push.js?v=3"></script>
 <script>
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
 // הקוד נבדק בשרת (study_parents_get). אחרי קוד נכון הוא נשמר במכשיר (study_par_pin); קוד שגוי מוחק אותו.
@@ -97,6 +98,19 @@ const $=id=>document.getElementById(id),V=$('v');
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let PIN='';try{PIN=localStorage.getItem(PINK)||''}catch(e){}
 const rpc=(fn,b)=>fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(b)}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
+// הסבר התראות למשפחות שהצטרפו (אורן 9.11.2026): מה זה נותן, למה מסך הבית, ואיך מפעילים אצל ההורים ובמכשירים של הילדים.
+// פתוח עד שההתראות פועלות במכשיר הזה (או שסגרו אותו ידנית; study_pgd_<fam>).
+function pushGuide(){let st=null;try{st=localStorage.getItem('study_pgd_'+FAM)}catch(e){}let on=false;try{on=!!localStorage.getItem('study_push_parent')}catch(e){}
+ const open=st==='1'||(st==null&&!on),N=KIDS.map(k=>k.n),names=N.length>1?N.slice(0,-1).join(', ')+' ו'+N[N.length-1]:N.join(''),F=StudyProfiles.fam().n;
+ return `<details class="pgd" id="pgd"${open?' open':''}><summary>🔔 התראות: מה זה נותן ואיך מפעילים</summary><div class="pgb">
+<p><b>מה מקבלים</b></p><ul><li><b>בטלפון של ההורים:</b> דוח קצר אחרי כל תרגול של ${esc(names)} (כמה זמן, כמה תשובות ונכונות), והודעה כשהם שולחים לכם בקשה או רעיון מהאפליקציה. רק על הילדים שלכם.</li>
+<li><b>במכשיר של כל ילד</b> (טלפון, טאבלט או אייפד): הודעה כשיש תוכן חדש ללמוד, ועל מתנות 🎁.</li></ul>
+<p><b>למה צריך מסך הבית?</b> באייפון ובאייפד התראות עובדות רק כש-Study Monster נמצאת במסך הבית ופותחים אותה מהאייקון. זה מה שמאפשר את ההתראות.</p>
+<p><b>שלב 1: מוסיפים למסך הבית (אייפון / אייפד)</b></p><ol><li>פותחים את הלינק של Study Monster בספארי.</li><li>לוחצים על כפתור השיתוף ⬆️ (או על שלוש הנקודות ליד שורת הכתובת ← "שיתוף").</li><li>בוחרים <b>"הוספה למסך הבית"</b>, מוודאים ש<b>"פתיחה כאפליקציית רשת"</b> מסומן, ולוחצים <b>"הוספה"</b>.</li><li>פותחים את Study Monster <b>מהאייקון החדש</b>, לא מהלינק. אם מופיעים שם אביתר, דני וליה: לוחצים ⚙️ למעלה ובוחרים <b>"${esc(F)}"</b>.</li></ol>
+<p class="sm">באנדרואיד (כרום) אפשר להפעיל ישר מהדפדפן, בלי מסך הבית.</p>
+<p><b>שלב 2: מפעילים</b></p><ol><li><b>בטלפון של כל הורה:</b> מהאייקון נכנסים ל"אזור הורים" עם הקוד, לוחצים <b>"🔔 התראות"</b> ← <b>"הפעלת התראות"</b>, ומאשרים כשהטלפון שואל.</li><li><b>בכל מכשיר של הילדים</b> (טלפון, טאבלט או אייפד): מהאייקון נכנסים לדף של ${esc(N.join(' / '))}, לוחצים <b>"🔔 התראות על תוכן חדש"</b> ← <b>"הפעלת התראות"</b>, ומאשרים. אם כמה ילדים משתמשים באותו מכשיר, מפעילים בדף של כל אחד.</li></ol>
+<p class="sm">עושים את זה פעם אחת בכל מכשיר. שעות שקט: לילדים 21:00-07:00, להורים 22:00-07:00.</p>
+<button class="b" id="pgdgo" type="button">🔔 הפעלת התראות בטלפון הזה</button></div></details>`}
 function pinView(msg){V.innerHTML=`<div class="pin"><h1>🔒 אזור הורים</h1><p>ההתקדמות של ${esc(StudyProfiles.fam().n)}. הכניסה עם קוד.</p>
 <input id="pi" type="password" inputmode="numeric" autocomplete="off" maxlength="8"><br><button class="b" id="pb" type="button">כניסה</button><div class="msg" id="pm">${esc(msg||'')}</div></div>`;
  const go=()=>{const v=$('pi').value.trim();if(!v)return;PIN=v;load(true)};$('pb').onclick=go;$('pi').onkeydown=e=>{if(e.key==='Enter')go()};setTimeout(()=>$('pi').focus(),50)}
@@ -202,6 +216,7 @@ function needsGrade(j,k){return k.apps.some(a=>{const t=(j.tests||[]).find(x=>x.
  if((j.results||[]).some(x=>x.kid===k.id&&x.app===a.id))return false;return t.done||(t.d&&new Date(t.d+'T00:00:00')<=new Date(new Date().toDateString()))})}
 function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/'+t.app]=t);
  let h=`<div class="stk"><a class="back" href="../">→ כל הילדים</a><div class="head"><h1 style="margin:0;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button><button class="b s" id="rf" type="button">רענון</button><button class="b s" id="lo" type="button">יציאה</button></span></div><div class="tabs" id="tabs">${KIDS.map(k=>`<button type="button" data-k="${k.id}"${k.id===TAB?' class="on"':''}>${StudyProfiles.pic(k.id,'tpic')}${k.n}<i class="dot" id="dot_${k.id}"></i></button>`).join('')}</div></div>`;
+ if(FAM!=='a')h+=pushGuide();
  KIDS.forEach(k=>{h+=`<div class="kid${k.id===TAB?'':' off'}" id="kd_${k.id}">`;
   if(!k.apps.length)h+=`<div class="none">עוד אין תכנים. התכנים של ${k.n} יגיעו בהמשך 🎈</div>`;
   k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`+(window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<div class="cnt" id="cr_${id}" data-c="${k.id}/${a.id}" data-n="${k.n}"></div>`:'')+evBox(k,a,t,RS,id0(k,a));
@@ -234,7 +249,7 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
  V.innerHTML=h;SAVED='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);const d=$('dot_'+k.id);if(d)d.classList.toggle('on',NG[k.id])});loadReq();loadQz();drawCnt();StudyContent.refresh(drawCnt);
  V.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{TAB=b.dataset.k;try{localStorage.setItem('study_par_tab',TAB)}catch(e){}V.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));KIDS.forEach(k=>$('kd_'+k.id).classList.toggle('off',k.id!==TAB));scrollTo(0,0)});
- V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':(b.dataset.l||'✏️ עריכה')});if(FAM!=='a'){const nb=$('nt');if(nb)nb.style.display='none'}else if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem(PINK)}catch(e){}PIN='';pinView()};
+ V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':(b.dataset.l||'✏️ עריכה')});if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);{const g=$('pgdgo');if(g)g.onclick=()=>$('nt').click();const d=$('pgd');if(d)d.ontoggle=()=>{try{localStorage.setItem('study_pgd_'+FAM,d.open?'1':'0')}catch(e){}}}$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem(PINK)}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
  V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const [k,a]=b.dataset.t.split('|'),id=k+'_'+a;b.textContent='...';
   SAVED=id;done(b,rpc('study_parents_set_test',{p_pin:PIN,p_kid:k,p_app:a,p_d:$('d_'+id).value||null,p_note:''}))});
