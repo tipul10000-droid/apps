@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.0";window.SQ_BUILD_AT="9.11.2026 10:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.1";window.SQ_BUILD_AT="9.11.2026 10:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2160,10 +2160,17 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
         return W.e+" "+l;}}
     return "";}
   // ?w=drive|work|home... from an iPhone Shortcut (CarPlay connected, arrived at work), ?car=1 = big text in the brief
+  // 14.1: the same switch from the iPhone Action Button without opening the app: the Shortcut writes settings/where {w, at}
+  // (sq_put), and every open copy (Safari or the home-screen app) applies it once, if it is from the last 4 hours.
+  function applyW(w){const m=ilNow().m;if(w==="drive")w=m<780?"drive_am":"drive_pm";if(w==="home")w=m<1170?"near_home":"light";
+    if(w==="auto"||w==="in"){winOv=null;localStorage.removeItem("sq_win");return true;}
+    if(WINS[w]){const ms=(WINS[w].ov?240:w.startsWith("drive")?45:120)*60000;winOv={id:w,until:Date.now()+ms,end:WINS[w].ov?hhmm((m+ms/60000)%1440):""};localStorage.setItem("sq_win",JSON.stringify(winOv));return true;}
+    return false;}
+  function remoteW(d){try{if(!d||!d.w||!d.at)return false;const t=Date.parse(d.at);if(!(t>Date.now()-4*3600000))return false;
+    if(String(d.at)===(localStorage.getItem("sq_where_at")||""))return false;localStorage.setItem("sq_where_at",String(d.at));
+    if(!applyW(String(d.w).trim().toLowerCase()))return false;toast(WINS[winOv&&winOv.id]?"📍 "+WINS[winOv.id].l:"✦ חלון זמן אוטומטי");return true;}catch(e){return false;}}
   (function(){try{const q=new URLSearchParams(location.search);let w=q.get("w");if(!w&&!q.get("car"))return;
-    if(w){const m=ilNow().m;if(w==="drive")w=m<780?"drive_am":"drive_pm";if(w==="home")w=m<1170?"near_home":"light";
-      if(w==="auto"||w==="in"){winOv=null;localStorage.removeItem("sq_win");} // 12.6: iPhone Shortcut on home Wi-Fi connect
-      else if(WINS[w]){const ms=(WINS[w].ov?240:w.startsWith("drive")?45:120)*60000;winOv={id:w,until:Date.now()+ms,end:WINS[w].ov?hhmm((m+ms/60000)%1440):""};localStorage.setItem("sq_win",JSON.stringify(winOv));}}
+    if(w){applyW(w);}
     if(q.get("car")==="1")localStorage.setItem("sq_car","1");else if(q.get("car")==="0")localStorage.removeItem("sq_car");
     q.delete("w");q.delete("car");const s=q.toString();history.replaceState(null,"",location.pathname+(s?"?"+s:"")+location.hash);}catch(e){}})();
   // tonight: "how much errand time tomorrow morning?" (Sun-Thu). Asked after 20:00, and in the morning before 08:00 if not answered.
@@ -4232,7 +4239,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   $("sunBtn").onclick=()=>showBrief();
   $("locBtn").onclick=()=>showHere(true);
   function initNotify(){
-    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan"),aw=s.docs.find(x=>x.id==="away");
+    db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan"),aw=s.docs.find(x=>x.id==="away"),wh=s.docs.find(x=>x.id==="where");
+      if(wh&&remoteW(wh.data())&&allTopics.length){renderCtx();renderList();}
       const plOld=JSON.stringify([plan,away]);if(pl){plan=pl.data();try{localStorage.setItem("sq_plan",JSON.stringify(plan));}catch(e){}}
       away=aw&&Array.isArray(aw.data().trips)?aw.data().trips:[];const plChg=plOld!==JSON.stringify([plan,away]);morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
       xBriefs={};for(const k of ["fri","wkend","week"]){const d0=s.docs.find(x=>x.id===BKD[k].doc);if(d0)xBriefs[k]=d0.data();}
