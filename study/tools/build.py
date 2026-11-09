@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # בונה קבצים שנגזרים מקבצים אחרים ב-study (9.11.2026). מריצים אחרי כל שינוי במקור:  python3 study/tools/build.py
-# 1. levi/phonics/index.html  ← lia/phonics/index.html (אותו שיעור אחד לאחד: מפתחות levi_ph, לשון זכר, הסקווישים של לוי, השמע מהתיקייה של ליה)
+# 1. levi/phonics/index.html  ← lia/phonics/index.html (אותו שיעור אחד לאחד: מפתחות levi_ph, לשון זכר, הסקווישים של לביא, השמע מהתיקייה של ליה)
 # 2. dani/squishies.js        ← הסקווישים שבתוך dani/spelling/index.html (ללוח המשפחתי; ההכתבה עצמה לא משתנה)
 import os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +20,7 @@ REP = [  # (מה, במה) — כל אחד חייב להופיע במקור, כד
   ("new Audio('audio/'+f", "new Audio('../../lia/phonics/audio/'+f"),
   ('<script src="../squishies.js?v=2"></script>', '<script src="../squishies.js?v=1"></script>'),
   ('LiaSquishies', 'LeviSquishies'),
-  ('היי ליה! 🚀', 'היי לוי! 🚀'),
+  ('היי ליה! 🚀', 'היי לביא! 🚀'),
   ('<li>6 קבוצות.', '<li>7 קבוצות.'),
   ('יאללה, מתחילות!', 'יאללה, מתחילים!'),
   ('לחצי עליו כדי למעוך', 'לחץ עליו כדי למעוך'),
