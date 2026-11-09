@@ -5,15 +5,15 @@
 // ילד בלי img מוצג עם אימוג׳י (emo) עד שיגיע איור.
 (function(){
   var FAMS=[
-    {id:'a',n:'אביתר, דני וליה',emo:'🦁💜🪐',kids:['evyatar','dani','lia']},
-    {id:'b',n:'לביא ושילו',emo:'🧱✡️',kids:['levi','shilo']}
+    {id:'a',n:'אביתר, דני וליה',emo:'⚽⛩️🪐',kids:['evyatar','dani','lia']},
+    {id:'b',n:'לביא ושילה',emo:'🔨🦁',kids:['levi','shilo']}
   ];
   var KIDS={
     evyatar:{n:'אביתר',boy:1,fam:'a',img:'kids/evyatar.webp',sq:null},
     dani:{n:'דני',boy:0,fam:'a',img:'kids/dani.webp',sq:'DaniSquishies',sqf:'dani/squishies.js',sqk:'dani_sp_sq'},
     lia:{n:'ליה',boy:0,fam:'a',img:'kids/lia.webp',sq:'LiaSquishies',sqf:'lia/squishies.js',sqk:'lia_ph_sq'},
     levi:{n:'לביא',boy:1,fam:'b',img:'kids/levi.webp',emo:'👦',bg:'#e0ecff',sq:'LeviSquishies',sqf:'levi/squishies.js',sqk:'levi_ph_sq'},
-    shilo:{n:'שילו',boy:1,fam:'b',img:'kids/shilo.webp',emo:'🧒',bg:'#fff1d6',sq:'ShiloSquishies',sqf:'shilo/squishies.js',sqk:'shilo_sq'}
+    shilo:{n:'שילה',boy:1,fam:'b',img:'kids/shilo.webp',emo:'🧒',bg:'#fff1d6',sq:'ShiloSquishies',sqf:'shilo/squishies.js',sqk:'shilo_sq'}
   };
   var K='study_profile';
   function get(){var v=null;try{v=localStorage.getItem(K)}catch(e){}return FAMS.some(function(f){return f.id===v})?v:'a'}
