@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.1";window.SQ_BUILD_AT="9.11.2026 10:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.2";window.SQ_BUILD_AT="9.11.2026 15:35";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -4169,6 +4169,9 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
         h("div",{class:"tsbtns"},...[["auto","לפי האייפון"],["1","רגיל"],["1.15","גדול"],["1.3","גדול מאוד"],["1.5","🚗 רכב"]].map(([v,l])=>h("button",{type:"button","aria-pressed":tsPref===v?"true":"false",onclick:()=>setTs(v)},l)))),
       sec("geo","🗺️ סידור לפי אזור",geoOff?"כבוי":"פעיל",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"סידור לפי אזור"),sw(!geoOff,v=>setGeo(v),"סידור לפי אזור"))),
+      grp("📱 אייפון"),
+      sec("sc","⚡ קיצורי דרך","כפתור Action",
+        h("div",{class:"sqbtns"},h("a",{class:"sqbtn ghost",style:"text-decoration:none",href:"shortcuts/",target:"_blank",rel:"noopener"},"⬇️ התקנה"))),
       grp("🔔 התראות ובריפים"),
       sec("push","🔔 התראות",pushOn?"פעיל":"כבוי",
         h("div",{class:"sqrow"},h("div",{class:"sqstate "+cls},h("span",{class:"d"}),h("span",null,st)),h("span",{style:"flex:1"}),act||null),
