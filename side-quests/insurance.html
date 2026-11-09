@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="1.9";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="2.0";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ביטוחים ופנסיה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -185,6 +185,21 @@ table.cov{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
 .est{color:var(--mid);font-size:11px;font-weight:700}
 .rsum{display:flex;justify-content:space-between;font-weight:700;font-size:14px;margin-top:4px}
 .rsum span:last-child{font-family:var(--f-mono);direction:ltr}
+/* kids savings */
+.kids{padding:14px}
+.kctl{display:grid;grid-template-columns:96px 1fr 64px;gap:6px 10px;align-items:center;font-size:13.5px;color:var(--muted);margin-bottom:6px}
+.kctl input[type=range]{width:100%;accent-color:var(--hero2);margin:0;height:28px}
+.kctl output{font-family:var(--f-mono);font-weight:600;color:var(--ink);direction:ltr;text-align:left}
+.kopt{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
+.kopt .chip{padding:4px 10px;font-size:13px}
+.kk{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-top:1px solid var(--line)}
+.kk h4{font-size:15.5px;margin:0}
+.kk .fv{font-family:var(--f-mono);font-weight:600;font-size:20px;direction:ltr;text-align:left}
+.kk small{color:var(--muted);font-size:12.5px}
+.kk small.r{direction:ltr;text-align:left;font-family:var(--f-mono)}
+.kk svg{grid-column:1/-1;width:100%;height:34px;display:block;margin-top:4px}
+.ktot{display:flex;justify-content:space-between;font-weight:700;font-size:14.5px;padding-top:10px;border-top:1px solid var(--line)}
+.ktot span:last-child{font-family:var(--f-mono);direction:ltr}
 /* jump nav */
 .jump{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:8px}
 .jump::-webkit-scrollbar{display:none}
@@ -382,6 +397,11 @@ function render(){
   if(R&&(R.people||[]).length&&(fWho==="all"||fWho==="oren"||fWho==="lior")){
     h+=`<section id="s-ret"><div class="sh"><h2>כמה יהיה לנו בפנסיה</h2><span class="hint">בכסף של היום</span></div><div class="card ret" id="retbox">${retHTML(R)}</div></section>`;
   }
+  // חיסכון לכל ילד: תחזית עד המשיכה
+  const KS=meta.retire&&meta.retire.kids_savings;
+  if(KS&&(KS.kids||[]).length&&(fWho==="all"||fWho==="kids"||fWho==="family")){
+    h+=`<section id="s-kids"><div class="sh"><h2>חיסכון לכל ילד</h2><span class="hint">היום ${ils(KS.total||KS.kids.reduce((a,k)=>a+(+k.v||0),0))}</span></div><div class="card kids" id="kidsbox">${kidsHTML(KS)}</div></section>`;
+  }
   // policies
   const groups={};V.forEach(p=>{(groups[p.cat]=groups[p.cat]||[]).push(p);});
   h+=`<section id="s-pol"><div class="sh"><h2>הפוליסות</h2><span class="hint">לחיצה פותחת את כל הפרטים</span></div>`;
@@ -401,10 +421,10 @@ function render(){
     h+=`<section id="s-tasks"><div class="sh"><h2>כל המשימות</h2><span class="hint">${open.length} פתוחות · ${done.length} בוצעו</span></div><div class="tasks">`+
       open.map(row).join("")+(done.length?`<button class="more" id="donebtn">${showDone?"הסתר":"הצג"} ${done.length} שבוצעו</button>`+(showDone?done.map(row).join(""):""):"")+`</div></section>`;
   }
-  $("app").innerHTML=h;bindRet();
+  $("app").innerHTML=h;bindRet();bindKids();
   if($("more"))$("more").onclick=()=>{showAll=!showAll;render();};
   if($("donebtn"))$("donebtn").onclick=()=>{showDone=!showDone;render();};
-  const J=[["s-mine","מחכה לכם"],["s-flags","ממצאים"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-cov","מפת כיסוי"],["s-ret","פרישה"],["s-sav","פנסיה"],["s-pol","פוליסות"],["s-tasks","משימות"]].filter(([i])=>$(i));
+  const J=[["s-mine","מחכה לכם"],["s-flags","ממצאים"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-cov","מפת כיסוי"],["s-ret","פרישה"],["s-kids","ילדים"],["s-sav","פנסיה"],["s-pol","פוליסות"],["s-tasks","משימות"]].filter(([i])=>$(i));
   $("jump").innerHTML=J.map(([i,l])=>`<a href="#${i}">${l}</a>`).join("");
   $("app").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openPol(b.dataset.p));
   $("app").querySelectorAll("[data-cov]").forEach(b=>b.onclick=()=>{const r=cov[+b.dataset.cov];$("covnote").innerHTML=`<b>${esc(r.risk)}:</b> ${esc(r.note||"")}`;$("covnote").scrollIntoView({block:"nearest",behavior:"smooth"});});
@@ -471,6 +491,52 @@ function bindRet(){
   box.querySelectorAll("[data-real]").forEach(b=>b.onclick=()=>{RS.real=+b.dataset.real;saveRS();re();});
   box.querySelectorAll("[data-yrs]").forEach(b=>b.onclick=()=>{RS.yrs=+b.dataset.yrs;saveRS();re();});
   box.querySelectorAll("[data-ra]").forEach(b=>b.onclick=()=>{const id=b.dataset.ra,p=data.meta.retire.people.find(x=>x.id===id);RS.ret=RS.ret||{};RS.ret[id]=Math.min(75,Math.max(55,(RS.ret[id]??p.ret)+(+b.dataset.d)));saveRS();re();});
+}
+
+// ---- חיסכון לכל ילד ----
+let KR={};try{KR=JSON.parse(localStorage.getItem("ins_kids")||"{}")}catch(e){}
+function saveKR(){try{localStorage.setItem("ins_kids",JSON.stringify(KR))}catch(e){}}
+function kidsCalc(KS){
+  const r=KR.r??6, age=KR.age??18, par=KR.par??true, grant=KS.grant??568;
+  const t0=new Date((KS.as_of||"2026-11-03")+"T00:00:00"), i=Math.pow(1+r/100,1/12)-1;
+  const kids=(KS.kids||[]).map(k=>{
+    const b=new Date(k.born+"T00:00:00"), t18=new Date(b.getFullYear()+18,b.getMonth(),b.getDate()), tw=new Date(b.getFullYear()+age,b.getMonth(),b.getDate());
+    let bal=+k.v||0, d=new Date(t0), pts=[bal];
+    while(d<tw){d.setMonth(d.getMonth()+1);bal=bal*(1+i)+(d<=t18?(KS.btl??58)+(par?(KS.par??58):0):0);pts.push(bal);}
+    const fv=bal+(age>=21?grant:0);
+    return {...k,tw,fv,pts,yrs:(tw-t0)/31557600000};
+  });
+  return {r,age,par,grant,kids,tot:kids.reduce((a,k)=>a+k.fv,0),now:kids.reduce((a,k)=>a+(+k.v||0),0)};
+}
+function spark(pts,mx){const n=pts.length-1||1,w=300,hh=32;return `<svg viewBox="0 0 ${w} ${hh}" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--hero2)" stroke-width="2" vector-effect="non-scaling-stroke" points="${pts.map((v,k)=>(k/n*w).toFixed(1)+","+(hh-1-v/mx*(hh-3)).toFixed(1)).join(" ")}"/></svg>`;}
+function kidsHTML(KS){
+  const C=kidsCalc(KS), mx=Math.max(...C.kids.map(k=>Math.max(...k.pts)),1), mo=d=>(d.getMonth()+1)+"."+d.getFullYear();
+  return `<div class="kctl"><span>תשואה בשנה</span><input type="range" id="kr" min="0" max="12" step="0.5" value="${C.r}" aria-label="תשואה בשנה"><output id="kro">${C.r}%</output>
+    <span>גיל משיכה</span><input type="range" id="ka" min="18" max="30" step="1" value="${C.age}" aria-label="גיל משיכה"><output id="kao">${C.age}</output></div>
+  <div class="kopt"><button class="chip" data-kr="3" aria-pressed="${C.r===3}">זהיר 3%</button><button class="chip" data-kr="6" aria-pressed="${C.r===6}">ממוצע 6%</button><button class="chip" data-kr="${KS.ytd_n??11.36}" aria-pressed="${C.r===(KS.ytd_n??11.36)}">כמו השנה ${KS.ytd_n??11.36}%</button><button class="chip" id="kpar" aria-pressed="${C.par}">הפקדה שלנו ₪${KS.par??58}</button></div>
+  <div id="kres">${kidsRes(C,mx,mo)}</div>
+  <details class="more"><summary>הכללים</summary><div>
+    עד גיל 18 נכנסים כל חודש ₪${KS.btl??58} מביטוח לאומי, ועוד ₪${KS.par??58} שלנו (יורד מקצבת הילדים). בגיל 18 ההפקדות נעצרות והכסף ממשיך לצבור תשואה.
+    מגיל 18 הילד מושך, ועד 21 צריך גם הסכמה של ההורים. מי שלא מושך עד 21 מקבל מענק ₪${C.grant} מביטוח לאומי, ומגיל 21 לא צריך הסכמה.
+    אפשר להשאיר את הכסף גם אחרי 21 ולמשוך מתי שרוצים (מסלול קופת גמל להשקעה). במשיכה יורד מס רווח הון על הרווח, והסכומים כאן לפני מס. מי שמשאיר עד הפרישה ומושך כקצבה פטור ממס על כל הרווח.
+    כדאי לעבור למסלול זהיר יותר 2-3 שנים לפני המשיכה. ${esc(KS.where||"")}, דמי ניהול ${esc(KS.fee||"")} (ביטוח לאומי משלם). יתרות מ-${esc(KS.as_of||"")}.
+    <br><a href="https://www.kolzchut.org.il/he/משיכת_כספים_מתוכנית_%22חיסכון_לכל_ילד%22" target="_blank" rel="noopener">כל זכות: משיכת הכספים</a>
+  </div></details>`;
+}
+function kidsRes(C,mx,mo){
+  return C.kids.map(k=>`<div class="kk"><h4>${esc(k.n)}</h4><span class="fv">${ils(k.fv)}</span>
+    <small>היום ${ils(k.v)} · בגיל ${C.age}: ${mo(k.tw)}${C.age>=21?" · כולל מענק":""}</small><small class="r">${k.yrs>0?"+"+Math.round((k.fv/(+k.v||1)-1)*100)+"%":""}</small>
+    ${spark(k.pts,mx)}</div>`).join("")+`<div class="ktot"><span>ביחד בגיל ${C.age}</span><span>${ils(C.tot)}</span></div>`;
+}
+function bindKids(){
+  const box=$("kidsbox");if(!box)return;const KS=data.meta.retire.kids_savings;
+  const upd=()=>{const C=kidsCalc(KS),mx=Math.max(...C.kids.map(k=>Math.max(...k.pts)),1);
+    $("kres").innerHTML=kidsRes(C,mx,d=>(d.getMonth()+1)+"."+d.getFullYear());$("kro").textContent=C.r+"%";$("kao").textContent=C.age;
+    box.querySelectorAll("[data-kr]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.kr===C.r)));$("kpar").setAttribute("aria-pressed",String(C.par));};
+  $("kr").oninput=e=>{KR.r=+e.target.value;saveKR();upd();};
+  $("ka").oninput=e=>{KR.age=+e.target.value;saveKR();upd();};
+  box.querySelectorAll("[data-kr]").forEach(b=>b.onclick=()=>{KR.r=+b.dataset.kr;$("kr").value=KR.r;saveKR();upd();});
+  $("kpar").onclick=()=>{KR.par=!(KR.par??true);saveKR();upd();};
 }
 
 function openPol(id){
