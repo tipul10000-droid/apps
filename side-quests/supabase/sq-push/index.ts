@@ -7,6 +7,8 @@ import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import "./timegate.js"; // shared with the app: side-quests/timegate.js (copy it here on every change)
 const SQGate = (globalThis as any).SQGate;
+import "./sqctx.js"; // shared with the app: side-quests/sqctx.js (copy it here on every change)
+const SQCtx = (globalThis as any).SQCtx;
 
 const APP = "sidequests";
 const SRV = "sq_push_srv";
@@ -272,9 +274,24 @@ async function gateTick(p: any, t: ReturnType<typeof il>) {
   return { gates: out };
 }
 
+async function ctxTick(t: any) {
+  const now = { date: t.date, mins: t.mins };
+  const all = (await listColl(APP, "topics")).filter((x: any) => SQCtx.wants(x));
+  let n = 0;
+  for (const x of all) {
+    const r = SQCtx.apply(x, now);
+    if (!r) continue;
+    await putDoc(APP, "topics", x.id, r.patch);
+    n++;
+  }
+  return n;
+}
+
 async function tick() {
   const p = await prefs(), t = il();
   const out: any = { at: t };
+  // 14.3: tasks said with their context ("מחר בדרך לעבודה לקנות עוגיות") get their window and day even when the app is closed
+  try { out.ctx = await ctxTick(t); } catch (e: any) { out.ctx = { error: String(e?.message || e) }; }
   const st = (await getDoc(SRV, "state", "brief")) || {};
   const [hh, mm] = String(p.brief_time || "08:00").split(":").map((x: string) => parseInt(x) || 0);
   const at = hh * 60 + mm;
