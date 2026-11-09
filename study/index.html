@@ -118,12 +118,24 @@ h1{margin:0;font-size:0;line-height:0}header{flex:none;display:block!important}@
  function quiz(rep){if(window.STUDY_GUEST&&left(kid)>0)return showLock(kid); // אורח באותו מכשיר לא עוקף נעילה קיימת (אורן 6.11.2026)
   REP=!!rep;qi=0;pickQ();var k=K[kid];$('qzi').src='kids/'+kid+'.webp';$('qzt').textContent='רק '+k.n+' יודע'+(kid==='evyatar'?'':'ת')+' את התשובות!';$('qzs').textContent=k.t;
   $('qzskip').style.display=window.STUDY_GUEST?'':'none';$('qzskip').classList.remove('glow');ov.classList.remove('on');qz.classList.add('on');ask()}
- document.querySelectorAll('a.kid').forEach(function(a){a.addEventListener('click',function(ev){var id=a.getAttribute('href').replace('/',''),k=K[id];if(!k)return;go=a.href;kid=id;
+ document.querySelectorAll('a.kid').forEach(function(a){a.addEventListener('click',function(ev){var id=a.getAttribute('href').replace('/',''),k=K[id];
+  // ילדים קטנים בלי חידון (לביא, שילה; אורן 9.11.2026): "האזור של X בלבד" ← "בטוח שאתה X?" ← נכנסים. רוצים רק להתנסות = מצב אורח.
+  if(!k){var Y=window.StudyProfiles&&StudyProfiles.kids[id];if(!Y||window.STUDY_GUEST||ok(id))return;ev.preventDefault();go=a.href;kid=id;YN=Y.n;YB=!!Y.boy;young(0);return}
+  go=a.href;kid=id;YN=null;$('whop').style.minHeight=$('whog').style.minHeight='';
   if(window.STUDY_GUEST){ev.preventDefault();return quiz()}
   if(ok(id)){qset(id,Object.assign(qget(id),{n:0}));return}ev.preventDefault();var n=k.n;$('whoi').src='kids/'+id+'.webp';
   $('whot').textContent='האזור של '+n+' בלבד';$('whop').innerHTML='כל התקדמות מכאן תירשם בהישגים של <b>'+n+'</b>.';
   $('whog').textContent='לא '+n+'? אפשר להיכנס במצב אורח, בלי להשפיע.';$('whoy').textContent='אני '+n+', להמשיך ←';ov.classList.add('on')})});
- $('whoy').onclick=function(){quiz()};
+ var YN=null,YB=1,YS=0;
+ function young(st){YS=st;var n=YN,b=YB;$('whoi').src='kids/'+kid+'.webp';
+  if(!st){$('whot').textContent='האזור של '+n+' בלבד';$('whop').innerHTML='כאן נשמרת ההתקדמות של <b>'+n+'</b>: הכוכבים, הסקווישים וכל מה '+(b?'שלמד':'שלמדה')+'.';
+   $('whog').textContent='רק רוצים להתנסות? היכנסו במצב אורח, וההתקדמות של '+n+' לא תשתנה.';$('whoy').textContent='אני '+n+', להמשיך ←'}
+  else{$('whot').textContent=(b?'בטוח שאתה ':'בטוחה שאת ')+n+'? 🙂';$('whop').innerHTML='מכאן כל מה '+(b?'שתעשה':'שתעשי')+' יירשם אצל <b>'+n+'</b>.';
+   $('whog').textContent='לא '+n+'? אפשר להתנסות במצב אורח, בלי לשמור כלום אצל '+n+'.';$('whoy').textContent='כן, אני '+n+' ←'}
+  ov.classList.add('on');
+  // הכפתורים לא זזים בין שני השלבים: הטקסטים שומרים את הגובה של השלב הראשון
+  ['whop','whog'].forEach(function(i){var e=$(i);if(!st)e.style.minHeight='';else if(!e.style.minHeight)e.style.minHeight=e.dataset.h+'px';if(!st)requestAnimationFrame(function(){e.dataset.h=e.getBoundingClientRect().height})})}
+ $('whoy').onclick=function(){if(!YN)return quiz();if(!YS)return young(1);try{localStorage.setItem('study_ok_'+kid,'1')}catch(e){}location.href=go};
  // 🎯 חידון: נכנסים לאזור של הילד דרך השאלות, גם אם כבר עברו אותן (משחק צד)
  // חידון כניסה (אורן 6.11.2026): הכפתור מופיע רק למי שכבר עבר את החידון. אחרי 2 חידונים ברצף בלי להיכנס ללמוד דרך הכרטיס: נעול ל-4 שעות עם ספירה לאחור, או עד 20 דקות של לימוד פעיל (track.js סופר ב-act).
  var REP=false;
@@ -149,7 +161,7 @@ h1{margin:0;font-size:0;line-height:0}header{flex:none;display:block!important}@
  function showLock(k){var boy=k==='evyatar';LK=k;ov.classList.remove('on');$('qlkt').innerHTML='חידון הכניסה נפתח שוב בעוד 4 שעות, <b>או</b> אחרי <b>20 דקות של לימוד</b> (עם תשובות, לא רק לפתוח את האפליקציה).<br>עכשיו הזמן ללמוד, אז '+(boy?'תיכנס ותלמד':'תיכנסי ותלמדי')+' עם חיוך 😊';$('qlkg').textContent=(boy?'נכנס':'נכנסת')+' ללמוד ←';tick();$('qlk').classList.add('on')}
  $('qlkg').onclick=function(){qset(kid,Object.assign(qget(kid),{n:0}));location.href=go};
  $('qlkb').onclick=function(){$('qlk').classList.remove('on');LK=null};
- $('whogb').onclick=function(){studyGuest(true,location.pathname+'?gq='+kid)};
+ $('whogb').onclick=function(){studyGuest(true,YN?go:location.pathname+'?gq='+kid)};
  $('whob').onclick=function(){ov.classList.remove('on')};
  $('qzb').onclick=function(){qz.classList.remove('on')};
  $('qzskip').onclick=function(){if(go)location.href=go};
