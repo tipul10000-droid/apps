@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="2.1";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="2.2";</script>
 <script src="sq-db.js?v=9"></script>
 <script src="dash-lock.js?v=1"></script>
 <title>ביטוחים ופיננסים</title>
@@ -121,6 +121,7 @@ table.cov{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
 .gh{display:flex;align-items:center;gap:8px;margin:0 2px 8px;font-family:var(--f-display);font-weight:700;font-size:16px}
 .gh .sw{width:10px;height:10px;border-radius:3px}
 .gh .s{margin-inline-start:auto;font-family:var(--f-mono);font-weight:500;font-size:13px;color:var(--muted);direction:ltr}
+.lnr{display:flex;gap:10px;justify-content:space-between;padding:10px 2px}.lnr+.lnr{border-top:1px solid var(--line)}.lnb{min-width:0}.lnb b{display:block;font-size:15px}.lnb span,.lnv span{display:block;font-size:12.5px;color:var(--muted)}.lnv{text-align:left;flex:none}.lnv b{display:block}
 .pol{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 13px;text-align:start;border:1px solid var(--line);border-radius:14px;background:var(--surface);margin-bottom:8px;border-inline-start:4px solid var(--cc,var(--line))}
 .pol .ic{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--sunk)}
 .pol .t{font-weight:700;font-size:15.5px;line-height:1.3}
@@ -403,6 +404,12 @@ function render(){
   if(KS&&(KS.kids||[]).length&&(fWho==="all"||fWho==="kids"||fWho==="family")){
     h+=`<section id="s-kids"><div class="sh"><h2>חיסכון לכל ילד</h2><span class="hint">היום ${ils(KS.total||KS.kids.reduce((a,k)=>a+(+k.v||0),0))}</span></div><div class="card kids" id="kidsbox">${kidsHTML(KS)}</div></section>`;
   }
+  // 2.2 (Oren 9.11): loans, from the cash-flow debits (_meta.loans)
+  const LN=meta.loans;
+  if(LN&&(LN.items||[]).length&&(fWho==="all"||fWho==="oren"||fWho==="family")){
+    const mt=LN.items.reduce((s,x)=>s+(+x.m||0),0);
+    h+=`<section id="s-loans"><div class="sh"><h2>הלוואות</h2><span class="hint">${ils(mt)} בחודש</span></div><div class="card">${LN.items.map(x=>`<div class="lnr"><div class="lnb"><b>${esc(x.l)}</b>${x.note?`<span>${esc(x.note)}</span>`:""}</div><div class="lnv">${x.m?`<b>${ils(+x.m)}</b>`:""}${x.bal?`<span>יתרה ${ils(+x.bal)}</span>`:""}${x.end?`<span>עד ${esc(x.end.split("-").reverse().join("."))}</span>`:""}</div></div>`).join("")}</div></section>`;
+  }
   // policies
   const groups={};V.forEach(p=>{(groups[p.cat]=groups[p.cat]||[]).push(p);});
   h+=`<section id="s-pol"><div class="sh"><h2>הפוליסות</h2><span class="hint">לחיצה פותחת את כל הפרטים</span></div>`;
@@ -425,7 +432,7 @@ function render(){
   $("app").innerHTML=h;bindRet();bindKids();
   if($("more"))$("more").onclick=()=>{showAll=!showAll;render();};
   if($("donebtn"))$("donebtn").onclick=()=>{showDone=!showDone;render();};
-  const J=[["s-mine","מחכה לכם"],["s-flags","ממצאים"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-cov","מפת כיסוי"],["s-ret","פרישה"],["s-kids","ילדים"],["s-sav","פנסיה"],["s-pol","פוליסות"],["s-tasks","משימות"]].filter(([i])=>$(i));
+  const J=[["s-mine","מחכה לכם"],["s-flags","ממצאים"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-cov","מפת כיסוי"],["s-ret","פרישה"],["s-kids","ילדים"],["s-loans","הלוואות"],["s-sav","פנסיה"],["s-pol","פוליסות"],["s-tasks","משימות"]].filter(([i])=>$(i));
   $("jump").innerHTML=J.map(([i,l])=>`<a href="#${i}">${l}</a>`).join("");
   $("app").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openPol(b.dataset.p));
   $("app").querySelectorAll("[data-cov]").forEach(b=>b.onclick=()=>{const r=cov[+b.dataset.cov];$("covnote").innerHTML=`<b>${esc(r.risk)}:</b> ${esc(r.note||"")}`;$("covnote").scrollIntoView({block:"nearest",behavior:"smooth"});});
