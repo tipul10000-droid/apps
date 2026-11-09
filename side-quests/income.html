@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=1"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2D4A2B">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IN_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<script src="dash-lock.js?v=1"></script>
+<title>שכר והכנסות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* דשבורד שכר והכנסות (9.11.2026). נתונים: sq_docs (app=sidequests, collection=income, _meta). נעול בקוד (dash-lock.js). */
+:root{
+  --bg:#F3F6F8; --surface:#FFFFFF; --sunk:#E7EDF1; --ink:#15212A; --muted:#5A6873; --line:#D6DFE5;
+  --hero:#2D4A2B; --hero2:#5E8C4A; --art:url(img/art-payments.svg); --mark:#E2C14B; --hero-ink:#F2F8FB; --hero-muted:#BFD6E0; --accent:#F4C152; --accent-ink:#3A2700;
+  --good:#23855A; --good-soft:#DDF1E6; --warn:#A8600E; --warn-soft:#FBEAD3; --bad:#B83A2E; --bad-soft:#F8E0DD; --link:#3D6E2E; --hi:#4E7D3C; --hi-soft:#E6F0DF;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10161A; --surface:#182127; --sunk:#212C33; --ink:#EAF1F5; --muted:#9FB0BA; --line:#2A3740;
+  --hero:#1B2E1A; --hero2:#3D5E30; --hero-ink:#EEF6FA; --hero-muted:#A9C6D2; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#9FD08A; --hi:#9FD08A; --hi-soft:#22341D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10161A; --surface:#182127; --sunk:#212C33; --ink:#EAF1F5; --muted:#9FB0BA; --line:#2A3740;
+  --hero:#1B2E1A; --hero2:#3D5E30; --hero-ink:#EEF6FA; --hero-muted:#A9C6D2; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#9FD08A; --hi:#9FD08A; --hi-soft:#22341D; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{flex:1;border:0;background:none;padding:9px 4px;font-weight:800;font-size:15px;cursor:pointer;font-family:var(--f-display);white-space:nowrap}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.docsbtn{display:block;text-align:center;margin-top:8px;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.35);color:#fff;text-decoration:none;font-weight:600;font-size:.95rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}.sh small{color:var(--muted);font-size:13px}
+.muted{color:var(--muted)}.empty{color:var(--muted);text-align:center;padding:20px 12px}
+.note{font-size:13.5px;color:var(--muted);line-height:1.5}
+/* one frame, rows split by lines (no frame in frame) */
+.list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:none;border:0;padding:12px 14px;cursor:pointer}
+.row+.row{border-top:1px solid var(--line)}
+.row .ic{width:46px;height:30px;border-radius:6px;flex:none;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:800;font-size:12px;color:#fff;letter-spacing:.5px}
+.row .b{flex:1;min-width:0}
+.row .t{font-family:var(--f-display);font-weight:700;font-size:16.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .s{color:var(--muted);font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .v{flex:none;text-align:left;font-family:var(--f-display);font-weight:800;font-size:15px}
+.row .v small{display:block;color:var(--muted);font-family:var(--f-body);font-weight:600;font-size:12px}
+.row.off{opacity:.55}
+.pill{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:1px 8px;margin-inline-start:6px;vertical-align:2px}
+.p-good{background:var(--good-soft);color:var(--good)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-hi{background:var(--hi-soft);color:var(--hi)}
+.cal{background:#1A5FB4}.isracard{background:#0B7A3E}.max{background:#E4362E}.leumi{background:#1F4E9A}.other{background:#6B7780}
+table.cmp{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.cmp th,.cmp td{padding:8px 8px;text-align:right;border-top:1px solid var(--line);vertical-align:top}
+.cmp th{background:var(--sunk);font-family:var(--f-display);font-size:13px;border-top:0}
+.cmp td b{font-family:var(--f-display)}
+.yes{color:var(--good);font-weight:800}.no{color:var(--muted);font-weight:700}.unk{color:var(--warn);font-weight:800}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:0}
+.kv div{padding:9px 2px;border-top:1px solid var(--line);font-size:15px}
+.kv div:nth-child(-n+2){border-top:0}
+.kv .k{color:var(--muted);font-weight:700;padding-inline-end:14px;white-space:nowrap}
+.ins li{padding:9px 2px;font-size:15px;line-height:1.45}.ins li+li{border-top:1px solid var(--line)}
+ul{list-style:none;margin:0;padding:0}
+.q h3{font-size:16.5px;margin-bottom:8px}
+.opts{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.opts button{background:var(--surface);border:0;padding:11px 12px;text-align:right;font-weight:700;font-size:15px;cursor:pointer}
+.opts button:active{background:var(--hi-soft)}
+.todo{display:flex;gap:10px;align-items:flex-start;padding:10px 2px;font-size:15px}
+.todo+.todo{border-top:1px solid var(--line)}
+.todo .w{flex:none;font-size:12px;font-weight:800;border-radius:999px;padding:2px 8px;background:var(--sunk)}
+.btns{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:10px}
+.btns button,.btns a{flex:1;background:var(--surface);border:0;padding:10px 6px;text-align:center;font-weight:800;font-size:14.5px;cursor:pointer;color:var(--ink)}
+pre.req{white-space:pre-wrap;font-family:var(--f-body);font-size:14.5px;line-height:1.55;margin:0;max-height:220px;overflow:auto}
+details.more{margin-top:8px}details.more summary{cursor:pointer;font-weight:800;color:var(--link);font-size:14px}
+details.more>div{padding-top:6px;font-size:14px;color:var(--muted);line-height:1.55}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw}
+.toast.on{display:block}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.cmp{font-size:13px}.cmp th,.cmp td{padding:7px 5px}}
+.who{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--sunk)}
+.mon{display:grid;grid-template-columns:repeat(13,1fr);gap:3px;align-items:end;height:90px;margin-top:6px}
+.mon i{display:block;background:var(--hi);border-radius:4px 4px 0 0;min-height:2px}
+.monl{display:grid;grid-template-columns:repeat(13,1fr);gap:3px;font-size:10.5px;color:var(--muted);text-align:center}
+.mh{font-family:var(--f-display);font-weight:800;font-size:13.5px;color:var(--muted);padding:8px 14px 4px;background:var(--sunk);border-top:1px solid var(--line)}
+.mh:first-child{border-top:0}
+.row{cursor:default}a.row{cursor:pointer;color:inherit;font-weight:400}
+.neg{color:var(--bad)}.pos{color:var(--good)}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=6">
+<script src="dash-sub.js?v=1" defer></script>
+<script src="fold.js?v=1" defer></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const WHO={oren:["🧔","אורן"],lior:["👩","ליאור"],family:["🏠","משפחה"]};
+const MON=["","ינו׳","פבר׳","מרץ","אפר׳","מאי","יוני","יולי","אוג׳","ספט׳","אוק׳","נוב׳","דצמ׳"];
+const K=v=>{const a=Math.abs(v);return (v<0?"−":"")+"₪"+(a>=10000?(Math.round(a/100)/10).toLocaleString("he-IL")+"K":Math.round(a).toLocaleString("he-IL"));};
+const ils=v=>(v<0?"−":"")+"₪"+Math.round(Math.abs(v)).toLocaleString("he-IL");
+const mLbl=m=>{const [y,mm]=String(m).split("-");return MON[+mm]+" "+String(y).slice(2);};
+let meta=null;
+const UI="sq_in_ui";let ui={tab:"month"};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
+function save(){try{localStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
+const who=w=>{const x=WHO[w]||["•",""];return `<span class="who" title="${esc(x[1])}">${x[0]}</span>`;};
+const arr=a=>Array.isArray(a)?a:[];
+function mil(){return meta.miluim||{};}
+function regular(){return arr(meta.monthly).reduce((s,x)=>s+(+x.v||0),0);}
+function milAvg(){const m=mil();return (+(m.elbit||{}).avg||0)+(+(m.mofet||{}).avg||0);}
+function annualSum(){return arr(meta.annual).reduce((s,x)=>s+(+x.v||0),0)+(+(mil().grant||{}).v||0)*0;}
+function hero(){const r=regular(),ma=milAvg(),an=annualSum();
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
+  <h1>💼 שכר והכנסות</h1>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url))}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
+  ${safe(meta.collect_url)?`<a class="docsbtn" href="${esc(meta.collect_url)}" target="_blank" rel="noopener">📥 שליפת מסמכים</a>`:""}
+  <div class="kpis"><div class="kpi"><b>${K(r)}</b><span>קבוע בחודש</span></div><div class="kpi"><b>${K(ma)}</b><span>מילואים בחודש (ממוצע)</span></div><div class="kpi"><b>${K(an)}</b><span>שנתי, 12 חודשים</span></div></div>`;}
+function bar(){return `<div class="seg">${[["month","📅 חודשי"],["year","🎁 שנתי"],["mil","🎖️ מילואים"],["tax","🧾 מס"]].map(([k,l])=>`<button data-tab="${k}" class="${ui.tab===k?"on":""}">${l}</button>`).join("")}</div>`;}
+function row(x,href){const tag=href?`a href="${esc(href)}" target="_top"`:"div";const end=href?"a":"div";
+  return `<${tag} class="row">${who(x.who)}<span class="b"><span class="t">${esc(x.l||x.t)}${x.warn?'<span class="pill p-warn">!</span>':""}${x.pill?`<span class="pill ${x.pill[1]}">${esc(x.pill[0])}</span>`:""}</span>${x.note?`<span class="s">${esc(x.note)}</span>`:""}</span>${x.v!=null?`<span class="v ${x.v<0?"neg":""}">${ils(x.v)}${x.rng?`<small>${esc(x.rng)}</small>`:""}</span>`:""}</${end}>`;}
+function openBlock(){const O=arr(meta.open);if(!O.length)return "";
+  return `<section><div class="sh"><h2>▶️ פתוח</h2><small>${O.length}</small></div><div class="list">${O.map(x=>row({who:x.who,l:x.t},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
+function tabMonth(){const M=arr(meta.monthly),m=mil();let o="";
+  o+=`<section><div class="sh"><h2>קבוע</h2><small>נטו</small></div><div class="list">${M.map(x=>row(x)).join("")}
+    <div class="row"><span class="who">Σ</span><span class="b"><span class="t">סה״כ קבוע</span></span><span class="v">${ils(regular())}</span></div></div></section>`;
+  o+=`<section><div class="sh"><h2>משתנה: מילואים</h2><small>ממוצע</small></div><div class="list">${[m.elbit,m.mofet].filter(Boolean).map(x=>row({who:"oren",l:x.l,v:+x.avg,note:x.note})).join("")}
+    <div class="row"><span class="who">Σ</span><span class="b"><span class="t">עם המילואים</span></span><span class="v">${ils(regular()+milAvg())}</span></div></div></section>`;
+  return o+openBlock();}
+function tabYear(){const A=arr(meta.annual).slice().sort((a,b)=>a.m<b.m?-1:1);let o="",last="";
+  o+=`<section><div class="sh"><h2>12 החודשים הבאים</h2><small>${ils(annualSum())}</small></div><div class="list">${A.map(x=>{const h=x.m!==last?`<div class="mh">${esc(mLbl(x.m))}</div>`:"";last=x.m;return h+row({...x,note:[x.note,x.conf==="low"?"לא בטוח":x.conf==="medium"?"הערכה":""].filter(Boolean).join(" · ")});}).join("")}</div></section>`;
+  const D=arr(meta.once_2026);
+  if(D.length)o+=`<section><div class="sh"><h2>חד-פעמי, לא חוזר</h2></div><div class="list">${D.map(x=>row(x)).join("")}</div></section>`;
+  return o;}
+function tabMil(){const m=mil(),mo=arr((m.mofet||{}).months),max=Math.max(1,...mo.map(x=>x[1]));let o="";
+  o+=`<section><div class="sh"><h2>12 חודשים</h2><small>${ils((+(m.elbit||{}).y12||0)+(+(m.mofet||{}).y12||0)+(+(m.grant||{}).paid||0))}</small></div><div class="list">
+    ${m.elbit?row({who:"oren",l:m.elbit.l,v:+m.elbit.y12,note:"ממוצע "+ils(m.elbit.avg)+" בחודש"}):""}
+    ${m.mofet?row({who:"oren",l:m.mofet.l,v:+m.mofet.y12,note:"ממוצע "+ils(m.mofet.avg)+" בחודש, בלי המענק"}):""}
+    ${m.grant?row({who:"oren",l:m.grant.l,v:+(m.grant.paid||m.grant.v),note:m.grant.note}):""}</div></section>`;
+  if(mo.length)o+=`<section><div class="sh"><h2>מופ״ת לפי חודש</h2></div><div class="card"><div class="mon" style="grid-template-columns:repeat(${mo.length},1fr)">${mo.map(x=>`<i style="height:${Math.max(2,x[1]/max*100)}%" title="${esc(mLbl(x[0]))}: ${ils(x[1])}"></i>`).join("")}</div><div class="monl" style="grid-template-columns:repeat(${mo.length},1fr)">${mo.map(x=>`<span>${esc(MON[+x[0].slice(5)].replace("׳",""))}</span>`).join("")}</div></div></section>`;
+  const P=arr((m.elbit||{}).pays);
+  if(P.length)o+=`<section><div class="sh"><h2>אלביט: התשלום השני</h2></div><div class="list">${P.slice().reverse().map(p=>`<div class="row"><span class="b"><span class="t">${esc(p[0].split("-").reverse().join("."))}</span></span><span class="v">${ils(p[1])}</span></div>`).join("")}</div></section>`;
+  return o;}
+function tabTax(){const T=arr(meta.tax);const ST={urgent:["דחוף","p-bad"],check:["לבדוק","p-warn"],plan:["מתוכנן","p-hi"]};
+  return `<section><div class="sh"><h2>מס, זיכויים והחזרים</h2></div><div class="list">${T.map(x=>row({...x,pill:ST[x.s]},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
+function render(){if(!meta){return;}
+  $("hero").innerHTML=hero();$("bar").innerHTML=bar();
+  $("app").innerHTML=ui.tab==="year"?tabYear():ui.tab==="mil"?tabMil():ui.tab==="tax"?tabTax():tabMonth();
+  $("foot").innerHTML=`שכר ${esc(window.IN_BUILD)}`;}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b){ui.tab=b.dataset.tab;save();render();}});
+window.claude.use("db").then(db=>{if(!db)return;
+  db.collection("income").onSnapshot(s=>{s.docs.forEach(x=>{if(x.id==="_meta")meta=x.data();});if(!meta)$("app").innerHTML='<div class="empty">אין נתונים</div>';render();},()=>{});});
+})();
+</script>
+</body>
+</html>
