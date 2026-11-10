@@ -287,6 +287,13 @@ async function ctxTick(t: any) {
   return n;
 }
 
+// settings/away {trips:[{from, to, place}]} (dates inclusive, Israel time), written by the app and by Claude
+async function awayTrip(date: string) {
+  const a = await getDoc(APP, "settings", "away");
+  const trips = a && Array.isArray(a.trips) ? a.trips : [];
+  return trips.find((x: any) => x && x.from && x.to && x.from <= date && date <= x.to) || null;
+}
+
 async function tick() {
   const p = await prefs(), t = il();
   const out: any = { at: t };
@@ -296,10 +303,19 @@ async function tick() {
   const [hh, mm] = String(p.brief_time || "08:00").split(":").map((x: string) => parseInt(x) || 0);
   const at = hh * 60 + mm;
   const dayOk = p.brief_days === "sun-thu" ? !["Fri", "Sat"].includes(t.wd) : p.brief_days === "sun-fri" ? t.wd !== "Sat" : true;
-  // abroad mode (Oren, 2.11.2026): no brief at all, only new critical items, until abroad_until (inclusive)
-  p.abroadOn = p.abroad === true && (!p.abroad_until || t.date <= p.abroad_until);
+  // abroad mode (Oren, 2.11.2026): only new critical items, until abroad_until (inclusive).
+  // sq-push 10.11.2026 (Oren): a day inside a trip in settings/away {trips:[{from,to,place}]} is abroad too, by itself.
+  const trip = await awayTrip(t.date);
+  p.abroadOn = (p.abroad === true && (!p.abroad_until || t.date <= p.abroad_until)) || !!trip;
   out.abroad = p.abroadOn;
-  if (p.brief && !p.abroadOn && dayOk && st.date !== t.date && t.mins >= at && t.mins < at + 180) {
+  // sq-push 10.11.2026: abroad, the morning brief is mail-only (no commute). It is sent only when Claude wrote today's
+  // settings/morning_brief with mode "abroad" (= something important came in by mail since yesterday).
+  let briefOk = !p.abroadOn;
+  if (p.abroadOn && p.abroad_brief !== false) {
+    const mb = await getDoc(APP, "settings", "morning_brief");
+    briefOk = !!(mb && mb.date === t.date && mb.mode === "abroad" && mb.headline);
+  }
+  if (p.brief && briefOk && dayOk && st.date !== t.date && t.mins >= at && t.mins < at + 180) {
     await putDoc(SRV, "state", "brief", { date: t.date }); // claim first, so two ticks never double-send
     out.brief = await briefNow("schedule");
   }
@@ -311,7 +327,9 @@ async function tick() {
     await putDoc(SRV, "state", "eve", { date: t.date });
     out.eve = await eveNow("schedule");
   }
-  if (p.wk !== false && !p.abroadOn) for (const x of XB) {
+  // sq-push 10.11.2026: the trip's last day (flying home) still gets Thursday's Friday-errands brief
+  const lastDay = !!trip && trip.to === t.date;
+  if (p.wk !== false && (!p.abroadOn || lastDay)) for (const x of XB) {
     if (t.wd !== x.wd || t.mins < x.at || t.mins >= x.at + 120) continue;
     const sx = (await getDoc(SRV, "state", "b_" + x.k)) || {};
     if (sx.date === t.date) continue;
