@@ -1,7 +1,7 @@
 // צליל מצחיק ושונה לכל סקווישי (אורן 6.11.2026): כל מזהה = צליל אחר לגמרי, בלי חזרות (WebAudio), ובערבוב גם צלילים מוקלטים (sqfx, למטה).
 // דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco
 // ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi
-// לביא ושילה (9.11.2026): lv_* ו-sh_* (18 לכל אחד, כולל האולטרה). האולטרה שלהם תמיד מנגנים את הצליל שלהם, בלי ערבוב הקלטות.
+// לביא ושילה (9.11.2026; שילה = כלי עבודה מ-10.11): lv_* ו-sh_* (18 לכל אחד, כולל האולטרה). האולטרה שלהם תמיד מנגנים את הצליל שלהם, בלי ערבוב הקלטות.
 // שימוש: <script src="../../sqsound.js"></script>  SqSound.play(id, muted)
 (function(){
   var AC=null;
@@ -68,24 +68,24 @@
   lv_u_matkot:function(){[0,.42,.74,.98,1.16,1.3,1.4].forEach(function(t){noise(t,.03,.4,'bandpass',1500,1500,3);beep(t,1100,.04,.12,'triangle')})},// טוק טוק טוק מאיץ
   lv_u_camel:function(){osc('sawtooth',0,1,[[0,140],[.2,90],[.5,160],[.8,80],[1,60]],.26,600,[9,25],4);noise(.2,.5,.12,'lowpass',400,200,2,40)},// נחרת גמל
   // ---- שילה: לגו + ישראל + תאילנד (9.11.2026) ----
-  sh_brick:function(){noise(0,.025,.45,'highpass',3000);noise(.09,.025,.45,'highpass',3600);osc('sine',.2,.25,[[0,600],[1,900]],.15)},// קליק-קלאק של לגו
-  sh_pita:function(){noise(0,.35,.3,'lowpass',2000,200,1);osc('sine',.3,.12,[[0,400],[1,1100]],.2)},// פוּף!
-  sh_rimon:function(){for(var i=0;i<14;i++)noise(i*.045+Math.random()*.02,.015,.3,'bandpass',3000+Math.random()*2000,3000,5)},// גרגרים מתגלגלים
-  sh_monkey:function(){[[0,500,800],[.2,500,800],[.42,700,1300],[.66,700,1300]].forEach(function(p){osc('triangle',p[0],.18,[[0,p[1]],[.5,p[2]],[1,p[1]]],.22)})},// או-או-אה-אה
-  sh_coconut:function(){osc('sine',0,.25,[[0,500],[1,180]],.35);noise(0,.03,.3,'bandpass',1200,1200,4);for(var i=0;i<4;i++)beep(.35+i*.1,300-i*30,.06,.12,'triangle')},// בונק! ומתגלגל
-  sh_artik:function(){osc('sine',0,1,[[0,600],[1,560]],.18,0,[28,60]);noise(0,1,.06,'highpass',4000,4000,0,28)},// בררררר קר
-  sh_s_honey:function(){[0,.3,.55,.75].forEach(function(t,i){osc('sine',t,.15,[[0,1400-i*120],[1,600-i*60]],.2)})},// טיפ טיפ טיפ של דבש
-  sh_s_matza:function(){noise(0,.12,.45,'highpass',1800,800);for(var i=0;i<6;i++)noise(.15+i*.06,.02,.25,'highpass',4000);},// קראנץ׳ ופירורים
-  sh_s_lantern:function(){noise(0,.8,.1,'bandpass',300,1500,2);osc('sine',.6,.9,[[0,1319],[1,1319]],.14,0,[4,8]);osc('sine',.6,.9,[[0,1976],[1,1976]],.05)},// פנס עף ופעמון רך
-  sh_s_rice:function(){noise(0,.08,.4,'lowpass',500,300,2);osc('square',.1,.18,[[0,1200],[1,1700]],.08,3000)},// תוּפּ דביק וציוץ
-  sh_s_dino:function(){osc('sawtooth',0,.55,[[0,500],[.3,750],[1,420]],.2,2400,[20,40],3)},// ראאאר קטן וחמוד
-  sh_s_flag:function(){noise(0,1,.22,'bandpass',800,1100,1.5,11);osc('triangle',.2,.5,[[0,784],[.5,988],[1,1175]],.08)},// דגל מתנופף ברוח
-  sh_u_ark:function(){osc('sawtooth',0,.5,[[0,180],[.5,150],[1,130]],.22,700,[5,6]);osc('square',.6,.12,[[0,900],[1,700]],.15,2400);osc('square',.75,.12,[[0,900],[1,700]],.15,2400);osc('sawtooth',.95,.5,[[0,520],[1,480]],.16,1600,[18,40])},// מוּ, גַּע גַּע, מֶההה
-  sh_u_castle:function(){[[0,392,.15],[.17,392,.15],[.34,523,.15],[.51,659,.6]].forEach(function(p){osc('square',p[0],p[2],[[0,p[1]],[1,p[1]]],.12,2200)})},// טְרוּ-טוּ-טוּ חצוצרות
-  sh_u_tiger:function(){noise(0,1.1,.25,'lowpass',260,220,2,24);osc('sawtooth',0,1.1,[[0,70],[1,64]],.12,300,[24,0])},// גרגור של נמר
-  sh_u_challah:function(){osc('sine',0,1,[[0,2093],[1,2093]],.16);osc('sine',0,1,[[0,3136],[1,3136]],.05);osc('sine',1,.5,[[0,300],[1,700]],.18,0,[6,20])},// דינג! של תנור וממממ
+  sh_hammer:function(){[0,.22,.44].forEach(function(t){noise(t,.04,.5,'bandpass',900,900,3);osc('sine',t,.12,[[0,320],[1,140]],.3)})},// טוק טוק טוק של פטיש
+  sh_screw:function(){osc('sawtooth',0,.7,[[0,500],[1,1500]],.12,2600,[22,80]);noise(0,.7,.08,'highpass',3000,5000,2)},// זִזִזִיק בורג מסתובב
+  sh_wrench:function(){[[0,1250],[0,1890],[.18,980],[.18,1470]].forEach(function(p){osc('triangle',p[0],.5,[[0,p[1]],[1,p[1]*.98]],.12)});noise(0,.03,.4,'highpass',2500)},// קלנג! מתכת
+  sh_tape:function(){noise(0,.45,.25,'bandpass',2200,600,2,40);osc('square',.45,.05,[[0,400],[1,300]],.2,1500)},// זיפ וקליק
+  sh_roller:function(){[0,.3].forEach(function(t){noise(t,.2,.35,'lowpass',700,250,1);osc('sine',t,.18,[[0,200],[1,90]],.2)})},// פלופ פלופ
+  sh_pliers:function(){noise(0,.03,.45,'highpass',3500);noise(.15,.03,.45,'highpass',2600);osc('triangle',.3,.25,[[0,900],[.5,1300],[1,1000]],.15)},// קליק-קלק וצחקוק
+  sh_s_saw:function(){for(var i=0;i<4;i++)noise(i*.22,.2,.28,'bandpass',i%2?1800:2600,i%2?2600:1800,4,30)},// זזז-זזז הלוך ושוב
+  sh_s_drill:function(){osc('sawtooth',0,.9,[[0,180],[.2,620],[.8,640],[1,200]],.16,1800,[45,30]);noise(0,.9,.06,'bandpass',1500,2500,2)},// ורררם
+  sh_s_level:function(){osc('sine',0,.18,[[0,300],[1,900]],.28);osc('sine',.25,.12,[[0,500],[1,1300]],.2)},// בלוב! בועה
+  sh_s_helmet:function(){[0,.18].forEach(function(t){noise(t,.04,.45,'bandpass',600,600,2);osc('sine',t,.2,[[0,700],[1,520]],.18)});osc('triangle',.45,.3,[[0,600],[1,900]],.12)},// נוק נוק ומי שם?
+  sh_s_box:function(){for(var i=0;i<12;i++){var t=i*.06+Math.random()*.02;noise(t,.03,.25,'bandpass',1500+Math.random()*3000,2000,6);if(i%3==0)beep(t,2000+Math.random()*1500,.05,.06,'triangle')}},// טרח-טרח כלים בארגז
+  sh_s_ladder:function(){[523,587,659,698,784,880].forEach(function(f,i){beep(i*.1,f,.09,.14,'triangle');noise(i*.1,.02,.2,'bandpass',800,800,3)})},// טי-טה עולים בסולם
+  sh_u_digger:function(){osc('sawtooth',0,.7,[[0,60],[1,70]],.16,400,[14,8]);[.8,1.15,1.5].forEach(function(t){beep(t,1050,.18,.16,'square')})},// מנוע וביפ ביפ ביפ
+  sh_u_crane:function(){osc('sawtooth',0,.9,[[0,300],[.5,420],[1,330]],.08,1200,[7,40]);noise(1,.06,.5,'lowpass',500,200,2);osc('sine',1,.4,[[0,110],[1,60]],.3)},// חריק וטרח
+  sh_u_mixer:function(){for(var i=0;i<5;i++)osc('sine',i*.22,.2,[[0,180],[.5,260],[1,160]],.22,0,[12,30]);noise(0,1.1,.12,'lowpass',400,300,1,5)},// גלו-גלו מערבל
+  sh_u_jack:function(){for(var i=0;i<14;i++){noise(i*.07,.03,.4,'bandpass',800,800,2);osc('square',i*.07,.03,[[0,90],[1,70]],.12,800)}},// טה-טה-טה פטיש אוויר
   sh_u_robot:function(){[880,440,1320,660,990,330,1760].forEach(function(f,i){beep(i*.09,f,.07,.12,'square')});osc('sine',.7,.4,[[0,200],[1,1200]],.12)},// ביפ-בופ-ביפ
-  sh_u_dragon:function(){noise(0,.8,.3,'lowpass',200,3000,1);osc('sine',.8,1.4,[[0,110],[1,104]],.3);osc('sine',.8,1.4,[[0,293],[1,290]],.1);osc('sine',.8,1.4,[[0,447],[1,440]],.06)},// אש ובונננג של גונג
+  sh_u_tractor:function(){osc('sawtooth',0,.6,[[0,50],[1,56]],.18,350,[10,6]);osc('square',.7,.25,[[0,392],[1,392]],.14,1800);osc('square',1,.45,[[0,392],[1,392]],.14,1800)},// מנוע וטוט-טוט
   };
   // צלילים מוקלטים מהאינטרנט (אורן 6.11.2026): 15 צלילים מצחיקים ב-CC0 מ-Freesound (study/sqfx, קרדיטים ב-sqfx/CREDITS.txt).
   // לכל אולטרה סקווישי צליל מוקלט משלו (ULT). לסקווישים הישנים: לפעמים הצליל שלהם, ולפעמים צליל מוקלט אקראי (ערבוב).

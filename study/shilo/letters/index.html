@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=4"></script>
+<script src="../../content.js?v=5"></script><script>StudyContent.guard('shilo/letters')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · האותיות של שילה</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css">
+<style>
+:root{--ac:#2f5d9e;--al:#eaf1fb;--ok:#16a34a;--sm:#9a3412}
+main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;flex-direction:column;justify-content:safe center}
+.nav{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex:none}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:14px;height:34px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.ib .cnt{display:inline-block;min-width:34px;text-align:center;direction:ltr;background:#ea580c;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 8px;flex:none;box-shadow:var(--sh)}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut)}.row b{color:var(--fg);font-size:17px}
+.stars{font-size:15px;font-weight:700;color:#b45309;background:#fff7e6;border-radius:20px;padding:1px 10px}
+.abc{display:grid;grid-template-columns:repeat(11,1fr);gap:3px;margin-top:5px;direction:rtl}
+.abc span{height:24px;border-radius:7px;background:#f1f3f7;color:#c0c6d2;font:800 15px/24px system-ui,Arial,sans-serif;text-align:center}
+.abc span.on{background:#fff7e6;color:#b45309}.abc span.ok{background:#dcfce7;color:#166534}
+.card{flex:0 1 520px;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px;box-shadow:var(--sh);text-align:center;margin-top:10px}
+.dots{display:flex;gap:6px;justify-content:center;height:14px;flex:none}.dots i{width:12px;height:12px;border-radius:50%;background:#e5e7eb}.dots i.d{background:#facc15}.dots i.c{outline:2px solid #f59e0b}
+.mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:4px}
+.big{font:900 110px/1 "Arial Hebrew",Arial,system-ui,sans-serif;color:var(--fg)}
+.pic{font-size:88px;line-height:1}
+.say{font-size:30px;width:74px;height:74px;border-radius:50%;border:0;background:var(--al);box-shadow:0 3px 0 #c9d8ef;cursor:pointer;flex:none}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:none;margin-top:6px}.opts.o3{grid-template-columns:1fr 1fr 1fr}
+.opt{height:112px;border:3px solid var(--bd);background:#fff;border-radius:18px;cursor:pointer;font-size:66px;line-height:1;color:var(--fg);padding:0;transition:opacity .3s,background .2s}
+.opt.lt{font:900 70px/1 "Arial Hebrew",Arial,system-ui,sans-serif}.opt.cl{font-size:30px;letter-spacing:-2px}
+.opt.ok{background:#dcfce7;border-color:var(--ok)}.opt.no{opacity:.25;pointer-events:none}.opt.hint{animation:hint 1s ease-in-out infinite;border-color:#f59e0b}
+@keyframes hint{50%{transform:scale(1.06)}}
+.btn{flex:1;font:inherit;font-weight:800;font-size:19px;padding:12px;border:0;border-radius:16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#2f5d9e,#4f7fc4);box-shadow:0 3px 0 #1e3f6e;height:58px}
+.btn.soft{color:var(--mut);background:#f1f3f7;box-shadow:none;font-weight:700}
+.btns{display:flex;gap:8px;flex:none;margin-top:8px;height:58px}
+.fb{height:30px;flex:none;font-size:20px;font-weight:800;color:var(--ok)}
+/* צביעה */
+.cv{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
+.cv svg{height:100%;max-height:300px;width:auto;max-width:100%}
+.cv .r{fill:#fff;stroke:#1f2937;stroke-width:3;stroke-linejoin:round;cursor:pointer}.cv .d{fill:none;stroke:#1f2937;stroke-width:3;stroke-linecap:round}.cv circle.d{fill:#1f2937}
+.pal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;flex:none;margin-top:6px}
+.pal button{height:44px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--bd);cursor:pointer;aspect-ratio:1;justify-self:center;padding:0}
+.pal button.sel{box-shadow:0 0 0 3px #1f2937}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 14px)}
+.ov.on{display:flex}
+.pn{background:var(--card);border-radius:20px;padding:18px 16px;width:100%;max-width:500px;max-height:100%;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.3);text-align:center}
+.pn h2{margin:0 0 8px;font-size:22px}.pn p{margin:6px 0;line-height:1.5;font-size:16px}.pn .btn{width:100%;margin-top:10px;flex:none;display:block}
+#sqimg{width:150px;height:150px;margin:6px auto;display:block;animation:sqin .9s cubic-bezier(.2,1.6,.4,1)}#sqimg.squish{animation:squish .5s}
+@keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
+@keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
+.pb{height:8px;background:#e8eaf6;border-radius:8px;overflow:hidden}.pb i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,#2f5d9e,#f97316);transition:width .5s}
+.sqg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px;max-width:360px;margin-inline:auto}
+.sqg div{background:#f7f7ff;border:1px solid #e4e6fb;border-radius:10px;padding:2px}.sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}
+.sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
+.sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
+.sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
+.sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
+.alb{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.alb div{border:1px solid var(--bd);border-radius:10px;padding:3px;position:relative;cursor:pointer;background:#fff}
+.alb svg{width:100%;height:auto;display:block}.alb .r{stroke:#1f2937;stroke-width:4}.alb .d{fill:none;stroke:#1f2937;stroke-width:4}.alb circle.d{fill:#1f2937}
+.alb div b{position:absolute;top:2px;right:5px;font:900 16px Arial;color:#b45309}
+.alb .lock{cursor:default;background:#f3f4f6;border-style:dashed}.alb .lock svg{opacity:.18}
+.conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:50;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.pop{position:fixed;left:50%;top:36%;transform:translate(-50%,-50%);font-size:30px;font-weight:900;color:#b45309;z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap;background:#fff;border:2px solid #fde68a;border-radius:999px;padding:4px 18px;box-shadow:0 6px 18px rgba(180,83,9,.18)}
+@keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
+.cr{font-size:12px;color:var(--mut);line-height:1.4}
+@media(max-height:700px){.big{font-size:84px}.pic{font-size:66px}.opt{height:92px;font-size:54px}.opt.lt{font-size:58px}.say{width:62px;height:62px;font-size:26px}.btn,.btns{height:50px}.pal button{height:38px}.abc span{height:20px;line-height:20px;font-size:13px}}
+@media(max-height:620px){.big{font-size:70px}.pic{font-size:54px}.opt{height:80px;font-size:46px}.opt.lt{font-size:50px}}
+@media(prefers-reduced-motion:reduce){#sqimg,.opt.hint{animation:none!important}}
+</style></head><body><main>
+<div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="albb" type="button">🖍️ <span id="aln" class="cnt">0</span></button><button class="ib" id="sqb" type="button">🧰 <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
+<div class="prog">
+  <div class="row"><span><b id="dn">0</b> מתוך 22 אותיות</span><span class="stars" id="pts">⭐ 0</span></div>
+  <div class="abc" id="abc"></div>
+</div>
+<div class="card" id="card"></div>
+
+<div class="ov" id="intro"><div class="pn">
+<div style="font-size:54px">🔨🖍️</div>
+<h2>היי שילה! האותיות של שילה</h2>
+<p>שומעים, לוחצים על התמונה הנכונה, ואוספים כוכבים ⭐</p>
+<p>בסוף כל סיבוב צובעים ציור 🖍️, ועל כל 6 תשובות נכונות מקבלים סקווישי של כלי עבודה 🧰</p>
+<button class="btn" id="go" type="button">יאללה, מתחילים! ▶</button>
+<p class="cr" id="vc"></p>
+</div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>🧰 ארגז הסקווישים של שילה</h2><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחץ עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">לארגז! 🧰</button></div></div>
+<div class="ov" id="albov"><div class="pn"><h2>🖍️ האלבום שלי</h2><p style="color:var(--mut);margin:0">לוחצים על ציור כדי לצבוע אותו שוב</p><div class="alb" id="alb"></div><button class="btn soft" id="albx" type="button">סגירה</button></div></div>
+
+<script src="pics.js?v=1"></script>
+<script src="../squishies.js?v=3"></script>
+<script src="../../sqsound.js?v=7"></script>
+<script src="../../track.js?v=8"></script>
+<script>
+// האותיות של שילה (אורן 10.11.2026; אפיון: https://claude.ai/artifact/HV7NH8bAutYJYWkAPaACLH).
+// גן חובה, לפי "תשתית לשפה אוריינית בגן" של משרד החינוך: צליל פותח, הברות, אותיות לפי צורה, שם וצליל. בלי קריאת מילים: הכל בקול.
+// 22 אותיות ב-4 קבוצות, מילה + ציור לכל אות. סיבוב = 6 שאלות, ובסוף צובעים ציור (נשמר באלבום).
+// קול: כרגע ההקראה בעברית של המכשיר (speechSynthesis he-IL). כשיהיו הקלטות: audio/<מפתח>.mp3 + LIST ב-audio/list.js גוברים על ההקראה.
+// מפתחות: shilo_lt (התקדמות), shilo_sq (סקווישים, כמו ב-profiles.js), shilo_lt_col (האלבום), shilo_lt_mute.
+// [אות, שם האות בניקוד, צליל (הברה פותחת), מילה בניקוד, הברות, אימוג׳י, מפתח ציור]
+const G=[
+[['ש','שִׁין','שֶׁ','שֶׁמֶשׁ',['שֶׁ','מֶשׁ'],'☀️','shemesh'],['מ','מֵם','מְ','מְכוֹנִית',['מְ','כוֹ','נִית'],'🚗','mechonit'],['ב','בֵּית','בַּ','בַּיִת',['בַּ','יִת'],'🏠','bayit'],['ל','לָמֶד','לִי','לִימוֹן',['לִי','מוֹן'],'🍋','limon'],['ד','דָּלֶת','דָּ','דָּג',['דָּג'],'🐟','dag'],['פ','פֵּא','פַּ','פַּטִּישׁ',['פַּ','טִּישׁ'],'🔨','patish']],
+[['א','אָלֶף','אַ','אַרְיֵה',['אַרְ','יֵה'],'🦁','arye'],['ת','תָּו','תַּ','תַּפּוּחַ',['תַּ','פּוּ','חַ'],'🍎','tapuach'],['ר','רֵישׁ','רַ','רַכֶּבֶת',['רַ','כֶּ','בֶת'],'🚂','rakevet'],['ס','סָמֶךְ','סוּ','סוּס',['סוּס'],'🐴','sus'],['נ','נוּן','נָ','נָחָשׁ',['נָ','חָשׁ'],'🐍','nachash'],['ג','גִּימֶל','גְּ','גְּלִידָה',['גְּ','לִי','דָה'],'🍦','glida']],
+[['כ','כַּף','כַּ','כַּדּוּר',['כַּ','דּוּר'],'⚽','kadur'],['ק','קוֹף','קוֹ','קוֹף',['קוֹף'],'🐒','kof'],['ח','חֵית','חָ','חָתוּל',['חָ','תוּל'],'🐱','chatul'],['צ','צָדִי','צָ','צָב',['צָב'],'🐢','tzav'],['ע','עַיִן','עֵ','עֵץ',['עֵץ'],'🌳','etz'],['ט','טֵית','טְ','טְרַקְטוֹר',['טְרַק','טוֹר'],'🚜','tractor']],
+[['ז','זַיִן','זֶ','זֶבְּרָה',['זֶבְּ','רָה'],'🦓','zebra'],['י','יוֹד','יָ','יָד',['יָד'],'✋','yad'],['ו','וָו','וֶ','וֶרֶד',['וֶ','רֶד'],'🌹','vered'],['ה','הֵא','הַ','הַר',['הַר'],'⛰️','har']]];
+const IT=[],BY={};G.forEach((g,gi)=>g.forEach(r=>{const o={l:r[0],nm:r[1],snd:r[2],w:r[3],syl:r[4],e:r[5],pk:r[6],g:gi};IT.push(o);BY[o.l]=o}));
+const N=IT.length,LEARN=3;// 3 תשובות נכונות בניסיון ראשון = האות נלמדה
+// זוגות שקל להתבלבל ביניהם: לא שמים אותם יחד כששתי אפשרויות בלבד
+const CONF=['דר','בכ','הח','וז','וי','גנ','כפ','טמ','סם','עצ'];
+const conf=(a,b)=>CONF.some(p=>p.includes(a)&&p.includes(b));
+const $=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function fresh(){const w={};IT.forEach(x=>w[x.l]={s:0,c:0,err:0});return{v:1,pts:0,att:0,okc:0,cc:0,rounds:0,w,started:new Date().toISOString()}}
+let S=LS.get('shilo_lt');if(!S||!S.w)S=fresh();IT.forEach(x=>{if(!S.w[x.l])S.w[x.l]={s:0,c:0,err:0}});
+const save=()=>LS.set('shilo_lt',S);save();
+let SQ=LS.get('shilo_sq')||[];let COL=LS.get('shilo_lt_col')||{};let MUTE=!!LS.get('shilo_lt_mute');
+
+// ---------- קול ----------
+let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,t0,d,type,vol,f2){const a=ac();if(!a||MUTE)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t0+d);g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.16,a.currentTime+t0+.015);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
+const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.22,'triangle')},soft(){tone(392,0,.18,'sine',.1)},pop(){tone(220,0,.18,'sine',.25,880)},win(){[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.15))},clap(){tone(180,0,.06,'square',.08,90)},paint(){tone(660,0,.08,'sine',.08,990)}};
+const AUD=new Set(window.SHILO_AUD||[]);
+let HEV=null;function heVoice(){if(HEV)return HEV;try{const v=speechSynthesis.getVoices();HEV=v.find(x=>/^he/i.test(x.lang)&&/carmit|כרמית/i.test(x.name))||v.find(x=>/^he|^iw/i.test(x.lang))||null}catch(e){}return HEV}
+try{speechSynthesis.onvoiceschanged=()=>{HEV=null;heVoice();vnote()}}catch(e){}
+let SAYID=0,PL=null;
+// say(['טקסט', {k:'מפתח-הקלטה', t:'גיבוי'}, 600 (הפסקה במילישניות)], then)
+function say(parts,then){const id=++SAYID;try{speechSynthesis.cancel()}catch(e){}if(PL){PL.pause();PL=null}
+  if(MUTE){if(then)setTimeout(then,300);return}
+  const q=parts.slice();(function nx(){if(id!==SAYID)return;const p=q.shift();if(p===undefined){if(then)then();return}
+    if(typeof p==='number')return setTimeout(nx,p);
+    const k=typeof p==='object'?p.k:null,t=typeof p==='object'?p.t:p;
+    if(k&&AUD.has(k)){const a=new Audio('audio/'+k+'.mp3');PL=a;a.onended=()=>setTimeout(nx,120);a.onerror=()=>tts(t,nx);a.play().catch(()=>tts(t,nx));return}
+    tts(t,nx)})()}
+function tts(t,cb){if(!('speechSynthesis' in window)){setTimeout(cb,500);return}
+  try{const u=new SpeechSynthesisUtterance(t);u.lang='he-IL';u.rate=.82;const v=heVoice();if(v)u.voice=v;let d=false;const f=()=>{if(!d){d=true;setTimeout(cb,140)}};u.onend=f;u.onerror=f;setTimeout(f,900+t.length*160);speechSynthesis.speak(u)}catch(e){setTimeout(cb,500)}}
+const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
+function vnote(){const e=$('vc');if(!e)return;e.textContent=('speechSynthesis' in window)&&!heVoice()&&speechSynthesis.getVoices().length?'⚠️ לא נמצא קול בעברית במכשיר הזה. אפשר להוסיף בהגדרות: נגישות ← תוכן מוקרא ← קולות ← עברית.':''}
+
+// ---------- עזר ----------
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const POPQ=[];let POPON=false;function popTxt(t){POPQ.push(t);if(!POPON)popNext()}
+function popNext(){const t=POPQ.shift();if(t===undefined){POPON=false;return}POPON=true;const p=document.createElement('div');p.className='pop';p.textContent=t;document.body.appendChild(p);setTimeout(()=>{p.remove();popNext()},1050)}
+function confetti(n){const c=['#facc15','#fb923c','#60a5fa','#34d399','#f472b6'];for(let i=0;i<(n||40);i++){const e=document.createElement('i');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(c);e.style.animationDuration=(1.6+Math.random()*1.6)+'s';e.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3800)}}
+const PRAISE=['כָּל הַכָּבוֹד!','מְעֻלֶּה!','אַלּוּף!','יוֹפִי שֶׁל עֲבוֹדָה!','וָאוּ, נָכוֹן!','אַתָּה תּוֹתָח!'];
+const PRAISE_T=['כל הכבוד! ⭐','מעולה! 🔨','אלוף! 🏆','יופי! ✨','נכון! 🎉','תותח! 💪'];
+
+// ---------- מצב ----------
+const learned=x=>S.w[x.l].c>=LEARN;
+const nLearned=()=>IT.filter(learned).length;
+const gOpen=g=>g===0||G[g-1].every(r=>learned(BY[r[0]]));// קבוצה נפתחת כשכל הקודמת נלמדה
+const avail=()=>IT.filter(x=>gOpen(x.g));
+const nOpt=()=>S.okc>=12?3:2;// מתחילים עם 2 אפשרויות, ואחרי 12 נכונות עוברים ל-3
+let R=null;// הסיבוב: {q:[...], i, ok}
+let CUR=null,TRY=0,LOCK=false;
+
+function buildRound(){const av=avail(),seen=av.filter(x=>S.w[x.l].s),nw=av.filter(x=>!S.w[x.l].s);
+  const learning=seen.filter(x=>!learned(x));const q=[];
+  // אות חדשה כשיש פחות מ-3 בלמידה
+  let intro=null;if(nw.length&&(learning.length<3||!seen.length))intro=nw[0];
+  if(intro){q.push({t:'intro',it:intro})}
+  const pool=seen.concat(intro?[intro]:[]);
+  const weak=pool.filter(x=>!learned(x));
+  while(q.length<6){let it;const r=Math.random();
+    if(intro&&q.filter(z=>z.it===intro).length<3&&r<.5)it=intro;
+    else if(weak.length&&r<.8)it=pick(weak);else it=pick(pool);
+    const ts=['pic','pic','let','let'];if(S.w[it.l].c>=1||S.okc>=8)ts.push('syl');
+    let t=pick(ts);const last=q[q.length-1];if(last&&last.it===it&&last.t===t)t=t==='pic'?'let':'pic';
+    q.push({t,it})}
+  return q}
+function startRound(){R={q:buildRound(),i:0,ok:0};nextQ()}
+function nextQ(){if(R.i>=R.q.length)return endRound();CUR=R.q[R.i];TRY=0;LOCK=false;render()}
+function dots(){return '<div class="dots">'+R.q.map((_,i)=>`<i class="${i<R.i?'d':''}${i===R.i?' c':''}"></i>`).join('')+'</div>'}
+
+function others(it,n,key){// מסיחים: אותיות אחרות (שנפתחו קודם, ואם אין מספיק גם מהקבוצה הבאה), בלי זוגות מבלבלים
+  let c=IT.filter(x=>x!==it&&x[key]!==it[key]&&(gOpen(x.g)||x.g<=it.g+1)&&!(n<=1&&conf(x.l,it.l)));
+  const s=c.filter(x=>S.w[x.l].s);const o=shuf(s).concat(shuf(c.filter(x=>!S.w[x.l].s)));return o.slice(0,n)}
+
+function render(){const it=CUR.it,c=$('card');
+  if(CUR.t==='intro'){
+    c.innerHTML=dots()+`<div class="mid"><div class="big">${it.l}</div><div class="pic">${it.e}</div><button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button">הבנתי! ▶</button></div>`;
+    const sp=()=>say(['זֹאת הָאוֹת',{k:'n-'+it.pk,t:it.nm},400,{k:'n-'+it.pk,t:it.nm},'עוֹשָׂה',{k:'s-'+it.pk,t:it.snd},500,{k:'s-'+it.pk,t:it.snd},'... כְּמוֹ',{k:'w-'+it.pk,t:it.w}]);
+    $('rp').onclick=sp;$('nx').onclick=()=>{S.w[it.l].s=1;save();R.i++;nextQ()};sp();return}
+  const n=nOpt();let opts,ask;
+  if(CUR.t==='pic'){// שומעים צליל, בוחרים תמונה שמתחילה בו
+    opts=shuf([it].concat(others(it,n-1,'snd')));
+    ask=()=>say(['אֵיזוֹ תְּמוּנָה מַתְחִילָה בַּצְּלִיל',{k:'s-'+it.pk,t:it.snd},400,{k:'s-'+it.pk,t:it.snd}]);
+    c.innerHTML=dots()+`<div class="mid"><div class="pic">👂</div><button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="opts${n>2?' o3':''}" id="op">${opts.map((x,i)=>`<button class="opt" data-i="${i}" type="button">${x.e}</button>`).join('')}</div><div class="btns" style="visibility:hidden"></div>`}
+  else if(CUR.t==='let'){// רואים תמונה ושומעים את שם האות, בוחרים את האות
+    opts=shuf([it].concat(others(it,n-1,'l')));
+    ask=()=>say(['אֵיפֹה הָאוֹת',{k:'n-'+it.pk,t:it.nm},'?',300,{k:'n-'+it.pk,t:it.nm},'כְּמוֹ',{k:'w-'+it.pk,t:it.w}]);
+    c.innerHTML=dots()+`<div class="mid"><div class="pic">${it.e}</div><button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="opts${n>2?' o3':''}" id="op">${opts.map((x,i)=>`<button class="opt lt" data-i="${i}" type="button">${x.l}</button>`).join('')}</div><div class="btns" style="visibility:hidden"></div>`}
+  else{// הברות: שומעים את המילה מחולקת, בוחרים כמה מחיאות
+    const k=it.syl.length;opts=[1,2,3];
+    ask=()=>say(['כַּמָּה מְחִיאוֹת כַּפַּיִם?',300,{k:'w-'+it.pk,t:it.w},500].concat(...it.syl.map(s=>[s,450])));
+    c.innerHTML=dots()+`<div class="mid"><div class="pic">${it.e}</div><button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="opts o3" id="op">${opts.map((x,i)=>`<button class="opt cl" data-i="${i}" type="button">${'👏'.repeat(x)}</button>`).join('')}</div><div class="btns" style="visibility:hidden"></div>`;
+    CUR.ans=k-1}
+  $('rp').onclick=ask;ask();
+  $('op').onclick=e=>{const b=e.target.closest('.opt');if(!b||LOCK)return;ac();const i=+b.dataset.i;
+    const right=CUR.t==='syl'?i===CUR.ans:opts[i]===it;
+    if(right)return good(b);
+    TRY++;S.att++;S.w[it.l].err++;b.classList.add('no');SND.soft();
+    if(CUR.t==='pic')say([{k:'w-'+opts[i].pk,t:opts[i].w},300,'נַסֵּה שׁוּב'],()=>{});else if(CUR.t==='let')say([{k:'n-'+opts[i].pk,t:opts[i].nm},300,'נַסֵּה שׁוּב']);else say([['אַחַת','שְׁתַּיִם','שָׁלוֹשׁ'][i],300,'נַסֵּה שׁוּב',300].concat(...it.syl.map(s=>[s,350])))
+    if(TRY>=2){const bs=[...$('op').children];const ri=CUR.t==='syl'?CUR.ans:opts.indexOf(it);bs[ri].classList.add('hint')}
+    save();report()}}
+function good(b){LOCK=true;const it=CUR.it;b.classList.remove('hint');b.classList.add('ok');SND.ok();
+  S.att++;S.okc++;S.pts++;R.ok++;if(TRY===0)S.w[it.l].c++;S.w[it.l].s=1;
+  const was=S.w[it.l].c===LEARN&&TRY===0;popTxt(pick(PRAISE_T));
+  const after=()=>{R.i++;if(was){popTxt('🎉 למדת את '+it.l+'!');confetti(30)}maybeSquishy(()=>setTimeout(nextQ,350))};
+  const w=CUR.t==='syl'?it.syl.map(s=>[s,300]).flat():[{k:'w-'+it.pk,t:it.w}];
+  say([pick(PRAISE),200].concat(CUR.t==='pic'?[{k:'w-'+it.pk,t:it.w},'מַתְחִילָה בְּ',{k:'s-'+it.pk,t:it.snd}]:CUR.t==='let'?[{k:'n-'+it.pk,t:it.nm}]:w),after);
+  save();upd();report()}
+
+// ---------- סוף סיבוב: צביעה ----------
+function endRound(){S.rounds++;save();SND.win();confetti(50);
+  const its=[...new Set(R.q.map(z=>z.it))];const fresh=its.filter(x=>!COL[x.pk]);const it=fresh.length?fresh[0]:pick(its);
+  say(['כָּל הַכָּבוֹד! עַכְשָׁיו צוֹבְעִים',{k:'w-'+it.pk,t:it.w}]);paint(it,true)}
+const PAL=['#ef4444','#f97316','#facc15','#22c55e','#3b82f6','#a855f7','#f472b6','#92400e','#9ca3af','#ffffff'];
+let PC=PAL[2];
+function paint(it,fromRound){const c=$('card');const fill=(COL[it.pk]||[]).slice();
+  c.innerHTML=`<div class="row" style="justify-content:center;gap:10px;height:30px;flex:none"><b style="font:900 28px Arial">${it.l}</b><span style="font-size:26px">${it.e}</span><button class="ib" id="rp" type="button" style="height:30px">🔊</button></div><div class="cv" id="cv">${ShiloPics.get(it.pk)}</div><div class="pal" id="pal">${PAL.map(p=>`<button type="button" data-c="${p}" style="background:${p}" class="${p===PC?'sel':''}" aria-label="צבע"></button>`).join('')}</div><div class="btns"><button class="btn" id="dn2" type="button">סיימתי! ✓</button></div>`;
+  const rs=[...$('cv').querySelectorAll('.r')];rs.forEach((r,i)=>{if(fill[i])r.style.fill=fill[i]});
+  $('rp').onclick=()=>say([{k:'w-'+it.pk,t:it.w},300,{k:'n-'+it.pk,t:it.nm}]);
+  $('pal').onclick=e=>{const b=e.target.closest('button');if(!b)return;PC=b.dataset.c;[...$('pal').children].forEach(x=>x.classList.toggle('sel',x===b));SND.paint()};
+  $('cv').onclick=e=>{const r=e.target.closest('.r');if(!r)return;ac();const i=rs.indexOf(r);r.style.fill=PC;fill[i]=PC;COL[it.pk]=fill;LS.set('shilo_lt_col',COL);SND.paint();upd()};
+  $('dn2').onclick=()=>{COL[it.pk]=fill;LS.set('shilo_lt_col',COL);confetti(40);SND.win();say(['אֵיזֶה יֹפִי! הַצִּיּוּר נִשְׁמַר בָּאַלְבּוֹם']);upd();report();setTimeout(()=>{if(!fromRound&&R&&CUR&&R.i<R.q.length)render();else startRound()},fromRound?900:300)}}
+
+// ---------- סקווישים ----------
+const SQS=ShiloSquishies.list,SQS2=ShiloSquishies.list2,SQS3=ShiloSquishies.list3,aura=ShiloSquishies.aura,uaura=ShiloSquishies.uaura,ALLSQ=ShiloSquishies.all;
+const baseDone=()=>SQS.every(x=>SQ.includes(x.id)),supDone=()=>baseDone()&&SQS2.every(x=>SQ.includes(x.id)),sqEvery=()=>supDone()?50:baseDone()?12:6,sqN=()=>ALLSQ.filter(x=>SQ.includes(x.id)).length,sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
+let CURSQ=null,SQCB=null;
+function maybeSquishy(cb){S.cc=(S.cc||0)+1;if(S.cc>=sqEvery()){S.cc=0;save();SQCB=cb;setTimeout(squishy,500)}else cb()}
+function squishy(){const L=supDone()?SQS3:baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(L);
+  $('sqtt').textContent=s.ult?(isNew?'💎 אולטרה סקווישי חדש! 💎':'💎 אולטרה סקווישי!'):s.sup?(isNew?'⭐ סופר סקווישי חדש! ⭐':'⭐ סופר סקווישי!'):(isNew?'סקווישי חדש! 🎉':'סקווישי! 🎉');
+  if(isNew){SQ.push(s.id);LS.set('shilo_sq',SQ)}
+  CURSQ=s.id;$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לארגז! 🧰';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
+  $('sqov').classList.add('on');confetti(70);SND.win();setTimeout(()=>sqSound(s.id),700);upd();report()}
+$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
+$('sqok').onclick=()=>{$('sqov').classList.remove('on');if(SQCB){const f=SQCB;SQCB=null;f()}};
+function sqCol(){const ev=sqEvery(),left=ev-(S.cc||0);
+  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} תשובות נכונות לסקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
+  const cl=s=>s.ult?' ult':s.sup?' sup':'';const tile=s=>SQ.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}</div>`;
+  $('sqg').innerHTML=`<div class="sqhd">${ShiloSquishies.rows[0]}</div>`+SQS.map(tile).join('')+`<div class="sqhd">${ShiloSquishies.rows[1]}</div>`+SQS2.map(tile).join('')+`<div class="sqhd">${ShiloSquishies.rows[2]}</div>`+SQS3.map(tile).join('');$('sqcol').classList.add('on')}
+$('sqb').onclick=sqCol;$('sqcx').onclick=()=>$('sqcol').classList.remove('on');
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🧰';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לארגז';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+
+// ---------- אלבום ----------
+function album(){$('alb').innerHTML=IT.map(x=>{const open=S.w[x.l].s;const f=COL[x.pk]||[];let svg=ShiloPics.get(x.pk);
+  let i=0;svg=svg.replace(/class="r"/g,()=>`class="r" style="fill:${f[i++]||'#fff'}"`);
+  return `<div class="${open?'':'lock'}" data-k="${x.l}"><b>${x.l}</b>${svg}</div>`}).join('');$('albov').classList.add('on')}
+$('albb').onclick=album;$('albx').onclick=()=>$('albov').classList.remove('on');
+$('alb').onclick=e=>{const d=e.target.closest('div[data-k]');if(!d||d.classList.contains('lock'))return;$('albov').classList.remove('on');const it=BY[d.dataset.k];R=R||{q:[],i:0,ok:0};paint(it,false)};
+
+// ---------- תצוגה ודיווח ----------
+function upd(){$('dn').textContent=nLearned();$('pts').textContent='⭐ '+S.pts;$('sqn').textContent=sqN()+'/'+ALLSQ.length;$('aln').textContent=Object.keys(COL).filter(k=>(COL[k]||[]).some(Boolean)).length+'/'+N;
+  $('abc').innerHTML=IT.map(x=>`<span class="${learned(x)?'ok':S.w[x.l].s?'on':''}">${x.l}</span>`).join('')}
+function report(){if(!window.StudyTrack)return;const hard=IT.filter(x=>S.w[x.l].err).sort((a,b)=>S.w[b.l].err-S.w[a.l].err).slice(0,4).map(x=>x.l+' ('+x.w+')');
+  let g=0;while(g<G.length-1&&gOpen(g+1))g++;
+  StudyTrack.report({total:N,done:nLearned(),learning:IT.filter(x=>S.w[x.l].s&&!learned(x)).length,att:S.att,ok:S.okc,pts:S.pts,squishies:sqN(),hard,group:g+1,rounds:S.rounds,colored:Object.keys(COL).length,lv:1,lvn:'אותיות וצלילים',prog:nLearned(),pmax:N,started:S.started})}
+$('mute').onclick=()=>{MUTE=!MUTE;LS.set('shilo_lt_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(MUTE){try{speechSynthesis.cancel()}catch(e){}if(PL)PL.pause()}};$('mute').textContent=MUTE?'🔇':'🔊';
+$('go').onclick=()=>{ac();$('intro').classList.remove('on');try{speechSynthesis.speak(new SpeechSynthesisUtterance(''))}catch(e){}startRound()};
+if(window.StudyTrack){StudyTrack.init('shilo','letters',['shilo_lt','shilo_sq','shilo_lt_col']);StudyTrack.gift(()=>{SQCB=null;squishy();$('sqtt').textContent='🎁 מתנה מאבא ואמא!';confetti(60)})}
+upd();$('intro').classList.add('on');setTimeout(vnote,800);
+</script>
+</body></html>

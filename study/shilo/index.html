@@ -15,15 +15,16 @@
 .soonp{margin:14px 0 0;text-align:center;font-size:15px;color:var(--mut);line-height:1.5}
 </style>
 </head><body><main>
-<!-- שילה (9.11.2026): עוד אין תכנים. אורן ישלח בהמשך מה להכניס. -->
+<!-- שילה: התוכן הראשון "האותיות של שילה" (אורן 10.11.2026) -->
 <a class="back" href="../">→ כל הילדים</a>
-<div class="top"><img src="../kids/shilo.webp" alt=""><div><h1>היי שילה! 🧱</h1><p>בקרוב יהיה כאן משהו מיוחד בשבילך</p></div></div>
+<div class="top"><img src="../kids/shilo.webp" alt=""><div><h1>היי שילה! 🔨</h1><p>מה משחקים היום?</p></div></div>
 <div class="list">
-<div class="item soon"><span class="ic">🎈</span><span class="tx"><b>תכנים יגיעו בהמשך</b><small>אבא ואמא מכינים לך משחקי לימוד</small></span><span class="go">‹</span></div>
+<a class="item" href="letters/"><span class="ic">🖍️</span><span class="tx"><b>האותיות של שילה</b><small id="lt">שומעים, מוצאים, צובעים ⭐</small><div class="bar"><i id="ltb" style="width:0"></i></div></span><span class="go">‹</span></a>
 <a class="item" href="../family/"><span class="ic">🏆</span><span class="tx"><b>לוח התקדמות משפחתי</b><small>לראות את הכוכבים והסקווישים של בני הדודים</small></span><span class="go">‹</span></a>
 </div>
-<p class="soonp">הסקווישים שלך כבר מחכים לך בלוח 🧱✡️🐘</p>
+<p class="soonp">על כל 6 תשובות נכונות: סקווישי של כלי עבודה 🔨🔧🪚</p>
 <div id="pbm" style="margin-top:10px"></div>
 </main>
+<script>try{var s=JSON.parse(localStorage.getItem('shilo_lt'));if(s&&s.w){var n=0,t=Object.keys(s.w).length;for(var k in s.w)if(s.w[k].c>=3)n++;if(s.att){document.getElementById('lt').textContent='אתה כבר יודע '+n+' מתוך '+t+' אותיות ⭐ '+(s.pts||0);document.getElementById('ltb').style.width=(n/t*100)+'%'}}}catch(e){}</script>
 <!-- התראות (9.11.2026): כשיגיע תוכן חדש לשילה, ההתראה תגיע למכשיר הזה -->
 <script src="../push.js?v=3"></script><script>StudyPush.kid(document.getElementById('pbm'),'shilo',true)</script></body></html>
