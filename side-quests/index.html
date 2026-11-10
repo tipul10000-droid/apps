@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.4";window.SQ_BUILD_AT="10.11.2026 12:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.5";window.SQ_BUILD_AT="10.11.2026 12:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1002,6 +1002,27 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 .tv-wkc .lk a{font-size:12.5px;padding:5px 9px;border-radius:999px;background:rgba(14,110,120,.1);color:inherit;text-decoration:none}
 .tv-wkc .lk a.main{background:#0E6E78;color:#fff;font-weight:700}
 .tv-wkc .op{justify-self:start;font-size:12.5px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0}
+.ws{background:var(--card,#fff);border:1px solid var(--line,#e3e3e3);border-radius:14px;padding:12px 14px;display:grid;gap:10px}
+.ws h3{margin:0;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ws h3 a{font-size:12.5px;font-weight:600}
+.ws-seg{display:flex;flex-wrap:wrap;gap:6px}
+.ws-seg button{font:inherit;font-size:12.5px;padding:6px 10px;border-radius:999px;border:1px solid var(--line,#ddd);background:none;color:inherit;cursor:pointer}
+.ws-seg button.on{background:#0E6E78;border-color:#0E6E78;color:#fff;font-weight:700}
+.ws-base{font-size:13px;background:rgba(14,110,120,.08);border-radius:10px;padding:8px 10px;line-height:1.5}
+.ws-base b{font-size:15px}
+.ws-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.ws-it{border:1px solid var(--line,#e3e3e3);border-radius:12px;padding:9px 10px;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start}
+.ws-it.vis{opacity:.62}
+.ws-it .ck{grid-row:span 3;width:30px;height:30px;border-radius:50%;border:2px solid #0E6E78;background:none;color:#0E6E78;font-weight:800;cursor:pointer;font-size:14px}
+.ws-it.vis .ck{background:#0E6E78;color:#fff}
+.ws-it .nm{font-weight:800;font-size:14.5px}
+.ws-it .nm small{font-weight:500;color:var(--muted);margin-inline-start:6px}
+.ws-it .wh{font-size:13px;line-height:1.5}
+.ws-it .tm{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;align-items:center}
+.ws-it .tm span{background:rgba(14,110,120,.1);border-radius:8px;padding:3px 7px}
+.ws-it .tm span.tot{background:#FFE3A3;color:#5a4300;font-weight:700}
+.ws-it .tm a{margin-inline-start:auto;font-size:12.5px}
+.ws-note{font-size:12px;color:var(--muted);line-height:1.5}
 .tv-trip{border-radius:16px;color:#F2FBFA;background:linear-gradient(135deg,#0E7C86,#0B4F57);box-shadow:0 3px 12px rgba(11,79,87,.25);--line:rgba(255,255,255,.18)}
 .tv-trip>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
 .tv-trip>summary::-webkit-details-marker{display:none}
@@ -3503,10 +3524,70 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     return h("details",{class:"tv-fold tv-ideas"},h("summary",null,`💡 רעיונות לטיולים (${L.length})`),
       h("ul",null,L.map(x=>{const u=safeUrl(x.url||"");const kids=[h("i",{"aria-hidden":"true"},IC[x.src]||(u?"🔗":"📝")),h("span",{class:"nm"},x.t||"לינק"),x.area?h("small",null,x.area):null,x.at?h("small",{dir:"ltr"},dd(x.at)):null];
         return h("li",null,u?h("a",{href:u,target:"_blank",rel:"noopener"},...kids):h("div",null,...kids));})));}
+  // 13.7 (Oren 10.11.2026): stops bank for a work-trip drive (collection workstops). type:"route" docs = {title,a:{he,lat,lng},b:{he,lat,lng},chat,maps_a,maps_b};
+  //  place docs = {route, he, name, axis west|mid|east, lat, lng, what, stop (minimal recommended minutes), stop_note, night, visited, visited_at}.
+  //  Detours are computed live in the browser (OSRM public table API, no traffic): net drive added = A->P->B minus A->B, and with the minimal stop.
+  let wsDocs=[];const wsUI={};const wsCalc={};
+  const WS_AX={west:"🌊 חוף",mid:"🏞️ אמצע",east:"⛰️ מזרח"};
+  function wsFmt(m){m=Math.round(m);if(m<60)return m+" דק׳";return Math.floor(m/60)+":"+String(m%60).padStart(2,"0")+" ש׳";}
+  function wsHav(a,b){const R=6371,r=x=>x*Math.PI/180,dl=r(b.lat-a.lat),dg=r(b.lng-a.lng);const q=Math.sin(dl/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(q));}
+  function wsRough(a,b){return wsHav(a,b)*1.35/65*60;}
+  async function wsTable(key,from,places,to){
+    try{const c=JSON.parse(localStorage.getItem("ws_"+key)||"null");if(c&&Date.now()-c.at<7*864e5&&c.n===places.length)return c;}catch(e){}
+    const pts=[from,...places,to].map(p=>(+p.lng).toFixed(5)+","+(+p.lat).toFixed(5)).join(";");const n=places.length;
+    const src=[0,...places.map((_,i)=>i+1)].join(";"),dst=[...places.map((_,i)=>i+1),n+1].join(";");
+    const r=await fetch(`https://router.project-osrm.org/table/v1/driving/${pts}?sources=${src}&destinations=${dst}&annotations=duration`);const j=await r.json();
+    if(j.code!=="Ok")throw new Error(j.code);const D=j.durations;
+    const out={at:Date.now(),n,base:D[0][n]/60,det:places.map((_,i)=>D[0][i]!=null&&D[i+1][n]!=null?(D[0][i]+D[i+1][n])/60-D[0][n]/60:null)};
+    if(!/^here/.test(key))try{localStorage.setItem("ws_"+key,JSON.stringify(out));}catch(e){}
+    return out;}
+  function wsRun(rt){const ui=wsUI[rt.id];const pl=wsDocs.filter(d=>d.type!=="route"&&d.route===rt.id&&isFinite(+d.lat)&&isFinite(+d.lng));
+    const back=ui.dir==="back";let from=back?rt.b:rt.a;const to=back?rt.a:rt.b;if(ui.here&&ui.pos)from=ui.pos;
+    const key=(ui.here&&ui.pos?"here":"")+rt.id+"_"+ui.dir+"_"+pl.length;
+    wsCalc[rt.id]={busy:true,key};renderTravel();
+    wsTable(key,from,pl,to).then(o=>{const m={};pl.forEach((p,i)=>m[p.id]=o.det[i]);wsCalc[rt.id]={key,base:o.base,det:m,live:true};renderTravel();})
+      .catch(()=>{const m={};const b=wsRough(from,to);pl.forEach(p=>m[p.id]=Math.max(0,wsRough(from,p)+wsRough(p,to)-b));wsCalc[rt.id]={key,base:b,det:m,live:false};renderTravel();});}
+  function wsToggle(p){if(!db||!canWrite)return;const v=!p.visited;db.collection("workstops").doc(p.id).update({visited:v,visited_at:v?new Date().toISOString().slice(0,10):""})
+      .then(()=>toast(v?"✓ סומן: הייתי שם":"הסימון הוסר")).catch(e=>fail(e));}
+  function wsBank(rt){const ui=wsUI[rt.id]||(wsUI[rt.id]={dir:"go",ax:"all",vis:"all",bud:0,here:false});
+    const back=ui.dir==="back";const A=back?rt.b:rt.a,B=back?rt.a:rt.b;
+    const C=wsCalc[rt.id];const want=(ui.here&&ui.pos?"here":"")+rt.id+"_"+ui.dir+"_"+wsDocs.filter(d=>d.type!=="route"&&d.route===rt.id&&isFinite(+d.lat)&&isFinite(+d.lng)).length;if(!C||(!C.busy&&C.key!==want))setTimeout(()=>wsRun(rt),0);
+    const set=(k,v)=>()=>{ui[k]=v;if(k==="dir"||k==="here")delete wsCalc[rt.id];renderTravel();};
+    const seg=(k,opts)=>h("div",{class:"ws-seg"},opts.map(([v,l])=>h("button",{type:"button",class:ui[k]===v?"on":"",onclick:set(k,v)},l)));
+    const hereBtn=h("button",{type:"button",class:ui.here?"on":"",onclick:()=>{if(ui.here){ui.here=false;delete wsCalc[rt.id];renderTravel();return;}
+      if(!navigator.geolocation){toast("אין גישה למיקום");return;}toast("מאתר מיקום…");navigator.geolocation.getCurrentPosition(p=>{ui.pos={lat:p.coords.latitude,lng:p.coords.longitude,he:"המיקום שלי"};ui.here=true;delete wsCalc[rt.id];renderTravel();},()=>toast("המיקום לא זמין"),{timeout:15000,maximumAge:120000});}},"📍 מהמיקום שלי");
+    // order along the drive: projection of each place on the A->B line
+    const ax=(B.lng-A.lng)*Math.cos(A.lat*Math.PI/180),ay=B.lat-A.lat;const proj=p=>((p.lng-A.lng)*Math.cos(A.lat*Math.PI/180)*ax+(p.lat-A.lat)*ay)/(ax*ax+ay*ay);
+    let L=wsDocs.filter(d=>d.type!=="route"&&d.route===rt.id);const tot=L.length,seen=L.filter(p=>p.visited).length;
+    if(ui.ax!=="all")L=L.filter(p=>p.axis===ui.ax);if(ui.vis==="new")L=L.filter(p=>!p.visited);if(ui.vis==="seen")L=L.filter(p=>p.visited);
+    const det=p=>C&&C.det?C.det[p.id]:null;
+    if(ui.bud)L=L.filter(p=>det(p)==null||det(p)+(+p.stop||0)<=ui.bud);
+    L.sort((a,b)=>proj(a)-proj(b));
+    const mapsUrl=p=>"https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(ui.here&&ui.pos?ui.pos.lat+","+ui.pos.lng:(back?rt.maps_b:rt.maps_a)||A.lat+","+A.lng)
+      +"&destination="+encodeURIComponent((back?rt.maps_a:rt.maps_b)||B.lat+","+B.lng)+"&waypoints="+encodeURIComponent(p.maps||(p.name+", Italy"))+"&travelmode=driving";
+    const u=safeUrl(rt.chat||"");
+    return h("article",{class:"ws"},
+      h("h3",null,h("span",null,"🧭 "+(rt.title||"בנק עצירות")),u?h("a",{href:u,target:"_blank",rel:"noopener"},"💬 שיחה"):null),
+      seg("dir",[["go",`${rt.a.he} ← ${rt.b.he}`],["back",`${rt.b.he} ← ${rt.a.he}`]]),
+      h("div",{class:"ws-seg"},hereBtn),
+      h("div",{class:"ws-base"},C&&C.base!=null?h("span",null,"הדרך הקצרה ביותר: ",h("b",null,wsFmt(C.base)),` (${ui.here&&ui.pos?"מהמיקום שלך":A.he} ← ${B.he})`,C.live?" · חישוב חי בלי פקקים":" · הערכה גסה (אין חיבור לחישוב)"):"מחשב זמנים…",
+        h("div",{class:"ws-note"},"🚗 = כמה דקות נסיעה העצירה מוסיפה לדרך הקצרה (רק נוסע דרכה). ⏱ = כולל עצירה מינימלית מומלצת.")),
+      seg("bud",[[0,"כל זמן"],[30,"עד +30 דק׳"],[60,"עד +שעה"],[90,"עד +1.5 ש׳"],[120,"עד +2 ש׳"]]),
+      seg("ax",[["all","כל הצירים"],["west",WS_AX.west],["mid",WS_AX.mid],["east",WS_AX.east]]),
+      seg("vis",[["all",`הכל (${tot})`],["new",`לא הייתי (${tot-seen})`],["seen",`הייתי (${seen})`]]),
+      L.length?h("ul",{class:"ws-list"},L.map(p=>{const d=det(p),st=+p.stop||0;
+        return h("li",{class:"ws-it"+(p.visited?" vis":"")},
+          h("button",{type:"button",class:"ck","aria-label":p.visited?"הייתי שם, לחץ לביטול":"סמן שהייתי שם",title:"הייתי שם",onclick:()=>wsToggle(p)},p.visited?"✓":""),
+          h("div",{class:"nm"},p.he||p.name,h("small",{dir:"ltr"},p.name||""),h("small",null,WS_AX[p.axis]||""),p.night?h("small",null,"🌙 גם בערב"):null),
+          p.what?h("div",{class:"wh"},p.what):null,
+          h("div",{class:"tm"},h("span",null,"🚗 +"+(d==null?"…":wsFmt(Math.max(0,d)))),h("span",{class:"tot"},"⏱ +"+(d==null?"…":wsFmt(Math.max(0,d)+st))+(st?` (עצירה ${st} דק׳${p.stop_note?": "+p.stop_note:""})`:"")),
+            h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"ניווט ↗")));})):h("p",{class:"ws-note"},"אין עצירות שמתאימות לסינון."),
+      h("p",{class:"ws-note"},"הסדר לפי המיקום לאורך הדרך בכיוון שנבחר. העיגול = הייתי שם. זמני הנסיעה מ-OSRM (בלי פקקים), כדאי לאמת בגוגל מפות."));}
   // 13.x (Oren 10.11.2026): work trips abroad = the experience side (stops on the way, not the work). Topics with area "נסיעות עבודה", open ones first.
   function workTrips(){const L=allTopics.filter(t=>!t._deleted&&t.area==="נסיעות עבודה"&&!["archived","promoted"].includes(t.status)).sort((a,b)=>(a.status==="done")-(b.status==="done")||(b.priority==="high")-(a.priority==="high"));
-    if(!L.length)return [];
-    return [h("div",{class:"tv-sec-h"},"💼 נסיעות עבודה: עצירות ורגעים בדרך"),h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
+    const R=wsDocs.filter(d=>d.type==="route"&&!d._deleted&&d.a&&d.b);
+    if(!L.length&&!R.length)return [];
+    return [h("div",{class:"tv-sec-h"},"💼 נסיעות עבודה: עצירות ורגעים בדרך"),...R.map(wsBank),h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
       return h("article",{class:"tv-wkc"},h("h3",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("div",{class:"st"},t.stand):null,
         t.summary?h("details",{class:"tv-fold",open:t.status!=="done"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
         ls.length?h("div",{class:"lk"},ls.map((l,i)=>h("a",{class:/⭐/.test(l.label||"")?"main":"",href:safeUrl(l.url),target:"_blank",rel:"noopener"},"📍 "+(l.label||"מפה")))):null,
@@ -4395,6 +4476,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     db.collection("housing").onSnapshot(s=>{houseDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("shopping").onSnapshot(s=>{shopDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("food").onSnapshot(s=>{foodDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
+    db.collection("workstops").onSnapshot(s=>{wsDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderTravel();},()=>{});
     db.collection("knowledge").onSnapshot(s=>{knowDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("sport").onSnapshot(s=>{sportDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("credit").onSnapshot(s=>{credDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
