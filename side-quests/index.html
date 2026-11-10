@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.4";window.SQ_BUILD_AT="10.11.2026 11:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.5";window.SQ_BUILD_AT="10.11.2026 12:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -714,24 +714,43 @@ html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 .tb.tloc.on svg circle{fill:currentColor}
 .tb.tloc.busy svg{animation:locp 1s ease-in-out infinite}
 @keyframes locp{50%{opacity:.35}}
-#locM .sqpanel{height:calc(70vh / var(--tz,1));max-height:none;display:flex;flex-direction:column;padding:0}
-@supports (height:1dvh){#locM .sqpanel{height:calc(70dvh / var(--tz,1))}}
-#locM .lhd{display:flex;align-items:center;gap:8px;padding:14px 16px 8px;flex:none}
-#locM .lbody{flex:1;overflow:auto;padding:0 16px 8px}
-#locM .lnow{font-size:16px;font-weight:700;margin:2px 0 10px}
-#locM .lnow small{display:block;font-weight:500;color:var(--muted);font-size:13px}
-#locM .lfr{border:1px solid var(--line,rgba(0,0,0,.14));border-radius:14px;overflow:hidden;margin:6px 0 12px;animation:sqgrow .22s ease-out}
-#locM .lfr>*{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:11px 12px;border:0;border-top:1px solid var(--line,rgba(0,0,0,.12));background:none;color:inherit;font:inherit}
-#locM .lfr>*:first-child{border-top:0}
-#locM .lfr .lt{flex:1;min-width:0}
-#locM .lfr .lt b{display:block;font-size:15px}
-#locM .lfr .lt small{display:block;color:var(--muted);font-size:13px}
-#locM .lfr .lk{flex:none;font-size:12.5px;color:var(--muted);font-weight:700}
-#locM .lh{font-weight:800;font-size:14px;margin:12px 0 0}
-#locM .lft{flex:none;display:flex;border-top:1px solid var(--line,rgba(0,0,0,.14));padding-bottom:env(safe-area-inset-bottom,0px)}
-#locM .lft button{flex:1;min-height:52px;font-weight:700;font-size:15px;background:none;border:0;color:inherit}
-#locM .lft button+button{border-inline-start:1px solid var(--line,rgba(0,0,0,.14))}
+:is(#locM,#gmM) .sqpanel{height:calc(70vh / var(--tz,1));max-height:none;display:flex;flex-direction:column;padding:0}
+@supports (height:1dvh){:is(#locM,#gmM) .sqpanel{height:calc(70dvh / var(--tz,1))}}
+:is(#locM,#gmM) .lhd{display:flex;align-items:center;gap:8px;padding:14px 16px 8px;flex:none}
+:is(#locM,#gmM) .lbody{flex:1;overflow:auto;padding:0 16px 8px}
+:is(#locM,#gmM) .lnow{font-size:16px;font-weight:700;margin:2px 0 10px}
+:is(#locM,#gmM) .lnow small{display:block;font-weight:500;color:var(--muted);font-size:13px}
+:is(#locM,#gmM) .lfr{border:1px solid var(--line,rgba(0,0,0,.14));border-radius:14px;overflow:hidden;margin:6px 0 12px;animation:sqgrow .22s ease-out}
+:is(#locM,#gmM) .lfr>*{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:11px 12px;border:0;border-top:1px solid var(--line,rgba(0,0,0,.12));background:none;color:inherit;font:inherit}
+:is(#locM,#gmM) .lfr>*:first-child{border-top:0}
+:is(#locM,#gmM) .lfr .lt{flex:1;min-width:0}
+:is(#locM,#gmM) .lfr .lt b{display:block;font-size:15px}
+:is(#locM,#gmM) .lfr .lt small{display:block;color:var(--muted);font-size:13px}
+:is(#locM,#gmM) .lfr .lk{flex:none;font-size:12.5px;color:var(--muted);font-weight:700}
+:is(#locM,#gmM) .lh{font-weight:800;font-size:14px;margin:12px 0 0}
+:is(#locM,#gmM) .lft{flex:none;display:flex;border-top:1px solid var(--line,rgba(0,0,0,.14));padding-bottom:env(safe-area-inset-bottom,0px)}
+:is(#locM,#gmM) .lft button{flex:1;min-height:52px;font-weight:700;font-size:15px;background:none;border:0;color:inherit}
+:is(#locM,#gmM) .lft button+button{border-inline-start:1px solid var(--line,rgba(0,0,0,.14))}
 @keyframes sqgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+/* 14.4 (Oren 10.11.2026): Gmail on demand + "what changed lately" */
+.topbtns .tb.tgm svg.gmic{width:22px!important;height:22px!important}
+.topbtns .tb.tgm.busy svg.gmic{animation:locp 1s ease-in-out infinite}
+#gmM .gnote{display:block;width:100%;box-sizing:border-box;min-height:44px;resize:none;border:1px solid var(--line,rgba(0,0,0,.18));border-radius:12px;padding:10px 12px;font:inherit;font-size:16px;background:transparent;color:inherit}
+#gmM .ggo{display:block;width:100%;min-height:48px;margin:8px 0 4px;border-radius:12px;border:0;background:#1a73e8;color:#fff;font-weight:800;font-size:16px}
+#gmM .ggo[disabled]{background:#9aa7b8}
+#gmM .lnow{min-height:44px}
+#gmM .lfr .gdot{flex:none;width:9px;height:9px;border-radius:50%;background:#2F80ED}
+#gmM .lfr .gdot.seen{background:transparent}
+.r-new{flex:none;width:9px;height:9px;border-radius:50%;background:#2F80ED;box-shadow:0 0 0 2px rgba(47,128,237,.25);margin-inline-end:2px}
+.r-tw{display:flex;flex-direction:column;min-width:0;flex:1}
+.r-tw .r-title{flex-basis:auto}
+.r-upd{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.ctxrow .wseg.w4{grid-template-columns:1.12fr .82fr 1.5fr .86fr}
+.ctxrow .wseg .wn{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:#2F80ED;color:#fff;font-size:11.5px;font-weight:800;line-height:1}
+.ctxrow .wseg .wn.z{visibility:hidden}
+.newhd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 14px 6px}
+.newhd b{font-size:14px;color:var(--muted)}
+.newhd button{border:0;background:none;color:var(--accent,#2F80ED);font-weight:700;font-size:14px;min-height:36px;padding:0 4px}
 /* 11.9 (Oren 7.11.2026): every Israel trip, grouped by region, in a fixed-height sheet with its own scroll */
 .tv-all{width:100%;justify-content:center;margin-top:10px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
 #ilAllM .sqpanel{height:calc(80vh / var(--tz,1));max-height:none;display:flex;flex-direction:column;padding:0}
@@ -1843,7 +1862,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   <div class="qb-in gut"><span class="ai-tag qa-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
 <button class="tfind fab" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tadd fab" id="addBtn" type="button" aria-label="הוראה חדשה" aria-expanded="false">+</button><div class="imenu" id="imenu" hidden role="group" aria-label="משימה או הוראה"><div class="im-r k-quick"><span class="im-l"><span class="e" aria-hidden="true">⚡</span>משימה מהירה</span><button type="button" id="qText" aria-label="משימה מהירה בכתיבה">⌨️</button><button type="button" id="qVoice" aria-label="משימה מהירה בהקלטה">🎤</button></div><div class="im-r k-ins"><span class="im-l"><span class="e" aria-hidden="true">🧠</span>הוראה חכמה</span><button type="button" id="iText" aria-label="הוראה בכתיבה">⌨️</button><button type="button" id="iVoice" aria-label="הוראה בהקלטה">🎤</button></div></div><div class="ibar" id="ibar" hidden></div><div class="ires" id="ires" hidden role="status"></div>
-<div class="topbtns"><a class="tb tchat" id="tchat" aria-label="All Arounder: העוזר האישי" href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<div class="topbtns"><a class="tb tchat" id="tchat" aria-label="All Arounder: העוזר האישי" href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tgm" id="gmBtn" type="button" aria-label="סריקת Gmail לפי דרישה"><svg class="gmic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M1.5 5.6v9.4c0 .6.4 1 1 1h2.4V8.9z"/><path fill="#34A853" d="M17.5 5.6v4.3a5.6 5.6 0 0 0-3.4 1V8.9z"/><path fill="#EA4335" d="M1.5 5.6 9.5 11.6l8-6V4.9c0-1.2-1.4-1.9-2.4-1.2L9.5 7.9 3.9 3.7c-1-.7-2.4 0-2.4 1.2z"/><circle cx="16.6" cy="15.6" r="3.7" fill="none" stroke="#fff" stroke-width="2"/><path d="M19.3 18.3 22.4 21.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg><i class="tdot" id="gmDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
@@ -2777,7 +2796,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     const seg=(k,l)=>h("button",{type:"button","aria-pressed":eff===k?"true":"false",onclick:()=>setWMode(k)},...[].concat(l));
     const kids=[];
     if(side){
-      kids.push(h("div",{class:"wseg",role:"group","aria-label":"חלון זמן"},seg("auto",[h("span",{class:"ai-ic","aria-hidden":"true",html:AI_SPARK}),"אוטומטי"]),seg("pick","בחירה"),seg("off","בלי חלונות זמן")));
+      kids.push(h("div",{class:"wseg w4",role:"group","aria-label":"חלון זמן"},seg("auto",[h("span",{class:"ai-ic","aria-hidden":"true",html:AI_SPARK}),"אוטומטי"]),seg("pick","בחירה"),seg("off","בלי חלונות זמן"),seg("new",["חדש",h("b",{class:"wn"+(newCount()?"":" z"),"aria-label":"לא נקראו"},String(newCount()||0))])));
       if(eff==="pick"){
         const trio=winTrio(),ids=trio.map(x=>x[1]);
         const chip=(id,t)=>h("button",{type:"button",class:"wchip","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;setWin(id);wMode="pick";try{localStorage.setItem("sq_wmode","pick");}catch(e){}}},
@@ -2812,7 +2831,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   function dlOf(t){const D=t.deadline;if(typeof D==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(D))return {d:D,l:""};return D&&typeof D==="object"&&D.d?D:null;}
   function dlTag(t){const D=dlOf(t),n=D&&D.d?daysUntil(D.d):null;if(n==null)return null;
     return h("span",{class:"r-dl"+(n<=14?" hot":""),title:(D.l||"")+" "+D.d.split("-").reverse().join(".")},n<0?"⏳ עבר המועד · ":n===0?"⏳ עד היום · ":(n===1?"⏳ עד מחר · ":n===2?"⏳ יומיים · ":"⏳ "+n+" ימים · "));}
-  function row(t){
+  function row(t,rx){
     const open=isOpen(t),n=daysUntil(t.next_date),asks=openAsks(t),st=stepsOf(t),sd=st.filter(s=>s.done).length;
     let chip=null;
     if(open){if(snoozed(t))chip=h("span",{class:"rc"},"⏰ "+fmtWhen(t.snooze_until));
@@ -2824,7 +2843,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       open?(canWrite?h("button",{class:"ck",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:press(()=>markDone(t))}):h("span",{class:"ck ph","aria-hidden":"true"})):h("span",{class:"ck on","aria-label":"בוצע",html:ICON.done}),
       h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":isO?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
         isUrgent(t)?h("span",{class:"r-urg","aria-label":"דחוף"},"!"):null,
-        h("span",{class:"r-title"},open?dlTag(t):null,t.title||"(ללא כותרת)"),
+        isNewUpd(t)?h("i",{class:"r-new","aria-label":"התעדכן"}):null,
+        rx&&rx.upd?h("span",{class:"r-tw"},h("span",{class:"r-title"},open?dlTag(t):null,t.title||"(ללא כותרת)"),h("small",{class:"r-upd"},updLine(rx.upd))):h("span",{class:"r-title"},open?dlTag(t):null,t.title||"(ללא כותרת)"),
         chip,h("span",{class:"r-chev","aria-hidden":"true"},"‹")));
     if(laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.classList.add("r-later");el.append(m);}
     if(isO)el.append(drawer(t));
@@ -2945,7 +2965,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       ta,h("div",{class:"d-row"},copy,wa),
       (shareMode!=="task"||hasPage)?h("span",{class:"src"},"לשיתוף צריך Share ב-Claude"):null);
   }
-  function toggle(id){openId=openId===id?null:id;renderList();if(openId)centerOpen(openId);}
+  function toggle(id){openId=openId===id?null:id;if(openId)seeUpd(openId);renderList();if(openId)centerOpen(openId);}
   // 13.1: bring the opened task to the middle of the screen; a task taller than the screen starts just under the top
   function centerOpen(id){requestAnimationFrame(()=>{const r=document.querySelector('.row.is-open[data-id="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');if(!r)return;
     const b=r.getBoundingClientRect(),vh=window.innerHeight,top=b.height>vh-80?b.top-60:b.top-(vh-b.height)/2;
@@ -3023,7 +3043,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   function renderList(){renderMain();renderStrip();renderDash();if(nav.lvl>=2)renderNav();if(nav.dash&&!dashPg.frame)renderDashPg();}
   function renderMain(){
     const allK=topics.filter(isOpen).filter(t=>!inStrip(t)).sort(byDate);
-    const side=WQ.includes(quest),w=curWin(),winOn=side&&(wMode!=="off"||w.manual);
+    const side=WQ.includes(quest),w=curWin(),winOn=side&&(wMode!=="off"&&wMode!=="new"||w.manual);
+    if(side&&wMode==="new"&&!w.manual){renderNew();return;}
     const urgAll=allK.filter(t=>isUrgent(t)&&!snoozed(t)).sort((a,b)=>(sizeOf(a)==="quick"?0:1)-(sizeOf(b)==="quick"?0:1));
     const rest=allK.filter(t=>!urgAll.includes(t)),later=rest.filter(snoozed),open=rest.filter(t=>!snoozed(t));
     const waiting=open.filter(t=>t.status==="waiting_other"),paused=open.filter(t=>t.status==="paused");
@@ -3679,7 +3700,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   let iKind="ins",iMode="",iRec=null,iAcc="",iSess="",iStopping=false,iStream=null,iAC=null,iRAF=0,iSpeak=0,iTimer=0,iResT=0;
   const iKey=()=>{try{return localStorage.getItem("sq_pin")||sessionStorage.getItem("sq_pin")||"";}catch(e){return "";}};
   function iFab(){const b=$("addBtn"),open=!!iMode||!$("imenu").hidden;b.setAttribute("aria-expanded",open?"true":"false");b.firstChild&&b.firstChild.nodeType===3?b.firstChild.nodeValue=open?"×":"+":b.prepend(open?"×":"+");}
-  function iPend(){const b=$("addBtn");let n=0;try{n=allIns().filter(x=>x.status==="pending"||x.status==="working").length;}catch(e){}
+  function iPend(){const b=$("addBtn");let n=0;try{n=allIns().filter(x=>x.kind!=="gmail_scan"&&(x.status==="pending"||x.status==="working")).length;}catch(e){}
     let p=b.querySelector(".ipend");if(!n){if(p)p.remove();return;}if(!p){p=h("span",{class:"ipend","aria-label":"הוראות שמחכות"});b.append(p);}p.textContent=n;}
   let iDocs=[];function allIns(){return iDocs;}
   function iMenu(on){$("imenu").hidden=!on;if(on){$("ires").hidden=true;showFind(false);}iFab();}
@@ -3770,7 +3791,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   $("qText").onclick=()=>iTextOpen("quick");
   $("qVoice").onclick=()=>iVoiceOpen("quick");
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("imenu").hidden)iMenu(false);});
-  const iWatch=setInterval(()=>{if(!db)return;clearInterval(iWatch);try{db.collection("instructions").onSnapshot(s=>{iDocs=(s.docs||[]).map(d=>({id:d.id,...d.data()}));iPend();},()=>{});}catch(e){}},500);
+  const iWatch=setInterval(()=>{if(!db)return;clearInterval(iWatch);try{db.collection("instructions").onSnapshot(s=>{iDocs=(s.docs||[]).map(d=>({id:d.id,...d.data()}));iPend();updGmBtn();fillGm();},()=>{});}catch(e){}},500);
   // 4.1: search across all quests (titles and every text field, Hebrew or English); a tap opens the task in its own quest
   const norm=x=>String(x||"").toLowerCase().normalize("NFKD").replace(/[\u0591-\u05C7]/g,"").replace(/[׳״'"`]/g,"").replace(/\s+/g," ");
   function textOf(v,out){if(v==null)return out;if(typeof v==="string")out.push(v);else if(Array.isArray(v))v.forEach(x=>textOf(x,out));else if(typeof v==="object")for(const k in v){if(k==="url"||k==="id"||k==="_deleted")continue;textOf(v[k],out);}return out;}
@@ -3944,6 +3965,77 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     el.append(near.length?h("div",{class:"lfr"},...near.map(x=>row(x.t,x.k))):h("div",{class:"lfr"},h("div",null,"✓ אין משימות במקום הזה")));
     if(any.length){el.append(h("div",{class:"lh"},"🛒 בכל מקום, גם כאן"));el.append(h("div",{class:"lfr"},...any.map(x=>row(x.t,null))));}
     if(far.length){el.append(h("div",{class:"lh"},"🧭 בהמשך"));el.append(h("div",{class:"lfr"},...far.map(x=>row(x.t,x.k))));}}
+  // ===== 14.4 (Oren 10.11.2026): what changed lately + Gmail scan on demand =====
+  // A task "changed" when something from OUTSIDE touched it: a Gmail scan or a sweep (upd {at, src, what}),
+  // another project's sync (sync.at), a run's log line, or a task Claude created. His own taps don't count.
+  // Windows stay the default view; the "חדש" segment lists what changed (7 days, newest first), and a blue dot
+  // marks unseen changes on every row until he opens the task (seen map in localStorage sq_upd_seen).
+  let gmScan=null;
+  const OWN_SRC=/^נוסף (ידנית|בהקלטה)/,EXT_LOG=/^(סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון)/;
+  function recentOf(t){if(!t||t._deleted)return null;let best=null;const now=Date.now();
+    const add=(at,what,src)=>{const ms=Date.parse(at||"");if(!ms||ms>now+6e4)return;if(!best||ms>best.ms)best={ms,what:String(what||"").replace(/\s+/g," ").trim(),src:String(src||"")};};
+    const L=Array.isArray(t.log)?t.log:[];
+    if(t.upd&&t.upd.at)add(t.upd.at,t.upd.what,t.upd.src||"run");
+    if(t.sync&&t.sync.at){const lg=L.length?L[L.length-1]:null;add(t.sync.at,(lg&&lg.text)||t.stand||"עודכן",/gmail|מייל/i.test(t.sync.from||"")?"gmail":"sync");}
+    if(t.created_at&&!OWN_SRC.test(t.source||""))add(t.created_at,"משימה חדשה",/gmail|מייל/i.test(t.source||"")?"gmail":"new");
+    L.forEach(l=>{if(l&&l.at&&l.by!=="oren"&&EXT_LOG.test(l.text||""))add(l.at,l.text,/^(Gmail|ג׳ימייל|מייל)/.test(l.text)?"gmail":"log");});
+    return best;}
+  let updSeen=null;try{updSeen=JSON.parse(localStorage.getItem("sq_upd_seen")||"null");}catch(e){updSeen=null;}
+  if(!updSeen||typeof updSeen!=="object"){updSeen={_base:new Date(Date.now()-24*36e5).toISOString()};try{localStorage.setItem("sq_upd_seen",JSON.stringify(updSeen));}catch(e){}}
+  const updBase=()=>Date.parse(updSeen._base||"")||0;
+  const newPool=()=>allTopics.filter(t=>!t._deleted&&!t.background&&!isFun(t)&&!(t.fit&&t.fit.owner==="claude")&&t.status!=="archived");
+  function isNewUpd(t){const r=recentOf(t);if(!r||Date.now()-r.ms>72*36e5||r.ms<=updBase())return null;const s=Date.parse(updSeen[t.id]||"")||0;return s<r.ms?r:null;}
+  function newCount(){try{return newPool().filter(t=>isNewUpd(t)).length;}catch(e){return 0;}}
+  function saveSeen(){const ks=Object.keys(updSeen).filter(k=>k!=="_base");if(ks.length>300)ks.sort((a,b)=>String(updSeen[a]).localeCompare(String(updSeen[b]))).slice(0,ks.length-300).forEach(k=>delete updSeen[k]);
+    try{localStorage.setItem("sq_upd_seen",JSON.stringify(updSeen));}catch(e){}}
+  function seeUpd(id){const t=allTopics.find(x=>x.id===id),r=t&&recentOf(t);if(!r)return;if((Date.parse(updSeen[id]||"")||0)>=r.ms)return;updSeen[id]=new Date(r.ms).toISOString();saveSeen();setTimeout(()=>{renderCtx();updGmBtn();},0);}
+  function seeAll(){updSeen={_base:new Date().toISOString()};saveSeen();renderCtx();renderList();updGmBtn();toast("✓ הכול סומן כנקרא");}
+  const SRC_E={gmail:"✉️",new:"🆕",sync:"🔗",log:"↻",run:"↻"};
+  function updLine(r){const w=r.what.replace(/^(סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור)\s*[:：]\s*/,"");return (SRC_E[r.src]||"↻")+" "+(w||"עודכן")+" · "+ago(r.ms);}
+  function recentList(days){const lim=Date.now()-days*864e5;return newPool().map(t=>({t,r:recentOf(t)})).filter(x=>x.r&&x.r.ms>=lim).sort((a,b)=>b.r.ms-a.r.ms);}
+  function renderNew(){
+    const L=recentList(7).slice(0,60),today=ilDate(),yest=addDays(today,-1);
+    const dayOf=ms=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date(ms));
+    const G=[["היום",x=>dayOf(x.r.ms)===today],["אתמול",x=>dayOf(x.r.ms)===yest],["השבוע",()=>true]];const used=new Set(),top=[];
+    top.push(h("div",{class:"newhd"},h("b",null,"🆕 מה התעדכן לאחרונה"),h("button",{type:"button",onclick:seeAll},"✓ הכול נקרא")));
+    for(const[g,f]of G){const it=L.filter(x=>!used.has(x.t.id)&&f(x));it.forEach(x=>used.add(x.t.id));if(!it.length)continue;
+      top.push(h("div",{class:"gwrap"},h("div",{class:"g-head"},g,h("span",{class:"n"},it.length)),h("div",{class:"glist"},it.map(x=>row(x.t,{upd:x.r})))));}
+    if(L.length===0)top.push(h("div",{class:"empty"},"שום דבר לא התעדכן בשבוע האחרון."));
+    $("list").replaceChildren(...top);$("more").replaceChildren();
+    const doneL=topics.filter(t=>t.status==="done"||t.status==="promoted").sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")).slice(0,30);
+    $("doneSec").replaceChildren(...[foldRows("done","בוצעו",doneL)].filter(Boolean));renderInbox();}
+  // Gmail on demand: the button queues sidequests/instructions {kind:"gmail_scan"}; the hourly instructions run (:47)
+  // scans Gmail since the last scan (plus what he noted), updates or adds the matching tasks with upd {src:"gmail"},
+  // and writes settings/gmail_scan. The 5-a-day sweep does the same pass automatically.
+  const gmReqs=()=>iDocs.filter(x=>x.kind==="gmail_scan").sort((a,b)=>String(b.at||"").localeCompare(String(a.at||"")));
+  const gmPending=()=>gmReqs().find(x=>x.status==="pending"||x.status==="working");
+  function nextIns(){const m=ilNow().m;for(let hh=7;hh<=23;hh++){if(hh*60+47>m+1)return (hh<10?"0":"")+hh+":47";}return "מחר 07:47";}
+  function updGmBtn(){const b=document.getElementById("gmBtn");if(!b)return;b.classList.toggle("busy",!!gmPending());}
+  function showGmail(){
+    const body=h("div",{class:"lbody",id:"gmBody"});
+    modal("gmM",h("div",{class:"lhd"},h("h2",null,"✉️ סריקת Gmail",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),body,
+      h("div",{class:"lft"},h("button",{type:"button",onclick:()=>{closeModal();if(!WQ.includes(quest))setQuest("side");setWMode("new");window.scrollTo({top:0});}},"🆕 כל מה שהתעדכן"),h("button",{type:"button",onclick:closeModal},"✓ סגור")));
+    fillGm();}
+  function fillGm(){const el=document.getElementById("gmBody");if(!el)return;
+    const p=gmPending(),R=gmReqs(),last=R.find(x=>x.status==="done");
+    const lastAt=Math.max(Date.parse((gmScan&&gmScan.last_at)||"")||0,Date.parse((last&&(last.done_at||last.at))||"")||0);
+    const st=p?(p.status==="working"?["🔍 סורק עכשיו…","עוד רגע זה מופיע כאן"]:["⏳ בתור","אסרוק עד "+nextIns()+" ואעדכן את המשימות"]):
+      [lastAt?"סריקה אחרונה: "+ago(lastAt):"עוד לא נסרק",(gmScan&&gmScan.summary)||(last&&last.reply)||"אוטומטית 5 פעמים ביום, או עכשיו בכפתור"];
+    let ta=el.querySelector(".gnote");const keep=ta?ta.value:"";
+    ta=h("textarea",{class:"gnote",rows:"1",placeholder:"על מה לשים לב? (לא חובה)","aria-label":"על מה לשים לב"});ta.value=keep;
+    const go=h("button",{class:"ggo",type:"button",disabled:p||!canWrite?"":null},p?"⏳ בתור לסריקה":"🔍 לסרוק את Gmail");
+    go.onclick=async()=>{if(gmPending()||!db)return;const note=ta.value.trim().slice(0,600),id="g-"+Date.now().toString(36)+Math.random().toString(36).slice(2,4);
+      go.disabled=true;go.textContent="⏳ בתור לסריקה";
+      try{await db.collection("instructions").doc(id).set({kind:"gmail_scan",text:note||"סריקת Gmail לפי דרישה",note,via:"gmail",at:new Date().toISOString(),status:"pending",ctx:{quest,open:openId||""}});
+        ta.value="";toast("✓ נשלח לסריקה. אעדכן עד "+nextIns());}catch(e){fail(e);}};
+    const kids=[h("div",{class:"lnow"},st[0],h("small",null,st[1])),ta,go];
+    const ops=last&&Array.isArray(last.ops)?last.ops.filter(o=>o&&o.id):[];
+    if(ops.length&&!p){kids.push(h("div",{class:"lh"},"✉️ בסריקה האחרונה"));
+      kids.push(h("div",{class:"lfr"},...ops.slice(0,8).map(o=>h("button",{type:"button",onclick:()=>{closeModal();openTask(o.id);}},h("span",{class:"lt"},h("b",null,o.title||o.id),o.what?h("small",null,o.what):null)))));}
+    const rec=recentList(3).slice(0,8);
+    kids.push(h("div",{class:"lh"},"🆕 התעדכן לאחרונה"));
+    kids.push(rec.length?h("div",{class:"lfr"},...rec.map(x=>h("button",{type:"button",onclick:()=>{closeModal();openTask(x.t.id);}},h("i",{class:"gdot"+(isNewUpd(x.t)?"":" seen"),"aria-hidden":"true"}),h("span",{class:"lt"},h("b",null,x.t.title||""),h("small",null,updLine(x.r)))))):h("div",{class:"lfr"},h("div",null,"✓ שום דבר חדש ב-3 הימים האחרונים")));
+    el.replaceChildren(...kids);}
   function closeModal(keep){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(keep!==true)unlockScroll();if(/^#(brief|eve|fri|wkend|week|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
   function modal(id,...kids){closeModal(true);lockScroll();const m=h("div",{class:"sqmodal",id,onclick:e=>{if(e.target===m)closeModal();}},h("div",{class:"sqpanel",role:"dialog","aria-modal":"true"},...kids));document.body.append(m);return m;}
   function sw(on,fn,label){return h("input",{type:"checkbox",class:"sqsw",role:"switch",checked:on||null,"aria-label":label,onchange:e=>fn(e.target.checked)});}
@@ -4336,7 +4428,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     if(!isFun(t)&&questOf(t)==="ai"){const pid=isProjTask(t)?t.project:GEN_ID;view="open";openId=id;if(nav.lvl===3&&nav.id===pid)renderNav();else navGo({lvl:3,id:pid});
       setTimeout(()=>{const r=$("pg3").querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},120);return;}{const q0=isFun(t)?"fun":questOf(t);if(qHidden(q0))setMode("home","🏠 עברתי לבית כדי לפתוח את המשימה");}const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
     if(t.status==="done"||t.status==="promoted")view="done";else if(t.status==="archived")view="archive";else view="open";
-    if(!ctxOk(t)){ctxNow="all";try{localStorage.setItem("sq_ctx","all");}catch(e){}}filterKind="all";openId=id;renderAll();
+    seeUpd(id);if(!ctxOk(t)){ctxNow="all";try{localStorage.setItem("sq_ctx","all");}catch(e){}}filterKind="all";openId=id;renderAll();
     setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
   let routed=false;
   function routeHash(){const hs=location.hash;
@@ -4348,6 +4440,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   $("setBtn").onclick=()=>showSettings();
   $("sunBtn").onclick=()=>showBrief();
   $("locBtn").onclick=()=>showHere(true);
+  $("gmBtn").onclick=()=>showGmail();
   function initNotify(){
     db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan"),aw=s.docs.find(x=>x.id==="away"),wh=s.docs.find(x=>x.id==="where");
       if(wh&&remoteW(wh.data())&&allTopics.length){renderCtx();renderList();}
@@ -4370,7 +4463,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();ctxRun(all);},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
-      const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};
+      const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();
       const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
