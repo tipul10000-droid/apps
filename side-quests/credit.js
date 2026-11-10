@@ -67,14 +67,54 @@ function tabDocs(){let o="";const G=Array.isArray(meta.gather)?meta.gather:[];
 function renderHome(){$("hero").innerHTML=heroHome();$("bar").innerHTML=bar();
   $("app").innerHTML=ui.tab==="ins"?tabIns():ui.tab==="docs"?tabDocs():tabCards();}
 
+// ---------- secure card details (full number + CVV, encrypted on the device with the app PIN; expiry plain) ----------
+const enc=new TextEncoder(),dec=new TextDecoder();
+const b64=a=>btoa(String.fromCharCode(...new Uint8Array(a))),unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+function pinKey(){try{return localStorage.getItem("sq_pin")||sessionStorage.getItem("sq_pin")||"";}catch(e){return "";}}
+async function aesKey(salt){const base=await crypto.subtle.importKey("raw",enc.encode("sq-credit|"+pinKey()),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:310000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);}
+async function seal(obj){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},await aesKey(salt),enc.encode(JSON.stringify(obj)));return {v:1,salt:b64(salt),iv:b64(iv),ct:b64(ct)};}
+async function unseal(s){const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(s.iv)},await aesKey(unb64(s.salt)),unb64(s.ct));return JSON.parse(dec.decode(pt));}
+const plain={},shown={},editing={};let hideT={};
+async function openSec(c){if(plain[c.id]!==undefined)return plain[c.id];if(!c.sec||!c.sec.ct){plain[c.id]={};return plain[c.id];}
+  try{plain[c.id]=await unseal(c.sec);}catch(e){plain[c.id]=null;}return plain[c.id];}
+const grp=n=>String(n||"").replace(/\D/g,"").replace(/(.{4})(?=.)/g,"$1 ");
+function expFmt(c){const m=String(c.exp||"").match(/^(\d{1,2})[.\/](\d{4})$/);return m?String(m[1]).padStart(2,"0")+"/"+m[2].slice(2):(c.exp||"");}
+function secBlock(c){const p=plain[c.id],on=shown[c.id]&&p,has=c.sec&&c.sec.ct;
+  if(editing[c.id]){const v=p||{};return `<section id="secb"><div class="sh"><h2>🔐 פרטי הכרטיס</h2></div><div class="card sec">
+    <label>מספר מלא<input id="sec-num" inputmode="numeric" autocomplete="off" dir="ltr" value="${esc(grp(v.num))}" placeholder="0000 0000 0000 ${esc(c.last4||"0000")}"></label>
+    <div class="two"><label>תוקף (חודש/שנה)<input id="sec-exp" inputmode="numeric" autocomplete="off" dir="ltr" value="${esc(expFmt(c))}" placeholder="MM/YY"></label>
+    <label>CVV (3 ספרות בגב)<input id="sec-cvv" inputmode="numeric" autocomplete="off" dir="ltr" maxlength="4" value="${esc(v.cvv||"")}" placeholder="•••"></label></div>
+    <p class="note">המספר וה-CVV נשמרים מוצפנים עם קוד הכניסה לאפליקציה. רק במכשיר שלך רואים אותם.</p>
+    <div class="btns"><button data-secsave="${esc(c.id)}">💾 שמירה</button><button data-seccancel="${esc(c.id)}">ביטול</button></div></div></section>`;}
+  const mask=on?(p.num?grp(p.num):"—"):(c.last4?"•••• •••• •••• "+c.last4:"—");
+  const cvv=on?(p.cvv||"—"):(has?"•••":"—");
+  const row=(k,v,copyv,cls)=>`<div class="k">${k}</div><div class="sv"><span class="${cls||""}" dir="ltr">${esc(v)}</span>${copyv?`<button class="cp" data-cpy="${esc(copyv)}" aria-label="העתקה">📋</button>`:""}</div>`;
+  return `<section id="secb"><div class="sh"><h2>🔐 פרטי הכרטיס</h2>${has?"":'<small>חסר מספר ו-CVV</small>'}</div><div class="card sec"><div class="kv">
+    ${row("מספר",mask,on&&p.num?p.num:"","mono")}${row("תוקף",expFmt(c)||"—",c.exp?expFmt(c):"","mono")}${row("CVV",cvv,on&&p.cvv?p.cvv:"","mono")}</div>
+    ${p===null?'<p class="note" style="color:var(--bad)">לא הצלחתי לפענח. אולי קוד הכניסה הוחלף. אפשר להזין מחדש בעריכה.</p>':""}
+    <div class="btns">${has?`<button data-secshow="${esc(c.id)}">${on?"🙈 הסתרה":"👁 הצגה"}</button>`:""}<button data-secedit="${esc(c.id)}">✏️ ${has?"עריכה":"הוספת מספר, תוקף ו-CVV"}</button></div></div></section>`;}
+async function secSave(id){const c=items[id];if(!c)return;
+  const num=($("sec-num").value||"").replace(/\D/g,""),cvv=($("sec-cvv").value||"").replace(/\D/g,""),ex=($("sec-exp").value||"").trim();
+  if(num&&(num.length<13||num.length>19)){toast("מספר כרטיס צריך 13 עד 19 ספרות");return;}
+  if(num&&c.last4&&!num.endsWith(c.last4)){toast("המספר לא נגמר ב-"+c.last4+". בדוק שזה הכרטיס הנכון");return;}
+  if(cvv&&(cvv.length<3||cvv.length>4)){toast("CVV הוא 3 ספרות (באמקס 4)");return;}
+  let exp=c.exp||"";if(ex){const m=ex.match(/^(\d{1,2})\s*[\/.\-]\s*(\d{2}|\d{4})$/);if(!m||+m[1]<1||+m[1]>12){toast("תוקף בפורמט MM/YY");return;}exp=+m[1]+"."+(m[2].length===2?"20"+m[2]:m[2]);}
+  if(!pinKey()){toast("צריך קוד כניסה כדי להצפין");return;}
+  const now=new Date().toISOString(),patch={exp,updated_at:now,log:[...(c.log||[]),{at:now,text:"עודכנו פרטי כרטיס (מספר/תוקף/CVV)"}]};
+  if(num||cvv){patch.sec=await seal({num,cvv});plain[id]={num,cvv};}else{patch.sec=null;plain[id]={};}
+  editing[id]=false;shown[id]=true;clearTimeout(hideT[id]);hideT[id]=setTimeout(()=>{shown[id]=false;render();},30000);upd(id,patch,"נשמר מוצפן");}
+
 // ---------- card page ----------
 function renderCard(id){const c=cards().find(x=>x.id===id);if(!c){goHash("");return;}
   $("hero").innerHTML=heroCard(c);$("bar").innerHTML="";const f=c.fee||{},fx=c.fx||{},cf=c.cf||{};let o="";
   if(c.q&&c.q.q&&!c.q.answer)o+=`<section>${qBlock(c)}</section>`;
   if(c.todo&&c.todo.text&&c.todo.status!=="done")o+=`<section><div class="card"><div class="todo"><span class="w">${esc(WHO[c.todo.who]||"")}</span><span>${esc(c.todo.text)}</span></div></div></section>`;
-  const kv=[["חברה",ISS[c.issuer]||c.issuer],["סוג",c.net],["מועדון",c.club],["דמי כרטיס",f.m!=null?ils(+f.m)+(f.net!=null&&+f.net!==+f.m?" (בפועל "+ils(+f.net)+")":""):"לא ידוע"],["עמלת מט״ח",fxTxt(c)],["חיוב",c.billing],["בעלים",c.owner&&c.owner!=="oren"?(OWN[c.owner]||c.owner):""],["תוקף",c.exp?(()=>{const e=expInfo(c);return c.exp+(e&&e.gone?" (פג)":"");})():""],["מסגרת",c.limit!=null?ils(+c.limit):""]].filter(r=>r[1]);
+  const kv=[["חברה",ISS[c.issuer]||c.issuer],["סוג",c.net],["מועדון",c.club],["דמי כרטיס",f.m!=null?ils(+f.m)+(f.net!=null&&+f.net!==+f.m?" (בפועל "+ils(+f.net)+")":""):"לא ידוע"],["עמלת מט״ח",fxTxt(c)],["חיוב",c.billing],["בעלים",c.owner&&c.owner!=="oren"?(OWN[c.owner]||c.owner):""],["מסגרת",c.limit!=null?ils(+c.limit):""]].filter(r=>r[1]);
   if(c.note_oren)o+=`<section><div class="card"><p class="note">📝 ${esc(c.note_oren)}</p></div></section>`;
   o+=`<section><div class="card"><div class="kv">${kv.map(([k,v])=>`<div class="k">${esc(k)}</div><div>${esc(v)}</div>`).join("")}</div>${f.note?`<p class="note fold">💰 ${esc(f.note)}</p>`:""}${fx.note?`<p class="note fold">🌍 ${esc(fx.note)}</p>`:""}</div></section>`;
+  o+=secBlock(c);
   o+=`<section><div class="sh"><h2>🛡️ ביטוחים בכרטיס</h2></div><div class="card"><ul class="ins">${INS.map(([k,ic,l])=>{const x=(c.ins||{})[k]||{},s=ST[x.s||"unknown"];return `<li>${ic} ${l}: <span class="${s[1]}">${s[0]}</span>${x.note?`<div class="note">${esc(x.note)}</div>`:""}</li>`;}).join("")}</ul></div></section>`;
   if((c.perks||[]).length)o+=`<section><div class="sh"><h2>🎁 הטבות</h2></div><div class="card"><ul class="ins">${c.perks.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div></section>`;
   if(cf.n)o+=`<section><div class="sh"><h2>📊 מהתזרים</h2></div><div class="card"><div class="kv">${[["עסקאות",cf.n+(cf.first?" (מ-"+cf.first+")":"")],["בחו״ל",cf.fx_n!=null?cf.fx_n+" עסקאות"+(cf.fx_spend?", "+ils(cf.fx_spend):""):""],["פעילות אחרונה",cf.last],["לתשלום",cf.due]].filter(r=>r[1]).map(([k,v])=>`<div class="k">${esc(k)}</div><div>${esc(v)}</div>`).join("")}</div></div></section>`;
@@ -97,6 +137,11 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
   if(b=g("[data-goc]")){goHash("c="+encodeURIComponent(b.dataset.goc));return;}
   if(g("[data-home]")){EMB?goHash(""):history.length>1&&route()?history.back():(location.hash="");return;}
   if(g("[data-copy]")){toast(await copy((meta.request||{}).body||"")?"הועתק":"לא הצלחתי להעתיק");return;}
+  if(b=g("[data-secshow]")){const id=b.dataset.secshow;if(shown[id]){shown[id]=false;render();return;}await openSec(items[id]?{id,...items[id]}:{id});shown[id]=true;clearTimeout(hideT[id]);hideT[id]=setTimeout(()=>{shown[id]=false;render();},30000);keepPut("#secb",render);return;}
+  if(b=g("[data-secedit]")){const id=b.dataset.secedit;await openSec({id,...items[id]});editing[id]=true;keepPut("#secb",render);return;}
+  if(b=g("[data-seccancel]")){editing[b.dataset.seccancel]=false;keepPut("#secb",render);return;}
+  if(b=g("[data-secsave]")){secSave(b.dataset.secsave);return;}
+  if(b=g("[data-cpy]")){toast(await copy(b.dataset.cpy)?"הועתק":"לא הצלחתי להעתיק");return;}
   if(b=g("[data-ans]")){const id=b.dataset.ans,c=items[id];if(!c||!c.q)return;const o=(c.q.options||[])[+b.dataset.i];if(o==null)return;
     const label=typeof o==="string"?o:o.label,now=new Date().toISOString();b.style.background="var(--hi-soft)";
     // every answer becomes a next step (todo) or closes (rule 7.11)
@@ -107,6 +152,6 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
 });
 render();
 window.claude.use("db").then(d=>{db=d;if(!db)return;
-  db.collection("credit").onSnapshot(s=>{const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else n[x.id]=v;});items=n;render();},()=>{});
+  db.collection("credit").onSnapshot(s=>{const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else{if(items[x.id]&&JSON.stringify(items[x.id].sec)!==JSON.stringify(v.sec)&&!editing[x.id])delete plain[x.id];n[x.id]=v;}});items=n;render();},()=>{});
 });
 })();
