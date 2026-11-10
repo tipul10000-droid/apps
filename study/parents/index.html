@@ -74,6 +74,21 @@ details.more{margin-top:10px}details.more summary{cursor:pointer;color:#2f5d9e;f
 .head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 /* הסרגל העליון נשאר קבוע למעלה, והגלילה רק מתחתיו (אורן 6.11.2026) */.stk{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);margin:-4px -16px 12px;padding:4px 16px 10px;border-bottom:1px solid var(--bd);box-shadow:0 -80px 0 var(--bg),0 4px 10px rgba(31,41,51,.05)}.stk .back{margin:0 0 4px}body:has(.stk)>main>a.back{display:none}
 html,body,*{touch-action:manipulation}
+/* קפסולות תוכן (אורן 10.11.2026). בלי scroll anchoring, כדי שהכותרת שנלחצה לא תזוז כשהתוכן נפתח */
+html,body,main{overflow-anchor:none}
+.kid{background:none;border:0;padding:0;box-shadow:none}
+.app.cap,.kid>.app.cap:first-child{background:var(--card);border:1px solid var(--bd);border-radius:16px;box-shadow:var(--sh);margin:0 0 10px;padding:0;transition:border-color .25s}
+.cap.open{border-color:#b7c8e2}
+.caph{width:100%;height:68px;display:flex;align-items:center;gap:12px;padding:0 14px;background:none;border:0;font:inherit;color:inherit;text-align:right;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:16px}
+.caph:active{background:#f4f6fa}
+.caph .ci{position:relative;width:42px;height:42px;flex:none;border-radius:12px;display:grid;place-items:center;font-size:22px;background:#e8eef7}
+.caph .cdot{position:absolute;top:-2px;left:-2px;width:10px;height:10px;border-radius:50%;background:#e11d48;border:2px solid #fff}
+.caph .ct{flex:1;min-width:0}.caph b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.caph small{display:block;font-size:13px;color:var(--mut);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.caph .cv{flex:none;color:var(--ac);font-size:18px;transition:transform .3s ease}.cap.open .cv{transform:rotate(180deg)}
+.capb{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s ease}.cap.open .capb{grid-template-rows:1fr}
+.capi{overflow:hidden;min-height:0}.capc{padding:2px 14px 12px;border-top:1px solid #eef0f4;opacity:0;transition:opacity .25s ease}.cap.open .capc{opacity:1}
+.kx{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;box-shadow:var(--sh);margin-bottom:14px}.kx>.qzc:first-child{margin-top:0;padding-top:0;border-top:0}.kx>.rqs:first-child{margin-top:0;padding-top:0;border-top:0}
 </style></head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
 <div id="v"></div>
@@ -83,10 +98,10 @@ html,body,*{touch-action:manipulation}
 <script>
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
 // הקוד נבדק בשרת (study_parents_get). אחרי קוד נכון הוא נשמר במכשיר (study_par_pin); קוד שגוי מוחק אותו.
-const KIDS_ALL=[{id:'evyatar',n:'אביתר',boy:1,apps:[{id:'vocab',n:'אוצר מילים באנגלית',unit:'מילים',test:'מבחן'},{id:'past',n:'זמני עבר: Past Simple / Progressive',unit:'שאלות',test:'מבחן',gen:1}]},
-{id:'dani',n:'דני',apps:[{id:'spelling',n:'הכתבה ואוצר מילים באנגלית',unit:'מילים',test:'הכתבה'}]},
-{id:'lia',n:'ליה',apps:[{id:'phonics',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן',gen:1}]},
-{id:'levi',n:'לביא',boy:1,noqz:1,apps:[{id:'phonics',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן',gen:1}]},
+const KIDS_ALL=[{id:'evyatar',n:'אביתר',boy:1,apps:[{id:'vocab',ic:'📚',n:'אוצר מילים באנגלית',unit:'מילים',test:'מבחן'},{id:'past',ic:'⏳',sn:'זמני עבר: חזרה',n:'זמני עבר: Past Simple / Progressive',unit:'שאלות',test:'מבחן',gen:1}]},
+{id:'dani',n:'דני',apps:[{id:'spelling',ic:'✏️',n:'הכתבה ואוצר מילים באנגלית',unit:'מילים',test:'הכתבה'}]},
+{id:'lia',n:'ליה',apps:[{id:'phonics',ic:'🔤',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן',gen:1}]},
+{id:'levi',n:'לביא',boy:1,noqz:1,apps:[{id:'phonics',ic:'🔤',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן',gen:1}]},
 {id:'shilo',n:'שילה',boy:1,noqz:1,apps:[]}];
 // אזור הורים לפי משפחה (אורן 9.11.2026): רק הילדים של המשפחה שנבחרה במכשיר (⚙️ במסך הראשי), וקוד הורים לכל משפחה.
 // השרת מחזיר רק את הילדים של המשפחה של הקוד (fam). הקוד נשמר במכשיר לכל משפחה בנפרד (study_par_pin / study_par_pin_<fam>).
@@ -133,6 +148,21 @@ function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה
   if(d.group)r.group=Math.max(r.group||0,+d.group);for(const g in d.tests||{}){const o=d.tests[g]||{};r.tests=r.tests||{};const c=r.tests[g]||{best:0};r.tests[g]={best:Math.max(c.best,+o.best||0),last:(!c.d||o.d>=c.d)?o.last:c.last,d:(!c.d||o.d>=c.d)?o.d:c.d}}});return r}
 const id0=(k,a)=>k.id+'_'+a.id;
 let TAB='dani',SAVED='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}if(!KIDS.some(k=>k.id===TAB))TAB=KIDS[KIDS.length>1&&FAM==='a'?1:0].id;
+// קפסולות (אורן 10.11.2026): כל תוכן לימוד באזור ההורים סגור בקפסולה עם כותרת ותקציר, ולחיצה פותחת אותו בגלילה עדינה למטה.
+// רק קפסולה אחת פתוחה בכל ילד (נשמר ב-study_par_cap). הכותרת שנלחצה לא זזה: אם קפסולה אחרת מעליה נסגרת, הגלילה מפצה.
+let CAP={};try{CAP=JSON.parse(localStorage.getItem('study_par_cap'))||{}}catch(e){}
+function capHead(k,a,id,rows,t,RS){const she=!!k.boy?'':'ה',bits=[];
+ const dl=t&&t.d&&!t.done?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null,G=RS&&RS[0];
+ if(G)bits.push('✅ ציון '+(+G.score));else if(dl!==null&&dl>0)bits.push('📅 '+esc(t.note||a.test)+(dl===1?' מחר':' בעוד '+dl+' ימים'));else if(t&&(t.done||dl!==null))bits.push('📝 חסר ציון');
+ if(!rows.length)bits.push('עוד לא התחיל'+she);
+ else{const r=agg(rows),sr=r.att?Math.round(r.ok/r.att*100):null;bits.push('📚 '+(r.prog!=null&&r.pmax?r.prog+'/'+r.pmax:r.done+'/'+r.total));if(sr!=null)bits.push('🎯 '+sr+'%');bits.push('⏱️ '+fmtT(r.sec))}
+ const op=CAP[k.id]===id,ng=bits.includes('📝 חסר ציון');
+ return`<div class="app cap${op?' open':''}" id="cap_${id}" data-k="${k.id}" data-id="${id}"><button class="caph" type="button" aria-expanded="${op}"><span class="ci">${a.ic||'📘'}${ng?'<i class="cdot"></i>':''}</span><span class="ct"><b>${esc(a.sn||a.n)}</b><small>${window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<bdi class="crv" data-c="${k.id}/${a.id}"${StudyContent.ok(k.id+'/'+a.id)?' hidden':''}>🧪 בבדיקה · </bdi>`:''}${bits.map(x=>`<bdi>${x}</bdi>`).join(' · ')}</small></span><span class="cv">▾</span></button><div class="capb"><div class="capi"><div class="capc">`}
+function capWire(){V.querySelectorAll('.cap>.caph').forEach(b=>b.onclick=()=>{const c=b.parentNode,k=c.dataset.k,on=!c.classList.contains('open'),y0=b.getBoundingClientRect().top;
+ if(on){V.style.minHeight=V.offsetHeight+'px';clearTimeout(capWire.t);capWire.t=setTimeout(()=>V.style.minHeight='',450)} // שלא תקפוץ הגלילה כשקפסולה אחרת נסגרת
+ if(on)V.querySelectorAll(`.cap.open[data-k="${k}"]`).forEach(o=>{if(o===c)return;const ob=o.querySelector('.capb');ob.style.transition='none';o.classList.remove('open');o.querySelector('.caph').setAttribute('aria-expanded','false');ob.offsetHeight;ob.style.transition=''});
+ const dy=b.getBoundingClientRect().top-y0;if(dy)scrollBy(0,dy);
+ c.classList.toggle('open',on);b.setAttribute('aria-expanded',on);CAP[k]=on?c.dataset.id:'';try{localStorage.setItem('study_par_cap',JSON.stringify(CAP))}catch(e){}})}
 // אירוע = תוכן לימוד עם מבחן/הכתבה אחד (אורן 6.11.2026): תאריך ← אחרי שעבר: ציון ← הציון. תאריך שנשמר מוצג עם ✓ ועיפרון לעריכה.
 function evBox(k,a,t,RS,id){const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null;
  const G=RS[0],DN=t&&t.done,PAST=t&&t.d&&dl!==null&&dl<=0,TN=esc(t&&t.note||a.test),fl=SAVED===id?' fl':'';
@@ -218,8 +248,8 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
  let h=`<div class="stk"><a class="back" href="../">→ כל הילדים</a><div class="head"><h1 style="margin:0;font-size:22px">אזור הורים</h1><span><button class="b s" id="nt" type="button">🔔 התראות</button><button class="b s" id="rf" type="button">רענון</button><button class="b s" id="lo" type="button">יציאה</button></span></div><div class="tabs" id="tabs">${KIDS.map(k=>`<button type="button" data-k="${k.id}"${k.id===TAB?' class="on"':''}>${StudyProfiles.pic(k.id,'tpic')}${k.n}<i class="dot" id="dot_${k.id}"></i></button>`).join('')}</div></div>`;
  if(FAM!=='a')h+=pushGuide();
  KIDS.forEach(k=>{h+=`<div class="kid${k.id===TAB?'':' off'}" id="kd_${k.id}">`;
-  if(!k.apps.length)h+=`<div class="none">עוד אין תכנים. התכנים של ${k.n} יגיעו בהמשך 🎈</div>`;
-  k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=`<div class="app"><h3>${a.n}</h3>`+(window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<div class="cnt" id="cr_${id}" data-c="${k.id}/${a.id}" data-n="${k.n}"></div>`:'')+evBox(k,a,t,RS,id0(k,a));
+  if(!k.apps.length)h+=`<div class="none kx">עוד אין תכנים. התכנים של ${k.n} יגיעו בהמשך 🎈</div>`;
+  k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=capHead(k,a,id,rows,t,RS)+(window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<div class="cnt" id="cr_${id}" data-c="${k.id}/${a.id}" data-n="${k.n}"></div>`:'')+evBox(k,a,t,RS,id0(k,a));
    if(!rows.length)h+=`<div class="none">עוד לא התחיל${!!k.boy?'':'ה'} (או שעוד לא נכנס${!!k.boy?'':'ה'} מאז שהוספנו את המעקב)</div>`;
    else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null,she=!!k.boy?'':'ה';
     // אורן 7.11.2026: למעלה רק מה שמעניין (זמן, איפה עומדים, דיוק, גרף שיפור לכל רמת קושי ומה לחזק), וכל השאר מקופל ב"עוד נתונים".
@@ -244,10 +274,10 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
     h+=`<details class="more"><summary>📊 עוד נתונים</summary>${m}</details>`}
    if(a.id==='vocab'){const L=(j.lb||[]).filter(x=>LBN.includes(String(x.name).trim().toLowerCase()));
     if(L.length)h+=`<div class="lbx">🏅 מלוח הדירוג באפליקציה: ${L.map(x=>`הכינוי <b>${esc(x.name)}</b>: נלמדו ${x.learned}, שיא רצף ${x.best}, עדכון אחרון ${fmtD(x.updated_at)}`).join('<br>')}</div>`}
-   h+=`<div class="rst"><button class="lnk" type="button" data-z="${k.id}|${a.id}|${a.n}|${k.n}">↺ איפוס ההתקדמות</button>${RZ?`<small>אופס לאחרונה ${fmtD(RZ.at)}</small>`:''}</div></div>`})
-  h+=`${k.noqz?'':`<div class="qzc" id="qz_${k.id}"></div>`}<div class="rqs" id="rq_${k.id}"></div></div>`});
+   h+=`<div class="rst"><button class="lnk" type="button" data-z="${k.id}|${a.id}|${a.n}|${k.n}">↺ איפוס ההתקדמות</button>${RZ?`<small>אופס לאחרונה ${fmtD(RZ.at)}</small>`:''}</div></div></div></div></div>`})
+  h+=`<div class="kx">${k.noqz?'':`<div class="qzc" id="qz_${k.id}"></div>`}<div class="rqs" id="rq_${k.id}"></div></div></div>`});
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
- V.innerHTML=h;SAVED='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);const d=$('dot_'+k.id);if(d)d.classList.toggle('on',NG[k.id])});loadReq();loadQz();drawCnt();StudyContent.refresh(drawCnt);
+ V.innerHTML=h;SAVED='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);const d=$('dot_'+k.id);if(d)d.classList.toggle('on',NG[k.id])});loadReq();loadQz();drawCnt();capWire();StudyContent.refresh(drawCnt);
  V.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{TAB=b.dataset.k;try{localStorage.setItem('study_par_tab',TAB)}catch(e){}V.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));KIDS.forEach(k=>$('kd_'+k.id).classList.toggle('off',k.id!==TAB));scrollTo(0,0)});
  V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':(b.dataset.l||'✏️ עריכה')});if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);{const g=$('pgdgo');if(g)g.onclick=()=>$('nt').click();const d=$('pgd');if(d)d.ontoggle=()=>{try{localStorage.setItem('study_pgd_'+FAM,d.open?'1':'0')}catch(e){}}}$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem(PINK)}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
@@ -263,7 +293,7 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
  V.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{if(!confirm('למחוק את הציון? אפשר יהיה להזין אותו מחדש.'))return;
   done(b,rpc('study_parents_result',{p_pin:PIN,p_kid:null,p_app:null,p_d:null,p_note:null,p_score:null,p_hide_id:+b.dataset.h}))})}
 // תוכן בבדיקה (אורן 6.11.2026): תוכן חדש פתוח קודם רק כאן. "👀 לפתוח ולבדוק" נכנס עם ?review=1, ו"✓ התוכן אושר" פותח אותו לילד עם סרט "חדש!".
-function drawCnt(){V.querySelectorAll('.cnt').forEach(b=>{const id=b.dataset.c,kn=b.dataset.n,ok=StudyContent.ok(id),boy=!!(StudyProfiles.kids[id.split('/')[0]]||{}).boy;
+function drawCnt(){V.querySelectorAll('.crv').forEach(x=>x.hidden=StudyContent.ok(x.dataset.c));V.querySelectorAll('.cnt').forEach(b=>{const id=b.dataset.c,kn=b.dataset.n,ok=StudyContent.ok(id),boy=!!(StudyProfiles.kids[id.split('/')[0]]||{}).boy;
  b.innerHTML=ok?`<div class="cl">✅ התוכן אושר. ${kn} ${boy?'רואה':'רואה'} אותו עכשיו עם סרט "חדש!" ✨</div>`
   :`<div class="cl">🧪 <b>בבדיקה:</b> ${kn} עוד לא ${boy?'רואה':'רואה'} את זה (${boy?'אצלו':'אצלה'} מופיע "בקרוב"). אפשר לבדוק ואז לאשר.</div><div class="cb"><a class="b s soft" href="../${id}/?review=1">👀 לפתוח ולבדוק</a><button class="b s" type="button" data-ca="${id}">✓ התוכן אושר</button></div><div class="cm" id="cm_${id.replace('/','_')}"></div>`});
  V.querySelectorAll('[data-ca]').forEach(x=>x.onclick=()=>{const id=x.dataset.ca,m=$('cm_'+id.replace('/','_'));if(!confirm('לאשר את התוכן? מעכשיו הילד יראה אותו.'))return;m.textContent='שומר...';
