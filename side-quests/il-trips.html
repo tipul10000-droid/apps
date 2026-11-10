@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=1"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2F6B3A">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.ILT_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<title>טיולים בארץ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* טיולים בארץ (אורן 10.11.2026): עמוד מלא בתוך Travel Quest, במקום החלון הקטן. כל המקומות לפי 10 האזורים.
+   נתונים: settings/travel_hub ב-sq_docs, החלק israel {visits, places, repeat, per_year, since, as_of, regions[{name,n,icon}], trips[{n,r,v,d}]}.
+   ספירה: טיול = ביקור. 115 טיולים = 99 מקומות + ביקורים חוזרים (v>1). אין נתונים אישיים בקוד. */
+:root{
+  --bg:#F2F6F1; --surface:#FFFFFF; --sunk:#E4ECE2; --ink:#16231A; --muted:#58695C; --line:#D3DED2;
+  --hero:#2F6B3A; --hero2:#5FA052; --mark:#F28C28; --hero-ink:#F3FAF2; --hero-muted:#CFE6C9; --accent:#F6C453; --accent-ink:#2E2300;
+  --bar:#5FA052; --rep:#1F4FC2; --rep-soft:#E3EAFB; --link:#2F5BD3;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1511; --surface:#17201A; --sunk:#202B23; --ink:#E7F0E8; --muted:#9DB0A0; --line:#2B382E;
+  --hero:#1E4426; --hero2:#356B30; --hero-ink:#EEF7EE; --hero-muted:#A9C9A4; --bar:#6DBA5E; --rep:#8CAAF5; --rep-soft:#1C2742; --link:#8CAAF5; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1511; --surface:#17201A; --sunk:#202B23; --ink:#E7F0E8; --muted:#9DB0A0; --line:#2B382E;
+  --hero:#1E4426; --hero2:#356B30; --hero-ink:#EEF7EE; --hero-muted:#A9C9A4; --bar:#6DBA5E; --rep:#8CAAF5; --rep-soft:#1C2742; --link:#8CAAF5; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button,input{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:13px;font-weight:600}
+.hero h1{font-size:24px;margin:10px 0 2px}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kpi{background:rgba(255,255,255,.12);border-radius:14px;padding:8px 10px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:22px;line-height:1.15}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.eq{margin:10px 0 0;font-size:13.5px;color:var(--hero-muted);font-weight:600}
+.eq b{color:var(--hero-ink)}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.bar .row1{display:flex;gap:8px}
+.bar input{flex:1;min-width:0;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:16px}
+.bar .tg{flex:none;width:92px;height:42px;padding:0 6px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-weight:800;font-size:14px;cursor:pointer;white-space:nowrap}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 10px;font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.chips button b{font-family:var(--f-display)}
+.reg{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden;scroll-margin-top:110px}
+.reg>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 10px;padding:12px 14px;-webkit-tap-highlight-color:transparent}
+.reg>summary::-webkit-details-marker{display:none}
+.reg .ic{grid-row:span 2;width:40px;height:40px;border-radius:12px;background:var(--sunk);display:flex;align-items:center;justify-content:center;font-size:21px}
+.reg .nm{font-family:var(--f-display);font-weight:700;font-size:17px;min-width:0}
+.reg .ct{font-family:var(--f-display);font-weight:800;font-size:20px;text-align:left;line-height:1}
+.reg .ct small{display:block;font-family:var(--f-body);font-weight:600;font-size:11.5px;color:var(--muted);margin-top:2px}
+.reg .sub{grid-column:2 / 4;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);font-weight:600}
+.reg .pb{flex:1;height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.reg .pb u{display:block;height:100%;background:var(--bar);border-radius:3px}
+.reg .chev{font-size:12px;transition:transform .2s;color:var(--muted)}
+.reg[open] .chev{transform:rotate(180deg)}
+.reg ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.reg li{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:15.5px}
+.reg li+li{border-top:1px solid var(--line)}
+.reg li .i{flex:none;width:22px;text-align:center;color:var(--muted);font-size:12.5px;font-weight:700}
+.reg li .t{flex:1;min-width:0}
+.reg li .x{flex:none;font-size:12px;font-weight:800;border-radius:999px;padding:1px 8px;background:var(--rep-soft);color:var(--rep)}
+.reg li .d{flex:none;font-size:12.5px;color:var(--muted);font-weight:600}
+.reg li mark{background:var(--accent);color:var(--accent-ink);border-radius:3px;padding:0 1px}
+.empty{color:var(--muted);text-align:center;padding:24px 12px}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:24px;line-height:1.7}
+@media (max-width:380px){.kpi b{font-size:19px}.reg .nm{font-size:15.5px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=6">
+<script src="dash-sub.js?v=1" defer></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const norm=s=>String(s||"").replace(/[֑-ׇ'"׳״־\-–—,.()]/g," ").replace(/\s+/g," ").trim();
+  const dd=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(d||"");return m?`${+m[3]}.${+m[2]}.${m[1].slice(2)}`:"";};
+  let I=null,q="",openAll=null;
+  let open={};try{open=JSON.parse(localStorage.getItem("ilt_open")||"{}")||{};}catch(e){}
+  function saveOpen(){try{localStorage.setItem("ilt_open",JSON.stringify(open));}catch(e){}}
+
+  function groups(){
+    const T=(Array.isArray(I.trips)?I.trips:[]).filter(t=>t&&t.n);
+    const regs=(Array.isArray(I.regions)?I.regions:[]).filter(r=>r&&r.name);
+    const names=regs.map(r=>r.name);
+    T.forEach(t=>{if(t.r&&!names.includes(t.r))names.push(t.r);});
+    if(T.some(t=>!t.r))names.push("");
+    return names.map(nm=>{const L=T.filter(t=>(t.r||"")===nm).sort((a,b)=>(b.d||"").localeCompare(a.d||"")||a.n.localeCompare(b.n,"he"));
+      const rg=regs.find(r=>r.name===nm)||{};return {name:nm,icon:rg.icon||"📍",L,vis:L.reduce((s,t)=>s+(+t.v||1),0)};}).filter(g=>g.L.length);
+  }
+  function hl(s){const i=q?s.indexOf(q):-1;if(i<0)return esc(s);return esc(s.slice(0,i))+"<mark>"+esc(s.slice(i,i+q.length))+"</mark>"+esc(s.slice(i+q.length));}
+
+  function render(){
+    if(!I){$("app").innerHTML='<div class="empty">אין עדיין נתונים.</div>';return;}
+    const G=groups(),places=G.reduce((s,g)=>s+g.L.length,0),visits=G.reduce((s,g)=>s+g.vis,0),rep=visits-places;
+    const max=Math.max(1,...G.map(g=>g.vis));
+    $("hero").innerHTML=`<div class="top"><a class="sqhome" href="./#travel"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${I.as_of?"נכון ל-"+esc(I.as_of):""}</span></div>
+      <h1>🇮🇱 טיולים בארץ</h1>
+      <div class="kpis"><div class="kpi"><b class="num">${visits}</b><span>טיולים</span></div><div class="kpi"><b class="num">${places}</b><span>מקומות שונים</span></div><div class="kpi"><b class="num">${I.per_year!=null?esc(I.per_year):"—"}</b><span>בשנה, מאז ${esc(I.since||"12/2017")}</span></div></div>
+      <p class="eq"><b class="num">${visits}</b> טיולים = <b class="num">${places}</b> מקומות + <b class="num">${rep}</b> ביקורים חוזרים (מסומנים ×2, ×3)</p>`;
+    if(!$("bar").firstChild){
+      $("bar").innerHTML=`<div class="row1"><input id="q" type="search" placeholder="חיפוש מקום…" aria-label="חיפוש מקום" autocomplete="off"><button class="tg" id="tg" type="button"></button></div><div class="chips" id="chips"></div>`;
+      $("q").addEventListener("input",e=>{q=e.target.value.trim();renderList();});
+      $("tg").addEventListener("click",()=>{const all=G.every(g=>open[g.name]);groups().forEach(g=>open[g.name]=!all);saveOpen();renderList();});
+    }
+    $("chips").innerHTML=G.map((g,i)=>`<button type="button" data-i="${i}">${g.icon} ${esc(g.name||"בלי אזור")}<b class="num">${g.vis}</b></button>`).join("");
+    $("chips").querySelectorAll("button").forEach(b=>b.onclick=()=>{const g=G[+b.dataset.i];open[g.name]=true;saveOpen();renderList();
+      const el=document.querySelector(`.reg[data-r="${CSS.escape(g.name)}"]`);el&&el.scrollIntoView({behavior:"smooth",block:"start"});});
+    renderList();
+    $("foot").innerHTML=`מקור: מאגר הביקורים בנושן · טיול = ביקור, מקום שחזרנו אליו נספר פעם לכל ביקור`;
+  }
+  function renderList(){
+    const G=groups(),max=Math.max(1,...G.map(g=>g.vis)),n=norm(q);
+    const all=G.every(g=>open[g.name]);$("tg").textContent=all?"סגור הכול":"פתח הכול";
+    const html=G.map(g=>{const L=n?g.L.filter(t=>norm(t.n).includes(n)):g.L;if(n&&!L.length)return "";
+      const isOpen=n?true:!!open[g.name];let k=0;
+      return `<details class="reg" data-r="${esc(g.name)}"${isOpen?" open":""}><summary>
+        <span class="ic" aria-hidden="true">${g.icon}</span><span class="nm">${esc(g.name||"בלי אזור")}</span>
+        <span class="ct"><span class="num">${g.vis}</span><small>טיולים</small></span>
+        <span class="sub"><span>${g.L.length} מקומות${g.vis>g.L.length?` · ${g.vis-g.L.length} חוזרים`:""}</span><span class="pb"><u style="width:${Math.round(g.vis/max*100)}%"></u></span><span class="chev">▾</span></span>
+      </summary><ol>${L.map(t=>`<li><span class="i num">${++k}</span><span class="t">${hl(t.n)}</span>${(+t.v||1)>1?`<span class="x num" title="ביקורים">×${+t.v}</span>`:""}${t.d?`<span class="d num">${dd(t.d)}</span>`:""}</li>`).join("")}</ol></details>`;}).join("");
+    $("app").innerHTML=html||'<div class="empty">לא נמצא מקום בשם הזה.</div>';
+    $("app").querySelectorAll("details.reg").forEach(d=>d.addEventListener("toggle",()=>{if(n)return;open[d.dataset.r]=d.open;saveOpen();$("tg").textContent=groups().every(g=>open[g.name])?"סגור הכול":"פתח הכול";}));
+  }
+  window.claude.use("db").then(db=>{if(!db)return;
+    db.collection("settings").doc("travel_hub").onSnapshot(s=>{const v=s&&s.exists?s.data():null;I=v&&v.israel||null;render();},()=>{});
+  });
+})();
+</script>
+</body>
+</html>
