@@ -4,23 +4,23 @@
 body{margin:0;font:16px -apple-system,Arial;background:#eef2f7;color:#0f172a;padding:max(env(safe-area-inset-top),16px) 14px 120px}
 h1{font-size:20px;margin:6px 0}p{margin:4px 0 10px;color:#475569;line-height:1.45}
 .w{background:#fff;border:1px solid #d6dee9;border-radius:14px;padding:10px;margin:10px 0}
-.w b{font-size:22px}.r{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}
+.w b{font-size:22px}.r{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
 .r button{height:46px;border-radius:10px;border:1px solid #c7d2e1;background:#f8fafc;font:700 18px Arial;color:#2f5d9e;touch-action:manipulation}
 .r button.pl{background:#dbeafe}.r button.ok{background:#dcfce7;border-color:#16a34a;color:#166534}
 .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #d6dee9;padding:10px 14px calc(env(safe-area-inset-bottom) + 10px)}
 .bar div{font-size:14px;color:#334155;min-height:20px;word-break:break-word}.bar button{width:100%;height:46px;margin-top:6px;border:0;border-radius:12px;background:#2f5d9e;color:#fff;font:700 17px Arial}
 </style></head><body>
 <h1>🎧 איך הילה צריכה להגיד?</h1>
-<p>לכל מילה 6 גרסאות. לוחצים על מספר כדי לשמוע, ולוחצים שוב על אותו מספר כדי לסמן אותו כנכון ✓. בסוף לוחצים "העתק" ושולחים לי.</p>
+<p>לכל מילה כמה גרסאות. לוחצים על מספר כדי לשמוע, ולוחצים שוב על אותו מספר כדי לסמן אותו כנכון ✓. בסוף לוחצים "העתק" ושולחים לי.</p>
 <div id="L"></div>
 <div class="bar"><div id="S">עוד לא סומן כלום</div><button id="C" type="button">📋 העתק את הבחירות</button></div>
 <script>
 let AC,ITEMS=[];const BUF={},CH={};let cur=null;
 function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state!=='running')AC.resume();return AC}
-function load(f){if(BUF[f])return Promise.resolve(BUF[f]);return fetch(f+'.mp3?v=1').then(r=>r.arrayBuffer()).then(ab=>new Promise((ok,no)=>ac().decodeAudioData(ab,b=>{BUF[f]=b;ok(b)},no)))}
+function load(f){if(BUF[f])return Promise.resolve(BUF[f]);return fetch(f+'.mp3?v=2').then(r=>r.arrayBuffer()).then(ab=>new Promise((ok,no)=>ac().decodeAudioData(ab,b=>{BUF[f]=b;ok(b)},no)))}
 function play(f){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}ac();if(cur)try{cur.stop()}catch(e){}load(f).then(b=>{const s=AC.createBufferSource();s.buffer=b;s.connect(AC.destination);s.start();cur=s})}
 function sum(){const t=ITEMS.filter(x=>CH[x.id]!=null).map(x=>x.w+' '+(CH[x.id]+1)).join(', ');document.getElementById('S').textContent=t||'עוד לא סומן כלום';return t}
-fetch('try.json?v=1').then(r=>r.json()).then(a=>{ITEMS=a;document.getElementById('L').innerHTML=a.map(x=>`<div class="w"><b>${x.w}</b><div class="r" data-id="${x.id}">${x.v.map((_,j)=>`<button type="button" data-j="${j}">${j+1}</button>`).join('')}</div></div>`).join('');
+fetch('try.json?v=2').then(r=>r.json()).then(a=>{ITEMS=a;document.getElementById('L').innerHTML=a.map(x=>`<div class="w"><b>${x.w}</b><div class="r" data-id="${x.id}">${x.v.map((_,j)=>`<button type="button" data-j="${j}">${j+1}</button>`).join('')}</div></div>`).join('');
   a.forEach(x=>x.v.forEach((_,j)=>load(x.id+'_'+j).catch(()=>{})))});
 document.getElementById('L').onclick=e=>{const b=e.target.closest('button');if(!b)return;const r=b.parentNode,id=r.dataset.id,j=+b.dataset.j;
   if(b.classList.contains('pl')){CH[id]=j;[...r.children].forEach(x=>x.classList.toggle('ok',x===b));sum()}
