@@ -91,6 +91,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 16px);display:flex
 <div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחץ עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">לארגז! 🧰</button></div></div>
 <div class="ov" id="albov"><div class="pn"><h2>🖍️ האלבום שלי</h2><p style="color:var(--mut);margin:0">לוחצים על ציור כדי לצבוע אותו שוב</p><div class="alb" id="alb"></div><button class="btn soft" id="albx" type="button">סגירה</button></div></div>
 
+<script src="audio/list.js?v=1"></script>
 <script src="pics.js?v=1"></script>
 <script src="../squishies.js?v=3"></script>
 <script src="../../sqsound.js?v=7"></script>
@@ -123,18 +124,18 @@ let SQ=LS.get('shilo_sq')||[];let COL=LS.get('shilo_lt_col')||{};let MUTE=!!LS.g
 let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
 function tone(f,t0,d,type,vol,f2){const a=ac();if(!a||MUTE)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t0+d);g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.16,a.currentTime+t0+.015);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
 const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.22,'triangle')},soft(){tone(392,0,.18,'sine',.1)},pop(){tone(220,0,.18,'sine',.25,880)},win(){[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.15))},clap(){tone(180,0,.06,'square',.08,90)},paint(){tone(660,0,.08,'sine',.08,990)}};
-const AUD=new Set(window.SHILO_AUD||[]);
 let HEV=null;function heVoice(){if(HEV)return HEV;try{const v=speechSynthesis.getVoices();HEV=v.find(x=>/^he/i.test(x.lang)&&/carmit|כרמית/i.test(x.name))||v.find(x=>/^he|^iw/i.test(x.lang))||null}catch(e){}return HEV}
 try{speechSynthesis.onvoiceschanged=()=>{HEV=null;heVoice();vnote()}}catch(e){}
 let SAYID=0,PL=null;
-// say(['טקסט', {k:'מפתח-הקלטה', t:'גיבוי'}, 600 (הפסקה במילישניות)], then)
-function say(parts,then){const id=++SAYID;try{speechSynthesis.cancel()}catch(e){}if(PL){PL.pause();PL=null}
+// say(['טקסט', 600 (הפסקה במילישניות)], then): לכל טקסט שיש לו הקלטה (window.SHILO_AUD: טקסט ← קובץ ב-audio/) מנגנים אותה; אחרת הקראה של המכשיר.
+const AMAP=window.SHILO_AUD||{};
+function say(parts,then){const id=++SAYID;try{if(speechSynthesis.speaking||speechSynthesis.pending)speechSynthesis.cancel()}catch(e){}if(PL){PL.pause();PL=null}
   if(MUTE){if(then)setTimeout(then,300);return}
   const q=parts.slice();(function nx(){if(id!==SAYID)return;const p=q.shift();if(p===undefined){if(then)then();return}
     if(typeof p==='number')return setTimeout(nx,p);
-    const k=typeof p==='object'?p.k:null,t=typeof p==='object'?p.t:p;
-    if(k&&AUD.has(k)){const a=new Audio('audio/'+k+'.mp3');PL=a;a.onended=()=>setTimeout(nx,120);a.onerror=()=>tts(t,nx);a.play().catch(()=>tts(t,nx));return}
-    tts(t,nx)})()}
+    const f=AMAP[p];
+    if(f){const a=new Audio('audio/'+f+'.mp3?v='+(window.SHILO_AUD_V||1));PL=a;let d=false;const go=()=>{if(!d&&id===SAYID){d=true;setTimeout(nx,60)}};a.onended=go;a.onerror=()=>{if(!d){d=true;tts(p,nx)}};a.play().catch(()=>{if(!d){d=true;tts(p,nx)}});return}
+    tts(p,nx)})()}
 function tts(t,cb){if(!('speechSynthesis' in window)){setTimeout(cb,500);return}
   try{const u=new SpeechSynthesisUtterance(t);u.lang='he-IL';u.rate=.82;const v=heVoice();if(v)u.voice=v;let d=false;const f=()=>{if(!d){d=true;setTimeout(cb,140)}};u.onend=f;u.onerror=f;setTimeout(f,900+t.length*160);speechSynthesis.speak(u)}catch(e){setTimeout(cb,500)}}
 const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
@@ -183,20 +184,20 @@ function others(it,n,key){// מסיחים: אותיות אחרות (שנפתחו
 function render(){const it=CUR.it,c=$('card');
   if(CUR.t==='intro'){
     c.innerHTML=dots()+`<div class="mid"><div class="big">${it.l}</div><div class="pic">${it.e}</div><button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button">הבנתי! ▶</button></div>`;
-    const sp=()=>say(['זֹאת הָאוֹת',{k:'n-'+it.pk,t:it.nm},400,{k:'n-'+it.pk,t:it.nm},'עוֹשָׂה',{k:'s-'+it.pk,t:it.snd},500,{k:'s-'+it.pk,t:it.snd},'... כְּמוֹ',{k:'w-'+it.pk,t:it.w}]);
+    const sp=()=>say(['זֹאת הָאוֹת',it.nm,400,it.nm,'עוֹשָׂה',it.snd,500,it.snd,400,'כְּמוֹ',it.w]);
     $('rp').onclick=sp;$('nx').onclick=()=>{S.w[it.l].s=1;save();R.i++;nextQ()};sp();return}
   const n=nOpt();let opts,ask;
   if(CUR.t==='pic'){// שומעים צליל, בוחרים תמונה שמתחילה בו
     opts=shuf([it].concat(others(it,n-1,'snd')));
-    ask=()=>say(['אֵיזוֹ תְּמוּנָה מַתְחִילָה בַּצְּלִיל',{k:'s-'+it.pk,t:it.snd},400,{k:'s-'+it.pk,t:it.snd}]);
+    ask=()=>say(['אֵיזוֹ תְּמוּנָה מַתְחִילָה בַּצְּלִיל',it.snd,400,it.snd]);
     c.innerHTML=dots()+`<div class="mid"><div class="pic">👂</div><button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="opts${n>2?' o3':''}" id="op">${opts.map((x,i)=>`<button class="opt" data-i="${i}" type="button">${x.e}</button>`).join('')}</div><div class="btns" style="visibility:hidden"></div>`}
   else if(CUR.t==='let'){// רואים תמונה ושומעים את שם האות, בוחרים את האות
     opts=shuf([it].concat(others(it,n-1,'l')));
-    ask=()=>say(['אֵיפֹה הָאוֹת',{k:'n-'+it.pk,t:it.nm},'?',300,{k:'n-'+it.pk,t:it.nm},'כְּמוֹ',{k:'w-'+it.pk,t:it.w}]);
+    ask=()=>say(['אֵיפֹה הָאוֹת',it.nm,600,it.nm,'כְּמוֹ',it.w]);
     c.innerHTML=dots()+`<div class="mid"><div class="pic">${it.e}</div><button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="opts${n>2?' o3':''}" id="op">${opts.map((x,i)=>`<button class="opt lt" data-i="${i}" type="button">${x.l}</button>`).join('')}</div><div class="btns" style="visibility:hidden"></div>`}
   else{// הברות: שומעים את המילה מחולקת, בוחרים כמה מחיאות
     const k=it.syl.length;opts=[1,2,3];
-    ask=()=>say(['כַּמָּה מְחִיאוֹת כַּפַּיִם?',300,{k:'w-'+it.pk,t:it.w},500].concat(...it.syl.map(s=>[s,450])));
+    ask=()=>say(['כַּמָּה מְחִיאוֹת כַּפַּיִם?',300,it.w,500].concat(...it.syl.map(s=>[s,450])));
     c.innerHTML=dots()+`<div class="mid"><div class="pic">${it.e}</div><button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="opts o3" id="op">${opts.map((x,i)=>`<button class="opt cl" data-i="${i}" type="button">${'👏'.repeat(x)}</button>`).join('')}</div><div class="btns" style="visibility:hidden"></div>`;
     CUR.ans=k-1}
   $('rp').onclick=ask;ask();
@@ -204,27 +205,27 @@ function render(){const it=CUR.it,c=$('card');
     const right=CUR.t==='syl'?i===CUR.ans:opts[i]===it;
     if(right)return good(b);
     TRY++;S.att++;S.w[it.l].err++;b.classList.add('no');SND.soft();
-    if(CUR.t==='pic')say([{k:'w-'+opts[i].pk,t:opts[i].w},300,'נַסֵּה שׁוּב'],()=>{});else if(CUR.t==='let')say([{k:'n-'+opts[i].pk,t:opts[i].nm},300,'נַסֵּה שׁוּב']);else say([['אַחַת','שְׁתַּיִם','שָׁלוֹשׁ'][i],300,'נַסֵּה שׁוּב',300].concat(...it.syl.map(s=>[s,350])))
+    if(CUR.t==='pic')say([opts[i].w,300,'נַסֵּה שׁוּב'],()=>{});else if(CUR.t==='let')say([opts[i].nm,300,'נַסֵּה שׁוּב']);else say([['אַחַת','שְׁתַּיִם','שָׁלוֹשׁ'][i],300,'נַסֵּה שׁוּב',300].concat(...it.syl.map(s=>[s,350])))
     if(TRY>=2){const bs=[...$('op').children];const ri=CUR.t==='syl'?CUR.ans:opts.indexOf(it);bs[ri].classList.add('hint')}
     save();report()}}
 function good(b){LOCK=true;const it=CUR.it;b.classList.remove('hint');b.classList.add('ok');SND.ok();
   S.att++;S.okc++;S.pts++;R.ok++;if(TRY===0)S.w[it.l].c++;S.w[it.l].s=1;
   const was=S.w[it.l].c===LEARN&&TRY===0;popTxt(pick(PRAISE_T));
   const after=()=>{R.i++;if(was){popTxt('🎉 למדת את '+it.l+'!');confetti(30)}maybeSquishy(()=>setTimeout(nextQ,350))};
-  const w=CUR.t==='syl'?it.syl.map(s=>[s,300]).flat():[{k:'w-'+it.pk,t:it.w}];
-  say([pick(PRAISE),200].concat(CUR.t==='pic'?[{k:'w-'+it.pk,t:it.w},'מַתְחִילָה בְּ',{k:'s-'+it.pk,t:it.snd}]:CUR.t==='let'?[{k:'n-'+it.pk,t:it.nm}]:w),after);
+  const w=CUR.t==='syl'?it.syl.map(s=>[s,300]).flat():[it.w];
+  say([pick(PRAISE),200].concat(CUR.t==='pic'?[it.w,'מַתְחִילָה בַּצְּלִיל',it.snd]:CUR.t==='let'?[it.nm]:w),after);
   save();upd();report()}
 
 // ---------- סוף סיבוב: צביעה ----------
 function endRound(){S.rounds++;save();SND.win();confetti(50);
   const its=[...new Set(R.q.map(z=>z.it))];const fresh=its.filter(x=>!COL[x.pk]);const it=fresh.length?fresh[0]:pick(its);
-  say(['כָּל הַכָּבוֹד! עַכְשָׁיו צוֹבְעִים',{k:'w-'+it.pk,t:it.w}]);paint(it,true)}
+  say(['כָּל הַכָּבוֹד! עַכְשָׁיו צוֹבְעִים',it.w]);paint(it,true)}
 const PAL=['#ef4444','#f97316','#facc15','#22c55e','#3b82f6','#a855f7','#f472b6','#92400e','#9ca3af','#ffffff'];
 let PC=PAL[2];
 function paint(it,fromRound){const c=$('card');const fill=(COL[it.pk]||[]).slice();
   c.innerHTML=`<div class="row" style="justify-content:center;gap:10px;height:30px;flex:none"><b style="font:900 28px Arial">${it.l}</b><span style="font-size:26px">${it.e}</span><button class="ib" id="rp" type="button" style="height:30px">🔊</button></div><div class="cv" id="cv">${ShiloPics.get(it.pk)}</div><div class="pal" id="pal">${PAL.map(p=>`<button type="button" data-c="${p}" style="background:${p}" class="${p===PC?'sel':''}" aria-label="צבע"></button>`).join('')}</div><div class="btns"><button class="btn" id="dn2" type="button">סיימתי! ✓</button></div>`;
   const rs=[...$('cv').querySelectorAll('.r')];rs.forEach((r,i)=>{if(fill[i])r.style.fill=fill[i]});
-  $('rp').onclick=()=>say([{k:'w-'+it.pk,t:it.w},300,{k:'n-'+it.pk,t:it.nm}]);
+  $('rp').onclick=()=>say([it.w,300,it.nm]);
   $('pal').onclick=e=>{const b=e.target.closest('button');if(!b)return;PC=b.dataset.c;[...$('pal').children].forEach(x=>x.classList.toggle('sel',x===b));SND.paint()};
   $('cv').onclick=e=>{const r=e.target.closest('.r');if(!r)return;ac();const i=rs.indexOf(r);r.style.fill=PC;fill[i]=PC;COL[it.pk]=fill;LS.set('shilo_lt_col',COL);SND.paint();upd()};
   $('dn2').onclick=()=>{COL[it.pk]=fill;LS.set('shilo_lt_col',COL);confetti(40);SND.win();say(['אֵיזֶה יֹפִי! הַצִּיּוּר נִשְׁמַר בָּאַלְבּוֹם']);upd();report();setTimeout(()=>{if(!fromRound&&R&&CUR&&R.i<R.q.length)render();else startRound()},fromRound?900:300)}}
@@ -262,7 +263,7 @@ function report(){if(!window.StudyTrack)return;const hard=IT.filter(x=>S.w[x.l].
   let g=0;while(g<G.length-1&&gOpen(g+1))g++;
   StudyTrack.report({total:N,done:nLearned(),learning:IT.filter(x=>S.w[x.l].s&&!learned(x)).length,att:S.att,ok:S.okc,pts:S.pts,squishies:sqN(),hard,group:g+1,rounds:S.rounds,colored:Object.keys(COL).length,lv:1,lvn:'אותיות וצלילים',prog:nLearned(),pmax:N,started:S.started})}
 $('mute').onclick=()=>{MUTE=!MUTE;LS.set('shilo_lt_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(MUTE){try{speechSynthesis.cancel()}catch(e){}if(PL)PL.pause()}};$('mute').textContent=MUTE?'🔇':'🔊';
-$('go').onclick=()=>{ac();$('intro').classList.remove('on');try{speechSynthesis.speak(new SpeechSynthesisUtterance(''))}catch(e){}startRound()};
+$('go').onclick=()=>{ac();try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}try{const a=new Audio();a.muted=true;a.play().catch(()=>{})}catch(e){}$('intro').classList.remove('on');try{const u=new SpeechSynthesisUtterance(' ');u.lang='he-IL';u.volume=0;speechSynthesis.speak(u)}catch(e){}startRound()};
 if(window.StudyTrack){StudyTrack.init('shilo','letters',['shilo_lt','shilo_sq','shilo_lt_col']);StudyTrack.gift(()=>{SQCB=null;squishy();$('sqtt').textContent='🎁 מתנה מאבא ואמא!';confetti(60)})}
 upd();$('intro').classList.add('on');setTimeout(vnote,800);
 </script>
