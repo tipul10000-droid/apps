@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.5";window.SQ_BUILD_AT="10.11.2026 12:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.6";window.SQ_BUILD_AT="10.11.2026 13:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -994,34 +994,38 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 .tv-sec-h{display:flex;align-items:center;gap:8px;margin:2px 2px -4px;font-size:12.5px;font-weight:800;letter-spacing:.4px;color:var(--muted)}
 .tv-trips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:10px}
 .tv-wk{display:grid;gap:10px}
-.tv-wkc{background:var(--card,#fff);border:1px solid var(--line,#e3e3e3);border-radius:14px;padding:12px 14px;display:grid;gap:8px}
-.tv-wkc h3{margin:0;font-size:15px}
-.tv-wkc .st{font-size:13.5px;font-weight:700;color:#0E6E78}
-.tv-wkc .sm{white-space:pre-line;font-size:13.5px;line-height:1.55}
+.tv-wkc,.ws{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-top:4px solid #1FB3AE;border-radius:18px;padding:14px;display:grid;gap:10px;min-width:0}
+.tv-wkc h3,.ws h3{margin:0;font-size:15.5px;color:var(--ink)}
+.tv-wkc .st{font-size:13.5px;font-weight:700;color:var(--qlead)}
+.tv-wkc .sm{white-space:pre-line;font-size:13.5px;line-height:1.55;color:var(--ink)}
 .tv-wkc .lk{display:flex;flex-wrap:wrap;gap:6px}
-.tv-wkc .lk a{font-size:12.5px;padding:5px 9px;border-radius:999px;background:rgba(14,110,120,.1);color:inherit;text-decoration:none}
-.tv-wkc .lk a.main{background:#0E6E78;color:#fff;font-weight:700}
-.tv-wkc .op{justify-self:start;font-size:12.5px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0}
-.ws{background:var(--card,#fff);border:1px solid var(--line,#e3e3e3);border-radius:14px;padding:12px 14px;display:grid;gap:10px}
-.ws h3{margin:0;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.ws h3 a{font-size:12.5px;font-weight:600}
-.ws-seg{display:flex;flex-wrap:wrap;gap:6px}
-.ws-seg button{font:inherit;font-size:12.5px;padding:6px 10px;border-radius:999px;border:1px solid var(--line,#ddd);background:none;color:inherit;cursor:pointer}
-.ws-seg button.on{background:#0E6E78;border-color:#0E6E78;color:#fff;font-weight:700}
-.ws-base{font-size:13px;background:rgba(14,110,120,.08);border-radius:10px;padding:8px 10px;line-height:1.5}
-.ws-base b{font-size:15px}
-.ws-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
-.ws-it{border:1px solid var(--line,#e3e3e3);border-radius:12px;padding:9px 10px;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start}
-.ws-it.vis{opacity:.62}
-.ws-it .ck{grid-row:span 3;width:30px;height:30px;border-radius:50%;border:2px solid #0E6E78;background:none;color:#0E6E78;font-weight:800;cursor:pointer;font-size:14px}
-.ws-it.vis .ck{background:#0E6E78;color:#fff}
-.ws-it .nm{font-weight:800;font-size:14.5px}
-.ws-it .nm small{font-weight:500;color:var(--muted);margin-inline-start:6px}
-.ws-it .wh{font-size:13px;line-height:1.5}
+.tv-wkc .lk a{font-size:12.5px;padding:5px 9px;border-radius:999px;background:var(--sunk);color:var(--ink);text-decoration:none}
+.tv-wkc .lk a.main{background:#FFC857;color:#3A2600;font-weight:700}
+.tv-wkc .op{justify-self:start;font:inherit;font-size:12.5px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0}
+.ws h3{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ws h3 a{font-size:12.5px;font-weight:700;color:var(--qlead);text-decoration:none}
+.ws-seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--sunk)}
+.ws-seg button{flex:1 1 0;min-width:0;font:inherit;font-size:12.5px;line-height:1.25;padding:8px 4px;border:0;border-inline-start:1px solid var(--line);background:none;color:var(--ink);cursor:pointer}
+.ws-seg button:first-child{border-inline-start:0}
+.ws-seg button.on{background:#0E6E78;color:#fff;font-weight:800}
+.ws-base{font-size:13px;background:var(--sunk);color:var(--ink);border-radius:12px;padding:9px 11px;line-height:1.5}
+.ws-base b{font-size:15px;color:var(--qlead)}
+.ws-list{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.ws-it{border-bottom:1px solid var(--line);padding:10px 0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start}
+.ws-it.vis .nm,.ws-it.vis .wh{opacity:.6}
+.ws-it .ck{grid-row:span 3;width:30px;height:30px;border-radius:50%;border:2px solid #1FB3AE;background:none;color:#fff;font-weight:800;cursor:pointer;font-size:14px;padding:0}
+.ws-it.vis .ck{background:#1FB3AE}
+.ws-it .nm{font-weight:800;font-size:14.5px;color:var(--ink)}
+.ws-it .nm small{display:inline-block;font-weight:500;color:var(--muted);margin:0 7px}
+.ws-it .wh{font-size:13px;line-height:1.5;color:var(--ink)}
 .ws-it .tm{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;align-items:center}
-.ws-it .tm span{background:rgba(14,110,120,.1);border-radius:8px;padding:3px 7px}
-.ws-it .tm span.tot{background:#FFE3A3;color:#5a4300;font-weight:700}
-.ws-it .tm a{margin-inline-start:auto;font-size:12.5px}
+.ws-it .tm span{background:var(--sunk);color:var(--ink);border-radius:8px;padding:3px 7px}
+.ws-it .tm span.tot{background:#FFC857;color:#3A2600;font-weight:700}
+.ws-it .tm a{margin-inline-start:auto;font-size:12.5px;font-weight:700;color:var(--qlead);text-decoration:none}
+.ab-seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.ab-seg button{font:inherit;font-size:14px;font-weight:700;padding:11px 6px;border:0;border-inline-start:1px solid var(--line);background:none;color:var(--ink);cursor:pointer}
+.ab-seg button:first-child{border-inline-start:0}
+.ab-seg button.on{background:#0E6E78;color:#fff}
 .ws-note{font-size:12px;color:var(--muted);line-height:1.5}
 .tv-trip{border-radius:16px;color:#F2FBFA;background:linear-gradient(135deg,#0E7C86,#0B4F57);box-shadow:0 3px 12px rgba(11,79,87,.25);--line:rgba(255,255,255,.18)}
 .tv-trip>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
@@ -3527,6 +3531,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   // 13.7 (Oren 10.11.2026): stops bank for a work-trip drive (collection workstops). type:"route" docs = {title,a:{he,lat,lng},b:{he,lat,lng},chat,maps_a,maps_b};
   //  place docs = {route, he, name, axis west|mid|east, lat, lng, what, stop (minimal recommended minutes), stop_note, night, visited, visited_at}.
   //  Detours are computed live in the browser (OSRM public table API, no traffic): net drive added = A->P->B minus A->B, and with the minimal stop.
+  let abTab="trip";try{if(localStorage.getItem("sq_tv_ab")==="work")abTab="work";}catch(e){}
   let wsDocs=[];const wsUI={};const wsCalc={};
   const WS_AX={west:"🌊 חוף",mid:"🏞️ אמצע",east:"⛰️ מזרח"};
   function wsFmt(m){m=Math.round(m);if(m<60)return m+" דק׳";return Math.floor(m/60)+":"+String(m%60).padStart(2,"0")+" ש׳";}
@@ -3586,8 +3591,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   // 13.x (Oren 10.11.2026): work trips abroad = the experience side (stops on the way, not the work). Topics with area "נסיעות עבודה", open ones first.
   function workTrips(){const L=allTopics.filter(t=>!t._deleted&&t.area==="נסיעות עבודה"&&!["archived","promoted"].includes(t.status)).sort((a,b)=>(a.status==="done")-(b.status==="done")||(b.priority==="high")-(a.priority==="high"));
     const R=wsDocs.filter(d=>d.type==="route"&&!d._deleted&&d.a&&d.b);
-    if(!L.length&&!R.length)return [];
-    return [h("div",{class:"tv-sec-h"},"💼 נסיעות עבודה: עצירות ורגעים בדרך"),...R.map(wsBank),h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
+    if(!L.length&&!R.length)return [h("p",{class:"ws-note"},"עוד אין כאן כלום. כל נסיעת עבודה חדשה תקבל כאן כרטיס.")];
+    return [h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank),h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
       return h("article",{class:"tv-wkc"},h("h3",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("div",{class:"st"},t.stand):null,
         t.summary?h("details",{class:"tv-fold",open:t.status!=="done"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
         ls.length?h("div",{class:"lk"},ls.map((l,i)=>h("a",{class:/⭐/.test(l.label||"")?"main":"",href:safeUrl(l.url),target:"_blank",rel:"noopener"},"📍 "+(l.label||"מפה")))):null,
@@ -3626,16 +3631,17 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     const onCal=trips.filter(x=>!x.concept),ideas=trips.filter(x=>x.concept);
     const ap=A.app||{},apu=safeUrl(ap.url||"");
     const ab=h("section",{class:"tz tz-ab-z"},
-      zoneHead("abroad","טיולים בחו״ל",[onCal.length?heN(onCal.length,"נסיעה אחת","נסיעות")+" בלוח":"",ideas.length?heN(ideas.length,"רעיון אחד","רעיונות")+" בקונספט":""].filter(Boolean).join(" · ")||"תכנון, היסטוריה ונתונים",AB_BANNER),
+      zoneHead("abroad","בחו״ל",[onCal.length?heN(onCal.length,"נסיעה אחת","נסיעות")+" בלוח":"",ideas.length?heN(ideas.length,"רעיון אחד","רעיונות")+" בקונספט":""].filter(Boolean).join(" · ")||"תכנון, היסטוריה ונתונים",AB_BANNER),
+      h("div",{class:"ab-seg",role:"tablist"},[["trip","✈️ טיול בחו״ל"],["work","💼 עבודה בחו״ל"]].map(([v,l])=>h("button",{type:"button",role:"tab","aria-selected":abTab===v?"true":"false",class:abTab===v?"on":"",onclick:()=>{abTab=v;try{localStorage.setItem("sq_tv_ab",v);}catch(e){}renderTravel();}},l))),
+      ...(abTab==="work"?workTrips(true):[
       onCal.length?h("div",{class:"tv-sec-h"},"✈️ בלוח: טיסות הוזמנו"):null,onCal.length?h("div",{class:"tv-trips"},onCal.map(x=>x.el)):null,
       ideas.length?h("div",{class:"tv-sec-h"},"💭 בקונספט: עוד בלי טיסות"):null,ideas.length?h("div",{class:"tv-trips"},ideas.map(x=>x.el)):null,
-      ...workTrips(),
       h("article",{class:"tv-card tv-ab"},
         apu?h("a",{class:"tv-app",href:apu,target:"_blank",rel:"noopener"},ap.icon?h("img",{src:ap.icon,alt:"",width:"44",height:"44"}):null,h("div",null,h("b",null,ap.name||""),ap.tag?h("span",null,ap.tag):null)):null,
         Array.isArray(A.highlights)&&A.highlights.length?h("ul",{class:"tv-hl"},A.highlights.map(x=>h("li",null,h("i",{"aria-hidden":"true"},x.icon||"•"),h("span",null,x.text)))):null,
         zoneDash("abroad"),
         tvLinks(noDup(A.links,"abroad").filter(l=>safeUrl(l.url||"")!==apu)),
-        secChat(secUrl("travel_abroad",...(A.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),(projById("holiday-optimizer")||{}).claude_url),"טיולים בחו״ל","שיחה: טיולים בחו״ל")));
+        secChat(secUrl("travel_abroad",...(A.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),(projById("holiday-optimizer")||{}).claude_url),"טיולים בחו״ל","שיחה: טיולים בחו״ל"))]));
     sec.replaceChildren(jump,il,ab,h("div",{class:"tv-sec-h tz-tasks"},"🧳 משימות הטיולים"));
   }
   window.addEventListener("hashchange",()=>{if(location.hash.startsWith("#/"))return;const q=questFromHash();if(qHidden(q)){setMode("home","🏠 עברתי לבית כדי לפתוח את "+QUESTS[q].name);return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
