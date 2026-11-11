@@ -1,6 +1,6 @@
 // המבחנים הקרובים של הילד, מדשבורד הלימודים של המשפחה (אורן 11.11.2026).
 // בדף הילד, בין תוכני הלימוד לכפתורי העזר: כרטיס קטן "📅 המבחנים הקרובים שלי" עם המבחן הבא.
-// לחיצה פותחת חלון בגובה קבוע עם כל המבחנים ל-8 שבועות, לפי שבועות. לכל מבחן "📤 לבקש חומר":
+// לחיצה פותחת חלון בגובה קבוע עם כל המבחנים ל-8 שבועות, לפי שבועות. לכל מבחן "אני רוצה להתכונן!" (אורן 11.11.2026) שפותח דף "💪 מתכוננים יחד":
 // תזכורת מה לשלוח לאבא ואמא בוואטסאפ (תמונות מהמחברת, דפי עבודה, ההודעה של המורה, רשימת נושאים)
 // + בקשה לאזור ההורים (study_request_add, סוג test/quiz) + פתיחת וואטסאפ עם הודעה מוכנה (הילד בוחר למי).
 // הנתונים: study_kid_events(kid) (קריאה בלבד: תאריך, סוג, שם). נשמרים במכשיר ב-study_ex_<kid> כדי שהדף לא יקפוץ.
@@ -22,9 +22,9 @@
     '#exo .rw{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #eef1f5}'+
     '#exo .dt{flex:none;width:52px;text-align:center;font:600 12px/1.25 system-ui,Arial,sans-serif;color:#5b6675}#exo .dt b{display:block;font-size:17px;color:#1f2933}'+
     '#exo .rt{flex:1;min-width:0}#exo .rt b{display:block;font-size:15px;line-height:1.3}#exo .rt small{display:block;font-size:12.5px;color:#5b6675;margin-top:1px}#exo .rt small.hot{color:#c2410c;font-weight:700}'+
-    '#exo .ask{flex:none;width:96px;height:38px;border-radius:11px;border:1.5px solid #2f5d9e;background:#fff;color:#2f5d9e;font:700 13px system-ui,Arial,sans-serif;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}'+
+    '#exo .ask{flex:none;width:92px;height:44px;box-sizing:border-box;padding:0 4px;border-radius:11px;border:1.5px solid #2f5d9e;background:#fff;color:#2f5d9e;font:700 13px/1.2 system-ui,Arial,sans-serif;cursor:pointer;white-space:normal;overflow:hidden;-webkit-tap-highlight-color:transparent}'+
     '#exo .ask.done{border-color:#86c79b;color:#15803d;background:#f0faf3}'+
-    '#exo .rq p{margin:10px 0 6px;font-size:15px;line-height:1.45}#exo .rq ul{margin:0 0 10px;padding:0;list-style:none;border:1px solid #e3e8ef;border-radius:12px;overflow:hidden}'+
+    '#exo .rq p{margin:10px 0 6px;font-size:15px;line-height:1.45}#exo .rq p.st{margin:8px 0 6px}#exo .rq ul{margin:0 0 10px;padding:0;list-style:none;border:1px solid #e3e8ef;border-radius:12px;overflow:hidden}'+
     '#exo .rq li{padding:9px 12px;font-size:14.5px;line-height:1.35;border-bottom:1px solid #eef1f5}#exo .rq li:last-child{border-bottom:0}'+
     '#exo .rq textarea{display:block;width:100%;height:62px;box-sizing:border-box;resize:none;font:16px system-ui,Arial,sans-serif;border:1.5px solid #d3d9e2;border-radius:12px;padding:8px 10px;color:#1f2933}#exo .rq textarea:focus{outline:none;border-color:#2f5d9e}'+
     '#exo .ft{flex:none;padding:10px 14px 12px;border-top:1px solid #e3e8ef;display:none}#exo .ft.on{display:block}'+
@@ -68,14 +68,17 @@
       if(!L.length){B.innerHTML='<div class="em">אין מבחנים ב-8 השבועות הקרובים 🎉</div>';return}
       var h='',g=null;L.forEach(function(e,i){var w=wk(e.d),n=days(e.d),x=dd(e.d);if(w!==g){g=w;h+='<div class="wk">'+w+'</div>'}
         h+='<div class="rw"><div class="dt">יום '+DOW[x.getDay()]+'<b>'+dm(e.d)+'</b></div><div class="rt"><b>'+esc(full(e))+'</b><small'+(n<=3?' class="hot"':'')+'>'+when(n)+(e.sub?' · '+esc(e.sub):'')+'</small></div>'+
-          '<button type="button" class="ask'+(R[idOf(e)]?' done':'')+'" data-i="'+i+'">'+(R[idOf(e)]?'✓ ביקשת':'📤 לבקש חומר')+'</button></div>'});
+          '<button type="button" class="ask'+(R[idOf(e)]?' done':'')+'" data-i="'+i+'">'+(R[idOf(e)]?'✓ ביקשת':'אני רוצה<br>להתכונן!')+'</button></div>'});
       B.innerHTML=h;B.scrollTop=0;
       [].forEach.call(B.querySelectorAll('.ask'),function(a){a.onclick=function(){ask(L[+a.dataset.i])}})}
-    function ask(e){cur=e;busy=false;go.disabled=false;var n=days(e.d);H.textContent='📤 לבקש חומר';
+    function ask(e){cur=e;busy=false;go.disabled=false;var n=days(e.d);H.textContent='💪 מתכוננים יחד';
       B.innerHTML='<button type="button" class="bk">→ כל המבחנים</button><div class="rq">'+
-        '<p><b>'+esc(full(e))+'</b>, יום '+DOW[dd(e.d).getDay()]+' '+dm(e.d)+' ('+when(n)+').<br>כדי שאבא ואמא יכינו לך תרגול באפליקציה, של'+(boy?'ח':'חי')+' להם בוואטסאפ:</p>'+
+        '<p><b>'+esc(full(e))+'</b>, יום '+DOW[dd(e.d).getDay()]+' '+dm(e.d)+' ('+when(n)+').<br>כל הכבוד שאת'+(boy?'ה':'')+' רוצה להתכונן! 💪 אבא ואמא יכינו לך תרגול באפליקציה. מה צריך:</p>'+
+        '<p class="st"><b>1. ספר'+(boy?'':'י')+' לאבא ואמא</b> בכפתור הכחול למטה (אפשר לכתוב מה נכנס למבחן).</p>'+
+        '<textarea maxlength="300" placeholder="מה נכנס למבחן? (לא חובה)"></textarea>'+
+        '<p class="st"><b>2. של'+(boy?'ח':'חי')+' להם צילומים בוואטסאפ</b> (הכפתור הירוק):</p>'+
         '<ul><li>📸 תמונות של המחברת או הסיכום</li><li>📄 דפי עבודה או מצגת מהמורה</li><li>💬 ההודעה של המורה על החומר למבחן</li><li>📝 רשימת הנושאים או העמודים בספר</li></ul>'+
-        '<textarea maxlength="300" placeholder="מה נכנס למבחן? (לא חובה)"></textarea></div>';
+        '</div>';
       B.scrollTop=0;B.querySelector('.bk').onclick=list;F.classList.add('on');
       M.textContent=R[idOf(e)]?'✓ כבר ביקשת. אפשר לשלוח שוב אם יש עוד חומר':'';}
     function txt(){var t=B.querySelector('textarea');return t?t.value.trim():''}
