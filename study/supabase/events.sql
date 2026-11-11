@@ -6,7 +6,7 @@ returns jsonb language sql stable security definer set search_path = '' as $$
   select coalesce(jsonb_agg(x order by x->>'d', x->>'t'), '[]'::jsonb) from (
     select distinct jsonb_build_object('d', e->>'d', 'ty', e->>'type', 't', left(e->>'t', 80), 'sub', left(coalesce(e->>'sub', ''), 80)) x
     from public.sq_docs f, jsonb_array_elements(coalesce(f.data->'events', '[]'::jsonb)) e
-    where f.app = 'sidequests' and f.collection = 'family'
+    where p_kid ~ '^[a-z]{2,20}$' and f.app = 'sidequests' and f.collection = 'family'
       and f.id = case p_kid when 'dani' then 'daniela' else p_kid end
       and coalesce(f.data->>'_deleted', '') <> 'true'
       and (e->>'type') in ('exam', 'quiz')
