@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.8";window.SQ_BUILD_AT="11.11.2026 11:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.9";window.SQ_BUILD_AT="11.11.2026 12:15";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -211,6 +211,10 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
 .opt.later{background:transparent;color:var(--muted)}
 .later-menu{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border-radius:10px;background:var(--sunk)}
 .later-menu .opt{background:var(--surface)}
+.later-menu .zzopt.on{background:var(--accent);color:var(--accent-ink)}
+.zzpick{flex-basis:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.zzpick input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.rc.zz{opacity:.8}
 .g-head.back{color:var(--k-research)}
 .tag.zz{background:var(--sunk);color:var(--muted)}
 [hidden]{display:none!important}
@@ -2288,8 +2292,12 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
 
   // ai_offers: [{id,text,detail,state:open|approved|declined|done,at}]  questions: [{id,q,options:[],answer,answered_at,done}]
   // snooze_until: ISO time, or "someday". Future = hidden in "אחר כך"; past = jumps to "חזר אליך" until Oren acts.
-  function snoozed(t){const z=t.snooze_until;if(!z)return false;if(z==="someday")return true;return new Date(z)>new Date();}
-  function returned(t){const z=t.snooze_until;return !!z&&z!=="someday"&&new Date(z)<=new Date();}
+  // 14.9 (Oren 11.11): dormant future tasks. sleep_until "YYYY-MM-DD" = the day it wakes (Israel), usually ~a week before the
+  // real date. Until then it is nowhere (lists, windows, counts, decisions, briefs) except the folded "💤 משימות עתידיות".
+  // Writers also set snooze_until to that morning, so the server push and the briefs skip it too. On the day it jumps to "חזר אליך".
+  function asleep(t){const s=t.sleep_until;return !!s&&String(s).slice(0,10)>ilDate();}
+  function snoozed(t){if(asleep(t))return true;const z=t.snooze_until;if(!z)return false;if(z==="someday")return true;return new Date(z)>new Date();}
+  function returned(t){if(asleep(t))return false;if(t.sleep_until)return true;const z=t.snooze_until;return !!z&&z!=="someday"&&new Date(z)<=new Date();}
   function atHour(dayOffset,hh){const d=new Date();d.setDate(d.getDate()+dayOffset);d.setHours(hh,0,0,0);return d;}
   function laterOptions(){
     const now=new Date(),eod=atHour(0,18);
@@ -2299,7 +2307,17 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   let laterFor=null;
   function remindLater(t,when,label){const z=when==="someday"?"someday":when.toISOString();laterFor=null;patch(t,{snooze_until:z,snooze_win:curWin().id,log:logPush(t,"תזכורת: "+label,new Date().toISOString())},when==="someday"?"עבר ל״אחר כך״":"אזכיר לך "+fmtWhen(z));}
   function laterBtn(t,key){return canWrite?h("button",{class:"opt later",type:"button",onclick:e=>{e.stopPropagation();laterFor=laterFor===key?null:key;renderAll();}},"⏰ אחר כך"):null;}
-  function laterMenu(t,key){if(laterFor!==key)return null;return h("div",{class:"later-menu"},laterOptions().map(([l,w])=>h("button",{class:"opt",type:"button",onclick:press(()=>remindLater(t,w,l))},l)),t.snooze_until?h("button",{class:"opt",type:"button",onclick:press(()=>{laterFor=null;patch(t,{snooze_until:""},"התזכורת בוטלה");})},"בטל תזכורת"):null);}
+  // 14.9: "💤 משימה עתידית" = pick the day it should come back (a week before the real date); until then it sleeps.
+  function sleepTask(t,d){if(!/^\d{4}-\d{2}-\d{2}$/.test(d||""))return;laterFor=null;sleepFor=null;
+    patch(t,{sleep_until:d,snooze_until:new Date(d+"T08:00:00").toISOString(),log:logPush(t,"💤 משימה עתידית עד "+fmtDate(d),new Date().toISOString())},"💤 עברה למשימות עתידיות. תחזור ב-"+fmtDate(d));}
+  let sleepFor=null;
+  function laterMenu(t,key){if(laterFor!==key)return null;
+    const zz=asleep(t),pick=sleepFor===key;
+    return h("div",{class:"later-menu"},laterOptions().map(([l,w])=>h("button",{class:"opt",type:"button",onclick:press(()=>remindLater(t,w,l))},l)),
+      zz?null:h("button",{class:"opt zzopt"+(pick?" on":""),type:"button",onclick:e=>{e.stopPropagation();sleepFor=pick?null:key;renderAll();}},"💤 משימה עתידית"),
+      pick&&!zz?h("div",{class:"zzpick sqgrow"},h("span",null,"מתי להחזיר? (כשבוע לפני)"),h("input",{type:"date",min:addDays(ilDate(),1),value:t.next_date&&t.next_date>ilDate()?addDays(t.next_date,-7)>ilDate()?addDays(t.next_date,-7):t.next_date:addDays(ilDate(),30),onclick:e=>e.stopPropagation(),onchange:e=>sleepTask(t,e.target.value)}),h("button",{class:"opt",type:"button",onclick:e=>{e.stopPropagation();const i=e.currentTarget.parentNode.querySelector("input");sleepTask(t,i&&i.value);}},"✓ שמור")):null,
+      zz?h("button",{class:"opt",type:"button",onclick:press(()=>{laterFor=null;patch(t,{sleep_until:"",snooze_until:"",log:logPush(t,"💤 הוחזרה מהמשימות העתידיות",new Date().toISOString())},"חזרה לרשימה");})},"להחזיר עכשיו"):
+      t.snooze_until?h("button",{class:"opt",type:"button",onclick:press(()=>{laterFor=null;patch(t,{snooze_until:""},"התזכורת בוטלה");})},"בטל תזכורת"):null);}
   function offersOf(t){return (Array.isArray(t.ai_offers)?t.ai_offers:[]).filter(o=>o&&o.text&&!o.superseded);}
   function questionsOf(t){return (Array.isArray(t.questions)?t.questions:[]).filter(q=>q&&q.q&&!q.superseded);}
   function openAsks(t){return offersOf(t).filter(o=>(o.state||"open")==="open").length+questionsOf(t).filter(q=>!q.answer).length;}
@@ -2569,7 +2587,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     if(quest==="fun"){const live=funTopics.filter(t=>t.status!=="archived"&&t.status!=="done");
       return {asks:live.reduce((n,t)=>n+openAsks(t),0),open:live.length,wait:0,later:0,done:funTopics.filter(t=>t.status==="done").length};}
     const open=topics.filter(t=>isOpen(t)&&!inStrip(t));
-    return {asks:open.filter(t=>!snoozed(t)).reduce((n,t)=>n+openAsks(t),0),open:open.filter(t=>!snoozed(t)).length,wait:open.filter(t=>!snoozed(t)&&!returned(t)&&t.status==="waiting_other").length,later:open.filter(snoozed).length,done:topics.filter(t=>t.status==="done"||t.status==="promoted").length};
+    return {asks:open.filter(t=>!snoozed(t)).reduce((n,t)=>n+openAsks(t),0),open:open.filter(t=>!snoozed(t)).length,wait:open.filter(t=>!snoozed(t)&&!returned(t)&&t.status==="waiting_other").length,later:open.filter(t=>snoozed(t)&&!asleep(t)).length,done:topics.filter(t=>t.status==="done"||t.status==="promoted").length};
   }
   const STATS=[["asks","החלטות"],["open","משימות פתוחות"],["wait","מחכות לאחרים"],["later","נדחו לאחר כך"],["done","בוצעו"]];
   function goStat(k){
@@ -2733,7 +2751,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     const open=all.filter(isOpen),zz=t=>snoozed(t);
     const me=open.filter(t=>t.status==="waiting_me"&&!zz(t)).sort(byDate);
     const cl=open.filter(t=>t.status==="active"&&!zz(t)).sort(byDate);
-    const oth=open.filter(t=>t.status==="waiting_other"||(zz(t)&&t.status!=="paused")).sort(byDate);
+    const oth=open.filter(t=>!asleep(t)&&(t.status==="waiting_other"||(zz(t)&&t.status!=="paused"))).sort(byDate);
+    const dormP=open.filter(asleep).sort((a,b)=>String(a.sleep_until).localeCompare(String(b.sleep_until)));
     const pa=open.filter(t=>t.status==="paused");
     const hist=all.filter(t=>!isOpen(t)&&!isBg(t)).sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")).slice(0,40);
     const plog=(!gen&&Array.isArray(p.log)?p.log:[]).filter(x=>x&&x.text).slice(-15).reverse();
@@ -2758,6 +2777,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     pg.replaceChildren(bar,h("div",{class:"pgbody"},head,
       sec("me","מחכה לך",me),sec("cl","אצל Claude",cl),sec("oth","מחכה לאחרים",oth),none,
       pjFold("paused","בהקפאה",pa.length,[h("div",{class:"glist"},pa.map(row))]),
+      pjFold("dorm","💤 משימות עתידיות",dormP.length,[h("div",{class:"glist"},dormP.map(row))]),
       pjFold("hist","היסטוריה ובוצעו",hist.length+plog.length,histBody)));
     pg.scrollTop=y;if(nav.lvl===3)document.title=gen?"משימות כלליות":(p.name||"AI Projects");}
   function relAgo(at){const t=Date.parse(at);return isNaN(t)?"":ago(t);}
@@ -2823,7 +2843,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     $("avail").parentNode.classList.toggle("noside",!side);
   }
   function setCtx(t,c){const cur=ctxOf(t),next=cur.includes(c)?cur.filter(x=>x!==c):[...cur,c];patch(t,{context:next},next.length?"מתאים ל: "+next.map(x=>TAGS[x].l).join(", "):"מתאים לכל מקום");}
-  function setUrgent(t){const on=!t.urgent;if(openId===t.id&&!on)openId=null;patch(t,{urgent:on,urgent_by:on?"oren":"",urgent_at:on?new Date().toISOString():"",...(on&&snoozed(t)?{snooze_until:""}:{}),log:logPush(t,on?"סומן דחוף ❗":"הוסר סימון דחוף",new Date().toISOString())},on?"❗ סומן דחוף, עלה לראש הרשימה":"הוסר סימון דחוף");}
+  function setUrgent(t){const on=!t.urgent;if(openId===t.id&&!on)openId=null;patch(t,{urgent:on,urgent_by:on?"oren":"",urgent_at:on?new Date().toISOString():"",...(on&&snoozed(t)?{snooze_until:"",sleep_until:""}:{}),log:logPush(t,on?"סומן דחוף ❗":"הוסר סימון דחוף",new Date().toISOString())},on?"❗ סומן דחוף, עלה לראש הרשימה":"הוסר סימון דחוף");}
   function renderFilters(){
     const counts={};topics.filter(isOpen).forEach(t=>counts[t.kind]=(counts[t.kind]||0)+1);
     $("filters").replaceChildren(h("button",{class:"fchip",type:"button","aria-pressed":filterKind==="all"?"true":"false",onclick:()=>{filterKind="all";renderFilters();renderList();}},"הכול"),
@@ -2842,7 +2862,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   function row(t,rx){
     const open=isOpen(t),n=daysUntil(t.next_date),asks=openAsks(t),st=stepsOf(t),sd=st.filter(s=>s.done).length;
     let chip=null;
-    if(open){if(snoozed(t))chip=h("span",{class:"rc"},"⏰ "+fmtWhen(t.snooze_until));
+    if(open){if(asleep(t))chip=h("span",{class:"rc zz"},"💤 "+fmtDate(String(t.sleep_until).slice(0,10)));
+      else if(snoozed(t))chip=h("span",{class:"rc"},"⏰ "+fmtWhen(t.snooze_until));
       else if(t.next_date&&n!=null&&n<=7)chip=h("span",{class:"rc"+(n<=0?" due":n<=2?" soon":"")},relDate(t.next_date));
       else if(asks)chip=h("span",{class:"rc ask","aria-label":asks===1?"שאלה אחת":asks+" שאלות"},"?");
       else if(st.length)chip=h("span",{class:"rc"},sd+"/"+st.length);}
@@ -2852,7 +2873,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":isO?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
         isUrgent(t)?h("span",{class:"r-urg","aria-label":"דחוף"},"!"):null,
         isNewUpd(t)?h("i",{class:"r-new","aria-label":"התעדכן"}):null,
-        rx&&rx.upd?h("span",{class:"r-tw"},h("span",{class:"r-title"},open?dlTag(t):null,t.title||"(ללא כותרת)"),h("small",{class:"r-upd"},updLine(rx.upd))):h("span",{class:"r-title"},open?dlTag(t):null,t.title||"(ללא כותרת)"),
+        rx&&rx.upd?h("span",{class:"r-tw"},h("span",{class:"r-title"},open&&!asleep(t)?dlTag(t):null,t.title||"(ללא כותרת)"),h("small",{class:"r-upd"},updLine(rx.upd))):h("span",{class:"r-title"},open&&!asleep(t)?dlTag(t):null,t.title||"(ללא כותרת)"),
         chip,h("span",{class:"r-chev","aria-hidden":"true"},"‹")));
     if(laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.classList.add("r-later");el.append(m);}
     if(isO)el.append(drawer(t));
@@ -3058,7 +3079,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     const side=WQ.includes(quest),w=curWin(),winOn=side&&(wMode!=="off"&&wMode!=="new"||w.manual);
     if(side&&wMode==="new"&&!w.manual){renderNew();return;}
     const urgAll=allK.filter(t=>isUrgent(t)&&!snoozed(t)).sort((a,b)=>(sizeOf(a)==="quick"?0:1)-(sizeOf(b)==="quick"?0:1));
-    const rest=allK.filter(t=>!urgAll.includes(t)),later=rest.filter(snoozed),open=rest.filter(t=>!snoozed(t));
+    const rest=allK.filter(t=>!urgAll.includes(t)),later=rest.filter(t=>snoozed(t)&&!asleep(t)),open=rest.filter(t=>!snoozed(t));
+    const dorm=rest.filter(asleep).sort((a,b)=>String(a.sleep_until).localeCompare(String(b.sleep_until)));
     const waiting=open.filter(t=>t.status==="waiting_other"),paused=open.filter(t=>t.status==="paused");
     const live=open.filter(t=>t.status!=="waiting_other"&&t.status!=="paused");
     const ord=(a,b)=>(returned(b)-returned(a))||byDate(a,b);
@@ -3095,7 +3117,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       else{if(tr.length)top.push(group(SIZES.trip.g,tr,false,"trip"));if(lo.length)top.push(group(SIZES.long.g,lo,false,"long"));}
       if(!top.length)top.push(h("div",{class:"empty"},topics.length?"אין משימות פתוחות.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה ב-+ למטה.`));
     }
-    more.push(foldRows("wait","מחכה לאחרים",waiting),foldRows("later","אחר כך",later),foldRows("paused","בהקפאה",paused));
+    more.push(foldRows("wait","מחכה לאחרים",waiting),foldRows("later","אחר כך",later),foldRows("paused","בהקפאה",paused),foldRows("dorm","💤 משימות עתידיות",dorm,{zz:true}));
     const doneL=topics.filter(t=>t.status==="done"||t.status==="promoted").sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")).slice(0,30);
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
@@ -3678,7 +3700,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>openTask(b.dataset.id));}
   function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();}
 
-  async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:""};
+  async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:"",...(t.sleep_until&&!("sleep_until" in fields)?{sleep_until:""}:{})};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
     try{await db.collection("topics").doc(t.id).update({...fields,updated_at:new Date().toISOString()});
       if(noUndo){if(msg)toast(msg);}else toast(msg||"נשמר",async()=>{try{await db.collection("topics").doc(t.id).update(prev);toast("בוטל");}catch(e){fail(e);}});
