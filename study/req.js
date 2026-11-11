@@ -22,7 +22,7 @@
       ['hard','🤔 לא הבנתי נושא','מה לא ברור? אבא יעזור לך להבין'],['topic','📚 נושא חדש ללימוד','מה תרצ'+(boy?'ה':'י')+' שאבא יכין לך ללמוד?'],
       ['idea','💡 רעיון לאפליקציה','מה היה כיף להוסיף או לשנות באפליקציה?'],['bug','🐞 מצאתי באג','מה קרה? באיזה מסך? מה לחצת רגע לפני?']];
     var host=where||document.getElementById('rqm');
-    var b=el('<button type="button" class="rqb"><span class="ic">💬</span><span><b>הצעות ובקשות לאבא ואמא!</b><small>מבחן קרוב, נושא קשה, רעיון או באג</small></span></button>');host.appendChild(b);if(host.closest&&host.closest('.tools'))b.querySelector('b').textContent='הצעות לאבא ואמא';
+    var b=el('<button type="button" class="rqb"><span class="ic">💬</span><span><b>הצעות ובקשות לאבא ואמא!</b><small>מבחן קרוב, נושא קשה, רעיון או באג</small></span></button>');host.appendChild(b);if(host.closest&&host.closest('.tools'))b.querySelector('b').textContent='הצעות ובקשות';
     var o=el('<div id="rq" role="dialog" aria-modal="true"><div class="pn"><h2>💬 מה תרצ'+(boy?'ה':'י')+' לבקש?</h2><p>הצעות ובקשות לאבא ואמא! הם יראו את זה באזור ההורים</p><div class="ks">'+
       K.map(function(k){return '<button type="button" class="k" data-k="'+k[0]+'">'+k[1]+'</button>'}).join('')+
       '</div><textarea maxlength="500" placeholder="קוד'+'ם בחר'+Y+' למעלה מה תרצ'+(boy?'ה':'י')+' לבקש"></textarea><div class="m"></div><div class="bs"><button type="button" class="go">שליחה לאבא ולאמא 💌</button><button type="button" class="no">סגירה</button></div></div></div>');

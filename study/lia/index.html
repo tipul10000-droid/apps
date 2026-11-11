@@ -13,7 +13,7 @@
 <style>
 /* תוכן בבדיקה = "בקרוב" (לא לחיץ). אחרי אישור ההורים: סרט "חדש!" חגיגי */
 .item.soon{opacity:.6;pointer-events:none;border-style:dashed}.item.soon .go{visibility:hidden}
-.item{position:relative;overflow:hidden}.nwr{position:absolute;top:8px;left:-30px;width:110px;transform:rotate(-35deg);text-align:center;font:800 12px/20px system-ui,Arial,sans-serif;color:#fff;background:linear-gradient(90deg,#ff5fa2,#ffb36b,#ff5fa2);background-size:200% 100%;animation:nwr 2.2s linear infinite;box-shadow:0 2px 6px rgba(255,95,162,.45);pointer-events:none}
+.item{position:relative;overflow:hidden}.nwr{position:absolute;top:5px;left:-29px;width:94px;transform:rotate(-35deg);text-align:center;font:800 11px/18px system-ui,Arial,sans-serif;color:#fff;background:linear-gradient(90deg,#ff5fa2,#ffb36b,#ff5fa2);background-size:200% 100%;animation:nwr 2.2s linear infinite;box-shadow:0 2px 6px rgba(255,95,162,.45);pointer-events:none}
 @keyframes nwr{to{background-position:200% 0}}
 </style>
 </head><body><main>
@@ -32,6 +32,6 @@ phGate();StudyContent.refresh(function(){location.reload()});
 </script>
 <script>if(StudyContent.ok('lia/phonics'))try{var s=JSON.parse(localStorage.getItem('lia_ph'));if(s&&s.w){var n=0;for(var k in s.w)if(s.w[k].s==='done')n++;if(s.T){document.getElementById('ph').textContent='את יודעת '+n+' מתוך 35 צלילים';document.getElementById('phb').style.width=(n/35*100)+'%'}}}catch(e){}</script>
 <script src="../kidlist.js?v=1"></script><script>StudyList.init('lia')</script>
-<script src="../req.js?v=4"></script><script>StudyReq.mount('lia',false)</script>
+<script src="../req.js?v=5"></script><script>StudyReq.mount('lia',false)</script>
 <script src="../push.js?v=4"></script><script>StudyPush.kid(document.getElementById('pbm'),'lia',false)</script>
 </main></body></html>
