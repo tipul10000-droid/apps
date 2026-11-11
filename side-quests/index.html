@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.2";window.SQ_BUILD_AT="11.11.2026 12:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.3";window.SQ_BUILD_AT="11.11.2026 13:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1677,13 +1677,19 @@ main{padding-bottom:90px}
 @keyframes dzblink{50%{opacity:.4;transform:scale(.8)}}
 .dz-tile.flash{animation:dzflash .55s ease-in-out 4}
 @keyframes dzflash{50%{box-shadow:0 0 0 4px #6FA8FF,0 2px 8px rgba(0,0,0,.12)}}
-.dnews{flex:none;background:color-mix(in srgb,#2F7BEA 13%,var(--bg));color:var(--ink);border-bottom:1px solid color-mix(in srgb,#2F7BEA 30%,var(--bg));padding:8px 14px 9px;max-height:34vh;overflow:auto;animation:sqdn .25s ease-out}
-@keyframes sqdn{from{opacity:0;transform:translateY(-6px)}}
-.dnews .dh{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14.5px;margin-bottom:3px}
-.dnews .dh button{margin-inline-start:auto;border:1.5px solid color-mix(in srgb,#2F7BEA 45%,var(--bg));background:transparent;color:inherit;border-radius:999px;font:inherit;font-size:13px;font-weight:700;padding:2px 12px;min-height:28px;cursor:pointer}
-.dnews ul{margin:0;padding-inline-start:18px;font-size:14px;line-height:1.4}
-.dnews li{margin:3px 0}
-.dnews li small{color:var(--muted);font-size:12px;white-space:nowrap}
+.dnews{background:color-mix(in srgb,#2F7BEA 11%,var(--card,var(--bg)));color:var(--ink);border:1.5px solid color-mix(in srgb,#2F7BEA 42%,var(--bg));border-radius:16px;padding:12px 14px 10px;margin:0 0 14px;box-shadow:0 2px 10px rgba(47,123,234,.12);animation:sqdn .25s ease-out}
+@keyframes sqdn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.dnews.incard{margin:12px 14px 4px}
+.dnews .dh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.dnews .dh span{font-weight:800;font-size:17px}
+.dnews .dh small{color:var(--muted);font-size:13px}
+.dnews .dh button{margin-inline-start:auto;border:1.5px solid color-mix(in srgb,#2F7BEA 45%,var(--bg));background:transparent;color:inherit;border-radius:999px;font:inherit;font-size:13px;font-weight:700;padding:2px 12px;min-height:30px;cursor:pointer}
+.dnews ul{list-style:none;margin:0;padding:0}
+.dnews li{display:grid;grid-template-columns:1fr auto;column-gap:10px;padding:7px 0;border-top:1px solid color-mix(in srgb,#2F7BEA 20%,var(--bg));font-size:14.5px;line-height:1.4}
+.dnews li b{grid-column:1;font-weight:800}
+.dnews li span{grid-column:1}
+.dnews li small{grid-column:2;grid-row:1;color:var(--muted);font-size:12px;white-space:nowrap}
+.dnews .more{font-size:13px;color:var(--muted);padding-top:4px}
 @media (prefers-reduced-motion:reduce){.dzbtn.has,.dz-tile .nw,.dz-tile.flash,.dnews{animation:none}}
 .ctxrow .wseg{border:1.5px solid rgba(255,255,255,.4)!important;border-radius:13px}
 .ctxrow .wseg button{min-height:40px!important}
@@ -2527,15 +2533,18 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   // lights up with a count and always scrolls down to the dashboards; opening one shows "🆕 מה חדש" on top, then it is seen.
   let dzSeen=null;try{dzSeen=JSON.parse(localStorage.getItem("sq_dash_seen")||"null");}catch(e){dzSeen=null;}
   if(!dzSeen||typeof dzSeen!=="object"){dzSeen={_base:new Date(Date.now()-72*36e5).toISOString()};try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}}
+  const EXT_NEW=/gmail|ג׳?ימייל|מייל|mail|סריקה|smart|סמארט|משו״?ב|mashov|אתר|portal/i;
   function dashNews(d){const out=[],now=Date.now(),wk=7*864e5;
-    for(const n of (Array.isArray(d.news)?d.news:[])){const ms=Date.parse(n&&n.at||"");if(ms&&now-ms<wk&&ms<=now+6e4&&n.text)out.push({ms,text:String(n.text)});}
+    for(const n of (Array.isArray(d.news)?d.news:[])){const ms=Date.parse(n&&n.at||"");if(ms&&now-ms<wk&&ms<=now+6e4&&n.text)out.push({ms,k:"news",title:"",what:String(n.text),text:String(n.text)});}
     // 15.2 (Oren 11.11): only real news about the dashboard's own subject: a task that came from outside (upd: mail/scan)
     // or a new task from outside, shown as "<task>: <what changed>". Claude's bookkeeping (sync/log lines) is not news.
     const clean=x=>String(x||"").replace(/\s+/g," ").replace(/^(All Arounder|סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור|חדש מהמייל|עדכון מהמייל)\s*[:：]\s*/i,"").trim();
     for(const t of dashTasks(d)){if(t.background||(t.fit&&t.fit.owner==="claude"))continue;
       const u=t.upd&&Date.parse(t.upd.at||""),c=Date.parse(t.created_at||"");
-      if(u&&now-u<wk&&u<=now+6e4){const w=clean(t.upd.what);out.push({ms:u,text:(t.title||"")+(w&&w!==t.title?": "+w:""),tid:t.id});}
-      else if(c&&now-c<wk&&c<=now+6e4&&!OWN_SRC.test(t.source||""))out.push({ms:c,text:"משימה חדשה: "+(t.title||""),tid:t.id});}
+      // 15.3 (Oren 11.11): a "new task" is news only if it came from outside (mail, school systems, a scan) and is still open;
+      // tasks Oren asked for in a chat, or that are already closed, are not news (income showed "9 updates" of those).
+      if(u&&now-u<wk&&u<=now+6e4){const w=clean(t.upd.what);out.push({ms:u,k:"upd",title:t.title||"",what:w&&w!==t.title?w:"",text:(t.title||"")+(w&&w!==t.title?": "+w:""),tid:t.id});}
+      else if(c&&now-c<wk&&c<=now+6e4&&isOpen(t)&&EXT_NEW.test(t.source||""))out.push({ms:c,k:"new",title:t.title||"",what:"משימה חדשה",text:"משימה חדשה: "+(t.title||""),tid:t.id});}
     return out.sort((a,b)=>b.ms-a.ms);}
   function dashUnseen(d){if(!d||d.archived||d._deleted)return [];const s=Math.max(Date.parse(dzSeen[d.id]||"")||0,Date.parse(dzSeen._base||"")||0);
     try{return dashNews(d).filter(x=>x.ms>s);}catch(e){return [];}}
@@ -2746,7 +2755,13 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     if(n.dash){const d=dashById(n.dash);document.title=d?(d.title||"דשבורד"):"דשבורד";}
     else if(n.lvl>=2)document.title=n.lvl===3?(projTitle(n.id)||"AI Projects"):"AI Projects";else document.title=QUESTS[quest].name;}
   // the dashboard page: our own dashboard html in a frame (rendered once), or the in-app card for a dashboard with no page
-  var dashPg={id:null,frame:false};
+  var dashPg={id:null,frame:false},newsKeep={id:null,data:null};
+  // in the in-app card the box goes right under the card's title row, inside its body
+  function withBox(card,nd){if(nd&&card.firstChild){const b=newsBox(nd);b.classList.add("incard");card.insertBefore(b,card.firstChild.nextSibling);}return card;}
+  function newsBox(nd){let box;box=h("section",{class:"dnews",role:"status"},
+      h("div",{class:"dh"},h("span",null,"🆕 מה חדש"),h("small",null,heN(nd.items.length+nd.more,"עדכון אחד","עדכונים")+" מאז הפעם הקודמת"),h("button",{type:"button",onclick:()=>box.remove()},"✓ הבנתי")),
+      h("ul",null,nd.items.map(x=>h("li",null,x.title?h("b",null,x.title):null,x.title&&x.what?h("span",null,x.what):x.what?h("span",{class:"solo"},x.what):null,h("small",null,x.ago)))),
+      nd.more?h("div",{class:"more"},"ועוד "+nd.more):null);return box;}
   function renderDashPg(){const pD=$("pgD"),id=nav.dash,d=dashById(id);
     const back=nav.lvl===3?(projTitle(nav.id)||"AI Projects"):nav.lvl===2?"AI Projects":"Side Quests";
     const u=d&&safeUrl(d.url||""),fr=u&&dashFrame(u);
@@ -2758,17 +2773,19 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       pgBack(back,()=>dashBack()),
       h("div",{class:"pgtitle"},d?((d.icon?d.icon+" ":"")+(d.short||d.title||"")):""),chat));
     const edge=h("div",{class:"pgedge","aria-hidden":"true"});
-    // 15.1: what's new since the last visit, on top of the dashboard; opening it marks it seen
-    const nws=d?dashUnseen(d):[];let strip=null;
-    if(nws.length){strip=h("div",{class:"dnews",role:"status"},h("div",{class:"dh"},h("span",null,"🆕 מה חדש"),h("button",{type:"button",onclick:()=>strip.remove()},"✓ הבנתי")),
-        d.locked?h("div",{style:"font-size:14px"},heN(nws.length,"עדכון חדש אחד","עדכונים חדשים")+" בפנים"):h("ul",null,nws.slice(0,6).map(x=>h("li",null,x.text," ",h("small",null,"· "+ago(x.ms))))));
-      dashSeen(d.id);}
-    const withNews=b=>strip?[bar,strip,b,edge]:[bar,b,edge];
+    // 15.3 (Oren 11.11): "🆕 מה חדש" is one clear summary box at the top of the dashboard BODY, under its title (not over it),
+    // with every item spelled out (also on locked dashboards: it sits inside the page, under the code screen). Frame pages get
+    // it through dash-sub.js (sq-news), the in-app card gets it as the first block. Opening the dashboard marks it seen.
+    const nws=d?dashUnseen(d):[];if(newsKeep.id!==id)newsKeep={id,data:null};
+    const newsData=newsKeep.data||(newsKeep.data=nws.length?{type:"sq-news",items:nws.slice(0,7).map(x=>({k:x.k,title:x.title,what:x.what,ago:ago(x.ms)})),more:Math.max(0,nws.length-7)}:null);
+    if(nws.length)dashSeen(d.id);
+    const withNews=b=>[bar,b,edge];
     let body;
-    if(fr){body=h("iframe",{class:"dfr",src:fr,title:d.title||"דשבורד",allow:"clipboard-write"});dashPg={id,frame:true,back,sub:null};}
+    if(fr){body=h("iframe",{class:"dfr",src:fr,title:d.title||"דשבורד",allow:"clipboard-write"});dashPg={id,frame:true,back,sub:null};
+      if(newsData){const f=body,send=()=>{try{f.contentWindow.postMessage(newsData,location.origin);}catch(e){}};f.addEventListener("load",()=>{send();setTimeout(send,600);});}}
     else if(d&&u){body=h("div",{class:"dscroll"},h("div",{class:"pgbody"},h("a",{class:"dz-go",href:u,target:"_blank",rel:"noopener"},"פתח את הדשבורד ←")));dashPg={id,frame:false};}
     else{const y=pD.querySelector(".dscroll")?pD.querySelector(".dscroll").scrollTop:0;
-      body=h("div",{class:"dscroll"},h("div",{class:"pgbody"},d?dashCard(d,true):h("div",{class:"empty"},dashes.length?"הדשבורד לא נמצא.":"טוען…")));dashPg={id:d?id:null,frame:false};
+      body=h("div",{class:"dscroll"},h("div",{class:"pgbody"},d?withBox(dashCard(d,true),newsData):h("div",{class:"empty"},dashes.length?"הדשבורד לא נמצא.":"טוען…")));dashPg={id:d?id:null,frame:false};
       pD.replaceChildren(...withNews(body));body.scrollTop=y;return;}
     pD.replaceChildren(...withNews(body));}
   function projTitle(id){if(id===GEN_ID)return "משימות כלליות";const p=projById(id);return p?p.name:"";}
