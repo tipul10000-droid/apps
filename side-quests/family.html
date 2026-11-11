@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=1"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0E5F56">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="1.2";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="1.3";</script>
 <script src="sq-db.js?v=9"></script>
 <title>דשבורד משפחה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,6 +99,18 @@ section{margin-bottom:22px}
 .act .t{font-weight:700;line-height:1.3}
 .act .s{color:var(--muted);font-size:13.5px}
 .act a.go{font-size:13.5px;font-weight:700;color:var(--sub);text-decoration:none;white-space:nowrap}
+/* 1.3 (Oren 11.11): "important this week" up front; done things leave the front for a folded archive */
+.wk{border:1.5px solid var(--hero2);box-shadow:0 2px 10px rgba(14,95,86,.08)}
+.wk .act .ic{flex:none;width:26px;text-align:center;font-size:17px;line-height:26px}
+.act .ck.on{background:var(--trip);border-color:var(--trip);color:#fff}
+.act.go-out{animation:famout .32s ease forwards}
+@keyframes famout{to{opacity:0;transform:translateY(-4px)}}
+.act .when{flex:none;font-size:12.5px;font-weight:700;color:var(--muted);white-space:nowrap;margin-top:3px}
+.act .when.soon{color:var(--exam)}
+.arch .act{opacity:.8}
+.arch .act .t{text-decoration:line-through;color:var(--muted);font-weight:600}
+.arch .act .ck{background:var(--trip);border-color:var(--trip);color:#fff}
+.toast button{margin-inline-start:10px;background:none;border:0;color:var(--accent);font-weight:800;cursor:pointer;padding:0}
 .prep li{margin:3px 0}
 .prep{margin:0;padding-inline-start:20px}
 .kids{display:grid;gap:12px}
@@ -135,7 +147,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
   <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis k2">
     <div class="kpi"><b id="k-ex">…</b><span>מבחנים ב-14 יום</span></div>
-    <div class="kpi"><b id="k-act">…</b><span>לפעולה</span></div>
+    <div class="kpi"><b id="k-act">…</b><span>חשוב השבוע</span></div>
     <div class="kpi nx"><div class="when"><small>הבא בתור</small><b id="k-next">…</b><small id="k-next-in"></small></div><div class="what"><div class="who" id="k-next-who"></div><div class="t" id="k-next-l">…</div><div class="t2" id="k-next-2"></div></div></div>
   </div>
 </div></header>
@@ -185,17 +197,40 @@ function timeline(evs){
 }
 function kidOf(id){return kids.find(k=>k.id===id);}
 function actions(){return (meta.actions||[]).filter(a=>fKid==="all"||(a.kids||[]).includes(fKid));}
-function prepList(){
-  // the coming 7 days: weekly routines for the days ahead + prep notes + big tests to sit on together
-  const t=todayStr(),end=addDays(t,7),items=[];
+// 1.3 (Oren 11.11.2026): one "important this week" list. Built from the board (next 7 days), the weekly
+// routines, "ask how it went" for what happened in the last 3 days, open actions and meta.week (written by Claude).
+// A tap on the circle moves the item to the folded archive (meta.week_done {key: {at, text, kids}}), with undo.
+const NDOW={"א׳":0,"ב׳":1,"ג׳":2,"ד׳":3,"ה׳":4,"ו׳":5,"ש׳":6};
+function nextDow(n){const t=todayStr();for(let i=0;i<7;i++){const d=addDays(t,i);if(new Date(d+"T12:00:00").getDay()===n)return d;}return t;}
+function weekItems(){
+  const t=todayStr(),end=addDays(t,7),from=addDays(t,-3),out=[],seen=new Set();
+  const push=x=>{if(seen.has(x.key))return;seen.add(x.key);out.push(x);};
+  const mine=ids=>fKid==="all"||(ids||[]).includes(fKid);
+  for(const a of (meta.actions||[]))if(a.status!=="done"&&mine(a.kids))push({key:"a:"+a.id,act:a.id,kids:a.kids||[],ic:"✍️",text:a.text,sub:a.sub,d:a.due||"",url:a.url});
+  for(const w of (Array.isArray(meta.week)?meta.week:[]))if(w&&w.text&&mine(w.kids)&&(!w.d||w.d>=from)&&(!w.until||w.until>=t))push({key:"w:"+(w.id||w.text),kids:w.kids||[],ic:w.icon||"⭐",text:w.text,sub:w.sub,d:w.d||"",url:w.url});
   for(const k of kids){if(fKid!=="all"&&k.id!==fKid)continue;
-    for(const w of (k.weekly||[]))if(/^(ה׳|ב׳|ג׳|ד׳|א׳|ו׳)$/.test(w.day)&&/להביא|ציוד/.test(w.text))items.push(`${kidTag(k)}כל יום ${esc(w.day)}: ${esc(w.text)}`);}
-  for(const e of allEvents()){if(e.d<t||e.d>end||e.maybe)continue;
-    if(e.prep)items.push(`${e.kids&&e.kids.length?e.kids.map(kidTag).join(""):kidTag(e.kid)}${dm(e.d)} ${esc(e.t)}: ${esc(e.prep)}`);
-    else if(e.type==="exam"||e.type==="quiz")items.push(`${kidTag(e.kid)}${dm(e.d)} ${esc(e.t)}: לשאול איך מתכונן/ת ואם צריך עזרה`);
-    else if(e.type==="trip")items.push(`${kidTag(e.kid)}${dm(e.d)} ${esc(e.t)}: לוודא ציוד, כובע, מים ואוכל`);}
-  return items;
+    for(const e of (k.events||[])){if(applies(k,e)!=="yes"||e.d<from||e.d>=t)continue;
+      if(!/^(exam|quiz|event|trip)$/.test(e.type))continue;
+      push({key:"ask:"+k.id+":"+e.d+":"+e.t,kids:[k.id],ic:"💬",text:`לשאול את ${k.name} איך ${e.type==="exam"||e.type==="quiz"?"הלך":"היה"}: ${e.t}`,sub:dm(e.d)+" · "+rel(e.d),d:"",ask:true});}
+    for(const w of (k.weekly||[])){const n=NDOW[w.day];if(n==null||!/להביא|ציוד/.test(w.text))continue;const d=nextDow(n);
+      push({key:"eq:"+k.id+":"+d+":"+w.text,kids:[k.id],ic:"🎒",text:`לדאוג של${k.name} יש ${w.text.replace(/^להביא\s*/,"").replace(/\s*\(.*$/,"")}`,sub:"כל יום "+w.day,d});}}
+  for(const e of allEvents()){if(e.d<t||e.d>end||e.maybe||e.type==="holiday")continue;
+    const ks=e.kids&&e.kids.length?e.kids.map(x=>x.id):e.kid?[e.kid.id]:[];const nm=ks.map(id=>(kidOf(id)||{}).name).filter(Boolean).join(" ו");
+    let ic="📅",text=e.t,sub=e.prep||e.sub||"";
+    if(e.type==="exam"||e.type==="quiz"){ic=TYPE[e.type][0];text=`להתכונן עם ${nm} ל${e.type==="exam"?"מבחן":"בוחן"}: ${e.t.replace(/\s*-\s*בוחן$/,"")}`;}
+    else if(e.type==="submit"){ic="📤";text=`לוודא הגשה של ${nm}: ${e.t}`;}
+    else if(e.type==="trip"){ic="🚌";text=`${e.t}: לדאוג לציוד ל${nm}`;sub=e.prep||"כובע, מים ואוכל";}
+    push({key:"ev:"+ks.join(",")+":"+e.d+":"+e.t,kids:ks,ic,text,sub,d:e.d,url:e.url});}
+  const done=meta.week_done||{};
+  return out.filter(x=>!done[x.key]).sort((a,b)=>(b.ask?1:0)-(a.ask?1:0)||((a.d||"0")<(b.d||"0")?-1:(a.d||"0")>(b.d||"0")?1:0));
 }
+function archItems(){const out=[];
+  for(const a of (meta.actions||[]))if(a.status==="done")out.push({key:"a:"+a.id,act:a.id,kids:a.kids||[],text:a.text,at:a.done_at||""});
+  const wd=meta.week_done||{};for(const k of Object.keys(wd)){const v=wd[k]||{};out.push({key:k,kids:v.kids||[],text:v.text||k,at:v.at||""});}
+  return out.filter(x=>fKid==="all"||x.kids.includes(fKid)).sort((a,b)=>(b.at||"").localeCompare(a.at||""));}
+function whenTxt(d){if(!d)return "";const n=diff(d);return n<0?"עבר":n===0?"היום":n===1?"מחר":dow(d)+" "+dm(d);}
+function actRow(x,arch){const n=x.d?diff(x.d):null;
+  return `<div class="act" data-key="${esc(x.key)}"><button class="ck" data-wk="${esc(x.key)}" aria-label="${arch?"להחזיר לרשימה":"סמן שבוצע"}">${arch?"✓":""}</button>${arch?"":`<span class="ic" aria-hidden="true">${x.ic}</span>`}<div style="flex:1;min-width:0"><div class="t">${(x.kids||[]).map(id=>kidTag(kidOf(id))).join("")}${esc(x.text)}</div>${!arch&&x.sub?`<div class="s">${esc(x.sub)}</div>`:""}${arch&&x.at?`<div class="s">בוצע ${esc(dm(x.at.slice(0,10)))}</div>`:""}</div>${!arch&&x.d?`<span class="when${n!=null&&n<=1?" soon":""}">${esc(whenTxt(x.d))}</span>`:""}${!arch&&safe(x.url)?`<a class="go" href="${esc(safe(x.url))}" target="_blank" rel="noopener">פתח</a>`:""}</div>`;}
 function kidCard(k){
   const r=(key,val)=>val?`<div class="row"><span class="k">${key}</span><span class="v">${val}</span></div>`:"";
   const hr=k.homeroom?`${esc(k.homeroom.name)}${k.homeroom.note?` <span style="color:var(--muted)">(${esc(k.homeroom.note)})</span>`:""}${k.homeroom.phone?` · <a href="tel:${esc(k.homeroom.phone.replace(/\D/g,""))}">${esc(k.homeroom.phone)}</a>`:""}${k.homeroom.email?` · <a href="mailto:${esc(k.homeroom.email)}">מייל</a>`:""}`:`<span style="color:var(--muted)">עוד לא ידוע</span>`;
@@ -222,8 +257,8 @@ function render(){
   const fut=evs.filter(e=>e.d>=t||(e.to&&e.to>=t));
   const ex14=fut.filter(e=>(e.type==="exam"||e.type==="quiz"||e.type==="submit")&&!e.maybe&&diff(e.d)<=14).length;
   const exMaybe=fut.filter(e=>(e.type==="exam"||e.type==="quiz"||e.type==="submit")&&e.maybe&&diff(e.d)<=14).length;
-  const open=actions().filter(a=>a.status!=="done");
-  $("k-ex").textContent=exMaybe?"~"+(ex14+exMaybe):ex14;$("k-act").textContent=open.length;
+  const wk=weekItems(),arch=archItems();
+  $("k-ex").textContent=exMaybe?"~"+(ex14+exMaybe):ex14;$("k-act").textContent=wk.length;
   const nx=fut.find(e=>e.type!=="holiday"&&!e.maybe&&e.d>=t);
   const nxKids=nx?(nx.kids||(nx.kid?[nx.kid]:[])):[];
   $("k-next").textContent=nx?dm(nx.d):"-";$("k-next-in").textContent=nx?inDays(diff(nx.d)):"";
@@ -233,23 +268,35 @@ function render(){
   const chat=safe(meta.chat_url);if(chat){$("chat").href=chat;$("chat").hidden=false;}
   const soon=fut.filter(e=>diff(e.d)<=14||(e.to&&e.d<=t));
   const later=fut.filter(e=>diff(e.d)>14&&(e.big||e.type==="trip"));
-  const prep=prepList();
   let h="";
-  if(open.length||actions().length)h+=`<section><div class="sh"><h2>✍️ לפעולה</h2></div><div class="card">${actions().sort((a,b)=>(a.status==="done")-(b.status==="done")).map(a=>`<div class="act${a.status==="done"?" done":""}"><button class="ck" data-act="${esc(a.id)}" aria-label="${a.status==="done"?"בטל סימון":"סמן שבוצע"}">${a.status==="done"?"✓":""}</button><div style="flex:1;min-width:0"><div class="t">${(a.kids||[]).map(id=>kidTag(kidOf(id))).join("")}${esc(a.text)}</div>${a.sub?`<div class="s">${esc(a.sub)}${a.due?" · עד "+dm(a.due):""}</div>`:""}</div>${safe(a.url)?`<a class="go" href="${esc(safe(a.url))}" target="_blank" rel="noopener">פתח</a>`:""}</div>`).join("")}</div></section>`;
-  if(prep.length)h+=`<section><div class="sh"><h2>🎒 מה להכין השבוע</h2></div><div class="card"><ul class="prep">${prep.map(x=>`<li>${x}</li>`).join("")}</ul></div></section>`;
+  h+=`<section><div class="sh"><h2>⭐ חשוב השבוע</h2></div><div class="card wk" id="wk">${wk.length?wk.map(x=>actRow(x,false)).join(""):`<div class="empty">✓ אין כלום פתוח לשבוע הקרוב</div>`}</div></section>`;
   h+=`<section><div class="sh"><h2>📅 השבועיים הקרובים</h2><small>★ מבחן גדול${kids.some(k=>k.class_n==null&&(k.events||[]).some(e=>e.cls))?" · קטן = לא בטוח":""}</small></div><div class="card">${soon.length?timeline(soon):`<div class="empty">אין כלום בלוח בשבועיים הקרובים</div>`}</div></section>`;
   if(later.length)h+=`<section><div class="sh"><h2>🔭 בהמשך</h2></div><div class="card">${timeline(later.slice(0,12))}</div></section>`;
   h+=`<section><div class="sh"><h2>👧🧑 הילדים</h2></div><div class="kids">${kids.filter(k=>fKid==="all"||k.id===fKid).map(kidCard).join("")}</div></section>`;
   if((meta.missing||[]).length&&fKid==="all")h+=`<section><details class="more"><summary>חסר בדשבורד (${meta.missing.length})</summary><div><ul>${meta.missing.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></details></section>`;
-  $("app").innerHTML=h;
+  if(arch.length)h+=`<section><details class="more arch"><summary>📦 בוצע (${arch.length})</summary><div class="card" style="margin-top:6px">${arch.map(x=>actRow(x,true)).join("")}</div></details></section>`;
+  const op=document.querySelector("details.arch")?.open;
+  $("app").innerHTML=h;if(op){const d=document.querySelector("details.arch");if(d)d.open=true;}
   $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}משפחה ${esc(window.FAM_BUILD)}`;
 }
-let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
+let tt;function toast(t,undo){const el=$("toast");el.textContent=t;if(undo){const b=document.createElement("button");b.textContent="בטל";b.onclick=()=>{el.className="toast";undo();};el.append(b);}el.className="toast on";clearTimeout(tt);tt=setTimeout(()=>el.className="toast",undo?5000:3500);}
+async function saveMeta(fields,prev,msg,undoable){Object.assign(meta,fields);render();
+  try{await db.collection("family").doc("_meta").update(fields);toast(msg,undoable?async()=>{Object.assign(meta,prev);render();try{await db.collection("family").doc("_meta").update(prev);toast("בוטל");}catch(x){toast("לא נשמר, נסה שוב");}}:null);}
+  catch(x){Object.assign(meta,prev);render();toast("לא נשמר, נסה שוב");}}
+function toggleItem(key,arch){const now=new Date().toISOString();
+  if(key.startsWith("a:")){const id=key.slice(2),prev={actions:meta.actions};
+    return saveMeta({actions:(meta.actions||[]).map(a=>a.id===id?{...a,status:arch?"open":"done",done_at:arch?null:now}:a)},prev,arch?"חזר לרשימה":"✓ עבר לבוצע",true);}
+  const wd={...(meta.week_done||{})},prev={week_done:meta.week_done||{}};
+  if(arch)delete wd[key];else{const x=weekItems().find(i=>i.key===key);wd[key]={at:now,text:x?x.text:key,kids:x?x.kids:[]};}
+  // keep the archive small: 60 newest
+  const ks=Object.keys(wd);if(ks.length>60)ks.sort((a,b)=>String(wd[a].at).localeCompare(String(wd[b].at))).slice(0,ks.length-60).forEach(k=>delete wd[k]);
+  return saveMeta({week_done:wd},prev,arch?"חזר לרשימה":"✓ עבר לבוצע",true);}
 document.addEventListener("click",async e=>{
   const c=e.target.closest(".chip");if(c){fKid=c.dataset.k;render();return;}
-  const b=e.target.closest("[data-act]");if(b&&db){const id=b.dataset.act;const prev=meta.actions;
-    meta.actions=(meta.actions||[]).map(a=>a.id===id?{...a,status:a.status==="done"?"open":"done",done_at:a.status==="done"?null:new Date().toISOString()}:a);render();
-    try{await db.collection("family").doc("_meta").update({actions:meta.actions});toast("נשמר");}catch(x){meta.actions=prev;render();toast("לא נשמר, נסה שוב");}}
+  const b=e.target.closest("[data-wk]");if(b&&db&&!b.dataset.busy){const key=b.dataset.wk,arch=!!b.closest(".arch");b.dataset.busy="1";
+    // the circle fills where it is, then the row leaves (the button itself never moves)
+    if(!arch){b.classList.add("on");b.textContent="✓";const row=b.closest(".act");setTimeout(()=>row&&row.classList.add("go-out"),300);setTimeout(()=>toggleItem(key,false),620);}
+    else toggleItem(key,true);}
 });
 document.addEventListener("change",async e=>{const s=e.target.closest("select.clsel");if(!s||!db||!s.value)return;const k=kidOf(s.dataset.kid);if(!k)return;
   k.class_n=+s.value;k.class_label=k.grade+k.class_n;k.unknown=(k.unknown||[]).filter(x=>!/באיזו כיתה/.test(x));render();
