@@ -14,6 +14,7 @@
 :root{--ok:#15803d;--okb:#dcfce7;--no:#be123c;--nob:#ffe4e6;--pl:#e8eef7}
 main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;flex-direction:column}
 .nav{display:flex;align-items:center;gap:6px;height:32px;flex:none}.nav .back{margin:0;flex:1}
+.seg{display:flex;flex:none;height:30px;border:1px solid var(--bd);border-radius:20px;overflow:hidden;background:var(--card)}.seg button{font:inherit;font-size:13px;width:68px;padding:0;border:0;background:none;color:var(--fg);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}.seg button+button{border-right:1px solid var(--bd)}.seg button.on{background:#2f5d9e;color:#fff;font-weight:700}.seg button.lk{color:#9aa4b2}@media (max-width:400px){.nav .bn{display:none}}
 .ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap}
 .prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh);margin-top:4px}
 .prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:22px}
@@ -81,7 +82,7 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
 @media (max-height:640px){.fb{min-height:56px;font-size:13px;line-height:1.35;padding:4px 8px}.op{min-height:36px}.stg span{height:18px}.prog{padding:4px 10px 6px}}
 </style>
 </head><body><main>
-<div class="nav"><a class="back" href="../">→ אביתר</a><button class="ib" id="mtb" type="button">🎯 מבחן</button><button class="ib" id="grb" type="button">📈 ציונים</button><button class="ib" id="rules" type="button">📘 תזכורת</button></div>
+<div class="nav"><a class="back" href="../" aria-label="חזרה לאביתר">→<span class="bn"> אביתר</span></a><span class="seg"><button id="prb" type="button">📚 תרגול</button><button id="mtb" type="button">🎯 מבחן</button></span><button class="ib" id="grb" type="button">📈 ציונים</button><button class="ib" id="rules" type="button">📘 תזכורת</button></div>
 <div class="prog">
  <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך <span id="nn">0</span> שאלות</span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span></span></div>
  <div class="stg" id="stg"></div>
@@ -269,7 +270,11 @@ function build(){if(S.rv){Q=shuf(S.rv.filter(i=>!S.rvd[i]));return}const s=stage
 function bar(){$('nn').textContent=N;$('dn').textContent=done();$('acc').textContent='🎯 '+(S.att?Math.round(S.okc/S.att*100)+'%':'—');$('stk').textContent='🔥 '+S.st.c;
  const sc=stageOf();$('stg').innerHTML=ST.map((n,s)=>{const t=QS.filter(q=>q[0]===s).length,d=QS.filter((q,i)=>q[0]===s&&S.d[i]).length;
   return `<span class="${d===t?'ok':s===sc?'cur':''}"><i style="width:${d/t*100}%"></i><em>${d===t?'✓':'שלב '+(s+1)}</em></span>`}).join('');
- $('mtb').textContent=S.mt?'🎯 '+(S.mt.i+1)+'/'+S.mt.q.length:'🎯 מבחן'}
+ const lk=!S.mt&&!REV&&!pracDone();$('mtb').textContent=S.mt?'🎯 '+(S.mt.i+1)+'/'+S.mt.q.length:lk?'🔒 מבחן':'🎯 מבחן';$('mtb').classList.toggle('on',!!S.mt);$('mtb').classList.toggle('lk',lk);$('prb').classList.toggle('on',!S.mt)}
+// תרגול ⇄ מבחן (אורן 11.11.2026): המבחן נעול עד שמסיימים את כל התרגול (כל שאלה נלמדה, או שאלה פתוחה שנשלחה לבדיקה). אחרי זה עוברים חופשי.
+const pracDone=()=>QS.every((q,i)=>S.d[i]||pend(i));
+function toPrac(){if(!S.mt)return;if(!confirm('לחזור לתרגול? המבחן הזה לא ייספר.'))return;S.mt=null;save();$('card').classList.remove('fin');Q=[];show();bar()}
+function toTest(){if(S.mt)return;if(!REV&&!pracDone()){const n=QS.filter((q,i)=>!S.d[i]&&!pend(i)).length;pop(`<h3>🔒 המבחן עוד נעול</h3><p>המבחן נפתח אחרי שמסיימים את כל התרגול. נשארו עוד <b>${n}</b> שאלות. כל הכבוד על ההתקדמות, ממשיכים! 💪</p><button class="cl" type="button" onclick="unpop()">להמשיך לתרגל</button>`);return}mtStart()}
 // מקטינים גופן של השאלה והתשובות עד שהכול נכנס במסך אחד
 function fit(){const q=$('q'),c=$('card');let f=19;q.style.fontSize='';document.querySelectorAll('.op').forEach(o=>o.style.fontSize='');
  while(f>12&&(q.scrollHeight>q.clientHeight+1||c.scrollHeight>c.clientHeight+1)){f--;q.style.fontSize=f+'px';if(f<16)document.querySelectorAll('.op').forEach(o=>o.style.fontSize=Math.max(12,f-1)+'px')}}
@@ -325,9 +330,9 @@ $('ws').onclick=()=>{const q=QS[cur],k=q[5],t=$('wt').value.trim();
   if(!j||!j.ok){$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent=j&&j.err==='rate'?'שלחת הרבה תשובות בשעה האחרונה. נסה שוב עוד מעט.':'לא נשלח. בדוק אינטרנט ונסה שוב (התשובה שמורה).';return}
   const o=S.oa[k]||{};S.oa[k]={id:j.id,at:new Date().toISOString(),txt:t,n:(o.n||0)+1,m:minute()};delete S.dr[k];save();$('ov3').classList.remove('on');
   answered=true;$('opts').innerHTML='<button class="op wr" type="button" id="mab">👀 התשובה לדוגמה</button>';
-  $('fb').className='fb';$('fb').textContent='⏳ נשלח לבדיקה! ממשיכים, והציון וההערה יקפצו כאן כשהם מוכנים.';
+  $('fb').className='fb';$('fb').textContent='⏳ נשלח לבדיקה! הציון וההערה יגיעו בשעה הקרובה. ממשיכים.';
   $('nx').disabled=false;bar();report();sentPop();poll.go()}).catch(()=>{$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent='לא נשלח. בדוק אינטרנט ונסה שוב (התשובה שמורה).'})};
-function sentPop(){const q=QS[cur];pop(`<h3>📤 נשלח לבדיקה</h3><p>Claude יקרא את התשובה שלך וייתן ציון מ-0 עד 10 עם הערה (בדרך כלל תוך שעה). בינתיים, תשובה לדוגמה:</p><div class="ma">${q[3]}</div><h4>מה בודקים בתשובה</h4><ul>${q[4].map(t=>'<li>'+t+'</li>').join('')}</ul><button class="cl" type="button" onclick="unpop()">המשך ›</button>`)}
+function sentPop(){const q=QS[cur];pop(`<h3>📤 נשלח לבדיקה</h3><p>Claude יקרא את התשובה שלך וייתן ציון מ-0 עד 10 עם הערה (התוצאה תגיע בשעה הקרובה). בינתיים, תשובה לדוגמה:</p><div class="ma">${q[3]}</div><h4>מה בודקים בתשובה</h4><ul>${q[4].map(t=>'<li>'+t+'</li>').join('')}</ul><button class="cl" type="button" onclick="unpop()">המשך ›</button>`)}
 // אורח: בדיקה עצמית
 function selfCheck(){const q=QS[cur];pop(`<h3>✍️ תשובה לדוגמה</h3><div class="ma">${q[3]}</div><h4>מה היה בתשובה שלך? סמן:</h4><div class="ck">${q[4].map(t=>`<label><input type="checkbox"><span>${t}</span></label>`).join('')}</div><div class="two"><button class="y" type="button" id="oy">✓ היה לי כמעט הכול</button><button class="n" type="button" id="on">✗ עוד לא</button></div>`);
  $('oy').onclick=()=>selfDone(true);$('on').onclick=()=>selfDone(false)}
@@ -355,11 +360,11 @@ function myGraph(){const E=S.gr.map(g=>({t:g[3],v:g[1]*10,k:'g'})).concat(S.mkh.
   svg=`<svg viewBox="0 0 ${W} ${H}" class="gs">${[0,25,50,75,100].map(v=>`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2e8f0"/><text x="${l-5}" y="${Y(v)+3.5}" text-anchor="end" font-size="10" fill="#64748b">${v}%</text>`).join('')}<text x="${l+pw/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#64748b">← מהציון הראשון לאחרון</text>${ln(G,'#2f5d9e')}${ln(M,'#ea580c')}</svg>
   <div class="lg"><span><i style="background:#2f5d9e"></i>✍️ תשובות פתוחות${G.length?' · ממוצע '+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1)+'/10':''}</span><span><i style="background:#ea580c"></i>🎯 מבחנים${M.length?' · אחרון '+M[M.length-1].v:''}</span></div>`}
  const L=Object.keys(S.oa).filter(k=>S.oa[k].id).sort((a,b)=>String(S.oa[b].at).localeCompare(String(S.oa[a].at)));
- pop(`<h3>📈 הציונים שלי</h3>${svg}<h4>✍️ התשובות שלי</h4>${L.length?'<div class="ol">'+L.map(k=>{const o=S.oa[k],q=QS.find(x=>x[5]===k);return`<button type="button" class="oi" data-k="${k}"><span class="scb ${o.sc==null?'p':o.sc>=7?'g':'b'}">${o.sc==null?'⏳':o.sc+'/10'}</span><span>${qOnly(q[1])}</span></button>`}).join('')+'</div>':'<p class="nt">עוד לא נשלחו תשובות.</p>'}<button class="cl" type="button" onclick="unpop()">סגירה</button>`);
+ pop(`<h3>📈 הציונים שלי</h3>${svg}<h4>✍️ התשובות שלי</h4>${L.length?'<div class="ol">'+L.map(k=>{const o=S.oa[k],q=QS.find(x=>x[5]===k);return`<button type="button" class="oi" data-k="${k}"><span class="scb ${o.sc==null?'p':o.sc>=7?'g':'b'}">${o.sc==null?'⏳':o.sc+'/10'}</span><span>${qOnly(q[1])}</span></button>`}).join('')+'</div>'+(L.some(k=>S.oa[k].sc==null)?'<p class="nt">⏳ = בבדיקה. התוצאה תגיע בשעה הקרובה.</p>':''):'<p class="nt">עוד לא נשלחו תשובות.</p>'}<button class="cl" type="button" onclick="unpop()">סגירה</button>`);
  document.querySelectorAll('.oi').forEach(b=>b.onclick=()=>{const o=S.oa[b.dataset.k];if(o.sc!=null)gradePop(b.dataset.k,false)})}
 $('nx').onclick=()=>{if(answered)show()};
 // 🎯 מבחן: 15 שאלות אמריקאיות אקראיות מכל השלבים (לפחות 2 מכל שלב), בלי הסברים עד הסוף.
-function mtStart(){if(S.mt){if(!confirm('לצאת מהמבחן באמצע? הוא לא ייספר.'))return;S.mt=null;save();$('card').classList.remove('fin');Q=[];show();return}
+function mtStart(){if(S.mt)return;
  if(!confirm('🎯 מבחן: 15 שאלות מכל החומר, בלי הסברים עד הסוף. מתחילים?'))return;
  let p=[];for(let s=0;s<ST.length;s++)p=p.concat(shuf(MCQ.filter(i=>QS[i][0]===s)).slice(0,2));
  p=p.concat(shuf(MCQ.filter(i=>!p.includes(i))).slice(0,15-p.length));
@@ -371,7 +376,7 @@ function mtEnd(){const m=S.mt,n=m.q.length,sc=Math.round(m.ok/n*100);S.mk={best:
  const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();$('card').classList.remove('fin');Q=[];show()};
  $('agb').onclick=()=>{$('card').classList.remove('fin');mtStart()};$('bkb').onclick=()=>{$('card').classList.remove('fin');Q=[];show()}}
 function finish(){bar();const f=Object.keys(S.f).length,wr=QS.map((q,i)=>i).filter(i=>S.w[i]>0);$('card').classList.add('fin');
- $('end').innerHTML=`<div class="big">🏆</div><h2>סיימת את כל ${N} השאלות!</h2><p><b>${f}</b> מתוך ${N} נכונות בניסיון הראשון.${S.mk?'<br>ציון המבחן הכי טוב: <b>'+S.mk.best+'</b>':''}${(()=>{const p=Object.values(S.oa).filter(o=>o.id&&o.sc==null).length;return p?'<br>⏳ '+p+' תשובות פתוחות עוד בבדיקה.':''})()}<br>עכשיו מבחן מסכם, כמו בבוחן.</p>`+
+ $('end').innerHTML=`<div class="big">🏆</div><h2>סיימת את כל ${N} השאלות!</h2><p><b>${f}</b> מתוך ${N} נכונות בניסיון הראשון.${S.mk?'<br>ציון המבחן הכי טוב: <b>'+S.mk.best+'</b>':''}${(()=>{const p=Object.values(S.oa).filter(o=>o.id&&o.sc==null).length;return p?'<br>⏳ '+p+' תשובות פתוחות עוד בבדיקה. התוצאות יגיעו בשעה הקרובה.':''})()}<br>עכשיו מבחן מסכם, כמו בבוחן.</p>`+
  '<button class="bt pr" id="mtg" type="button">🎯 מבחן מסכם (15 שאלות)</button>'+(wr.length?'<button class="bt" id="rvb" type="button">🔁 חזרה על השאלות שטעיתי ('+wr.length+')</button>':'');
  $('mtg').onclick=mtStart;const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();$('card').classList.remove('fin');Q=[];show()}}
 // לגרף של ההורים: ציר הדקות עולה תמיד (כמה תשובות באותה דקה = דקה אחרי דקה)
@@ -379,7 +384,7 @@ const inc=P=>{let z=-1;return P.map(p=>{z=Math.max(+p[0]||0,z+1);return[z,p[1]]}
 function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1,mk:S.mk,
  lv:1,lvn:'שאלות שנלמדו',prog:done(),pmax:N,oa:{n:S.gr.length,avg:S.gr.length?+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1):null,pend:Object.values(S.oa).filter(o=>o.id&&o.sc==null).length},
  hist:[S.gr.length?{lv:2,name:'✍️ ציון בתשובות הפתוחות',u:'',max:10,pts:inc(S.gr.map(g=>[g[2],g[1]]))}:null,S.mkh.length?{lv:3,name:'🎯 ציון במבחן',u:'',max:100,pts:inc(S.mkh.map(x=>[x.m||0,x.s]))}:null].filter(Boolean)})}
-$('mtb').onclick=mtStart;$('grb').onclick=myGraph;
+$('mtb').onclick=toTest;$('prb').onclick=toPrac;$('grb').onclick=myGraph;
 // 📘 תזכורת קטנה על החומר (אורן 11.11.2026): 4 עמודים קצרים במקום מסך אחד עמוס. גובה קבוע, הכפתורים לא זזים.
 const SP=[...document.querySelectorAll('#smb section')];let sp=0;
 function smGo(i){sp=Math.max(0,Math.min(SP.length-1,i));SP.forEach((x,k)=>x.classList.toggle('on',k===sp));$('smd').innerHTML=SP.map((x,k)=>`<i class="${k===sp?'on':''}"></i>`).join('');
