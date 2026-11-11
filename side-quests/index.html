@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.1";window.SQ_BUILD_AT="11.11.2026 13:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.2";window.SQ_BUILD_AT="11.11.2026 12:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2529,9 +2529,13 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   if(!dzSeen||typeof dzSeen!=="object"){dzSeen={_base:new Date(Date.now()-72*36e5).toISOString()};try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}}
   function dashNews(d){const out=[],now=Date.now(),wk=7*864e5;
     for(const n of (Array.isArray(d.news)?d.news:[])){const ms=Date.parse(n&&n.at||"");if(ms&&now-ms<wk&&ms<=now+6e4&&n.text)out.push({ms,text:String(n.text)});}
-    for(const t of dashTasks(d)){if(t.background||(t.fit&&t.fit.owner==="claude"))continue;const r=recentOf(t);if(!r||now-r.ms>=wk)continue;
-      const w=String(r.what||"").replace(/^(סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור)\s*[:：]\s*/,"");
-      out.push({ms:r.ms,text:r.what==="משימה חדשה"?"משימה חדשה: "+(t.title||""):(w||t.title||"עודכן"),tid:t.id});}
+    // 15.2 (Oren 11.11): only real news about the dashboard's own subject: a task that came from outside (upd: mail/scan)
+    // or a new task from outside, shown as "<task>: <what changed>". Claude's bookkeeping (sync/log lines) is not news.
+    const clean=x=>String(x||"").replace(/\s+/g," ").replace(/^(All Arounder|סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור|חדש מהמייל|עדכון מהמייל)\s*[:：]\s*/i,"").trim();
+    for(const t of dashTasks(d)){if(t.background||(t.fit&&t.fit.owner==="claude"))continue;
+      const u=t.upd&&Date.parse(t.upd.at||""),c=Date.parse(t.created_at||"");
+      if(u&&now-u<wk&&u<=now+6e4){const w=clean(t.upd.what);out.push({ms:u,text:(t.title||"")+(w&&w!==t.title?": "+w:""),tid:t.id});}
+      else if(c&&now-c<wk&&c<=now+6e4&&!OWN_SRC.test(t.source||""))out.push({ms:c,text:"משימה חדשה: "+(t.title||""),tid:t.id});}
     return out.sort((a,b)=>b.ms-a.ms);}
   function dashUnseen(d){if(!d||d.archived||d._deleted)return [];const s=Math.max(Date.parse(dzSeen[d.id]||"")||0,Date.parse(dzSeen._base||"")||0);
     try{return dashNews(d).filter(x=>x.ms>s);}catch(e){return [];}}
