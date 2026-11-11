@@ -8,12 +8,16 @@
 (function(){
   var SB='https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
   var css=
-    '.exs{display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;margin-top:14px;font:inherit;text-align:right;color:inherit;background:#fffaf3;border:1.5px solid #f3d3a8;border-radius:14px;padding:10px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:exin .25s ease-out}'+
+    '.exs{position:relative;display:flex;align-items:center;gap:14px;width:100%;box-sizing:border-box;min-height:84px;margin-top:16px;font:inherit;text-align:right;color:inherit;background:linear-gradient(#fffdf8,#fff6ea) padding-box,linear-gradient(120deg,#f59e0b,#ec4899 55%,#8b5cf6) border-box;border:2.5px solid transparent;border-radius:18px;padding:12px 14px;cursor:pointer;box-shadow:0 6px 18px rgba(236,72,153,.16),0 2px 4px rgba(31,41,51,.06);-webkit-tap-highlight-color:transparent;animation:exin .25s ease-out;overflow:hidden}'+
+    '.exs::after{content:"✨";position:absolute;top:5px;left:12px;font-size:13px;opacity:.75}'+
+    '@media (max-height:700px){.exs{min-height:72px;margin-top:12px;padding:9px 12px}.exs .ic{width:46px;height:46px;font-size:26px}}'+
     '@keyframes exin{from{opacity:0;transform:translateY(-4px)}}'+
-    '.exs:active{background:#fdf0dd}.exs *{pointer-events:none}.exs .ic{font-size:24px;flex:none}.exs .tx{flex:1;min-width:0}'+
-    '.exs b{display:block;font:700 15px/1.3 system-ui,Arial,sans-serif;color:#7c2d12}.exs small{display:block;font-size:13px;color:#5b6675;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
-    '.exs .n{flex:none;font:700 13px system-ui,Arial,sans-serif;color:#9a3412;background:#fde8cc;border-radius:20px;padding:3px 10px;white-space:nowrap}'+
-    '#exo{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;justify-content:center;align-items:flex-start;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 56px) 12px 0;box-sizing:border-box}#exo.on{display:flex}'+
+    '.exs:active{filter:brightness(.97)}.exs *{pointer-events:none}'+
+    '.exs .ic{flex:none;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px;background:linear-gradient(135deg,#fde68a,#fbcfe8);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}'+
+    '.exs .tx{flex:1;min-width:0}'+
+    '.exs b{display:block;font:800 17px/1.3 system-ui,Arial,sans-serif;color:#9d174d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.exs small{display:block;font-size:14px;color:#5b6675;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
+    '.exs .n{flex:none;font:800 13px system-ui,Arial,sans-serif;color:#fff;background:linear-gradient(135deg,#ec4899,#8b5cf6);border-radius:20px;padding:5px 11px;white-space:nowrap;box-shadow:0 2px 6px rgba(139,92,246,.3)}'+
+    '#exo{position:fixed;inset:0;background:rgba(15,23,42,.7);display:none;justify-content:center;align-items:flex-start;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 56px) 12px 0;box-sizing:border-box}#exo.on{display:flex}'+
     '#exo .pn{background:#fff;border-radius:18px;width:100%;max-width:440px;height:min(600px,calc(100dvh - env(safe-area-inset-top,0px) - 76px));display:flex;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.3);overflow:hidden}'+
     '#exo .hd{flex:none;display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #e3e8ef}#exo .hd h2{flex:1;margin:0;font-size:19px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
     '#exo .x{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid #d3d9e2;background:#fff;font-size:20px;color:#1f2933;cursor:pointer}'+
@@ -53,7 +57,7 @@
     var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
     var Y=boy?'':'י',key='study_ex_'+kid,rk='study_ex_rq_'+kid,C=lj(key,{}),R=lj(rk,{}),L=[],cur=null,busy=false;
     var b=document.createElement('button');b.type='button';b.className='exs';b.style.display='none';
-    b.innerHTML='<span class="ic">📅</span><span class="tx"><b>המבחנים הקרובים שלי</b><small></small></span><span class="n"></span>';host.appendChild(b);
+    b.innerHTML='<span class="ic">🗓️</span><span class="tx"><b>המבחנים הקרובים שלי</b><small></small></span><span class="n"></span>';host.appendChild(b);
     var o=document.createElement('div');o.id='exo';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
     o.innerHTML='<div class="pn"><div class="hd"><h2></h2><button type="button" class="x" aria-label="סגירה">✕</button></div><div class="bd"></div>'+
       '<div class="ft"><div class="m"></div><div class="bs"><button type="button" class="go">📨 לבקש מאבא ואמא</button><button type="button" class="wa">💬 לשלוח בוואטסאפ</button></div></div></div>';
