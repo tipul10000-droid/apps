@@ -99,7 +99,7 @@ function draw(){var L=kidsNow().map(function(id){var d=D[id]||{sec:0,ok:0,sq:[]}
   $('tot').textContent=(VIEW==='all'?'כל בני הדודים ביחד: ':'המשפחה ביחד: ')+'⭐ '+tot;
   $('lst').innerHTML=L.map(function(x){var k=P.kids[x.id],S=SQ(x.id),n=S?S.all.filter(function(s){return x.d.sq.indexOf(s.id)>=0}).length:0;
     return '<button type="button" class="row'+(VIEW==='all'&&fam.indexOf(x.id)>=0?' me':'')+'" data-k="'+x.id+'"><span class="pp">'+P.pic(x.id)+'</span><span class="tx"><b>'+k.n+'</b><span class="bar"><i style="width:'+Math.round(x.s/mx*100)+'%"></i></span>'+
-      '<span class="sq">'+(S?'🎁 '+n+' מתוך '+S.all.length+' סקווישים':'🎁 עוד אין לוח סקווישים')+'</span></span><span class="st">⭐ '+x.s+'<small>כוכבים</small></span><span class="go">‹</span></button>'}).join('');
+      '<span class="sq">'+(S?'🎁 '+n+' מתוך '+S.all.length+' סקווישים':'🎁 עוד אין לוח סקווישים')+'</span></span><span class="st">⭐ '+x.s+'<small>כוכבים</small></span><span class="go">›</span></button>'}).join('');
   [].forEach.call($('tg').children,function(b){b.classList.toggle('on',b.getAttribute('data-v')===VIEW)})}
 $('tg').onclick=function(e){var b=e.target.closest('button');if(!b)return;VIEW=b.getAttribute('data-v');try{localStorage.setItem(VK,VIEW)}catch(e){}draw()};
 // לוח הסקווישים של ילד: מה שאסף צבעוני (לוחצים ושומעים), מה שעוד לא: צללית אפורה

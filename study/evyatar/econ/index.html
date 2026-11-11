@@ -124,7 +124,7 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
   <div class="ax"><span>ימין: קפיטליזם</span><span>ניאו-ליברליזם</span><span>סוציאל-דמוקרטיה</span><span>שמאל: קומוניזם</span></div>
   <div class="key">✍️ "הציגו והסבירו": <b>1.</b> שם הגישה <b>2.</b> מה היא אומרת <b>3.</b> ציטוט מהטקסט.</div></section>
  </div>
- <div class="smn"><button type="button" id="smp">› הקודם</button><button type="button" class="pr" id="smf">הבא ‹</button></div>
+ <div class="smn"><button type="button" id="smp">→ הקודם</button><button type="button" class="pr" id="smf">הבא ←</button></div>
 </div></div>
 <div class="ov" id="ov2"><div class="pop"></div></div>
 <div class="ov top" id="ov3"><div class="pop wp">
@@ -388,12 +388,12 @@ $('mtb').onclick=toTest;$('prb').onclick=toPrac;$('grb').onclick=myGraph;
 // 📘 תזכורת קטנה על החומר (אורן 11.11.2026): 4 עמודים קצרים במקום מסך אחד עמוס. גובה קבוע, הכפתורים לא זזים.
 const SP=[...document.querySelectorAll('#smb section')];let sp=0;
 function smGo(i){sp=Math.max(0,Math.min(SP.length-1,i));SP.forEach((x,k)=>x.classList.toggle('on',k===sp));$('smd').innerHTML=SP.map((x,k)=>`<i class="${k===sp?'on':''}"></i>`).join('');
- $('smp').style.visibility=sp?'visible':'hidden';$('smf').textContent=sp<SP.length-1?'הבא ‹':'סיימתי ✓';$('smb').scrollTop=0}
+ $('smp').style.visibility=sp?'visible':'hidden';$('smf').textContent=sp<SP.length-1?'הבא ←':'סיימתי ✓';$('smb').scrollTop=0}
 function smOpen(){smGo(0);$('ov').classList.add('on')}
-$('rules').onclick=smOpen;$('smx').onclick=()=>$('ov').classList.remove('on');$('smp').onclick=()=>smGo(sp-1);$('smf').onclick=()=>{if(sp<SP.length-1)smGo(sp+1);else $('ov').classList.remove('on')};
+$('rules').onclick=smOpen;$('smx').onclick=()=>$('ov').classList.remove('on');$('smp').onclick=()=>smGo(sp-1);$('smf').onclick=()=>{if(sp<SP.length-1)smGo(sp+1);else{$('ov').classList.remove('on');if(!S.sm){S.sm=1;if(!REV)save()}}};
 $('ov').onclick=e=>{if(e.target===$('ov'))$('ov').classList.remove('on')};
 if(window.StudyTrack)StudyTrack.init('evyatar','econ',['ev_econ']);
-if(!S.att)setTimeout(smOpen,300); // פעם ראשונה: מציגים את הסיכום
+if(!S.sm&&!S.mt)setTimeout(smOpen,300); // אורן 11.11.2026: התזכורת נפתחת בכניסה, עד שקוראים אותה עד הסוף (סיימתי ✓), ורק אז תרגול ומבחן
 addEventListener('resize',fit);
 show();poll();poll.go();setTimeout(grades,600);
 </script>
