@@ -28,7 +28,7 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
 .tag{display:flex;justify-content:space-between;align-items:center;height:24px;flex:none;font-size:13px;color:var(--mut)}
 .tag b{font-weight:700;color:#1e3a8a;background:var(--pl);border-radius:20px;padding:2px 10px}
 .tag .rt{color:#c2410c;background:#fff1e6;border-radius:20px;padding:2px 8px;font-weight:700;visibility:hidden}.tag .rt.on{visibility:visible}
-.q{flex:1 1 auto;min-height:64px;display:flex;align-items:center;justify-content:center;direction:ltr;text-align:center;font:600 19px/1.4 system-ui,Arial,sans-serif;padding:4px 2px;overflow:hidden}
+.q{flex:0 1 auto;min-height:64px;display:flex;align-items:center;justify-content:center;direction:ltr;text-align:center;font:600 19px/1.4 system-ui,Arial,sans-serif;padding:4px 2px;overflow:hidden}
 .q u{text-decoration:none;display:inline-block;min-width:54px;border-bottom:2px solid #64748b;margin:0 2px}
 .opts{display:flex;flex-direction:column;gap:7px;flex:none}
 .op{font:600 16px/1.25 system-ui,Arial,sans-serif;direction:ltr;text-align:left;min-height:46px;padding:6px 12px;border-radius:12px;border:1.5px solid var(--bd);background:#f8fafc;color:var(--fg);cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px}
@@ -37,7 +37,7 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
 .op.ok{border-color:#22c55e;background:var(--okb);color:#14532d}.op.ok .k{background:#22c55e;color:#fff}
 .op.no{border-color:#fb7185;background:var(--nob);color:#881337}.op.no .k{background:#fb7185;color:#fff}
 .op.dim{opacity:.55}
-.fb{height:84px;flex:none;margin-top:8px;border-radius:12px;padding:6px 10px;font-size:14px;line-height:1.4;overflow:hidden;background:#f1f5f9;color:var(--mut);display:flex;align-items:center;justify-content:center;text-align:center}
+.fb{flex:1 1 0;min-height:84px;margin-top:8px;border-radius:12px;padding:8px 12px;font-size:15px;line-height:1.45;overflow:auto;background:#f1f5f9;color:var(--mut);display:flex;align-items:center;justify-content:center;text-align:center}
 .fb.ok{background:var(--okb);color:#14532d}.fb.no{background:var(--nob);color:#881337}
 .fb bdi{direction:ltr;font-weight:700}
 .nx{flex:none;margin-top:8px;height:48px;border:0;border-radius:14px;font:700 17px system-ui,Arial,sans-serif;background:var(--ac);color:#fff;cursor:pointer}
@@ -52,7 +52,7 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
 .pop h3{margin:0 0 4px;font-size:18px}.pop h4{margin:8px 0 1px;font-size:15px;color:#1e3a8a}.pop p{margin:2px 0}
 .pop .en{direction:ltr;text-align:left;display:block;font-weight:500;color:#334155;background:#f1f5f9;border-radius:8px;padding:1px 8px;margin:2px 0}
 .pop .cl{margin-top:10px;width:100%;height:42px;border:0;border-radius:12px;background:var(--ac);color:#fff;font:700 16px system-ui,Arial,sans-serif}
-@media (max-height:700px){.q{min-height:52px}.op{min-height:40px;font-size:15px;padding:4px 10px}.opts{gap:6px}.fb{height:66px;font-size:13px;margin-top:6px}.nx{height:44px;margin-top:6px}.card{padding:8px 10px 10px;margin-top:6px}.stg{margin-top:4px}}
+@media (max-height:700px){.q{min-height:52px}.op{min-height:40px;font-size:15px;padding:4px 10px}.opts{gap:6px}.fb{min-height:66px;font-size:14px;margin-top:6px}.nx{height:44px;margin-top:6px}.card{padding:8px 10px 10px;margin-top:6px}.stg{margin-top:4px}}
 </style>
 </head><body><main>
 <div class="nav"><a class="back" href="../">→ אביתר</a><button class="ib" id="rules" type="button">📘 הכללים</button></div>
@@ -181,9 +181,9 @@ function show(){answered=false;$('nx').disabled=true;$('nx').textContent='הבא
 $('opts').onclick=e=>{const b=e.target.closest('.op');if(!b||answered)return;answered=true;const ok=b.dataset.i==='0',q=QS[cur];S.att++;
  document.querySelectorAll('.op').forEach(x=>{if(x.dataset.i==='0')x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
  if(ok){S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);if(S.rv)S.rvd[cur]=1;else{S.d[cur]=1;if(!(S.w[cur]>0))S.f[cur]=1}
-  $('fb').className='fb ok';$('fb').innerHTML='✓ נכון! '+q[3]}
+  $('fb').className='fb ok';$('fb').innerHTML='<div>✓ נכון! '+q[3]+'</div>'}
  else{S.st.c=0;S.w[cur]=(S.w[cur]||0)+1;Q.splice(Math.min(3,Q.length),0,cur); // חוזרת אחרי 3 שאלות
-  $('fb').className='fb no';$('fb').innerHTML='✗ לא נכון. '+q[3]}
+  $('fb').className='fb no';$('fb').innerHTML='<div>✗ לא נכון. '+q[3]+'</div>'}
  if(S.rv&&!Q.length&&ok){S.rv=null;S.rvd={}}
  save();bar();$('nx').disabled=false;if(!Q.length&&(S.rv?false:stageOf()!==QS[cur][0]))$('nx').textContent=stageOf()<0?'לסיום 🎉':'לשלב הבא ›';report()};
 $('nx').onclick=()=>{if(answered)show()};

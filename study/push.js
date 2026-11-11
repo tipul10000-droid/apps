@@ -84,6 +84,7 @@
       var b=document.createElement('button');b.type='button';b.className='pbn';
       b.innerHTML='<span class="ic">🔔</span><span><b>התראות על תוכן חדש</b><small>כבויות · לחיצה להסבר והפעלה</small></span>';
       var sm=b.querySelector('small');if(window.STUDY_GUEST)sm.textContent='לא פעילות במצב אורח';
+      if(host.closest&&host.closest('.tools'))b.querySelector('b').textContent='התראות';
       glow(b,true);b.onclick=open;host.appendChild(b);return b},
     parent:function(btn,getPin){ // אפשר לקרוא שוב אחרי רינדור מחדש: החלון נבנה פעם אחת
       var dot=document.createElement('i');dot.style.cssText='display:inline-block;width:8px;height:8px;border-radius:50%;background:'+(PON?'#1d9e5a':'#c3cad4')+';margin-inline-start:6px;vertical-align:middle';btn.appendChild(dot);PDOT=dot;PBTN=btn;glow(btn,!PON);
