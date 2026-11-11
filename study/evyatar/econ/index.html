@@ -382,7 +382,7 @@ function finish(){bar();const f=Object.keys(S.f).length,wr=QS.map((q,i)=>i).filt
 // לגרף של ההורים: ציר הדקות עולה תמיד (כמה תשובות באותה דקה = דקה אחרי דקה)
 const inc=P=>{let z=-1;return P.map(p=>{z=Math.max(+p[0]||0,z+1);return[z,p[1]]})};
 function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1,mk:S.mk,
- lv:1,lvn:'שאלות שנלמדו',prog:done(),pmax:N,oa:{n:S.gr.length,avg:S.gr.length?+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1):null,pend:Object.values(S.oa).filter(o=>o.id&&o.sc==null).length},
+ lv:1,lvn:'שאלות שנלמדו',prog:done(),pmax:N,oad:QS.map((q,i)=>!q[2]&&S.d[i]?q[5]:null).filter(Boolean),oa:{n:S.gr.length,avg:S.gr.length?+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1):null,pend:Object.values(S.oa).filter(o=>o.id&&o.sc==null).length},
  hist:[S.gr.length?{lv:2,name:'✍️ ציון בתשובות הפתוחות',u:'',max:10,pts:inc(S.gr.map(g=>[g[2],g[1]]))}:null,S.mkh.length?{lv:3,name:'🎯 ציון במבחן',u:'',max:100,pts:inc(S.mkh.map(x=>[x.m||0,x.s]))}:null].filter(Boolean)})}
 $('mtb').onclick=toTest;$('prb').onclick=toPrac;$('grb').onclick=myGraph;
 // 📘 תזכורת קטנה על החומר (אורן 11.11.2026): 4 עמודים קצרים במקום מסך אחד עמוס. גובה קבוע, הכפתורים לא זזים.
