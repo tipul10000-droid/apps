@@ -2,7 +2,7 @@
 <!-- נוצר אוטומטית מ-lia/phonics/index.html ע"י study/tools/build.py. לא לערוך כאן: לשנות אצל ליה ולהריץ שוב. -->
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <script src="../../guest.js?v=4"></script>
-<script src="../../content.js?v=5"></script><script>StudyContent.guard('levi/phonics')</script>
+<script src="../../content.js?v=6"></script><script>StudyContent.guard('levi/phonics')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · אותיות וצלילים</title>
 <link rel="manifest" href="../../manifest.json">
@@ -73,6 +73,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 .sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
 .sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
 .sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
+.sqg .bug{background:linear-gradient(160deg,#ecfdf5,#e0f2fe,#f5f3ff);border-color:#34d399}.sqg .lock.bug{background:#f0faf6;border-color:#a7f3d0}
 .sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
 .conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:20;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
@@ -110,7 +111,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 
 <script src="../../lia/phonics/audio/list.js?v=1"></script>
 <script src="../squishies.js?v=1"></script>
-<script src="../../sqsound.js?v=7"></script>
+<script src="../../sqsound.js?v=8"></script>
 <script src="../../track.js?v=8"></script>
 <script>
 // אותיות וצלילים באנגלית לליה (אורן 6.11.2026). פוניקס שיטתי: צליל ← אות ← קריאה, 6 קבוצות לפי סדר Jolly Phonics, השוואה לעברית, הגייה אמריקאית.
@@ -305,7 +306,7 @@ function renderDone(){upd();$('card').innerHTML=head('🏆 סיימת הכל')+`
 
 // ---------- סקווישים (אותה שיטה כמו בהכתבה של דני) ----------
 const SQS=LeviSquishies.list,SQS2=LeviSquishies.list2,SQS3=LeviSquishies.list3,aura=LeviSquishies.aura,uaura=LeviSquishies.uaura,ALLSQ=LeviSquishies.all;
-const baseDone=()=>SQS.every(x=>SQ.includes(x.id)),supDone=()=>baseDone()&&SQS2.every(x=>SQ.includes(x.id)),sqEvery=()=>supDone()?50:baseDone()?12:6,sqN=()=>ALLSQ.filter(x=>SQ.includes(x.id)).length,sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
+const baseDone=()=>SQS.every(x=>SQ.includes(x.id)),supDone=()=>baseDone()&&SQS2.every(x=>SQ.includes(x.id)),sqEvery=()=>supDone()?50:baseDone()?12:6,sqOwn=()=>LeviSquishies.owned?LeviSquishies.owned():SQ,sqN=()=>{const o=sqOwn();return ALLSQ.filter(x=>o.includes(x.id)).length},sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
 let CURSQ=null;
 function squishy(){const L=supDone()?SQS3:baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(L);if(s.ult)$('sqtt').textContent=isNew?'💎 אולטרה סקווישי חדש! 💎':'💎 אולטרה סקווישי!';else if(s.sup)$('sqtt').textContent=isNew?'⭐ סופר סקווישי חדש! ⭐':'⭐ סופר סקווישי!';if(isNew){SQ.push(s.id);LS.set('levi_ph_sq',SQ)}
   CURSQ=s.id;$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לאוסף! 🧱';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
@@ -315,10 +316,10 @@ $('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='�
 function sqRender(){const ev=sqEvery(),left=ev-(S.cc||0),bd=baseDone();
   $('sqtx').innerHTML=supDone()?'כל הסופר סקווישים אצלך! עכשיו <b>אולטרה סקווישים</b> 💎: כל אחד על <b>50 תשובות נכונות</b>. אלוף!':bd?'כל החבורה אצלך! עכשיו <b>סופר סקווישים</b>: כל אחד על <b>12 תשובות נכונות</b> ⭐':'על כל <b>6 תשובות נכונות</b> מצטרף סקווישי לחבורת הלגו. אחרי 6 נפתחים 6 סופר ⭐ ואחריהם 6 אולטרה 💎 לחץ על סקווישי כדי להכיר אותו.';
   $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${supDone()?'אולטרה ':bd?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
-  const cl=s=>s.ult?' ult':s.sup?' sup':'';const tile=s=>SQ.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}</div>`;
-  $('sqg').innerHTML='<div class="sqhd">🧱 חבורת הלגו</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')+'<div class="sqhd">💎 אולטרה סקווישים</div>'+SQS3.map(tile).join('')}
+  const cl=s=>s.bug?' bug':s.ult?' ult':s.sup?' sup':'',OWN=sqOwn();const tile=s=>OWN.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}</div>`;
+  $('sqg').innerHTML='<div class="sqhd">🧱 חבורת הלגו</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')+'<div class="sqhd">💎 אולטרה סקווישים</div>'+SQS3.map(tile).join('')+((LeviSquishies.list4||[]).length?'<div class="sqhd">'+LeviSquishies.rows[3]+'</div>'+LeviSquishies.list4.map(tile).join(''):'')}
 $('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
-$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🧱';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.bug?'חרק החלל שלך 🐞':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🧱';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
 // ---------- ממשק ----------
