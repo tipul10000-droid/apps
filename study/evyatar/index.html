@@ -23,10 +23,9 @@
 <a class="back" href="../">→ כל הילדים</a>
 <div class="top"><img src="../kids/evyatar.webp" alt=""><div><h1>היי אביתר!</h1><p>מה לומדים היום?</p></div></div>
 <div class="list">
-<a class="item" href="vocab/"><span class="ic">📚</span><span class="tx"><b>אוצר מילים באנגלית</b><small>בלוקים ורמות, לוח דירוג</small></span><span class="go">‹</span></a>
-<a class="item" id="psi" href="past/"><span class="ic">⏳</span><span class="tx"><b>זמני עבר: חזרה</b><small id="ps">50 שאלות, מהקל לקשה</small><div class="bar" id="psbr" style="display:none"><i id="psb" style="width:0"></i></div></span><span class="go">‹</span></a>
-<a class="item" id="eci" href="econ/"><span class="ic">📈</span><span class="tx"><b>כלכלה: הכנה לבוחן</b><small id="ec">מחסור, גורמי ייצור, הגישות</small><div class="bar" id="ecbr" style="display:none"><i id="ecb" style="width:0"></i></div></span><span class="go">‹</span></a>
-<a class="item" href="notes/"><span class="ic">📎</span><span class="tx"><b>החומרים שלי</b><small id="nc">דפי נוסחאות, סיכומים ותמונות</small></span><span class="go">‹</span></a>
+<a class="item" data-c="evyatar/vocab" href="vocab/"><span class="ic">📚</span><span class="tx"><b>אוצר מילים באנגלית</b><small>בלוקים ורמות, לוח דירוג</small></span><span class="go">‹</span></a>
+<a class="item" id="psi" data-c="evyatar/past" data-gen="1" href="past/"><span class="ic">⏳</span><span class="tx"><b>זמני עבר: חזרה</b><small id="ps">50 שאלות, מהקל לקשה</small><div class="bar" id="psbr" style="display:none"><i id="psb" style="width:0"></i></div></span><span class="go">‹</span></a>
+<a class="item" id="eci" data-c="evyatar/econ" data-t="בוחן" data-gen="1" href="econ/"><span class="ic">📈</span><span class="tx"><b>כלכלה: הכנה לבוחן</b><small id="ec">מחסור, גורמי ייצור, הגישות</small><div class="bar" id="ecbr" style="display:none"><i id="ecb" style="width:0"></i></div></span><span class="go">‹</span></a>
 </div>
 <script>
 // לפני אישור ההורים: "בקרוב". אחרי אישור: לחיץ, עם סרט "חדש!" עד הכניסה הראשונה (אורן 6.11.2026)
@@ -37,11 +36,12 @@ function psGate(){var a=document.getElementById('psi'),ok=StudyContent.ok('evyat
 function ecGate(){var a=document.getElementById('eci'),ok=StudyContent.ok('evyatar/econ');a.classList.toggle('soon',!ok);
  if(!ok){document.getElementById('ec').textContent='בקרוב! 🚧';return}
  if(StudyContent.isNew('evyatar/econ')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
- try{var s=JSON.parse(localStorage.getItem('ev_econ'));if(s&&s.d&&s.v>=2&&(s.att||Object.keys(s.oa||{}).length)){var n=Object.keys(s.d).length;document.getElementById('ec').textContent=n+' מתוך 65 שאלות'+(s.mk?' · מבחן: '+s.mk.best:'');document.getElementById('ecbr').style.display='';document.getElementById('ecb').style.width=(n/65*100)+'%'}}catch(e){}}
+ try{var s=JSON.parse(localStorage.getItem('ev_econ'));if(s&&s.d&&s.v>=2&&(s.att||Object.keys(s.oa||{}).length)){var n=Object.keys(s.d).length;document.getElementById('ec').textContent=n+' מתוך 64 שאלות'+(s.mk?' · מבחן: '+s.mk.best:'');document.getElementById('ecbr').style.display='';document.getElementById('ecb').style.width=(n/64*100)+'%'}}catch(e){}}
 psGate();ecGate();StudyContent.refresh(function(){location.reload()});
 </script>
-<div id="rqm" style="margin-top:12px"></div>
-<div id="pbm" style="margin-top:10px"></div>
-<script src="../req.js?v=3"></script><script>StudyReq.mount('evyatar',true)</script>
-<script src="../push.js?v=3"></script><script>StudyPush.kid(document.getElementById('pbm'),'evyatar',true)</script>
+<script src="../kidlist.js?v=1"></script><script>StudyList.init('evyatar')</script>
+
+<div class="tools"><a class="tl" href="notes/"><span class="ic">📎</span><b>החומרים שלי</b></a><div id="rqm"></div><div id="pbm"></div></div>
+<script src="../req.js?v=4"></script><script>StudyReq.mount('evyatar',true)</script>
+<script src="../push.js?v=4"></script><script>StudyPush.kid(document.getElementById('pbm'),'evyatar',true)</script>
 </main></body></html>
