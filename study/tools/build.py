@@ -18,7 +18,7 @@ REP = [  # (מה, במה) — כל אחד חייב להופיע במקור, כד
   ('lia_ph_mute.', 'levi_ph_mute.'),
   ('<script src="audio/list.js', '<script src="../../lia/phonics/audio/list.js'),
   ("new Audio('audio/'+f", "new Audio('../../lia/phonics/audio/'+f"),
-  ('<script src="../squishies.js?v=3"></script>', '<script src="../squishies.js?v=1"></script>'),
+  ('<script src="../squishies.js?v=4"></script>', '<script src="../squishies.js?v=1"></script>'),
   ('LiaSquishies', 'LeviSquishies'),
   ('היי ליה! 🚀', 'היי לביא! 🚀'),
   ('<li>6 קבוצות.', '<li>7 קבוצות.'),

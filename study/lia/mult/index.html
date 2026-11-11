@@ -123,7 +123,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex
 <div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">🐞 חרק חלל חדש!</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">ללוח! 🐞</button></div></div>
 <div class="ov" id="mdov"><div class="pn"><div style="font-size:46px" id="mde">🏅</div><h2 id="mdt"></h2><p id="mdp"></p><button class="btn" id="mdy" type="button">לכוכב הבא 🚀</button></div></div>
 
-<script src="../squishies.js?v=3"></script>
+<script src="../squishies.js?v=4"></script>
 <script src="../../sqsound.js?v=8"></script>
 <script src="../../track.js?v=8"></script>
 <script>
@@ -381,7 +381,7 @@ $('mute').onclick=()=>{MUTE=!MUTE;LS.set('lia_mx_mute',MUTE);$('mute').textConte
 $('isq').innerHTML='<div class="sqhd">'+LiaSquishies.rows[3]+'</div>'+L4.map(s=>tile(s,own())).join('');
 $('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();S.intro=1;save();if(!PH2()&&!S.les[S.m])openLes(S.m);else next()};
 if(window.StudyTrack){StudyTrack.init('lia','mult',['lia_mx','lia_mx_sq']);StudyTrack.gift(()=>{const b=L4.find(x=>!SQ.includes(x.id))||pick(L4);if(!SQ.includes(b.id)){SQ.push(b.id);LS.set('lia_mx_sq',SQ)}confetti(60);upd();showSq(b,'🎁 מתנה מאבא ואמא!','ללוח! 🐞')})}
-upd();
+upd();LiaSquishies.sync(()=>{upd();if($('sqcol').classList.contains('on'))sqRender()});
 if(!S.intro)$('intro').classList.add('on');else if(!PH2()&&!S.les[S.m])openLes(S.m);
 next();
 </script>
