@@ -17,10 +17,10 @@ h1{font-size:20px;margin:6px 0}p{margin:4px 0 10px;color:#475569;line-height:1.4
 <script>
 let AC,ITEMS=[];const BUF={},CH={};let cur=null;
 function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state!=='running')AC.resume();return AC}
-function load(f){if(BUF[f])return Promise.resolve(BUF[f]);return fetch(f+'.mp3?v=7').then(r=>r.arrayBuffer()).then(ab=>new Promise((ok,no)=>ac().decodeAudioData(ab,b=>{BUF[f]=b;ok(b)},no)))}
+function load(f){if(BUF[f])return Promise.resolve(BUF[f]);return fetch(f+'.mp3?v=8').then(r=>r.arrayBuffer()).then(ab=>new Promise((ok,no)=>ac().decodeAudioData(ab,b=>{BUF[f]=b;ok(b)},no)))}
 function play(f){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}ac();if(cur)try{cur.stop()}catch(e){}load(f).then(b=>{const s=AC.createBufferSource();s.buffer=b;s.connect(AC.destination);s.start();cur=s})}
 function sum(){const t=ITEMS.filter(x=>CH[x.id]!=null).map(x=>x.w+(x.c?' ('+x.c+')':'')+' '+(CH[x.id]+1)).join(', ');document.getElementById('S').textContent=t||'עוד לא סומן כלום';return t}
-fetch('try.json?v=7').then(r=>r.json()).then(a=>{ITEMS=a;document.getElementById('L').innerHTML=a.map(x=>`<div class="w"><b>${x.w}</b><div class="r" data-id="${x.id}">${x.v.map((_,j)=>`<button type="button" data-j="${j}">${j+1}</button>`).join('')}</div></div>`).join('');
+fetch('try.json?v=8').then(r=>r.json()).then(a=>{ITEMS=a;document.getElementById('L').innerHTML=a.map(x=>`<div class="w"><b>${x.w}</b><div class="r" data-id="${x.id}">${x.v.map((_,j)=>`<button type="button" data-j="${j}">${j+1}</button>`).join('')}</div></div>`).join('');
   a.forEach(x=>x.v.forEach((_,j)=>load(x.id+'_'+j).catch(()=>{})))});
 document.getElementById('L').onclick=e=>{const b=e.target.closest('button');if(!b)return;const r=b.parentNode,id=r.dataset.id,j=+b.dataset.j;
   if(b.classList.contains('pl')){CH[id]=j;[...r.children].forEach(x=>x.classList.toggle('ok',x===b));sum()}
