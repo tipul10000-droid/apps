@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.5";window.SQ_BUILD_AT="11.11.2026 16:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.6";window.SQ_BUILD_AT="11.11.2026 17:05";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -770,6 +770,7 @@ html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 #ilAllM .ilfr li{display:flex;align-items:center;gap:8px;padding:9px 12px;border-top:1px solid var(--line,rgba(0,0,0,.12));font-size:14.5px}
 #ilAllM .ilfr li:first-child{border-top:0}
 #ilAllM .ilfr .nm{flex:1;min-width:0}
+#ilAllM .ilfr .pic{flex:none;text-decoration:none;font-size:15px;line-height:1;padding:4px;border-radius:8px;background:var(--sunk)}
 #ilAllM .ilfr .x{flex:none;font-size:12px;font-weight:800;color:#2F6B3A;background:rgba(139,195,74,.18);border-radius:999px;padding:1px 8px}
 #ilAllM .ilfr .dt{flex:none;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 #ilAllM .lft{flex:none;display:flex;border-top:1px solid var(--line,rgba(0,0,0,.14));padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -1032,7 +1033,7 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 .ab-seg button.on{background:#0E6E78;color:#fff}
 .ws-note{font-size:12px;color:var(--muted);line-height:1.5}
 .ws-it .nm .sc{display:inline-block;font-size:12.5px;font-weight:800;background:#FFC857;color:#3A2600;border-radius:7px;padding:1px 6px;margin-inline-end:7px}
-.ws-it .ac{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:4px}
+.ws-it .ac{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:4px}
 .ws-it .ac a{text-align:center;padding:8px 4px;font-size:13px;font-weight:700;color:var(--qlead);text-decoration:none;background:var(--sunk)}
 .ws-it .ac a+a{border-inline-start:1px solid var(--line)}
 .tv-trip{border-radius:16px;color:#F2FBFA;background:linear-gradient(135deg,#0E7C86,#0B4F57);box-shadow:0 3px 12px rgba(11,79,87,.25);--line:rgba(255,255,255,.18)}
@@ -2317,6 +2318,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   function relDate(iso){const n=daysUntil(iso);if(n==null)return"";if(n===0)return"היום";if(n===1)return"מחר";if(n===-1)return"אתמול";if(n<0)return"באיחור של "+heN(-n,"יום","ימים","יומיים");if(n<=14)return n===2?"בעוד יומיים":`בעוד ${n} ימים`;return fmtDate(iso);}
   // 10.7: Hebrew count with its noun: heN(1,"משימה פתוחה אחת","משימות פתוחות") / heN(3,...) = "3 משימות פתוחות"
   function heN(n,one,many,two){return n===1?one:n===2&&two?two:n+" "+many;}
+  // 15.6 (Oren 11.11.2026): photos = a link to an image search, never images pulled into the app
+  function picsUrl(q){return "https://www.google.com/search?udm=2&q="+encodeURIComponent(q);}
   function safeUrl(u){try{const x=new URL(u);return x.protocol==="https:"||x.protocol==="http:"?x.href:null;}catch(e){return null;}}
   function linkType(l){if(l.type)return l.type;const u=l.url||"";if(/claude\.ai\/(chat|code\/project|code\/session|share|project)/.test(u)&&!/\/artifact\//.test(u))return"chat";if(/\/artifact\/|\.html|github\.io/.test(u))return"page";return"other";}
   function linksOf(t){return (Array.isArray(t.links)?t.links:[]).filter(l=>l&&safeUrl(l.url));}
@@ -3643,7 +3646,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       const vis=L.reduce((s,t)=>s+(+t.v||1),0);
       return h("section",null,h("div",{class:"ilrh"},h("span",{"aria-hidden":"true"},rg.icon||"📍"),h("span",null,nm||"בלי אזור"),
           h("small",null,heN(L.length,"מקום אחד","מקומות")+(vis>L.length?` · ${vis} ביקורים`:""))),
-        h("ul",{class:"ilfr"},L.map(t=>h("li",null,h("span",{class:"nm"},t.n),(+t.v||1)>1?h("span",{class:"x",dir:"ltr",title:"ביקורים"},"×"+t.v):null,t.d?h("span",{class:"dt",dir:"ltr"},dd(t.d)):null))));}));
+        h("ul",{class:"ilfr"},L.map(t=>h("li",null,h("span",{class:"nm"},t.n),h("a",{class:"pic",href:picsUrl(t.n+" נוף"),target:"_blank",rel:"noopener","aria-label":"תמונות של "+t.n},"📷"),(+t.v||1)>1?h("span",{class:"x",dir:"ltr",title:"ביקורים"},"×"+t.v):null,t.d?h("span",{class:"dt",dir:"ltr"},dd(t.d)):null))));}));
     const vis=T.reduce((s,t)=>s+(+t.v||1),0);
     modal("ilAllM",h("div",{class:"lhd"},h("h2",null,"🇮🇱 כל הטיולים בארץ",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),
       h("div",{class:"ilsum"},`${T.length} מקומות · ${vis} ביקורים · לפי אזורים`+(I.as_of?` · נכון ל-${I.as_of}`:"")),body,
@@ -3728,8 +3731,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
           p.what?h("div",{class:"wh"},p.what):null,
           h("div",{class:"tm"},h("span",null,"🚗 +"+(d==null?"…":wsFmt(Math.max(0,d)))),h("span",{class:"tot"},"⏱ +"+(d==null?"…":wsFmt(Math.max(0,d)+st))+(st?` (עצירה ${st} דק׳${p.stop_note?": "+p.stop_note:""})`:"")),
 ),
-          h("div",{class:"ac"},h("a",{href:wsPlan(p,rt,back,d,st),target:"_blank",rel:"noopener"},"🧠 תכנון עצירה"),h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"🅿️ ניווט לחנייה")));})):h("p",{class:"ws-note"},"אין עצירות שמתאימות לסינון."),
-      h("p",{class:"ws-note"},"מקומות שהייתי בהם יורדים לסוף הרשימה. ⭐ = הציון שלי (1-10) לכמה שווה לעצור: יופי, כמה יש לעשות וכמה ייחודי. ״ניווט לחנייה״ = הדרך עם החנייה כעצירה (חיפוש בגוגל, כדאי להציץ). ״תכנון״ פותח את קלוד עם פרומפט מוכן. זמני הנסיעה מ-OSRM, בלי פקקים."));}
+          h("div",{class:"ac"},h("a",{href:wsPlan(p,rt,back,d,st),target:"_blank",rel:"noopener"},"🧠 תכנון עצירה"),h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"🅿️ ניווט לחנייה"),h("a",{href:picsUrl((p.name||p.he)+" best photos"),target:"_blank",rel:"noopener"},"📷 תמונות")));})):h("p",{class:"ws-note"},"אין עצירות שמתאימות לסינון."),
+      h("p",{class:"ws-note"},"מקומות שהייתי בהם יורדים לסוף הרשימה. ⭐ = הציון שלי (1-10) לכמה שווה לעצור: יופי, כמה יש לעשות וכמה ייחודי. ״ניווט לחנייה״ = הדרך עם החנייה כעצירה (חיפוש בגוגל, כדאי להציץ). ״תכנון״ פותח את קלוד עם פרומפט מוכן. 📷 = התמונות הכי יפות מהמקום בגוגל. זמני הנסיעה מ-OSRM, בלי פקקים."));}
   // 13.x (Oren 10.11.2026): work trips abroad = the experience side (stops on the way, not the work). Topics with area "נסיעות עבודה", open ones first.
   function workTrips(){const L=allTopics.filter(t=>!t._deleted&&t.area==="נסיעות עבודה"&&!["archived","promoted"].includes(t.status)).sort((a,b)=>(a.status==="done")-(b.status==="done")||(b.priority==="high")-(a.priority==="high"));
     const R=wsDocs.filter(d=>d.type==="route"&&!d._deleted&&d.a&&d.b);
