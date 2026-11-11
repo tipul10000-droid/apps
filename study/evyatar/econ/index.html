@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=4"></script>
+<script src="../../content.js?v=5"></script><script>StudyContent.guard('evyatar/econ')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · כלכלה: הכנה לבוחן</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css">
+<style>
+:root{--ok:#15803d;--okb:#dcfce7;--no:#be123c;--nob:#ffe4e6;--pl:#e8eef7}
+main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;flex-direction:column}
+.nav{display:flex;align-items:center;gap:6px;height:32px;flex:none}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh);margin-top:4px}
+.prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:22px}
+.prog .row b{color:var(--fg);font-size:16px}
+.chip{font-size:13px;background:var(--pl);color:#1e3a8a;border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
+.stg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:6px}
+.stg span{height:22px;border-radius:7px;background:#f1f3f7;color:var(--mut);font:600 11px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;white-space:nowrap}
+.stg span i{position:absolute;inset:0 0 0 auto;background:rgba(47,93,158,.16);width:0}
+.stg span em{position:relative;font-style:normal}
+.stg span.cur{background:#dbe7f7;color:#1e3a8a;outline:2px solid #93b4e0}.stg span.ok{background:var(--okb);color:#166534}
+.card{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px 12px;box-shadow:var(--sh);margin-top:8px;overflow:hidden}
+.tag{display:flex;justify-content:space-between;align-items:center;height:24px;flex:none;font-size:13px;color:var(--mut)}
+.tag b{font-weight:700;color:#1e3a8a;background:var(--pl);border-radius:20px;padding:2px 10px;white-space:nowrap}
+.tag .rt{color:#c2410c;background:#fff1e6;border-radius:20px;padding:2px 8px;font-weight:700;visibility:hidden}.tag .rt.on{visibility:visible}
+.q{flex:1 1 auto;min-height:64px;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:8px;text-align:center;font:600 19px/1.4 system-ui,Arial,sans-serif;padding:4px 2px;overflow:hidden}
+.q .ps{font-weight:500;text-align:right;background:#f6f8fb;border-right:3px solid #93b4e0;border-radius:10px;padding:6px 10px;font-size:.84em;line-height:1.45;color:#334155}
+.q u{text-decoration:none;display:inline-block;min-width:54px;border-bottom:2px solid #64748b;margin:0 2px}
+.opts{display:flex;flex-direction:column;gap:7px;flex:none}
+.opts.two{flex-direction:row}.opts.two .op{flex:1;justify-content:center}
+.op{font:600 16px/1.25 system-ui,Arial,sans-serif;text-align:right;min-height:46px;padding:6px 12px;border-radius:12px;border:1.5px solid var(--bd);background:#f8fafc;color:var(--fg);cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px}
+.op .k{flex:none;width:24px;height:24px;border-radius:50%;background:#e2e8f0;color:#475569;font:700 12px/24px system-ui,Arial,sans-serif;text-align:center}
+.op:active{background:#eef2f7}
+.op.ok{border-color:#22c55e;background:var(--okb);color:#14532d}.op.ok .k{background:#22c55e;color:#fff}
+.op.no{border-color:#fb7185;background:var(--nob);color:#881337}.op.no .k{background:#fb7185;color:#fff}
+.op.dim{opacity:.55}
+.op.sel{border-color:#2f5d9e;background:#dbe7f7;color:#1e3a8a}.op.sel .k{background:#2f5d9e;color:#fff}
+.op.wr{justify-content:center;background:var(--pl);border-color:#93b4e0;color:#1e3a8a}
+.fb{height:84px;flex:none;margin-top:8px;border-radius:12px;padding:6px 10px;font-size:14px;line-height:1.4;overflow:hidden;background:#f1f5f9;color:var(--mut);display:flex;align-items:center;justify-content:center;text-align:center}
+.fb.ok{background:var(--okb);color:#14532d}.fb.no{background:var(--nob);color:#881337}
+.nx{flex:none;margin-top:8px;height:48px;border:0;border-radius:14px;font:700 17px system-ui,Arial,sans-serif;background:var(--ac);color:#fff;cursor:pointer}
+.nx:disabled{background:#cbd5e1;color:#f8fafc;cursor:default}
+.end{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
+.end .big{font-size:54px;line-height:1}.end h2{margin:0;font-size:22px}.end p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
+.end .bt{width:100%;max-width:320px;height:46px;border-radius:14px;border:1.5px solid var(--bd);background:var(--card);font:700 16px system-ui,Arial,sans-serif;color:var(--fg);cursor:pointer}
+.end .bt.pr{background:var(--ac);color:#fff;border:0}
+.card.fin .tag,.card.fin .q,.card.fin .opts,.card.fin .fb,.card.fin .nx{display:none}.card.fin .end{display:flex}
+.ov{position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.ov.on{display:flex}
+.pop{background:var(--card);border-radius:18px;max-width:440px;width:100%;max-height:calc(100dvh - 70px);overflow:auto;padding:12px 14px;box-shadow:0 10px 40px rgba(0,0,0,.3);font-size:14.5px;line-height:1.45}
+.pop h3{margin:0 0 4px;font-size:18px}.pop h4{margin:10px 0 2px;font-size:15px;color:#1e3a8a}.pop p{margin:2px 0}.pop ul{margin:2px 0;padding-right:18px}
+.pop table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}.pop td,.pop th{border:1px solid var(--bd);padding:3px 5px;vertical-align:top}.pop th{background:var(--pl);color:#1e3a8a}
+.pop .ax{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;background:linear-gradient(90deg,#fee2e2,#f1f5f9,#dbeafe);border-radius:8px;padding:4px 8px;margin-top:4px}
+.pop .cl{margin-top:10px;width:100%;height:42px;border:0;border-radius:12px;background:var(--ac);color:#fff;font:700 16px system-ui,Arial,sans-serif}
+.pop .ma{background:#f6f8fb;border-right:3px solid #22c55e;border-radius:10px;padding:6px 10px;margin:4px 0}
+.pop .ck label{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px solid #eef2f7}.pop .ck input{margin-top:3px;width:18px;height:18px;flex:none}
+.pop .two{display:flex;gap:8px;margin-top:10px}.pop .two button{flex:1;height:44px;border-radius:12px;font:700 15px system-ui,Arial,sans-serif;cursor:pointer}
+.pop .two .y{border:0;background:#16a34a;color:#fff}.pop .two .n{border:1.5px solid #fb7185;background:#fff;color:#be123c}
+@media (max-height:700px){.q{min-height:52px}.op{min-height:40px;font-size:15px;padding:4px 10px}.opts{gap:6px}.fb{height:66px;font-size:13px;margin-top:6px}.nx{height:44px;margin-top:6px}.card{padding:8px 10px 10px;margin-top:6px}.stg{margin-top:4px}}
+@media (max-height:640px){.fb{height:56px;font-size:12.5px;line-height:1.3;padding:4px 8px}.op{min-height:36px}.stg span{height:18px}.prog{padding:4px 10px 6px}}
+</style>
+</head><body><main>
+<div class="nav"><a class="back" href="../">→ אביתר</a><button class="ib" id="mtb" type="button">🎯 מבחן</button><button class="ib" id="rules" type="button">📘 סיכום</button></div>
+<div class="prog">
+ <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך <span id="nn">0</span> שאלות</span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span></span></div>
+ <div class="stg" id="stg"></div>
+</div>
+<div class="card" id="card">
+ <div class="tag"><b id="tg"></b><span class="rt" id="rt">↺ שוב</span></div>
+ <div class="q" id="q"></div>
+ <div class="opts" id="opts"></div>
+ <div class="fb" id="fb">בחר את התשובה הנכונה</div>
+ <button class="nx" id="nx" type="button" disabled>הבא ›</button>
+ <div class="end" id="end"></div>
+</div>
+</main>
+<div class="ov" id="ov"><div class="pop">
+ <h3>📘 הסיכום בקצרה</h3>
+ <h4>תופעת המחסור</h4>
+ <p>המשאבים <b>תמיד מוגבלים</b>, והרצונות והצרכים <b>תמיד בלתי מוגבלים</b>. לכן יש פער מתמיד ביניהם. הפתרון: <b>סדרי עדיפויות / ויתור</b> על חלק מהרצונות. קיים גם במדינות עשירות.</p>
+ <h4>מוצרים</h4>
+ <ul><li><b>סחורות</b> = מוחשיות (טלפון, שולחן, אוכל)</li><li><b>שירותים</b> = לא מוחשיים (רפואה, ייעוץ משפטי, הקרנת סרט)</li></ul>
+ <h4>3 גורמי הייצור (משאבים)</h4>
+ <ul><li><b>טבע</b>: יד אדם לא נגעה בו (מים, נפט, אדמה, יהלום לא מלוטש)</li><li><b>עבודה</b>: מאמץ אנושי, פיזי או מחשבתי (מורים, רופאים, מהנדסים)</li><li><b>הון פיזי</b>: בני אדם ייצרו אותו (מכונות, מפעלים, יהלום מלוטש)</li></ul>
+ <h4>3 השאלות הכלכליות (נובעות מהמחסור)</h4>
+ <ul><li><b>מה וכמה לייצר?</b> אילו מוצרים ובאיזו כמות</li><li><b>איך לייצר?</b> הצירוף הכי טוב של גורמי הייצור</li><li><b>עבור מי לייצר?</b> איך לחלק בין האזרחים</li></ul>
+ <h4>שתי הגישות הכלכליות-חברתיות</h4>
+ <table><tr><th></th><th>ניאו-ליברליזם</th><th>סוציאל-דמוקרטיה</th></tr>
+ <tr><th>ערך מוביל</th><td>חירות</td><td>שוויון וצמצום פערים</td></tr>
+ <tr><th>זיהוי פוליטי</th><td>ימין כלכלי</td><td>שמאל כלכלי</td></tr>
+ <tr><th>רווחת הפרט</th><td>אחריות הפרט; המדינה עוזרת רק לנזקקים באמת</td><td>אחריות המדינה</td></tr>
+ <tr><th>מעורבות המדינה</th><td>קטנה (מזערית)</td><td>גדולה</td></tr>
+ <tr><th>שוויון</th><td>לא תפקיד המדינה</td><td>ערך עליון של המדינה</td></tr></table>
+ <div class="ax"><span>ימין: קפיטליזם</span><span>ניאו-ליברליזם</span><span>סוציאל-דמוקרטיה</span><span>שמאל: קומוניזם</span></div>
+ <h4>✍️ איך עונים על "הציגו והסבירו"</h4>
+ <p>1. <b>מציגים</b>: שם הגישה. 2. <b>מסבירים</b>: מה הגישה אומרת. 3. <b>מקשרים</b>: ציטוט או דוגמה מהטקסט שמראים את זה.</p>
+ <button class="cl" id="cl" type="button">הבנתי</button>
+</div></div>
+<div class="ov" id="ov2"><div class="pop">
+ <h3>✍️ תשובה לדוגמה</h3>
+ <div class="ma" id="ma"></div>
+ <h4>מה היה בתשובה שלך? סמן:</h4>
+ <div class="ck" id="ck"></div>
+ <div class="two"><button class="y" id="oy" type="button">✓ היה לי כמעט הכול</button><button class="n" id="on" type="button">✗ עוד לא</button></div>
+</div></div>
+<script src="../../track.js?v=8"></script>
+<script>
+// הכנה לבוחן כלכלה של אביתר (אורן 11.11.2026; הבוחן ביום שישי 13.11.2026). כיתה י׳, מגמת כלכלה.
+// לפי הסיכום שלו במחברת: תופעת המחסור, סחורות ושירותים, גורמי ייצור, 3 השאלות הכלכליות, ניאו-ליברליזם מול סוציאל-דמוקרטיה, שאלות על קטע.
+// מפתח: ev_econ. שאלה אמריקאית = [שלב, שאלה, [נכונה, מסיחים...], הסבר]. בשאלה: "קטע||שאלה" = קטע קריאה מעל השאלה.
+// שאלה פתוחה = [שלב, שאלה, null, תשובה לדוגמה, [נקודות לבדיקה עצמית]]: כותבים על דף, רואים תשובה לדוגמה ומסמנים.
+// טעות: ההסבר מוצג והשאלה חוזרת אחרי 3 שאלות, עד שעונים נכון. 🎯 מבחן = 15 שאלות אקראיות בלי עזרה, הציון נשמר.
+const ST=['מושגים','מיון','3 השאלות','2 הגישות','שאלות כמו בבוחן'];
+const SD='סוציאל-דמוקרטיה',NL='ניאו-ליברליזם';
+const Q3=['מה וכמה לייצר?','איך לייצר?','עבור מי לייצר?'];
+const FT=['גורם ייצור טבעי','עבודה','הון פיזי'];
+const rot=(a,i)=>a.slice(i).concat(a.slice(0,i)); // התשובה הנכונה ראשונה, השאר מסיחים
+const TXA='הכנסת אישרה העלאה של שכר המינימום החל מהחודש הבא. שר האוצר אמר: "זה צעד חשוב לצמצום הפערים בחברה ולחיזוק העובדים, והמדינה צריכה לדאוג שכל עובד יוכל להתפרנס בכבוד."';
+const TXB='הממשלה הציגה תוכנית: להוריד מסים לשכבות החלשות, ולהעלות מסים לשכבות המבוססות ולחברות. המתנגדים טוענים שהמבוססים והחברות הם שמקימים עסקים ומניעים את הכלכלה, ושמסים גבוהים יבריחו משקיעים לחו״ל.';
+const TXC='ראש העירייה הודיע: "נמכור את חברת האוטובוסים העירונית לחברה פרטית. התחרות בין החברות תוריד מחירים, והתושבים יבחרו בעצמם במה להשתמש. העירייה לא צריכה לנהל עסקים."';
+const TXD='משרד החינוך הודיע: "מהשנה הבאה מעונות היום יהיו בחינם לכל הילדים, במימון המסים. כך לכל ילד תהיה אותה נקודת פתיחה, בלי קשר להכנסה של ההורים."';
+const QS=[
+// שלב 1: מושגים
+[0,'מהי תופעת המחסור?',['פער מתמיד בין רצונות וצרכים בלתי מוגבלים לבין משאבים מוגבלים','מצב שבו לאנשים עניים אין מספיק כסף','מצב זמני שקורה רק במלחמה או במשבר','מצב שבו המדינה לא מייצרת מספיק בגלל ניהול גרוע'],'המחסור הוא <b>הפער הקבוע</b>: המשאבים תמיד מוגבלים, והרצונות תמיד בלתי מוגבלים. הוא לא קשור רק לעוני או למשבר.'],
+[0,'מה הפתרון לתופעת המחסור?',['לקבוע סדרי עדיפויות ולוותר על חלק מהרצונות','להדפיס עוד כסף','לייצר בלי הגבלה','להפסיק לרצות דברים חדשים'],'אי אפשר להעלים את המחסור. החברה חייבת <b>לבחור מה קודם</b> (סדרי עדיפויות) ולוותר על חלק מהרצונות.'],
+[0,'האם תופעת המחסור קיימת גם במדינה עשירה כמו שווייץ?',['כן, כי גם שם הרצונות בלתי מוגבלים והמשאבים מוגבלים','לא, במדינה עשירה יש מספיק מכל דבר','רק אם יש בה אנשים עניים','רק בשנים של מיתון'],'גם במדינה עשירה <b>המשאבים מוגבלים</b> (זמן, קרקע, עובדים, תקציב) <b>והרצונות לא נגמרים</b>. לכן גם שם צריך לבחור.'],
+[0,'הרצונות והצרכים של בני האדם הם...',['תמיד בלתי מוגבלים','מוגבלים, ונגמרים כשמתעשרים','קבועים לאורך כל החיים','זהים אצל כל האנשים'],'תמיד יש עוד משהו שרוצים: מסופקים צורך אחד, ומיד מופיע רצון חדש.'],
+[0,'מהם "משאבים" בכלכלה?',['המקורות שעומדים לרשות החברה כדי לייצר מוצרים','רק הכסף שיש למדינה','המוצרים שקונים בחנות','הרצונות של האזרחים'],'משאבים = מה שמשתמשים בו כדי <b>לייצר</b> מוצרים ולספק את הרצונות. כסף לבד הוא לא משאב ייצור.'],
+[0,'איך נקראים המשאבים בשפה הכלכלית?',['גורמי ייצור','מוצרי צריכה','שירותים','סדרי עדיפויות'],'בכלכלה קוראים למשאבים <b>גורמי ייצור</b>, ויש 3 סוגים: טבע, עבודה והון פיזי.'],
+[0,'מה ההבדל בין סחורה לשירות?',['סחורה היא מוצר מוחשי, שירות הוא מוצר לא מוחשי','סחורה זולה ושירות יקר','סחורה מייצרים במפעל, ושירות רק המדינה נותנת','אין הבדל, אלה שני שמות לאותו דבר'],'<b>סחורה</b> = אפשר לגעת בה (טלפון, שולחן). <b>שירות</b> = לא מוחשי (טיפול רפואי, ייעוץ). שניהם "מוצרים".'],
+[0,'אילו 3 סוגים של גורמי ייצור יש?',['טבע, עבודה, הון פיזי','כסף, מכונות, עובדים','סחורות, שירותים, רצונות','קרקע, מים, נפט'],'<b>טבע</b> (מה שבטבע), <b>עבודה</b> (אנשים), <b>הון פיזי</b> (מה שבני אדם ייצרו כדי לייצר).'],
+[0,'מה מאפיין גורם ייצור טבעי?',['יד אדם לא נגעה בו, והוא נוצר בטבע','הוא קיים רק בחקלאות','בני אדם ייצרו אותו','הוא בלתי מוגבל'],'טבעי = נוצר בטבע ויד אדם לא נגעה בו: מים, נפט, אדמה, עץ, יהלום לא מלוטש. גם הוא מוגבל.'],
+[0,'מה מאפיין הון פיזי?',['משאב שבני אדם ייצרו, ובעזרתו מייצרים מוצרים אחרים','הכסף שיש בבנק','כוח העבודה של האנשים','משאב שנוצר בטבע'],'הון פיזי = <b>יד אדם נגעה בו</b>: מכונות, מפעלים, כלים, יהלום מלוטש. לא כסף!'],
+// שלב 2: מיון
+[1,'📕 ספר',['סחורה','שירות'],'ספר הוא מוצר מוחשי, אפשר להחזיק אותו → <b>סחורה</b>.'],
+[1,'🦷 טיפול שיניים',['שירות','סחורה'],'מקבלים טיפול, לא חפץ → <b>שירות</b>.'],
+[1,'🚗 מכונית',['סחורה','שירות'],'מוצר מוחשי → <b>סחורה</b>.'],
+[1,'⚖️ ייעוץ משפטי',['שירות','סחורה'],'עורך הדין נותן ידע ועצה, לא חפץ → <b>שירות</b>.'],
+[1,'🎬 כרטיס קולנוע',['שירות','סחורה'],'משלמים על <b>הצפייה בסרט</b> (הקרנה), לא על פיסת הנייר → <b>שירות</b>.'],
+[1,'🏥 אשפוז בבית חולים',['שירות','סחורה'],'טיפול והשגחה של צוות רפואי → <b>שירות</b>.'],
+[1,'🛢️ נפט שנמצא באדמה',FT,'נוצר בטבע ויד אדם לא נגעה בו → <b>גורם ייצור טבעי</b>.'],
+[1,'💎 יהלום לא מלוטש',FT,'כמו שנמצא בטבע → <b>גורם ייצור טבעי</b>. (יהלום מלוטש כבר עבר עיבוד = הון פיזי.)'],
+[1,'👩‍💻 מהנדסת שכותבת קוד',rot(FT,1),'מאמץ אנושי, כאן מחשבתי → <b>עבודה</b>.'],
+[1,'🧵 מכונת תפירה במפעל בגדים',rot(FT,2),'בני אדם ייצרו אותה, ובעזרתה מייצרים בגדים → <b>הון פיזי</b>.'],
+[1,'💍 יהלום מלוטש',rot(FT,2),'יד אדם עיבדה אותו → <b>הון פיזי</b> (לפי הסיכום שלך).'],
+[1,'🍕 הפיצאי שמכין את הבצק',rot(FT,1),'אדם שעובד → <b>עבודה</b>.'],
+[1,'🔥 תנור הפיצה בפיצרייה',rot(FT,2),'מכונה שבני אדם ייצרו, ובעזרתה אופים פיצות → <b>הון פיזי</b>.'],
+// שלב 3: שלוש השאלות
+[2,'"השנה המדינה תבנה עוד 3 בתי חולים, ובגלל זה פחות כבישים חדשים."<br>לאיזו שאלה כלכלית זה עונה?',Q3,'מחליטים <b>אילו מוצרים ובאיזו כמות</b> → מה וכמה לייצר.'],
+[2,'"מפעל מתלבט אם להחליף 50 עובדים ברובוטים."<br>לאיזו שאלה כלכלית זה עונה?',rot(Q3,1),'הבחירה היא בין צירופים של גורמי ייצור (עבודה מול הון פיזי) → <b>איך לייצר</b>.'],
+[2,'"האם לתת דירות בחינם למשפחות עניות?"<br>לאיזו שאלה כלכלית זה עונה?',rot(Q3,2),'השאלה היא <b>מי יקבל</b> את המוצר → עבור מי לייצר.'],
+[2,'"חקלאי מחליט לגדל השנה עגבניות במקום מלפפונים."<br>לאיזו שאלה כלכלית זה עונה?',Q3,'בוחרים <b>מה</b> לייצר → מה וכמה לייצר.'],
+[2,'"חברת רהיטים בוחרת בין עבודת יד של נגרים לבין ייצור במכונות."<br>לאיזו שאלה כלכלית זה עונה?',rot(Q3,1),'בוחרים <b>את הדרך</b> לייצר, כלומר איזה צירוף של גורמי ייצור → איך לייצר.'],
+[2,'"האם מלגות לסטודנטים יינתנו לפי מצב כלכלי או לפי ציונים?"<br>לאיזו שאלה כלכלית זה עונה?',rot(Q3,2),'מחליטים <b>איך לחלק</b> בין האזרחים → עבור מי לייצר.'],
+[2,'על מה שואלת השאלה "איך לייצר?"',['מהו הצירוף הכי טוב (אופטימלי) של גורמי ייצור','כמה מוצרים צריך לייצר','מי יקבל את המוצרים','כמה יעלה המוצר בחנות'],'"איך" = <b>הצירוף האופטימלי של גורמי הייצור</b> לכל מוצר.'],
+[2,'מאיפה נובעות 3 השאלות הכלכליות?',['מתופעת המחסור: אי אפשר לייצר הכול לכולם','מהחוקים של הכנסת','מהרצון של חברות להרוויח','מהמלחמות'],'בגלל <b>המחסור</b> חייבים להחליט: מה לייצר, איך, ועבור מי.'],
+// שלב 4: שתי הגישות
+[3,'מהו הערך המוביל בניאו-ליברליזם?',['חירות','שוויון','צדק חברתי','ערבות הדדית'],'ניאו-ליברליזם = <b>חירות</b> של הפרט, והתערבות מזערית של המדינה.'],
+[3,'מהו הערך המוביל בסוציאל-דמוקרטיה?',['שוויון וצמצום פערים חברתיים','חירות של הפרט','תחרות חופשית','רווח של חברות'],'סוציאל-דמוקרטיה = <b>שוויון וצמצום פערים</b>, בעזרת מעורבות של המדינה.'],
+[3,'"המדינה צריכה להתערב בכלכלה כמה שפחות."',[NL,SD],'התערבות מזערית של המדינה → <b>ניאו-ליברליזם</b>.'],
+[3,'"המדינה צריכה לתת חינוך ובריאות בחינם לכולם, גם אם צריך להעלות מסים."',[SD,NL],'המדינה אחראית לרווחה ולשוויון → <b>סוציאל-דמוקרטיה</b>.'],
+[3,'"כל אדם אחראי לפרנסה שלו. המדינה צריכה לעזור רק למי שבאמת נזקק."',[NL,SD],'אחריות הפרט, ועזרה רק לנזקקים באמת → <b>ניאו-ליברליזם</b>.'],
+[3,'"צריך להעלות את שכר המינימום כדי לצמצם את הפערים."',[SD,NL],'צמצום פערים בעזרת התערבות המדינה → <b>סוציאל-דמוקרטיה</b>.'],
+[3,'"צריך להוריד את המסים לחברות, כדי שיפתחו עסקים והמשק יצמח."',[NL,SD],'פחות מסים ופחות התערבות, השוק מוביל → <b>ניאו-ליברליזם</b>.'],
+[3,'"צריך למכור את חברת החשמל הממשלתית לחברה פרטית."',[NL,SD],'הפרטה = המדינה יוצאת מהפעילות הכלכלית → <b>ניאו-ליברליזם</b>.'],
+[3,'איך מזהים את הסוציאל-דמוקרטיה בפוליטיקה?',['שמאל כלכלי','ימין כלכלי','מרכז כלכלי','אין לה זיהוי פוליטי'],'סוציאל-דמוקרטיה = <b>שמאל כלכלי</b>. ניאו-ליברליזם = ימין כלכלי.'],
+[3,'מה הסדר הנכון על הציר, מימין לשמאל?',['קפיטליזם, ניאו-ליברליזם, סוציאל-דמוקרטיה, קומוניזם','ניאו-ליברליזם, קפיטליזם, קומוניזם, סוציאל-דמוקרטיה','קומוניזם, סוציאל-דמוקרטיה, ניאו-ליברליזם, קפיטליזם','סוציאל-דמוקרטיה, קפיטליזם, ניאו-ליברליזם, קומוניזם'],'בקצה הימני קפיטליזם, ואז ניאו-ליברליזם. בקצה השמאלי קומוניזם, ולפניו סוציאל-דמוקרטיה.'],
+[3,'מה אומר הניאו-ליברליזם על שוויון וצמצום פערים?',['זה לא תפקידה של המדינה','זה הערך העליון של המדינה','המדינה צריכה לדאוג לזה רק בבריאות','המדינה צריכה לחלק את כל הכסף שווה בשווה'],'בניאו-ליברליזם <b>לא תפקיד המדינה</b> לדאוג לשוויון. בסוציאל-דמוקרטיה זה ערך עליון.'],
+[3,'מה מידת המעורבות של המדינה בכלכלה בסוציאל-דמוקרטיה?',['גדולה','קטנה','אין מעורבות בכלל','רק בזמן מלחמה'],'סוציאל-דמוקרטיה = <b>מעורבות גדולה</b> של המדינה. ניאו-ליברליזם = קטנה.'],
+// שלב 5: שאלות כמו בבוחן (קטע + שאלה)
+[4,TXA+'||באיזו גישה כלכלית-חברתית תומך שר האוצר?',[SD,NL],'"צמצום הפערים" ו"המדינה צריכה לדאוג" → <b>סוציאל-דמוקרטיה</b>.'],
+[4,TXA+'||איזה ציטוט מהטקסט הכי מוכיח את הגישה?',['"זה צעד חשוב לצמצום הפערים בחברה"','"הכנסת אישרה"','"החל מהחודש הבא"','"שר האוצר אמר"'],'מצטטים את המשפט שמראה את <b>הערך</b> של הגישה: צמצום פערים = שוויון.'],
+[4,TXB+'||באיזו גישה תומכת הממשלה?',[SD,NL],'פחות מסים לחלשים ויותר מסים על המבוססים = <b>צמצום פערים</b> → סוציאל-דמוקרטיה.'],
+[4,TXB+'||באיזו גישה תומכים המתנגדים?',[NL,SD],'החברות והמבוססים "מניעים את הכלכלה", ומסים גבוהים פוגעים בהם → <b>ניאו-ליברליזם</b>.'],
+[4,TXB+'||אילו 2 ערכים מתנגשים בין הממשלה למתנגדים?',['הממשלה: שוויון. המתנגדים: חירות','ביטחון מול בריאות','הממשלה: חירות. המתנגדים: שוויון','שוויון מול צדק חברתי'],'הממשלה: <b>שוויון</b> וצמצום פערים. המתנגדים: <b>חירות</b> כלכלית ופחות התערבות.'],
+[4,TXC+'||באיזו גישה תומך ראש העירייה?',[NL,SD],'הפרטה, תחרות, והעירייה "לא צריכה לנהל עסקים" → <b>ניאו-ליברליזם</b>.'],
+[4,TXD+'||באיזו גישה תומך משרד החינוך?',[SD,NL],'שירות חינם לכולם במימון מסים, "אותה נקודת פתיחה" → <b>סוציאל-דמוקרטיה</b>.'],
+[4,'כשכתוב בבוחן "הציגו והסבירו את הגישה", מה צריך להיות בתשובה?',['שם הגישה + מה היא אומרת + דוגמה או ציטוט מהטקסט','רק שם הגישה','רק ציטוט מהטקסט','רק הדעה האישית שלי'],'<b>מציגים</b> (שם), <b>מסבירים</b> (מה הגישה אומרת), ו<b>מקשרים</b> לטקסט עם ציטוט.'],
+[4,'הגדירו את תופעת המחסור.',null,
+ 'קיומו של המחסור נובע מכך שהמשאבים העומדים לרשות החברה האנושית תמיד מוגבלים, בעוד שהרצונות והצרכים של בני האדם תמיד בלתי מוגבלים. לכן קיים פער מתמיד בין הרצונות והצרכים לבין האפשרות לספק אותם על ידי ייצור מוצרים. הפתרון לתופעת המחסור מחייב את החברה לקבוע סדרי עדיפויות ולוותר על חלק מהרצונות.',
+ ['המשאבים מוגבלים','הרצונות והצרכים בלתי מוגבלים','יש פער מתמיד ביניהם','הפתרון: סדרי עדיפויות / ויתור']],
+[4,'האם תופעת המחסור קיימת גם במשקים עשירים? נמקו.',null,
+ 'כן. תופעת המחסור קיימת גם במשקים עשירים, כי גם בהם המשאבים (קרקע, עובדים, מכונות, תקציב) מוגבלים, והרצונות והצרכים של האנשים בלתי מוגבלים. גם מדינה עשירה צריכה לבחור, למשל בין עוד בתי חולים לבין עוד כבישים, ולוותר על חלק מהרצונות.',
+ ['כתבתי "כן"','המשאבים מוגבלים גם במדינה עשירה','הרצונות בלתי מוגבלים','דוגמה לבחירה או ויתור']],
+[4,'הסבירו אילו גורמי ייצור משתתפים בייצור פיצה, וסווגו אותם ל-3 הסוגים.',null,
+ '<b>טבע:</b> מים, האדמה שעליה גדלו החיטה והעגבניות.<br><b>עבודה:</b> הפיצאי שמכין את הבצק, השליח, הקופאי.<br><b>הון פיזי:</b> תנור הפיצה, מערבל הבצק, המבנה של הפיצרייה, אופנוע המשלוחים.',
+ ['לפחות דוגמה אחת של טבע','לפחות דוגמה אחת של עבודה','לפחות דוגמה אחת של הון פיזי','כל דוגמה בסוג הנכון']],
+[4,TXB+'||א. הציגו את הגישה של הממשלה ואת הגישה של המתנגדים. הביאו דוגמאות מהטקסט.',null,
+ '<b>הממשלה</b> תומכת בגישה <b>הסוציאל-דמוקרטית</b>, שדוגלת במעורבות גדולה של המדינה כדי להשיג שוויון וצמצום פערים חברתיים. בטקסט: הממשלה רוצה "להוריד מסים לשכבות החלשות" ו"להעלות מסים לשכבות המבוססות", כדי לצמצם פערים.<br><b>המתנגדים</b> תומכים בגישה <b>הניאו-ליברלית</b>, שדוגלת בחירות כלכלית ובהתערבות מזערית של המדינה. בטקסט: הם טוענים שהמבוססים והחברות "מניעים את הכלכלה", ושמסים גבוהים "יבריחו משקיעים".',
+ ['הממשלה = סוציאל-דמוקרטיה + הסבר','המתנגדים = ניאו-ליברליזם + הסבר','ציטוט מהטקסט לכל צד','הערכים: שוויון מול חירות']]
+];
+const N=QS.length,$=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+// S.d[i]=1 נלמדה, S.w[i]=טעויות, S.f[i]=1 נכון בניסיון הראשון. S.rv = חזרה על טעויות. S.mt = מבחן פעיל, S.mk = {best,last,n} ציוני מבחן.
+function fresh(){return{v:1,d:{},w:{},f:{},att:0,okc:0,st:{c:0,b:0},rv:null,rvd:{},mt:null,mk:null,started:new Date().toISOString()}}
+let S=LS.get('ev_econ');if(!S||!S.d)S=fresh();S.rvd=S.rvd||{};
+const save=()=>LS.set('ev_econ',S);
+const done=()=>Object.keys(S.d).length;
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const MCQ=QS.map((q,i)=>i).filter(i=>QS[i][2]);
+let Q=[],cur=-1,answered=false;
+function stageOf(){for(let s=0;s<ST.length;s++)if(QS.some((q,i)=>q[0]===s&&!S.d[i]))return s;return -1}
+function build(){if(S.rv){Q=shuf(S.rv.filter(i=>!S.rvd[i]));return}const s=stageOf();if(s<0){Q=[];return}
+ const L=QS.map((q,i)=>i).filter(i=>QS[i][0]===s&&!S.d[i]);Q=shuf(L.filter(i=>QS[i][2])).concat(L.filter(i=>!QS[i][2]))} // שאלות פתוחות בסוף השלב
+function bar(){$('nn').textContent=N;$('dn').textContent=done();$('acc').textContent='🎯 '+(S.att?Math.round(S.okc/S.att*100)+'%':'—');$('stk').textContent='🔥 '+S.st.c;
+ const sc=stageOf();$('stg').innerHTML=ST.map((n,s)=>{const t=QS.filter(q=>q[0]===s).length,d=QS.filter((q,i)=>q[0]===s&&S.d[i]).length;
+  return `<span class="${d===t?'ok':s===sc?'cur':''}"><i style="width:${d/t*100}%"></i><em>${d===t?'✓':'שלב '+(s+1)}</em></span>`}).join('');
+ $('mtb').textContent=S.mt?'🎯 '+(S.mt.i+1)+'/'+S.mt.q.length:'🎯 מבחן'}
+// מקטינים גופן של השאלה והתשובות עד שהכול נכנס במסך אחד
+function fit(){const q=$('q'),c=$('card');let f=19;q.style.fontSize='';document.querySelectorAll('.op').forEach(o=>o.style.fontSize='');
+ while(f>12&&(q.scrollHeight>q.clientHeight+1||c.scrollHeight>c.clientHeight+1)){f--;q.style.fontSize=f+'px';if(f<16)document.querySelectorAll('.op').forEach(o=>o.style.fontSize=Math.max(12,f-1)+'px')}}
+function qhtml(t){const p=t.split('||');return p.length>1?'<div class="ps">'+p[0]+'</div><div>'+p[1]+'</div>':'<div>'+t+'</div>'}
+function show(){answered=false;$('nx').disabled=true;$('nx').textContent='הבא ›';
+ if(S.mt){if(S.mt.i>=S.mt.q.length)return mtEnd();cur=S.mt.q[S.mt.i]}
+ else{if(!Q.length)build();if(!Q.length)return finish();cur=Q.shift()}
+ const q=QS[cur];
+ $('tg').textContent=S.mt?'🎯 מבחן: שאלה '+(S.mt.i+1)+' מתוך '+S.mt.q.length:S.rv?'🔁 חזרה על טעויות':'שלב '+(q[0]+1)+': '+ST[q[0]];
+ $('rt').classList.toggle('on',!S.mt&&S.w[cur]>0&&!S.rv);
+ $('q').innerHTML=qhtml(q[1]);
+ if(q[2]){const os=shuf(q[2].map((t,i)=>({t,i})));$('opts').className='opts'+(q[2].length===2?' two':'');
+  $('opts').innerHTML=os.map((o,k)=>`<button class="op" type="button" data-i="${o.i}"><span class="k">${'אבגד'[k]}</span><span>${o.t}</span></button>`).join('');
+  $('fb').className='fb';$('fb').textContent=S.mt?'מבחן: בלי הסברים עד הסוף. בהצלחה!':'בחר את התשובה הנכונה'}
+ else{$('opts').className='opts';$('opts').innerHTML='<button class="op wr" type="button" id="wrb">✍️ כתבתי תשובה, להראות תשובה לדוגמה</button>';
+  $('fb').className='fb';$('fb').textContent='שאלה פתוחה: כתוב את התשובה על דף, כמו בבוחן. אחר כך השווה לתשובה לדוגמה.'}
+ bar();fit()}
+function mark(ok){const q=QS[cur];S.att++;
+ if(ok){S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);if(S.rv)S.rvd[cur]=1;else{S.d[cur]=1;if(!(S.w[cur]>0))S.f[cur]=1}}
+ else{S.st.c=0;S.w[cur]=(S.w[cur]||0)+1;Q.splice(Math.min(3,Q.length),0,cur)} // חוזרת אחרי 3 שאלות
+ if(S.rv&&!Q.length&&ok){S.rv=null;S.rvd={}}
+ save();bar();$('nx').disabled=false;if(!Q.length&&(S.rv?false:stageOf()!==q[0]))$('nx').textContent=stageOf()<0?'לסיום 🎉':'לשלב הבא ›';report()}
+$('opts').onclick=e=>{const b=e.target.closest('.op');if(!b||answered)return;
+ if(b.id==='wrb'){openModel();return}
+ answered=true;const ok=b.dataset.i==='0',q=QS[cur];
+ if(S.mt){b.classList.add('sel');document.querySelectorAll('.op').forEach(x=>{if(x!==b)x.classList.add('dim')});
+  if(ok)S.mt.ok++;else S.mt.wr.push(cur);S.mt.i++;save();$('fb').className='fb';$('fb').textContent='נרשם. התשובות וההסברים בסוף המבחן.';$('nx').disabled=false;
+  if(S.mt.i>=S.mt.q.length)$('nx').textContent='לציון 🎯';return}
+ document.querySelectorAll('.op').forEach(x=>{if(x.dataset.i==='0')x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
+ $('fb').className='fb '+(ok?'ok':'no');$('fb').innerHTML=(ok?'✓ נכון! ':'✗ לא נכון. ')+q[3];mark(ok)};
+function openModel(){const q=QS[cur];$('ma').innerHTML=q[3];$('ck').innerHTML=q[4].map(t=>`<label><input type="checkbox"><span>${t}</span></label>`).join('');$('ov2').classList.add('on');$('ov2').querySelector('.pop').scrollTop=0}
+function closeModel(ok){$('ov2').classList.remove('on');if(answered)return;answered=true;
+ $('opts').innerHTML='<button class="op wr" type="button" id="wrb">✍️ לראות שוב את התשובה לדוגמה</button>';
+ $('fb').className='fb '+(ok?'ok':'no');$('fb').textContent=ok?'✓ מעולה! השאלה נלמדה.':'השאלה תחזור עוד מעט. קרא שוב את התשובה לדוגמה ונסה לכתוב אותה בעצמך.';mark(ok)}
+$('oy').onclick=()=>closeModel(true);$('on').onclick=()=>closeModel(false);
+$('ov2').onclick=e=>{if(e.target===$('ov2')){$('ov2').classList.remove('on')}};
+$('nx').onclick=()=>{if(answered)show()};
+// 🎯 מבחן: 15 שאלות אמריקאיות אקראיות מכל השלבים (לפחות 2 מכל שלב), בלי הסברים עד הסוף.
+function mtStart(){if(S.mt){if(!confirm('לצאת מהמבחן באמצע? הוא לא ייספר.'))return;S.mt=null;save();$('card').classList.remove('fin');Q=[];show();return}
+ if(!confirm('🎯 מבחן: 15 שאלות מכל החומר, בלי הסברים עד הסוף. מתחילים?'))return;
+ let p=[];for(let s=0;s<ST.length;s++)p=p.concat(shuf(MCQ.filter(i=>QS[i][0]===s)).slice(0,2));
+ p=p.concat(shuf(MCQ.filter(i=>!p.includes(i))).slice(0,15-p.length));
+ S.mt={q:shuf(p),i:0,ok:0,wr:[]};save();$('card').classList.remove('fin');show()}
+function mtEnd(){const m=S.mt,n=m.q.length,sc=Math.round(m.ok/n*100);S.mk={best:Math.max(sc,(S.mk&&S.mk.best)||0),last:sc,n:((S.mk&&S.mk.n)||0)+1,at:new Date().toISOString()};
+ const wr=m.wr;S.mt=null;save();report();bar();$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">${sc>=85?'🏆':sc>=70?'💪':'📚'}</div><h2>ציון: ${sc}</h2><p><b>${m.ok}</b> נכונות מתוך ${n}.<br>${sc>=85?'מוכן לבוחן! 🔥':sc>=70?'טוב! עוד סבב קטן על הטעויות וזה שם.':'שווה לעבור על הטעויות ועל הסיכום, ולנסות שוב.'}</p>`+
+ (wr.length?'<button class="bt pr" id="rvb" type="button">🔁 תרגול השאלות שטעיתי ('+wr.length+')</button>':'')+'<button class="bt" id="agb" type="button">🎯 מבחן נוסף</button><button class="bt" id="bkb" type="button">חזרה לתרגול</button>';
+ const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();$('card').classList.remove('fin');Q=[];show()};
+ $('agb').onclick=()=>{$('card').classList.remove('fin');mtStart()};$('bkb').onclick=()=>{$('card').classList.remove('fin');Q=[];show()}}
+function finish(){bar();const f=Object.keys(S.f).length,wr=QS.map((q,i)=>i).filter(i=>S.w[i]>0);$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">🏆</div><h2>סיימת את כל ${N} השאלות!</h2><p><b>${f}</b> מתוך ${N} נכונות בניסיון הראשון.${S.mk?'<br>ציון המבחן הכי טוב: <b>'+S.mk.best+'</b>':''}<br>עכשיו מבחן מסכם, כמו בבוחן.</p>`+
+ '<button class="bt pr" id="mtg" type="button">🎯 מבחן מסכם (15 שאלות)</button>'+(wr.length?'<button class="bt" id="rvb" type="button">🔁 חזרה על השאלות שטעיתי ('+wr.length+')</button>':'');
+ $('mtg').onclick=mtStart;const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();$('card').classList.remove('fin');Q=[];show()}}
+function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1,mk:S.mk})}
+$('mtb').onclick=mtStart;
+$('rules').onclick=()=>{$('ov').classList.add('on');$('ov').querySelector('.pop').scrollTop=0};$('cl').onclick=()=>$('ov').classList.remove('on');$('ov').onclick=e=>{if(e.target===$('ov'))$('ov').classList.remove('on')};
+if(window.StudyTrack)StudyTrack.init('evyatar','econ',['ev_econ']);
+if(!S.att)setTimeout(()=>$('ov').classList.add('on'),300); // פעם ראשונה: מציגים את הסיכום
+addEventListener('resize',fit);
+show();
+</script>
+</body></html>

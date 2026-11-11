@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Study Monster">
 <meta name="theme-color" content="#eef1f5">
 <link rel="stylesheet" href="../theme.css">
-<script src="../content.js?v=4"></script>
+<script src="../content.js?v=5"></script>
 <style>
 /* תוכן בבדיקה = "בקרוב" (לא לחיץ). אחרי אישור ההורים: סרט "חדש!" */
 .item.soon{opacity:.6;pointer-events:none;border-style:dashed}.item.soon .go{visibility:hidden}
@@ -17,6 +17,7 @@
 @keyframes nwr{to{background-position:200% 0}}
 /* שלושה תכנים: מצמצמים קצת במסכים נמוכים כדי שהכול ייכנס במסך אחד */
 @media (max-height:760px){.top{margin-bottom:10px}.list{gap:9px}.item{padding:11px 14px}.item .ic{width:46px;height:46px;font-size:25px}}
+@media (max-height:680px){.top{margin-bottom:6px}.top img{max-height:90px}.list{gap:7px}.item{padding:8px 12px}.item b{font-size:18px}.item small{font-size:13px}}
 </style>
 </head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
@@ -24,6 +25,7 @@
 <div class="list">
 <a class="item" href="vocab/"><span class="ic">📚</span><span class="tx"><b>אוצר מילים באנגלית</b><small>בלוקים ורמות, לוח דירוג</small></span><span class="go">‹</span></a>
 <a class="item" id="psi" href="past/"><span class="ic">⏳</span><span class="tx"><b>זמני עבר: חזרה</b><small id="ps">50 שאלות, מהקל לקשה</small><div class="bar" id="psbr" style="display:none"><i id="psb" style="width:0"></i></div></span><span class="go">‹</span></a>
+<a class="item" id="eci" href="econ/"><span class="ic">📈</span><span class="tx"><b>כלכלה: הכנה לבוחן</b><small id="ec">מחסור, גורמי ייצור, הגישות</small><div class="bar" id="ecbr" style="display:none"><i id="ecb" style="width:0"></i></div></span><span class="go">‹</span></a>
 <a class="item" href="notes/"><span class="ic">📎</span><span class="tx"><b>החומרים שלי</b><small id="nc">דפי נוסחאות, סיכומים ותמונות</small></span><span class="go">‹</span></a>
 </div>
 <script>
@@ -32,7 +34,11 @@ function psGate(){var a=document.getElementById('psi'),ok=StudyContent.ok('evyat
  if(!ok){document.getElementById('ps').textContent='בקרוב! 🚧';return}
  if(StudyContent.isNew('evyatar/past')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
  try{var s=JSON.parse(localStorage.getItem('ev_past'));if(s&&s.d&&s.att){var n=Object.keys(s.d).length;document.getElementById('ps').textContent=n+' מתוך 50 שאלות';document.getElementById('psbr').style.display='';document.getElementById('psb').style.width=(n/50*100)+'%'}}catch(e){}}
-psGate();StudyContent.refresh(function(){location.reload()});
+function ecGate(){var a=document.getElementById('eci'),ok=StudyContent.ok('evyatar/econ');a.classList.toggle('soon',!ok);
+ if(!ok){document.getElementById('ec').textContent='בקרוב! 🚧';return}
+ if(StudyContent.isNew('evyatar/econ')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
+ try{var s=JSON.parse(localStorage.getItem('ev_econ'));if(s&&s.d&&s.att){var n=Object.keys(s.d).length;document.getElementById('ec').textContent=n+' מתוך 55 שאלות'+(s.mk?' · מבחן: '+s.mk.best:'');document.getElementById('ecbr').style.display='';document.getElementById('ecb').style.width=(n/55*100)+'%'}}catch(e){}}
+psGate();ecGate();StudyContent.refresh(function(){location.reload()});
 </script>
 <div id="rqm" style="margin-top:12px"></div>
 <div id="pbm" style="margin-top:10px"></div>
