@@ -66,7 +66,12 @@
   {id:'bg_queen',bug:1,n:'חִפּוּשִׁית-הַחוֹקֶרֶת',d:'מלכת חרקי החלל, עם קסדה וזכוכית מגדלת 👑🔭 היא יודעת שכפל וחילוק הם אחים: 8 × 7 = 56, ולכן 56 : 8 = 7.',
    svg:`<circle cx="50" cy="56" r="40" fill="#bae6fd" opacity=".25" stroke="#38bdf8" stroke-width="2.5"/><path d="M28 30a30 30 0 0 1 14-12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".9"/><path d="M34 22l5-10 6 7 5-10 5 10 6-7 5 10z" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 40C30 40 22 54 24 68c2 14 14 22 26 22s24-8 26-22c2-14-6-28-26-28z" fill="#0d9488" stroke="#115e59" stroke-width="2"/><path d="M50 42v47" stroke="#115e59" stroke-width="2"/><path d="M30 56q8 4 12 14M70 56q-8 4-12 14" stroke="#5eead4" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="50" cy="38" r="13" fill="#134e4a"/>${face(50,38,.55).replace(/#1e1b4b/g,'#ccfbf1')}<circle cx="82" cy="72" r="9" fill="#e0f2fe" stroke="#475569" stroke-width="3"/><path d="M76 79l-8 9" stroke="#475569" stroke-width="4" stroke-linecap="round"/>${star(12,20,5,'#facc15')}${star(88,22,4,'#fde68a')}`}];
   // כל הסקווישים של ליה מכל התכנים (לוח אחד): מה שבמפתחות האלה במכשיר. guest.js מוסיף את הקידומת לבד.
-  const KEYS=['lia_ph_sq','lia_mx_sq'];
+  // + מה שנשמר בשרת מכל המכשירים (study_family_board, קריאה בלבד), כדי שהלוח המלא יופיע בכל תוכן ובכל מכשיר, גם באפליקציה במסך הבית ובמצב אורח (אורן 11.11.2026).
+  const KEYS=['lia_ph_sq','lia_mx_sq','lia_sq_srv'];
+  function sync(cb){try{const K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
+    fetch('https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/study_family_board',{method:'POST',headers:{'Content-Type':'application/json',apikey:K,Authorization:'Bearer '+K},body:'{}'})
+      .then(r=>r.ok?r.json():null).then(j=>{const x=j&&j.items&&j.items.find(i=>i.kid==='lia');if(!x||!Array.isArray(x.sq))return;const v=JSON.stringify(x.sq);
+        let old=null;try{old=localStorage.getItem('lia_sq_srv');localStorage.setItem('lia_sq_srv',v)}catch(e){}if(old!==v&&cb)cb()}).catch(()=>{})}catch(e){}}
   function owned(){const o=[];KEYS.forEach(k=>{try{const a=JSON.parse(localStorage.getItem(k));if(Array.isArray(a))a.forEach(x=>{if(o.indexOf(x)<0)o.push(x)})}catch(e){}});return o}
-  window.LiaSquishies={list,list2,list3,list4,aura,uaura,owned,keys:KEYS,rows:['🪐 צוות החלל','⭐ סופר סקווישים','💎 אולטרה סקווישים','🐞 חרקי חלל: לוח הכפל'],all:list.concat(list2,list3,list4),every:n=>n>=list.length?12:6,svg:s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`};
+  window.LiaSquishies={list,list2,list3,list4,aura,uaura,owned,sync,keys:KEYS,rows:['🪐 צוות החלל','⭐ סופר סקווישים','💎 אולטרה סקווישים','🐞 חרקי חלל: לוח הכפל'],all:list.concat(list2,list3,list4),every:n=>n>=list.length?12:6,svg:s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`};
 })();

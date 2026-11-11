@@ -334,7 +334,7 @@ $('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();if(!S.intro
 $('rs').onclick=()=>$('rsov').classList.add('on');$('rsn').onclick=()=>$('rsov').classList.remove('on');
 $('rsy').onclick=()=>{const st=S.started;S=fresh();S.started=st;S.intro=1;save();$('rsov').classList.remove('on');$('intro').classList.remove('on');TEST=null;LAST=null;upd();next()};
 if(window.StudyTrack){StudyTrack.init('levi','phonics',['levi_ph','levi_ph_sq']);StudyTrack.gift(()=>{squishy();$('sqtt').textContent='🎁 מתנה מאבא ואמא!';confetti(60)})}
-upd();
+upd();if(LeviSquishies.sync)LeviSquishies.sync(()=>{upd();if($('sqcol').classList.contains('on'))sqRender()});
 if(!S.intro)$('intro').classList.add('on');
 next();
 </script>

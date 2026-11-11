@@ -109,7 +109,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 <div class="ov" id="gdov"><div class="pn" style="text-align:center"><div style="font-size:46px">🏅</div><h2 id="gdt"></h2><p id="gdp"></p><button class="btn" id="gdy" type="button">⏱️ למבחן של דקה</button><button class="btn soft" style="width:100%;margin-top:8px" id="gdn" type="button">אחר כך, ממשיכות</button></div></div>
 
 <script src="audio/list.js?v=1"></script>
-<script src="../squishies.js?v=3"></script>
+<script src="../squishies.js?v=4"></script>
 <script src="../../sqsound.js?v=8"></script>
 <script src="../../track.js?v=8"></script>
 <script>
@@ -333,7 +333,7 @@ $('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();if(!S.intro
 $('rs').onclick=()=>$('rsov').classList.add('on');$('rsn').onclick=()=>$('rsov').classList.remove('on');
 $('rsy').onclick=()=>{const st=S.started;S=fresh();S.started=st;S.intro=1;save();$('rsov').classList.remove('on');$('intro').classList.remove('on');TEST=null;LAST=null;upd();next()};
 if(window.StudyTrack){StudyTrack.init('lia','phonics',['lia_ph','lia_ph_sq']);StudyTrack.gift(()=>{squishy();$('sqtt').textContent='🎁 מתנה מאבא ואמא!';confetti(60)})}
-upd();
+upd();if(LiaSquishies.sync)LiaSquishies.sync(()=>{upd();if($('sqcol').classList.contains('on'))sqRender()});
 if(!S.intro)$('intro').classList.add('on');
 next();
 </script>
