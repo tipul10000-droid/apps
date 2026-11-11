@@ -18,6 +18,10 @@
       S.forEach(function(a){L.appendChild(a)})}
     function sc(a){if(a.classList.contains('soon'))return 900;return (a.querySelector('.nwr')?0:50)+(a.dataset.n!==''?+a.dataset.n:30)} // חדש + מבחן קרוב = הכי למעלה
     draw();
+    // אורן 11.11.2026: "חדש!" רק עד הכניסה הראשונה. לחיצה על התוכן מסמנת אותו כנראה מיד, וחזרה לדף (גם מהמטמון של ספארי) מורידה את הסרט.
+    function unNew(){I.forEach(function(a){var r=a.querySelector('.nwr');if(r&&window.StudyContent&&!StudyContent.isNew(a.dataset.c))r.remove()});draw()}
+    I.forEach(function(a){a.addEventListener('click',function(){if(window.StudyContent&&!a.classList.contains('soon'))StudyContent.seen(a.dataset.c)})});
+    addEventListener('pageshow',function(e){if(e.persisted)unNew()});
     I.forEach(function(a){var p=a.dataset.c.split('/');if(p[0]!==kid)return;
       fetch(SB+'study_test_get',{method:'POST',headers:{'Content-Type':'application/json',apikey:SK,Authorization:'Bearer '+SK},body:JSON.stringify({p_kid:p[0],p_app:p[1]})})
        .then(function(r){return r.ok?r.json():null}).then(function(j){if(!j)return;var v=j.d&&!(j.auto&&a.dataset.gen)?{d:j.d}:{};
