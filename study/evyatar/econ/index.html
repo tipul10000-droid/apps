@@ -60,11 +60,22 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
 .pop .ck label{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px solid #eef2f7}.pop .ck input{margin-top:3px;width:18px;height:18px;flex:none}
 .pop .two{display:flex;gap:8px;margin-top:10px}.pop .two button{flex:1;height:44px;border-radius:12px;font:700 15px system-ui,Arial,sans-serif;cursor:pointer}
 .pop .two .y{border:0;background:#16a34a;color:#fff}.pop .two .n{border:1.5px solid #fb7185;background:#fff;color:#be123c}
+.ov.top{align-items:flex-start;padding-top:max(calc(env(safe-area-inset-top) + 6px),44px)}
+.wp{display:flex;flex-direction:column;gap:8px;max-height:none}.wh{display:flex;justify-content:space-between;align-items:center}.wh h3{margin:0}
+.wx{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:#f8fafc;font-size:16px;cursor:pointer}
+.wq{max-height:22dvh;overflow:auto;font-weight:600;font-size:15px}.wq .ps{font-weight:500;background:#f6f8fb;border-right:3px solid #93b4e0;border-radius:10px;padding:5px 9px;font-size:13.5px;margin-bottom:4px;color:#334155}
+#wt{width:100%;box-sizing:border-box;height:20dvh;min-height:110px;resize:none;border:1.5px solid #93b4e0;border-radius:12px;padding:8px 10px;font:16px/1.45 system-ui,Arial,sans-serif;color:var(--fg);background:#fff}
+.wf{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--mut);min-height:17px}.wm{color:#be123c;font-weight:600}.wp .cl{margin-top:0}.cl:disabled{background:#94a3b8}
+.scb{display:inline-block;border-radius:20px;padding:1px 9px;font-weight:800;white-space:nowrap}.scb.g{background:var(--okb);color:#166534}.scb.b{background:#fff1e6;color:#c2410c}.scb.p{background:#f1f5f9;color:#64748b}
+.pop .qq{font-weight:600;color:#334155}.pop .mine{background:#fffbea;border-right:3px solid #f59e0b;border-radius:10px;padding:6px 10px;white-space:pre-wrap}.pop .nt{color:var(--mut);font-size:13.5px;margin-top:8px}
+.pop details{margin-top:8px}.pop summary{color:#1e3a8a;font-weight:700;cursor:pointer}.gs{width:100%;height:auto;display:block}
+.lg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:#334155}.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:4px;vertical-align:-1px}
+.ol{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:12px;overflow:hidden}.oi{display:flex;gap:8px;align-items:center;text-align:right;font:inherit;font-size:13.5px;background:#fff;border:0;border-bottom:1px solid #eef2f7;padding:7px 9px;cursor:pointer;color:var(--fg)}.oi:last-child{border-bottom:0}
 @media (max-height:700px){.q{min-height:52px}.op{min-height:40px;font-size:15px;padding:4px 10px}.opts{gap:6px}.fb{height:66px;font-size:13px;margin-top:6px}.nx{height:44px;margin-top:6px}.card{padding:8px 10px 10px;margin-top:6px}.stg{margin-top:4px}}
 @media (max-height:640px){.fb{height:56px;font-size:12.5px;line-height:1.3;padding:4px 8px}.op{min-height:36px}.stg span{height:18px}.prog{padding:4px 10px 6px}}
 </style>
 </head><body><main>
-<div class="nav"><a class="back" href="../">→ אביתר</a><button class="ib" id="mtb" type="button">🎯 מבחן</button><button class="ib" id="rules" type="button">📘 סיכום</button></div>
+<div class="nav"><a class="back" href="../">→ אביתר</a><button class="ib" id="mtb" type="button">🎯 מבחן</button><button class="ib" id="grb" type="button">📈 ציונים</button><button class="ib" id="rules" type="button">📘 סיכום</button></div>
 <div class="prog">
  <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך <span id="nn">0</span> שאלות</span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span></span></div>
  <div class="stg" id="stg"></div>
@@ -100,19 +111,19 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
  <p>1. <b>מציגים</b>: שם הגישה. 2. <b>מסבירים</b>: מה הגישה אומרת. 3. <b>מקשרים</b>: ציטוט או דוגמה מהטקסט שמראים את זה.</p>
  <button class="cl" id="cl" type="button">הבנתי</button>
 </div></div>
-<div class="ov" id="ov2"><div class="pop">
- <h3>✍️ תשובה לדוגמה</h3>
- <div class="ma" id="ma"></div>
- <h4>מה היה בתשובה שלך? סמן:</h4>
- <div class="ck" id="ck"></div>
- <div class="two"><button class="y" id="oy" type="button">✓ היה לי כמעט הכול</button><button class="n" id="on" type="button">✗ עוד לא</button></div>
+<div class="ov" id="ov2"><div class="pop"></div></div>
+<div class="ov top" id="ov3"><div class="pop wp">
+ <div class="wh"><h3>✍️ התשובה שלך</h3><button class="wx" id="wx" type="button" aria-label="סגירה">✕</button></div>
+ <div class="wq" id="wq"></div>
+ <textarea id="wt" maxlength="1500" placeholder="כתוב כאן 2-3 משפטים, כמו בבוחן…"></textarea>
+ <div class="wf"><span id="wm" class="wm"></span><span id="wc" dir="ltr">0 / 1500</span></div>
+ <button class="cl" id="ws" type="button">📤 לשלוח לבדיקה</button>
 </div></div>
 <script src="../../track.js?v=8"></script>
 <script>
 // הכנה לבוחן כלכלה של אביתר (אורן 11.11.2026; הבוחן ביום שישי 13.11.2026). כיתה י׳, מגמת כלכלה.
 // לפי הסיכום שלו במחברת: תופעת המחסור, סחורות ושירותים, גורמי ייצור, 3 השאלות הכלכליות, ניאו-ליברליזם מול סוציאל-דמוקרטיה, שאלות על קטע.
 // מפתח: ev_econ. שאלה אמריקאית = [שלב, שאלה, [נכונה, מסיחים...], הסבר]. בשאלה: "קטע||שאלה" = קטע קריאה מעל השאלה.
-// שאלה פתוחה = [שלב, שאלה, null, תשובה לדוגמה, [נקודות לבדיקה עצמית]]: כותבים על דף, רואים תשובה לדוגמה ומסמנים.
 // טעות: ההסבר מוצג והשאלה חוזרת אחרי 3 שאלות, עד שעונים נכון. 🎯 מבחן = 15 שאלות אקראיות בלי עזרה, הציון נשמר.
 const ST=['מושגים','מיון','3 השאלות','2 הגישות','שאלות כמו בבוחן'];
 const SD='סוציאל-דמוקרטיה',NL='ניאו-ליברליזם';
@@ -180,32 +191,68 @@ const QS=[
 [4,TXC+'||באיזו גישה תומך ראש העירייה?',[NL,SD],'הפרטה, תחרות, והעירייה "לא צריכה לנהל עסקים" → <b>ניאו-ליברליזם</b>.'],
 [4,TXD+'||באיזו גישה תומך משרד החינוך?',[SD,NL],'שירות חינם לכולם במימון מסים, "אותה נקודת פתיחה" → <b>סוציאל-דמוקרטיה</b>.'],
 [4,'כשכתוב בבוחן "הציגו והסבירו את הגישה", מה צריך להיות בתשובה?',['שם הגישה + מה היא אומרת + דוגמה או ציטוט מהטקסט','רק שם הגישה','רק ציטוט מהטקסט','רק הדעה האישית שלי'],'<b>מציגים</b> (שם), <b>מסבירים</b> (מה הגישה אומרת), ו<b>מקשרים</b> לטקסט עם ציטוט.'],
-[4,'הגדירו את תופעת המחסור.',null,
- 'קיומו של המחסור נובע מכך שהמשאבים העומדים לרשות החברה האנושית תמיד מוגבלים, בעוד שהרצונות והצרכים של בני האדם תמיד בלתי מוגבלים. לכן קיים פער מתמיד בין הרצונות והצרכים לבין האפשרות לספק אותם על ידי ייצור מוצרים. הפתרון לתופעת המחסור מחייב את החברה לקבוע סדרי עדיפויות ולוותר על חלק מהרצונות.',
- ['המשאבים מוגבלים','הרצונות והצרכים בלתי מוגבלים','יש פער מתמיד ביניהם','הפתרון: סדרי עדיפויות / ויתור']],
-[4,'האם תופעת המחסור קיימת גם במשקים עשירים? נמקו.',null,
- 'כן. תופעת המחסור קיימת גם במשקים עשירים, כי גם בהם המשאבים (קרקע, עובדים, מכונות, תקציב) מוגבלים, והרצונות והצרכים של האנשים בלתי מוגבלים. גם מדינה עשירה צריכה לבחור, למשל בין עוד בתי חולים לבין עוד כבישים, ולוותר על חלק מהרצונות.',
- ['כתבתי "כן"','המשאבים מוגבלים גם במדינה עשירה','הרצונות בלתי מוגבלים','דוגמה לבחירה או ויתור']],
-[4,'הסבירו אילו גורמי ייצור משתתפים בייצור פיצה, וסווגו אותם ל-3 הסוגים.',null,
- '<b>טבע:</b> מים, האדמה שעליה גדלו החיטה והעגבניות.<br><b>עבודה:</b> הפיצאי שמכין את הבצק, השליח, הקופאי.<br><b>הון פיזי:</b> תנור הפיצה, מערבל הבצק, המבנה של הפיצרייה, אופנוע המשלוחים.',
- ['לפחות דוגמה אחת של טבע','לפחות דוגמה אחת של עבודה','לפחות דוגמה אחת של הון פיזי','כל דוגמה בסוג הנכון']],
-[4,TXB+'||א. הציגו את הגישה של הממשלה ואת הגישה של המתנגדים. הביאו דוגמאות מהטקסט.',null,
- '<b>הממשלה</b> תומכת בגישה <b>הסוציאל-דמוקרטית</b>, שדוגלת במעורבות גדולה של המדינה כדי להשיג שוויון וצמצום פערים חברתיים. בטקסט: הממשלה רוצה "להוריד מסים לשכבות החלשות" ו"להעלות מסים לשכבות המבוססות", כדי לצמצם פערים.<br><b>המתנגדים</b> תומכים בגישה <b>הניאו-ליברלית</b>, שדוגלת בחירות כלכלית ובהתערבות מזערית של המדינה. בטקסט: הם טוענים שהמבוססים והחברות "מניעים את הכלכלה", ושמסים גבוהים "יבריחו משקיעים".',
- ['הממשלה = סוציאל-דמוקרטיה + הסבר','המתנגדים = ניאו-ליברליזם + הסבר','ציטוט מהטקסט לכל צד','הערכים: שוויון מול חירות']]
+// שאלות פתוחות (אורן 11.11.2026): אביתר מקליד 2-3 משפטים באפליקציה, התשובה נשמרת ב-study_answers, Claude בודק ונותן ציון 0-10 והערה.
+// [שלב, שאלה, null, תשובה לדוגמה, [מה צריך להיות בתשובה = מחוון לבדיקה], מזהה]. ציון 7 ומעלה = נלמדה; פחות = חוזרת לניסיון נוסף.
+[0,'במילים שלך: מהי תופעת המחסור, ומה הפתרון שלה?',null,
+ 'תופעת המחסור היא פער מתמיד בין הרצונות והצרכים של בני האדם, שהם בלתי מוגבלים, לבין המשאבים, שהם תמיד מוגבלים. לכן אי אפשר לספק את כל הרצונות. הפתרון הוא לקבוע סדרי עדיפויות ולוותר על חלק מהרצונות.',
+ ['המשאבים מוגבלים','הרצונות והצרכים בלתי מוגבלים','יש פער מתמיד ביניהם','הפתרון: סדרי עדיפויות / ויתור'],'o1'],
+[0,'האם תופעת המחסור קיימת גם במשקים עשירים? נמק.',null,
+ 'כן. גם במשק עשיר המשאבים מוגבלים (קרקע, עובדים, זמן, תקציב), והרצונות של האנשים בלתי מוגבלים. לכן גם מדינה עשירה צריכה לבחור, למשל בין עוד בתי חולים לבין עוד כבישים.',
+ ['עונה "כן"','המשאבים מוגבלים גם במשק עשיר','הרצונות בלתי מוגבלים','דוגמה לבחירה או ויתור'],'o2'],
+[0,'מה ההבדל בין סחורה לשירות? תן דוגמה אחת לכל אחד.',null,
+ 'סחורה היא מוצר מוחשי, שאפשר לגעת בו, למשל טלפון או שולחן. שירות הוא מוצר שאינו מוחשי, למשל טיפול אצל רופא או ייעוץ משפטי.',
+ ['סחורה = מוחשית','שירות = לא מוחשי','דוגמה נכונה לסחורה','דוגמה נכונה לשירות'],'o3'],
+[1,'ציין את 3 סוגי גורמי הייצור, ותן דוגמה אחת לכל סוג.',null,
+ '<b>גורמי ייצור טבעיים:</b> משאבים שיד אדם לא נגעה בהם, למשל מים או נפט. <b>עבודה:</b> המאמץ האנושי, הפיזי או המחשבתי, למשל רופא או מהנדס. <b>הון פיזי:</b> משאבים שבני אדם ייצרו, למשל מכונות או מפעל.',
+ ['טבע + דוגמה נכונה','עבודה + דוגמה נכונה','הון פיזי + דוגמה נכונה','הסבר קצר לכל סוג'],'o4'],
+[1,'אילו גורמי ייצור משתתפים בהכנת פיצה? תן דוגמה לכל אחד מ-3 הסוגים.',null,
+ '<b>טבע:</b> מים, האדמה שעליה גדלו החיטה והעגבניות. <b>עבודה:</b> הפיצאי, השליח, הקופאי. <b>הון פיזי:</b> התנור, מערבל הבצק, המבנה של הפיצרייה.',
+ ['טבע: למשל מים, אדמה','עבודה: למשל הפיצאי, השליח','הון פיזי: למשל התנור, המבנה','כל דוגמה בסוג הנכון'],'o5'],
+[1,'יהלום יכול להיות גורם ייצור טבעי, וגם הון פיזי. הסבר איך.',null,
+ 'יהלום לא מלוטש, כמו שהוא נמצא באדמה, הוא גורם ייצור טבעי, כי יד אדם לא נגעה בו. אחרי שאדם ליטש אותו, הוא הופך להון פיזי, כי בני אדם עיבדו אותו.',
+ ['לא מלוטש = טבעי','כי יד אדם לא נגעה בו','מלוטש = הון פיזי','כי בני אדם עיבדו אותו'],'o6'],
+[2,'מהן 3 השאלות המרכזיות בכלכלה, ולמה צריך לשאול אותן?',null,
+ 'מה וכמה לייצר, איך לייצר, ועבור מי לייצר. שואלים אותן בגלל תופעת המחסור: המשאבים מוגבלים, ולכן צריך להחליט מה לייצר, באיזו דרך הכי טובה, ואיך לחלק בין האנשים.',
+ ['מה וכמה לייצר?','איך לייצר?','עבור מי לייצר?','הן נובעות מתופעת המחסור'],'o7'],
+[2,'הממשלה מתלבטת אם לתת מעונות יום חינם לכל המשפחות, או רק למשפחות עם הכנסה נמוכה. על איזו מ-3 השאלות הכלכליות היא עונה? הסבר.',null,
+ 'על השאלה "עבור מי לייצר?", כי הממשלה מחליטה איך לחלק את המוצר (מעונות היום) בין האזרחים: לכולם, או רק לנזקקים.',
+ ['"עבור מי לייצר?"','הסבר: איך מחלקים בין האזרחים','קישור למקרה (לכולם או רק לנזקקים)'],'o8'],
+[3,'מה ההבדל בין ניאו-ליברליזם לסוציאל-דמוקרטיה? התייחס לערך המוביל ולמעורבות המדינה.',null,
+ 'בניאו-ליברליזם הערך המוביל הוא חירות, ולכן המדינה מתערבת בכלכלה מעט מאוד. בסוציאל-דמוקרטיה הערך המוביל הוא שוויון וצמצום פערים, ולכן המדינה מעורבת הרבה ודואגת לרווחה.',
+ ['ניאו-ליברליזם: חירות','ניאו-ליברליזם: מעורבות קטנה של המדינה','סוציאל-דמוקרטיה: שוויון וצמצום פערים','סוציאל-דמוקרטיה: מעורבות גדולה של המדינה'],'o9'],
+[3,'לפי כל אחת משתי הגישות, מי אחראי לרווחה של האדם? הסבר.',null,
+ 'לפי הניאו-ליברליזם, האדם אחראי לרווחה שלו בעצמו, והמדינה עוזרת רק לנזקקים באמת. לפי הסוציאל-דמוקרטיה, המדינה אחראית לרווחה של האזרחים, למשל דרך שירותים בחינם וקצבאות.',
+ ['ניאו-ליברליזם: אחריות הפרט','המדינה עוזרת רק לנזקקים באמת','סוציאל-דמוקרטיה: אחריות המדינה','דוגמה (שירותים, קצבאות)'],'o10'],
+[4,TXA+'||הציגו והסבירו את הגישה שבה תומך שר האוצר. הביאו ציטוט מהטקסט.',null,
+ 'שר האוצר תומך בגישה הסוציאל-דמוקרטית, שדוגלת במעורבות גדולה של המדינה כדי להשיג שוויון וצמצום פערים. הוא אומר שזה "צעד חשוב לצמצום הפערים בחברה", ושהמדינה "צריכה לדאוג שכל עובד יוכל להתפרנס בכבוד".',
+ ['מציג: סוציאל-דמוקרטיה','מסביר: מעורבות המדינה, שוויון','ציטוט מתאים מהטקסט'],'o11'],
+[4,TXB+'||א. הציגו את הגישה של הממשלה ואת הגישה של המתנגדים. הביאו דוגמה מהטקסט לכל צד.',null,
+ '<b>הממשלה</b> תומכת בסוציאל-דמוקרטיה, שרוצה שוויון וצמצום פערים בעזרת המדינה: היא רוצה "להוריד מסים לשכבות החלשות" ולהעלות למבוססים. <b>המתנגדים</b> תומכים בניאו-ליברליזם, שרוצה חירות כלכלית ומעט התערבות: הם אומרים שהחברות "מניעות את הכלכלה" ושמסים גבוהים "יבריחו משקיעים".',
+ ['הממשלה = סוציאל-דמוקרטיה + הסבר','המתנגדים = ניאו-ליברליזם + הסבר','דוגמה מהטקסט לכל צד'],'o12'],
+[4,TXB+'||ב. אילו 2 ערכים מתנגשים בין תומכי התוכנית למתנגדים? מה דעתך? נמק.',null,
+ 'הערכים המתנגשים הם שוויון מול חירות. התומכים רוצים שוויון וצמצום פערים, ולכן מעלים מסים למבוססים. המתנגדים רוצים חירות כלכלית, שבה המדינה לא לוקחת יותר מדי מהעסקים. דעה אישית: כל עמדה מתקבלת, אם יש לה נימוק.',
+ ['שוויון (התומכים)','חירות (המתנגדים)','הסבר קצר לכל ערך','עמדה אישית עם נימוק'],'o13'],
+[4,TXC+'||הציגו והסבירו את הגישה של ראש העירייה. הביאו ציטוט מהטקסט.',null,
+ 'ראש העירייה תומך בגישה הניאו-ליברלית, שדוגלת בחירות כלכלית ובהתערבות מזערית של המדינה. הוא רוצה למכור את החברה לחברה פרטית, ואומר ש"העירייה לא צריכה לנהל עסקים" ושהתחרות "תוריד מחירים".',
+ ['מציג: ניאו-ליברליזם','מסביר: חירות, מעורבות מזערית','ציטוט מתאים מהטקסט'],'o14']
 ];
-const N=QS.length,$=id=>document.getElementById(id);
+const N=QS.length,$=id=>document.getElementById(id),esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 // S.d[i]=1 נלמדה, S.w[i]=טעויות, S.f[i]=1 נכון בניסיון הראשון. S.rv = חזרה על טעויות. S.mt = מבחן פעיל, S.mk = {best,last,n} ציוני מבחן.
-function fresh(){return{v:1,d:{},w:{},f:{},att:0,okc:0,st:{c:0,b:0},rv:null,rvd:{},mt:null,mk:null,started:new Date().toISOString()}}
-let S=LS.get('ev_econ');if(!S||!S.d)S=fresh();S.rvd=S.rvd||{};
+// S.oa[מזהה] = {id בשרת, at, txt, n ניסיונות, m דקת לימוד, sc ציון, fb הערה, seen}. S.gr = [[מזהה, ציון, דקה, זמן]]. S.mkh = [{s, m, at}] ציוני המבחנים. S.dr = טיוטות.
+function fresh(){return{v:2,d:{},w:{},f:{},att:0,okc:0,st:{c:0,b:0},rv:null,rvd:{},mt:null,mk:null,oa:{},gr:[],mkh:[],dr:{},started:new Date().toISOString()}}
+let S=LS.get('ev_econ');if(!S||!S.d||!(S.v>=2))S=fresh();S.rvd=S.rvd||{};S.oa=S.oa||{};S.gr=S.gr||[];S.mkh=S.mkh||[];S.dr=S.dr||{};
 const save=()=>LS.set('ev_econ',S);
 const done=()=>Object.keys(S.d).length;
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const MCQ=QS.map((q,i)=>i).filter(i=>QS[i][2]);
 let Q=[],cur=-1,answered=false;
-function stageOf(){for(let s=0;s<ST.length;s++)if(QS.some((q,i)=>q[0]===s&&!S.d[i]))return s;return -1}
-function build(){if(S.rv){Q=shuf(S.rv.filter(i=>!S.rvd[i]));return}const s=stageOf();if(s<0){Q=[];return}
- const L=QS.map((q,i)=>i).filter(i=>QS[i][0]===s&&!S.d[i]);Q=shuf(L.filter(i=>QS[i][2])).concat(L.filter(i=>!QS[i][2]))} // שאלות פתוחות בסוף השלב
+const OA=i=>S.oa[QS[i][5]],pend=i=>{const o=OA(i);return!!(o&&o.id&&o.sc==null)};
+// השלב נקבע לפי השאלות האמריקאיות. שאלה פתוחה שנשלחה ומחכה לציון לא עוצרת את ההתקדמות.
+function stageOf(){for(let s=0;s<ST.length;s++)if(QS.some((q,i)=>q[0]===s&&q[2]&&!S.d[i]))return s;return -1}
+function build(){if(S.rv){Q=shuf(S.rv.filter(i=>!S.rvd[i]));return}const s=stageOf(),top=s<0?ST.length:s;
+ const L=MCQ.filter(i=>QS[i][0]===s&&!S.d[i]),O=QS.map((q,i)=>i).filter(i=>!QS[i][2]&&QS[i][0]<=top&&!S.d[i]&&!pend(i));
+ Q=shuf(L).concat(O)} // שאלות פתוחות בסוף השלב (וגם פתוחות משלבים קודמים שעוד לא נלמדו)
 function bar(){$('nn').textContent=N;$('dn').textContent=done();$('acc').textContent='🎯 '+(S.att?Math.round(S.okc/S.att*100)+'%':'—');$('stk').textContent='🔥 '+S.st.c;
  const sc=stageOf();$('stg').innerHTML=ST.map((n,s)=>{const t=QS.filter(q=>q[0]===s).length,d=QS.filter((q,i)=>q[0]===s&&S.d[i]).length;
   return `<span class="${d===t?'ok':s===sc?'cur':''}"><i style="width:${d/t*100}%"></i><em>${d===t?'✓':'שלב '+(s+1)}</em></span>`}).join('');
@@ -224,8 +271,8 @@ function show(){answered=false;$('nx').disabled=true;$('nx').textContent='הבא
  if(q[2]){const os=shuf(q[2].map((t,i)=>({t,i})));$('opts').className='opts'+(q[2].length===2?' two':'');
   $('opts').innerHTML=os.map((o,k)=>`<button class="op" type="button" data-i="${o.i}"><span class="k">${'אבגד'[k]}</span><span>${o.t}</span></button>`).join('');
   $('fb').className='fb';$('fb').textContent=S.mt?'מבחן: בלי הסברים עד הסוף. בהצלחה!':'בחר את התשובה הנכונה'}
- else{$('opts').className='opts';$('opts').innerHTML='<button class="op wr" type="button" id="wrb">✍️ כתבתי תשובה, להראות תשובה לדוגמה</button>';
-  $('fb').className='fb';$('fb').textContent='שאלה פתוחה: כתוב את התשובה על דף, כמו בבוחן. אחר כך השווה לתשובה לדוגמה.'}
+ else{const o=OA(cur);$('opts').className='opts';$('opts').innerHTML='<button class="op wr" type="button" id="wrb">✍️ לכתוב תשובה (2-3 משפטים)</button>';
+  $('fb').className='fb';if(o&&o.sc!=null)$('fb').innerHTML='בפעם הקודמת: <b>'+o.sc+'/10</b>. '+esc(o.fb||'');else $('fb').textContent='שאלה פתוחה, כמו בבוחן: כותבים 2-3 משפטים. Claude בודק ומחזיר ציון והערה.'}
  bar();fit()}
 function mark(ok){const q=QS[cur];S.att++;
  if(ok){S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);if(S.rv)S.rvd[cur]=1;else{S.d[cur]=1;if(!(S.w[cur]>0))S.f[cur]=1}}
@@ -233,19 +280,70 @@ function mark(ok){const q=QS[cur];S.att++;
  if(S.rv&&!Q.length&&ok){S.rv=null;S.rvd={}}
  save();bar();$('nx').disabled=false;if(!Q.length&&(S.rv?false:stageOf()!==q[0]))$('nx').textContent=stageOf()<0?'לסיום 🎉':'לשלב הבא ›';report()}
 $('opts').onclick=e=>{const b=e.target.closest('.op');if(!b||answered)return;
- if(b.id==='wrb'){openModel();return}
+ if(b.id==='wrb'){openWrite();return}
+ if(b.id==='mab'){sentPop();return}
  answered=true;const ok=b.dataset.i==='0',q=QS[cur];
  if(S.mt){b.classList.add('sel');document.querySelectorAll('.op').forEach(x=>{if(x!==b)x.classList.add('dim')});
   if(ok)S.mt.ok++;else S.mt.wr.push(cur);S.mt.i++;save();$('fb').className='fb';$('fb').textContent='נרשם. התשובות וההסברים בסוף המבחן.';$('nx').disabled=false;
   if(S.mt.i>=S.mt.q.length)$('nx').textContent='לציון 🎯';return}
  document.querySelectorAll('.op').forEach(x=>{if(x.dataset.i==='0')x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
  $('fb').className='fb '+(ok?'ok':'no');$('fb').innerHTML=(ok?'✓ נכון! ':'✗ לא נכון. ')+q[3];mark(ok)};
-function openModel(){const q=QS[cur];$('ma').innerHTML=q[3];$('ck').innerHTML=q[4].map(t=>`<label><input type="checkbox"><span>${t}</span></label>`).join('');$('ov2').classList.add('on');$('ov2').querySelector('.pop').scrollTop=0}
-function closeModel(ok){$('ov2').classList.remove('on');if(answered)return;answered=true;
- $('opts').innerHTML='<button class="op wr" type="button" id="wrb">✍️ לראות שוב את התשובה לדוגמה</button>';
+// ✍️ תשובה פתוחה: מקלידים באפליקציה ← study_answer_add ← Claude בודק בשרת (ריצה מתוזמנת) ← הציון חוזר דרך study_answer_get.
+// במצב אורח (או בלי רשת בשרת) אין שליחה: רואים תשובה לדוגמה ומסמנים לבד, כמו קודם.
+const SB='https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
+const rpc=(f,b)=>fetch(SB+f,{method:'POST',headers:{'Content-Type':'application/json',apikey:SK,Authorization:'Bearer '+SK},body:JSON.stringify(b)}).then(r=>r.ok?r.json():{st:r.status});
+const GUEST=!!window.STUDY_GUEST,REV=!!window.STUDY_REVIEW;
+const plain=h=>String(h).replace(/<br>/g,'\n').replace(/<[^>]+>/g,'').replace(/\|\|/g,'\n\n');
+const qOnly=t=>{const p=t.split('||');return p[p.length-1]};
+function minute(){try{const t=JSON.parse(localStorage.getItem('study_t_evyatar_econ'));return Math.round(((t&&t.sec)||0)/60)}catch(e){return 0}}
+function pop(h){const v=$('ov2');v.querySelector('.pop').innerHTML=h;v.classList.add('on');v.querySelector('.pop').scrollTop=0}
+function unpop(){$('ov2').classList.remove('on')}
+$('ov2').onclick=e=>{if(e.target===$('ov2'))unpop()};
+function openWrite(){const q=QS[cur],k=q[5];$('wq').innerHTML=qhtml(q[1]);$('wt').value=S.dr[k]||'';$('wm').textContent='';$('ws').disabled=false;$('ws').textContent=GUEST?'✓ סיימתי, להראות תשובה לדוגמה':'📤 לשלוח לבדיקה';cnt();$('ov3').classList.add('on');setTimeout(()=>$('wt').focus(),50)}
+function cnt(){const n=$('wt').value.trim().length;$('wc').textContent=n+' / 1500'}
+$('wt').oninput=()=>{S.dr[QS[cur][5]]=$('wt').value;cnt();clearTimeout(cnt.t);cnt.t=setTimeout(save,800)};
+$('wx').onclick=()=>{save();$('ov3').classList.remove('on')};
+$('ws').onclick=()=>{const q=QS[cur],k=q[5],t=$('wt').value.trim();
+ if(t.length<15){$('wm').textContent='כתוב לפחות משפט אחד מלא 🙂';return}
+ if(GUEST){$('ov3').classList.remove('on');selfCheck();return}
+ $('ws').disabled=true;$('ws').textContent='שולח…';$('wm').textContent='';
+ rpc('study_answer_add',{p_kid:'evyatar',p_app:REV?'econ-rv':'econ',p_qid:k,p_q:plain(q[1]),p_model:plain(q[3]),p_pts:q[4],p_txt:t}).then(j=>{
+  if(j&&j.st===404){$('ov3').classList.remove('on');selfCheck();return} // השרת עוד לא מוכן: בדיקה עצמית
+  if(!j||!j.ok){$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent=j&&j.err==='rate'?'שלחת הרבה תשובות בשעה האחרונה. נסה שוב עוד מעט.':'לא נשלח. בדוק אינטרנט ונסה שוב (התשובה שמורה).';return}
+  const o=S.oa[k]||{};S.oa[k]={id:j.id,at:new Date().toISOString(),txt:t,n:(o.n||0)+1,m:minute()};delete S.dr[k];save();$('ov3').classList.remove('on');
+  answered=true;$('opts').innerHTML='<button class="op wr" type="button" id="mab">👀 התשובה לדוגמה</button>';
+  $('fb').className='fb';$('fb').textContent='⏳ נשלח לבדיקה! ממשיכים, והציון וההערה יקפצו כאן כשהם מוכנים.';
+  $('nx').disabled=false;bar();report();sentPop();poll.go()}).catch(()=>{$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent='לא נשלח. בדוק אינטרנט ונסה שוב (התשובה שמורה).'})};
+function sentPop(){const q=QS[cur];pop(`<h3>📤 נשלח לבדיקה</h3><p>Claude יקרא את התשובה שלך וייתן ציון מ-0 עד 10 עם הערה (בדרך כלל תוך שעה). בינתיים, תשובה לדוגמה:</p><div class="ma">${q[3]}</div><h4>מה בודקים בתשובה</h4><ul>${q[4].map(t=>'<li>'+t+'</li>').join('')}</ul><button class="cl" type="button" onclick="unpop()">המשך ›</button>`)}
+// אורח: בדיקה עצמית
+function selfCheck(){const q=QS[cur];pop(`<h3>✍️ תשובה לדוגמה</h3><div class="ma">${q[3]}</div><h4>מה היה בתשובה שלך? סמן:</h4><div class="ck">${q[4].map(t=>`<label><input type="checkbox"><span>${t}</span></label>`).join('')}</div><div class="two"><button class="y" type="button" id="oy">✓ היה לי כמעט הכול</button><button class="n" type="button" id="on">✗ עוד לא</button></div>`);
+ $('oy').onclick=()=>selfDone(true);$('on').onclick=()=>selfDone(false)}
+function selfDone(ok){unpop();if(answered)return;answered=true;$('opts').innerHTML='';
  $('fb').className='fb '+(ok?'ok':'no');$('fb').textContent=ok?'✓ מעולה! השאלה נלמדה.':'השאלה תחזור עוד מעט. קרא שוב את התשובה לדוגמה ונסה לכתוב אותה בעצמך.';mark(ok)}
-$('oy').onclick=()=>closeModel(true);$('on').onclick=()=>closeModel(false);
-$('ov2').onclick=e=>{if(e.target===$('ov2')){$('ov2').classList.remove('on')}};
+// הציונים: בודקים כל 45 שניות כשיש תשובה שמחכה, כשהדף נפתח וכשחוזרים אליו.
+function poll(){const ids=Object.values(S.oa).filter(o=>o.id&&o.sc==null).map(o=>o.id);if(!ids.length||GUEST)return;
+ rpc('study_answer_get',{p_ids:ids}).then(j=>{if(!j||!j.items)return;let ch=0;
+  j.items.forEach(x=>{if(x.score==null)return;const k=Object.keys(S.oa).find(q=>S.oa[q].id===x.id);if(!k)return;const o=S.oa[k];if(o.sc!=null)return;
+   o.sc=+x.score;o.fb=x.fb||'';o.ga=x.graded_at;ch=1;const i=QS.findIndex(q=>q[5]===k);S.gr.push([k,o.sc,o.m||0,Date.now()]);
+   if(o.sc>=7){S.d[i]=1;if(o.n===1)S.f[i]=1}else{S.w[i]=(S.w[i]||0)+1;if(!S.rv&&!Q.includes(i)&&i!==cur)Q.splice(Math.min(2,Q.length),0,i)}});
+  if(ch){save();bar();report();if($('card').classList.contains('fin')&&!S.mt){$('card').classList.remove('fin');Q=[];show()}grades()}}).catch(()=>{})}
+poll.go=()=>{clearTimeout(poll.t);poll.t=setTimeout(function L(){if(document.visibilityState==='visible')poll();if(Object.values(S.oa).some(o=>o.id&&o.sc==null))poll.t=setTimeout(L,45000)},45000)};
+addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){poll();grades()}});
+// ציון חדש = חלון עם הציון, ההערה והתשובה שלו (אחד בכל פעם, לא באמצע מבחן)
+function grades(){if(S.mt||document.querySelector('.ov.on'))return;const k=Object.keys(S.oa).find(q=>S.oa[q].sc!=null&&!S.oa[q].seen);if(!k)return;gradePop(k,true)}
+function gradePop(k,nw){const o=S.oa[k],q=QS.find(x=>x[5]===k);if(!o||!q)return;if(nw){o.seen=1;save()}const g=o.sc>=7;
+ pop(`<h3>${o.sc>=9?'🏆':g?'💪':'📚'} הציון שלך: <span class="scb ${g?'g':'b'}">${o.sc}/10</span></h3><p class="qq">${qOnly(q[1])}</p><h4>💬 הערה</h4><p>${esc(o.fb||'')}</p><h4>✍️ מה כתבת</h4><div class="mine">${esc(o.txt||'')}</div><details><summary>תשובה לדוגמה</summary><div class="ma">${q[3]}</div></details><p class="nt">${g?'✓ השאלה נלמדה.':'השאלה תחזור עוד מעט לניסיון נוסף.'}</p><button class="cl" type="button" onclick="unpop();grades()">${g?'מעולה ›':'הבנתי, אנסה שוב ›'}</button>`)}
+// 📈 הציונים שלי: גרף של התשובות הפתוחות (מתוך 10) ושל המבחנים (באחוזים), לפי דקות הלימוד, ורשימת התשובות.
+function myGraph(){const E=S.gr.map(g=>({t:g[3],v:g[1]*10,k:'g'})).concat(S.mkh.map(x=>({t:new Date(x.at).getTime(),v:x.s,k:'m'}))).sort((a,b)=>a.t-b.t);E.forEach((e,i)=>e.m=i+1);
+ const G=E.filter(e=>e.k==='g'),M=E.filter(e=>e.k==='m'),A=E;
+ let svg='<p class="nt">עוד אין ציונים. ענה על שאלה פתוחה או עשה 🎯 מבחן, והגרף יתחיל.</p>';
+ if(A.length){const W=320,H=160,l=30,r=10,t=12,b=26,pw=W-l-r,ph=H-t-b,m0=Math.min(...A.map(p=>p.m)),sp=Math.max(1,Math.max(...A.map(p=>p.m))-m0),X=m=>l+(m-m0)/sp*pw,Y=v=>t+ph-v/100*ph;
+  const ln=(P,c)=>{P=P.slice().sort((a,b)=>a.m-b.m);return`<path d="${P.map((p,i)=>(i?'L':'M')+X(p.m).toFixed(1)+','+Y(p.v).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"/>`+P.map(p=>`<circle cx="${X(p.m).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="3.4" fill="${c}"/>`).join('')};
+  svg=`<svg viewBox="0 0 ${W} ${H}" class="gs">${[0,25,50,75,100].map(v=>`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2e8f0"/><text x="${l-5}" y="${Y(v)+3.5}" text-anchor="end" font-size="10" fill="#64748b">${v}%</text>`).join('')}<text x="${l+pw/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#64748b">← מהציון הראשון לאחרון</text>${ln(G,'#2f5d9e')}${ln(M,'#ea580c')}</svg>
+  <div class="lg"><span><i style="background:#2f5d9e"></i>✍️ תשובות פתוחות${G.length?' · ממוצע '+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1)+'/10':''}</span><span><i style="background:#ea580c"></i>🎯 מבחנים${M.length?' · אחרון '+M[M.length-1].v:''}</span></div>`}
+ const L=Object.keys(S.oa).filter(k=>S.oa[k].id).sort((a,b)=>String(S.oa[b].at).localeCompare(String(S.oa[a].at)));
+ pop(`<h3>📈 הציונים שלי</h3>${svg}<h4>✍️ התשובות שלי</h4>${L.length?'<div class="ol">'+L.map(k=>{const o=S.oa[k],q=QS.find(x=>x[5]===k);return`<button type="button" class="oi" data-k="${k}"><span class="scb ${o.sc==null?'p':o.sc>=7?'g':'b'}">${o.sc==null?'⏳':o.sc+'/10'}</span><span>${qOnly(q[1])}</span></button>`}).join('')+'</div>':'<p class="nt">עוד לא נשלחו תשובות.</p>'}<button class="cl" type="button" onclick="unpop()">סגירה</button>`);
+ document.querySelectorAll('.oi').forEach(b=>b.onclick=()=>{const o=S.oa[b.dataset.k];if(o.sc!=null)gradePop(b.dataset.k,false)})}
 $('nx').onclick=()=>{if(answered)show()};
 // 🎯 מבחן: 15 שאלות אמריקאיות אקראיות מכל השלבים (לפחות 2 מכל שלב), בלי הסברים עד הסוף.
 function mtStart(){if(S.mt){if(!confirm('לצאת מהמבחן באמצע? הוא לא ייספר.'))return;S.mt=null;save();$('card').classList.remove('fin');Q=[];show();return}
@@ -253,22 +351,26 @@ function mtStart(){if(S.mt){if(!confirm('לצאת מהמבחן באמצע? הו�
  let p=[];for(let s=0;s<ST.length;s++)p=p.concat(shuf(MCQ.filter(i=>QS[i][0]===s)).slice(0,2));
  p=p.concat(shuf(MCQ.filter(i=>!p.includes(i))).slice(0,15-p.length));
  S.mt={q:shuf(p),i:0,ok:0,wr:[]};save();$('card').classList.remove('fin');show()}
-function mtEnd(){const m=S.mt,n=m.q.length,sc=Math.round(m.ok/n*100);S.mk={best:Math.max(sc,(S.mk&&S.mk.best)||0),last:sc,n:((S.mk&&S.mk.n)||0)+1,at:new Date().toISOString()};
+function mtEnd(){const m=S.mt,n=m.q.length,sc=Math.round(m.ok/n*100);S.mk={best:Math.max(sc,(S.mk&&S.mk.best)||0),last:sc,n:((S.mk&&S.mk.n)||0)+1,at:new Date().toISOString()};S.mkh.push({s:sc,m:minute(),at:S.mk.at});if(S.mkh.length>40)S.mkh.shift();
  const wr=m.wr;S.mt=null;save();report();bar();$('card').classList.add('fin');
  $('end').innerHTML=`<div class="big">${sc>=85?'🏆':sc>=70?'💪':'📚'}</div><h2>ציון: ${sc}</h2><p><b>${m.ok}</b> נכונות מתוך ${n}.<br>${sc>=85?'מוכן לבוחן! 🔥':sc>=70?'טוב! עוד סבב קטן על הטעויות וזה שם.':'שווה לעבור על הטעויות ועל הסיכום, ולנסות שוב.'}</p>`+
  (wr.length?'<button class="bt pr" id="rvb" type="button">🔁 תרגול השאלות שטעיתי ('+wr.length+')</button>':'')+'<button class="bt" id="agb" type="button">🎯 מבחן נוסף</button><button class="bt" id="bkb" type="button">חזרה לתרגול</button>';
  const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();$('card').classList.remove('fin');Q=[];show()};
  $('agb').onclick=()=>{$('card').classList.remove('fin');mtStart()};$('bkb').onclick=()=>{$('card').classList.remove('fin');Q=[];show()}}
 function finish(){bar();const f=Object.keys(S.f).length,wr=QS.map((q,i)=>i).filter(i=>S.w[i]>0);$('card').classList.add('fin');
- $('end').innerHTML=`<div class="big">🏆</div><h2>סיימת את כל ${N} השאלות!</h2><p><b>${f}</b> מתוך ${N} נכונות בניסיון הראשון.${S.mk?'<br>ציון המבחן הכי טוב: <b>'+S.mk.best+'</b>':''}<br>עכשיו מבחן מסכם, כמו בבוחן.</p>`+
+ $('end').innerHTML=`<div class="big">🏆</div><h2>סיימת את כל ${N} השאלות!</h2><p><b>${f}</b> מתוך ${N} נכונות בניסיון הראשון.${S.mk?'<br>ציון המבחן הכי טוב: <b>'+S.mk.best+'</b>':''}${(()=>{const p=Object.values(S.oa).filter(o=>o.id&&o.sc==null).length;return p?'<br>⏳ '+p+' תשובות פתוחות עוד בבדיקה.':''})()}<br>עכשיו מבחן מסכם, כמו בבוחן.</p>`+
  '<button class="bt pr" id="mtg" type="button">🎯 מבחן מסכם (15 שאלות)</button>'+(wr.length?'<button class="bt" id="rvb" type="button">🔁 חזרה על השאלות שטעיתי ('+wr.length+')</button>':'');
  $('mtg').onclick=mtStart;const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();$('card').classList.remove('fin');Q=[];show()}}
-function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1,mk:S.mk})}
-$('mtb').onclick=mtStart;
+// לגרף של ההורים: ציר הדקות עולה תמיד (כמה תשובות באותה דקה = דקה אחרי דקה)
+const inc=P=>{let z=-1;return P.map(p=>{z=Math.max(+p[0]||0,z+1);return[z,p[1]]})};
+function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1,mk:S.mk,
+ lv:1,lvn:'שאלות שנלמדו',prog:done(),pmax:N,oa:{n:S.gr.length,avg:S.gr.length?+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1):null,pend:Object.values(S.oa).filter(o=>o.id&&o.sc==null).length},
+ hist:[S.gr.length?{lv:2,name:'✍️ ציון בתשובות הפתוחות',u:'',max:10,pts:inc(S.gr.map(g=>[g[2],g[1]]))}:null,S.mkh.length?{lv:3,name:'🎯 ציון במבחן',u:'',max:100,pts:inc(S.mkh.map(x=>[x.m||0,x.s]))}:null].filter(Boolean)})}
+$('mtb').onclick=mtStart;$('grb').onclick=myGraph;
 $('rules').onclick=()=>{$('ov').classList.add('on');$('ov').querySelector('.pop').scrollTop=0};$('cl').onclick=()=>$('ov').classList.remove('on');$('ov').onclick=e=>{if(e.target===$('ov'))$('ov').classList.remove('on')};
 if(window.StudyTrack)StudyTrack.init('evyatar','econ',['ev_econ']);
 if(!S.att)setTimeout(()=>$('ov').classList.add('on'),300); // פעם ראשונה: מציגים את הסיכום
 addEventListener('resize',fit);
-show();
+show();poll();poll.go();setTimeout(grades,600);
 </script>
 </body></html>

@@ -37,7 +37,7 @@ function psGate(){var a=document.getElementById('psi'),ok=StudyContent.ok('evyat
 function ecGate(){var a=document.getElementById('eci'),ok=StudyContent.ok('evyatar/econ');a.classList.toggle('soon',!ok);
  if(!ok){document.getElementById('ec').textContent='בקרוב! 🚧';return}
  if(StudyContent.isNew('evyatar/econ')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
- try{var s=JSON.parse(localStorage.getItem('ev_econ'));if(s&&s.d&&s.att){var n=Object.keys(s.d).length;document.getElementById('ec').textContent=n+' מתוך 55 שאלות'+(s.mk?' · מבחן: '+s.mk.best:'');document.getElementById('ecbr').style.display='';document.getElementById('ecb').style.width=(n/55*100)+'%'}}catch(e){}}
+ try{var s=JSON.parse(localStorage.getItem('ev_econ'));if(s&&s.d&&s.v>=2&&(s.att||Object.keys(s.oa||{}).length)){var n=Object.keys(s.d).length;document.getElementById('ec').textContent=n+' מתוך 65 שאלות'+(s.mk?' · מבחן: '+s.mk.best:'');document.getElementById('ecbr').style.display='';document.getElementById('ecb').style.width=(n/65*100)+'%'}}catch(e){}}
 psGate();ecGate();StudyContent.refresh(function(){location.reload()});
 </script>
 <div id="rqm" style="margin-top:12px"></div>

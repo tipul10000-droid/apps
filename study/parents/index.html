@@ -47,6 +47,7 @@
 .imt{height:90px;width:100%;max-width:26px;display:flex;align-items:flex-end;border-bottom:1px solid #cbd5e1}.imt i{display:block;width:100%;background:#2f5d9e;border-radius:4px 4px 0 0}
 .imc.old .imt i{background:#9db3d4}.imc.few .imt i{opacity:.45}.imv{font-size:11px;color:#1f2937;height:15px;direction:ltr}.imx{font-size:10px;color:#64748b;direction:ltr;white-space:nowrap}.ima{font-size:9px;color:#94a3b8}
 .kp{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}.kp>div{background:#f5f8fc;border-radius:12px;padding:8px 6px;text-align:center;min-width:0}.kp small{display:block;font-size:11px;color:#64748b;line-height:1.35}.kp b{display:block;font-size:clamp(15px,4.4vw,20px);margin:2px 0;color:#0f172a;line-height:1.2}
+.oaw{margin-top:10px;border:1px solid #e3e8f0;border-radius:14px;padding:10px;background:#fff}.oaw:empty{display:none}.oas{font-size:13px;color:#475569;margin:2px 0 6px}.oai{border-top:1px solid #eef2f7;padding:6px 0}.oai summary{display:flex;gap:8px;align-items:center;cursor:pointer;font-size:13.5px;list-style:none}.oai summary::-webkit-details-marker{display:none}.oaq{flex:1;min-width:0}.oab{padding:6px 2px 2px;font-size:13.5px;line-height:1.45}.oam{background:#fffbea;border-right:3px solid #f59e0b;border-radius:8px;padding:5px 8px;margin-top:4px;white-space:pre-wrap}.oaf{background:#eef4fb;border-radius:8px;padding:5px 8px;margin-top:5px}.scb{flex:none;display:inline-block;border-radius:20px;padding:1px 8px;font-weight:800;font-size:12.5px;white-space:nowrap}.scb.g{background:#dcfce7;color:#166534}.scb.b{background:#fff1e6;color:#c2410c}.scb.p{background:#f1f5f9;color:#64748b}
 .lnw{margin-top:10px;border:1px solid #e3e8f0;border-radius:14px;padding:10px;background:#fff}.lc{margin-top:6px}.lc+.lc{border-top:1px solid #eef2f7;padding-top:8px}.lct{font-size:13px;font-weight:700;color:#2f5d9e}
 .lcs{width:100%;height:auto;display:block;margin-top:4px;direction:ltr}.lcs .g{stroke:#e5eaf1;stroke-width:1}.lcs .g0{stroke:#cbd5e1;stroke-width:1}.lcs .ls{fill:none;stroke:#2f5d9e;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.lcs .ld{fill:none;stroke:#2f5d9e;stroke-width:2;stroke-dasharray:5 4;stroke-linecap:round;opacity:.8}.lcs .pt{fill:#2f5d9e;stroke:#fff;stroke-width:1.5}.lcs .ar{fill:#2f5d9e;opacity:.08}.lcs text{font-size:10px;fill:#64748b}.lcs .vl{font-size:10.5px;font-weight:700;fill:#0f172a}
 .ins{margin-top:10px;background:#f5f8fc;border-radius:12px;padding:8px 10px;font-size:14px;line-height:1.6}.hw{display:inline-block;background:#fff1f2;color:#9f1239;border-radius:12px;padding:0 8px;margin:1px;direction:ltr}
@@ -98,7 +99,7 @@ html,body,main{overflow-anchor:none}
 <script>
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
 // הקוד נבדק בשרת (study_parents_get). אחרי קוד נכון הוא נשמר במכשיר (study_par_pin); קוד שגוי מוחק אותו.
-const KIDS_ALL=[{id:'evyatar',n:'אביתר',boy:1,apps:[{id:'vocab',ic:'📚',n:'אוצר מילים באנגלית',unit:'מילים',test:'מבחן'},{id:'past',ic:'⏳',sn:'זמני עבר: חזרה',n:'זמני עבר: Past Simple / Progressive',unit:'שאלות',test:'מבחן',gen:1},{id:'econ',ic:'📈',sn:'כלכלה: בוחן',n:'כלכלה: מחסור, גורמי ייצור וגישות',unit:'שאלות',test:'בוחן',gen:1}]},
+const KIDS_ALL=[{id:'evyatar',n:'אביתר',boy:1,apps:[{id:'vocab',ic:'📚',n:'אוצר מילים באנגלית',unit:'מילים',test:'מבחן'},{id:'past',ic:'⏳',sn:'זמני עבר: חזרה',n:'זמני עבר: Past Simple / Progressive',unit:'שאלות',test:'מבחן',gen:1},{id:'econ',ic:'📈',sn:'כלכלה: בוחן',n:'כלכלה: מחסור, גורמי ייצור וגישות',unit:'שאלות',test:'בוחן',gen:1,oa:1}]},
 {id:'dani',n:'דני',apps:[{id:'spelling',ic:'✏️',n:'הכתבה ואוצר מילים באנגלית',unit:'מילים',test:'הכתבה'}]},
 {id:'lia',n:'ליה',apps:[{id:'phonics',ic:'🔤',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן',gen:1}]},
 {id:'levi',n:'לביא',boy:1,noqz:1,apps:[{id:'phonics',ic:'🔤',n:'אותיות וצלילים באנגלית',unit:'צלילים',test:'מבחן',gen:1}]},
@@ -184,28 +185,28 @@ function recent(r){const L=r.tlm;if(!L||L.length<2)return null;const z=L[L.lengt
 // שחזור הקו מהגיבויים של 6.11.2026 (לפני שהאפליקציות שמרו נקודות לאורך הזמן). רק מספרים, בלי מידע אישי.
 const HIST={'dani/spelling':[{"lv":1,"name":"שלב 1 (עם רמזים)","max":36,"start":"2026-11-06T10:20:48Z","est":1,"pts":[[0,0],[3,2],[4,4],[8,5],[13,6],[17,7],[21,8],[22,9],[25,10],[26,11],[28,12],[29,13],[32,14],[35,15],[38,16],[39,17],[41,18],[42,21],[44,23],[49,24],[53,26],[58,27],[60,29],[62,30],[65,31],[67,32],[68,33],[71,34],[78,35],[80,36]]},{"lv":2,"name":"🚀 שלב מתקדם (רמז חלקי)","max":36,"start":"2026-11-06T18:47:01Z","est":1,"pts":[[80,0],[84,0]]}],'lia/phonics':[{"lv":1,"name":"שלב 1: לומדת צלילים","max":35,"start":"2026-11-06T16:19:35Z","est":1,"pts":[[0,0],[1,1],[3,2],[4,3],[5,4],[7,5],[8,6],[9,7],[11,8],[12,9],[13,10],[14,11],[16,12],[17,13],[18,14],[20,15],[21,16],[22,17],[24,18],[25,19],[26,20],[28,21],[29,22],[30,23],[32,24],[33,25],[34,26],[35,27],[37,28],[38,29],[39,30],[41,31],[42,32],[43,33],[45,34],[46,35]]},{"lv":2,"name":"שלב 2: חיזוק ⭐ (צלילים בשליטה)","max":35,"est":1,"pts":[[46,0],[50,1],[54,2],[58,3],[63,4],[67,5],[71,6],[75,7]]}]};
 function lines(r,k,a){const S={};
- (r.hist||HIST[k.id+'/'+a.id]||[]).forEach(x=>{S[x.lv]={lv:x.lv,name:x.name,max:x.max,start:x.start,pts:x.pts.map(p=>({m:p[0],v:p[1],e:!!x.est}))}});
+ (r.hist||HIST[k.id+'/'+a.id]||[]).forEach(x=>{S[x.lv]={lv:x.lv,name:x.name,max:x.max,u:x.u,start:x.start,pts:x.pts.map(p=>({m:p[0],v:p[1],e:!!x.est}))}});
  (r.tlm||[]).forEach(e=>{if(e[3]==null||e[5]==null)return;const lv=e[4]||1,o=S[lv]||(S[lv]={lv,name:lv===r.lv?r.lvn:'רמה '+lv,max:r.pmax||r.total,pts:[]});o.pts.push({m:e[5],v:e[3],e:false})});
  const L=Object.values(S).sort((x,y)=>x.lv-y.lv);if(!L.length)return'';
  return`<div class="lnw"><div class="imh">📈 גרף שיפור</div>${L.map(x=>chart(x,a,k)).join('')}${L.some(x=>x.pts.some(p=>p.e))?'<small class="imn">קו מקווקו = שחזור מהנתונים שנשמרו (הזמנים משוערים). קו מלא = נמדד.</small>':''}</div>`}
 function chart(x,a,k){const P=x.pts.slice().sort((p,q)=>p.m-q.m);if(!P.length)return'';const m0=P[0].m,span=Math.max(1,P[P.length-1].m-m0),max=Math.max(1,x.max||Math.max(...P.map(p=>p.v)));
  // אורן 7.11.2026: כמו במתמטיקה, ציר X משמאל (0) לימין, עם צירים, שנתות, רשת ונקודות לאורך הקו.
  const W=320,H=170,l=30,rr=10,tp=14,bt=30,pw=W-l-rr,ph=H-tp-bt,X=m=>l+(m-m0)/span*pw,Y=v=>tp+ph-v/max*ph;
- const ys=[0,.25,.5,.75,1].map(f=>Math.round(max*f)),stp=[5,10,15,20,30,60,120].find(s=>span/s<=6)||Math.ceil(span/6),xs=[];for(let t=0;t<=span;t+=stp)xs.push(t);if(span-xs[xs.length-1]>stp*.4)xs.push(span);
+ const ys=(max<=10?[0,.5,1]:[0,.25,.5,.75,1]).map(f=>Math.round(max*f)),stp=[5,10,15,20,30,60,120].find(s=>span/s<=6)||Math.ceil(span/6),xs=[];for(let t=0;t<=span;t+=stp)xs.push(t);if(span-xs[xs.length-1]>stp*.4)xs.push(span);
  let d='',dd='';P.forEach((p,i)=>{if(!i)return;const q=P[i-1],seg=`M${X(q.m).toFixed(1)},${Y(q.v).toFixed(1)}L${X(p.m).toFixed(1)},${Y(p.v).toFixed(1)}`;if(p.e)dd+=seg;else d+=seg});
  const area=`M${X(P[0].m).toFixed(1)},${Y(0)}`+P.map(p=>`L${X(p.m).toFixed(1)},${Y(p.v).toFixed(1)}`).join('')+`L${X(P[P.length-1].m).toFixed(1)},${Y(0)}Z`;
- const f=P[0],z=P[P.length-1],tt=x.start?new Date(x.start):null,st=tt?tt.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'})+' '+tt.toTimeString().slice(0,5):'';
+ const U=x.u!=null?x.u:a.unit,f=P[0],z=P[P.length-1],tt=x.start?new Date(x.start):null,st=tt?tt.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'})+' '+tt.toTimeString().slice(0,5):'';
  const lab=new Set([0,P.length-1]);if(P.length>4){[.25,.5,.75].forEach(fr=>lab.add(Math.round((P.length-1)*fr)))}
- if(P.length<2)return`<div class="lc"><div class="lct">${esc(x.name||'')}</div><small class="imn">${z.v} מתוך ${max}. הקו יתחיל מהתרגול הבא.</small></div>`;
+ if(P.length<2)return`<div class="lc"><div class="lct">${esc(x.name||'')}</div><small class="imn">${z.v} מתוך ${max}. הקו יתחיל מהנקודה הבאה.</small></div>`;
  return`<div class="lc"><div class="lct">${esc(x.name||'')}</div><svg viewBox="0 0 ${W} ${H}" class="lcs" role="img" aria-label="${esc(x.name||'')}: מ-${f.v} ל-${z.v}">
  ${ys.map(v=>`<line x1="${l}" x2="${W-rr}" y1="${Y(v)}" y2="${Y(v)}" class="${v?'g':'g0'}"/><text x="${l-5}" y="${Y(v)+3.5}" class="yl" text-anchor="end">${v}</text>`).join('')}
  ${xs.map(t=>`<line x1="${X(m0+t)}" x2="${X(m0+t)}" y1="${Y(0)}" y2="${Y(0)+4}" class="g0"/><text x="${X(m0+t)}" y="${Y(0)+15}" class="xl" text-anchor="middle">${t}</text>`).join('')}
  <line x1="${l}" x2="${l}" y1="${tp}" y2="${Y(0)}" class="g0"/>
  <text x="${l+pw/2}" y="${H-2}" class="xl" text-anchor="middle">דקות לימוד</text>
  <path d="${area}" class="ar"/><path d="${dd}" class="ld"/><path d="${d}" class="ls"/>
- ${P.map((p,i)=>`<circle cx="${X(p.m).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${i===P.length-1?4.5:2.6}" class="pt"><title>דקה ${p.m-m0}: ${p.v} ${esc(a.unit)}</title></circle>`).join('')}
+ ${P.map((p,i)=>`<circle cx="${X(p.m).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${i===P.length-1?4.5:2.6}" class="pt"><title>דקה ${p.m-m0}: ${p.v} ${esc(U)}</title></circle>`).join('')}
  ${[...lab].map(i=>{const p=P[i];return`<text x="${Math.min(W-rr-4,Math.max(l+8,X(p.m)))}" y="${Math.max(10,Y(p.v)-7)}" class="vl" text-anchor="middle">${p.v}</text>`}).join('')}</svg>
- <small class="imn">${st?st+' · ':''}מ-<b>${f.v}</b> ל-<b>${z.v}</b> ${esc(a.unit)} מתוך ${max}, ב-${span} דקות לימוד</small></div>`}
+ <small class="imn">${st?st+' · ':''}מ-<b>${f.v}</b> ל-<b>${z.v}</b> ${esc(U)} מתוך ${max}, ב-${span} דקות לימוד</small></div>`}
 // ניתוח מהנתונים שכבר נשמרו (אורן 7.11.2026): סשנים לפי מכשיר, שלבים (דני), טעויות לצליל לפי סדר הקבוצות (ליה), ריכוז הטעויות במילים.
 function impX(r,k){let h='';const pc=(o,a)=>a?Math.round(o/a*100):0,hb=(l,v,max,txt)=>`<div class="ixr"><span class="ixl">${l}</span><span class="ixb"><i style="width:${Math.max(2,Math.round(v/max*100))}%"></i></span><span class="ixv">${txt}</span></div>`;
  const dv=(r.devs||[]).filter(d=>d.a>0).sort((x,y)=>String(x.f).localeCompare(String(y.f)));
@@ -274,10 +275,11 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
     h+=`<details class="more"><summary>📊 עוד נתונים</summary>${m}</details>`}
    if(a.id==='vocab'){const L=(j.lb||[]).filter(x=>LBN.includes(String(x.name).trim().toLowerCase()));
     if(L.length)h+=`<div class="lbx">🏅 מלוח הדירוג באפליקציה: ${L.map(x=>`הכינוי <b>${esc(x.name)}</b>: נלמדו ${x.learned}, שיא רצף ${x.best}, עדכון אחרון ${fmtD(x.updated_at)}`).join('<br>')}</div>`}
+   if(a.oa)h+=`<div class="oaw" id="oa_${id}" data-k="${k.id}" data-a="${a.id}"></div>`;
    h+=`<div class="rst"><button class="lnk" type="button" data-z="${k.id}|${a.id}|${a.n}|${k.n}">↺ איפוס ההתקדמות</button>${RZ?`<small>אופס לאחרונה ${fmtD(RZ.at)}</small>`:''}</div></div></div></div></div>`})
   h+=`<div class="kx">${k.noqz?'':`<div class="qzc" id="qz_${k.id}"></div>`}<div class="rqs" id="rq_${k.id}"></div></div></div>`});
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
- V.innerHTML=h;SAVED='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);const d=$('dot_'+k.id);if(d)d.classList.toggle('on',NG[k.id])});loadReq();loadQz();drawCnt();capWire();StudyContent.refresh(drawCnt);
+ V.innerHTML=h;SAVED='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);const d=$('dot_'+k.id);if(d)d.classList.toggle('on',NG[k.id])});loadReq();loadQz();loadOA();drawCnt();capWire();StudyContent.refresh(drawCnt);
  V.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{TAB=b.dataset.k;try{localStorage.setItem('study_par_tab',TAB)}catch(e){}V.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));KIDS.forEach(k=>$('kd_'+k.id).classList.toggle('off',k.id!==TAB));scrollTo(0,0)});
  V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':(b.dataset.l||'✏️ עריכה')});if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);{const g=$('pgdgo');if(g)g.onclick=()=>$('nt').click();const d=$('pgd');if(d)d.ontoggle=()=>{try{localStorage.setItem('study_pgd_'+FAM,d.open?'1':'0')}catch(e){}}}$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem(PINK)}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
@@ -315,6 +317,12 @@ function loadQz(kid,cmd){rpc('study_parents_quiz',{p_pin:PIN,p_kid:kid||null,p_c
  QZF='';V.querySelectorAll('[data-qz]').forEach(b=>b.onclick=()=>{const [k,c]=b.dataset.qz.split('|');QZF=k;loadQz(k,c)})}).catch(()=>{})}
 // בקשות והצעות מהילדים (study_requests, נשלחות מדף הילד דרך study/req.js)
 const ARC={},NG={};const RQK={test:'📅 מבחן קרוב',quiz:'⏰ בוחן',hard:'🤔 לא מבין/ה',topic:'📚 נושא ללימוד',idea:'💡 רעיון לאפליקציה',bug:'🐞 באג באפליקציה'};
+// ✍️ תשובות פתוחות (אורן 11.11.2026): מה הילד הקליד, הציון וההערה של Claude. study_parents_answers מחזיר רק ילד מהמשפחה של הקוד.
+function loadOA(){V.querySelectorAll('.oaw').forEach(el=>{const k=el.dataset.k,ap=el.dataset.a;rpc('study_parents_answers',{p_pin:PIN,p_kid:k}).then(j=>{if(!j||!j.ok)return;
+ const L=(j.items||[]).filter(x=>x.app===ap||x.app===ap+'-rv');if(!L.length){el.innerHTML='<div class="imh">✍️ תשובות פתוחות</div><small class="imn">עוד לא נשלחו תשובות. כל תשובה נבדקת ומקבלת ציון 0-10 והערה.</small>';return}
+ const G=L.filter(x=>x.score!=null&&x.app===ap),av=G.length?(G.reduce((a,x)=>a+x.score,0)/G.length).toFixed(1):null,pd=L.filter(x=>x.score==null).length;
+ el.innerHTML=`<div class="imh">✍️ תשובות פתוחות</div><div class="oas">${G.length} נבדקו${av?` · ממוצע <b>${av}/10</b>`:''}${pd?` · ⏳ ${pd} מחכות לבדיקה`:''}</div>`+L.map(x=>{const q=String(x.q||'').split('\n\n').pop(),c=x.score==null?'p':x.score>=7?'g':'b';
+  return`<details class="oai"><summary><span class="scb ${c}">${x.score==null?'⏳':x.score+'/10'}</span><span class="oaq">${esc(q)}</span></summary><div class="oab"><small>${x.app!==ap?'🧪 תשובת בדיקה (תצוגת הורה) · ':''}${fmtD(x.at)}</small><div class="oam">${esc(x.txt)}</div>${x.fb?`<div class="oaf">💬 ${esc(x.fb)}</div>`:''}</div></details>`}).join('')}).catch(()=>{})})}
 function loadReq(id,set){rpc('study_parents_requests',{p_pin:PIN,p_id:id||null,p_set:set||null}).then(j=>{if(!j||!j.ok)return;
  KIDS.forEach(k=>{const box=$('rq_'+k.id);if(!box)return;const L=j.items.filter(x=>x.kid===k.id),open=L.filter(x=>!x.done).length;
   const O=L.filter(x=>!x.done),D=L.filter(x=>x.done),row=x=>`<div class="rq${x.done?' dn':''}"><div class="t"><span>${RQK[x.kind]||''}</span><span>${ago(x.at)}</span></div><div class="tx">${esc(x.txt)}</div><div class="a">${x.done?`<span class="none" style="font-size:13px">✓ טופל ${x.done_at?ago(x.done_at):''}</span><button class="lnk" type="button" data-q="${x.id}|open">↩ לא טופל</button>`:`<button class="lnk" type="button" data-q="${x.id}|done">✓ טופל</button>`}<button class="lnk" type="button" data-q="${x.id}|hide">הסתרה</button></div></div>`;
