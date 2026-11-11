@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=4"></script>
+<script src="../../content.js?v=6"></script><script>StudyContent.guard('lia/mult')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · לוח הכפל</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css">
+<style>
+:root{--pu:#0f766e;--pu2:#0d9488;--pk:#f97316;--pl:#e6f6f3;--ok:#16a34a;--no:#e11d48;--sm:#115e59;--kh:50px}
+main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;flex-direction:column;justify-content:safe center}
+.nav{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex:none}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 9px;cursor:pointer;white-space:nowrap}
+.ib.gift{background:#ecfdf5;border-color:#6ee7b7;color:#065f46;font-weight:700;font-size:13px;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;width:38px;text-align:center;direction:ltr;background:#0d9488;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
+@keyframes gw{0%,88%,100%{transform:none}91%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}97%{transform:rotate(-3deg)}}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh)}
+.prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:24px}
+.prog .row b{color:var(--fg);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chips{display:flex;gap:5px;flex:none}.chip{font-size:13px;background:var(--pl);color:var(--sm);border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
+.pls{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px}
+.pls span{height:24px;border-radius:8px;background:#f1f3f7;color:var(--mut);font:600 12px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;position:relative}
+.pls span i{position:absolute;inset:0 0 0 auto;background:rgba(13,148,136,.18);width:0}.pls span em{position:relative;font-style:normal}
+.pls span{font-size:15px}.pls span.cur{background:#ccfbf1;color:var(--sm);outline:2px solid #5eead4}.pls span.ok{background:#dcfce7;color:#166534}.pls span.lk{opacity:.55}
+.card{flex:0 1 520px;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:8px 12px 10px;box-shadow:var(--sh);text-align:center;margin-top:8px}
+.top2{display:flex;align-items:center;justify-content:space-between;height:30px;flex:none}
+.mode{font-size:13px;font-weight:700;color:var(--sm);background:var(--pl);border-radius:20px;padding:2px 10px;white-space:nowrap}.mode.new{color:#9a3412;background:#fff1e6}.mode.fast{color:#6d28d9;background:#f3e8ff}
+.bugp{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--mut);direction:ltr}
+.bugp .bx{position:relative;width:30px;height:30px}.bugp svg{position:absolute;inset:0;width:30px;height:30px}.bugp .gr{filter:brightness(0) invert(.7);opacity:.7}
+.mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:4px;overflow:hidden}
+.ask{font-size:16px;color:var(--fg);font-weight:600;line-height:1.35;max-width:400px}
+.ex{font:800 48px/1.1 system-ui,Arial,sans-serif;direction:ltr;unicode-bidi:isolate;color:var(--fg);white-space:nowrap}.ex .q{color:var(--pk)}
+.ex.sm{font-size:36px}
+.tip{font-size:14px;color:#115e59;background:#f0fdfa;border-radius:12px;padding:3px 10px;max-width:400px}
+.arr{display:inline-grid;gap:2px;direction:ltr;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:5px}.arr span{font-size:20px;line-height:1}
+.slot{height:50px;min-width:130px;border-bottom:3px solid #5eead4;font:800 38px/50px system-ui,Arial,sans-serif;direction:ltr;flex:none;margin:0 auto}
+.slot.ok{color:var(--ok);border-color:var(--ok)}.slot.no{color:var(--no);border-color:var(--no)}.slot.hid{visibility:hidden}
+.fb{height:44px;flex:none;display:flex;flex-direction:column;justify-content:center;font-size:14px;line-height:1.3;margin:3px 0}
+.fb .t{font-size:17px;font-weight:800}.fb .ok{color:var(--ok)}.fb .no{color:var(--no)}.fb .s{direction:rtl}
+.zone{flex:none;height:calc(var(--kh)*3 + 14px);position:relative}
+.kp,.op{position:absolute;inset:0;display:grid;gap:7px}
+.kp{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);direction:ltr}
+.op{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}.op.o1{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:6px}
+.k,.opt{font:700 26px system-ui,Arial,sans-serif;color:inherit;background:#fff;border:2px solid var(--bd);border-radius:14px;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.k:active{background:#f0fdfa}
+.opt{direction:ltr;font-size:24px;line-height:1.15}.op.o1 .opt,.opt.he{direction:rtl;font:600 15px system-ui,Arial,sans-serif;padding:0 8px}.op.o1 .opt{text-align:right}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}.opt.no{background:var(--no);border-color:var(--no);color:#fff}.opt:disabled{cursor:default}
+.r4{flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px;height:var(--kh);direction:ltr}
+.r4 .k{height:var(--kh)}.r4 .hid{visibility:hidden}
+.act{font:inherit;font-weight:800;font-size:18px;border:0;border-radius:14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pu),var(--pu2));box-shadow:0 3px 0 #115e59;direction:rtl}
+.act:disabled{opacity:.4}
+.btn{flex:1;font:inherit;font-weight:700;padding:12px;border:0;border-radius:14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pu),var(--pu2));box-shadow:0 3px 0 #115e59;height:50px}
+.btn.soft{color:var(--mut);background:#f1f3f7;box-shadow:none;font-weight:600}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 14px)}
+.ov.on{display:flex}
+.pn{background:var(--card);border-radius:20px;padding:16px 16px;width:100%;max-width:500px;max-height:100%;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.pn h2{margin:0 0 8px;font-size:20px}.pn p{margin:7px 0;line-height:1.5;font-size:16px}
+.pn .btn{width:100%;margin-top:10px}
+/* עמודי ההסבר: גובה קבוע, כפתורים קבועים למטה */
+#les .pn{height:min(520px,100%);display:flex;flex-direction:column;overflow:hidden}
+.lh{display:flex;justify-content:space-between;align-items:center;flex:none}.lh small{color:var(--mut);font-size:13px;direction:ltr}
+.lb{flex:1;min-height:0;overflow:auto;padding:4px 2px}.lb p{font-size:17px;line-height:1.55;margin:8px 0}
+.lb .eq{direction:ltr;unicode-bidi:isolate;font:800 24px/1.3 system-ui,Arial,sans-serif;text-align:center;margin:8px 0;color:var(--fg)}.lb .eq b{color:var(--pk)}
+.lb .vis{text-align:center;font-size:24px;line-height:1.25;margin:6px 0}
+.lb .box{background:#f0fdfa;border:1px solid #99f6e4;border-radius:14px;padding:8px 12px;margin:8px 0}
+.dots{display:flex;gap:5px;justify-content:center;margin:6px 0;flex:none}.dots i{width:8px;height:8px;border-radius:50%;background:#d1d5db}.dots i.on{background:var(--pu2)}
+.lnav{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:none}.lnav .btn{margin:0;width:auto}.lnav .hid{visibility:hidden}
+#sqov .pn,#mdov .pn{text-align:center;overflow:hidden}
+#sqimg{width:150px;height:150px;margin:6px auto;display:block;animation:sqin .9s cubic-bezier(.2,1.6,.4,1)}#sqimg.squish{animation:squish .5s}
+@keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
+@keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
+.sqg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px;max-width:360px;margin-inline:auto}
+.sqg div{background:#f7f7ff;border:1px solid #e4e6fb;border-radius:10px;padding:2px}
+.sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}
+.sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
+.sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
+.sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
+.sqg .bug{background:linear-gradient(160deg,#ecfdf5,#e0f2fe,#f5f3ff);border-color:#34d399}.sqg .lock.bug{background:#f0faf6;border-color:#a7f3d0}
+.sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
+.sqg.big{max-width:330px}
+.pb{height:8px;background:#e2f3ef;border-radius:8px;overflow:hidden}.pb i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--pu2),var(--pk));transition:width .5s}
+.conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:50;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:var(--pu);z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap;direction:rtl;unicode-bidi:isolate;background:#fff;border:2px solid #99f6e4;border-radius:999px;padding:4px 16px;box-shadow:0 6px 18px rgba(15,118,110,.18)}
+@keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
+.tbar{height:5px;background:#f3e8ff;border-radius:4px;overflow:hidden;width:160px;margin:0 auto}.tbar i{display:block;height:100%;background:#8b5cf6;width:100%}
+@media(max-height:700px){:root{--kh:42px}.ex{font-size:38px}.ex.sm{font-size:26px}.slot{height:42px;font-size:30px;line-height:42px}.ask{font-size:15px;line-height:1.25}.arr span{font-size:15px}.arr{padding:3px}.fb{height:40px;font-size:13px}.fb .t{font-size:16px}.tip{font-size:13px;padding:2px 8px}.top2{height:26px}.prog{padding:4px 10px 6px}}
+@media(max-height:640px){:root{--kh:38px}.pls span{height:20px;font-size:13px}.ex{font-size:32px}.mid{gap:2px}.k,.opt{font-size:22px}}
+@media(prefers-reduced-motion:reduce){#sqimg,.ib.gift{animation:none!important}}
+</style></head><body><main>
+<div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="lsb" type="button" aria-label="ההסבר">📘</button><button class="ib gift" id="sqb" type="button">🐞 סקווישים <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
+<div class="prog">
+  <div class="row"><b id="mt"></b><span class="chips"><span class="chip" id="pts">⭐ 0</span><span class="chip" id="stc">🔥 0</span></span></div>
+  <div class="pls" id="pls"></div>
+</div>
+<div class="card">
+  <div class="top2"><span class="mode" id="mode"></span><span class="bugp" id="bugp"></span></div>
+  <div class="mid" id="mid"></div>
+  <div class="slot" id="slot"></div>
+  <div class="fb" id="fb"></div>
+  <div class="zone"><div class="kp" id="kp"></div><div class="op" id="op" style="display:none"></div></div>
+  <div class="r4"><button class="k" id="kdel" type="button" aria-label="מחיקה">⌫</button><button class="k" id="k0" type="button">0</button><button class="act" id="act" type="button" disabled>בדיקה ✓</button></div>
+</div>
+
+<div class="ov" id="intro"><div class="pn" style="text-align:center">
+<h2>🔭 ליה, חוקרת חרקי חלל!</h2>
+<p>בגלקסיה מסתתרים <b>6 חרקי חלל</b> נדירים. כל אחד גר על כוכב משלו, ושומר על סוד אחד של <b>לוח הכפל</b>.</p>
+<p style="margin-bottom:2px">🎁 <b>את מקבלת 6 סקווישים חדשים ומיוחדים!</b> על כל כוכב שתסיימי, חרק החלל שלו מצטרף ללוח הסקווישים שלך, בשורה חדשה:</p>
+<div class="sqg big" id="isq"></div>
+<p style="font-size:14px;color:var(--mut)">בכל כוכב: קודם הסבר קצר 📘, ואז משימות. כל תרגיל צריך לפתור נכון פעמיים, בתורות שונות.</p>
+<button class="btn" id="go" type="button">יאללה, להמראה! 🚀</button>
+</div></div>
+<div class="ov" id="les"><div class="pn">
+<div class="lh"><h2 id="lt" style="margin:0"></h2><small id="lp"></small></div>
+<div class="lb" id="lb"></div>
+<div class="dots" id="ld"></div>
+<div class="lnav"><button class="btn soft" id="lpr" type="button">→ הקודם</button><button class="btn" id="lnx" type="button">הבא ←</button></div>
+</div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>🐞 לוח הסקווישים שלי</h2><p id="sqtx" style="margin:0 0 6px;font-size:15px"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">🐞 חרק חלל חדש!</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">ללוח! 🐞</button></div></div>
+<div class="ov" id="mdov"><div class="pn"><div style="font-size:46px" id="mde">🏅</div><h2 id="mdt"></h2><p id="mdp"></p><button class="btn" id="mdy" type="button">לכוכב הבא 🚀</button></div></div>
+
+<script src="../squishies.js?v=3"></script>
+<script src="../../sqsound.js?v=8"></script>
+<script src="../../track.js?v=8"></script>
+<script>
+// לוח הכפל לליה, כיתה ד׳ (אורן 11.11.2026), "חוקרת חרקי חלל".
+// לפי הדרך של משרד החינוך: קודם הבנה (קבוצות שוות, מערך, חוק החילוף), אחר כך אסטרטגיות לכל עמודה (כפול, חצי מ-10, 10 פחות קבוצה, חוק הפילוג),
+// ואז שליפה מהירה ("שליטה בעובדות היסוד"), וכפל וחילוק כפעולות הפוכות + כפל בעשרות שלמות + בעיות מילוליות (תכנית כיתה ד׳).
+// 6 משימות (כוכבים) = 6 חרקי חלל (LiaSquishies.list4) בשורה רביעית של הלוח האחד שלה. אחרי 6 הכוכבים: ⚡ שליפה מהירה של כל 45 העובדות.
+// מפתחות: lia_mx (התקדמות), lia_mx_sq (חרקי החלל שנאספו; הלוח מציג גם את lia_ph_sq), lia_mx_mute.
+const $=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const X=(a,b)=>`${a} × ${b}`;
+const BUG=['🐞','🐝','🐜','🪲','🦋','🐞'];
+
+// ---------- המשימות ----------
+// t = העמודות של הכוכב (כל התרגילים עם המספר הזה, 2 עד 10). c = שאלות הבנה [שאלה, נכונה, שגויה, שגויה, שגויה, מערך (שורות,עמודות) או null].
+const M=[
+ {n:'כוכב הקבוצות',s:'×2 ×10',t:[2,10],tip:{2:'×2 = כפול: המספר ועוד המספר',10:'×10 = המספר עם 0 בסוף'},
+  c:[['3 שורות, ובכל שורה 4 חרקים. איזה תרגיל מתאים?','3 × 4','3 + 4','4 × 4','3 × 5',[3,4]],
+     ['איזה תרגיל כפל שווה ל: 5 + 5 + 5 ?','3 × 5','5 + 3','5 × 5','3 × 3',null],
+     ['מה נכון על 7 × 3 ועל 3 × 7?','התוצאות שוות, מותר להחליף את הסדר','7 × 3 גדול יותר, כי 7 בא קודם','3 × 7 גדול יותר, כי 7 בא בסוף','אי אפשר לדעת בלי לספור הכול',null],
+     ['8 צנצנות ריקות, בכל אחת 0 חרקים. כמה זה 8 × 0 ?','0','8','1','80',null],
+     ['כמה זה 1 × 9 ?','9','1','10','0',null],
+     ['2 שורות של 6 חרקים. כמה חרקים יש?','12','8','10','14',[2,6]]],
+  L:[['כפל = קבוצות שוות','<p>בכל צנצנת מחקר יש <b>4 חרקים</b>. יש <b>3 צנצנות</b>.</p><div class="vis">🫙🐞🐞🐞🐞<br>🫙🐞🐞🐞🐞<br>🫙🐞🐞🐞🐞</div><div class="eq">4 + 4 + 4 = <b>3 × 4</b> = 12</div><p>כפל הוא דרך קצרה לחבר <b>קבוצות שוות</b>.</p>'],
+     ['מערך וחוק החילוף','<p>מסדרים חרקים בשורות ובעמודות. זה נקרא <b>מערך</b>.</p><div class="vis" dir="ltr">🐞🐞🐞🐞<br>🐞🐞🐞🐞<br>🐞🐞🐞🐞</div><p>3 שורות של 4 = <span dir="ltr">3 × 4</span>. מסובבים את הצנצנת: 4 שורות של 3 = <span dir="ltr">4 × 3</span>.</p><div class="box">אותה תוצאה! מותר להחליף את הסדר. זה <b>חוק החילוף</b>.</div>'],
+     ['×2 ו-×10','<p><b>×2 = כפול.</b> לוקחים את המספר פעמיים:</p><div class="eq">2 × 7 = 7 + 7 = <b>14</b></div><p><b>×10 = מוסיפים 0 בסוף:</b></p><div class="eq">10 × 6 = <b>60</b></div>'],
+     ['×1 ו-×0','<p><b>×1</b> = קבוצה אחת. נשאר המספר עצמו:</p><div class="eq">1 × 8 = <b>8</b></div><p><b>×0</b> = צנצנות ריקות. אין חרקים בכלל:</p><div class="eq">8 × 0 = <b>0</b></div><div class="box">בכל תרגיל של הכוכב הזה: רמז קטן מחכה לך למעלה 💡</div>']]},
+ {n:'כוכב הדבורים',s:'×5 ×4',t:[5,4],tip:{5:'×5 = חצי מ-×10',4:'×4 = כפול, ושוב כפול'},
+  c:[['איזו דרך עוזרת לחשב 5 × 8 ?','10 × 8 = 80, ואז חצי מזה','5 + 8 = 13, ואז עוד 5','8 × 8 = 64, ואז פחות 5','5 × 5 = 25, ואז עוד 8',null],
+     ['איזו דרך עוזרת לחשב 4 × 7 ?','2 × 7 = 14, ושוב כפול','4 + 7 = 11, ושוב כפול','7 × 7 = 49, ואז פחות 4','4 × 4 = 16, ואז עוד 7',null],
+     ['באיזו ספרה נגמרת תוצאה של כפל ב-5?','תמיד ב-0 או ב-5','תמיד רק בספרה 5','תמיד במספר זוגי','בכל ספרה שהיא',null],
+     ['4 שורות, ובכל שורה 5 חרקים. איזה תרגיל מתאים?','4 × 5','4 + 5','5 × 5','4 × 4',[4,5]]],
+  L:[['×5 = חצי מ-×10','<p>דבורת-מטאור קופצת בקפיצות של 5:</p><div class="eq">5, 10, 15, 20, 25…</div><p>דרך מהירה: מחשבים <b>×10</b>, ולוקחים <b>חצי</b>.</p><div class="eq">5 × 8 → 10 × 8 = 80 → <b>40</b></div>'],
+     ['×4 = כפול של כפול','<p>כופלים ב-2, ואז שוב ב-2:</p><div class="eq">4 × 7 → 7 + 7 = 14 → 14 + 14 = <b>28</b></div><div class="box">4 = 2 ועוד 2, אז ×4 = כפול פעמיים.</div>'],
+     ['סוד של 5','<p>בכל תרגיל של <b>×5</b> התוצאה נגמרת ב-<b>0</b> או ב-<b>5</b>:</p><div class="eq">5 × 6 = 30 · 5 × 7 = 35</div><p>מספר זוגי × 5 → נגמר ב-0. מספר אי-זוגי × 5 → נגמר ב-5.</p>']]},
+ {n:'כוכב הנמלים',s:'×3 ×6',t:[3,6],tip:{3:'×3 = כפול ועוד פעם אחת',6:'×6 = כפול של ×3 (או ×5 ועוד קבוצה)'},
+  c:[['איזו דרך עוזרת לחשב 6 × 7 ?','3 × 7 = 21, ואז כפול','6 + 7 = 13, ואז כפול','7 × 7 = 49, ואז פחות 6','6 × 6 = 36, ואז עוד 1',null],
+     ['3 × 8 שווה ל:','8 + 8 + 8','3 + 3 + 3','8 + 3 + 8','3 + 8 + 3',null],
+     ['אם 3 × 9 = 27, כמה זה 6 × 9 ?','54, כי 6 הוא כפול של 3','33, כי מוסיפים עוד 6','30, כי מוסיפים עוד 3','27, כי זה כמעט אותו דבר',null]],
+  L:[['×3 = כפול ועוד פעם','<p>לנמלת-רקטה יש 3 זוגות רגליים. ×3 = כפול, ועוד פעם אחת:</p><div class="eq">3 × 7 = 7 + 7 + 7 = 14 + 7 = <b>21</b></div>'],
+     ['×6 = כפול של ×3','<p>יודעת ×3? אז ×6 זה פשוט <b>כפול</b>:</p><div class="eq">6 × 7 → 3 × 7 = 21 → <b>42</b></div><p>או: <b>×5 ועוד קבוצה אחת</b>:</p><div class="eq">5 × 7 = 35 → 35 + 7 = <b>42</b></div>'],
+     ['בודקות עם המערך','<div class="vis" dir="ltr">🐜🐜🐜🐜🐜🐜<br>🐜🐜🐜🐜🐜🐜<br>🐜🐜🐜🐜🐜🐜</div><p>3 שורות של 6 = <span dir="ltr">3 × 6 = 18</span>. ועוד 3 שורות כאלה = <span dir="ltr">6 × 6 = 36</span>.</p>']]},
+ {n:'כוכב הגחליליות',s:'×9 ×8',t:[9,8],tip:{9:'×9 = ×10 פחות קבוצה אחת',8:'×8 = כפול, כפול, כפול'},
+  c:[['איזו דרך עוזרת לחשב 9 × 6 ?','10 × 6 = 60, ואז פחות 6','9 + 6 = 15, ואז עוד 9','6 × 6 = 36, ואז עוד 9','9 × 9 = 81, ואז פחות 6',null],
+     ['איזו דרך עוזרת לחשב 8 × 7 ?','כפול 3 פעמים: 14, 28, 56','כפול 2 פעמים: 14, 28, וזהו','10 × 7 = 70, ואז פחות 8','7 + 8 = 15, ואז עוד 8',null],
+     ['מה הסוד של התוצאות ב-×9?','סכום הספרות הוא 9 (63: 6 + 3)','התוצאה תמיד נגמרת בספרה 9','התוצאה תמיד מספר זוגי','התוצאה תמיד גדולה מ-90',null]],
+  L:[['×9 = ×10 פחות קבוצה','<p>מחשבים <b>×10</b>, ומורידים קבוצה אחת:</p><div class="eq">9 × 7 → 10 × 7 = 70 → 70 − 7 = <b>63</b></div>'],
+     ['הסוד של 9','<p>בתוצאות של ×9 הספרות מתחברות ל-<b>9</b>:</p><div class="eq">18 · 27 · 36 · 45 · 54 · 63</div><p>והספרה הראשונה קטנה ב-1 מהמספר שכופלים: <span dir="ltr">9 × 7 = <b>6</b>3</span></p>'],
+     ['×8 = כפול, כפול, כפול','<p>8 = 2 × 2 × 2. אז כופלים ב-2 שלוש פעמים:</p><div class="eq">8 × 6 → 12 → 24 → <b>48</b></div><div class="box">גחלילית-נבולה מהבהבת 3 פעמים, ובכל פעם האור מוכפל ✨</div>']]},
+ {n:'כוכב הפרפרים',s:'×7 ריבועים',t:[7],sq:[3,4,6,8,9],tip:{7:'×7 = חוק הפילוג: ×5 ועוד ×2'},
+  c:[['חוק הפילוג: איך מחשבים 7 × 8 ?','5 × 8 + 2 × 8 = 40 + 16','5 × 8 + 2 × 7 = 40 + 14','7 × 5 + 7 × 2 = 35 + 14','7 + 8 + 7 + 8 = 15 + 15',null],
+     ['מה זה מספר ריבועי?','מספר כפול עצמו, כמו 6 × 6','מספר שנגמר ב-0, כמו 60','מספר כפול 4, כמו 4 × 9','מספר כפול 2, כמו 2 × 6',null],
+     ['7 × 6 = 42. כמה זה 7 × 7 ?','49, כי מוסיפים עוד 7','48, כי מוסיפים עוד 6','43, כי מוסיפים עוד 1','56, כי מוסיפים עוד 14',null]],
+  L:[['חוק הפילוג','<p>תרגיל קשה? <b>מפרקים</b> אותו לשני תרגילים קלים:</p><div class="eq">7 × 8 = 5 × 8 + 2 × 8</div><div class="eq">= 40 + 16 = <b>56</b></div><div class="box">7 = 5 ועוד 2. את ×5 ואת ×2 את כבר יודעת!</div>'],
+     ['מספרים ריבועיים','<p>מספר כפול <b>עצמו</b> יוצר מערך מרובע:</p><div class="vis" dir="ltr">🦋🦋🦋🦋<br>🦋🦋🦋🦋<br>🦋🦋🦋🦋<br>🦋🦋🦋🦋</div><div class="eq">4 × 4 = 16 · 6 × 6 = 36 · 7 × 7 = 49 · 8 × 8 = 64</div>'],
+     ['טריק לזכור','<p>הספרות 5, 6, 7, 8 בסדר:</p><div class="eq"><b>56</b> = <b>7 × 8</b></div><p>ועוד אחד: <span dir="ltr">6 × 7 = 42</span>, וצעד אחד הלאה <span dir="ltr">7 × 7 = 49</span>.</p>']]},
+ {n:'כוכב המלכה',s:'חילוק',dv:1,
+  c:[['24 חרקים ב-6 צנצנות שוות. איזה תרגיל מתאים?','24 : 6','24 × 6','24 − 6','6 : 24',null],
+     ['איזה תרגיל שייך למשפחה של 6 × 8 = 48 ?','48 : 6 = 8','48 : 6 = 7','6 : 48 = 8','48 × 6 = 8',null],
+     ['איך מחשבים 3 × 40 ?','3 × 4 = 12, ומוסיפים 0: 120','3 + 40 = 43, ומוסיפים 0: 430','3 × 4 = 12, ומוסיפים 00: 1200','4 × 4 = 16, ומוסיפים 0: 160',null],
+     ['איך בודקים ש-56 : 7 = 8 ?','7 × 8 = 56, אז זה נכון','7 + 8 = 15, אז זה נכון','56 − 7 = 49, אז זה נכון','7 × 7 = 49, אז זה נכון',null]],
+  L:[['חילוק = חלוקה שווה','<p>מלכת החרקים מחלקת <b>24</b> חרקים ל-<b>6</b> צנצנות, בכל צנצנת אותו מספר:</p><div class="vis">🫙🪲🪲🪲🪲 🫙🪲🪲🪲🪲 🫙🪲🪲🪲🪲<br>🫙🪲🪲🪲🪲 🫙🪲🪲🪲🪲 🫙🪲🪲🪲🪲</div><div class="eq">24 : 6 = <b>4</b></div>'],
+     ['משפחת תרגילים','<p>כפל וחילוק הם <b>פעולות הפוכות</b>. מתרגיל אחד יוצאים ארבעה:</p><div class="eq">6 × 4 = 24 · 4 × 6 = 24</div><div class="eq">24 : 6 = 4 · 24 : 4 = 6</div><div class="box">ב-<span dir="ltr">42 : 6</span> שואלים: 6 כפול כמה זה 42? 7!</div>'],
+     ['כפל בעשרות','<p>כופלים בלי האפס, ובסוף מחזירים אותו:</p><div class="eq">3 × 40 → 3 × 4 = 12 → <b>120</b></div><div class="eq">20 × 7 → 2 × 7 = 14 → <b>140</b></div>'],
+     ['בעיה מילולית','<p>שואלים שתי שאלות: <b>כמה קבוצות?</b> <b>כמה בכל קבוצה?</b></p><p>יודעים את שתיהן? כופלים. יודעים את הכול ואת מספר הקבוצות? מחלקים.</p><div class="box">7 צנצנות, בכל אחת 6 חרקים → <span dir="ltr">7 × 6 = 42</span></div>']]}
+];
+// כוכב המלכה: חילוק (a×b : a = b), חסר גורם, עשרות, בעיות מילוליות
+const DIV=[[6,4],[7,3],[8,6],[9,7],[7,8],[6,9],[4,8],[5,7],[3,9],[8,8],[6,7],[9,4]];
+const MIS=[[7,6],[8,4],[9,6],[6,8]];
+const TENS=[[3,40],[6,30],[20,7],[5,80]];
+const WORDS=[['בכל צנצנת מחקר יש 6 חרקים. לליה יש 7 צנצנות. כמה חרקים יש לה?',42],
+ ['ליה מצאה 32 חיפושיות וחילקה אותן שווה בשווה ל-4 חלליות. כמה חיפושיות בכל חללית?',8],
+ ['לכל נמלת-רקטה יש 6 רגליים. כמה רגליים יש ל-9 נמלות?',54],
+ ['זכוכית מגדלת עולה 20 שקלים. כמה עולות 3 זכוכיות?',60],
+ ['48 גחליליות עומדות ב-6 שורות שוות. כמה בכל שורה?',8]];
+
+// פריטים לכל משימה: f = עובדת כפל (צריך 2 נכונות), c = שאלת הבנה (1), d חילוק (2), m חסר גורם (1), t עשרות (1), w בעיה (1)
+const FACTS=[];for(let a=2;a<=10;a++)for(let b=a;b<=10;b++)FACTS.push([a,b]);
+function items(mi){const m=M[mi],o=[];
+  if(!m.dv){const fs=FACTS.filter(([a,b])=>m.t.includes(a)||m.t.includes(b)||(m.sq&&a===b&&m.sq.includes(a)));
+    fs.forEach(([a,b])=>o.push({id:'f'+a+'x'+b,k:'f',a,b,need:2}))}
+  else{DIV.forEach(([a,b])=>o.push({id:'d'+a+'x'+b,k:'d',a,b,need:2}));MIS.forEach(([a,b])=>o.push({id:'m'+a+'x'+b,k:'m',a,b,need:1}));
+    TENS.forEach(([a,b])=>o.push({id:'t'+a+'x'+b,k:'t',a,b,need:1}));WORDS.forEach((w,i)=>o.push({id:'w'+i,k:'w',q:w[0],ans:w[1],need:1}))}
+  // שאלות ההבנה משולבות: אחת אחרי כל כמה תרגילים (הראשונה בהתחלה, כי היא מסבירה)
+  const cs=m.c.map((c,i)=>({id:'c'+i,k:'c',c,need:1}));const res=[];const step=Math.max(2,Math.floor(o.length/cs.length));
+  o.forEach((x,i)=>{if(i%step===0&&cs.length)res.push(cs.shift());res.push(x)});return res.concat(cs)}
+const IT=M.map((m,i)=>items(i));
+const FL=FACTS; // שלב השליפה: כל 45 העובדות
+
+// ---------- מצב ----------
+function fresh(){return{v:1,m:0,w:{},T:0,pts:0,st:{c:0,b:0},att:0,okc:0,intro:0,les:{},md:{},fl:{},started:new Date().toISOString()}}
+let S=LS.get('lia_mx');if(!S||!S.w)S=fresh();S.les=S.les||{};S.md=S.md||{};S.fl=S.fl||{};
+const save=()=>LS.set('lia_mx',S);save();
+let SQ=LS.get('lia_mx_sq')||[];let MUTE=!!LS.get('lia_mx_mute');
+const W=(mi,id)=>{const k=mi+':'+id;return S.w[k]||(S.w[k]={c:0,due:0,err:0})};
+const FLW=id=>S.fl[id]||(S.fl[id]={c:0,err:0});
+const PH2=()=>S.m>=M.length;
+const misPct=mi=>{const L=IT[mi];let n=0,t=0;L.forEach(x=>{t+=x.need;n+=Math.min(W(mi,x.id).c,x.need)});return t?n/t:0};
+const misDone=mi=>IT[mi].every(x=>W(mi,x.id).c>=x.need);
+const flDone=()=>FL.filter(([a,b])=>FLW(a+'x'+b).c>=2).length;
+
+// ---------- שמע ----------
+let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,t0,d,type,vol,f2){const a=ac();if(!a||MUTE)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t0+d);g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.16,a.currentTime+t0+.015);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
+const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.22,'triangle')},bad(){tone(330,0,.25,'sine',.14,220)},pop(){tone(220,0,.18,'sine',.25,880);tone(880,.16,.2,'sine',.15,440)},win(){[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.15))},key(){tone(1500,0,.03,'square',.03)}};
+const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
+
+// ---------- עזר ----------
+const POPQ=[];let POPON=false;function popTxt(t){POPQ.push(t);if(!POPON)popNext()}
+function popNext(){const t=POPQ.shift();if(t===undefined){POPON=false;return}POPON=true;const p=document.createElement('div');p.className='pop';p.textContent=t;document.body.appendChild(p);setTimeout(()=>{p.remove();popNext()},1050)}
+function confetti(n){const c=['#2dd4bf','#fb923c','#facc15','#60a5fa','#a78bfa'];for(let i=0;i<(n||40);i++){const e=document.createElement('i');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(c);e.style.animationDuration=(1.6+Math.random()*1.6)+'s';e.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3800)}}
+const OK=['מעולה! 🌟','את חוקרת אמיתית! 🔭','בול! 🎯','יופי של חישוב! ✨','אלופה! 🚀','החרק מתקרב! 🐞'];
+// אסטרטגיה לכל עמודה (משרד החינוך: לחשב מעובדה שיודעים). בוחרים את הגורם שהכי קל לחשב איתו.
+const PRI=[10,2,5,9,4,3,6,8,7];
+function strat(a,b){const t=PRI.find(x=>x===a||x===b)||a,n=t===a?b:a,p=a*b;
+  const r={10:['מוסיפים 0',`10 × ${n} = ${p}`],2:['כפול',`${n} + ${n} = ${p}`],5:['חצי מ-×10',`10 × ${n} = ${10*n} → ${p}`],9:['×10 פחות קבוצה',`${10*n} − ${n} = ${p}`],
+   4:['כפול של כפול',`${n} → ${2*n} → ${p}`],3:['3 קבוצות',`${n} + ${n} + ${n} = ${p}`],6:['×5 ועוד קבוצה',`${5*n} + ${n} = ${p}`],
+   8:['כפול 3 פעמים',`${n} → ${2*n} → ${4*n} → ${p}`],7:['פילוג: ×5 ועוד ×2',`${5*n} + ${2*n} = ${p}`]}[t];return r}
+const M_=m=>`<bdi dir="ltr">${m}</bdi>`;
+const MW=t=>String(t).replace(/(\d+(?:\s*[×:+−=→-]\s*(?:\d+|\?))+)/g,'<bdi dir="ltr">$1</bdi>'); // תרגיל בתוך משפט בעברית: מבודד, כדי שלא יתהפך
+const stH=st=>st?`<div class="s">💡 ${st[0]}: ${M_(st[1])}</div>`:'';
+const tipFor=(mi,a,b)=>{const m=M[mi];if(!m||!m.tip)return'';const t=m.t.find(x=>x===a||x===b);if(t&&m.tip[t])return m.tip[t];if(a===b)return'ריבוע: מספר כפול עצמו';return''};
+// מסיחים מספריים: תוצאות של תרגילים שכנים (נראים נכון, באותו אורך)
+function near(a,b){const p=a*b,c=[a*(b+1),a*(b-1),(a+1)*b,(a-1)*b,p+a,p-b,p+10,p-1,p+1].filter(x=>x>0&&x!==p);const u=[...new Set(c)];
+  const same=u.filter(x=>String(x).length===String(p).length);return shuf(same.length>=3?same:u).slice(0,3)}
+const arrH=(r,c,e)=>`<div class="arr" style="grid-template-columns:repeat(${c},auto)">${Array(r*c).fill(`<span>${e}</span>`).join('')}</div>`;
+
+// ---------- ממשק ----------
+const kp=$('kp'),op=$('op');
+kp.innerHTML=[7,8,9,4,5,6,1,2,3].map(d=>`<button class="k" type="button" data-d="${d}">${d}</button>`).join('');
+let CUR=null,INP='',DONE=false,T0=0,TIMER=null,LASTID=null,NEEDNEXT=false;
+function setMode(kind){const isOp=kind==='op';kp.style.display=isOp?'none':'grid';op.style.display=isOp?'grid':'none';
+  $('kdel').classList.toggle('hid',isOp);$('k0').classList.toggle('hid',isOp);$('slot').classList.toggle('hid',isOp)}
+function upd(){const ph=PH2();
+  $('mt').textContent=ph?'⚡ שליפה מהירה: '+flDone()+' מתוך '+FL.length:'כוכב '+(S.m+1)+' מתוך 6: '+M[S.m].n;
+  $('pls').innerHTML=M.map((m,i)=>{const d=!!S.md[i],cur=i===S.m,p=d?1:cur?misPct(i):0;return `<span class="${d?'ok':cur?'cur':'lk'}"><i style="width:${p*100}%"></i><em>${d?'✓':BUG[i]}</em></span>`}).join('')+
+    `<span class="${ph?'cur':'lk'}"><i style="width:${ph?flDone()/FL.length*100:0}%"></i><em>⚡</em></span>`;
+  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);
+  $('sqn').textContent=sqN()+'/'+ALLSQ.length;
+  const b=ph?null:LiaSquishies.list4[S.m];
+  if(b){const pc=misPct(S.m);$('bugp').innerHTML=`<span>${Math.round(pc*100)}%</span><span class="bx"><svg class="gr" viewBox="0 0 100 100">${b.svg}</svg><svg viewBox="0 0 100 100" style="clip-path:inset(${100-pc*100}% 0 0 0)">${b.svg}</svg></span>`}
+  else $('bugp').innerHTML=`<span>⚡ ${flDone()}/${FL.length}</span>`;
+  report()}
+function report(){if(!window.StudyTrack)return;const ph=PH2(),md=Object.keys(S.md).length;
+  const errs={};Object.keys(S.w).forEach(k=>{const e=S.w[k].err||0;if(!e)return;const id=k.split(':')[1];const m=/^[fd](\d+)x(\d+)$/.exec(id);if(!m)return;const key=id[0]==='d'?`${m[1]*m[2]} : ${m[1]}`:`${m[1]} × ${m[2]}`;errs[key]=(errs[key]||0)+e});
+  Object.keys(S.fl).forEach(k=>{const e=S.fl[k].err||0;if(e){const p=k.split('x');const key=`${p[0]} × ${p[1]}`;errs[key]=(errs[key]||0)+e}});
+  const hard=Object.keys(errs).sort((a,b)=>errs[b]-errs[a]).slice(0,8).map(e=>({e,n:errs[e]}));
+  StudyTrack.report({total:6,done:md,learning:ph?0:1,att:S.att,ok:S.okc,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:SQ.length,hard,mission:Math.min(S.m+1,7),
+    lv:ph?2:1,lvn:ph?'שלב 2: ⚡ שליפה מהירה (45 עובדות)':'שלב 1: 6 כוכבים (משימות)',prog:ph?flDone():md,pmax:ph?FL.length:6,started:S.started})}
+
+// בחירת הפריט הבא: עד 4 פריטים "בלמידה", כל אחד חוזר אחרי 2 תורות לפחות (תשובה נכונה בתורות נפרדות)
+function choose(){const mi=S.m,L=IT[mi];
+  const open=L.filter(x=>W(mi,x.id).c<x.need),act=open.filter(x=>W(mi,x.id).seen);
+  if(!open.length)return null;
+  const due=act.filter(x=>W(mi,x.id).due<=S.T&&x.id!==LASTID).sort((a,b)=>W(mi,a.id).due-W(mi,b.id).due);
+  if(due.length)return due[0];
+  const nw=open.filter(x=>!W(mi,x.id).seen);
+  if(nw.length&&act.length<4)return nw[0];
+  const any=act.filter(x=>x.id!==LASTID);if(any.length)return pick(any);
+  return nw[0]||open[0]}
+function next(){clearInterval(TIMER);DONE=false;INP='';$('act').textContent='בדיקה ✓';$('act').disabled=true;$('fb').innerHTML='';$('slot').className='slot';$('slot').textContent='';
+  if(PH2())return nextFl();
+  if(misDone(S.m))return missionDone();
+  const it=choose();if(!it)return missionDone();CUR={it,mi:S.m};const w=W(S.m,it.id),first=!w.seen;w.seen=1;LASTID=it.id;render(it,first,w);upd()}
+function render(it,first,w){const mi=S.m;let h='',mode=first?'🆕 תרגיל חדש':'🔁 תרגול',kind='kp';CUR.f=null;
+  $('mode').className='mode'+(first?' new':'');
+  if(it.k==='f'){let [a,b]=Math.random()<.5?[it.a,it.b]:[it.b,it.a];CUR.ans=a*b;
+    let f=first?'in':pick(['in','in','miss','mcq']);if(mi===0&&first&&a*b<=24&&a<=3)f='arr';CUR.f=f;
+    if(f==='arr'){h=`<div class="ask">${a} שורות, ובכל שורה ${b} חרקים. כמה חרקים?</div>${arrH(a,b,BUG[mi])}<div class="ex sm">${X(a,b)} = <span class="q">?</span></div>`}
+    else if(f==='miss'){CUR.ans=b;h=`<div class="ask">איזה מספר חסר?</div><div class="ex">${a} × <span class="q">?</span> = ${a*b}</div>`}
+    else if(f==='mcq'){kind='op';h=`<div class="ask">כמה זה?</div><div class="ex">${X(a,b)} = <span class="q">?</span></div>`;mcq([a*b,...near(a,b)].map(String),String(a*b))}
+    else h=`<div class="ex">${X(a,b)} = <span class="q">?</span></div>`;
+    const tp=first?tipFor(mi,a,b):'';if(tp&&f!=='mcq'&&f!=='arr')h+=`<div class="tip">💡 ${tp}</div>`;CUR.st=strat(a,b);CUR.show=X(a,b)+' = '+a*b}
+  else if(it.k==='d'){const p=it.a*it.b;CUR.ans=it.b;h=`<div class="ask">${first?'חילוק: '+it.a+' כפול כמה זה '+p+'?':'כמה זה?'}</div><div class="ex">${p} : ${it.a} = <span class="q">?</span></div>`;CUR.st=['כי',`${it.a} × ${it.b} = ${p}`];CUR.show=`${p} : ${it.a} = ${it.b}`}
+  else if(it.k==='m'){CUR.ans=it.b;h=`<div class="ask">איזה מספר חסר?</div><div class="ex">${it.a} × <span class="q">?</span> = ${it.a*it.b}</div>`;CUR.st=['בודקות בחילוק',`${it.a*it.b} : ${it.a} = ${it.b}`];CUR.show=`${it.a} × ${it.b} = ${it.a*it.b}`}
+  else if(it.k==='t'){const p=it.a*it.b,s=it.a>=10?it.a/10:it.a,u=it.a>=10?it.b:it.b/10;CUR.ans=p;h=`<div class="ask">כפל בעשרות</div><div class="ex">${X(it.a,it.b)} = <span class="q">?</span></div><div class="tip">💡 כופלים בלי ה-0, ובסוף מחזירים אותו</div>`;CUR.st=['בלי ה-0, ואז מחזירים',`${s} × ${u} = ${s*u} → ${p}`];CUR.show=X(it.a,it.b)+' = '+p}
+  else if(it.k==='w'){CUR.ans=it.ans;mode='📜 בעיה מהיומן';h=`<div class="ask" style="font-size:17px">${it.q}</div>`;CUR.st=null;CUR.show=String(it.ans)}
+  else if(it.k==='c'){kind='op';mode='🧠 שאלת הבנה';const c=it.c;h=`<div class="ask" style="font-size:17px">${MW(c[0])}</div>`+(c[5]?arrH(c[5][0],c[5][1],BUG[mi]):'');CUR.ans=c[1];CUR.st=null;CUR.show=c[1];mcq([c[1],c[2],c[3],c[4]],c[1])}
+  $('mode').textContent=mode;$('mid').innerHTML=h;setMode(kind)}
+function mcq(opts,ans){const o=shuf(opts),lng=o.some(x=>x.length>9);op.className='op'+(lng?' o1':'');
+  op.innerHTML=o.map(x=>`<button class="opt${/[֐-׿]/.test(x)?' he':''}" type="button" data-v="${x.replace(/"/g,'&quot;')}">${/[\u0590-\u05FF]/.test(x)?MW(x):x}</button>`).join('');CUR.ans=ans}
+op.onclick=e=>{const b=e.target.closest('.opt');if(!b||DONE)return;check(b.dataset.v,b)};
+kp.onclick=e=>{const b=e.target.closest('.k');if(b)key(b.dataset.d)};
+$('k0').onclick=()=>key('0');$('kdel').onclick=()=>key('del');
+function key(d){if(DONE)return;ac();if(d==='del')INP=INP.slice(0,-1);else if(INP.length<3)INP=(INP==='0'?'':INP)+d;
+  SND.key();$('slot').textContent=INP;$('act').disabled=!INP}
+$('act').onclick=()=>{if(DONE){next();return}if(INP)check(INP)};
+document.addEventListener('keydown',e=>{if(document.querySelector('.ov.on'))return;if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('del');else if(e.key==='Enter')$('act').click()});
+function check(v,btn){if(DONE)return;DONE=true;clearInterval(TIMER);const ok=String(v)===String(CUR.ans),fast=PH2()?(Date.now()-T0)<=6000:true;S.T++;S.att++;
+  if(btn){[...op.children].forEach(x=>{x.disabled=true;if(x.dataset.v===String(CUR.ans))x.classList.add('ok')});if(!ok)btn.classList.add('no')}
+  else $('slot').className='slot '+(ok?'ok':'no');
+  if(PH2())return checkFl(ok,fast);
+  const w=W(CUR.mi,CUR.it.id);
+  if(ok){w.c++;w.due=S.T+2+(w.c>1?2:0);S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);S.pts+=10;SND.ok();
+    if(S.st.c>0&&S.st.c%5===0)popTxt('🔥 '+S.st.c+' ברצף!');
+    $('fb').innerHTML=`<div class="t ok">${pick(OK)}</div>`+(w.c>=CUR.it.need?'<div>✅ התרגיל הזה שלך!</div>':'<div>עוד פעם אחת בהמשך, וזה שלך</div>')}
+  else{w.err=(w.err||0)+1;w.c=Math.max(0,w.c-1);w.due=S.T+2;S.st.c=0;SND.bad();
+    $('fb').innerHTML=`<div class="t no">כמעט! ${btn?'':'התשובה: '+M_(CUR.show)}</div>`+(CUR.st?stH(CUR.st):'<div>זה יחזור עוד מעט 🙂</div>')}
+  save();upd();$('act').disabled=false;$('act').textContent='הבא ←';
+  const tk=S.T;if(ok)setTimeout(()=>{if(DONE&&S.T===tk&&!document.querySelector('.ov.on'))next()},1100)}
+
+// ---------- שלב 2: שליפה מהירה ⚡ ----------
+function nextFl(){const open=FL.filter(([a,b])=>FLW(a+'x'+b).c<2);const pool=open.length?open:FL;
+  let c=shuf(pool).sort((x,y)=>FLW(x[0]+'x'+x[1]).c-FLW(y[0]+'x'+y[1]).c).slice(0,6).filter(([a,b])=>a+'x'+b!==LASTID);const [A,B]=pick(c.length?c:pool);
+  const [a,b]=Math.random()<.5?[A,B]:[B,A];CUR={fl:A+'x'+B,ans:a*b,st:strat(a,b),show:X(a,b)+' = '+a*b};LASTID=A+'x'+B;
+  $('mode').className='mode fast';$('mode').textContent=open.length?'⚡ שליפה מהירה':'🏆 אלופה! עוד אימון';
+  $('mid').innerHTML=`<div class="ex">${X(a,b)} = <span class="q">?</span></div><div class="tbar"><i id="tb"></i></div><div class="tip" style="background:#faf5ff;color:#6d28d9">עד 6 שניות = ⚡ נספר</div>`;setMode('kp');
+  T0=Date.now();TIMER=setInterval(()=>{const p=Math.max(0,1-(Date.now()-T0)/6000);const t=$('tb');if(t)t.style.width=p*100+'%';if(!p)clearInterval(TIMER)},100);upd()}
+function checkFl(ok,fast){const w=FLW(CUR.fl);
+  if(ok){S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);S.pts+=fast?12:6;SND.ok();if(fast)w.c++;
+    $('fb').innerHTML=fast?`<div class="t ok">⚡ מהיר ונכון!</div><div>${w.c>=2?'✅ העובדה הזאת בשליפה!':'עוד פעם אחת מהירה, וזה שלך'}</div>`:`<div class="t ok">נכון! 👍</div><div>בפעם הבאה קצת יותר מהר ⚡</div>`;
+    if(w.c>=2&&flDone()===FL.length&&!S.flw){S.flw=1;setTimeout(()=>{SND.win();confetti(80);$('mde').textContent='🏆';$('mdt').textContent='אלופת לוח הכפל!';$('mdp').textContent='את יודעת את כל 45 העובדות בשליפה מהירה. מלכת חרקי החלל גאה בך! אפשר להמשיך להתאמן כדי לשמור על המהירות.';$('mdy').textContent='להמשיך להתאמן ⚡';$('mdov').classList.add('on')},900)}}
+  else{w.err=(w.err||0)+1;w.c=Math.max(0,w.c-1);S.st.c=0;SND.bad();$('fb').innerHTML=`<div class="t no">כמעט! התשובה: ${M_(CUR.show)}</div>`+stH(CUR.st)}
+  save();upd();$('act').disabled=false;$('act').textContent='הבא ←';const tk=S.T;if(ok)setTimeout(()=>{if(DONE&&S.T===tk&&!document.querySelector('.ov.on'))next()},1000)}
+
+// ---------- סיום כוכב = חרק חלל חדש ----------
+function missionDone(){const mi=S.m;if(!S.md[mi])S.md[mi]=new Date().toISOString();S.m=mi+1;save();
+  const b=LiaSquishies.list4[mi];if(b&&!SQ.includes(b.id)){SQ.push(b.id);LS.set('lia_mx_sq',SQ)}
+  SND.win();confetti(70);upd();showSq(b,'🐞 חרק חלל חדש!','ללוח! 🐞',()=>{
+    $('mde').textContent=S.m<M.length?'🚀':'⚡';$('mdt').textContent=`סיימת את ${M[mi].n}! 🎉`;
+    $('mdp').textContent=S.m<M.length?`${b.n} הצטרף ללוח הסקווישים שלך. הכוכב הבא: ${M[S.m].n} (${M[S.m].s}). חרק חדש מחכה שם!`:'כל 6 חרקי החלל אצלך! 🐞🐝🐜✨🦋👑 עכשיו השלב של האלופות: ⚡ שליפה מהירה של כל לוח הכפל.';
+    $('mdy').textContent=S.m<M.length?'לכוכב הבא 🚀':'לשליפה המהירה ⚡';$('mdov').classList.add('on')})}
+$('mdy').onclick=()=>{$('mdov').classList.remove('on');if(!PH2()&&!S.les[S.m]){NEEDNEXT=true;openLes(S.m)}else next()};
+let SQAFTER=null,CURSQ=null;
+function showSq(s,tt,okt,after){CURSQ=s.id;SQAFTER=after||null;$('sqtt').textContent=tt;$('sqimg').innerHTML=`<svg viewBox="0 0 100 100">${s.svg}</svg>`;$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent=okt;
+  const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on');setTimeout(()=>sqSound(s.id),350)}
+$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
+$('sqok').onclick=()=>{$('sqov').classList.remove('on');const f=SQAFTER;SQAFTER=null;if(f)f()};
+
+// ---------- הלוח האחד (כל התכנים של ליה) ----------
+const L4=LiaSquishies.list4,ALLSQ=LiaSquishies.all,aura=LiaSquishies.aura,uaura=LiaSquishies.uaura;
+const own=()=>LiaSquishies.owned(),sqN=()=>{const o=own();return ALLSQ.filter(x=>o.includes(x.id)).length};
+const cl=s=>s.bug?' bug':s.ult?' ult':s.sup?' sup':'';
+function tile(s,o){return o.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}"><svg viewBox="0 0 100 100">${s.svg}</svg></div>`:`<div class="lock${cl(s)}"><svg viewBox="0 0 100 100">${s.svg.split(aura).join('').split(uaura).join('')}</svg></div>`}
+function sqRender(){const o=own(),R=LiaSquishies.rows,n=L4.filter(x=>o.includes(x.id)).length;
+  $('sqtx').innerHTML=`הלוח שלך, אחד לכל התכנים. בלוח הכפל: <b>חרק חלל על כל כוכב</b> שמסיימים (${n} מתוך 6). אספת ${sqN()} מתוך ${ALLSQ.length}.`;$('sqpb').style.width=(PH2()?100:misPct(S.m)*100)+'%';
+  $('sqg').innerHTML=[LiaSquishies.list,LiaSquishies.list2,LiaSquishies.list3,L4].map((l,i)=>`<div class="sqhd">${R[i]}</div>`+l.map(s=>tile(s,o)).join('')).join('')}
+$('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
+$('sqcx').onclick=()=>$('sqcol').classList.remove('on');
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;$('sqcol').classList.remove('on');
+  showSq(s,s.bug?'חרק החלל שלך 🐞':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🪐','חזרה ללוח',()=>{sqRender();$('sqcol').classList.add('on')})};
+
+// ---------- ההסבר: עמודים קצרים ----------
+let LM=0,LPG=0;
+function openLes(mi){LM=Math.min(mi,M.length-1);LPG=0;drawLes();$('les').classList.add('on')}
+function drawLes(){const P=M[LM].L,p=P[LPG];$('lt').textContent=`📘 ${BUG[LM]} ${p[0]}`;$('lp').textContent=(LPG+1)+'/'+P.length;$('lb').innerHTML=p[1];$('lb').scrollTop=0;
+  $('ld').innerHTML=P.map((_,i)=>`<i class="${i===LPG?'on':''}"></i>`).join('');$('lpr').classList.toggle('hid',LPG===0);$('lnx').textContent=LPG===P.length-1?'סיימתי ✓ למשימות':'הבא ←'}
+$('lpr').onclick=()=>{if(LPG>0){LPG--;drawLes()}};
+$('lnx').onclick=()=>{const P=M[LM].L;if(LPG<P.length-1){LPG++;drawLes();return}$('les').classList.remove('on');if(!S.les[LM]){S.les[LM]=1;save()}if(NEEDNEXT){NEEDNEXT=false;next()}};
+$('lsb').onclick=()=>openLes(PH2()?M.length-1:S.m);
+
+$('mute').onclick=()=>{MUTE=!MUTE;LS.set('lia_mx_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.key()};$('mute').textContent=MUTE?'🔇':'🔊';
+$('isq').innerHTML='<div class="sqhd">'+LiaSquishies.rows[3]+'</div>'+L4.map(s=>tile(s,own())).join('');
+$('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();S.intro=1;save();if(!PH2()&&!S.les[S.m])openLes(S.m);else next()};
+if(window.StudyTrack){StudyTrack.init('lia','mult',['lia_mx','lia_mx_sq']);StudyTrack.gift(()=>{const b=L4.find(x=>!SQ.includes(x.id))||pick(L4);if(!SQ.includes(b.id)){SQ.push(b.id);LS.set('lia_mx_sq',SQ)}confetti(60);upd();showSq(b,'🎁 מתנה מאבא ואמא!','ללוח! 🐞')})}
+upd();
+if(!S.intro)$('intro').classList.add('on');else if(!PH2()&&!S.les[S.m])openLes(S.m);
+next();
+</script>
+</main></body></html>

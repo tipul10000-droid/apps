@@ -1,6 +1,6 @@
 // צליל מצחיק ושונה לכל סקווישי (אורן 6.11.2026): כל מזהה = צליל אחר לגמרי, בלי חזרות (WebAudio), ובערבוב גם צלילים מוקלטים (sqfx, למטה).
 // דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco
-// ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi
+// ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi + חרקי חלל bg_lady bg_bee bg_ant bg_fire bg_fly bg_queen
 // לביא ושילה (9.11.2026; שילה = כלי עבודה מ-10.11): lv_* ו-sh_* (18 לכל אחד, כולל האולטרה). האולטרה שלהם תמיד מנגנים את הצליל שלהם, בלי ערבוב הקלטות.
 // שימוש: <script src="../../sqsound.js"></script>  SqSound.play(id, muted)
 (function(){
@@ -48,6 +48,13 @@
   s_taco:function(){for(var i=0;i<5;i++)noise(i*.09,.07,.3,'bandpass',1800-i*150,1200,1.5)},// קראנץ׳ קראנץ׳
   s_galaxy:function(){for(var i=0;i<7;i++){var t=i*.11+Math.random()*.05;noise(t,.04,.35,'bandpass',1400+Math.random()*900,900,4);beep(t,300+Math.random()*200,.05,.1)}},// פופקורן מתפוצץ
   s_sushi:function(){[[523,.0],[784,.15],[659,.3],[1047,.45]].forEach(function(p){beep(p[1],p[0],.11,.14,'square')});osc('square',.62,.3,[[0,200],[1,1600]],.09,2000)},// ביפ בופ של לווין
+  // ---- ליה: חרקי חלל של לוח הכפל (11.11.2026). תמיד הצליל שלהם, בלי ערבוב הקלטות ----
+  bg_lady:function(){for(var i=0;i<8;i++)noise(i*.05,.035,.22,'bandpass',2600,2600,5);[0,.09,.18].forEach(function(t,i){osc('sine',.5+t,.08,[[0,1500+i*120],[.5,1900+i*120],[1,1600+i*120]],.14)})},// פרפור כנפיים וצחקוק קטנטן
+  bg_bee:function(){osc('sawtooth',0,1,[[0,210],[.3,260],[.6,190],[1,300]],.14,1400,[38,22],3);noise(0,1,.05,'bandpass',800,1100,2,38)},// בזזזזז של דבורה
+  bg_ant:function(){for(var i=0;i<6;i++){noise(i*.11,.03,.4,'highpass',3500);beep(i*.11,500+i*80,.05,.12,'square')}osc('sine',.75,.35,[[0,300],[1,1500]],.16)},// טיק-טק של 6 רגליים ושיגור
+  bg_fire:function(){[1568,2093,1760,2349,1976,2637].forEach(function(f,i){osc('sine',i*.12,.2,[[0,f],[1,f*1.02]],.11,0,[9,20])});noise(.7,.4,.05,'highpass',6000,8000)},// נצנוץ-נצנוץ של אור
+  bg_fly:function(){noise(0,.9,.16,'bandpass',500,1500,1.2,9);osc('triangle',.1,.8,[[0,700],[.5,1100],[1,800]],.1,0,[4,40])},// פְפְפְפ של כנפיים גדולות
+  bg_queen:function(){noise(0,.04,.4,'bandpass',1200,1200,3);noise(.12,.04,.4,'bandpass',1500,1500,3);[523,659,784,1047].forEach(function(f,i){osc('square',.3+i*.12,i===3?.5:.13,[[0,f],[1,f]],.1,2400)})},// קליק-קלאק ותרועת מלכה
   // ---- לביא: לגו + ישראל + תאילנד (9.11.2026) ----
   lv_dreidel:function(){osc('square',0,1.1,[[0,520],[.5,420],[1,160]],.1,1400,[18,90]);osc('sine',0,1.1,[[0,1040],[1,320]],.06,0,[18,140])},// סביבון מסתובב ומאט
   lv_falafel:function(){noise(0,.9,.12,'highpass',3500,5000,0,0);for(var i=0;i<9;i++)noise(Math.random()*.8,.02,.3,'bandpass',2500+Math.random()*2500,2000,6);osc('sine',.85,.12,[[0,300],[1,900]],.22)},// טיגון שששש ופופ
@@ -110,5 +117,5 @@
   function mix(){var n;do{n=POOL[Math.floor(Math.random()*POOL.length)]}while(n===LAST&&POOL.length>1);LAST=n;return n}
   window.SqSound={has:function(id){return !!(S[id]||ULT[id])},ids:Object.keys(S).concat(Object.keys(ULT)),
     play:function(id,muted){if(muted)return false;if(ULT[id]){file(ULT[id]);return true}if(!S[id]||!ac())return false;
-      if(!/^(lv|sh)_u_/.test(id)&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
+      if(!/^(lv|sh)_u_|^bg_/.test(id)&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
 })();

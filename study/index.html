@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <script src="guest.js?v=4"></script>
-<script src="profiles.js?v=4"></script>
+<script src="profiles.js?v=5"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster</title>
 <link rel="manifest" href="manifest.json">
@@ -170,7 +170,7 @@ h1{margin:0;font-size:0;line-height:0}header{flex:none;display:block!important}@
  (function(){var m=/[?&]gq=([a-z]+)/.exec(location.search);if(!m)return;try{history.replaceState(null,'',location.pathname)}catch(e){}
   var a=document.querySelector('a.kid[href="'+m[1]+'/"]');if(!window.STUDY_GUEST||!a||!K[m[1]])return;kid=m[1];go=a.href;quiz()})()})();
 </script>
-</main><script src="content.js?v=5"></script><style>.kid{position:relative}.knw{position:absolute;top:6px;left:8px;font:800 11px/18px system-ui,Arial,sans-serif;color:#fff;padding:0 8px;border-radius:9px;background:linear-gradient(90deg,#ff5fa2,#ffb36b,#ff5fa2);background-size:200% 100%;animation:knw 2.2s linear infinite;box-shadow:0 2px 6px rgba(255,95,162,.45);pointer-events:none}@keyframes knw{to{background-position:200% 0}}</style>
+</main><script src="content.js?v=6"></script><style>.kid{position:relative}.knw{position:absolute;top:6px;left:8px;font:800 11px/18px system-ui,Arial,sans-serif;color:#fff;padding:0 8px;border-radius:9px;background:linear-gradient(90deg,#ff5fa2,#ffb36b,#ff5fa2);background-size:200% 100%;animation:knw 2.2s linear infinite;box-shadow:0 2px 6px rgba(255,95,162,.45);pointer-events:none}@keyframes knw{to{background-position:200% 0}}</style>
 <script>(function(){function u(){var a=document.getElementById('kLia');if(a&&StudyContent.ok('lia/phonics')){a.classList.remove('soon');a.querySelector('small').textContent='אותיות וצלילים באנגלית';
  // סימון "חדש" על הכרטיס של הילד במסך הראשי, עד שהיא נכנסת לתוכן (אורן 6.11.2026)
  var n=a.querySelector('.knw');if(StudyContent.isNew('lia/phonics')){if(!n){n=document.createElement('span');n.className='knw';n.textContent='חדש! ✨';a.appendChild(n)}}else if(n)n.remove()}}u();StudyContent.refresh(u)})()</script>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <script src="../guest.js?v=4"></script>
-<script src="../profiles.js?v=4"></script>
+<script src="../profiles.js?v=5"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · לוח התקדמות משפחתי</title>
 <link rel="manifest" href="../manifest.json">
@@ -46,6 +46,7 @@ h1{margin:4px 0 8px;font-size:22px;flex:none}
 .sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
 .sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
 .sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
+.sqg .bug{background:linear-gradient(160deg,#ecfdf5,#e0f2fe,#f5f3ff);border-color:#34d399}.sqg .lock.bug{background:#f0faf6;border-color:#a7f3d0}
 .sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:#5b21b6;text-align:right;background:none;border:0;padding:0;margin-top:4px}
 .bt{display:block;width:100%;margin-top:12px;padding:12px;font:inherit;font-size:16px;border-radius:14px;cursor:pointer;border:1px solid var(--bd);background:#f4f6f9;color:var(--fg);flex:none}
 .bt.pr{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
@@ -71,7 +72,7 @@ h1{margin:4px 0 8px;font-size:22px;flex:none}
 <p>זה לא מרוץ. כל אחד לומד משהו אחר ובקצב שלו, וביחד אנחנו אוספים המון כוכבים 💛</p><p>אפשר ללחוץ על כל אחד ולראות את הסקווישים שאסף, ולמעוך אותם.</p>
 <button class="bt pr" id="hx" type="button">הבנתי</button></div></div>
 <script src="../dani/squishies.js?v=1"></script>
-<script src="../lia/squishies.js?v=2"></script>
+<script src="../lia/squishies.js?v=3"></script>
 <script src="../levi/squishies.js?v=1"></script>
 <script src="../shilo/squishies.js?v=3"></script>
 <script src="../sqsound.js?v=7"></script>
@@ -79,7 +80,7 @@ h1{margin:4px 0 8px;font-size:22px;flex:none}
 (function(){
 var P=StudyProfiles,$=function(i){return document.getElementById(i)};
 var SB='https://emgtyfksnofzzlutngbf.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
-var ROWS={lia:['🪐 צוות החלל','⭐ סופר סקווישים','💎 אולטרה סקווישים']};
+var ROWS={lia:['🪐 צוות החלל','⭐ סופר סקווישים','💎 אולטרה סקווישים','🐞 חרקי חלל: לוח הכפל']};
 var VK='study_fam_view',VIEW='fam';try{VIEW=localStorage.getItem(VK)==='all'?'all':'fam'}catch(e){}
 var D={};// kid -> {sec, ok, sq:[]}
 function lj(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
@@ -90,7 +91,7 @@ function local(){P.all().forEach(function(id){var d={sec:0,ok:0,sq:[]};
   try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);k=k.replace(/^guest:/,'');
     if(k.indexOf('study_t_'+id+'_')===0){var t=lj(k);if(t)d.sec+=+t.sec||0}
     if(k.indexOf('study_r_'+id+'_')===0){var r=lj(k);if(r&&r.data)d.ok+=+r.data.ok||0}}}catch(e){}
-  var kk=P.kids[id];if(kk.sqk){var a=lj(kk.sqk);if(Array.isArray(a))d.sq=a}
+  var kk=P.kids[id];[kk.sqk,kk.sqk2].forEach(function(q){if(!q)return;var a=lj(q);if(Array.isArray(a))a.forEach(function(x){if(d.sq.indexOf(x)<0)d.sq.push(x)})})
   merge(id,d)})}
 function merge(id,d){var o=D[id]||(D[id]={sec:0,ok:0,sq:[]});o.sec=Math.max(o.sec,+d.sec||0);o.ok=Math.max(o.ok,+d.ok||0);(d.sq||[]).forEach(function(x){if(o.sq.indexOf(x)<0)o.sq.push(x)})}
 function kidsNow(){return VIEW==='all'?P.all():P.kidsOf()}
@@ -109,11 +110,11 @@ function board(id){var k=P.kids[id],S=SQ(id),d=D[id]||{sq:[]},boy=k.boy;
   if(!S){$('bs').textContent='';$('bg').innerHTML='<div class="emp" style="grid-column:1/-1;background:none;border:0">ל'+k.n+' עוד אין לוח סקווישים.<br>יש לו מתנות אחרות באוצר המילים 🎁</div>';$('bov').classList.add('on');return}
   var own=S.all.filter(function(s){return d.sq.indexOf(s.id)>=0}).length;
   $('bs').innerHTML=own?(k.n+' '+(boy?'אסף':'אספה')+' <b>'+own+' מתוך '+S.all.length+'</b>. לוחצים על סקווישי צבעוני כדי למעוך אותו 😆'):(k.n+' עוד לא '+(boy?'אסף':'אספה')+' סקווישים. הם מחכים '+(boy?'לו':'לה')+' כאן בצללית 👀');
-  var rows=S.rows||ROWS[id]||['רגילים','⭐ סופר סקווישים','💎 אולטרה סקווישים'],cl=function(s){return s.ult?' ult':s.sup?' sup':''};
+  var rows=S.rows||ROWS[id]||['רגילים','⭐ סופר סקווישים','💎 אולטרה סקווישים'],cl=function(s){return s.bug?' bug':s.ult?' ult':s.sup?' sup':''};
   var tile=function(s){return d.sq.indexOf(s.id)>=0?'<div class="own'+cl(s)+'" data-id="'+s.id+'"><svg viewBox="0 0 100 100">'+s.svg+'</svg></div>':'<div class="lock'+cl(s)+'"><svg viewBox="0 0 100 100">'+s.svg.split(S.aura).join('').split(S.uaura).join('')+'</svg></div>'};
-  $('bg').innerHTML=[S.list,S.list2,S.list3].map(function(l,i){return '<div class="sqhd">'+rows[i]+'</div>'+l.map(tile).join('')}).join('');
+  $('bg').innerHTML=[S.list,S.list2,S.list3,S.list4].filter(Boolean).map(function(l,i){return '<div class="sqhd">'+rows[i]+'</div>'+l.map(tile).join('')}).join('');
   $('bg').onclick=function(e){var t=e.target.closest('.own');if(!t)return;var s=S.all.filter(function(x){return x.id===t.getAttribute('data-id')})[0];if(!s)return;CUR=s.id;
-    $('qt').textContent=(s.ult?'💎 אולטרה סקווישי':s.sup?'⭐ סופר סקווישי':'סקווישי')+' של '+k.n;$('bigimg').innerHTML='<svg viewBox="0 0 100 100">'+s.svg+'</svg>';$('qn').textContent=s.n;$('qd').textContent=s.d;
+    $('qt').textContent=(s.bug?'🐞 חרק חלל':s.ult?'💎 אולטרה סקווישי':s.sup?'⭐ סופר סקווישי':'סקווישי')+' של '+k.n;$('bigimg').innerHTML='<svg viewBox="0 0 100 100">'+s.svg+'</svg>';$('qn').textContent=s.n;$('qd').textContent=s.d;
     var im=$('bigimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('qov').classList.add('on');if(window.SqSound)SqSound.play(s.id,false)};
   $('bov').classList.add('on')}
 $('lst').onclick=function(e){var b=e.target.closest('.row');if(b)board(b.getAttribute('data-k'))};
