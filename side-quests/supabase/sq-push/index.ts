@@ -308,16 +308,30 @@ async function tick() {
   const trip = await awayTrip(t.date);
   p.abroadOn = (p.abroad === true && (!p.abroad_until || t.date <= p.abroad_until)) || !!trip;
   out.abroad = p.abroadOn;
-  // sq-push 10.11.2026: abroad, the morning brief is mail-only (no commute). It is sent only when Claude wrote today's
-  // settings/morning_brief with mode "abroad" (= something important came in by mail since yesterday).
-  let briefOk = !p.abroadOn;
-  if (p.abroadOn && p.abroad_brief !== false) {
-    const mb = await getDoc(APP, "settings", "morning_brief");
-    briefOk = !!(mb && mb.date === t.date && mb.mode === "abroad" && mb.headline);
-  }
-  if (p.brief && briefOk && dayOk && st.date !== t.date && t.mins >= at && t.mins < at + 180) {
-    await putDoc(SRV, "state", "brief", { date: t.date }); // claim first, so two ticks never double-send
-    out.brief = await briefNow("schedule");
+  // sq-push 11.11.2026 (Oren, abroad): the commute briefs stop. Instead two "what's new" briefs, 08:00 and 20:00
+  // in HIS local time there (trip.tz, else notify.abroad_tz, else Europe/Rome), every day of the trip.
+  // Content = settings/abroad_am | abroad_pm {date, headline, news[], critical[]} written by Claude's abroad task
+  // (only new mail/updates, never tasks). No doc for today = no push.
+  if (!p.abroadOn) {
+    if (p.brief && dayOk && st.date !== t.date && t.mins >= at && t.mins < at + 180) {
+      await putDoc(SRV, "state", "brief", { date: t.date }); // claim first, so two ticks never double-send
+      out.brief = await briefNow("schedule");
+    }
+  } else if (p.abroad_brief !== false) {
+    let lt = t;
+    try { lt = il(Date.now(), (trip && trip.tz) || (p.abroad_tz && p.abroad_tz !== "Asia/Jerusalem" ? p.abroad_tz : "Europe/Rome")); } catch (_) { lt = t; }
+    out.abroadLocal = lt;
+    for (const k of [{ k: "am", at: 480, doc: "abroad_am", title: "☀️ בוקר טוב", hash: "#abroad_am" }, { k: "pm", at: 1200, doc: "abroad_pm", title: "🌙 ערב טוב", hash: "#abroad_pm" }]) {
+      if (lt.mins < k.at || lt.mins >= k.at + 180) continue;
+      const sx = (await getDoc(SRV, "state", "ab_" + k.k)) || {};
+      if (sx.date === lt.date) continue;
+      const d = await getDoc(APP, "settings", k.doc);
+      if (!d || !(d.date === t.date || d.date === lt.date) || !d.headline) continue;
+      await putDoc(SRV, "state", "ab_" + k.k, { date: lt.date });
+      const n = await sendTo(await subs(), { title: k.title, body: String(d.headline).slice(0, 120), tag: "sq-ab-" + k.k, url: APP_URL + k.hash });
+      await putDoc(APP, "settings", k.doc + "_last", { at: new Date().toISOString(), date: lt.date, headline: d.headline, sent: n });
+      out["ab_" + k.k] = { sent: n };
+    }
   }
   // evening brief, same once-a-day claim (window: 120 minutes)
   const se = (await getDoc(SRV, "state", "eve")) || {};

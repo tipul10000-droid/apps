@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.3";window.SQ_BUILD_AT="11.11.2026 13:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.4";window.SQ_BUILD_AT="11.11.2026 16:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -4208,10 +4208,19 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   const BKD={morning:{doc:"morning_brief",l:"בריף הבוקר"},eve:{doc:"evening_brief",l:"בריף הערב"},
     fri:{doc:"fri_brief",l:"בריף לשישי",t:"🛒 שישי: סידורים",ok:"יאללה 🛒"},
     wkend:{doc:"weekend_brief",l:"בריף הסופ״ש",t:"🏡 סופ״ש טוב",ok:"סופ״ש טוב 🏡"},
-    week:{doc:"week_brief",l:"בריף לשבוע",t:"🗓️ השבוע שמתחיל",ok:"שבוע טוב 💪"}};
+    week:{doc:"week_brief",l:"בריף לשבוע",t:"🗓️ השבוע שמתחיל",ok:"שבוע טוב 💪"},
+    // 14.8 (Oren 11.11.2026, from Italy): abroad the commute briefs stop. Two "what's new" briefs, 08:00 and 20:00 in his local time
+    // there: only new mail/updates (Claude writes settings/abroad_am | abroad_pm {date, headline, news[], critical[]}), never tasks.
+    abroad_am:{doc:"abroad_am",l:"בריף בוקר בחו״ל",t:"☀️ בוקר טוב",ok:"הבנתי ☕",at:480},
+    abroad_pm:{doc:"abroad_pm",l:"בריף ערב בחו״ל",t:"🌙 ערב טוב",ok:"לילה טוב 🌙",at:1200}};
+  // the trip today (settings/away, or abroad mode in the settings), and how far his local clock there is from Israel's
+  function tripToday(){const a=awayOn(ilDate());if(a)return a;return abroadOn()?{place:"חו״ל",tz:notify.abroad_tz}:null;}
+  function tzMin(tz){try{const p=new Intl.DateTimeFormat("en-GB",{timeZone:tz,hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const g=k=>+((p.find(x=>x.type===k)||{}).value||0);return (g("hour")%24)*60+g("minute");}catch(e){return null;}}
+  function tripOff(tr){const tz=(tr&&tr.tz&&tr.tz!=="Asia/Jerusalem")?tr.tz:"Europe/Rome",a=tzMin("Asia/Jerusalem"),b=tzMin(tz);if(a==null||b==null)return 60;let d=a-b;if(d>720)d-=1440;if(d<-720)d+=1440;return d;}
   let xBriefs={};
   const dayOkB=(days,d)=>days==="all"?true:days==="sun-fri"?d!==6:d<=4;
   function briefSlots(d){const r=[];
+    const tr=tripToday();if(tr){const off=tripOff(tr);return [["abroad_am",Math.max(0,480+off)],["abroad_pm",Math.min(1439,1200+off)]];}
     if(notify.brief!==false&&dayOkB(notify.brief_days||"sun-thu",d))r.push(["morning",300]);
     if(notify.eve!==false&&dayOkB(notify.eve_days||"sun-thu",d))r.push(["eve",Math.min(hm(notify.eve_time||"18:00")-90,900)]);
     if(notify.wk!==false){if(d===4)r.push(["fri",1260]);if(d===5)r.push(["wkend",750]);if(d===6)r.push(["week",1200]);}
@@ -4336,6 +4345,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     const top=S.flatMap(s=>s.items).slice(0,3);
     return {auto:true,date,headline:head,top,sections:S};}
   function curBrief(md){const t=briefDate(md);
+    if(/^abroad_/.test(md)){const x=xBriefs[md];return x&&x.date===t?x:{headline:"",news:[],critical:[]};}
     if(BKD[md]&&!["morning","eve"].includes(md)){const x=xBriefs[md];return x&&x.date===t&&Array.isArray(x.sections)?x:autoX(md,t);}
     if(md==="eve"){const e=eveBrief&&eveBrief.date===t&&(eveBrief.way||eveBrief.news||eveBrief.call)?eveBrief:null;return e||autoEve();}
     const m=morningBrief&&morningBrief.date===t&&(morningBrief.now||morningBrief.news||morningBrief.critical)?morningBrief:null;return m||autoBrief();}
@@ -4375,7 +4385,10 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     setTimeout(()=>{if(!document.querySelector(".sqmodal"))showBrief(L.kind);},500);}
   function showBrief(md){
     if(!$("briefM"))briefFull=false; // every new open starts short
-    md=BKD[md]?md:briefMode();briefMd=md;
+    md=BKD[md]?md:briefMode();
+    if(tripToday()&&(md==="morning"||md==="eve"))md=md==="eve"?"abroad_pm":"abroad_am"; // abroad there is no commute brief
+    briefMd=md;
+    if(/^abroad_/.test(md))return showAbroad(md);
     if(md==="eve")return showEve();
     if(md!=="morning")return showX(md);
     const b=curBrief("morning"),now=new Date(),wk=now.getDay()<=4,fri=now.getDay()===5;
@@ -4405,6 +4418,18 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   // Remembered on this device (localStorage sq_car) until he taps again.
   let carOn=false;try{carOn=localStorage.getItem("sq_car")==="1";}catch(e){}
   function setCar(on){carOn=on;try{on?localStorage.setItem("sq_car","1"):localStorage.removeItem("sq_car");}catch(e){}if($("briefM"))showBrief("morning");}
+  // 14.8: abroad brief = only what is new (mail / updates from outside), no task lists, no "on the way"
+  function showAbroad(kind){const B=BKD[kind],b=curBrief(kind),tr=tripToday(),now=new Date();
+    const crit=(b.critical||[]).filter(liveItem),news=(b.news||[]).filter(liveItem);
+    const m=modal("briefM",
+      h("div",{class:"bp-top "+(kind==="abroad_pm"?"eve":"")},h("div",{class:"bp-h"},h("b",null,B.t),h("small",null,`✈️ ${(tr&&tr.place)||"חו״ל"} · ${HE_DAYS[now.getDay()]} ${now.getDate()}.${now.getMonth()+1}`),h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeBrief},"×")),
+        b.headline?h("div",{class:"bp-head"},String(b.headline)):null),
+      h("div",{class:"bp-in bp-full"},
+        bpSec("🚨 קריטי",crit,"🚨","bp-crit"),
+        bpSec(kind==="abroad_pm"?"📬 מה חדש מאז הבוקר":"📬 מה חדש מאתמול",news,"•"),
+        !crit.length&&!news.length?h("div",{class:"bp-empty"},b.date?"אין שום דבר חדש. אפשר להמשיך בנסיעה בראש שקט ✈️":"הבריף עוד לא מוכן. הוא מגיע ב-"+(kind==="abroad_pm"?"20:00":"08:00")+" לפי השעה אצלך"):null,
+        h("div",{class:"bp-btns"},h("button",{class:"main",type:"button",onclick:closeBrief},B.ok))));
+    m.classList.add("bpop");m.classList.toggle("car",carOn);markBriefSeen(kind);}
   function showEve(){
     const b=curBrief("eve"),now=new Date();
     const m=modal("briefM",
@@ -4581,7 +4606,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
   let routed=false;
   function routeHash(){const hs=location.hash;
-    if(hs==="#brief"){showBrief("morning");return true;}if(hs==="#eve"){showBrief("eve");return true;}if(/^#(fri|wkend|week)$/.test(hs)){showBrief(hs.slice(1));return true;}if(hs==="#settings"){showSettings();return true;}
+    if(hs==="#brief"){showBrief("morning");return true;}if(hs==="#eve"){showBrief("eve");return true;}if(/^#(fri|wkend|week|abroad_am|abroad_pm)$/.test(hs)){showBrief(hs.slice(1));return true;}if(hs==="#settings"){showSettings();return true;}
     const m=hs.match(/^#t=(.+)$/);if(m&&allTopics.length){const id=decodeURIComponent(m[1]);try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}openTask(id);return true;}
     return false;}
   window.addEventListener("hashchange",routeHash);
@@ -4595,7 +4620,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       if(wh&&remoteW(wh.data())&&allTopics.length){renderCtx();renderList();}
       const plOld=JSON.stringify([plan,away]);if(pl){plan=pl.data();try{localStorage.setItem("sq_plan",JSON.stringify(plan));}catch(e){}}
       away=aw&&Array.isArray(aw.data().trips)?aw.data().trips:[];const plChg=plOld!==JSON.stringify([plan,away]);morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
-      xBriefs={};for(const k of ["fri","wkend","week"]){const d0=s.docs.find(x=>x.id===BKD[k].doc);if(d0)xBriefs[k]=d0.data();}
+      xBriefs={};for(const k of ["fri","wkend","week","abroad_am","abroad_pm"]){const d0=s.docs.find(x=>x.id===BKD[k].doc);if(d0)xBriefs[k]=d0.data();}
       notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;refreshMode();
       if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}else if($("briefM"))showBrief(briefMd);else renderSettings();renderSunDot();
       if(plChg&&allTopics.length){renderCtx();renderList();}},()=>{});
