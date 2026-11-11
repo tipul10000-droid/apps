@@ -13,7 +13,7 @@
 <style>
 /* תוכן בבדיקה = "בקרוב" (לא לחיץ). אחרי אישור ההורים: סרט "חדש!" */
 .item.soon{opacity:.6;pointer-events:none;border-style:dashed}.item.soon .go{visibility:hidden}
-.item{position:relative;overflow:hidden}.nwr{position:absolute;top:8px;left:-30px;width:110px;transform:rotate(-35deg);text-align:center;font:800 12px/20px system-ui,Arial,sans-serif;color:#fff;background:linear-gradient(90deg,#2f5d9e,#5b8fd6,#2f5d9e);background-size:200% 100%;animation:nwr 2.2s linear infinite;box-shadow:0 2px 6px rgba(47,93,158,.45);pointer-events:none}
+.item{position:relative;overflow:hidden}.nwr{position:absolute;top:5px;left:-29px;width:94px;transform:rotate(-35deg);text-align:center;font:800 11px/18px system-ui,Arial,sans-serif;color:#fff;background:linear-gradient(90deg,#2f5d9e,#5b8fd6,#2f5d9e);background-size:200% 100%;animation:nwr 2.2s linear infinite;box-shadow:0 2px 6px rgba(47,93,158,.45);pointer-events:none}
 @keyframes nwr{to{background-position:200% 0}}
 /* שלושה תכנים: מצמצמים קצת במסכים נמוכים כדי שהכול ייכנס במסך אחד */
 @media (max-height:760px){.top{margin-bottom:10px}.list{gap:9px}.item{padding:11px 14px}.item .ic{width:46px;height:46px;font-size:25px}}
@@ -43,7 +43,7 @@ psGate();ecGate();StudyContent.refresh(function(){location.reload()});
 
 <div id="exm"></div>
 <div class="tools"><a class="tl" href="notes/"><span class="ic">📎</span><b>החומרים שלי</b></a><div id="rqm"></div><div id="pbm"></div></div>
-<script src="../req.js?v=4"></script><script>StudyReq.mount('evyatar',true)</script>
+<script src="../req.js?v=5"></script><script>StudyReq.mount('evyatar',true)</script>
 <script src="../push.js?v=4"></script><script>StudyPush.kid(document.getElementById('pbm'),'evyatar',true)</script>
-<script src="../tests.js?v=1"></script><script>StudyTests.mount('evyatar',true)</script>
+<script src="../tests.js?v=2"></script><script>StudyTests.mount('evyatar',true)</script>
 </main></body></html>

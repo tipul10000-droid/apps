@@ -71,7 +71,7 @@
           '<button type="button" class="ask'+(R[idOf(e)]?' done':'')+'" data-i="'+i+'">'+(R[idOf(e)]?'✓ ביקשת':'📤 לבקש חומר')+'</button></div>'});
       B.innerHTML=h;B.scrollTop=0;
       [].forEach.call(B.querySelectorAll('.ask'),function(a){a.onclick=function(){ask(L[+a.dataset.i])}})}
-    function ask(e){cur=e;busy=false;go.disabled=false;var n=days(e.d);H.textContent='📤 חומר ל'+full(e);
+    function ask(e){cur=e;busy=false;go.disabled=false;var n=days(e.d);H.textContent='📤 לבקש חומר';
       B.innerHTML='<button type="button" class="bk">→ כל המבחנים</button><div class="rq">'+
         '<p><b>'+esc(full(e))+'</b>, יום '+DOW[dd(e.d).getDay()]+' '+dm(e.d)+' ('+when(n)+').<br>כדי שאבא ואמא יכינו לך תרגול באפליקציה, של'+(boy?'ח':'חי')+' להם בוואטסאפ:</p>'+
         '<ul><li>📸 תמונות של המחברת או הסיכום</li><li>📄 דפי עבודה או מצגת מהמורה</li><li>💬 ההודעה של המורה על החומר למבחן</li><li>📝 רשימת הנושאים או העמודים בספר</li></ul>'+
