@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="14.9";window.SQ_BUILD_AT="11.11.2026 12:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.0";window.SQ_BUILD_AT="11.11.2026 12:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1333,6 +1333,16 @@ html.bigtx #tgate .tg-s,html.bigtx .r-wait{white-space:normal!important;display:
 .steps,.d-links{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .step{display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--line);font-size:15.5px;line-height:1.35}
 .step:last-child{border-bottom:0}
+.s-h{display:flex;align-items:center;gap:6px;width:100%;padding:7px 12px;border:0;border-bottom:1px solid var(--line);background:var(--sunk);color:var(--muted);font:inherit;font-size:12.5px;font-weight:700;text-align:start}
+.s-h-urg{color:var(--due)}
+.s-n{font-weight:600;opacity:.8}
+button.s-h-done{min-height:40px;cursor:pointer}
+.s-h-done[aria-expanded=false]{border-bottom:0}
+.s-c{margin-inline-start:auto;transition:transform .2s}
+.s-h-done[aria-expanded=true] .s-c{transform:rotate(-90deg)}
+.s-done{animation:sqgrow .22s ease-out}
+.s-done[hidden]{display:none}
+.s-done .step:last-child{border-bottom:0}
 .sck{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);background:transparent;display:inline-flex;align-items:center;justify-content:center;padding:0;opacity:.7;position:relative}
 .sck::before{content:"";position:absolute;inset:-10px}
 .sck svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.8}
@@ -2928,6 +2938,24 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   const WHO={claude:"Claude",lior:"ליאור",other:"מחכה"};
   function toggleStep(t,s){const now=new Date().toISOString();const steps=stepsOf(t).map(x=>x.id===s.id?{...x,done:!x.done,done_at:x.done?"":now}:x);
     patch(t,{steps,log:logPush(t,(s.done?"נפתח שוב: ":"בוצע: ")+s.text,now)},s.done?"נפתח שוב":"✓ "+s.text.slice(0,30));}
+  // 15.0 (Oren 11.11): a task that folds many steps shows them in groups, in one frame cut by dividers:
+  // ❗ urgent (step.urgent), open (his own), ⏳ waiting (Lior, Claude or someone else), and the done ones folded
+  // behind one row at the bottom (tap opens them below it, so the row itself never moves).
+  let stepsDoneOpen=new Set();
+  function stepGroup(s){return s.done||s.superseded?"done":s.urgent?"urg":s.who&&s.who!=="oren"?"wait":"open";}
+  function stepRow(t,s){return h("div",{class:"step"+(s.done||s.superseded?" done":"")},
+    canWrite?h("button",{class:"sck",type:"button","aria-label":(s.done?"פתח שוב: ":"סמן כבוצע: ")+s.text,"aria-pressed":s.done?"true":"false",onclick:press(()=>toggleStep(t,s)),html:s.done?ICON.done:""}):h("span",{class:"sck"}),
+    h("span",{class:"s-t"},s.text),s.who&&s.who!=="other"&&WHO[s.who]&&!s.done?h("span",{class:"s-who"},WHO[s.who]):null);}
+  function stepList(t,st){
+    const G={urg:[],open:[],wait:[],done:[]};st.forEach(s=>G[stepGroup(s)].push(s));
+    const used=["urg","open","wait","done"].filter(k=>G[k].length).length,heads=used>1;
+    const L={urg:"❗ דחוף",open:"פתוחות",wait:"⏳ מחכות"},dOpen=stepsDoneOpen.has(t.id);
+    const sec=k=>G[k].length?[heads?h("div",{class:"s-h s-h-"+k},L[k],h("span",{class:"s-n"},G[k].length)):null,...G[k].map(s=>stepRow(t,s))]:[];
+    return h("div",{class:"steps"},...sec("urg"),...sec("open"),...sec("wait"),
+      G.done.length?h("button",{class:"s-h s-h-done",type:"button","aria-expanded":dOpen?"true":"false",onclick:e=>{e.stopPropagation();
+        const b=e.currentTarget,box=b.nextElementSibling;if(stepsDoneOpen.has(t.id)){stepsDoneOpen.delete(t.id);b.setAttribute("aria-expanded","false");box.hidden=true;}
+        else{stepsDoneOpen.add(t.id);b.setAttribute("aria-expanded","true");box.hidden=false;}}},"✓ בוצעו",h("span",{class:"s-n"},G.done.length),h("span",{class:"s-c","aria-hidden":"true"},"‹")):null,
+      G.done.length?h("div",{class:"s-done",hidden:dOpen?null:""},G.done.map(s=>stepRow(t,s))):null);}
   function drawer(t){
     const st=stepsOf(t),qs=questionsOf(t),offs=offersOf(t),open=isOpen(t);
     const dd=t.dash&&dashById(t.dash),pr=t.project&&projById(t.project);
@@ -2945,9 +2973,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     return h("div",{class:"drawer"},
       line?h("p",{class:"d-line"},line):null,
       near.length?h("p",{class:"d-near"},"📍 כבר ב"+ga.replace(/^ב/,"")+"? גם: "+near.map(x=>x.title).join(" · ")):null,
-      st.length?h("div",{class:"steps"},st.map(s=>h("div",{class:"step"+(s.done?" done":"")},
-        canWrite?h("button",{class:"sck",type:"button","aria-label":(s.done?"פתח שוב: ":"סמן כבוצע: ")+s.text,"aria-pressed":s.done?"true":"false",onclick:press(()=>toggleStep(t,s)),html:s.done?ICON.done:""}):h("span",{class:"sck"}),
-        h("span",{class:"s-t"},s.text),s.who&&WHO[s.who]&&!s.done?h("span",{class:"s-who"},WHO[s.who]):null))):null,
+      st.length?stepList(t,st):null,
       ...qs.filter(q=>!q.answer).map(q=>questionCard(t,q,false)),
       ...offs.filter(o=>(o.state||"open")==="open").map(o=>offerCard(t,o,false)),
       dd&&!inDashCard||pr||links.length||!open&&!c0?h("div",{class:"d-links"},
