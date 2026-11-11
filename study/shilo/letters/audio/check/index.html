@@ -1,0 +1,51 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>בדיקת הקלטות לשילה</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px -apple-system,Arial;background:#eef2f7;color:#0f172a;padding:max(env(safe-area-inset-top),16px) 12px 150px;touch-action:manipulation}
+h1{font-size:20px;margin:6px 0}p{margin:4px 0 10px;color:#475569;line-height:1.45;font-size:15px}
+.c{background:#fff;border:1px solid #d6dee9;border-radius:14px;margin:10px 0;overflow:hidden}
+.h{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f1f5f9;border-bottom:1px solid #d6dee9;font-weight:700}
+.h .lt{font-size:26px;color:#2f5d9e;min-width:30px;text-align:center}.h .em{font-size:22px}
+.r{display:grid;grid-template-columns:54px 1fr 56px 56px;align-items:center;gap:6px;padding:6px 10px;border-top:1px solid #edf1f6}
+.r:first-of-type{border-top:0}.k{font-size:12px;color:#64748b}.t{font-size:22px;font-weight:700;display:flex;align-items:center;gap:8px}
+.t button{width:40px;height:40px;border-radius:50%;border:1px solid #c7d2e1;background:#f8fafc;font-size:16px;color:#2f5d9e;flex:none}
+.t button.pl{background:#dbeafe}
+.y,.n{height:44px;border-radius:10px;border:1px solid #c7d2e1;background:#f8fafc;font:700 20px Arial;color:#94a3b8}
+.y.on{background:#dcfce7;border-color:#16a34a;color:#166534}.n.on{background:#fee2e2;border-color:#dc2626;color:#991b1b}
+.r.ok{background:#f0fdf4}.r.bad{background:#fef2f2}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #d6dee9;padding:10px 14px calc(env(safe-area-inset-bottom) + 10px)}
+.bar .s{font-size:14px;color:#334155}.bar .b{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.bar button{height:46px;border:0;border-radius:12px;background:#2f5d9e;color:#fff;font:700 16px Arial}.bar button.g{background:#e2e8f0;color:#0f172a}
+</style></head><body>
+<h1>🎧 בדיקת כל ההקלטות של שילה</h1>
+<p>לוחצים ▶ כדי לשמוע, ומסמנים ✓ נכון או ✗ לא נכון. הסימונים נשמרים בטלפון. בסוף לוחצים "📋 העתק" ושולחים לי, ואני אכין גרסאות לכל מה שסומן ✗.</p>
+<div id="L"></div>
+<div class="bar"><div class="s" id="S"></div><div class="b"><button id="P" type="button" class="g">▶ לשמוע הכול ברצף</button><button id="C" type="button">📋 העתק</button></div></div>
+<script src="../list.js"></script>
+<script>
+const D={"L": [{"l": "ש", "e": "☀️", "r": [["שם האות", "שִׁין", "c001"], ["הצליל", "שֶׁ", "c002"], ["המילה", "שֶׁמֶשׁ", "c003"]]}, {"l": "מ", "e": "🚗", "r": [["שם האות", "מֵם", "c005"], ["הצליל", "מְ", "c006"], ["המילה", "מְכוֹנִית", "c007"]]}, {"l": "ב", "e": "🏠", "r": [["שם האות", "בֵּית", "c010"], ["הצליל", "בַּ", "c011"], ["המילה", "בַּיִת", "c012"]]}, {"l": "ל", "e": "🍋", "r": [["שם האות", "לָמֶד", "c014"], ["הצליל", "לִי", "c015"], ["המילה", "לִימוֹן", "c016"]]}, {"l": "ד", "e": "🐟", "r": [["שם האות", "דָּלֶת", "c018"], ["הצליל", "דָּ", "c019"], ["המילה", "דָּג", "c020"]]}, {"l": "פ", "e": "🔨", "r": [["שם האות", "פֵּא", "c021"], ["הצליל", "פַּ", "c022"], ["המילה", "פַּטִּישׁ", "c023"]]}, {"l": "א", "e": "🦁", "r": [["שם האות", "אָלֶף", "c025"], ["הצליל", "אַ", "c026"], ["המילה", "אַרְיֵה", "c027"]]}, {"l": "ת", "e": "🍎", "r": [["שם האות", "תָּו", "c030"], ["הצליל", "תַּ", "c031"], ["המילה", "תַּפּוּחַ", "c032"]]}, {"l": "ר", "e": "🚂", "r": [["שם האות", "רֵישׁ", "c035"], ["הצליל", "רַ", "c036"], ["המילה", "רַכֶּבֶת", "c037"]]}, {"l": "ס", "e": "🐴", "r": [["שם האות", "סָמֶךְ", "c040"], ["הצליל", "סוּ", "c041"], ["המילה", "סוּס", "c042"]]}, {"l": "נ", "e": "🐍", "r": [["שם האות", "נוּן", "c043"], ["הצליל", "נָ", "c044"], ["המילה", "נָחָשׁ", "c045"]]}, {"l": "ג", "e": "🍦", "r": [["שם האות", "גִּימֶל", "c047"], ["הצליל", "גְּ", "c048"], ["המילה", "גְּלִידָה", "c049"]]}, {"l": "כ", "e": "⚽", "r": [["שם האות", "כַּף", "c051"], ["הצליל", "כַּ", "c052"], ["המילה", "כַּדּוּר", "c053"]]}, {"l": "ק", "e": "🐒", "r": [["שם האות", "קוֹף", "c055"], ["הצליל", "קוֹ", "c056"], ["המילה", "קוֹף", "c055"]]}, {"l": "ח", "e": "🐱", "r": [["שם האות", "חֵית", "c057"], ["הצליל", "חָ", "c058"], ["המילה", "חָתוּל", "c059"]]}, {"l": "צ", "e": "🐢", "r": [["שם האות", "צָדִי", "c061"], ["הצליל", "צָ", "c062"], ["המילה", "צָב", "c063"]]}, {"l": "ע", "e": "🌳", "r": [["שם האות", "עַיִן", "c064"], ["הצליל", "עֵ", "c065"], ["המילה", "עֵץ", "c066"]]}, {"l": "ט", "e": "🚜", "r": [["שם האות", "טֵית", "c067"], ["הצליל", "טְ", "c068"], ["המילה", "טְרַקְטוֹר", "c069"]]}, {"l": "ז", "e": "🦓", "r": [["שם האות", "זַיִן", "c072"], ["הצליל", "זֶ", "c073"], ["המילה", "זֶבְּרָה", "c074"]]}, {"l": "י", "e": "✋", "r": [["שם האות", "יוֹד", "c077"], ["הצליל", "יָ", "c078"], ["המילה", "יָד", "c079"]]}, {"l": "ו", "e": "🌹", "r": [["שם האות", "וָו", "c080"], ["הצליל", "וֶ", "c081"], ["המילה", "וֶרֶד", "c082"]]}, {"l": "ה", "e": "⛰️", "r": [["שם האות", "הֵא", "c084"], ["הצליל", "הַ", "c085"], ["המילה", "הַר", "c086"]]}], "S": [["זֹאת הָאוֹת", "c093"], ["כְּמוֹ", "c095"], ["אֵיזוֹ תְּמוּנָה מַתְחִילָה בַּצְּלִיל", "c096"], ["אֵיפֹה הָאוֹת", "c097"], ["נַסֵּה שׁוּב", "c099"]]};const V=window.SHILO_AUD_V||1;
+let AC,cur=null,RUN=0;const BUF={};
+let M={};try{M=JSON.parse(localStorage.getItem('shilo_chk'))||{}}catch(e){}
+const save=()=>{try{localStorage.setItem('shilo_chk',JSON.stringify(M))}catch(e){}};
+function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state!=='running')AC.resume();return AC}
+function load(f){if(BUF[f])return Promise.resolve(BUF[f]);return fetch('../'+f+'.mp3?v='+V).then(r=>r.arrayBuffer()).then(ab=>new Promise((ok,no)=>ac().decodeAudioData(ab,b=>{BUF[f]=b;ok(b)},no)))}
+function play(f,then){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}ac();if(cur)try{cur.onended=null;cur.stop()}catch(e){}
+  document.querySelectorAll('.t button').forEach(b=>b.classList.toggle('pl',b.dataset.f===f));
+  load(f).then(b=>{const s=AC.createBufferSource();s.buffer=b;s.connect(AC.destination);s.onended=()=>{if(then)then()};s.start();cur=s})}
+const ALL=[];
+function row(k,t,f){ALL.push([t,f]);return `<div class="r" data-f="${f}"><div class="k">${k}</div><div class="t"><button type="button" data-f="${f}">▶</button><span>${t}</span></div><button class="y" type="button">✓</button><button class="n" type="button">✗</button></div>`}
+document.getElementById('L').innerHTML=D.L.map(x=>`<div class="c"><div class="h"><span class="lt">${x.l}</span><span class="em">${x.e}</span><span>${x.r[2][1]}</span></div>${x.r.map(r=>row(r[0],r[1],r[2])).join('')}</div>`).join('')
+ +`<div class="c"><div class="h"><span class="em">💬</span><span>המשפטים במשחק</span></div>${D.S.map(s=>row('משפט',s[0],s[1])).join('')}</div>`;
+function paint(){document.querySelectorAll('.r').forEach(r=>{const v=M[r.dataset.f];r.classList.toggle('ok',v===1);r.classList.toggle('bad',v===0);r.querySelector('.y').classList.toggle('on',v===1);r.querySelector('.n').classList.toggle('on',v===0)});
+  const u=[...new Set(ALL.map(a=>a[1]))],ok=u.filter(f=>M[f]===1).length,bad=u.filter(f=>M[f]===0).length;
+  document.getElementById('S').textContent=`✓ ${ok}  ·  ✗ ${bad}  ·  עוד לא סומנו ${u.length-ok-bad} מתוך ${u.length}`}
+paint();
+document.getElementById('L').onclick=e=>{const b=e.target.closest('button');if(!b)return;const f=b.closest('.r').dataset.f;
+  if(b.classList.contains('y')||b.classList.contains('n')){const v=b.classList.contains('y')?1:0;if(M[f]===v)delete M[f];else M[f]=v;save();paint();return}
+  RUN++;play(f)};
+document.getElementById('P').onclick=()=>{const id=++RUN;const q=[...new Set(ALL.map(a=>a[1]))].filter(f=>M[f]==null);
+  const next=i=>{if(id!==RUN||i>=q.length)return;const r=document.querySelector('.r[data-f="'+q[i]+'"]');if(r)r.scrollIntoView({block:'center',behavior:'smooth'});play(q[i],()=>setTimeout(()=>next(i+1),900))};next(0)};
+document.getElementById('C').onclick=()=>{const seen={},bad=[],ok=[];ALL.forEach(([t,f])=>{if(seen[f])return;seen[f]=1;if(M[f]===0)bad.push(t+' ('+f+')');else if(M[f]===1)ok.push(f)});
+  const txt='בדיקת הקלטות שילה\n✗ לא נכון ('+bad.length+'): '+(bad.join(', ')||'אין')+'\n✓ נכון: '+ok.length;
+  try{navigator.clipboard.writeText(txt)}catch(e){}const c=document.getElementById('C');c.textContent='✓ הועתק';setTimeout(()=>c.textContent='📋 העתק',2500)};
+</script></body></html>
