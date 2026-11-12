@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.6";window.SQ_BUILD_AT="11.11.2026 17:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.7";window.SQ_BUILD_AT="12.11.2026 11:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1328,6 +1328,7 @@ html.bigtx .rc{font-size:13px}
 html.bigtx .r-chev{display:none}
 html.bigtx #tgate .tg-s,html.bigtx .r-wait{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .r-later{grid-column:1/-1;margin:0 12px 12px}
+.r-later{animation:sqgrowA .18s ease-out}.d-later{margin:8px 0 4px}
 /* opened task */
 .drawer{grid-column:1/-1;border-top:1px solid var(--line);background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:12px;font-size:15.5px}
 .d-line{margin:0;color:var(--muted);font-size:15.5px;line-height:1.45}
@@ -2960,7 +2961,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
         isNewUpd(t)?h("i",{class:"r-new","aria-label":"התעדכן"}):null,
         rx&&rx.upd?h("span",{class:"r-tw"},h("span",{class:"r-title"},open&&!asleep(t)?dlTag(t):null,t.title||"(ללא כותרת)"),h("small",{class:"r-upd"},updLine(rx.upd))):h("span",{class:"r-title"},open&&!asleep(t)?dlTag(t):null,t.title||"(ללא כותרת)"),
         chip,h("span",{class:"r-chev","aria-hidden":"true"},"‹")));
-    if(laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.classList.add("r-later");el.append(m);}
+    if(!isO&&laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.classList.add("r-later");el.append(m);}
     if(isO)el.append(drawer(t));
     return el;
   }
@@ -3057,6 +3058,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
         pr?h("a",{class:"d-link",href:contUrl(t),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true"},pr.icon||"🧩"),h("span",{class:"t"},pr.name||"פרויקט"),h("span",{class:"c","aria-hidden":"true"},"‹")):null,
         links.map(l=>h("a",{class:"d-link",href:safeUrl(l.url),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true",html:isGmail(l.url)?ICON.mail:linkType(l)==="chat"?ICON.chat:ICON.page}),h("span",{class:"t"},l.label||"קישור"),h("span",{class:"c","aria-hidden":"true"},"‹")))):null,
       actBar(t),
+      // 15.7 (Oren 12.11): the snooze options open right under the action bar where "אחר כך" was tapped, not at the top of the task
+      open&&canWrite&&laterFor==="r:"+t.id?(()=>{const m=laterMenu(t,"r:"+t.id);m.classList.add("r-later","d-later");return m;})():null,
       fitFor===t.id&&open&&canWrite?fitPanel(t):null,
       h("details",{class:"more",open:shareId===t.id||!open?"":null},h("summary",null,"פרטים ועריכה"),h("div",{class:"f-list"},
         fitL?h("div",{class:"f-row"},h("span",{class:"f-l"},"מתאים"),h("span",null,fitL)):null,
