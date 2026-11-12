@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.7";window.SQ_BUILD_AT="12.11.2026 11:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.8";window.SQ_BUILD_AT="12.11.2026 23:15";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -3649,7 +3649,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       const vis=L.reduce((s,t)=>s+(+t.v||1),0);
       return h("section",null,h("div",{class:"ilrh"},h("span",{"aria-hidden":"true"},rg.icon||"📍"),h("span",null,nm||"בלי אזור"),
           h("small",null,heN(L.length,"מקום אחד","מקומות")+(vis>L.length?` · ${vis} ביקורים`:""))),
-        h("ul",{class:"ilfr"},L.map(t=>h("li",null,h("span",{class:"nm"},t.n),h("a",{class:"pic",href:picsUrl(t.n+" נוף"),target:"_blank",rel:"noopener","aria-label":"תמונות של "+t.n},"📷"),(+t.v||1)>1?h("span",{class:"x",dir:"ltr",title:"ביקורים"},"×"+t.v):null,t.d?h("span",{class:"dt",dir:"ltr"},dd(t.d)):null))));}));
+        h("ul",{class:"ilfr"},L.map(t=>h("li",null,h("span",{class:"nm"},t.n),h("a",{class:"pic",href:picsUrl(t.n+", ישראל"),target:"_blank",rel:"noopener","aria-label":"תמונות של "+t.n},"📷"),(+t.v||1)>1?h("span",{class:"x",dir:"ltr",title:"ביקורים"},"×"+t.v):null,t.d?h("span",{class:"dt",dir:"ltr"},dd(t.d)):null))));}));
     const vis=T.reduce((s,t)=>s+(+t.v||1),0);
     modal("ilAllM",h("div",{class:"lhd"},h("h2",null,"🇮🇱 כל הטיולים בארץ",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),
       h("div",{class:"ilsum"},`${T.length} מקומות · ${vis} ביקורים · לפי אזורים`+(I.as_of?` · נכון ל-${I.as_of}`:"")),body,
@@ -3734,7 +3734,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
           p.what?h("div",{class:"wh"},p.what):null,
           h("div",{class:"tm"},h("span",null,"🚗 +"+(d==null?"…":wsFmt(Math.max(0,d)))),h("span",{class:"tot"},"⏱ +"+(d==null?"…":wsFmt(Math.max(0,d)+st))+(st?` (עצירה ${st} דק׳${p.stop_note?": "+p.stop_note:""})`:"")),
 ),
-          h("div",{class:"ac"},h("a",{href:wsPlan(p,rt,back,d,st),target:"_blank",rel:"noopener"},"🧠 תכנון עצירה"),h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"🅿️ ניווט לחנייה"),h("a",{href:picsUrl((p.name||p.he)+" best photos"),target:"_blank",rel:"noopener"},"📷 תמונות")));})):h("p",{class:"ws-note"},"אין עצירות שמתאימות לסינון."),
+          h("div",{class:"ac"},h("a",{href:wsPlan(p,rt,back,d,st),target:"_blank",rel:"noopener"},"🧠 תכנון עצירה"),h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"🅿️ ניווט לחנייה"),h("a",{href:picsUrl([p.name||p.he,p.region||rt.region||"Lazio",p.country||rt.country||"Italy"].join(", ")),target:"_blank",rel:"noopener"},"📷 תמונות")));})):h("p",{class:"ws-note"},"אין עצירות שמתאימות לסינון."),
       h("p",{class:"ws-note"},"מקומות שהייתי בהם יורדים לסוף הרשימה. ⭐ = הציון שלי (1-10) לכמה שווה לעצור: יופי, כמה יש לעשות וכמה ייחודי. ״ניווט לחנייה״ = הדרך עם החנייה כעצירה (חיפוש בגוגל, כדאי להציץ). ״תכנון״ פותח את קלוד עם פרומפט מוכן. 📷 = התמונות הכי יפות מהמקום בגוגל. זמני הנסיעה מ-OSRM, בלי פקקים."));}
   // 13.x (Oren 10.11.2026): work trips abroad = the experience side (stops on the way, not the work). Topics with area "נסיעות עבודה", open ones first.
   function workTrips(){const L=allTopics.filter(t=>!t._deleted&&t.area==="נסיעות עבודה"&&!["archived","promoted"].includes(t.status)).sort((a,b)=>(a.status==="done")-(b.status==="done")||(b.priority==="high")-(a.priority==="high"));
