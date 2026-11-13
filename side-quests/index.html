@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.1";window.SQ_BUILD_AT="13.11.2026 13:32";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.1";window.SQ_BUILD_AT="13.11.2026 13:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2564,6 +2564,12 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     const go=()=>{const el=quest==="travel"?document.querySelector("#tvSec .tv-dash")||sec:sec;if(!el||el.hidden)return;
       el.scrollIntoView({behavior:"smooth",block:"start"});
       setTimeout(()=>document.querySelectorAll(".dz-tile").forEach(t=>{const d=dashById(t.dataset.dz);if(d&&dashUnseen(d).length){t.classList.remove("flash");void t.offsetWidth;t.classList.add("flash");}}),450);};
+    // 16.1 (Oren 13.11.2026): the count covers every quest, so when the updated dashboard lives in another quest (skills is in
+    // AI Projects) go to that quest, not to Side, where no tile blinks.
+    const qOf=d=>d.quest||"side",un=dashes.filter(d=>!d._deleted&&!d.archived&&dashUnseen(d).length);
+    const here=quest!=="fun"&&un.some(d=>qOf(d)===quest);
+    const tq=un.length&&!here?qOf(un.map(d=>[d,dashUnseen(d)[0].ms]).sort((a,b)=>b[1]-a[1])[0][0]):null;
+    if(tq&&tq!==quest){setQuest(tq);setTimeout(go,160);return;}
     if((!sec||sec.hidden)&&quest!=="travel"){setQuest("side");setTimeout(go,120);}else go();}
   const DASH_MAX=3, DASH_IDLE=90;
   function dashIdle(d){return !d.archived&&!dashTasks(d).some(isOpen)&&dashActivity(d)&&(Date.now()-dashActivity(d))/86400000>DASH_IDLE;}
