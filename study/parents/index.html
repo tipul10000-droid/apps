@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Study Monster">
 <meta name="theme-color" content="#eef1f5">
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../theme.css?v=2"><style>:root{padding-top:max(calc(env(safe-area-inset-top,0px) + 6px),44px)}</style>
+<link rel="stylesheet" href="../theme.css?v=3"><style>:root{padding-top:max(calc(env(safe-area-inset-top,0px) + 6px),44px)}</style>
 <style>
 .pin{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px 16px;box-shadow:var(--sh);text-align:center;margin-top:20px}
 .pin h1{margin:0 0 6px;font-size:22px}.pin p{margin:0 0 14px;color:var(--mut);font-size:15px}
@@ -26,7 +26,7 @@
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .st{background:#f6f8fb;border-radius:10px;padding:8px 10px}.st small{display:block;color:var(--mut);font-size:12px}.st b{font-size:17px}
 .qzc{margin-top:16px;padding-top:12px;border-top:1px solid var(--bd,#e3e8ef)}.qzc h3{margin:0 0 6px}.qzc .qs{height:64px;box-sizing:border-box;overflow:hidden;line-height:1.35;font-size:14px;border-radius:10px;padding:6px 8px;background:#f6f8fc;transition:background .4s}.qzc .qs.fl{background:#e9f7ef}.qzc .qs small{color:var(--mut)}.qzc .pd{color:#c2410c;font-size:13px}.qzc .qb{display:flex;gap:8px;margin-top:8px}.qzc .qb .b{flex:1 1 0;margin:0;padding:10px 6px;white-space:nowrap}.qzc .qb .b:not(.soft){background:var(--ac);color:#fff}.qzc .q3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.qzc .q3 .b{font-size:13px;padding:10px 2px;min-width:0;overflow:hidden;text-overflow:ellipsis}.qzc .qb .pm{background:#7c3aed}.qzc .qb .pm.on{background:#fff;color:#7c3aed;border:1.5px solid #7c3aed}.qzc .qb .soft{background:#fff;color:var(--ac);border:1.5px solid var(--ac)}
-.cnt{border:1.5px dashed #f0a35e;background:#fff7ed;border-radius:12px;padding:10px;margin:6px 0 10px;font-size:14px}.cnt .cl{line-height:1.45}.cnt .cb{display:flex;gap:8px;margin-top:8px}.cnt .cb .b{flex:1 1 0;margin:0;padding:11px 6px;white-space:nowrap;text-align:center;text-decoration:none}.cnt .cb button.b{background:#16a34a;color:#fff;font-size:16px}.cnt .cb .soft{background:#fff;color:var(--ac);border:1.5px solid var(--ac)}.cnt .cm{height:18px;font-size:13px;color:#c2410c;margin-top:4px}
+.cnt{border:1.5px dashed #f0a35e;background:#fff7ed;border-radius:12px;padding:10px;margin:6px 0 10px;font-size:14px}.cnt .cl{line-height:1.45}.cnt.okd{position:relative;padding-left:40px;border-style:solid;border-color:#bbd3b6;background:#f3f8f1}.cnt .cx{position:absolute;top:50%;left:6px;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;border:1px solid #d3d9e2;background:#fff;color:#5b6675;font:700 14px system-ui,Arial,sans-serif;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}.cnt .cb{display:flex;gap:8px;margin-top:8px}.cnt .cb .b{flex:1 1 0;margin:0;padding:11px 6px;white-space:nowrap;text-align:center;text-decoration:none}.cnt .cb button.b{background:#16a34a;color:#fff;font-size:16px}.cnt .cb .soft{background:#fff;color:var(--ac);border:1.5px solid var(--ac)}.cnt .cm{height:18px;font-size:13px;color:#c2410c;margin-top:4px}
 /* ציר הלימוד (אורן 6.11.2026): מימין לשמאל, מהיום הראשון ועד יום המבחן */
 .tl{margin-top:12px;border:1px solid #e3e8ef;border-radius:14px;padding:10px 10px 8px;background:#fafbfd}
 .tl .tt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px;margin-bottom:6px}.tl .tt b{color:var(--ac)}.tl .tt small{color:var(--mut);font-size:12px;white-space:nowrap}
@@ -259,7 +259,7 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
  if(FAM!=='a')h+=pushGuide();
  KIDS.forEach(k=>{h+=`<div class="kid${k.id===TAB?'':' off'}" id="kd_${k.id}"><div class="need" id="nd_${k.id}" hidden></div>`;
   if(!k.apps.length)h+=`<div class="none kx">עוד אין תכנים. התכנים של ${k.n} יגיעו בהמשך 🎈</div>`;
-  k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=capHead(k,a,id,rows,t,RS)+(window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<div class="cnt" id="cr_${id}" data-c="${k.id}/${a.id}" data-n="${k.n}"></div>`:'')+evBox(k,a,t,RS,id0(k,a));
+  k.apps.forEach(a=>{const id=id0(k,a),rows=P.filter(p=>p.kid===k.id&&p.app===a.id),t=T[k.id+'/'+a.id]||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null),RZ=(j.resets||[]).find(x=>x.kid===k.id&&x.app===a.id),RS=(j.results||[]).filter(x=>x.kid===k.id&&x.app===a.id);h+=capHead(k,a,id,rows,t,RS)+(window.StudyContent&&StudyContent.reg[k.id+'/'+a.id]==='review'?`<div class="cnt" id="cr_${id}" data-c="${k.id}/${a.id}" data-n="${k.n}" data-u="${rows.length?esc(agg(rows).last||'1'):''}"></div>`:'')+evBox(k,a,t,RS,id0(k,a));
    if(!rows.length)h+=`<div class="none">עוד לא התחיל${!!k.boy?'':'ה'} (או שעוד לא נכנס${!!k.boy?'':'ה'} מאז שהוספנו את המעקב)</div>`;
    else{const r=agg(rows),pc=r.total?Math.round(r.done/r.total*100):0,sr=r.att?Math.round(r.ok/r.att*100):null,she=!!k.boy?'':'ה';
     // אורן 7.11.2026: למעלה רק מה שמעניין (זמן, איפה עומדים, דיוק, גרף שיפור לכל רמת קושי ומה לחזק), וכל השאר מקופל ב"עוד נתונים".
@@ -304,9 +304,15 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
  V.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{if(!confirm('למחוק את הציון? אפשר יהיה להזין אותו מחדש.'))return;
   done(b,rpc('study_parents_result',{p_pin:PIN,p_kid:null,p_app:null,p_d:null,p_note:null,p_score:null,p_hide_id:+b.dataset.h}))})}
 // תוכן בבדיקה (אורן 6.11.2026): תוכן חדש פתוח קודם רק כאן. "👀 לפתוח ולבדוק" נכנס עם ?review=1, ו"✓ התוכן אושר" פותח אותו לילד עם סרט "חדש!".
+// אורן 13.11.2026: התווית "✅ התוכן אושר" נסגרת ב-✕ (נשמר במכשיר, study_cnt_x), ויורדת לבד כשהילד כבר התחיל להשתמש בתוכן (יש התקדמות מאז האישור).
+function cntGone(id,u){let at=null,x={};try{at=(JSON.parse(localStorage.getItem('study_cnt_ok'))||{})[id]||null;x=JSON.parse(localStorage.getItem('study_cnt_x'))||{}}catch(e){}
+ if(at&&x[id]===at)return true;if(!u)return false;return u==='1'||!at||Date.parse(u)>=Date.parse(at)}
 function drawCnt(){V.querySelectorAll('.crv').forEach(x=>x.hidden=StudyContent.ok(x.dataset.c));V.querySelectorAll('.cnt').forEach(b=>{const id=b.dataset.c,kn=b.dataset.n,ok=StudyContent.ok(id),boy=!!(StudyProfiles.kids[id.split('/')[0]]||{}).boy;
- b.innerHTML=ok?`<div class="cl">✅ התוכן אושר. ${kn} ${boy?'רואה':'רואה'} אותו עכשיו עם סרט "חדש!" ✨</div>`
+ b.hidden=ok&&cntGone(id,b.dataset.u);if(b.hidden){b.innerHTML='';return}
+ b.classList.toggle('okd',ok);
+ b.innerHTML=ok?`<div class="cl">✅ התוכן אושר. ${kn} ${boy?'רואה':'רואה'} אותו עכשיו עם סרט "חדש!" ✨</div><button class="cx" type="button" data-cx="${id}" aria-label="לסגור">✕</button>`
   :`<div class="cl">🧪 <b>בבדיקה:</b> ${kn} עוד לא ${boy?'רואה':'רואה'} את זה (${boy?'אצלו':'אצלה'} מופיע "בקרוב"). אפשר לבדוק ואז לאשר.</div><div class="cb"><a class="b s soft" href="../${id}/?review=1">👀 לפתוח ולבדוק</a><button class="b s" type="button" data-ca="${id}">✓ התוכן אושר</button></div><div class="cm" id="cm_${id.replace('/','_')}"></div>`});
+ V.querySelectorAll('[data-cx]').forEach(x=>x.onclick=()=>{const id=x.dataset.cx;try{const at=(JSON.parse(localStorage.getItem('study_cnt_ok'))||{})[id],m=JSON.parse(localStorage.getItem('study_cnt_x'))||{};if(at){m[id]=at;localStorage.setItem('study_cnt_x',JSON.stringify(m))}}catch(e){}const c=x.closest('.cnt');c.hidden=true;c.innerHTML=''});
  V.querySelectorAll('[data-ca]').forEach(x=>x.onclick=()=>{const id=x.dataset.ca,m=$('cm_'+id.replace('/','_'));if(!confirm('לאשר את התוכן? מעכשיו הילד יראה אותו.'))return;m.textContent='שומר...';
   rpc('study_parents_content_approve',{p_pin:PIN,p_id:id}).then(j=>{if(j&&j.ok)StudyContent.refresh(drawCnt);else m.textContent=j&&j.err==='bad'?'צריך להיכנס שוב עם הקוד':'לא הצלחנו לשמור. נסו שוב'}).catch(()=>{m.textContent='אין חיבור לשרת כרגע. נסו שוב בעוד רגע'})})}
 // חידון כניסה: שחרור או נעילה ידנית (אורן 6.11.2026). החלטה רכה מעל החוק האוטומטי (4 שעות / 20 דקות לימוד).
