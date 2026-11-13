@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.5";window.SQ_BUILD_AT="13.11.2026 16:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.6";window.SQ_BUILD_AT="14.11.2026 01:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1873,6 +1873,52 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
 #setM .ssw small{font-size:11.5px;color:var(--muted)}
 #setM .ssw small.d{font-size:10.5px}
 .rc.mny{background:rgba(31,157,85,.12);color:#1f7a45}
+/* 16.6 (Oren 14.11.2026): desktop / browser layout. Same page, same content and buttons as the iPhone.
+   Only from 1024px wide: the quest band + controls become a fixed column on the right, tasks in the middle,
+   a project page opens as a panel on the left (tasks stay visible), a dashboard fills everything but the column.
+   Nothing here applies to a phone. */
+@media (min-width:1024px){
+  :root{--sbw:400px;--pgw:min(600px,42vw)}
+  .qband,body .qband{position:fixed!important;top:0;right:0;width:var(--sbw);z-index:5}
+  .hero{position:fixed!important;top:102px;right:0;bottom:0;width:var(--sbw);z-index:4;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;padding-bottom:110px!important;box-shadow:inset 1px 0 0 rgba(255,255,255,.06)}
+  .hero .inner{max-width:none}
+  .topbtns{position:fixed!important;top:54px!important;left:auto!important;right:var(--sbw)!important;transform:translateX(calc(100% + 12px))}
+  main,footer.ver{margin-right:var(--sbw)}
+  main{padding-top:28px!important}
+  main>.inner{max-width:880px}
+  /* the floating + and search sit at the bottom of the column, under the controls */
+  .tadd.fab{left:auto!important;right:calc(var(--sbw) - 76px)!important;bottom:22px!important}
+  .tfind.fab{left:auto!important;right:calc(var(--sbw) - 140px)!important;bottom:29px!important}
+  .toast{left:calc((100% - var(--sbw)) / 2)!important}
+  /* pages on top never cover the column: a dashboard fills the rest, a project page is a side panel */
+  #pgShade{display:none}
+  .aipg{right:var(--sbw)!important;left:0!important;width:auto!important}
+  #pg3{right:auto!important;width:var(--pgw)!important;box-shadow:1px 0 0 var(--line),12px 0 32px rgba(0,0,0,.08)}
+  body:has(#pg3:not([hidden])) main{margin-left:var(--pgw)}
+  .aipg.enter{animation:pgInD .22s cubic-bezier(.2,.8,.2,1)}
+  @keyframes pgInD{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+  .pgedge{display:none!important}
+  /* sheets become centered dialogs */
+  .sqmodal{align-items:center!important;padding:24px}
+  .sqpanel{border-radius:20px!important;max-height:84vh}
+  /* keyboard hints, only here */
+  .kbh{display:block;margin-top:14px;font:500 11.5px/1.6 var(--f-mono);color:var(--hero-muted);opacity:.75;text-align:center;direction:rtl}
+  .kbh kbd{font:inherit;padding:0 5px;border:1px solid currentColor;border-radius:4px;margin:0 2px}
+}
+@media (min-width:1440px){:root{--sbw:420px}main>.inner{max-width:920px}}
+@media (max-width:1023.98px){.kbh{display:none}}
+/* mouse: hover feedback (color only, nothing moves) */
+@media (hover:hover) and (pointer:fine){
+  .row{transition:border-color .15s,box-shadow .15s}
+  .row:hover{border-color:color-mix(in srgb,var(--ink) 28%,var(--line))}
+  .r-body{cursor:pointer}
+  .qbtn{transition:opacity .15s,filter .15s}
+  .qbtn:not([aria-current="true"]):hover{opacity:.7;filter:grayscale(.2)}
+  .topbtns .tb:hover{background:rgba(255,255,255,.14)!important}
+  .tadd.fab:hover,.tfind.fab:hover{filter:brightness(1.08)}
+  .ptile:hover,.dz-tile:hover{filter:brightness(1.04)}
+  .pgback:hover{opacity:.85}
+}
 </style>
 </head>
 <body>
@@ -1955,6 +2001,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
+    <div class="kbh" aria-hidden="true"><kbd>/</kbd> חיפוש · <kbd>N</kbd> חדש · <kbd>1</kbd>-<kbd>6</kbd> קווסט · <kbd>Esc</kbd> חזרה</div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
   </div>
 </div>
@@ -4155,7 +4202,20 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   function renderSetDot(){const d=$("setDot");if(d)d.hidden=pushOn||!pushSupported()||!standalone()||Notification.permission==="denied";}
   // 11.3: one lock, many holders ("m" = a sheet, "pg" = a project/dashboard page on top), so closing a sheet over a page keeps the page lock
   let lockY=null;const lockBy=new Set();
-  function lockScroll(k){lockBy.add(k||"m");if(lockY!==null)return;lockY=window.scrollY;document.body.style.top=-lockY+"px";document.documentElement.classList.add("sqlock");}
+  // 16.6: on a wide screen a page on top sits beside the tasks, so the list under it keeps scrolling
+  const DESK=matchMedia("(min-width:1024px)");
+  // 16.6: keyboard on a computer: / or Ctrl+K search, N new, 1-6 quest, Esc close / back, Ctrl+Z undo
+  document.addEventListener("keydown",e=>{const t=e.target,typing=t&&t.offsetParent!==null&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+    const vis=el=>el&&el.offsetParent!==null;const modal=[...document.querySelectorAll(".sqmodal")].find(vis);
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("findBtn").click();return;}
+    if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&!typing){const u=document.querySelector(".toast.undo button");if(u){e.preventDefault();u.click();}return;}
+    if(e.key==="Escape"&&!typing){if(modal){const x=modal.querySelector("[aria-label*='סגור'],.x,.close,.sqx");if(x){x.click();return;}modal.click();return;}
+      const pg=[$("pgD"),$("pg3")].find(p=>!p.hidden);if(pg){const b=pg.querySelector(".pgback");if(b){b.click();return;}history.back();}return;}
+    if(typing||e.ctrlKey||e.metaKey||e.altKey||modal)return;
+    if(e.key==="/"){e.preventDefault();$("findBtn").click();}
+    else if(e.key==="n"||e.key==="N"||e.key==="מ"){e.preventDefault();$("addBtn").click();}
+    else if(/^[1-6]$/.test(e.key)){const b=document.querySelectorAll("#qnav .qbtn")[+e.key-1];if(b){e.preventDefault();b.click();}}});
+  function lockScroll(k){if(k==="pg"&&DESK.matches)return;lockBy.add(k||"m");if(lockY!==null)return;lockY=window.scrollY;document.body.style.top=-lockY+"px";document.documentElement.classList.add("sqlock");}
   function unlockScroll(k){lockBy.delete(k||"m");if(lockBy.size||lockY===null)return;const y=lockY;lockY=null;document.documentElement.classList.remove("sqlock");document.body.style.top="";window.scrollTo(0,y);}
   function showHere(sample){
     if(sample){if(!loc.on){loc.on=true;saveLoc();}locHook=()=>{updLocBtn();renderAll();if(document.getElementById("locM"))fillHere();};sampleLoc(true);updLocBtn();}
