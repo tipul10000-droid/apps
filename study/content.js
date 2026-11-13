@@ -1,5 +1,5 @@
 // תוכן לימוד בבדיקה (אורן 6.11.2026): תוכן חדש מוצג קודם רק להורים, באזור ההורים ("🧪 תוכן בבדיקה").
-// הילד רואה "בקרוב" עד שההורה לוחץ "✓ התוכן אושר". אחרי האישור התוכן נפתח לילד עם סרט "חדש!" חגיגי (עד שנכנס אליו, ולכל היותר 10 ימים).
+// הילד רואה "בקרוב" עד שההורה לוחץ "✓ התוכן אושר". אחרי האישור התוכן נפתח לילד עם סרט "חדש!" חגיגי (עד הכניסה הראשונה או עד סוף היום של האישור, המוקדם מביניהם).
 // REG: מצב כל תוכן בקוד. 'review' = בבדיקה (נפתח רק אחרי אישור בשרת: study_content_get), 'live' = פתוח תמיד.
 // תוכן חדש: מוסיפים כאן 'review', ובדף התוכן StudyContent.guard('<kid>/<app>') מיד אחרי guest.js.
 (function(){
@@ -18,7 +18,7 @@
   window.StudyContent={
     reg:REG,ok:ok,refresh:refresh,
     // "נראה" נשמר עם זמן האישור: אישור מחדש (או ערך ישן 1) מחזיר את הסרט "חדש!" עד הכניסה הבאה.
-    isNew:function(id){var a=approvedAt(id);if(!a||a==='live')return false;if(lj(SK)[id]===a)return false;return Date.now()-Date.parse(a)<10*864e5},
+    isNew:function(id){var a=approvedAt(id);if(!a||a==='live')return false;if(lj(SK)[id]===a)return false;return new Date(a).toDateString()===new Date().toDateString()}, // אורן 13.11.2026: "חדש" רק עד סוף היום של האישור, או עד הלחיצה הראשונה (המוקדם מביניהם)
     seen:function(id){var s=lj(SK),a=approvedAt(id)||1;if(s[id]!==a){s[id]=a;sj(SK,s)}},
     // בדף התוכן: ילד שעוד אין לו אישור חוזר לדף שלו. הורה שנכנס מאזור ההורים (?review=1) רואה הכול, עם פס "תצוגת בדיקה".
     guard:function(id){
