@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
-<script src="../../guest.js?v=4"></script>
+<script src="../../guest.js?v=5"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · הכתבה של דני</title>
 <link rel="manifest" href="../../manifest.json">
@@ -154,7 +154,8 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 <div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
 
 <script src="../../sqsound.js?v=9"></script>
-<script src="../../track.js?v=8"></script>
+<script src="../../track.js?v=9"></script>
+<script src="../../guess.js?v=1"></script>
 <script>
 // הכתבה ואוצר מילים לדני. מפתחות: dani_sp (התקדמות), dani_sp_sq (אוסף סקווישים), dani_sp_mute.
 const WORDS=[
@@ -333,7 +334,9 @@ function render(){ANS=false;const e=CUR.e,c=$('card');c.classList.remove('ans');
     c.innerHTML=`<div class="en">${esc(e)}</div><button class="say" id="say" type="button">🔊 לשמוע</button><div class="ask">בחרי את התרגום הנכון</div>
     <div class="opts">${opts.map(o=>`<button class="opt" type="button" data-e="${esc(o)}">${esc(HE[o])}</button>`).join('')}</div><div class="fb" id="fb"></div><div class="btns b3"><button class="btn" id="nx" type="button" style="visibility:hidden">הבא ←</button></div>`;
     $('say').onclick=()=>speak(e);
-    c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>meanAns(b));
+    // זיהוי ניחושים (אורן 13.11.2026): בחירה מהירה מדי שחוזרת על עצמה = ההודעה של הילה, ואותה שאלה שוב
+    if(window.StudyGuess)StudyGuess.q();
+    c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(ANS)return;if(window.StudyGuess&&StudyGuess.chk(b.dataset.e===e,()=>render()))return;meanAns(b)});
   }
   if($('nx'))$('nx').onclick=goNext;LAST=e;}
 function goNext(){SND.click();next()}
@@ -343,7 +346,7 @@ function showNext(){ANS=true;$('card').classList.add('ans');StudyKB.lock(true);c
 function streak(ok){if(ok){S.st.c++;if(S.st.c>S.st.b)S.st.b=S.st.c;if([3,5,10,15,20,30,50].includes(S.st.c)){popTxt('🔥 רצף של '+S.st.c+'!');mon('dance')}}else S.st.c=0}
 function addPts(p){if(p>0){S.pts+=p;popTxt('+'+p+' ⭐')}}
 const SQ_EVERY=6;// כל 6 תשובות נכונות = סקווישי; אחרי 6 הראשונים: כל 12 = סופר; אחרי 12: כל 50 = אולטרה (sqEvery)
-function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=sqEvery()){S.cc=0;setTimeout(squishy,900)}upd()}
+function maybeSquishy(){if(window.StudyGuess&&!StudyGuess.reward())return upd();S.cc=(S.cc||0)+1;if(S.cc>=sqEvery()){S.cc=0;setTimeout(squishy,900)}upd()}
 // רמז (אורן 6.11.2026): כל לחיצה חושפת עוד אות מההתחלה. נחשפה כל המילה = טעות שלמדו ממנה, עוברים לבאה. נכון עם רמז לא נחשב כתיבה נכונה.
 function hint(){if(ANS)return;const e=CUR.e,inp=$('ans');let h=(CUR.h||0)+1;while(h<e.length&&e[h-1]===' ')h++;CUR.h=h;SND.click();
   if(h>=e.length){inp.value=e;return revealed()}
@@ -422,7 +425,7 @@ $('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void i
 $('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click()};
 function sqRender(){const ev=sqEvery(),left=ev-(S.cc||0),bd=baseDone();
   $('sqtx').innerHTML=supDone()?'כל הסופר סקווישים אצלך! עכשיו <b>אולטרה סקווישים</b> 💎: כל אחד על <b>50 תשובות נכונות</b>. אלופה!':bd?'כל הלהקה אצלך! עכשיו <b>סופר סקווישים</b>: כל אחד על <b>12 תשובות נכונות</b> ⭐':'על כל <b>6 תשובות נכונות</b> מצטרף סקווישי ללהקה. אחרי 6 נפתחים 6 סופר ⭐ ואחריהם 6 אולטרה 💎 לחצי על סקווישי כדי להכיר אותו.';
-  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${supDone()?'אולטרה ':bd?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
+  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${supDone()?'אולטרה ':bd?'סופר ':''}סקווישי הבא`+(window.StudyGuess&&!StudyGuess.reward()?` · 🤔 הפרסים עצורים בגלל ניחושים: עוד ${StudyGuess.stat().need} תשובות נכונות במחשבה`:'');$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
   const cl=s=>s.ult?' ult':s.sup?' sup':'',tile=s=>SQ.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}<span>${esc(s.n)}</span></div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}<span>???</span></div>`;
   $('sqg').innerHTML='<div class="sqhd">💜 הלהקה</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')+'<div class="sqhd">💎 אולטרה סקווישים</div>'+SQS3.map(tile).join('')}
 $('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
@@ -444,6 +447,7 @@ $('lstx').onclick=()=>$('lst').classList.remove('on');$('lstp').onclick=()=>{$('
 $('rs').onclick=()=>$('rsov').classList.add('on');$('rsn').onclick=()=>$('rsov').classList.remove('on');
 $('rsy').onclick=()=>{const keep={started:S.started,intro:1};S=fresh();S.started=keep.started;S.intro=1;save();$('rsov').classList.remove('on');PRAC=null;LAST=null;upd();mon('hop','מתחילות מחדש! 💜');next()};
 
+if(window.StudyGuess)StudyGuess.init('dani','spelling',{fast:1500});
 if(window.StudyTrack){StudyTrack.init('dani','spelling',['dani_sp','dani_sp_sq']);StudyTrack.gift(()=>{squishy();$('sqtt').textContent='🎁 מתנה! ענית נכון על הכל לפני ההכתבה';mon('dance','מתנה מיוחדת בשבילך! 🎁');confetti(60)});StudyTrack.test(j=>{const d=Math.ceil((new Date(j.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);if(d>=0){const t=$('tst');t.style.display='';t.textContent='📅 '+(j.note||'הכתבה')+(d===0?' היום!':d===1?' מחר!':' בעוד '+d+' ימים')}})}
 upd();
 const d0=done();if(ADV())mon('hop',`היי דני! 🚀 שלב מתקדם: ${advDone()} מתוך ${N}. ממשיכות?`);else mon('hop',d0?`היי דני! כבר ענית נכון על ${d0===1?'מילה אחת':d0+' מילים'}. ממשיכות? 💜`:'היי דני! אני מוצ׳י, ואני פה לעזור לך עם ההכתבה 💜');

@@ -1,8 +1,8 @@
 <!doctype html>
 <!-- נוצר אוטומטית מ-lia/phonics/index.html ע"י study/tools/build.py. לא לערוך כאן: לשנות אצל ליה ולהריץ שוב. -->
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
-<script src="../../guest.js?v=4"></script>
-<script src="../../content.js?v=6"></script><script>StudyContent.guard('levi/phonics')</script>
+<script src="../../guest.js?v=5"></script>
+<script src="../../content.js?v=7"></script><script>StudyContent.guard('levi/phonics')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · אותיות וצלילים</title>
 <link rel="manifest" href="../../manifest.json">
@@ -112,7 +112,8 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 <script src="../../lia/phonics/audio/list.js?v=1"></script>
 <script src="../squishies.js?v=1"></script>
 <script src="../../sqsound.js?v=9"></script>
-<script src="../../track.js?v=8"></script>
+<script src="../../track.js?v=9"></script>
+<script src="../../guess.js?v=1"></script>
 <script>
 // אותיות וצלילים באנגלית לליה (אורן 6.11.2026). פוניקס שיטתי: צליל ← אות ← קריאה, 6 קבוצות לפי סדר Jolly Phonics, השוואה לעברית, הגייה אמריקאית.
 // מפתחות: levi_ph (התקדמות), levi_ph_sq (אוסף סקווישים), levi_ph_mute.
@@ -256,14 +257,17 @@ function render(){ANS=false;SEL=null;const c=$('card'),m=CUR.mode,it=CUR.it;let 
   const play=()=>{if(m==='pic')word(it.word);else if(CUR.w&&m!=='build')word(CUR.w);else sound(it)};if($('rp'))$('rp').onclick=play;
   c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(ANS)return;const o=BY[b.dataset.id];
     if(m==='see'){c.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));SEL=o;sound(o);$('nx').disabled=false;return}
-    answer(m==='read'?b.dataset.w===CUR.w:o.snd===it.snd,b)});
-  $('nx').onclick=()=>{if(ANS)return goNext();if(m==='see'&&SEL)answer(SEL.snd===it.snd,c.querySelector(`.opt[data-id="${SEL.id}"]`))};
-  if(m!=='see'&&m!=='read')setTimeout(play,250);LAST=it.id}
+    const ok=m==='read'?b.dataset.w===CUR.w:o.snd===it.snd;
+    // זיהוי ניחושים (אורן 13.11.2026), לא במבחן הדקה: התשובה לא מתקבלת, ההודעה של הילה, ואותה שאלה שוב
+    if(!TEST&&window.StudyGuess&&StudyGuess.chk(ok,()=>render()))return;
+    answer(ok,b)});
+  $('nx').onclick=()=>{if(ANS)return goNext();if(m==='see'&&SEL){if(!TEST&&window.StudyGuess&&StudyGuess.chk(SEL.snd===it.snd,()=>render()))return;answer(SEL.snd===it.snd,c.querySelector(`.opt[data-id="${SEL.id}"]`))}};
+  if(window.StudyGuess)StudyGuess.q({audio:m!=='see'&&m!=='read'&&!MUTE});if(m!=='see'&&m!=='read')setTimeout(()=>{const g=()=>{if(window.StudyGuess)StudyGuess.heard()};if(m==='pic')word(it.word,g);else if(CUR.w)word(CUR.w,g);else sound(it,g);setTimeout(g,4000)},250);LAST=it.id}
 function slots(){const u=CUR.u;$('sl').innerHTML=u.map((_,i)=>`<span>${CUR.got[i]!=null?esc(CUR.tiles[CUR.got[i]]):''}</span>`).join('');$('nx').disabled=CUR.got.length<u.length}
 function goNext(){SND.click();if(TEST)return testNext();next()}
 function streak(ok){if(ok){S.st.c++;if(S.st.c>S.st.b)S.st.b=S.st.c;if([3,5,10,15,20,30,50].includes(S.st.c))popTxt('🔥 רצף של '+S.st.c+'!')}else S.st.c=0}
 function addPts(p){S.pts+=p;popTxt('+'+p+' ⭐')}
-function maybeSquishy(){S.cc=(S.cc||0)+1;if(S.cc>=sqEvery()){S.cc=0;setTimeout(squishy,900)}}
+function maybeSquishy(){if(window.StudyGuess&&!StudyGuess.reward())return;S.cc=(S.cc||0)+1;if(S.cc>=sqEvery()){S.cc=0;setTimeout(squishy,900)}}
 function showNext(){ANS=true;const n=$('nx');n.style.visibility='visible';n.disabled=false;n.textContent='הבא ←'}
 function answer(ok,b){const it=CUR.it,w=S.w[it.id],fb=$('fb'),c=$('card');ANS=true;
   const rd=CUR.mode==='read',wq=['end','mid','read'].includes(CUR.mode)?CUR.w:null;c.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(rd?x.dataset.w===CUR.w:BY[x.dataset.id].snd===it.snd)x.classList.add('ok')});
@@ -282,7 +286,7 @@ function answer(ok,b){const it=CUR.it,w=S.w[it.id],fb=$('fb'),c=$('card');ANS=tr
     if(wq){fb.innerHTML=`<div class="t no">${pick(BAD)}</div><div>${CUR.mode==='end'?`<b dir="ltr">${esc(wq)}</b> נגמרת ב-<b dir="ltr">${esc(lbl(it))}</b>`:CUR.mode==='mid'?`באמצע <b dir="ltr">${esc(wq)}</b> שומעים <b dir="ltr">${esc(lbl(it))}</b>`:`זו המילה <b dir="ltr">${esc(wq)}</b> ${EMO[wq]||''}`}</div>`;setTimeout(()=>word(wq),500)}
     else{fb.innerHTML=`<div class="t no">${pick(BAD)}</div><div>${esc(lbl(it))} = ${esc(it.word)} ${it.pic}</div>`;setTimeout(()=>sound(it,()=>word(it.word)),500)}}
   save();upd();showNext()}
-function checkBuild(){const u=CUR.u,got=CUR.got.map(i=>CUR.tiles[i]),ok=got.join('')===u.join(''),fb=$('fb');ANS=true;S.att++;S.T++;S.bn=(S.bn||0)+1;bLevel(ok);credit(CUR.w.split('|'),ok,u.length===CUR.w.split('|').length?got:null);
+function checkBuild(){if(window.StudyGuess&&StudyGuess.chk(CUR.got.map(i=>CUR.tiles[i]).join('')===CUR.u.join(''),()=>render()))return;const u=CUR.u,got=CUR.got.map(i=>CUR.tiles[i]),ok=got.join('')===u.join(''),fb=$('fb');ANS=true;S.att++;S.T++;S.bn=(S.bn||0)+1;bLevel(ok);credit(CUR.w.split('|'),ok,u.length===CUR.w.split('|').length?got:null);
   $('sl').classList.add(ok?'ok':'no');
   if(ok){S.okc++;S.bw=(S.bw||0)+1;SND.ok();streak(true);addPts(8);fb.innerHTML=`<div class="t ok">כתבת נכון! ✍️</div><div>${pick(OK)}</div>`;maybeSquishy()}
   else{SND.bad();streak(false);fb.innerHTML=`<div class="t no">כמעט! המילה היא: <span dir="ltr">${esc(u.join(''))}</span></div><div class="mine">אתה בנית: <span dir="ltr">${esc(got.join(''))}</span></div>`;$('sl').innerHTML=got.map((x,i)=>`<span class="${x===u[i]?'g':''}">${esc(x)}</span>`).join('')}
@@ -315,7 +319,7 @@ $('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void i
 $('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click();if(GDQ!==null)setTimeout(()=>groupDone(GDQ),250)};
 function sqRender(){const ev=sqEvery(),left=ev-(S.cc||0),bd=baseDone();
   $('sqtx').innerHTML=supDone()?'כל הסופר סקווישים אצלך! עכשיו <b>אולטרה סקווישים</b> 💎: כל אחד על <b>50 תשובות נכונות</b>. אלוף!':bd?'כל החבורה אצלך! עכשיו <b>סופר סקווישים</b>: כל אחד על <b>12 תשובות נכונות</b> ⭐':'על כל <b>6 תשובות נכונות</b> מצטרף סקווישי לחבורת הלגו. אחרי 6 נפתחים 6 סופר ⭐ ואחריהם 6 אולטרה 💎 לחץ על סקווישי כדי להכיר אותו.';
-  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${supDone()?'אולטרה ':bd?'סופר ':''}סקווישי הבא`;$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
+  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${supDone()?'אולטרה ':bd?'סופר ':''}סקווישי הבא`+(window.StudyGuess&&!StudyGuess.reward()?` · 🤔 הפרסים עצורים בגלל ניחושים: עוד ${StudyGuess.stat().need} תשובות נכונות במחשבה`:'');$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
   const cl=s=>s.bug?' bug':s.ult?' ult':s.sup?' sup':'',OWN=sqOwn();const tile=s=>OWN.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}</div>`;
   $('sqg').innerHTML='<div class="sqhd">🧱 חבורת הלגו</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')+'<div class="sqhd">💎 אולטרה סקווישים</div>'+SQS3.map(tile).join('')+((LeviSquishies.list4||[]).length?'<div class="sqhd">'+LeviSquishies.rows[3]+'</div>'+LeviSquishies.list4.map(tile).join(''):'')}
 $('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
@@ -333,6 +337,7 @@ $('hw').onclick=()=>$('intro').classList.add('on');
 $('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();if(!S.intro){S.intro=1;save()}if(CUR&&!TEST)render();else if(!TEST)next()};
 $('rs').onclick=()=>$('rsov').classList.add('on');$('rsn').onclick=()=>$('rsov').classList.remove('on');
 $('rsy').onclick=()=>{const st=S.started;S=fresh();S.started=st;S.intro=1;save();$('rsov').classList.remove('on');$('intro').classList.remove('on');TEST=null;LAST=null;upd();next()};
+if(window.StudyGuess)StudyGuess.init('levi','phonics',{fast:1200,stop:()=>{if(PL){PL.pause();PL=null}}});
 if(window.StudyTrack){StudyTrack.init('levi','phonics',['levi_ph','levi_ph_sq']);StudyTrack.gift(()=>{squishy();$('sqtt').textContent='🎁 מתנה מאבא ואמא!';confetti(60)})}
 upd();if(LeviSquishies.sync)LeviSquishies.sync(()=>{upd();if($('sqcol').classList.contains('on'))sqRender()});
 if(!S.intro)$('intro').classList.add('on');

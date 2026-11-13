@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=2"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#3A2A1E">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SK_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<title>סקילים: בחינה והתקנה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* דשבורד סקילים (AI Projects): כל סקיל / פלאגין / MCP שאורן מוצא (בעיקר ברילסים) נבחן כאן לפני התקנה:
+   האם הוא עושה מה שמבטיחים, בטיחות, כוכבים וריוויו, האם שווה להתקין, והאם כבר מותקן. לא מתקינים מכאן כלום.
+   נתונים: sq_docs (app=sidequests, collection=skills): מסמך לכל סקיל (kind skill), לכל סרטון (kind video) + _meta. */
+:root{
+  --bg:#F7F4F1; --surface:#FFFFFF; --sunk:#EFE9E3; --ink:#221A14; --muted:#6B6058; --line:#E3DAD2;
+  --hero:#3A2A1E; --hero2:#C15F2C; --art:url(img/art-skills.svg); --mark:#D97745; --hero-ink:#FFF6EE; --hero-muted:#E9CDB8; --accent:#F0A25B; --accent-ink:#2D1600;
+  --good:#2E8A4E; --good-soft:#E1F2E6; --warn:#A35A0C; --warn-soft:#FBEAD3; --bad:#B23A2E; --bad-soft:#F9E1DE; --link:#B4501F; --hi:#C15F2C; --hi-soft:#FBE9DD; --en:#5A4A9E;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15110E; --surface:#1F1915; --sunk:#2A221D; --ink:#F2EAE3; --muted:#B5A79C; --line:#3A2F28;
+  --hero:#2A1D14; --hero2:#7E3A17; --hero-ink:#FFF6EE; --hero-muted:#DDBFA8; --accent:#F0A25B; --accent-ink:#2D1600;
+  --good:#5CC27E; --good-soft:#173022; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F08A7E; --bad-soft:#3D1D19; --link:#F4A877; --hi:#F4A877; --hi-soft:#3A2418; --en:#B9AEFF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15110E; --surface:#1F1915; --sunk:#2A221D; --ink:#F2EAE3; --muted:#B5A79C; --line:#3A2F28;
+  --hero:#2A1D14; --hero2:#7E3A17; --hero-ink:#FFF6EE; --hero-muted:#DDBFA8; --accent:#F0A25B; --accent-ink:#2D1600;
+  --good:#5CC27E; --good-soft:#173022; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F08A7E; --bad-soft:#3D1D19; --link:#F4A877; --hi:#F4A877; --hi-soft:#3A2418; --en:#B9AEFF; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.src{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.1);color:var(--hero-ink)!important;font-weight:800}
+.src small{display:block;color:var(--hero-muted);font-weight:600;font-size:12.5px}
+.src+.src{margin-top:8px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.chipsel{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.chipsel::-webkit-scrollbar{display:none}
+.chipsel button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-weight:700;font-size:14px;cursor:pointer}
+.chipsel button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}
+.sh small{color:var(--muted);font-size:13px}
+.sh h2::before{content:"";display:inline-block;width:5px;height:.9em;border-radius:3px;background:var(--mark);margin-inline-end:8px;vertical-align:-.08em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.45}
+.empty{color:var(--muted);text-align:center;padding:24px 12px;line-height:1.6}
+.rule{background:var(--hi-soft);border-radius:14px;padding:10px 14px;font-size:14.5px;font-weight:700;line-height:1.5;margin-bottom:16px}
+/* videos */
+.vids{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--line);gap:1px}
+.vid{display:block;width:100%;background:var(--surface);border:0;padding:12px 14px;text-align:start;cursor:pointer}
+.vid .t{font-family:var(--f-display);font-weight:800;font-size:16.5px;line-height:1.3}
+.vid .m{font-size:12.5px;color:var(--muted);font-weight:700;margin-top:2px}
+.mini{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.mini span{border-radius:999px;padding:2px 9px;font-size:12.5px;font-weight:800;background:var(--sunk)}
+.mini span.y{background:var(--good-soft);color:var(--good)}
+.mini span.p{background:var(--warn-soft);color:var(--warn)}
+/* skill rows */
+.tlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--line);gap:1px}
+.tk{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:0;padding:12px 14px;text-align:start;cursor:pointer;width:100%}
+.tk .i{flex:none;width:40px;height:40px;border-radius:12px;background:var(--hi-soft);display:grid;place-items:center;font-size:21px}
+.tk .b{flex:1;min-width:0}
+.tk .t{font-family:var(--f-display);font-weight:800;font-size:16.5px;line-height:1.3}
+.tk .s{color:var(--muted);font-size:13.5px;margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tk .m{font-size:12px;color:var(--muted);font-weight:700;margin-top:5px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:800;background:var(--sunk);color:var(--ink);white-space:nowrap}
+.tag.y{background:var(--good-soft);color:var(--good)}
+.tag.p{background:var(--warn-soft);color:var(--warn)}
+.tag.n{background:var(--bad-soft);color:var(--bad)}
+.tag.h{background:var(--hi-soft);color:var(--hi)}
+.addrow{width:100%;border:2px dashed var(--line);border-radius:16px;background:none;padding:14px;margin-top:10px;cursor:pointer;font-weight:800;font-size:15.5px;color:var(--muted)}
+.addrow small{display:block;font-weight:600;font-size:13px;margin-top:2px}
+/* skill page */
+.acts{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);margin-bottom:14px}
+.acts button{flex:1;border:0;background:none;padding:10px 4px;font-weight:800;font-size:14.5px;cursor:pointer;min-height:44px;white-space:nowrap}
+.acts button+button{border-inline-start:1px solid var(--line)}
+.acts .on{background:var(--good-soft);color:var(--good)}
+.verd{border-radius:16px;padding:12px 14px;margin-bottom:14px;background:var(--sunk)}
+.verd.yes{background:var(--good-soft)}.verd.maybe{background:var(--warn-soft)}.verd.no{background:var(--bad-soft)}.verd.have{background:var(--hi-soft)}
+.verd b{display:block;font-family:var(--f-display);font-size:18px;line-height:1.3}
+.verd.yes b{color:var(--good)}.verd.maybe b{color:var(--warn)}.verd.no b{color:var(--bad)}.verd.have b{color:var(--hi)}
+.verd p{margin:4px 0 0;font-size:15.5px;line-height:1.55}
+.claims{list-style:none;margin:0;padding:0}
+.claims li{display:flex;gap:10px;padding:10px 2px;align-items:flex-start}
+.claims li+li{border-top:1px solid var(--line)}
+.claims .v{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:15px}
+.claims .v.yes{background:var(--good-soft);color:var(--good)}.claims .v.part{background:var(--warn-soft);color:var(--warn)}.claims .v.no{background:var(--bad-soft);color:var(--bad)}.claims .v.unk{background:var(--sunk);color:var(--muted)}
+.claims .c{font-weight:800;font-size:15.5px;line-height:1.4}
+.claims .x{font-size:14.5px;color:var(--muted);line-height:1.5;margin-top:2px}
+.safe{border-radius:14px;padding:10px 14px;font-weight:600;font-size:14.5px;line-height:1.5}
+.safe.ok{background:var(--good-soft)}.safe.care{background:var(--warn-soft)}.safe.risk{background:var(--bad-soft)}
+.safe b{font-family:var(--f-display);font-size:16px;display:block}
+.safe.ok b{color:var(--good)}.safe.care b{color:var(--warn)}.safe.risk b{color:var(--bad)}
+.safe ul{margin:4px 0 0;padding-inline-start:18px}
+.safe li{margin:3px 0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stats div{background:var(--surface);padding:9px 10px;min-width:0}
+.stats b{display:block;font-family:var(--f-display);font-size:17px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats span{display:block;color:var(--muted);font-size:12px;font-weight:700}
+.todo{list-style:none;margin:0;padding:0}
+.todo li{display:flex;gap:10px;padding:9px 2px;font-size:15.5px;line-height:1.5}
+.todo li+li{border-top:1px solid var(--line)}
+.todo li::before{content:"→";flex:none;color:var(--hi);font-weight:900}
+.inst{display:flex;gap:10px;align-items:flex-start}
+.inst .ic{flex:none;font-size:26px;line-height:1}
+.inst b{font-family:var(--f-display);font-size:16.5px}
+.how{direction:ltr;text-align:left;white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:var(--sunk);border-radius:10px;padding:10px 12px;margin-top:8px;overflow-x:auto}
+.ask{display:block;width:100%;border:0;border-radius:14px;background:var(--ink);color:var(--bg);padding:13px 14px;font-family:var(--f-display);font-weight:800;font-size:16px;cursor:pointer;margin-top:10px}
+.ask small{display:block;font-family:var(--f-body);font-weight:600;font-size:12.5px;opacity:.8}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw}
+.toast.on{display:block}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.stats b{font-size:15px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=6">
+<script src="dash-sub.js?v=2" defer></script>
+<script src="fold.js?v=1" defer></script>
+<script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const CHAT_FALLBACK="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCP2NJvYTr7sWh9tpGSyPBzEN";
+const TYPE={skill:"סקיל",plugin:"פלאגין",mcp:"MCP",cli:"כלי CLI",agents:"סוכנים",app:"אפליקציה"};
+const INST={yes:["✅","מותקן","y"],part:["🔸","מותקן חלקית","p"],no:["⬜","לא מותקן",""]};
+const REC={yes:["👍","שווה להתקין"],maybe:["🤔","אולי, בתנאים"],no:["👎","לא כדאי"],have:["✅","כבר אצלך, להשאיר"]};
+const CL={yes:"✓",part:"≈",no:"✗",unk:"?"};
+const SAFE={ok:"🛡️ בטוח להתקנה",care:"⚠️ בטוח, עם הסתייגויות",risk:"⛔ סיכון"};
+let items={},meta={},db=null,loaded=false;
+const UI_KEY="sq_sk_ui";let ui={f:"all"};
+try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
+function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
+const EMB=window.self!==window.top;function goHash(x){if(EMB)location.replace(location.pathname+location.search+"#"+x);else location.hash=x;}
+function route(){const m=location.hash.match(/^#(s|v)=(.+)$/);return m?{k:m[1],id:decodeURIComponent(m[2])}:null;}
+function all(kind){return Object.entries(items).map(([id,v])=>({id,...v})).filter(x=>!x._deleted&&x.title&&(x.kind||"skill")===kind);}
+const inst=x=>(x.install&&x.install.s)||"no";
+const rec=x=>(x.verdict&&x.verdict.rec)||"";
+function fmtD(s){if(!s)return "";const d=new Date(s);return isNaN(d)?String(s):d.getDate()+"."+(d.getMonth()+1)+"."+d.getFullYear();}
+function k(n){n=+n;if(!isFinite(n)||!n)return "–";return n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,"")+"K":String(n);}
+const byOrder=(a,b)=>(a.order||99)-(b.order||99)||String(a.title).localeCompare(String(b.title));
+
+// ---------- hero ----------
+function heroHome(){const S=all("skill");
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
+  <h1>🧰 סקילים: בחינה והתקנה</h1>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
+  <div class="kpis"><div class="kpi"><b>${S.length}</b><span>נבחנו</span></div><div class="kpi"><b>${S.filter(x=>inst(x)!=="no").length}</b><span>מותקנים אצלך</span></div><div class="kpi"><b>${S.filter(x=>inst(x)==="no"&&(rec(x)==="yes"||rec(x)==="maybe")).length}</b><span>שווה לשקול</span></div></div>`;}
+function backBtn(){return `<button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧰</span><span>כל הסקילים</span></button>`;}
+function heroSkill(x){const r=safe(x.url);
+  return `<div class="top">${backBtn()}<span class="back">${esc(TYPE[x.type]||"סקיל")}</span></div>
+  <h1>${esc(x.icon||"🧩")} ${esc(x.title)}</h1><p class="sub">${esc(x.what||"")}</p>
+  ${r?`<a class="src" href="${esc(r)}" target="_blank" rel="noopener"><span style="font-size:22px">🐙</span><span>${esc(x.repo||"GitHub")}<small>⭐ ${k(x.stars)} כוכבים${x.license?" · "+esc(x.license):""}${x.stats_at?" · נבדק "+esc(fmtD(x.stats_at)):""}</small></span></a>`:""}`;}
+function heroVideo(v){const u=safe(v.url);
+  return `<div class="top">${backBtn()}<span class="back">${esc(fmtD(v.date))}</span></div>
+  <h1>🎬 ${esc(v.title)}</h1><p class="sub">${esc(v.gist||"")}</p>
+  ${u?`<a class="src" href="${esc(u)}" target="_blank" rel="noopener"><span style="font-size:22px">▶️</span><span>לסרטון${v.author?": "+esc(v.author):""}<small>${esc([v.platform==="instagram"?"אינסטגרם":v.platform,fmtD(v.date)].filter(Boolean).join(" · "))}</small></span></a>`:""}`;}
+
+// ---------- rows ----------
+function tags(x){const i=INST[inst(x)],r=REC[rec(x)];
+  return `<span class="tag ${i[2]}">${i[0]} ${i[1]}</span>${r&&inst(x)==="no"?`<span class="tag ${rec(x)==="yes"?"y":rec(x)==="no"?"n":"p"}">${r[0]} ${r[1]}</span>`:""}${x.stars?`<span class="tag">⭐ ${k(x.stars)}</span>`:""}`;}
+function skillRow(x){return `<button class="tk" data-gos="${esc(x.id)}"><span class="i">${esc(x.icon||"🧩")}</span><span class="b">
+  <span class="t">${esc(x.title)}</span><span class="s">${esc(x.what||"")}</span><span class="m">${tags(x)}</span></span></button>`;}
+function vidRow(v){const S=(v.skills||[]).map(id=>({id,...(items[id]||{})})).filter(s=>s.title);
+  return `<button class="vid" data-gov="${esc(v.id)}"><div class="t">🎬 ${esc(v.title)}</div><div class="m">${esc([v.author,fmtD(v.date),S.length?S.length+" כלים":""].filter(Boolean).join(" · "))}${v.status==="new"?" · ⏳ בבדיקה":""}</div>
+  ${S.length?`<div class="mini">${S.map(s=>`<span class="${INST[inst(s)][2]}">${INST[inst(s)][0]} ${esc(s.short||s.title)}</span>`).join("")}</div>`:""}</button>`;}
+
+// ---------- home ----------
+const FILT=[["all","הכול"],["yes","✅ מותקנים"],["no","⬜ לא מותקנים"],["try","👍 שווה לשקול"]];
+function fOk(x){return ui.f==="all"||(ui.f==="yes"&&inst(x)!=="no")||(ui.f==="no"&&inst(x)==="no")||(ui.f==="try"&&inst(x)==="no"&&(rec(x)==="yes"||rec(x)==="maybe"));}
+function renderHome(){$("hero").innerHTML=heroHome();
+  $("bar").innerHTML=`<div class="chipsel">${FILT.map(([k2,l])=>`<button data-f="${k2}" class="${ui.f===k2?"on":""}">${l}</button>`).join("")}</div>`;
+  const S=all("skill").filter(fOk).sort(byOrder),V=all("video").sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));
+  let h=`<div class="rule">🔒 מכאן לא מתקינים כלום. כל כלי נבדק (מה הוא מבטיח מול מה שיש בריפו, בטיחות, כוכבים), ומותקן רק אם תבקש בצ׳אט.</div>`;
+  if(ui.f==="all")h+=`<section><div class="sh"><h2>🎬 הסרטונים</h2><small>${V.length}</small></div>${V.length?`<div class="vids">${V.map(vidRow).join("")}</div>`:`<div class="card empty">${loaded?"עוד אין":"טוען…"}</div>`}
+    <button class="addrow" data-add>＋ סרטון או סקיל חדש<small>מדביקים לינק, והבדיקה נעשית בצ׳אט</small></button></section>`;
+  h+=`<section><div class="sh"><h2>🧩 הכלים</h2><small>${S.length}</small></div>${S.length?`<div class="tlist">${S.map(skillRow).join("")}</div>`:`<div class="card empty">${loaded?"אין כאלה":"טוען…"}</div>`}</section>`;
+  $("app").innerHTML=h;}
+
+// ---------- skill ----------
+function renderSkill(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
+  $("hero").innerHTML=heroSkill(x);$("bar").innerHTML="";
+  const I=x.install||{},iv=INST[inst(x)],v=x.verdict||{},r=REC[v.rec];let h="";
+  h+=`<div class="acts"><button data-inst class="${inst(x)!=="no"?"on":""}">${iv[0]} ${iv[1]}</button><button data-share>📤 לשתף</button></div>`;
+  if(r)h+=`<div class="verd ${esc(v.rec)}"><b>${r[0]} ${esc(v.h||r[1])}</b>${v.text?`<p>${esc(v.text)}</p>`:""}</div>`;
+  if((x.claims||[]).length)h+=`<section><div class="sh"><h2>🎯 מה מבטיחים, ומה באמת</h2></div><div class="card"><ul class="claims">${x.claims.map(c=>`<li><span class="v ${esc(c.v||"unk")}">${CL[c.v]||"?"}</span><span><div class="c">${esc(c.c)}</div>${c.n?`<div class="x">${esc(c.n)}</div>`:""}</span></li>`).join("")}</ul></div></section>`;
+  const sf=x.safety||{};
+  if(sf.lvl)h+=`<section><div class="sh"><h2>🛡️ בטיחות</h2></div><div class="safe ${esc(sf.lvl)}"><b>${SAFE[sf.lvl]||""}</b>${(sf.notes||[]).length?`<ul>${sf.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`:""}</div></section>`;
+  h+=`<section><div class="sh"><h2>⭐ קהילה וריוויו</h2>${x.stats_at?`<small>נבדק ${esc(fmtD(x.stats_at))}</small>`:""}</div><div class="stats">
+    <div><b>${k(x.stars)}</b><span>כוכבים</span></div><div><b>${k(x.forks)}</b><span>פורקים</span></div><div><b>${x.issues!=null?k(x.issues):"–"}</b><span>issues פתוחים</span></div>
+    <div><b>${esc(x.license||"אין")}</b><span>רישיון</span></div><div><b>${esc(fmtD(x.created)||"–")}</b><span>נוצר</span></div><div><b>${esc(fmtD(x.pushed)||"–")}</b><span>עדכון אחרון</span></div></div>
+    ${(x.community||[]).length?`<div class="card" style="margin-top:8px"><ul class="todo">${x.community.map(c=>`<li><span>${esc(c)}</span></li>`).join("")}</ul></div>`:""}</section>`;
+  if((x.fit||[]).length)h+=`<section><div class="sh"><h2>🧭 איפה זה יעזור לך</h2></div><div class="card"><ul class="todo">${x.fit.map(f=>`<li><span>${esc(f)}</span></li>`).join("")}</ul></div></section>`;
+  h+=`<section><div class="sh"><h2>📍 אצלך</h2>${I.at?`<small>${esc(fmtD(I.at))}</small>`:""}</div><div class="card"><div class="inst"><span class="ic">${iv[0]}</span><span><b>${iv[1]}</b>${I.where?`<div>${esc(I.where)}</div>`:""}${I.note?`<div class="muted" style="font-size:14px">${esc(I.note)}</div>`:""}</span></div>
+    ${x.how&&inst(x)!=="yes"?`<details style="margin-top:8px"><summary style="font-weight:800;cursor:pointer">איך מתקינים (רק אם תחליט)</summary><div class="how">${esc(x.how)}</div></details>`:""}
+    ${inst(x)!=="yes"?`<button class="ask" data-ask><span>🙋 לבקש התקנה בצ׳אט</span><small>הבקשה מועתקת, ואני מתקין רק אחרי שתשלח אותה</small></button>`:""}</div></section>`;
+  const V=all("video").filter(v=>(v.skills||[]).includes(id));
+  if(V.length)h+=`<section><div class="sh"><h2>🎬 מאיפה זה הגיע</h2></div><div class="vids">${V.map(vidRow).join("")}</div></section>`;
+  else if(x.origin)h+=`<section><div class="sh"><h2>🎬 מאיפה זה הגיע</h2></div><div class="card">${esc(x.origin)}</div></section>`;
+  if((x.links||[]).length)h+=`<section><div class="sh"><h2>🔗 עוד</h2></div><div class="card">${x.links.filter(l=>safe(l.url)).map(l=>`<div style="padding:4px 0"><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>${l.note?` <span class="muted">· ${esc(l.note)}</span>`:""}</div>`).join("")}</div></section>`;
+  $("app").innerHTML=h;}
+
+// ---------- video ----------
+function renderVideo(id){const v={id,...(items[id]||{})};if(!v.title){$("app").innerHTML=`<div class="empty">${loaded?"לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
+  $("hero").innerHTML=heroVideo(v);$("bar").innerHTML="";
+  const S=(v.skills||[]).map(s=>({id:s,...(items[s]||{})})).filter(s=>s.title);let h="";
+  if(v.caption)h+=`<section><div class="sh"><h2>📝 מה נאמר בסרטון</h2></div><div class="card" style="white-space:pre-line">${esc(v.caption)}</div></section>`;
+  if((v.notes||[]).length)h+=`<section><div class="sh"><h2>⚖️ הערות על הסרטון</h2></div><div class="card"><ul class="todo">${v.notes.map(n=>`<li><span>${esc(n)}</span></li>`).join("")}</ul></div></section>`;
+  h+=`<section><div class="sh"><h2>🧩 הכלים בסרטון</h2><small>${S.length}</small></div>${S.length?`<div class="tlist">${S.map(skillRow).join("")}</div>`:`<div class="card empty">${v.status==="new"?"⏳ בבדיקה":"אין"}</div>`}</section>`;
+  $("app").innerHTML=h;}
+
+function render(){const r=route();if(r&&r.k==="s")renderSkill(r.id);else if(r&&r.k==="v")renderVideo(r.id);else renderHome();
+  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}סקילים ${esc(window.SK_BUILD)}`;}
+let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
+async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
+async function upd(id,patch,msg){const prev=JSON.parse(JSON.stringify(items[id]||{}));items[id]=Object.assign({},items[id],patch);const y=scrollY;render();scrollTo(0,y);
+  if(!db){toast("אין חיבור, לא נשמר");return;}
+  try{await db.collection("skills").doc(id).update(patch);toast(msg||"נשמר");}catch(e){items[id]=prev;render();toast("לא נשמר, נסה שוב");}}
+function openChat(){setTimeout(()=>window.open(safe(meta.chat_url)||CHAT_FALLBACK,"_blank","noopener"),700);}
+window.addEventListener("hashchange",()=>{render();scrollTo(0,0);});
+document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
+  if(b=g("[data-f]")){ui.f=b.dataset.f;saveUi();render();return;}
+  if(b=g("[data-gos]")){goHash("s="+encodeURIComponent(b.dataset.gos));return;}
+  if(b=g("[data-gov]")){goHash("v="+encodeURIComponent(b.dataset.gov));return;}
+  if(g("[data-home]")){EMB?goHash(""):history.length>1&&route()?history.back():(location.hash="");return;}
+  const now=new Date().toISOString();
+  if(g("[data-inst]")){const id=route().id,x=items[id]||{},cur=inst(x),nx=cur==="no"?"yes":"no";
+    upd(id,{install:Object.assign({},x.install||{},{s:nx,at:now,by:"oren"}),updated_at:now},nx==="yes"?"סומן כמותקן":"סומן כלא מותקן");return;}
+  if(g("[data-share]")){const id=route().id,x=items[id]||{},r=REC[(x.verdict||{}).rec];
+    const t=[`${x.icon||"🧩"} ${x.title}`,x.what||"",r?`${r[0]} ${(x.verdict||{}).h||r[1]}`:"",x.stars?`⭐ ${k(x.stars)} בגיטהאב`:"",safe(x.url)].filter(Boolean).join("\n");
+    if(navigator.share){try{await navigator.share({text:t});return;}catch(err){if(err&&err.name==="AbortError")return;}}
+    toast(await copy(t)?"הועתק":"לא הצלחתי להעתיק");return;}
+  if(g("[data-ask]")){const id=route().id,x=items[id]||{};
+    const ok=await copy(`תתקין את ${x.title} (${x.repo||x.url||id}) מדשבורד הסקילים. לפני ההתקנה תבדוק שוב את הריפו, ואחרי ההתקנה תעדכן את הסימון בדשבורד.`);
+    toast(ok?"הבקשה הועתקה, הדבק בשיחה":"פתח את השיחה ובקש שם");openChat();return;}
+  if(g("[data-add]")){const u=(prompt("הדבק לינק לסרטון או לסקיל")||"").trim();if(!u)return;if(!db){toast("אין חיבור");return;}
+    const m=u.match(/https:\/\/\S+/);const url=m?m[0]:"";const id="v"+Date.now().toString(36);
+    try{await db.collection("skills").doc(id).set({kind:"video",title:url?"סרטון חדש":u.slice(0,100),url,platform:/instagram/.test(url)?"instagram":/tiktok/.test(url)?"tiktok":/youtu/.test(url)?"youtube":"web",status:"new",skills:[],date:now.slice(0,10),created_at:now,updated_at:now,log:[{at:now,text:"נפתח מהדשבורד"}]});
+      const ok=await copy(`סרטון/סקיל חדש לדשבורד הסקילים (id ${id}): ${u}\nתצפה בו, תזהה כל סקיל או כלי שמוזכר, ולכל אחד תבדוק: האם הוא עושה מה שמבטיחים, בטיחות, כוכבים וריוויו בגיטהאב, האם שווה להתקין והאם כבר מותקן אצלי. לא להתקין כלום.`);
+      toast(ok?"נוסף. הבקשה הועתקה, הדבק בשיחה":"נוסף");openChat();goHash("v="+encodeURIComponent(id));}catch(err){toast("לא נשמר");}return;}
+});
+render();
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("skills").onSnapshot(s=>{loaded=true;const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else n[x.id]=v;});items=n;render();},()=>{});
+});
+})();
+</script>
+</body>
+</html>

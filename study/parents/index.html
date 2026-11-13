@@ -99,7 +99,7 @@ html,body,main{overflow-anchor:none}
 <a class="back" href="../">→ כל הילדים</a>
 <div id="v"></div>
 <script src="../profiles.js?v=5"></script>
-<script src="../content.js?v=6"></script>
+<script src="../content.js?v=7"></script>
 <script src="../push.js?v=4"></script>
 <script>
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
@@ -151,7 +151,7 @@ function agg(rows){// כמה מכשירים לאותו ילד ואפליקציה
   const lv=+d.lvl||1;if(lv>(r.lvl||1)||(lv===(r.lvl||1)&&(+d.done||0)>=r.done)){r.lvl=lv;r.l1=d.l1;r.done=+d.done||0;r.total=+d.total||r.total;r.learning=d.learning;r.pts=d.pts;r.first_ok=d.first}
   r.best=Math.max(r.best,+d.best||0);const f=d.first||x.first_at;if(f&&(!r.first||f<r.first))r.first=f;const l=d.last||x.updated_at;if(l&&(!r.last||l>r.last))r.last=l;
   for(const k in d.days||{})r.days[k]=(r.days[k]||0)+d.days[k];(d.hard||[]).forEach(h=>{r.hard[h.e]=Math.max(r.hard[h.e]||0,h.n)});if(Array.isArray(d.tl)&&d.tl.length)(r.tls=r.tls||[]).push(d.tl);(r.devs=r.devs||[]).push({f:d.first||x.first_at,a:+d.att||0,o:+d.ok||0});if((+d.att||0)>=(r.xa||0)){r.xa=+d.att||0;r.ph=d.ph;r.grp=d.grp;r.top=d.top;r.hist=d.hist;r.tlm=d.tl;r.lv=d.lv;r.lvn=d.lvn;r.prog=d.prog;r.pmax=d.pmax;r.oad=d.oad||(d.oa&&!+d.oa.n?[]:null)}(d.hard1||[]).forEach(h=>{r.hard1=r.hard1||{};r.hard1[h.e]=Math.max(r.hard1[h.e]||0,h.n)});
-  if(d.group)r.group=Math.max(r.group||0,+d.group);for(const g in d.tests||{}){const o=d.tests[g]||{};r.tests=r.tests||{};const c=r.tests[g]||{best:0};r.tests[g]={best:Math.max(c.best,+o.best||0),last:(!c.d||o.d>=c.d)?o.last:c.last,d:(!c.d||o.d>=c.d)?o.d:c.d}}});return r}
+  r.gs=(r.gs||0)+(+d.gs||0);if(+d.gl)r.gl=1;if(d.group)r.group=Math.max(r.group||0,+d.group);for(const g in d.tests||{}){const o=d.tests[g]||{};r.tests=r.tests||{};const c=r.tests[g]||{best:0};r.tests[g]={best:Math.max(c.best,+o.best||0),last:(!c.d||o.d>=c.d)?o.last:c.last,d:(!c.d||o.d>=c.d)?o.d:c.d}}});return r}
 const id0=(k,a)=>k.id+'_'+a.id;
 let TAB='dani',SAVED='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}if(!KIDS.some(k=>k.id===TAB))TAB=KIDS[KIDS.length>1&&FAM==='a'?1:0].id;
 // קפסולות (אורן 10.11.2026): כל תוכן לימוד באזור ההורים סגור בקפסולה עם כותרת ותקציר, ולחיצה פותחת אותו בגלילה עדינה למטה.
@@ -278,7 +278,7 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
     <div><small>🎯 דיוק</small><b>${sr==null?'-':sr+'%'}</b><small>${rec?'לאחרונה '+rec+'%':r.ok+' מתוך '+r.att}</small></div></div>`;
     h+=lines(r,k,a);
     const ins=[];if(r.last)ins.push(`פעילות אחרונה ${ago(r.last)}.`);
-    const hd=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,4);if(hd.length)ins.push(`כדאי לחזק: ${hd.map(x=>`<span class="hw">${esc(x[0])}</span>`).join(' ')}`);
+    const hd=Object.entries(r.hard).sort((x,y)=>y[1]-x[1]).slice(0,4);if(r.gs)ins.push(`🤔 זוהו ניחושים ${r.gs} ${r.gs===1?'פעם':'פעמים'} (הילה ביקשה לא לנחש)${r.gl?'. הפרסים עצורים עכשיו, עד 10 תשובות נכונות במחשבה':''}.`);if(hd.length)ins.push(`כדאי לחזק: ${hd.map(x=>`<span class="hw">${esc(x[0])}</span>`).join(' ')}`);
     if(t&&t.d&&r.total){const dl=Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5),left=r.total-r.done;if(dl>0&&left>0)ins.push(`נשארו ${left} ${a.unit} ו-${dl} ימים: בערך ${Math.ceil(left/dl)} ביום.`)}
     if(ins.length)h+=`<div class="ins">${ins.map(x=>`<div>${x}</div>`).join('')}</div>`;
     let m=`<div class="big"><b dir="ltr" style="unicode-bidi:isolate">${r.done} / ${r.total}</b><span>${a.unit} (${pc}%)</span></div><div class="pbar"><i style="width:${pc}%"></i></div>

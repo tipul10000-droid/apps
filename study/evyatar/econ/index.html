@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
-<script src="../../guest.js?v=4"></script>
-<script src="../../content.js?v=6"></script><script>StudyContent.guard('evyatar/econ')</script>
+<script src="../../guest.js?v=5"></script>
+<script src="../../content.js?v=7"></script><script>StudyContent.guard('evyatar/econ')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · כלכלה: הכנה לבוחן</title>
 <link rel="manifest" href="../../manifest.json">
@@ -134,7 +134,8 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
  <div class="wf"><span id="wm" class="wm"></span><span id="wc" dir="ltr">0 / 1500</span></div>
  <button class="cl" id="ws" type="button">📤 לשלוח לבדיקה</button>
 </div></div>
-<script src="../../track.js?v=8"></script>
+<script src="../../track.js?v=9"></script>
+<script src="../../guess.js?v=1"></script>
 <script>
 // הכנה לבוחן כלכלה של אביתר (אורן 11.11.2026; הבוחן ביום שישי 13.11.2026). כיתה י׳, מגמת כלכלה.
 // לפי הסיכום שלו במחברת: תופעת המחסור, סחורות ושירותים, גורמי ייצור, 3 השאלות הכלכליות, ניאו-ליברליזם מול סוציאל-דמוקרטיה, שאלות על קטע.
@@ -291,7 +292,7 @@ function show(){answered=false;$('nx').disabled=true;$('nx').textContent='הבא
   $('fb').className='fb';$('fb').textContent=S.mt?'מבחן: בלי הסברים עד הסוף. בהצלחה!':'בחר את התשובה הנכונה'}
  else{const o=OA(cur);$('opts').className='opts';$('opts').innerHTML='<button class="op wr" type="button" id="wrb">✍️ לכתוב תשובה (2-3 משפטים)</button>';
   $('fb').className='fb';if(o&&o.sc!=null)$('fb').innerHTML='<div>בפעם הקודמת: <b>'+o.sc+'/10</b>. '+esc(o.fb||'')+'</div>';else $('fb').textContent='שאלה פתוחה, כמו בבוחן: כותבים 2-3 משפטים. Claude בודק ומחזיר ציון והערה.'}
- bar();fit()}
+ bar();fit();if(window.StudyGuess)StudyGuess.q()}
 function mark(ok){const q=QS[cur];S.att++;
  if(ok){S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);if(S.rv)S.rvd[cur]=1;else{S.d[cur]=1;if(!(S.w[cur]>0))S.f[cur]=1}}
  else{S.st.c=0;S.w[cur]=(S.w[cur]||0)+1;Q.splice(Math.min(3,Q.length),0,cur)} // חוזרת אחרי 3 שאלות
@@ -300,6 +301,8 @@ function mark(ok){const q=QS[cur];S.att++;
 $('opts').onclick=e=>{const b=e.target.closest('.op');if(!b||answered)return;
  if(b.id==='wrb'){openWrite();return}
  if(b.id==='mab'){sentPop();return}
+ // זיהוי ניחושים (אורן 13.11.2026): כמה טעויות מהירות מדי = ההודעה של הילה, והתשובה לא מתקבלת
+ if(window.StudyGuess&&StudyGuess.chk(b.dataset.i==='0'))return;
  answered=true;const ok=b.dataset.i==='0',q=QS[cur];
  if(S.mt){b.classList.add('sel');document.querySelectorAll('.op').forEach(x=>{if(x!==b)x.classList.add('dim')});
   if(ok)S.mt.ok++;else S.mt.wr.push(cur);S.mt.i++;save();$('fb').className='fb';$('fb').textContent='נרשם. התשובות וההסברים בסוף המבחן.';$('nx').disabled=false;
@@ -392,6 +395,7 @@ function smGo(i){sp=Math.max(0,Math.min(SP.length-1,i));SP.forEach((x,k)=>x.clas
 function smOpen(){smGo(0);$('ov').classList.add('on')}
 $('rules').onclick=smOpen;$('smx').onclick=()=>$('ov').classList.remove('on');$('smp').onclick=()=>smGo(sp-1);$('smf').onclick=()=>{if(sp<SP.length-1)smGo(sp+1);else{$('ov').classList.remove('on');if(!S.sm){S.sm=1;if(!REV)save()}}};
 $('ov').onclick=e=>{if(e.target===$('ov'))$('ov').classList.remove('on')};
+if(window.StudyGuess)StudyGuess.init('evyatar','econ',{fast:3000});
 if(window.StudyTrack)StudyTrack.init('evyatar','econ',['ev_econ']);
 if(!S.sm&&!S.mt)setTimeout(smOpen,300); // אורן 11.11.2026: התזכורת נפתחת בכניסה, עד שקוראים אותה עד הסוף (סיימתי ✓), ורק אז תרגול ומבחן
 addEventListener('resize',fit);

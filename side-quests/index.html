@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<script src="nozoom.js?v=1"></script>
+<script src="nozoom.js?v=2"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0f3b57">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="15.9";window.SQ_BUILD_AT="13.11.2026 09:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.5";window.SQ_BUILD_AT="13.11.2026 16:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1837,6 +1837,42 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
 .tadd.fab .ipend{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;border-radius:9px;background:#F6B53C;color:#000;font:700 11px/18px system-ui,sans-serif;text-align:center;padding:0 4px}
 .tadd.fab{overflow:visible}
 body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none!important}
+/* 16.2 stats in settings */
+#setM .ssmoney{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:4px 0 8px}
+#setM .ssmn{display:flex;flex-direction:column;gap:2px;padding:10px 4px;text-align:center}
+#setM .ssmn+.ssmn{border-inline-start:1px solid var(--line)}
+#setM .ssmn span{font-size:14px;color:var(--muted)}
+#setM .ssmn b{font-size:21px;font-weight:800;line-height:1.15}
+#setM .ssmn.s b{color:#1f9d55}
+#setM .ssmn.e b{color:#c77d00}
+#setM .ssmn.p b{color:#6b7c93}
+.rc.mny.p{background:rgba(107,124,147,.14);color:#56657a}
+#setM .ssmn small{font-size:12.5px;color:var(--muted)}
+#setM .ssmore{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:44px;background:none;border:0;border-top:1px solid var(--line);font:inherit;font-size:15px;color:inherit;cursor:pointer;padding:0 2px}
+#setM .sslist{display:flex;flex-direction:column}
+#setM .ssm{display:grid;grid-template-columns:1fr auto;gap:0 10px;text-align:start;background:none;border:0;border-top:1px solid var(--line);padding:9px 2px;font:inherit;color:inherit;cursor:pointer}
+#setM .ssm .t{font-size:14.5px}
+#setM .ssm small{grid-column:1;color:var(--muted);font-size:12.5px}
+#setM .ssm b{grid-row:1/span 2;grid-column:2;align-self:center;font-size:15px;white-space:nowrap}
+#setM .sssub{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin:14px 0 6px}
+#setM .sssub .lg{margin-inline-start:auto;font-weight:400;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:4px}
+#setM .sssub .lg i,.ssb i{display:inline-block;border-radius:3px}
+#setM .sssub .lg i{width:10px;height:10px}
+#setM .sstiles{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#setM .sst{display:flex;flex-direction:column;align-items:center;padding:8px 2px;gap:1px}
+#setM .sst+.sst{border-inline-start:1px solid var(--line)}
+#setM .sst b{font-size:21px;font-weight:800}
+#setM .sst span{font-size:12.5px;color:var(--muted);text-align:center}
+#setM .sst.all b{color:var(--hero,#3b5bdb)}
+#setM .ssbars{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;align-items:end;padding:4px 0}
+#setM .ssw{display:flex;flex-direction:column;align-items:center;gap:2px}
+#setM .ssb{height:80px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:2px}
+#setM .ssb i{width:40%;min-height:2px}
+#setM .ssb i.c,#setM .sssub .lg i.c{background:#1f9d55}
+#setM .ssb i.o,#setM .sssub .lg i.o{background:#9aa5b1}
+#setM .ssw small{font-size:11.5px;color:var(--muted)}
+#setM .ssw small.d{font-size:10.5px}
+.rc.mny{background:rgba(31,157,85,.12);color:#1f7a45}
 </style>
 </head>
 <body>
@@ -2383,7 +2419,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a||!isGmail(a.href))return;e.preventDefault();e.stopPropagation();openGmail(a.href);},true);
   function mailOf(t){const ls=linksOf(t).filter(l=>isGmail(l.url));const l=ls.find(l=>gmailId(l.url))||ls.find(l=>!/compose=|#drafts/.test(l.url));return l?safeUrl(l.url):null;}
   // ---- 5.0: levels and dashboards (collection "dashboards" in sq_docs) ----
-  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], carDocs=[], houseDocs=[], shopDocs=[], foodDocs=[], sportDocs=[], knowDocs=[], credDocs=[], inDashCard=false;
+  let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], carDocs=[], houseDocs=[], shopDocs=[], foodDocs=[], sportDocs=[], knowDocs=[], credDocs=[], skillDocs=[], expDocs=[], inDashCard=false;
   function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted);}
   function levelOf(t){const L=+t.level;if(L>=1&&L<=4)return L;if(t.project&&projById(t.project))return 4;if(t.dash&&dashById(t.dash))return 3;if(chatOf(t)||mailOf(t))return 2;return 1;}
   function levelRow(t){
@@ -2478,6 +2514,19 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       const kpis=[{v:String(T.length),l:"פיסות ידע"},{v:String(new Set(T.map(x=>x.topic||"other")).size),l:"תחומים"},{v:String(H.length),l:"דשבורדים"}];
       return {kpis,sugs:[],live:true,line:T.length?"אחרון: "+[...T].sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")))[0].title:""};
     }
+    if(d.source==="skills"&&skillDocs.length){ // 16.0: skills review (skills.html)
+      const S=skillDocs.filter(x=>x.id!=="_meta"&&x.title&&(x.kind||"skill")==="skill"),on=S.filter(x=>((x.install||{}).s||"no")!=="no");
+      const tr=S.filter(x=>((x.install||{}).s||"no")==="no"&&/^(yes|maybe)$/.test((x.verdict||{}).rec||""));
+      return {kpis:[{v:String(S.length),l:"נבחנו"},{v:String(on.length),l:"מותקנים"},{v:String(tr.length),l:"שווה לשקול"}],sugs:[],live:true,line:on.length+" מותקנים מתוך "+S.length};
+    }
+    if(d.source==="expenses"&&expDocs.length){ // 16.5: work expense reimbursement (expenses.html, Work Quest)
+      const E=expDocs.filter(x=>(x.kind||"exp")==="exp"&&x.title&&x.st!=="dropped"),due=E.filter(x=>!x.st||x.st==="open"||x.st==="sent");
+      const miss=E.filter(x=>x.rcpt==="missing"&&!/^(personal|submitted|received)$/.test(x.st||"")),wait=E.filter(x=>x.st==="submitted");
+      const sym={EUR:"€",ILS:"₪",USD:"$"},sm=L=>{const m={};L.forEach(x=>{m[x.cur||"ILS"]=(m[x.cur||"ILS"]||0)+(+x.amt||0);});return Object.keys(m).filter(c=>m[c]).map(c=>(sym[c]||c)+Math.round(m[c]).toLocaleString("en-US")).join(" + ")||"0";};
+      const kpis=[{v:String(due.length),l:"להגיש"},{v:String(wait.length),l:"מחכה לכסף"},{v:String(miss.length),l:"בלי קבלה"}];
+      const sugs=miss.slice(0,2).map(x=>({text:"חויבת בלי קבלה: "+x.title,sub:(sym[x.cur]||"")+(+x.amt||0)}));
+      return {kpis,sugs,live:true,line:due.length?"להגיש: "+sm(due):"✓ הכול הוגש"};
+    }
     if(d.source==="food"&&foodDocs.length){ // 10.5: food & restaurants (food.html)
       const R=foodDocs.filter(x=>x.id!=="_meta"&&x.title&&(x.kind||"recipe")==="recipe"),cart=R.filter(x=>x.cart);
       const kpis=[{v:String(R.length),l:"מתכונים"},{v:String(R.filter(x=>(x.made_count||0)>0).length),l:"כבר הכנתי"},{v:String(cart.length),l:"ברשימת קניות"}];
@@ -2559,6 +2608,12 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     const go=()=>{const el=quest==="travel"?document.querySelector("#tvSec .tv-dash")||sec:sec;if(!el||el.hidden)return;
       el.scrollIntoView({behavior:"smooth",block:"start"});
       setTimeout(()=>document.querySelectorAll(".dz-tile").forEach(t=>{const d=dashById(t.dataset.dz);if(d&&dashUnseen(d).length){t.classList.remove("flash");void t.offsetWidth;t.classList.add("flash");}}),450);};
+    // 16.1 (Oren 13.11.2026): the count covers every quest, so when the updated dashboard lives in another quest (skills is in
+    // AI Projects) go to that quest, not to Side, where no tile blinks.
+    const qOf=d=>d.quest||"side",un=dashes.filter(d=>!d._deleted&&!d.archived&&dashUnseen(d).length);
+    const here=quest!=="fun"&&un.some(d=>qOf(d)===quest);
+    const tq=un.length&&!here?qOf(un.map(d=>[d,dashUnseen(d)[0].ms]).sort((a,b)=>b[1]-a[1])[0][0]):null;
+    if(tq&&tq!==quest){setQuest(tq);setTimeout(go,160);return;}
     if((!sec||sec.hidden)&&quest!=="travel"){setQuest("side");setTimeout(go,120);}else go();}
   const DASH_MAX=3, DASH_IDLE=90;
   function dashIdle(d){return !d.archived&&!dashTasks(d).some(isOpen)&&dashActivity(d)&&(Date.now()-dashActivity(d))/86400000>DASH_IDLE;}
@@ -2840,7 +2895,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     const oth=open.filter(t=>!asleep(t)&&(t.status==="waiting_other"||(zz(t)&&t.status!=="paused"))).sort(byDate);
     const dormP=open.filter(asleep).sort((a,b)=>String(a.sleep_until).localeCompare(String(b.sleep_until)));
     const pa=open.filter(t=>t.status==="paused");
-    const hist=all.filter(t=>!isOpen(t)&&!isBg(t)).sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")).slice(0,40);
+    const hist=all.filter(t=>!isOpen(t)&&!isBg(t)).sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||""));
     const plog=(!gen&&Array.isArray(p.log)?p.log:[]).filter(x=>x&&x.text).slice(-15).reverse();
     const sec=(cls,title,items)=>items.length?h("section",{class:"pjsec "+cls},h("h2",null,title,h("span",{class:"n"},"· "+items.length)),h("div",{class:"glist"},items.map(row))):null;
     let head=null;
@@ -2952,7 +3007,11 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       else if(snoozed(t))chip=h("span",{class:"rc"},"⏰ "+fmtWhen(t.snooze_until));
       else if(t.next_date&&n!=null&&n<=7)chip=h("span",{class:"rc"+(n<=0?" due":n<=2?" soon":"")},relDate(t.next_date));
       else if(asks)chip=h("span",{class:"rc ask","aria-label":asks===1?"שאלה אחת":asks+" שאלות"},"?");
-      else if(st.length)chip=h("span",{class:"rc"},sd+"/"+st.length);}
+      else if(st.length)chip=h("span",{class:"rc"},sd+"/"+st.length);
+      else if(+t.money_expected>0)chip=h("span",{class:"rc mny"},"⏳ "+fmtNis(t.money_expected));
+      else if(+t.money_potential>0)chip=h("span",{class:"rc mny p"},"💭 "+fmtNis(t.money_potential));}
+    else if(+t.money_saved>0)chip=h("span",{class:"rc mny"},"✅ "+fmtNis(t.money_saved));
+    else if(+t.money_monthly>0)chip=h("span",{class:"rc mny"},"🔁 "+fmtNis(t.money_monthly));
     const isO=openId===t.id;
     const el=h("div",{class:"row"+(open?"":" closed")+(isUrgent(t)?" urgent":"")+(isO?" is-open":""),"data-id":t.id},
       open?(canWrite?h("button",{class:"ck",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:press(()=>markDone(t))}):h("span",{class:"ck ph","aria-hidden":"true"})):h("span",{class:"ck on","aria-label":"בוצע",html:ICON.done}),
@@ -3222,7 +3281,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       if(!top.length)top.push(h("div",{class:"empty"},topics.length?"אין משימות פתוחות.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה ב-+ למטה.`));
     }
     more.push(foldRows("wait","מחכה לאחרים",waiting),foldRows("later","אחר כך",later),foldRows("paused","בהקפאה",paused),foldRows("dorm","💤 משימות עתידיות",dorm,{zz:true}));
-    const doneL=topics.filter(t=>t.status==="done"||t.status==="promoted").sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")).slice(0,30);
+    const doneL=topics.filter(t=>t.status==="done"||t.status==="promoted").sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")); // 16.2: no cap (it was 30, Oren saw "בוצעו" stuck on 30)
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
     $("doneSec").replaceChildren(...[foldRows("done","בוצעו",doneL)].filter(Boolean));
@@ -4138,7 +4197,9 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   let updSeen=null;try{updSeen=JSON.parse(localStorage.getItem("sq_upd_seen")||"null");}catch(e){updSeen=null;}
   if(!updSeen||typeof updSeen!=="object"){updSeen={_base:new Date(Date.now()-24*36e5).toISOString()};try{localStorage.setItem("sq_upd_seen",JSON.stringify(updSeen));}catch(e){}}
   const updBase=()=>Date.parse(updSeen._base||"")||0;
-  const newPool=()=>allTopics.filter(t=>!t._deleted&&!t.background&&!isFun(t)&&!(t.fit&&t.fit.owner==="claude")&&t.status!=="archived");
+  // 16.4 (Oren 13.11.2026): "what's new" = only real news, never tasks that were completed, and each quest shows only its own.
+  const DONE_ST=["done","promoted","archived"];
+  const newPool=q=>{const qq=q||quest;return allTopics.filter(t=>!t._deleted&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!DONE_ST.includes(t.status)&&!t.merged_into&&(qq==="fun"?isFun(t):!isFun(t)&&questOf(t)===qq));};
   function isNewUpd(t){const r=recentOf(t);if(!r||Date.now()-r.ms>72*36e5||r.ms<=updBase())return null;const s=Date.parse(updSeen[t.id]||"")||0;return s<r.ms?r:null;}
   function newCount(){try{return newPool().filter(t=>isNewUpd(t)).length;}catch(e){return 0;}}
   function saveSeen(){const ks=Object.keys(updSeen).filter(k=>k!=="_base");if(ks.length>300)ks.sort((a,b)=>String(updSeen[a]).localeCompare(String(updSeen[b]))).slice(0,ks.length-300).forEach(k=>delete updSeen[k]);
@@ -4155,10 +4216,9 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     top.push(h("div",{class:"newhd"},h("b",null,"🆕 מה התעדכן לאחרונה"),h("button",{type:"button",onclick:seeAll},"✓ הכול נקרא")));
     for(const[g,f]of G){const it=L.filter(x=>!used.has(x.t.id)&&f(x));it.forEach(x=>used.add(x.t.id));if(!it.length)continue;
       top.push(h("div",{class:"gwrap"},h("div",{class:"g-head"},g,h("span",{class:"n"},it.length)),h("div",{class:"glist"},it.map(x=>row(x.t,{upd:x.r})))));}
-    if(L.length===0)top.push(h("div",{class:"empty"},"שום דבר לא התעדכן בשבוע האחרון."));
+    if(L.length===0)top.push(h("div",{class:"empty"},"שום דבר חדש בשבוע האחרון."));
     $("list").replaceChildren(...top);$("more").replaceChildren();
-    const doneL=topics.filter(t=>t.status==="done"||t.status==="promoted").sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")).slice(0,30);
-    $("doneSec").replaceChildren(...[foldRows("done","בוצעו",doneL)].filter(Boolean));renderInbox();}
+    $("doneSec").replaceChildren();renderInbox();}
   // Gmail on demand: the button queues sidequests/instructions {kind:"gmail_scan"}; the hourly instructions run (:47)
   // scans Gmail since the last scan (plus what he noted), updates or adds the matching tasks with upd {src:"gmail"},
   // and writes settings/gmail_scan. The 5-a-day sweep does the same pass automatically.
@@ -4542,6 +4602,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
         ...locBody);
     const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
       h("a",{class:"sqbtn ghost sqchat sqtopchat",href:SQ_CHAT,target:"_blank",rel:"noopener"},h("span",{class:"chtool","aria-hidden":"true",html:'<svg viewBox="0 0 24 24"><path d="M3.5 4.5h17v11.5H9.5l-6 4.5z"/></svg><i>🛠️</i>'}),"שיפורים ותיקונים במערכת"),
+      grp("📊 סטטיסטיקה"),
+      statsSec(sec),
       grp("👁️ תצוגה"),
       placeSec,
       sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
@@ -4578,6 +4640,69 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     p.addEventListener("click",e=>{const el=e.target.closest("[data-pin],button,summary,input,select");if(el&&p.contains(el))setPin={k:pinKey(el),top:el.getBoundingClientRect().top};},true);
     if(keep&&p){p.scrollTop=top;holdPin(p);}
     setGrow=null;
+  }
+
+  // 16.2 (Oren 13.11.2026): "סטטיסטיקת Side Quests": how much we closed together (day / week / month / all), opened, topics handled,
+  // and above all money: money_saved (₪ already saved or received) and money_expected (₪ still on the way) on each topic.
+  // Merged children and fun items are not counted as closes; money is summed on every non-deleted topic (never put it on both parent and child).
+  function fmtNis(v){v=Math.round(+v||0);return "₪"+v.toLocaleString("he-IL");}
+  let statOpen=null;
+  function statsSec(sec){
+    const T=allTopics.filter(t=>!t._deleted&&!isFun(t));
+    const dOf=t=>Date.parse(t.done_at||t.updated_at||"")||0,cOf=t=>Date.parse(t.created_at||"")||0;
+    const closed=T.filter(t=>t.status==="done"||t.status==="promoted");
+    const opened=T.filter(t=>!t.merged_into&&cOf(t));
+    const now=new Date(),day0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+    const wk0=day0-now.getDay()*86400000,mo0=new Date(now.getFullYear(),now.getMonth(),1).getTime();
+    const first=Math.min(...T.map(cOf).filter(Boolean),day0),days=Math.max(1,Math.round((day0-first)/86400000)+1);
+    const cnt=(L,f,from)=>L.filter(t=>f(t)>=from).length;
+    const logs=t=>Array.isArray(t.log)?t.log:[];
+    const touched=from=>T.filter(t=>logs(t).some(x=>(Date.parse(x.at||"")||0)>=from)||cOf(t)>=from||dOf(t)>=from&&(t.status==="done"||t.status==="promoted")).length;
+    const steps=T.reduce((n,t)=>n+stepsOf(t).filter(x=>x.done).length,0);
+    // 16.3 (Oren 13.11): separate what really came in from what is on the way and what is only possible.
+    // real = money_saved + money_monthly × full months since money_at; monthly savings count only for months already passed.
+    const mon=t=>{const m=+t.money_monthly||0,a=Date.parse(t.money_at||"")||0;return m>0&&a&&a<=Date.now()?Math.floor((Date.now()-a)/(30.44*86400000)):0;};
+    const real=t=>(+t.money_saved||0)+(+t.money_monthly||0)*mon(t);
+    const saved=T.filter(t=>+t.money_saved>0||+t.money_monthly>0),exp=T.filter(t=>+t.money_expected>0),pot=T.filter(t=>+t.money_potential>0);
+    const sum=(L,f)=>L.reduce((n,t)=>n+f(t),0);
+    const S=sum(saved,real),E=sum(exp,t=>+t.money_expected||0),P=sum(pot,t=>+t.money_potential||0),M=sum(T,t=>+t.money_monthly||0);
+    const tile=(n,l,cls)=>h("div",{class:"sst"+(cls?" "+cls:"")},h("b",null,String(n)),h("span",null,l));
+    // last 8 weeks (Sun-Sat): closed vs opened
+    const nW=Math.min(8,Math.floor((wk0-first)/(7*86400000))+1),W=[];for(let i=nW-1;i>=0;i--){const a=wk0-i*7*86400000,b=a+7*86400000;W.push({a,c:closed.filter(t=>dOf(t)>=a&&dOf(t)<b).length,o:opened.filter(t=>cOf(t)>=a&&cOf(t)<b).length});}
+    const mx=Math.max(1,...W.map(w=>Math.max(w.c,w.o)));
+    const dm=ms=>{const d=new Date(ms);return d.getDate()+"."+(d.getMonth()+1);};
+    const bars=h("div",{class:"ssbars",style:"grid-template-columns:repeat("+nW+",1fr)",role:"img","aria-label":"נסגרו ונפתחו בכל שבוע"},...W.map(w=>h("div",{class:"ssw"},
+      h("div",{class:"ssb"},h("i",{class:"c",style:"height:"+Math.round(w.c/mx*100)+"%",title:w.c+" נסגרו"}),h("i",{class:"o",style:"height:"+Math.round(w.o/mx*100)+"%",title:w.o+" נפתחו"})),
+      h("small",null,w.c?String(w.c):"·"),h("small",{class:"d"},dm(w.a)))));
+    const byQ={};closed.forEach(t=>{const q=questOf(t);byQ[q]=(byQ[q]||0)+1;});
+    const val=(t,k)=>k==="s"?real(t):+t[k==="e"?"money_expected":"money_potential"]||0;
+    const amt=(t,k)=>k==="s"&&+t.money_monthly>0&&!real(t)?"🔁 "+fmtNis(t.money_monthly)+" בחודש":fmtNis(val(t,k));
+    const mRow=(t,k)=>h("button",{class:"ssm",type:"button",onclick:()=>{closeModal();openTask(t.id);}},
+      h("span",{class:"t"},t.title||""),t.money_note?h("small",null,t.money_note):null,h("b",null,amt(t,k)));
+    const list=(L,k)=>L.slice().sort((a,b)=>val(b,k)-val(a,k)||(+b.money_monthly||0)-(+a.money_monthly||0)).map(t=>mRow(t,k));
+    const tg=(k,label,n)=>h("button",{class:"ssmore",type:"button","aria-expanded":statOpen===k?"true":"false",onclick:()=>{statOpen=statOpen===k?null:k;renderSettings();}},label+" ("+n+")",h("span",{"aria-hidden":"true"},statOpen===k?"▴":"▾"));
+    return sec("stats","📊 סטטיסטיקת Side Quests",closed.length+" נסגרו · ✅ "+fmtNis(S),
+      h("div",{class:"ssmoney"},
+        h("div",{class:"ssmn s"},h("span",null,"✅ בפועל"),h("b",null,fmtNis(S)),h("small",null,"נכנס או נחסך")),
+        h("div",{class:"ssmn e"},h("span",null,"⏳ בדרך"),h("b",null,fmtNis(E)),h("small",null,"אושר או נתבע")),
+        h("div",{class:"ssmn p"},h("span",null,"💭 פוטנציאלי"),h("b",null,fmtNis(P)),h("small",null,"עוד לא נתבע"))),
+      M>0?h("div",{class:"sqhint"},"🔁 חיסכון קבוע: "+fmtNis(M)+" בחודש ("+fmtNis(M*12)+" בשנה). נכנס ל״בפועל״ רק על חודשים שעברו."):null,
+      saved.length?tg("s","✅ מה נכנס או נחסך",saved.length):null,
+      statOpen==="s"?h("div",{class:"sslist sqgrow"},...list(saved,"s")):null,
+      exp.length?tg("e","⏳ מה בדרך",exp.length):null,
+      statOpen==="e"?h("div",{class:"sslist sqgrow"},...list(exp,"e")):null,
+      pot.length?tg("p","💭 מה עוד אפשר להשיג",pot.length):null,
+      statOpen==="p"?h("div",{class:"sslist sqgrow"},...list(pot,"p")):null,
+      h("div",{class:"sssub"},"✓ נסגרו"),
+      h("div",{class:"sstiles"},tile(cnt(closed,dOf,day0),"היום"),tile(cnt(closed,dOf,wk0),"השבוע"),tile(cnt(closed,dOf,mo0),"החודש"),tile(closed.length,"מההתחלה","all")),
+      h("div",{class:"sssub"},"＋ נפתחו"),
+      h("div",{class:"sstiles"},tile(cnt(opened,cOf,day0),"היום"),tile(cnt(opened,cOf,wk0),"השבוע"),tile(cnt(opened,cOf,mo0),"החודש"),tile(opened.length,"מההתחלה","all")),
+      h("div",{class:"sssub"},"🗂️ נושאים שטופלו"),
+      h("div",{class:"sstiles"},tile(touched(day0),"היום"),tile(touched(wk0),"השבוע"),tile(touched(mo0),"החודש"),tile(steps,"שלבים שבוצעו","all")),
+      h("div",{class:"sssub"},"📈 לפי שבועות",h("span",{class:"lg"},h("i",{class:"c"}),"נסגרו ",h("i",{class:"o"}),"נפתחו")),
+      bars,
+      h("div",{class:"sqhint"},"מאז "+dm(first)+"."+new Date(first).getFullYear()+" ("+days+" ימים): בממוצע "+(Math.round(closed.length/days*10)/10)+" משימות ביום · "+
+        Object.keys(byQ).sort((a,b)=>byQ[b]-byQ[a]).map(q=>((QUESTS[q]||QUESTS.side).e||"")+" "+byQ[q]).join(" · ")));
   }
   // 9.5 (Oren 6.11): everything that counts as "archive" lives only here: archived tasks (all quests) and archived / idle dashboards
   let archOpen=null;
@@ -4658,6 +4783,8 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     db.collection("food").onSnapshot(s=>{foodDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("workstops").onSnapshot(s=>{wsDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderTravel();},()=>{});
     db.collection("knowledge").onSnapshot(s=>{knowDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
+    db.collection("expenses").onSnapshot(s=>{expDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
+    db.collection("skills").onSnapshot(s=>{skillDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("sport").onSnapshot(s=>{sportDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("credit").onSnapshot(s=>{credDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     initNotify();
