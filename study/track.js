@@ -55,17 +55,51 @@
     if(z&&(a<z[1]||k<z[2])){L=T.tl=[];z=null}
     if(z&&z[0]===b&&L.length>1&&(z[4]||1)===lv){z[1]=a;z[2]=k;z[3]=pg;z[5]=m}else if(!z||z[1]!==a||z[0]!==b||(z[4]||1)!==lv)L.push([b,a,k,pg,lv,m]);
     if(L.length>80)L.splice(1,L.length-80);set('study_t_'+kid+'_'+app,T)}
+  // מצב אורח (אורן 13.11.2026), כלל לכל study ולכל שיעור עתידי:
+  // 1. אחרי 2 דקות של לימוד פעיל במצב אורח עם התקדמות אמיתית (יותר תשובות מבכניסה), חלון עדין: "במצב אורח ההתקדמות לא נשמרת, עוברים למשתמש שלך".
+  //    "זה אני" = יציאה ממצב אורח לאותו שיעור, וההתקדמות של האורח עוברת לילד (study_adopt). "להמשיך כאורח" = שוב רק אחרי עוד 5 דקות.
+  // 2. העברה (adopt): מפתחות ההתקדמות של השיעור (KEYS) עוברים מ-guest:<מפתח> לרגיל, רק אם לאורח יש יותר תשובות (att). סקווישים (מערכים) מתאחדים,
+  //    זמן הלימוד והימים מתחברים, ומפתחות האורח נמחקים מהמכשיר. אחר כך טעינה מחדש והדיווח הרגיל שולח לשרת.
+  // 3. AUTO: לביא שיחק הרבה בצלילים במצב אורח לפני 13.11.2026, ולכן אצלו ההעברה קורית פעם אחת אוטומטית כשהשיעור נפתח במשתמש שלו (study_adopted_<kid>_<app>).
+  var NAMES={evyatar:'אביתר',dani:'דני',lia:'ליה',levi:'לביא',shilo:'שילה'},AUTO=['levi/phonics'];
+  function raw(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function attOf(v){try{var o=JSON.parse(v);return o&&typeof o==='object'&&!Array.isArray(o)?(+o.att||+o.okc||0):0}catch(e){return 0}}
+  function adopt(){if(off()||!KEYS.length)return false;var id=kid+'/'+app,ak='study_adopted_'+kid+'_'+app,L=get('study_adopt'),asked=false;
+    if(Array.isArray(L)&&L.indexOf(id)>=0){asked=true;L.splice(L.indexOf(id),1);set('study_adopt',L)}
+    if(!asked&&(AUTO.indexOf(id)<0||raw(ak)))return false;
+    var gv=raw('guest:'+KEYS[0]),rv=raw(KEYS[0]);if(gv==null||(rv!=null&&attOf(gv)<=attOf(rv)))return false;
+    KEYS.forEach(function(x){var g=raw('guest:'+x);if(g==null)return;var r=raw(x),v=g;
+      try{var a=JSON.parse(g),b=r!=null?JSON.parse(r):null;if(Array.isArray(a)&&Array.isArray(b))v=JSON.stringify(b.concat(a.filter(function(y){return b.indexOf(y)<0})))}catch(e){}
+      try{localStorage.setItem(x,v);localStorage.removeItem('guest:'+x)}catch(e){}});
+    var tk='study_t_'+kid+'_'+app,gt=get('guest:'+tk);
+    if(gt){var rt=get(tk);if(!rt)rt=gt;else{rt.sec=(rt.sec||0)+(gt.sec||0);rt.days=rt.days||{};for(var d in(gt.days||{}))rt.days[d]=(rt.days[d]||0)+gt.days[d];if(gt.first&&(!rt.first||gt.first<rt.first))rt.first=gt.first;if(gt.tl)rt.tl=gt.tl}
+      set(tk,rt);try{localStorage.removeItem('guest:'+tk)}catch(e){}}
+    var n=attOf(gv);set(ak,{at:new Date().toISOString(),att:n});set('study_r_'+kid+'_'+app,{at:new Date().toISOString(),data:{att:n}});// שהגיבוי הישן בשרת לא ידרוס את מה שעבר
+    stop=true;location.reload();return true}
+  var gSec=0,gNext=120,gAtt0=null,gProg=false,gOpen=false;
+  function nudge(){if(gOpen||document.getElementById('gnud'))return;gOpen=true;var nm=NAMES[kid]||'',o=document.createElement('div');o.id='gnud';
+    o.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(30,41,59,.45);display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl;font-family:system-ui,Arial,sans-serif';
+    o.innerHTML='<div style="background:#fff;border-radius:18px;max-width:340px;width:100%;padding:20px 18px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2);color:#1e293b">'
+      +'<div style="font-size:40px;line-height:1">🌟</div><div style="font-size:20px;font-weight:700;margin:8px 0 6px">וואו, איזו התקדמות יפה!</div>'
+      +'<div style="font-size:16px;line-height:1.5;color:#334155">רק שתדעו: ב<b>מצב אורח</b> ההתקדמות, הנקודות והסקווישים <b>לא נשמרים</b>.<br>'+(nm?'אם זה '+nm+', עוברים עכשיו למשתמש של '+nm+', וכל מה שעשית עד עכשיו יעבור איתך.':'כדאי לעבור למשתמש שלך.')+'</div>'
+      +'<button type="button" id="gnY" style="display:block;width:100%;margin-top:16px;padding:12px;font:700 17px system-ui,Arial,sans-serif;color:#fff;background:#2563eb;border:0;border-radius:14px;cursor:pointer">'+(nm?'✓ זה אני, '+nm+'! לשמור אצלי':'✓ לעבור למשתמש שלי')+'</button>'
+      +'<button type="button" id="gnN" style="display:block;width:100%;margin-top:8px;padding:10px;font:600 15px system-ui,Arial,sans-serif;color:#475569;background:#f1f5f9;border:0;border-radius:14px;cursor:pointer">להמשיך כאורח</button></div>';
+    document.body.appendChild(o);
+    o.querySelector('#gnY').onclick=function(){var L=get('study_adopt');if(!Array.isArray(L))L=[];var id=kid+'/'+app;if(L.indexOf(id)<0)L.push(id);set('study_adopt',L);
+      if(window.studyGuest)window.studyGuest(false,location.href.split('#')[0]);else location.reload()};
+    o.querySelector('#gnN').onclick=function(){o.remove();gOpen=false;gSec=0;gNext=300}}
+  function gTick(){if(!window.STUDY_GUEST||window.STUDY_REVIEW)return;gSec+=5;if(gSec>=gNext&&gProg)nudge()}
   window.StudyTrack={
-    init:function(k,a,keys){kid=k;app=a;KEYS=keys||[];var key='study_t_'+k+'_'+a,old=get(key);if(KEYS.length){checkReset(KEYS,old);restore()}T=old||{first:new Date().toISOString(),sec:0,days:{}};T.days=T.days||{};
+    init:function(k,a,keys){kid=k;app=a;KEYS=keys||[];if(adopt())return;var key='study_t_'+k+'_'+a,old=get(key);if(KEYS.length){checkReset(KEYS,old);restore()}T=old||{first:new Date().toISOString(),sec:0,days:{}};T.days=T.days||{};
       ['pointerdown','keydown','touchstart'].forEach(function(e){addEventListener(e,act,{passive:true})});
-      setInterval(function(){if(document.visibilityState!=='visible'||Date.now()-lastAct>60000)return;T.sec+=5;qzAct();var t=today();T.days[t]=(T.days[t]||0)+5;T.last=new Date().toISOString();set(key,T);dirty=true},5000);
+      setInterval(function(){if(document.visibilityState!=='visible'||Date.now()-lastAct>60000)return;T.sec+=5;qzAct();gTick();var t=today();T.days[t]=(T.days[t]||0)+5;T.last=new Date().toISOString();set(key,T);dirty=true},5000);
       setInterval(function(){if(dirty)send(false)},60000);
       // איפוס מאזור ההורים גם כשהדף כבר פתוח (אורן 6.11.2026: לחץ איפוס והטלפון של ליה המשיך מאותו מקום): בדיקה כל 30 שניות וכשחוזרים לדף
       if(KEYS.length){setInterval(function(){checkReset(KEYS,T)},30000);addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')checkReset(KEYS,T)})}
       addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&dirty)send(true)});
       addEventListener('pagehide',function(){if(dirty)send(true)});
       T.last=new Date().toISOString();set(key,T)},
-    report:function(o){data=o||{};tl();later()},
+    report:function(o){data=o||{};var na=+data.att;if(isFinite(na)){if(gAtt0==null)gAtt0=na;else if(na>gAtt0)gProg=true}tl();later()},
     gift:function(cb){if(off())return;try{rpc('study_gift_take',{p_kid:kid,p_app:app}).then(function(j){if(j&&j.kind)cb(j)}).catch(function(){})}catch(e){}},
     test:function(cb){try{rpc('study_test_get',{p_kid:kid,p_app:app}).then(function(j){if(j&&j.d)cb(j)}).catch(function(){})}catch(e){}}
   };
