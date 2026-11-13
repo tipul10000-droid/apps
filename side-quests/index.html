@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.2";window.SQ_BUILD_AT="13.11.2026 14:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.3";window.SQ_BUILD_AT="13.11.2026 14:15";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1838,13 +1838,15 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
 .tadd.fab{overflow:visible}
 body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none!important}
 /* 16.2 stats in settings */
-#setM .ssmoney{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:4px 0 8px}
-#setM .ssmn{display:flex;flex-direction:column;gap:2px;padding:12px;text-align:center}
+#setM .ssmoney{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:4px 0 8px}
+#setM .ssmn{display:flex;flex-direction:column;gap:2px;padding:10px 4px;text-align:center}
 #setM .ssmn+.ssmn{border-inline-start:1px solid var(--line)}
 #setM .ssmn span{font-size:14px;color:var(--muted)}
-#setM .ssmn b{font-size:26px;font-weight:800;line-height:1.15}
+#setM .ssmn b{font-size:21px;font-weight:800;line-height:1.15}
 #setM .ssmn.s b{color:#1f9d55}
 #setM .ssmn.e b{color:#c77d00}
+#setM .ssmn.p b{color:#6b7c93}
+.rc.mny.p{background:rgba(107,124,147,.14);color:#56657a}
 #setM .ssmn small{font-size:12.5px;color:var(--muted)}
 #setM .ssmore{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:44px;background:none;border:0;border-top:1px solid var(--line);font:inherit;font-size:15px;color:inherit;cursor:pointer;padding:0 2px}
 #setM .sslist{display:flex;flex-direction:column}
@@ -2998,8 +3000,10 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       else if(t.next_date&&n!=null&&n<=7)chip=h("span",{class:"rc"+(n<=0?" due":n<=2?" soon":"")},relDate(t.next_date));
       else if(asks)chip=h("span",{class:"rc ask","aria-label":asks===1?"שאלה אחת":asks+" שאלות"},"?");
       else if(st.length)chip=h("span",{class:"rc"},sd+"/"+st.length);
-      else if(+t.money_expected>0)chip=h("span",{class:"rc mny"},"⏳ "+fmtNis(t.money_expected));}
-    else if(+t.money_saved>0)chip=h("span",{class:"rc mny"},"💰 "+fmtNis(t.money_saved));
+      else if(+t.money_expected>0)chip=h("span",{class:"rc mny"},"⏳ "+fmtNis(t.money_expected));
+      else if(+t.money_potential>0)chip=h("span",{class:"rc mny p"},"💭 "+fmtNis(t.money_potential));}
+    else if(+t.money_saved>0)chip=h("span",{class:"rc mny"},"✅ "+fmtNis(t.money_saved));
+    else if(+t.money_monthly>0)chip=h("span",{class:"rc mny"},"🔁 "+fmtNis(t.money_monthly));
     const isO=openId===t.id;
     const el=h("div",{class:"row"+(open?"":" closed")+(isUrgent(t)?" urgent":"")+(isO?" is-open":""),"data-id":t.id},
       open?(canWrite?h("button",{class:"ck",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:press(()=>markDone(t))}):h("span",{class:"ck ph","aria-hidden":"true"})):h("span",{class:"ck on","aria-label":"בוצע",html:ICON.done}),
@@ -4646,9 +4650,13 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     const logs=t=>Array.isArray(t.log)?t.log:[];
     const touched=from=>T.filter(t=>logs(t).some(x=>(Date.parse(x.at||"")||0)>=from)||cOf(t)>=from||dOf(t)>=from&&(t.status==="done"||t.status==="promoted")).length;
     const steps=T.reduce((n,t)=>n+stepsOf(t).filter(x=>x.done).length,0);
-    const saved=T.filter(t=>+t.money_saved>0),exp=T.filter(t=>+t.money_expected>0);
-    const sum=(L,k)=>L.reduce((n,t)=>n+(+t[k]||0),0);
-    const S=sum(saved,"money_saved"),E=sum(exp,"money_expected");
+    // 16.3 (Oren 13.11): separate what really came in from what is on the way and what is only possible.
+    // real = money_saved + money_monthly × full months since money_at; monthly savings count only for months already passed.
+    const mon=t=>{const m=+t.money_monthly||0,a=Date.parse(t.money_at||"")||0;return m>0&&a&&a<=Date.now()?Math.floor((Date.now()-a)/(30.44*86400000)):0;};
+    const real=t=>(+t.money_saved||0)+(+t.money_monthly||0)*mon(t);
+    const saved=T.filter(t=>+t.money_saved>0||+t.money_monthly>0),exp=T.filter(t=>+t.money_expected>0),pot=T.filter(t=>+t.money_potential>0);
+    const sum=(L,f)=>L.reduce((n,t)=>n+f(t),0);
+    const S=sum(saved,real),E=sum(exp,t=>+t.money_expected||0),P=sum(pot,t=>+t.money_potential||0),M=sum(T,t=>+t.money_monthly||0);
     const tile=(n,l,cls)=>h("div",{class:"sst"+(cls?" "+cls:"")},h("b",null,String(n)),h("span",null,l));
     // last 8 weeks (Sun-Sat): closed vs opened
     const nW=Math.min(8,Math.floor((wk0-first)/(7*86400000))+1),W=[];for(let i=nW-1;i>=0;i--){const a=wk0-i*7*86400000,b=a+7*86400000;W.push({a,c:closed.filter(t=>dOf(t)>=a&&dOf(t)<b).length,o:opened.filter(t=>cOf(t)>=a&&cOf(t)<b).length});}
@@ -4658,18 +4666,24 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       h("div",{class:"ssb"},h("i",{class:"c",style:"height:"+Math.round(w.c/mx*100)+"%",title:w.c+" נסגרו"}),h("i",{class:"o",style:"height:"+Math.round(w.o/mx*100)+"%",title:w.o+" נפתחו"})),
       h("small",null,w.c?String(w.c):"·"),h("small",{class:"d"},dm(w.a)))));
     const byQ={};closed.forEach(t=>{const q=questOf(t);byQ[q]=(byQ[q]||0)+1;});
+    const val=(t,k)=>k==="s"?real(t):+t[k==="e"?"money_expected":"money_potential"]||0;
+    const amt=(t,k)=>k==="s"&&+t.money_monthly>0&&!real(t)?"🔁 "+fmtNis(t.money_monthly)+" בחודש":fmtNis(val(t,k));
     const mRow=(t,k)=>h("button",{class:"ssm",type:"button",onclick:()=>{closeModal();openTask(t.id);}},
-      h("span",{class:"t"},t.title||""),t.money_note?h("small",null,t.money_note):null,h("b",null,fmtNis(t[k])));
-    const list=(L,k)=>L.slice().sort((a,b)=>(+b[k]||0)-(+a[k]||0)).map(t=>mRow(t,k));
+      h("span",{class:"t"},t.title||""),t.money_note?h("small",null,t.money_note):null,h("b",null,amt(t,k)));
+    const list=(L,k)=>L.slice().sort((a,b)=>val(b,k)-val(a,k)||(+b.money_monthly||0)-(+a.money_monthly||0)).map(t=>mRow(t,k));
     const tg=(k,label,n)=>h("button",{class:"ssmore",type:"button","aria-expanded":statOpen===k?"true":"false",onclick:()=>{statOpen=statOpen===k?null:k;renderSettings();}},label+" ("+n+")",h("span",{"aria-hidden":"true"},statOpen===k?"▴":"▾"));
-    return sec("stats","📊 סטטיסטיקת Side Quests",closed.length+" נסגרו · "+fmtNis(S),
+    return sec("stats","📊 סטטיסטיקת Side Quests",closed.length+" נסגרו · ✅ "+fmtNis(S),
       h("div",{class:"ssmoney"},
-        h("div",{class:"ssmn s"},h("span",null,"💰 נחסך או התקבל"),h("b",null,fmtNis(S)),h("small",null,saved.length+" משימות")),
-        h("div",{class:"ssmn e"},h("span",null,"⏳ בדרך אליך"),h("b",null,fmtNis(E)),h("small",null,exp.length+" משימות"))),
-      saved.length?tg("s","מה נחסך",saved.length):null,
-      statOpen==="s"?h("div",{class:"sslist sqgrow"},...list(saved,"money_saved")):null,
-      exp.length?tg("e","מה עוד יגיע",exp.length):null,
-      statOpen==="e"?h("div",{class:"sslist sqgrow"},...list(exp,"money_expected")):null,
+        h("div",{class:"ssmn s"},h("span",null,"✅ בפועל"),h("b",null,fmtNis(S)),h("small",null,"נכנס או נחסך")),
+        h("div",{class:"ssmn e"},h("span",null,"⏳ בדרך"),h("b",null,fmtNis(E)),h("small",null,"אושר או נתבע")),
+        h("div",{class:"ssmn p"},h("span",null,"💭 פוטנציאלי"),h("b",null,fmtNis(P)),h("small",null,"עוד לא נתבע"))),
+      M>0?h("div",{class:"sqhint"},"🔁 חיסכון קבוע: "+fmtNis(M)+" בחודש ("+fmtNis(M*12)+" בשנה). נכנס ל״בפועל״ רק על חודשים שעברו."):null,
+      saved.length?tg("s","✅ מה נכנס או נחסך",saved.length):null,
+      statOpen==="s"?h("div",{class:"sslist sqgrow"},...list(saved,"s")):null,
+      exp.length?tg("e","⏳ מה בדרך",exp.length):null,
+      statOpen==="e"?h("div",{class:"sslist sqgrow"},...list(exp,"e")):null,
+      pot.length?tg("p","💭 מה עוד אפשר להשיג",pot.length):null,
+      statOpen==="p"?h("div",{class:"sslist sqgrow"},...list(pot,"p")):null,
       h("div",{class:"sssub"},"✓ נסגרו"),
       h("div",{class:"sstiles"},tile(cnt(closed,dOf,day0),"היום"),tile(cnt(closed,dOf,wk0),"השבוע"),tile(cnt(closed,dOf,mo0),"החודש"),tile(closed.length,"מההתחלה","all")),
       h("div",{class:"sssub"},"＋ נפתחו"),
