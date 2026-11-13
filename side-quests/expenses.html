@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=2"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.1";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.2";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,9 +47,9 @@ button{font:inherit;color:inherit}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
 /* one frame split by lines (no frame in frame) */
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.seg button{border:0;background:var(--surface);padding:7px 2px 6px;font-weight:800;font-size:13.5px;cursor:pointer;font-family:var(--f-display);line-height:1.2;min-width:0;-webkit-tap-highlight-color:transparent}
+.seg button{display:flex;flex-direction:column;align-items:center;justify-content:center;border:0;background:var(--surface);padding:7px 2px 6px;font-weight:800;font-size:13.5px;cursor:pointer;font-family:var(--f-display);line-height:1.2;min-width:0;-webkit-tap-highlight-color:transparent}
 .seg button i{display:block;font-style:normal;font-size:18px;line-height:1.2}
-.seg button em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--muted);display:block;height:14px}
+.seg button em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--muted);display:block;height:14px}.seg button em:empty{display:none}
 .seg button.on{background:var(--ink);color:var(--bg)}.seg button.on em{color:var(--bg);opacity:.8}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
 section{margin-bottom:22px}
