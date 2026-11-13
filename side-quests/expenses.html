@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=2"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0F3B66">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<title>החזר הוצאות עבודה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* דשבורד החזר הוצאות עבודה (Work Quest, 13.11.2026). נתונים: sq_docs (app=sidequests, collection=expenses).
+   רק סכומים, מטבע ומצב הגשה. הקבלות עצמן נשארות בצ׳אט ונשלחות למייל העבודה, לא כאן. */
+:root{
+  --bg:#F2F5F9; --surface:#FFFFFF; --sunk:#E6ECF3; --ink:#122033; --muted:#566579; --line:#D3DCE7;
+  --hero:#0F3B66; --hero2:#2E6FB0; --art:url(img/art-expenses.svg); --mark:#F4C152; --hero-ink:#F2F7FC; --hero-muted:#BBD0E6; --accent:#F4C152; --accent-ink:#3A2700;
+  --good:#23855A; --good-soft:#DDF1E6; --warn:#A8600E; --warn-soft:#FBEAD3; --bad:#B83A2E; --bad-soft:#F8E0DD; --link:#1F5FA8; --hi:#2E6FB0; --hi-soft:#E2ECF8;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F151C; --surface:#17202A; --sunk:#202B37; --ink:#EAF1F8; --muted:#9FB0C2; --line:#2A3746;
+  --hero:#0B2A4A; --hero2:#1E4F80; --hero-ink:#EEF5FC; --hero-muted:#A9C2DA; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#8DBBF0; --hi:#8DBBF0; --hi-soft:#1B2E44; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F151C; --surface:#17202A; --sunk:#202B37; --ink:#EAF1F8; --muted:#9FB0C2; --line:#2A3746;
+  --hero:#0B2A4A; --hero2:#1E4F80; --hero-ink:#EEF5FC; --hero-muted:#A9C2DA; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#8DBBF0; --hi:#8DBBF0; --hi-soft:#1B2E44; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.chatbtn{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.09);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:17px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.cflink{display:inline-block;margin-top:8px;color:var(--hero-muted);font-size:13px;font-weight:700}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+/* one frame split by lines (no frame in frame) */
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:7px 2px 6px;font-weight:800;font-size:13.5px;cursor:pointer;font-family:var(--f-display);line-height:1.2;min-width:0;-webkit-tap-highlight-color:transparent}
+.seg button i{display:block;font-style:normal;font-size:18px;line-height:1.2}
+.seg button em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--muted);display:block;height:14px}
+.seg button.on{background:var(--ink);color:var(--bg)}.seg button.on em{color:var(--bg);opacity:.8}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:18px}.sh small{color:var(--muted);font-size:13px;white-space:nowrap}
+.muted{color:var(--muted)}.empty{color:var(--muted);text-align:center;padding:22px 12px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.list.red{border-color:var(--bad)}
+.row{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:none;border:0;padding:11px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.it+.it{border-top:1px solid var(--line)}
+.row .b{flex:1;min-width:0}
+.row .t{font-family:var(--f-display);font-weight:700;font-size:16px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .s{color:var(--muted);font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .v{flex:none;text-align:left;font-family:var(--f-display);font-weight:800;font-size:15.5px;direction:ltr;white-space:nowrap}
+.row .v small{display:block;text-align:left;direction:rtl}
+.it.off .row{opacity:.5}
+.pill{display:inline-block;font-family:var(--f-body);font-size:11.5px;font-weight:800;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.p-good{background:var(--good-soft);color:var(--good)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-hi{background:var(--hi-soft);color:var(--hi)}.p-mute{background:var(--sunk);color:var(--muted)}
+.gh{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--sunk)}
+.gh .b{flex:1;min-width:0}
+.gh .t{font-family:var(--f-display);font-weight:800;font-size:15.5px;display:block}
+.gh .s{font-size:12.5px;color:var(--muted);display:block}
+.gh a{font-size:13px;white-space:nowrap}
+.open{padding:0 14px 12px;animation:grow .22s ease-out}
+@keyframes grow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.chips{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.chips button{border:0;background:var(--surface);padding:8px 2px;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.chips button.on{background:var(--hi);color:#fff}
+.chips.c3{grid-template-columns:repeat(3,1fr)}
+.kv{display:grid;grid-template-columns:auto 1fr;margin-top:8px;font-size:14px}
+.kv div{padding:6px 2px;border-top:1px solid var(--line)}
+.kv .k{color:var(--muted);font-weight:700;padding-inline-end:12px;white-space:nowrap}
+.kv .f{direction:rtl;word-break:break-word}
+.bulk{display:flex;align-items:center;gap:8px;padding:8px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bulk .chips{flex:1}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw;align-items:center;gap:12px}
+.toast.on{display:flex}.toast button{border:0;background:none;color:var(--accent);font-weight:800;cursor:pointer;padding:0}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+details.more{margin-top:4px}details.more summary{cursor:pointer;font-weight:800;color:var(--link);font-size:14px;padding:4px 2px}
+details.more>div{padding:6px 2px;font-size:14px;color:var(--muted);line-height:1.55}
+@media (max-width:420px){.kpi b{font-size:15px}.hero h1{font-size:22px}.seg button{font-size:12.5px}.chips button{font-size:12px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=6">
+<script src="dash-sub.js?v=2" defer></script>
+<script src="fold.js?v=1" defer></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast"><span id="tmsg"></span><button id="tundo" hidden>בטל</button></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const arr=a=>Array.isArray(a)?a:[];
+// 4 categories (Oren 13.11.2026)
+const CATS=[["abroad","✈️","חו״ל"],["project","📁","פרויקטלי"],["meals","🍽️","אש״ל"],["car","🚗","רכב ותחבורה"]];
+// receipt flow: in chat → sent to the work mailbox → submitted on Elbit's network → money back. personal = not Elbit's.
+const ST={open:["לא נשלח","p-bad"],sent:["במייל","p-warn"],submitted:["הוגש","p-hi"],received:["התקבל","p-good"],personal:["פרטי","p-mute"]};
+const ORDER=["open","sent","submitted","received","personal"];
+const SYM={EUR:"€",ILS:"₪",USD:"$"};
+const CF_URL="https://household-cashflow-control.vercel.app/trips?t=work";
+const money=(v,c)=>(SYM[c]||(c?c+" ":""))+(+v||0).toLocaleString("en-US",{minimumFractionDigits:(+v%1)?2:0,maximumFractionDigits:2});
+const sums=list=>{const m={};list.forEach(x=>{const c=x.cur||"ILS";m[c]=(m[c]||0)+(+x.amt||0);});return m;};
+const sumTxt=m=>{const k=Object.keys(m).filter(c=>m[c]);return k.length?k.sort((a,b)=>["EUR","USD","ILS"].indexOf(a)-["EUR","USD","ILS"].indexOf(b)).map(c=>money(Math.round(m[c]*100)/100,c)).join(" + "):"0";};
+const fdate=d=>{if(!d)return "";const [y,m,dd]=String(d).slice(0,10).split("-");return +dd+"."+(+m)+(y!==String(new Date().getFullYear())?"."+y.slice(2):"");};
+const fileOf=x=>x.file||((x.title||"")+" "+(+x.amt||0)+" "+(x.cur||"ILS"));
+let db=null,docs=[],meta={},loaded=false,openId=null;
+const UI="sq_ex_ui";let ui={tab:"abroad"};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
+function save(){try{localStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
+const exps=()=>docs.filter(x=>(x.kind||"exp")==="exp"&&x.title&&!x._deleted&&x.st!=="dropped");
+const trips=()=>docs.filter(x=>x.kind==="trip"&&!x._deleted);
+const toSubmit=x=>x.st==="open"||x.st==="sent"||!x.st;
+const missing=x=>x.rcpt==="missing"&&x.st!=="personal"&&x.st!=="received"&&x.st!=="submitted";
+function hero(){const E=exps(),due=E.filter(toSubmit),wait=E.filter(x=>x.st==="submitted"),miss=E.filter(missing);
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
+  <h1>🧾 החזר הוצאות עבודה</h1>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url))}" target="_blank" rel="noopener" ${safe(meta.chat_url)?"":"hidden"}><span>💬</span><span>צ׳אט</span></a>
+  <div class="kpis"><div class="kpi"><b>${esc(sumTxt(sums(due)))}</b><span>להגיש (${due.length})</span></div><div class="kpi"><b>${esc(sumTxt(sums(wait)))}</b><span>הוגש, מחכה לכסף</span></div><div class="kpi"><b>${miss.length}</b><span>חיובים בלי קבלה</span></div></div>
+  <a class="cflink" href="${CF_URL}" target="_blank" rel="noopener">📊 נסיעות עבודה בתזרים ←</a>`;}
+function bar(){const E=exps();
+  return `<div class="seg">${CATS.map(([k,i,l])=>{const n=E.filter(x=>(x.cat||"abroad")===k&&(toSubmit(x)||missing(x))).length;
+    return `<button data-tab="${k}" class="${ui.tab===k?"on":""}"><i>${i}</i>${l}<em>${n?n+" פתוחים":""}</em></button>`;}).join("")}</div>`;}
+function item(x){const st=ST[x.st||"open"]||ST.open,on=openId===x.id;
+  const sub=[fdate(x.d),x.rcpt==="missing"?"⚠️ אין קבלה":"",x.src==="card"?"מהאשראי":""].filter(Boolean).join(" · ");
+  let o=`<div class="it ${x.st==="personal"?"off":""}" data-id="${esc(x.id)}"><button class="row" data-open="${esc(x.id)}"><span class="b"><span class="t">${esc(x.title)}</span><span class="s">${esc(sub)}</span></span><span class="v">${esc(money(x.amt,x.cur))}<small><span class="pill ${x.rcpt==="missing"&&st[0]==="לא נשלח"?"p-bad":st[1]}">${x.rcpt==="missing"&&(x.st||"open")==="open"?"חסרה קבלה":st[0]}</span></small></span></button>`;
+  if(on){const c=x.card||{};
+    o+=`<div class="open"><div class="chips">${ORDER.map(k=>`<button data-st="${k}" data-id="${esc(x.id)}" class="${(x.st||"open")===k?"on":""}">${ST[k][0]}</button>`).join("")}</div>
+    <div class="kv">${[["קובץ",x.rcpt==="missing"?"":fileOf(x)],["באשראי",c.m?[c.m,c.ils?"₪"+(+c.ils).toLocaleString("he-IL"):"",c.d?fdate(c.d):"",c.last4?"כרטיס "+c.last4:""].filter(Boolean).join(" · "):""],["הערה",x.note]].filter(r=>r[1]).map(([k,v])=>`<div class="k">${esc(k)}</div><div class="f">${esc(v)}</div>`).join("")}</div></div>`;}
+  return o+"</div>";}
+function group(title,sub,list,trip){if(!list.length)return "";const due=list.filter(toSubmit);
+  const open=trip&&trip.topic_id?`<a href="./#t=${encodeURIComponent(trip.topic_id)}" target="_top">משימה ›</a>`:"";
+  return `<div class="list" style="margin-bottom:12px"><div class="gh"><span class="b"><span class="t">${esc(title)}</span><span class="s">${esc([sub,due.length?"להגיש "+sumTxt(sums(due)):"✓ הכול הוגש"].filter(Boolean).join(" · "))}</span></span>${open}</div>
+    ${list.map(item).join("")}
+    ${due.length>1?`<div class="bulk"><span>הכול:</span><div class="chips c3">${["sent","submitted","received"].map(k=>`<button data-bulk="${k}" data-ids="${esc(due.map(x=>x.id).join(","))}">${ST[k][0]}</button>`).join("")}</div></div>`:""}</div>`;}
+function tab(){const cat=ui.tab,E=exps().filter(x=>(x.cat||"abroad")===cat).sort((a,b)=>String(b.d||"").localeCompare(String(a.d||"")));
+  if(!E.length)return `<div class="empty">אין עדיין הוצאות כאן.<br>שולחים קבלות לצ׳אט והן נכנסות לכאן.</div>`;
+  const miss=E.filter(missing);let o="";
+  if(miss.length)o+=`<section><div class="sh"><h2>⚠️ חויבת ואין קבלה</h2><small>${miss.length}</small></div><div class="list red">${miss.map(item).join("")}</div></section>`;
+  const rest=E.filter(x=>!missing(x)),T=trips().filter(t=>(t.cat||"abroad")===cat).sort((a,b)=>String(b.from||"").localeCompare(String(a.from||"")));
+  let g="";const used=new Set();
+  T.forEach(t=>{const L=rest.filter(x=>x.trip===t.id);L.forEach(x=>used.add(x.id));g+=group((t.icon||"")+" "+(t.title||t.id),[t.from?fdate(t.from)+(t.to?"–"+fdate(t.to):""):""].filter(Boolean).join(""),L,t);});
+  const left=rest.filter(x=>!used.has(x.id)),bym={};left.forEach(x=>{const k=String(x.d||"").slice(0,7)||"—";(bym[k]=bym[k]||[]).push(x);});
+  Object.keys(bym).sort().reverse().forEach(k=>{const [y,m]=k.split("-");g+=group(m?["","ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"][+m]+" "+y:"בלי תאריך","",bym[k]);});
+  return o+(g?`<section><div class="sh"><h2>הוצאות</h2><small>${rest.length}</small></div>${g}</section>`:"");}
+function render(){if(!loaded)return;$("hero").innerHTML=hero();$("bar").innerHTML=bar();$("app").innerHTML=tab();
+  $("foot").innerHTML=`${meta.scan_at?"סריקת אשראי אחרונה: "+esc(fdate(meta.scan_at))+"<br>":""}הוצאות ${esc(window.EX_BUILD)}`;}
+let tt=null,undoFn=null;
+function toast(msg,undo){$("tmsg").textContent=msg;undoFn=undo||null;$("tundo").hidden=!undo;$("toast").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("toast").classList.remove("on"),5000);}
+$("tundo").onclick=()=>{const f=undoFn;$("toast").classList.remove("on");if(f)f();};
+// the trip's Side Quests task follows its expenses (same idea as the cashflow app's sync)
+async function syncTopic(tripId){const t=trips().find(x=>x.id===tripId);if(!t||!t.topic_id||!db)return;
+  const L=exps().filter(x=>x.trip===tripId&&x.st!=="personal");if(!L.length)return;
+  const due=L.filter(x=>toSubmit(x)||missing(x)),wait=L.filter(x=>x.st==="submitted"),now=new Date().toISOString();
+  const status=due.length?"waiting_me":wait.length?"waiting_other":"done";
+  const stand=due.length?`להגיש ${sumTxt(sums(due))} (${due.length})`:wait.length?`הוגש, מחכה להחזר ${sumTxt(sums(wait))}`:"ההחזר התקבל";
+  try{await db.collection("topics").doc(t.topic_id).update({status,stand,waiting_for:due.length?"אתה: להגיש באלביט":wait.length?"אלביט: העברת ההחזר":"",...(status==="done"?{done_at:now}:{}),updated_at:now});}catch(e){}}
+async function setSt(ids,st){if(!db)return;const now=new Date().toISOString(),prev=ids.map(id=>[id,(docs.find(x=>x.id===id)||{}).st||"open"]);
+  const tripIds=new Set(ids.map(id=>(docs.find(x=>x.id===id)||{}).trip).filter(Boolean));
+  try{await Promise.all(ids.map(id=>db.collection("expenses").doc(id).update({st,st_at:now})));
+    tripIds.forEach(syncTopic);
+    toast(ids.length>1?`${ids.length} סומנו: ${ST[st][0]}`:`סומן: ${ST[st][0]}`,async()=>{try{await Promise.all(prev.map(([id,s])=>db.collection("expenses").doc(id).update({st:s})));tripIds.forEach(syncTopic);toast("בוטל");}catch(e){toast("נכשל");}});
+  }catch(e){toast("השמירה נכשלה");}}
+document.addEventListener("click",e=>{
+  const tb=e.target.closest("[data-tab]");if(tb){ui.tab=tb.dataset.tab;openId=null;save();render();return;}
+  const sb=e.target.closest("[data-st]");if(sb){const id=sb.dataset.id,x=docs.find(d=>d.id===id);if(x&&(x.st||"open")!==sb.dataset.st){x.st=sb.dataset.st;render();setSt([id],sb.dataset.st);}return;}
+  const bb=e.target.closest("[data-bulk]");if(bb){const ids=bb.dataset.ids.split(",").filter(Boolean);ids.forEach(id=>{const x=docs.find(d=>d.id===id);if(x)x.st=bb.dataset.bulk;});render();setSt(ids,bb.dataset.bulk);return;}
+  const ob=e.target.closest("[data-open]");if(ob){const id=ob.dataset.open,top=ob.getBoundingClientRect().top;openId=openId===id?null:id;render();
+    const nb=document.querySelector(`[data-open="${CSS.escape(id)}"]`);if(nb){const d=nb.getBoundingClientRect().top-top;if(d)window.scrollBy(0,d);}}
+});
+window.claude.use("db").then(d=>{if(!d)return;db=d;
+  db.collection("expenses").onSnapshot(s=>{docs=s.docs.map(x=>({id:x.id,...x.data()}));meta=docs.find(x=>x.id==="_meta")||{};loaded=true;render();},()=>{});});
+})();
+</script>
+</body>
+</html>
