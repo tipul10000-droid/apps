@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=2"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,7 +41,7 @@ button{font:inherit;color:inherit}
 .chatbtn{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
 .kpi{background:rgba(255,255,255,.09);border-radius:14px;padding:9px 11px;min-width:0}
-.kpi b{display:block;font-family:var(--f-display);font-size:17px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi b{display:block;font-family:var(--f-display);font-size:17px;line-height:1.25;overflow-wrap:anywhere}
 .kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
 .cflink{display:inline-block;margin-top:8px;color:var(--hero-muted);font-size:13px;font-weight:700}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
@@ -90,6 +90,42 @@ section{margin-bottom:22px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 details.more{margin-top:4px}details.more summary{cursor:pointer;font-weight:800;color:var(--link);font-size:14px;padding:4px 2px}
 details.more>div{padding:6px 2px;font-size:14px;color:var(--muted);line-height:1.55}
+
+.hero .kpis .kpi b{white-space:normal;overflow:visible;font-size:14.5px}
+/* 1.1: Elbit trips layer (handoff from the cashflow app, 13.11.2026) */
+.trip{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.trip.red{border-color:var(--bad)}
+.th{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:var(--sunk);border:0;padding:10px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.th .b{flex:1;min-width:0}.th .t{font-family:var(--f-display);font-weight:800;font-size:16px;display:block}
+.th .s{font-size:12.5px;color:var(--muted);display:block}
+.tb{padding:10px 14px 12px;animation:grow .22s ease-out}
+.tb .stand{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.lab{font-size:12.5px;font-weight:800;color:var(--muted);margin:10px 0 4px}
+.dec{display:grid;grid-template-columns:1fr 1fr;flex:none;width:112px;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.dec button{border:0;background:var(--surface);padding:6px 0;font-weight:800;font-size:12.5px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dec button.on{background:var(--hi);color:#fff}
+.dec.c3{grid-template-columns:repeat(3,1fr);width:100%;margin-top:6px}
+.irow{display:flex;align-items:center;gap:10px;padding:8px 0}
+.irow+.irow{border-top:1px solid var(--line)}
+.irow .b{flex:1;min-width:0}.irow .t{font-weight:700;font-size:14.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.irow .s{font-size:12px;color:var(--muted);display:block;direction:rtl}
+.irow .v{font-family:var(--f-display);font-weight:800;font-size:14px;white-space:nowrap;direction:ltr;text-align:left}
+.irow .v small{display:block;font-size:11px;color:var(--muted);font-weight:700}
+details.fd{border-top:1px solid var(--line);margin-top:6px}
+details.fd>summary{cursor:pointer;font-weight:800;font-size:13.5px;color:var(--link);padding:8px 0;list-style:none}
+details.fd>summary::-webkit-details-marker{display:none}
+details.fd>summary::before{content:"▸ ";color:var(--muted)}details.fd[open]>summary::before{content:"▾ "}
+.need .row .v{font-size:14px}
+.car{padding:10px 14px}.car+.car{border-top:1px solid var(--line)}
+.car .t{font-weight:800;font-size:15px}.car .s{font-size:12.5px;color:var(--muted)}
+.hold{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;margin-top:6px}
+.hold ol{margin:6px 0 0;padding-inline-start:18px;font-weight:600;color:var(--ink)}
+.go{display:block;width:100%;border:0;border-radius:12px;background:var(--hi);color:#fff;font-family:var(--f-display);font-weight:800;font-size:15.5px;padding:11px;cursor:pointer;margin-top:10px}
+.prow{display:flex;align-items:center;gap:10px;padding:8px 14px}.prow+.prow{border-top:1px solid var(--line)}
+.prow .b{flex:1;min-width:0;font-weight:700;font-size:14px}
+.prow .dec{width:170px}
+.dep{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.dep button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 10px;font-weight:800;font-size:13px;cursor:pointer}
 @media (max-width:420px){.kpi b{font-size:15px}.hero h1{font-size:22px}.seg button{font-size:12.5px}.chips button{font-size:12px}}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=6">
@@ -130,15 +166,20 @@ const exps=()=>docs.filter(x=>(x.kind||"exp")==="exp"&&x.title&&!x._deleted&&x.s
 const trips=()=>docs.filter(x=>x.kind==="trip"&&!x._deleted);
 const toSubmit=x=>x.st==="open"||x.st==="sent"||!x.st;
 const missing=x=>x.rcpt==="missing"&&x.st!=="personal"&&x.st!=="received"&&x.st!=="submitted";
-function hero(){const E=exps(),due=E.filter(toSubmit),wait=E.filter(x=>x.st==="submitted"),miss=E.filter(missing);
+function kpis(){const R=tripRows();if(!R.length){const E=exps(),due=E.filter(toSubmit),wait=E.filter(x=>x.st==="submitted"),miss=E.filter(missing);
+    return [[sumTxt(sums(due)),"להגיש ("+due.length+")"],[sumTxt(sums(wait)),"הוגש, מחכה לכסף"],[miss.length,"חיובים בלי קבלה"]];}
+  const val=st=>{const L=R.filter(t=>tState(t)===st&&(!isPast(t)||t.confirmed_at));const m={};L.forEach(t=>{const I=itemsOf(t);if(I.length)I.filter(i=>fin(i)==="work").forEach(i=>{const c=i.ils?"ILS":i.cur;m[c]=(m[c]||0)+(+(i.ils||i.amt)||0);});else m.ILS=(m.ILS||0)+(+t.money_potential||0);});return [sumTxt(m),L.length];};
+  const a=val("open"),b=val("submitted");return [[a[0],"להגיש ("+a[1]+")"],[b[0],"הוגש, מחכה ("+b[1]+")"],[cars().filter(carOpen).length,"🚨 רכב פתוחים"]];}
+function hero(){const K=kpis();
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
-  <h1>🧾 החזר הוצאות עבודה</h1>
+  <h1>🧾 החזר הוצאות אלביט</h1>
   <a class="chatbtn" href="${esc(safe(meta.chat_url))}" target="_blank" rel="noopener" ${safe(meta.chat_url)?"":"hidden"}><span>💬</span><span>צ׳אט</span></a>
-  <div class="kpis"><div class="kpi"><b>${esc(sumTxt(sums(due)))}</b><span>להגיש (${due.length})</span></div><div class="kpi"><b>${esc(sumTxt(sums(wait)))}</b><span>הוגש, מחכה לכסף</span></div><div class="kpi"><b>${miss.length}</b><span>חיובים בלי קבלה</span></div></div>
+  <div class="kpis">${K.map(([v,l])=>`<div class="kpi"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join("")}</div>
   <a class="cflink" href="${CF_URL}" target="_blank" rel="noopener">📊 נסיעות עבודה בתזרים ←</a>`;}
 function bar(){const E=exps();
   return `<div class="seg">${CATS.map(([k,i,l])=>{const n=E.filter(x=>(x.cat||"abroad")===k&&(toSubmit(x)||missing(x))).length;
-    return `<button data-tab="${k}" class="${ui.tab===k?"on":""}"><i>${i}</i>${l}<em>${n?n+" פתוחים":""}</em></button>`;}).join("")}</div>`;}
+    const m=k==="abroad"&&tripRows().length?tripRows().reduce((a,t)=>a+tripWork(t).ask,0)+cars().filter(c=>!c.state).length+tripRows().filter(t=>tState(t)==="open"&&!isPast(t)).length:n;
+    return `<button data-tab="${k}" class="${ui.tab===k?"on":""}"><i>${i}</i>${l}<em>${m?m+" פתוחים":""}</em></button>`;}).join("")}</div>`;}
 function item(x){const st=ST[x.st||"open"]||ST.open,on=openId===x.id;
   const sub=[fdate(x.d),x.rcpt==="missing"?"⚠️ אין קבלה":"",x.src==="card"?"מהאשראי":""].filter(Boolean).join(" · ");
   let o=`<div class="it ${x.st==="personal"?"off":""}" data-id="${esc(x.id)}"><button class="row" data-open="${esc(x.id)}"><span class="b"><span class="t">${esc(x.title)}</span><span class="s">${esc(sub)}</span></span><span class="v">${esc(money(x.amt,x.cur))}<small><span class="pill ${x.rcpt==="missing"&&st[0]==="לא נשלח"?"p-bad":st[1]}">${x.rcpt==="missing"&&(x.st||"open")==="open"?"חסרה קבלה":st[0]}</span></small></span></button>`;
@@ -151,8 +192,8 @@ function group(title,sub,list,trip){if(!list.length)return "";const due=list.fil
   return `<div class="list" style="margin-bottom:12px"><div class="gh"><span class="b"><span class="t">${esc(title)}</span><span class="s">${esc([sub,due.length?"להגיש "+sumTxt(sums(due)):"✓ הכול הוגש"].filter(Boolean).join(" · "))}</span></span>${open}</div>
     ${list.map(item).join("")}
     ${due.length>1?`<div class="bulk"><span>הכול:</span><div class="chips c3">${["sent","submitted","received"].map(k=>`<button data-bulk="${k}" data-ids="${esc(due.map(x=>x.id).join(","))}">${ST[k][0]}</button>`).join("")}</div></div>`:""}</div>`;}
-function tab(){const cat=ui.tab,E=exps().filter(x=>(x.cat||"abroad")===cat).sort((a,b)=>String(b.d||"").localeCompare(String(a.d||"")));
-  if(!E.length)return `<div class="empty">אין עדיין הוצאות כאן.<br>שולחים קבלות לצ׳אט והן נכנסות לכאן.</div>`;
+function tab(){const cat=ui.tab,EL=cat==="abroad"?elbitView():"",elbitTrips=new Set(trips().filter(t=>/^elbit-trip-/.test(t.topic_id||"")&&tripRows().some(r=>r.id===t.topic_id)).map(t=>t.id)),E=exps().filter(x=>(x.cat||"abroad")===cat&&!(EL&&elbitTrips.has(x.trip))).sort((a,b)=>String(b.d||"").localeCompare(String(a.d||"")));
+  if(!E.length)return EL||`<div class="empty">אין עדיין הוצאות כאן.<br>שולחים קבלות לצ׳אט והן נכנסות לכאן.</div>`;
   const miss=E.filter(missing);let o="";
   if(miss.length)o+=`<section><div class="sh"><h2>⚠️ חויבת ואין קבלה</h2><small>${miss.length}</small></div><div class="list red">${miss.map(item).join("")}</div></section>`;
   const rest=E.filter(x=>!missing(x)),T=trips().filter(t=>(t.cat||"abroad")===cat).sort((a,b)=>String(b.from||"").localeCompare(String(a.from||"")));
@@ -160,14 +201,118 @@ function tab(){const cat=ui.tab,E=exps().filter(x=>(x.cat||"abroad")===cat).sort
   T.forEach(t=>{const L=rest.filter(x=>x.trip===t.id);L.forEach(x=>used.add(x.id));g+=group((t.icon||"")+" "+(t.title||t.id),[t.from?fdate(t.from)+(t.to?"–"+fdate(t.to):""):""].filter(Boolean).join(""),L,t);});
   const left=rest.filter(x=>!used.has(x.id)),bym={};left.forEach(x=>{const k=String(x.d||"").slice(0,7)||"—";(bym[k]=bym[k]||[]).push(x);});
   Object.keys(bym).sort().reverse().forEach(k=>{const [y,m]=k.split("-");g+=group(m?["","ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"][+m]+" "+y:"בלי תאריך","",bym[k]);});
-  return o+(g?`<section><div class="sh"><h2>הוצאות</h2><small>${rest.length}</small></div>${g}</section>`:"");}
+  return EL+o+(g?`<section><div class="sh"><h2>הוצאות</h2><small>${rest.length}</small></div>${g}</section>`:"");}
+// ===== 1.1: Elbit work trips (moved here from the cashflow app, 13.11.2026). Contract: sq_docs topics elbit-* =====
+// trip rows: elbit-trip-<start>, steps submit/paid. car verdicts: elbit-car-charges-scan.verdicts {tx:{state,at}}.
+// manual work/private: <trip>.decisions {tx:{decision,at}}. cashflow writes <trip>.expenses (items) when it has them.
+let topics=[];
+const TS={open:["לא הוגש","p-bad"],submitted:["הוגש","p-hi"],received:["התקבל","p-good"]};
+const VS={ok:"תקין",check:"בבירור",bad:"לא תקין"};
+const nowIso=()=>new Date().toISOString();
+const tripRows=()=>topics.filter(t=>/^elbit-trip-\d{4}-\d{2}-\d{2}$/.test(t.id)&&!t._deleted&&t.status!=="archived").sort((a,b)=>b.id.localeCompare(a.id));
+const scanRow=()=>topics.find(t=>t.id==="elbit-car-charges-scan");
+const stp=(t,id)=>arr(t.steps).find(s=>s.id===id);
+function tState(t){const p=stp(t,"paid"),s=stp(t,"submit");if((p&&p.done)||(t.status==="done"&&!(s&&!s.done)))return "received";if((s&&s.done)||t.status==="waiting_other")return "submitted";return "open";}
+const tStart=t=>(t.expenses&&t.expenses.start)||t.id.slice(11);
+const tName=t=>String(t.title||t.id).replace(/^אלביט:\s*/,"").replace(/^הוצאות נסיעה\s*/,"").replace(/\s*\(₪[\d,]+\)\s*$/,"").replace(/\s*\+.*$/,"");
+const nameH=t=>esc(tName(t)).replace(/(\d[\d.]*[–-]\d[\d.]*)/g,'<bdi dir="ltr">$1</bdi>');
+const isPast=t=>tStart(t)<"2026-10-01"; // Oren 13.11.2026: everything up to 7-9.9 was submitted and paid
+function itemsOf(t){const dec=t.decisions||{};let L;
+  if(t.expenses&&arr(t.expenses.items).length)L=arr(t.expenses.items).map(i=>({tx:i.tx,d:i.date,label:i.label,amt:i.amount,cur:i.currency||"EUR",ils:i.amount_ils,auto:i.decision,pending:i.pending}));
+  else L=exps().filter(x=>{const tr=trips().find(y=>y.id===x.trip);return tr&&tr.topic_id===t.id;}).map(x=>({tx:(x.card&&x.card.tx)||x.id,d:x.d,label:x.title,amt:x.amt,cur:x.cur||"ILS",ils:x.card&&x.card.ils,
+    auto:x.st==="personal"?"private":/עבודה או פרטי|לשאול/.test(x.note||"")?"ask":"work",pending:x.card&&x.card.pending,eid:x.id,rcpt:x.rcpt,note:x.note}));
+  return L.map(i=>({...i,dec:dec[i.tx]&&dec[i.tx].decision})).sort((a,b)=>String(a.d||"").localeCompare(String(b.d||"")));}
+const fin=i=>i.dec||(i.auto==="ask"||i.auto==="special"?null:i.auto);
+const ilsSum=L=>sumTxt(sums(L.map(i=>i.ils?{cur:"ILS",amt:+i.ils}:{cur:i.cur,amt:+i.amt})));
+function tripWork(t){const L=itemsOf(t);if(L.length)return {txt:ilsSum(L.filter(i=>fin(i)==="work")),ask:L.filter(i=>!fin(i)&&i.auto!=="special").length};
+  return {txt:t.money_potential?money(t.money_potential,"ILS"):"",ask:0};}
+// car charges: scan steps + trip steps that carry a tx (Maggiore, Hertz)
+function cars(){const out=[],seen=new Set(),V=(scanRow()||{}).verdicts||{};
+  const add=(s,row)=>{if(!s.tx||seen.has(s.tx))return;seen.add(s.tx);const txt=String(s.text||"");
+    const m=txt.match(/[₪€]\s?[\d,.]+|[\d,.]+\s?[₪€]/),v=V[s.tx]&&V[s.tx].state;
+    out.push({tx:s.tx,row:row.id,step:s.id,label:txt.split(/[(:]/)[0].replace(/[₪€]\s?[\d,.]+|[\d,.]+\s?[₪€]/,"").trim(),amt:m?m[0]:"",info:(txt.match(/\(([^)]*)\)/)||[])[1]||"",
+      hold:/hertz/i.test(txt),late:/אחרי|מאוחר/.test(txt),state:v||(s.done?"ok":null)});};
+  const sc=scanRow();if(sc)arr(sc.steps).forEach(s=>add(s,sc));
+  tripRows().forEach(t=>arr(t.steps).forEach(s=>add(s,t)));
+  return out;}
+const carOpen=c=>!c.state||c.state==="check"||c.state==="bad"||c.state==="submitted";
+function irow(i,t){const sub=[fdate(i.d),i.pending?"ממתין":"",i.rcpt==="missing"&&fin(i)==="work"?"⚠️ אין קבלה":""].filter(Boolean).join(" · ");
+  const f=fin(i);const v=i.ils?`₪${(+i.ils).toLocaleString("en-US",{maximumFractionDigits:2})}<small>${esc(money(i.amt,i.cur))}</small>`:esc(money(i.amt,i.cur));
+  return `<div class="irow"><span class="b"><span class="t">${esc(i.label)}</span><span class="s">${esc(sub)}</span></span><span class="v">${v}</span>
+  <span class="dec"><button data-dec="work" data-t="${esc(t.id)}" data-tx="${esc(i.tx)}" class="${f==="work"?"on":""}">עבודה</button><button data-dec="private" data-t="${esc(t.id)}" data-tx="${esc(i.tx)}" class="${f==="private"?"on":""}">פרטי</button></span></div>`;}
+const fold=(title,L,t,open)=>L.length?`<details class="fd"${open?" open":""}><summary>${esc(title)} (${L.length})</summary>${L.map(i=>irow(i,t)).join("")}</details>`:"";
+function stateChips(t,cur){return `<div class="dec c3">${["open","submitted","received"].map(k=>`<button data-ts="${k}" data-t="${esc(t.id)}" class="${cur===k?"on":""}">${TS[k][0]}</button>`).join("")}</div>`;}
+function tripCard(t){const st=tState(t),L=itemsOf(t),w=tripWork(t),on=ui.trip===t.id;
+  const ask=L.filter(i=>!i.dec&&i.auto==="ask"),special=L.filter(i=>!i.dec&&i.auto==="special"),mine=L.filter(i=>i.dec),aw=L.filter(i=>!i.dec&&i.auto==="work"),ap=L.filter(i=>!i.dec&&i.auto==="private");
+  const extra=arr(t.steps).filter(s=>!s.tx&&!s.superseded&&!["submit","paid","classify"].includes(s.id));
+  const sub=[w.txt?"להגשה "+w.txt:"",w.ask?w.ask+" לסיווג":""].filter(Boolean).join(" · ");
+  let o=`<div class="trip${special.length?" red":""}" id="tr-${esc(t.id)}"><button class="th" data-trip="${esc(t.id)}"><span class="b"><span class="t">${nameH(t)}</span><span class="s">${esc(sub)}</span></span><span class="pill ${TS[st][1]}">${TS[st][0]}</span></button>`;
+  if(on){o+=`<div class="tb">${t.stand&&!L.length?`<p class="stand">${esc(t.stand)}</p>`:""}${stateChips(t,st)}`;
+    if(st==="submitted")o+=depBox(t);
+    extra.forEach(s=>{o+=`<div class="irow"><span class="b"><span class="t" style="white-space:normal">${esc(s.text)}</span></span><span class="dec" style="width:76px;grid-template-columns:1fr"><button data-step="${esc(s.id)}" data-t="${esc(t.id)}" class="${s.done?"on":""}">${s.done?"✓ טופל":"טופל"}</button></span></div>`;});
+    if(special.length)o+=`<div class="lab" style="color:var(--bad)">🚨 חריג</div>`+special.map(i=>irow(i,t)).join("");
+    if(ask.length)o+=`<div class="lab">❓ לסיווג</div>`+ask.map(i=>irow(i,t)).join("");
+    o+=fold("סיווגת · לעריכה",mine,t)+fold("להגשה · לבדיקה ושינוי",aw,t)+fold("פרטי · לבדיקה ושינוי",ap,t);
+    if(t.topic_id||1)o+=`<div style="margin-top:8px;font-size:13px"><a href="./#t=${encodeURIComponent(t.id)}" target="_top">משימה ›</a></div>`;
+    o+="</div>";}
+  return o+"</div>";}
+function depBox(t){const D=arr(meta.deposits);if(!D.length)return "";const used=new Set(topics.filter(x=>x.deposit&&x.deposit.d).map(x=>x.deposit.d+"|"+x.deposit.ils));
+  const sd=String((stp(t,"submit")||{}).done_at||"").slice(0,10);const C=D.filter(d=>!used.has(d.d+"|"+d.ils)&&(!sd||d.d>=sd)).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,3);
+  if(!C.length)return "";return `<div class="lab">💰 הפקדה מאלביט שמתאימה?</div><div class="dep">${C.map(d=>`<button data-dep="${esc(d.d)}" data-ils="${esc(d.ils)}" data-t="${esc(t.id)}">${esc(fdate(d.d))} · ₪${(+d.ils).toLocaleString("en-US")}</button>`).join("")}</div>`;}
+function carRow(c){const st=c.state,bad=st==="bad"||st==="submitted"||st==="received";
+  let o=`<div class="car"><div class="t">🚗 ${esc(c.label)} <span style="direction:ltr;display:inline-block">${esc(c.amt)}</span> ${st==="check"?'<span class="pill p-warn">בבירור</span>':""}</div><div class="s">${esc(c.info)}</div>`;
+  if(c.hold)o+=`<div class="hold">תפיסת מסגרת, לא חיוב. הכסף לא יצא.<details><summary style="cursor:pointer">איך משחררים</summary><ol><li>באפליקציית כאל, בעסקאות בהמתנה: לוודא שזה עדיין ממתין.</li><li>מספר ההזמנה של Hertz במייל מאופקים מ-18.10.</li><li>לבקש מ-Hertz איטליה לשחרר את ה-pre-authorization.</li><li>אין תשובה תוך כמה ימים: להתקשר לכאל ולבקש לבטל.</li><li>הפך לחיוב סופי: לסמן "לא תקין" ולהגיש לאלביט.</li></ol></details></div>`;
+  o+=`<div class="dec c3">${["ok","check","bad"].map(k=>`<button data-cv="${k}" data-tx="${esc(c.tx)}" class="${(k==="bad"?bad:st===k)?"on":""}">${VS[k]}</button>`).join("")}</div>`;
+  if(bad)o+=`<div class="dec c3">${[["bad","לא הוגש"],["submitted","הוגש"],["received","התקבל"]].map(([k,l])=>`<button data-cv="${k}" data-tx="${esc(c.tx)}" class="${st===k?"on":""}">${l}</button>`).join("")}</div>`;
+  return o+"</div>";}
+function elbitView(){const R=tripRows();if(!R.length)return "";
+  const past=R.filter(t=>isPast(t)&&!t.confirmed_at),cur=R.filter(t=>!isPast(t)||t.confirmed_at).filter(t=>tState(t)!=="received"),done=R.filter(t=>(!isPast(t)||t.confirmed_at)&&tState(t)==="received");
+  const C=cars(),co=C.filter(carOpen),cd=C.filter(c=>!carOpen(c));
+  const askN=R.reduce((n,t)=>n+tripWork(t).ask,0),noV=C.filter(c=>!c.state).length,notSub=cur.filter(t=>tState(t)==="open").length;
+  if(ui.trip===undefined&&cur[0])ui.trip=cur[0].id;
+  let o="";
+  const need=[[askN,"❓ חיובים לסיווג","sec-trips"],[noV,"🚨 חיובי רכב בלי הכרעה","sec-cars"],[notSub,"📤 נסיעות שלא הוגשו","sec-trips"],[past.length,"🗂️ נסיעות עבר לאישור","sec-past"]].filter(x=>x[0]);
+  if(need.length)o+=`<section class="need"><div class="sh"><h2>מחכה לך</h2></div><div class="list">${need.map(([n,l,a])=>`<div class="it"><button class="row" data-go="${a}"><span class="b"><span class="t">${l}</span></span><span class="v">${n}</span></button></div>`).join("")}</div></section>`;
+  if(past.length){if(!ui.past)ui.past={};
+    o+=`<section id="sec-past"><div class="sh"><h2>🗂️ אישור עבר</h2><small>${past.length}</small></div><div class="list">${past.map(t=>{const sel=ui.past[t.id]||(tState(t)==="open"?"received":tState(t));
+      return `<div class="prow"><span class="b">${nameH(t)}</span><span class="dec c3" style="width:170px;margin:0">${["open","submitted","received"].map(k=>`<button data-ps="${k}" data-t="${esc(t.id)}" class="${sel===k?"on":""}">${TS[k][0]}</button>`).join("")}</span></div>`;}).join("")}
+      <div style="padding:0 14px 12px"><button class="go" data-pastok="1">✓ לאשר הכל</button></div></div></section>`;}
+  o+=`<section id="sec-trips"><div class="sh"><h2>נסיעות פתוחות</h2><small>${cur.length}</small></div>${cur.length?cur.map(tripCard).join(""):'<div class="empty">✓ הכל הוגש</div>'}</section>`;
+  if(C.length)o+=`<section id="sec-cars"><div class="sh"><h2>🚨 חיובי רכב</h2><small>${co.length} פתוחים</small></div><div class="list red">${co.map(carRow).join("")||'<div class="empty">✓ הכל טופל</div>'}
+    ${cd.length?`<details class="fd" style="padding:0 14px"><summary>טופלו · לעריכה (${cd.length})</summary>${cd.map(carRow).join("")}</details>`:""}</div></section>`;
+  if(done.length)o+=`<section><details class="fd" style="border:0"><summary>✓ נסיעות שההחזר התקבל (${done.length})</summary>${done.map(tripCard).join("")}</details></section>`;
+  return o;}
+function patchTopic(t,patch,logText){const now=nowIso(),p={...patch,updated_at:now};
+  if(logText)p.log=[...arr(t.log),{at:now,text:"דשבורד ההוצאות: "+logText}].slice(-40);
+  Object.assign(t,p);render();return db.collection("topics").doc(t.id).update(p).catch(()=>toast("השמירה נכשלה"));}
+function tripPatch(t,st){const now=nowIso();let S=arr(t.steps).map(s=>({...s}));
+  ["submit","paid"].forEach(id=>{if(!S.find(s=>s.id===id))S.push({id,who:"oren",done:false,text:id==="submit"?"להגיש באלביט":"ההחזר נכנס לבנק"});});
+  S=S.map(s=>s.id==="submit"?{...s,done:st!=="open",done_at:st!=="open"?(s.done_at||now):null}:s.id==="paid"?{...s,done:st==="received",done_at:st==="received"?(s.done_at||now):null}:s);
+  return {steps:S,status:st==="received"?"done":st==="submitted"?"waiting_other":"waiting_me",waiting_for:st==="received"?"":st==="submitted"?"אלביט: העברת ההחזר":"אתה: להגיש באלביט",...(st==="received"?{done_at:now}:{})};}
+function setTripState(id,st){const t=topics.find(x=>x.id===id);if(!t||!db)return;const prev={steps:arr(t.steps),status:t.status,waiting_for:t.waiting_for};
+  patchTopic(t,tripPatch(t,st),"סומן "+TS[st][0]);toast("סומן: "+TS[st][0],()=>{patchTopic(t,prev,"בוטל");});}
+function setDecision(id,tx,d){const t=topics.find(x=>x.id===id);if(!t||!db)return;const dec={...(t.decisions||{})};const was=dec[tx];dec[tx]={decision:d,at:nowIso()};
+  const p={decisions:dec};const it=itemsOf({...t,decisions:dec});const cl=stp(t,"classify");
+  if(cl&&!cl.done&&it.length&&!it.some(i=>!fin(i)))p.steps=arr(t.steps).map(s=>s.id==="classify"?{...s,done:true,done_at:nowIso()}:s);
+  patchTopic(t,p);const e=it.find(i=>i.tx===tx);
+  if(e&&e.eid){const x=docs.find(y=>y.id===e.eid);const ns=d==="private"?"personal":(x&&x.st==="personal"?"open":x&&x.st);if(x&&ns!==x.st){x.st=ns;db.collection("expenses").doc(x.id).update({st:ns,st_at:nowIso()}).catch(()=>{});}}
+  toast(d==="work"?"סומן עבודה":"סומן פרטי",()=>{const D={...(t.decisions||{})};if(was)D[tx]=was;else delete D[tx];patchTopic(t,{decisions:D});});}
+function setVerdict(tx,state){const sc=scanRow();if(!sc||!db)return toast("חסרה משימת חיובי הרכב");const V={...(sc.verdicts||{})},was=V[tx];V[tx]={state,at:nowIso()};
+  patchTopic(sc,{verdicts:V},"חיוב רכב: "+(VS[state]||state));
+  const c=cars().find(x=>x.tx===tx);if(c){const row=topics.find(x=>x.id===c.row);const done=state==="ok"||state==="received";
+    if(row){const S=arr(row.steps).map(s=>s.tx===tx?{...s,done,done_at:done?nowIso():null}:s);if(JSON.stringify(S)!==JSON.stringify(row.steps))patchTopic(row,{steps:S});}}
+  toast("נשמר: "+({ok:"תקין",check:"בבירור",bad:"לא תקין",submitted:"הוגש",received:"התקבל"}[state]),()=>{const W={...(sc.verdicts||{})};if(was)W[tx]=was;else delete W[tx];patchTopic(sc,{verdicts:W});});}
+function confirmPast(){const R=tripRows().filter(t=>isPast(t)&&!t.confirmed_at),now=nowIso();
+  R.forEach(t=>{const sel=(ui.past&&ui.past[t.id])||(tState(t)==="open"?"received":tState(t));patchTopic(t,{...tripPatch(t,sel),confirmed_at:now},"אישור עבר: "+TS[sel][0]);});
+  toast(`אושרו ${R.length} נסיעות`);}
+function setDeposit(id,d,ils){const t=topics.find(x=>x.id===id);if(!t)return;patchTopic(t,{...tripPatch(t,"received"),deposit:{d,ils:+ils,at:nowIso()}},"הותאמה הפקדה "+fdate(d));toast("ההחזר סומן כהתקבל");}
 function render(){if(!loaded)return;$("hero").innerHTML=hero();$("bar").innerHTML=bar();$("app").innerHTML=tab();
   $("foot").innerHTML=`${meta.scan_at?"סריקת אשראי אחרונה: "+esc(fdate(meta.scan_at))+"<br>":""}הוצאות ${esc(window.EX_BUILD)}`;}
 let tt=null,undoFn=null;
 function toast(msg,undo){$("tmsg").textContent=msg;undoFn=undo||null;$("tundo").hidden=!undo;$("toast").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("toast").classList.remove("on"),5000);}
 $("tundo").onclick=()=>{const f=undoFn;$("toast").classList.remove("on");if(f)f();};
 // the trip's Side Quests task follows its expenses (same idea as the cashflow app's sync)
-async function syncTopic(tripId){const t=trips().find(x=>x.id===tripId);if(!t||!t.topic_id||!db)return;
+async function syncTopic(tripId){const t=trips().find(x=>x.id===tripId);if(!t||!t.topic_id||!db||/^elbit-trip-/.test(t.topic_id))return;
   const L=exps().filter(x=>x.trip===tripId&&x.st!=="personal");if(!L.length)return;
   const due=L.filter(x=>toSubmit(x)||missing(x)),wait=L.filter(x=>x.st==="submitted"),now=new Date().toISOString();
   const status=due.length?"waiting_me":wait.length?"waiting_other":"done";
@@ -180,6 +325,16 @@ async function setSt(ids,st){if(!db)return;const now=new Date().toISOString(),pr
     toast(ids.length>1?`${ids.length} סומנו: ${ST[st][0]}`:`סומן: ${ST[st][0]}`,async()=>{try{await Promise.all(prev.map(([id,s])=>db.collection("expenses").doc(id).update({st:s})));tripIds.forEach(syncTopic);toast("בוטל");}catch(e){toast("נכשל");}});
   }catch(e){toast("השמירה נכשלה");}}
 document.addEventListener("click",e=>{
+  const q=(a)=>e.target.closest("["+a+"]");let b;
+  if((b=q("data-trip"))){const id=b.dataset.trip,top=b.getBoundingClientRect().top;ui.trip=ui.trip===id?null:id;save();render();const nb=document.querySelector(`[data-trip="${CSS.escape(id)}"]`);if(nb){const d=nb.getBoundingClientRect().top-top;if(d)window.scrollBy(0,d);}return;}
+  if((b=q("data-ts"))){const t=topics.find(x=>x.id===b.dataset.t);if(t&&tState(t)!==b.dataset.ts)setTripState(t.id,b.dataset.ts);return;}
+  if((b=q("data-dec"))){setDecision(b.dataset.t,b.dataset.tx,b.dataset.dec);return;}
+  if((b=q("data-cv"))){setVerdict(b.dataset.tx,b.dataset.cv);return;}
+  if((b=q("data-ps"))){ui.past=ui.past||{};ui.past[b.dataset.t]=b.dataset.ps;render();return;}
+  if((b=q("data-pastok"))){confirmPast();return;}
+  if((b=q("data-dep"))){setDeposit(b.dataset.t,b.dataset.dep,b.dataset.ils);return;}
+  if((b=q("data-step"))){const t=topics.find(x=>x.id===b.dataset.t);if(t){const S=arr(t.steps).map(s=>s.id===b.dataset.step?{...s,done:!s.done,done_at:s.done?null:nowIso()}:s);patchTopic(t,{steps:S},"שלב: "+b.dataset.step);}return;}
+  if((b=q("data-go"))){const el=document.getElementById(b.dataset.go);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});return;}
   const tb=e.target.closest("[data-tab]");if(tb){ui.tab=tb.dataset.tab;openId=null;save();render();return;}
   const sb=e.target.closest("[data-st]");if(sb){const id=sb.dataset.id,x=docs.find(d=>d.id===id);if(x&&(x.st||"open")!==sb.dataset.st){x.st=sb.dataset.st;render();setSt([id],sb.dataset.st);}return;}
   const bb=e.target.closest("[data-bulk]");if(bb){const ids=bb.dataset.ids.split(",").filter(Boolean);ids.forEach(id=>{const x=docs.find(d=>d.id===id);if(x)x.st=bb.dataset.bulk;});render();setSt(ids,bb.dataset.bulk);return;}
@@ -187,6 +342,7 @@ document.addEventListener("click",e=>{
     const nb=document.querySelector(`[data-open="${CSS.escape(id)}"]`);if(nb){const d=nb.getBoundingClientRect().top-top;if(d)window.scrollBy(0,d);}}
 });
 window.claude.use("db").then(d=>{if(!d)return;db=d;
+  db.collection("topics").onSnapshot(s=>{topics=s.docs.map(x=>({id:x.id,...x.data()})).filter(x=>/^elbit-/.test(x.id)&&!x._deleted);render();},()=>{});
   db.collection("expenses").onSnapshot(s=>{docs=s.docs.map(x=>({id:x.id,...x.data()}));meta=docs.find(x=>x.id==="_meta")||{};loaded=true;render();},()=>{});});
 })();
 </script>
