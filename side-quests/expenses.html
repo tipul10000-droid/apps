@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=2"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.1";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.2";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,9 +47,10 @@ button{font:inherit;color:inherit}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
 /* one frame split by lines (no frame in frame) */
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.seg button{border:0;background:var(--surface);padding:7px 2px 6px;font-weight:800;font-size:13.5px;cursor:pointer;font-family:var(--f-display);line-height:1.2;min-width:0;-webkit-tap-highlight-color:transparent}
+/* fixed height, content centered: the open-count line shows only when there is one (Oren 13.11.2026) */
+.seg button{border:0;background:var(--surface);padding:7px 2px 6px;font-weight:800;font-size:13.5px;cursor:pointer;font-family:var(--f-display);line-height:1.2;min-width:0;min-height:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .seg button i{display:block;font-style:normal;font-size:18px;line-height:1.2}
-.seg button em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--muted);display:block;height:14px}
+.seg button em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--muted);display:block;line-height:14px}
 .seg button.on{background:var(--ink);color:var(--bg)}.seg button.on em{color:var(--bg);opacity:.8}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
 section{margin-bottom:22px}
@@ -179,7 +180,7 @@ function hero(){const K=kpis();
 function bar(){const E=exps();
   return `<div class="seg">${CATS.map(([k,i,l])=>{const n=E.filter(x=>(x.cat||"abroad")===k&&(toSubmit(x)||missing(x))).length;
     const m=k==="abroad"&&tripRows().length?tripRows().reduce((a,t)=>a+tripWork(t).ask,0)+cars().filter(c=>!c.state).length+tripRows().filter(t=>tState(t)==="open"&&!isPast(t)).length:n;
-    return `<button data-tab="${k}" class="${ui.tab===k?"on":""}"><i>${i}</i>${l}<em>${m?m+" פתוחים":""}</em></button>`;}).join("")}</div>`;}
+    return `<button data-tab="${k}" class="${ui.tab===k?"on":""}"><i>${i}</i>${l}${m?`<em>${m} פתוחים</em>`:""}</button>`;}).join("")}</div>`;}
 function item(x){const st=ST[x.st||"open"]||ST.open,on=openId===x.id;
   const sub=[fdate(x.d),x.rcpt==="missing"?"⚠️ אין קבלה":"",x.src==="card"?"מהאשראי":""].filter(Boolean).join(" · ");
   let o=`<div class="it ${x.st==="personal"?"off":""}" data-id="${esc(x.id)}"><button class="row" data-open="${esc(x.id)}"><span class="b"><span class="t">${esc(x.title)}</span><span class="s">${esc(sub)}</span></span><span class="v">${esc(money(x.amt,x.cur))}<small><span class="pill ${x.rcpt==="missing"&&st[0]==="לא נשלח"?"p-bad":st[1]}">${x.rcpt==="missing"&&(x.st||"open")==="open"?"חסרה קבלה":st[0]}</span></small></span></button>`;
