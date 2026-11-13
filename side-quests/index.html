@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.3";window.SQ_BUILD_AT="13.11.2026 14:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.4";window.SQ_BUILD_AT="13.11.2026 16:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -4189,7 +4189,9 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   let updSeen=null;try{updSeen=JSON.parse(localStorage.getItem("sq_upd_seen")||"null");}catch(e){updSeen=null;}
   if(!updSeen||typeof updSeen!=="object"){updSeen={_base:new Date(Date.now()-24*36e5).toISOString()};try{localStorage.setItem("sq_upd_seen",JSON.stringify(updSeen));}catch(e){}}
   const updBase=()=>Date.parse(updSeen._base||"")||0;
-  const newPool=()=>allTopics.filter(t=>!t._deleted&&!t.background&&!isFun(t)&&!(t.fit&&t.fit.owner==="claude")&&t.status!=="archived");
+  // 16.4 (Oren 13.11.2026): "what's new" = only real news, never tasks that were completed, and each quest shows only its own.
+  const DONE_ST=["done","promoted","archived"];
+  const newPool=q=>{const qq=q||quest;return allTopics.filter(t=>!t._deleted&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!DONE_ST.includes(t.status)&&!t.merged_into&&(qq==="fun"?isFun(t):!isFun(t)&&questOf(t)===qq));};
   function isNewUpd(t){const r=recentOf(t);if(!r||Date.now()-r.ms>72*36e5||r.ms<=updBase())return null;const s=Date.parse(updSeen[t.id]||"")||0;return s<r.ms?r:null;}
   function newCount(){try{return newPool().filter(t=>isNewUpd(t)).length;}catch(e){return 0;}}
   function saveSeen(){const ks=Object.keys(updSeen).filter(k=>k!=="_base");if(ks.length>300)ks.sort((a,b)=>String(updSeen[a]).localeCompare(String(updSeen[b]))).slice(0,ks.length-300).forEach(k=>delete updSeen[k]);
@@ -4206,10 +4208,9 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     top.push(h("div",{class:"newhd"},h("b",null,"🆕 מה התעדכן לאחרונה"),h("button",{type:"button",onclick:seeAll},"✓ הכול נקרא")));
     for(const[g,f]of G){const it=L.filter(x=>!used.has(x.t.id)&&f(x));it.forEach(x=>used.add(x.t.id));if(!it.length)continue;
       top.push(h("div",{class:"gwrap"},h("div",{class:"g-head"},g,h("span",{class:"n"},it.length)),h("div",{class:"glist"},it.map(x=>row(x.t,{upd:x.r})))));}
-    if(L.length===0)top.push(h("div",{class:"empty"},"שום דבר לא התעדכן בשבוע האחרון."));
+    if(L.length===0)top.push(h("div",{class:"empty"},"שום דבר חדש בשבוע האחרון."));
     $("list").replaceChildren(...top);$("more").replaceChildren();
-    const doneL=topics.filter(t=>t.status==="done"||t.status==="promoted").sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")); // 16.2: no cap (it was 30, Oren saw "בוצעו" stuck on 30)
-    $("doneSec").replaceChildren(...[foldRows("done","בוצעו",doneL)].filter(Boolean));renderInbox();}
+    $("doneSec").replaceChildren();renderInbox();}
   // Gmail on demand: the button queues sidequests/instructions {kind:"gmail_scan"}; the hourly instructions run (:47)
   // scans Gmail since the last scan (plus what he noted), updates or adds the matching tasks with upd {src:"gmail"},
   // and writes settings/gmail_scan. The 5-a-day sweep does the same pass automatically.
