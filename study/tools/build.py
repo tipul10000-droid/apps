@@ -13,6 +13,7 @@ s = rd('lia/phonics/index.html')
 REP = [  # (מה, במה) — כל אחד חייב להופיע במקור, כדי ששינוי אצל ליה לא ישבור בשקט
   ("StudyContent.guard('lia/phonics')", "StudyContent.guard('levi/phonics')"),
   ("StudyTrack.init('lia',", "StudyTrack.init('levi',"),
+  ("StudyGuess.init('lia',", "StudyGuess.init('levi',"),
   ("'lia_ph", "'levi_ph"),
   ('מפתחות: lia_ph (התקדמות), lia_ph_sq', 'מפתחות: levi_ph (התקדמות), levi_ph_sq'),
   ('lia_ph_mute.', 'levi_ph_mute.'),

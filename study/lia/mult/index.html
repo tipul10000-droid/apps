@@ -126,6 +126,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex
 <script src="../squishies.js?v=4"></script>
 <script src="../../sqsound.js?v=9"></script>
 <script src="../../track.js?v=9"></script>
+<script src="../../guess.js?v=1"></script>
 <script>
 // לוח הכפל לליה, כיתה ד׳ (אורן 11.11.2026), "חוקרת חרקי חלל".
 // לפי הדרך של משרד החינוך: קודם הבנה (קבוצות שוות, מערך, חוק החילוף), אחר כך אסטרטגיות לכל עמודה (כפול, חצי מ-10, 10 פחות קבוצה, חוק הפילוג),
@@ -257,7 +258,7 @@ const arrH=(r,c,e)=>`<div class="arr" style="grid-template-columns:repeat(${c},a
 const kp=$('kp'),op=$('op');
 kp.innerHTML=[7,8,9,4,5,6,1,2,3].map(d=>`<button class="k" type="button" data-d="${d}">${d}</button>`).join('');
 let CUR=null,INP='',DONE=false,T0=0,TIMER=null,LASTID=null,NEEDNEXT=false;
-function setMode(kind){const isOp=kind==='op';kp.style.display=isOp?'none':'grid';op.style.display=isOp?'grid':'none';
+function setMode(kind){if(window.StudyGuess)StudyGuess.q();const isOp=kind==='op';kp.style.display=isOp?'none':'grid';op.style.display=isOp?'grid':'none';
   $('kdel').classList.toggle('hid',isOp);$('k0').classList.toggle('hid',isOp);$('slot').classList.toggle('hid',isOp)}
 function upd(){const ph=PH2();
   $('mt').textContent=ph?'⚡ שליפה מהירה: '+flDone()+' מתוך '+FL.length:'כוכב '+(S.m+1)+' מתוך 6: '+M[S.m].n;
@@ -314,7 +315,9 @@ function key(d){if(DONE)return;ac();if(d==='del')INP=INP.slice(0,-1);else if(INP
   SND.key();$('slot').textContent=INP;$('act').disabled=!INP}
 $('act').onclick=()=>{if(DONE){next();return}if(INP)check(INP)};
 document.addEventListener('keydown',e=>{if(document.querySelector('.ov.on'))return;if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('del');else if(e.key==='Enter')$('act').click()});
-function check(v,btn){if(DONE)return;DONE=true;clearInterval(TIMER);const ok=String(v)===String(CUR.ans),fast=PH2()?(Date.now()-T0)<=6000:true;S.T++;S.att++;
+function check(v,btn){if(DONE)return;
+  // זיהוי ניחושים (אורן 13.11.2026), לא בשליפה המהירה (שם המהירות היא המטרה): התשובה לא מתקבלת, ההודעה של הילה, ואותה שאלה שוב
+  if(!PH2()&&window.StudyGuess&&StudyGuess.chk(String(v)===String(CUR.ans),()=>{INP='';$('slot').textContent='';$('act').disabled=true}))return;DONE=true;clearInterval(TIMER);const ok=String(v)===String(CUR.ans),fast=PH2()?(Date.now()-T0)<=6000:true;S.T++;S.att++;
   if(btn){[...op.children].forEach(x=>{x.disabled=true;if(x.dataset.v===String(CUR.ans))x.classList.add('ok')});if(!ok)btn.classList.add('no')}
   else $('slot').className='slot '+(ok?'ok':'no');
   if(PH2())return checkFl(ok,fast);
@@ -380,6 +383,7 @@ $('lsb').onclick=()=>openLes(PH2()?M.length-1:S.m);
 $('mute').onclick=()=>{MUTE=!MUTE;LS.set('lia_mx_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.key()};$('mute').textContent=MUTE?'🔇':'🔊';
 $('isq').innerHTML='<div class="sqhd">'+LiaSquishies.rows[3]+'</div>'+L4.map(s=>tile(s,own())).join('');
 $('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();S.intro=1;save();if(!PH2()&&!S.les[S.m])openLes(S.m);else next()};
+if(window.StudyGuess)StudyGuess.init('lia','mult',{fast:1500});
 if(window.StudyTrack){StudyTrack.init('lia','mult',['lia_mx','lia_mx_sq']);StudyTrack.gift(()=>{const b=L4.find(x=>!SQ.includes(x.id))||pick(L4);if(!SQ.includes(b.id)){SQ.push(b.id);LS.set('lia_mx_sq',SQ)}confetti(60);upd();showSq(b,'🎁 מתנה מאבא ואמא!','ללוח! 🐞')})}
 upd();LiaSquishies.sync(()=>{upd();if($('sqcol').classList.contains('on'))sqRender()});
 if(!S.intro)$('intro').classList.add('on');else if(!PH2()&&!S.les[S.m])openLes(S.m);
