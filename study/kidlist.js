@@ -8,20 +8,26 @@
   window.StudyList={init:function(kid){
     var L=document.querySelector('.list');if(!L)return;var I=[].slice.call(L.querySelectorAll('.item[data-c]')),key='study_kl_'+kid,C=lj(key);
     I.forEach(function(a,i){a.dataset.o=i});
+    // אורן 13.11.2026: שלושה אזורים ברורים: 🎯 לפנינו (מבחן עם תאריך), 📚 למידה כללית (תמיד לפנינו), 🏆 ההישגים שלי (מבחן שבוצע, עם חותמת הציון).
+    var H={};[['up','🎯 לפנינו'],['gen','📚 למידה כללית'],['done','🏆 ההישגים שלי']].forEach(function(x){var h=document.createElement('div');h.className='lh lh-'+x[0];h.textContent=x[1];H[x[0]]=h});
+    function grp(a){var t=C[a.dataset.c]||{},n=t.d?days(t.d):null;if(a.classList.contains('soon'))return 'gen';if(n!=null&&n>=0)return 'up';if(t.s!=null||(n!=null&&n<0))return 'done';return 'gen'}
     function draw(){
-      I.forEach(function(a){var t=C[a.dataset.c],ch=a.querySelector('.chip'),n=t&&t.d?days(t.d):null,w=a.dataset.t||'מבחן';stamp(a,t&&t.s!=null?+t.s:null);
-        var on=n!=null&&n>=0&&n<=14&&!a.classList.contains('soon');a.dataset.n=on?n:'';
-        if(!on){if(ch)ch.remove();return}
+      I.forEach(function(a){var t=C[a.dataset.c]||{},ch=a.querySelector('.chip'),n=t.d?days(t.d):null,w=a.dataset.t||'מבחן',g=grp(a);a.dataset.g=g;a.classList.toggle('dn',g==='done');stamp(a,t.s!=null&&!a.classList.contains('soon')?+t.s:null);
+        a.dataset.n=g==='up'?n:'';
+        var txt=g==='up'?(n===0?'🎯 ה'+w+' היום!':n===1?'🎯 '+w+' מחר':'🎯 '+w+' בעוד '+n+' ימים'):g==='done'?(t.s!=null?(+t.s>=85?'✓ בוצע · מצוין!':'✓ בוצע'):'⏳ מחכים לציון'):'';
+        if(!txt){if(ch)ch.remove();return}
         if(!ch){ch=document.createElement('span');ch.className='chip';a.querySelector('.tx').appendChild(ch)}
-        ch.textContent=n===0?'🎯 ה'+w+' היום!':n===1?'🎯 '+w+' מחר':'🎯 '+w+' בעוד '+n+' ימים';ch.classList.toggle('hot',n<=3)});
+        ch.textContent=txt;ch.classList.toggle('hot',g==='up'&&n<=3);ch.classList.toggle('ok',g==='done')});
       var S=I.slice().sort(function(a,b){return sc(a)-sc(b)||a.dataset.o-b.dataset.o});
-      S.forEach(function(a){L.appendChild(a)})}
+      ['up','gen','done'].forEach(function(g){var G=S.filter(function(a){return a.dataset.g===g});if(!G.length){if(H[g].parentNode)H[g].remove();return}L.appendChild(H[g]);G.forEach(function(a){L.appendChild(a)})})}
     // חותמת ציון (אורן 13.11.2026): תוכן שכבר קיבל ציון במבחן מקבל חותמת עגולה בצד שמאל של הכרטיס. 85 ומעלה = חותמת כחולה מלאה עם כוכב.
     function stamp(a,s){var e=a.querySelector('.stp');if(s==null||a.classList.contains('soon')){if(e)e.remove();return}
       if(!e){e=document.createElement('span');e.className='stp';a.insertBefore(e,a.querySelector('.go'))}
       var g=s>=85?'top':s>=70?'ok':'low',v=String(Math.round(s));e.className='stp '+g;e.setAttribute('aria-label','ציון '+v);
-      e.innerHTML=(g==='top'?'<i>★</i>':'<i>ציון</i>')+'<b>'+v+'</b>'}
-    function sc(a){if(a.classList.contains('soon'))return 900;return (a.querySelector('.nwr')?0:50)+(a.dataset.n!==''?+a.dataset.n:30)} // חדש + מבחן קרוב = הכי למעלה
+      e.innerHTML=(g==='top'?'<i>★</i>':'<i>ציון</i>')+'<b>'+v+'</b>';
+      // פעם ראשונה שהציון הזה מופיע במכשיר: החותמת "ננחתת" על הכרטיס (פעם אחת בלבד, study_stp_seen)
+      var sn=lj('study_stp_seen');if(sn[a.dataset.c]!==v){sn[a.dataset.c]=v;try{localStorage.setItem('study_stp_seen',JSON.stringify(sn))}catch(x){}e.classList.add('pop')}}
+    function sc(a){if(a.classList.contains('soon'))return 900;return (a.querySelector('.nwr')?0:50)+(a.dataset.n!==''?+a.dataset.n:30)} // בתוך כל אזור: חדש + מבחן קרוב = הכי למעלה
     draw();
     // אורן 11.11.2026: "חדש!" רק עד הכניסה הראשונה. לחיצה על התוכן מסמנת אותו כנראה מיד, וחזרה לדף (גם מהמטמון של ספארי) מורידה את הסרט.
     function unNew(){I.forEach(function(a){var r=a.querySelector('.nwr');if(r&&window.StudyContent&&!StudyContent.isNew(a.dataset.c))r.remove()});draw()}
