@@ -315,7 +315,7 @@
     {v: "0.3", at: "6.10.2026 · 03:17", items: ["איורי הדמויות ועיצוב כהה"]},
     {v: "0.1", at: "6.10.2026 · 02:09", items: ["הגרסה הראשונה: בחירת סנדוויץ' לבית הספר"]}
   ];
-  function famTxt(t) { return FAM === "a" ? t : t.replace(/אמא ליאורי/g, "אמא").replace(/ \(אורן\)/g, ""); }
+  function famTxt(t) { return FAM === "a" ? t : t.replace(/ \(אורן\)/g, ""); }
   function relHtml(r) {
     return '<p class="rv">גרסה <bdi>' + esc(r.v) + '</bdi> · <bdi>' + esc(r.at) + '</bdi></p><ul>' + r.items.map(function (t) { return '<li>' + esc(famTxt(t)) + '</li>'; }).join("") + '</ul>';
   }
