@@ -121,6 +121,7 @@ section{margin-bottom:22px}
 .part .he{font-size:16px;line-height:1.6;white-space:pre-line}
 .part .en{direction:ltr;text-align:left;font-size:15px;line-height:1.55;color:var(--en);white-space:pre-line;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 .part .he+.en{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.kimg{margin:0}.kimg+.kimg{margin-top:12px}.kimg img{display:block;width:100%;height:auto;border-radius:12px;background:#fff}.kimg figcaption{font-size:14px;line-height:1.5;margin-top:6px;color:var(--muted,#666)}
 .glos{list-style:none;margin:0;padding:0}
 .glos li{padding:8px 2px;font-size:15px;line-height:1.5}
 .glos li+li{border-top:1px solid var(--line)}
@@ -213,6 +214,7 @@ function renderList(){const H=all("hub").sort((a,b)=>(a.order||99)-(b.order||99)
 // ---------- ticket ----------
 function tabIns(x){let h="";
   if(x.tldr)h+=`<div class="tldr"><b>בשורה אחת</b>${esc(x.tldr)}</div>`;
+  if((x.images||[]).length)h+=`<section><div class="sh"><h2>🖼️ תמונות</h2></div><div class="card">${x.images.filter(m=>safe(m.url)).map(m=>`<figure class="kimg"><a href="${esc(m.url)}" target="_blank" rel="noopener"><img src="${esc(m.url)}" alt="${esc(m.caption||"")}" loading="lazy"></a>${m.caption?`<figcaption>${esc(m.caption)}</figcaption>`:""}</figure>`).join("")}</div></section>`;
   if((x.insights||[]).length)h+=`<section><div class="sh"><h2>💡 תובנות</h2></div><div class="card"><ul class="ins">${x.insights.map((i,n)=>`<li><h3><span class="n">${n+1}</span><span>${esc(i.h||"")}</span></h3>${i.text?`<p>${esc(i.text)}</p>`:""}</li>`).join("")}</ul></div></section>`;
   if((x.actions||[]).length)h+=`<section><div class="sh"><h2>🛠️ מה אפשר לעשות עם זה</h2></div><div class="card"><ul class="todo">${x.actions.map(a=>`<li><span>${esc(typeof a==="string"?a:a.text)}</span></li>`).join("")}</ul></div></section>`;
   if((x.caveats||[]).length)h+=`<section><div class="sh"><h2>⚖️ לקחת בעירבון מוגבל</h2></div><div class="warnbox"><ul>${x.caveats.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div></section>`;
