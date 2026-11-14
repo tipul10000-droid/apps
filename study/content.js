@@ -3,7 +3,7 @@
 // REG: מצב כל תוכן בקוד. 'review' = בבדיקה (נפתח רק אחרי אישור בשרת: study_content_get), 'live' = פתוח תמיד.
 // תוכן חדש: מוסיפים כאן 'review', ובדף התוכן StudyContent.guard('<kid>/<app>') מיד אחרי guest.js.
 (function(){
-  var REG={'evyatar/vocab':'live','evyatar/past':'review','evyatar/econ':'review','dani/spelling':'live','lia/phonics':'review','lia/mult':'review','levi/phonics':'live','shilo/letters':'live'}; // levi/phonics: אותו שיעור של ליה, אורן ביקש ישירות (9.11.2026); shilo/letters: אורן ביקש לבנות ולשלוח מיד (10.11.2026)
+  var REG={'evyatar/vocab':'live','evyatar/past':'review','evyatar/econ':'review','evyatar/hist':'review','dani/spelling':'live','lia/phonics':'review','lia/mult':'review','levi/phonics':'live','shilo/letters':'live'}; // levi/phonics: אותו שיעור של ליה, אורן ביקש ישירות (9.11.2026); shilo/letters: אורן ביקש לבנות ולשלוח מיד (10.11.2026)
   var SB='https://emgtyfksnofzzlutngbf.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
   var CK='study_cnt_ok',SK='study_cnt_seen';
   function lj(k){try{return JSON.parse(localStorage.getItem(k))||{}}catch(e){return{}}}

@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=5"></script>
+<script src="../../content.js?v=8"></script><script>StudyContent.guard('evyatar/hist')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · היסטוריה: הכנה לבוחן</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css?v=5">
+<style>
+:root{--ok:#15803d;--okb:#dcfce7;--no:#be123c;--nob:#ffe4e6;--pl:#e8eef7}
+main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;flex-direction:column}
+.nav{display:flex;align-items:center;gap:6px;height:32px;flex:none}.nav .back{margin:0;flex:1}
+.seg{display:flex;flex:none;height:30px;border:1px solid var(--bd);border-radius:20px;overflow:hidden;background:var(--card)}.seg button{font:inherit;font-size:13px;width:64px;padding:0;border:0;background:none;color:var(--fg);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}.seg button+button{border-right:1px solid var(--bd)}.seg button.on{background:#2f5d9e;color:#fff;font-weight:700}.seg button.lk{color:#9aa4b2}@media (max-width:400px){.nav .bn{display:none}}
+.ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh);margin-top:4px}
+.prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:22px}
+.prog .row b{color:var(--fg);font-size:16px}
+.chip{font-size:13px;background:var(--pl);color:#1e3a8a;border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
+.stg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:6px}
+.stg span{height:22px;border-radius:7px;background:#f1f3f7;color:var(--mut);font:600 11px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;white-space:nowrap}
+.stg span i{position:absolute;inset:0 0 0 auto;background:rgba(47,93,158,.16);width:0}
+.stg span em{position:relative;font-style:normal}
+.stg span.cur{background:#dbe7f7;color:#1e3a8a;outline:2px solid #93b4e0}.stg span.ok{background:var(--okb);color:#166534}
+.card{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px 12px;box-shadow:var(--sh);margin-top:8px;overflow:hidden}
+.tag{display:flex;justify-content:space-between;align-items:center;height:24px;flex:none;font-size:13px;color:var(--mut)}
+.tag b{font-weight:700;color:#1e3a8a;background:var(--pl);border-radius:20px;padding:2px 10px;white-space:nowrap}
+.tag .rt{color:#c2410c;background:#fff1e6;border-radius:20px;padding:2px 8px;font-weight:700;visibility:hidden}.tag .rt.on{visibility:visible}
+.q{flex:0 1 auto;min-height:64px;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:8px;text-align:center;font:600 19px/1.4 system-ui,Arial,sans-serif;padding:4px 2px;overflow:hidden}
+.q .ps{font-weight:500;text-align:right;background:#f6f8fb;border-right:3px solid #93b4e0;border-radius:10px;padding:6px 10px;font-size:.84em;line-height:1.45;color:#334155}
+.q u{text-decoration:none;display:inline-block;min-width:54px;border-bottom:2px solid #64748b;margin:0 2px}
+.opts{display:flex;flex-direction:column;gap:7px;flex:none}
+.opts.two{flex-direction:row}.opts.two .op{flex:1;justify-content:center}
+.op{font:600 16px/1.25 system-ui,Arial,sans-serif;text-align:right;min-height:46px;padding:6px 12px;border-radius:12px;border:1.5px solid var(--bd);background:#f8fafc;color:var(--fg);cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px}
+.op .k{flex:none;width:24px;height:24px;border-radius:50%;background:#e2e8f0;color:#475569;font:700 12px/24px system-ui,Arial,sans-serif;text-align:center}
+.op:active{background:#eef2f7}
+.op.ok{border-color:#22c55e;background:var(--okb);color:#14532d}.op.ok .k{background:#22c55e;color:#fff}
+.op.no{border-color:#fb7185;background:var(--nob);color:#881337}.op.no .k{background:#fb7185;color:#fff}
+.op.dim{opacity:.55}
+.op.sel{border-color:#2f5d9e;background:#dbe7f7;color:#1e3a8a}.op.sel .k{background:#2f5d9e;color:#fff}
+.op.wr{justify-content:center;background:var(--pl);border-color:#93b4e0;color:#1e3a8a}
+.fb{flex:1 1 0;min-height:84px;margin-top:8px;border-radius:12px;padding:8px 12px;font-size:15px;line-height:1.45;overflow:auto;background:#f1f5f9;color:var(--mut);display:flex;align-items:center;justify-content:center;text-align:center}
+.fb.ok{background:var(--okb);color:#14532d}.fb.no{background:var(--nob);color:#881337}
+.nx{flex:none;margin-top:8px;height:48px;border:0;border-radius:14px;font:700 17px system-ui,Arial,sans-serif;background:var(--ac);color:#fff;cursor:pointer}
+.nx:disabled{background:#cbd5e1;color:#f8fafc;cursor:default}
+.end{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
+.end .big{font-size:54px;line-height:1}.end h2{margin:0;font-size:22px}.end p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
+.end .bt{width:100%;max-width:320px;height:46px;border-radius:14px;border:1.5px solid var(--bd);background:var(--card);font:700 16px system-ui,Arial,sans-serif;color:var(--fg);cursor:pointer}
+.end .bt.pr{background:var(--ac);color:#fff;border:0}
+.card.fin .tag,.card.fin .q,.card.fin .opts,.card.fin .fb,.card.fin .nx{display:none}.card.fin .end{display:flex}
+.ov{position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.ov.on{display:flex}
+.pop{background:var(--card);border-radius:18px;max-width:440px;width:100%;max-height:calc(100dvh - 70px);overflow:auto;padding:12px 14px;box-shadow:0 10px 40px rgba(0,0,0,.3);font-size:14.5px;line-height:1.45}
+.pop h3{margin:0 0 4px;font-size:18px}.pop h4{margin:10px 0 2px;font-size:15px;color:#1e3a8a}.pop p{margin:2px 0}.pop ul{margin:2px 0;padding-right:18px}
+.pop table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}.pop td,.pop th{border:1px solid var(--bd);padding:3px 5px;vertical-align:top}.pop th{background:var(--pl);color:#1e3a8a}
+.pop .ax{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;background:linear-gradient(90deg,#fee2e2,#f1f5f9,#dbeafe);border-radius:8px;padding:4px 8px;margin-top:4px}
+.pop .cl{margin-top:10px;width:100%;height:42px;border:0;border-radius:12px;background:var(--ac);color:#fff;font:700 16px system-ui,Arial,sans-serif}
+.pop .ma{background:#f6f8fb;border-right:3px solid #22c55e;border-radius:10px;padding:6px 10px;margin:4px 0}
+.pop .ck label{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px solid #eef2f7}.pop .ck input{margin-top:3px;width:18px;height:18px;flex:none}
+.pop .two{display:flex;gap:8px;margin-top:10px}.pop .two button{flex:1;height:44px;border-radius:12px;font:700 15px system-ui,Arial,sans-serif;cursor:pointer}
+.pop .two .y{border:0;background:#16a34a;color:#fff}.pop .two .n{border:1.5px solid #fb7185;background:#fff;color:#be123c}
+.pop.sm{display:flex;flex-direction:column;height:min(520px,calc(100dvh - 90px));overflow:hidden;padding:12px 14px}
+.smh{display:flex;justify-content:space-between;align-items:center;flex:none}.smh h3{margin:0;font-size:17px}
+.smd{display:flex;gap:6px;justify-content:center;margin:8px 0 2px;flex:none}.smd i{width:8px;height:8px;border-radius:50%;background:#cbd5e1}.smd i.on{background:var(--ac);width:20px;border-radius:4px}
+.smb{flex:1;min-height:0;overflow:auto}.smb section{display:none;animation:smin .25s ease}.smb section.on{display:block}@keyframes smin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.smb h4{font-size:17px;margin:10px 0 6px}.smb p{margin:6px 0;font-size:15.5px;line-height:1.5}.smb .key{margin-top:10px;background:#eef4fb;border-right:3px solid var(--ac);border-radius:10px;padding:8px 10px;font-size:15px;line-height:1.5}
+.smn{display:flex;gap:8px;flex:none;margin-top:10px}.smn button{flex:1;height:46px;border-radius:12px;border:1.5px solid var(--bd);background:#fff;font:700 16px system-ui,Arial,sans-serif;color:var(--fg);cursor:pointer}.smn .pr{background:var(--ac);border:0;color:#fff}
+.ov.top{align-items:flex-start;padding-top:max(calc(env(safe-area-inset-top) + 6px),44px)}
+.wp{display:flex;flex-direction:column;gap:8px;max-height:none}.wh{display:flex;justify-content:space-between;align-items:center}.wh h3{margin:0}
+.wx{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:#f8fafc;font-size:16px;cursor:pointer}
+.wq{max-height:22dvh;overflow:auto;font-weight:600;font-size:15px}.wq .ps{font-weight:500;background:#f6f8fb;border-right:3px solid #93b4e0;border-radius:10px;padding:5px 9px;font-size:13.5px;margin-bottom:4px;color:#334155}
+#wt{width:100%;box-sizing:border-box;height:20dvh;min-height:110px;resize:none;border:1.5px solid #93b4e0;border-radius:12px;padding:8px 10px;font:16px/1.45 system-ui,Arial,sans-serif;color:var(--fg);background:#fff}
+.wf{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--mut);min-height:17px}.wm{color:#be123c;font-weight:600}.wp .cl{margin-top:0}.cl:disabled{background:#94a3b8}
+.scb{display:inline-block;border-radius:20px;padding:1px 9px;font-weight:800;white-space:nowrap}.scb.g{background:var(--okb);color:#166534}.scb.b{background:#fff1e6;color:#c2410c}.scb.p{background:#f1f5f9;color:#64748b}
+.pop .qq{font-weight:600;color:#334155}.pop .mine{background:#fffbea;border-right:3px solid #f59e0b;border-radius:10px;padding:6px 10px;white-space:pre-wrap}.pop .nt{color:var(--mut);font-size:13.5px;margin-top:8px}
+.pop details{margin-top:8px}.pop summary{color:#1e3a8a;font-weight:700;cursor:pointer}.gs{width:100%;height:auto;display:block}
+.lg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:#334155}.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:4px;vertical-align:-1px}
+.ol{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:12px;overflow:hidden}.oi{display:flex;gap:8px;align-items:center;text-align:right;font:inherit;font-size:13.5px;background:#fff;border:0;border-bottom:1px solid #eef2f7;padding:7px 9px;cursor:pointer;color:var(--fg)}.oi:last-child{border-bottom:0}
+
+/* היסטוריה: כפתורי ניווט, בוחן לדוגמה, סיכום וטיפים */
+.nav .ib{padding:3px 8px}.ib.gl{border-color:#f59e0b;box-shadow:0 0 0 2px #fde68a}
+.chip.bt2{border:0;font:inherit;font-size:13px;cursor:pointer}
+.card.ex .q{flex:1 1 auto;justify-content:flex-start;text-align:right;font-weight:500;font-size:15px}
+.card.ex .q .ps{flex:1 1 auto;min-height:0;overflow:auto;font-size:14.5px;line-height:1.5}
+.card.ex .q .it{flex:none;font-size:13.5px;color:#334155;font-weight:600}
+.card.ex .fb{flex:none;min-height:0;height:auto;padding:6px 10px;font-size:13.5px}
+.op.sec{justify-content:space-between;text-align:right}.op.sec .scb{flex:none}
+.end .bt.ex{display:flex;justify-content:space-between;align-items:center;text-align:right;padding:0 12px;font-size:15px;height:auto;min-height:46px}
+.end .bt.ex .scb{font-size:13px}.end .tm{font-size:13px;color:var(--mut)}
+.wq details{margin-top:4px;font-weight:500}.wq summary{color:#1e3a8a;cursor:pointer;font-size:13.5px}
+#wt.lg{height:30dvh}
+.smb ul{margin:4px 0;padding-right:18px}.smb li{margin:4px 0;font-size:15px;line-height:1.45}
+.smb .qt{background:#fffbea;border-right:3px solid #f59e0b;border-radius:10px;padding:6px 10px;margin:6px 0;font-size:14.5px;line-height:1.5}
+.smb table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}.smb td,.smb th{border:1px solid var(--bd);padding:3px 4px;vertical-align:top}.smb th{background:var(--pl);color:#1e3a8a}
+.smb .mm{display:flex;flex-direction:column;gap:5px;margin:6px 0}.smb .mm div{display:flex;gap:10px;align-items:center;background:#f6f8fb;border-radius:12px;padding:5px 10px;font-size:15px;line-height:1.3}.smb .mm b{font-size:16px}.smb .mm span.e{font-size:22px}
+.hl{border-radius:4px;padding:0 3px}.hy{background:#fef08a}.hg{background:#bbf7d0}.hb{background:#bae6fd}
+@media (max-height:700px){.q{min-height:52px}.op{min-height:40px;font-size:15px;padding:4px 10px}.opts{gap:6px}.fb{min-height:66px;font-size:14px;margin-top:6px}.nx{height:44px;margin-top:6px}.card{padding:8px 10px 10px;margin-top:6px}.stg{margin-top:4px}}
+@media (max-height:640px){.fb{min-height:56px;font-size:13px;line-height:1.35;padding:4px 8px}.op{min-height:36px}.stg span{height:18px}.prog{padding:4px 10px 6px}}
+</style>
+
+</head><body><main>
+<div class="nav"><a class="back" href="../" aria-label="חזרה לאביתר">→<span class="bn"> אביתר</span></a><span class="seg"><button id="prb" type="button">📚 תרגול</button><button id="mtb" type="button">🎯 בוחן</button></span><button class="ib" id="rules" type="button">📘 סיכום</button><button class="ib" id="tips" type="button">💡 טיפים</button></div>
+<div class="prog">
+ <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך <span id="nn">0</span></span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span> <button class="chip bt2" id="grb" type="button">📈 ציונים</button></span></div>
+ <div class="stg" id="stg"></div>
+</div>
+<div class="card" id="card">
+ <div class="tag"><b id="tg"></b><span class="rt" id="rt">↺ שוב</span></div>
+ <div class="q" id="q"></div>
+ <div class="opts" id="opts"></div>
+ <div class="fb" id="fb">בחר את התשובה הנכונה</div>
+ <button class="nx" id="nx" type="button" disabled>הבא ›</button>
+ <div class="end" id="end"></div>
+</div>
+</main>
+<!-- 📘 סיכום: עמודים קצרים, מסודרים לפי הספר (עמ׳ 12, 19, 25-26) -->
+<div class="ov" id="ov"><div class="pop sm">
+ <div class="smh"><h3 id="smt">📘 סיכום החומר</h3><button class="wx" id="smx" type="button" aria-label="סגירה">✕</button></div>
+ <div class="smd" id="smd"></div>
+ <div class="smb" id="smb">
+ <section><h4>🗺️ התמונה הגדולה</h4>
+  <p>השאלה של כל הפרק: <b>איך הופכים מיליוני מהגרים מארצות שונות לאומה אמריקאית אחת?</b></p>
+  <p>לאורך הזמן היו לזה <b>3 תשובות</b>:</p>
+  <div class="mm"><div><span class="e">🔥</span><span><b>מתיכים</b>: כור ההיתוך<br><small>המאה ה-18 · עמ׳ 12</small></span></div>
+  <div><span class="e">🧽</span><span><b>מוחקים</b>: טמיעה (הטמעה)<br><small>סוף המאה ה-19 · עמ׳ 19</small></span></div>
+  <div><span class="e">🎻</span><span><b>מנגנים</b>: פלורליזם תרבותי<br><small>תחילת המאה ה-20 · עמ׳ 25-26</small></span></div></div>
+  <div class="key">🧠 לזכור: <b>מתיכים ← מוחקים ← מנגנים</b>. זה גם הסדר שבו הגישות הופיעו.</div></section>
+ <section><h4>🔥 כור ההיתוך (עמ׳ 12)</h4>
+  <p>👤 <b>קרבקר</b>, "מכתבים מחוואי אמריקני", <b>המאה ה-18</b>.</p>
+  <p>הוא השתמש <b>לראשונה</b> בדימוי של <b>"כור ההיתוך"</b>:</p>
+  <p>🫕 כור לוהט קולט <b>מתכות שונות</b>, ומהן נוצרת <b>מתכת חדשה אחת</b>. היא <b>לא סכום</b> של המרכיבים, אלא <b>תוצר חדש וייחודי</b>, אף שכל מתכת תרמה לה תכונות.</p>
+  <div class="qt">"בני אדם מכל האומות מותכים כאן לגזע אנשים חדש"</div>
+  <div class="key">✍️ המשמעות: האמריקאי הוא <b>"אדם חדש"</b>, לא אנגלי ולא צרפתי, אלא משהו שנוצר מכולם.</div></section>
+ <section><h4>🔥 כור ההיתוך: מה הופך לאמריקאי?</h4>
+  <ul><li>💍 <b>"תערובת דמים"</b>: נישואי תערובת (סב אנגלי, אישה הולנדית, בן שנשא צרפתייה)</li>
+  <li>🧳 עוזב את <b>דעותיו הקדומות והרגליו הישנים</b></li>
+  <li>💪 הופך ל<b>פעיל, יזם, חרוץ, עצמאי</b>, בעל כבוד עצמי</li>
+  <li>🗽 נהנה מ<b>חירות ושוויון</b>, וכך נוצר <b>האתוס האמריקני</b></li></ul>
+  <div class="key">🤔 למה זה עבד? 50 שנה אחרי העצמאות הגיעו רק <b>כ-5,000 מהגרים בשנה</b>, רובם מ<b>אנגליה</b> וצפון אירופה, <b>פרוטסטנטים</b>. עד <b>1820</b> נוצרה חברה אחידה, והאתוס שלה הפך ל<b>"תנאי קבלה"</b> למהגרים החדשים.</div></section>
+ <section><h4>🧽 טמיעה: למה ומתי? (עמ׳ 19)</h4>
+  <p>⏳ <b>סוף המאה ה-19</b>: גלי הגירה גדולים, קשיי השתלבות (גם פשיעה). החברה הוותיקה <b>דואגת</b> ודורשת <b>"הטמעה מהירה"</b>.</p>
+  <p>🏛️ <b>הממשל לא התערב</b>: הגירה חופשית, וכל מהגר מסתדר לבד. ההנחה: <b>"המוכשרים ייקלטו והנכשלים ייפלטו"</b>.</p>
+  <p>🤝 מי עזר? <b>ארגונים פרטיים</b>, בעיקר על בסיס מוצא משותף. למשל <b>"ברית חינוך"</b> (ניו יורק, 1893): יהודים ותיקים שעזרו למהגרים יהודים חדשים. שיעורי אנגלית, ספורט, בריאות, חוגים, קייטנות.</p>
+  <div class="key">👤 גם הסוציולוג <b>מאיו-סמית</b> קרא ל"טמיעה" של המהגרים.</div></section>
+ <section><h4>🧽 מקור 3: מה דורשים מהמהגר?</h4>
+  <ul><li>💪 לשמור על <b>בריאות</b>, להיות חזק גופנית</li>
+  <li>🇬🇧 <b>שליטה באנגלית</b>, בלי מבטא רע ("אבן נגף" בדרך להתקדם)</li>
+  <li>📖 חינוך אינטלקטואלי, ⚽ ללמוד לשחק</li>
+  <li>⚖️ החובות והזכויות של <b>אזרח אמריקני</b></li></ul>
+  <div class="qt">"עליו להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות" · "צריך לעזור ליהודי להפוך חלק מהקהילה [האמריקנית]"</div>
+  <div class="key">🔄 השינוי: המונח "כור ההיתוך" נשאר, אבל עם <b>משמעות חדשה</b>: <b>תוותר על שלך ותהיה כמונו</b>. אין סובלנות לגיוון.</div></section>
+ <section><h4>🖼️ טמיעה במקור חזותי (עמ׳ 21)</h4>
+  <p>📷 <b>"משפחת מהגרים יהודים סביב 1900"</b>:</p>
+  <ul><li>👴 <b>האב והילדים הקטנים</b>: לבוש אירופאי מסורתי</li>
+  <li>👩 <b>האם (בלי כיסוי ראש) והצעירים</b>: לבוש אמריקאי לפי האופנה</li></ul>
+  <p>המשפחה <b>"מתפצלת"</b>: חלק כבר נטמע וחלק עוד לא.</p>
+  <div class="key">✍️ במקור חזותי: קודם <b>מתרגמים למילים</b> מה רואים, ואז מסבירים <b>מה זה אומר</b> (כאן: צעד ברור לקראת טמיעה).</div></section>
+ <section><h4>🎻 פלורליזם: הוראס קאלן, 1915 (עמ׳ 25)</h4>
+  <p>יוצא <b>נגד</b> ההנחה שכל המהגרים חייבים להפוך לאומה אחידה. לפי קאלן יש <b>שתי דרכים</b>:</p>
+  <p>1️⃣ <b>"אמריקה האנגלוסקסית"</b>: ביטול חינוך פרטי, ביטול שפות זרות, רק ספרות והיסטוריה אנגלית. <b>"דרך זו מובילה לעריצות"</b>.</p>
+  <p>2️⃣ <b>הדרך ההרמונית</b>: לא חוטאת לחוקה ולערכי אנוש.</p>
+  <div class="qt">"[אך] הם אינם יכולים להחליף את אבות אבותיהם. כדי שיהודים או פולנים או אנגלוסקסים יחדלו להיות... עליהם לחדול להיות"</div></section>
+ <section><h4>🎻 קאלן: התזמורת</h4>
+  <p>🏛️ בצורתה: <b>רפובליקה פדרלית</b>. במהותה: <b>"דמוקרטיה של לאומים"</b>.</p>
+  <p>🗣️ <b>אנגלית</b> = השפה המשותפת, אבל כל לאום <b>שומר על שפתו ותרבותו</b>.</p>
+  <div class="qt">"ריבוי בתוך אחדות, תזמור של האנושות"</div>
+  <p>🎻 כמו בתזמורת: לכל כלי <b>צליל משלו</b>, ויחד <b>סימפוניה אחת</b>. ההבדל: סימפוניה נכתבת לפני שמנגנים, ובחברה <b>"הנגינה היא היא הכתיבה"</b>.</p>
+  <div class="key">🥗 מאוחר יותר: דימוי <b>"קערת סלט"</b>: כל ירק נשאר הוא עצמו, ויחד מנה אחת.</div></section>
+ <section><h4>🎻 מאגנס 1909 (עמ׳ 26)</h4>
+  <p>👤 <b>יהודה ל׳ מאגנס</b>, רב רפורמי והוגה ציוני. <b>ביקורת על הטמיעה</b>:</p>
+  <ul><li>פער גדול בין המסורת לסביבה החדשה ← <b>הידרדרות</b></li>
+  <li>ילדי המיעוטים לא רוכשים ערכי תרבות מוצקים</li>
+  <li><b>"שרשרת המסורת נשברה"</b>, החוכמה והיופי של הדורות נעלמים</li>
+  <li>לא לועגים למי שנאמן לעצמו, אבל <b>לועגים למי שממהר "להיראות אמריקאי מושלם"</b></li></ul>
+  <div class="key">✍️ מה הפלורליזם נותן? שמירה על המסורת, כך ש<b>שרשרת הדורות לא נשברת</b>.</div></section>
+ <section><h4>🎻 הפלורליזם מתרחב (עמ׳ 26)</h4>
+  <ul><li>🔁 לקח <b>מציאות קיימת</b> (קבוצות ששמרו על נבדלות) והפך אותה ל<b>אידיאל</b></li>
+  <li>🏘️ ריבוי קהילות: דת, מוצא, חינוך, פוליטיקה, צדקה. <b>בחירה חופשית</b> ומעבר ביניהן</li>
+  <li>🤝 העיקרון: <b>"חייה ותן לחיות"</b> (live and let live). תומכיו ראו בטמיעה <b>גישה של עריצות</b></li>
+  <li>🌍 אחרי <b>מלחמת העולם ה-2</b>: דור 3-4 שומר זיקה, חוגים באוניברסיטאות</li>
+  <li>📜 <b>1972</b>: חוק פדרלי: "שימור האתניות הינו כוח חיובי ובונה בחברה שלנו"</li>
+  <li>🌱 משנות ה-70: <b>חיפוש שורשים</b>, גאווה במוצא</li></ul></section>
+ <section><h4>📊 היום: כל הגישות ביחד (עמ׳ 26)</h4>
+  <p>הפלורליזם <b>לא החליף</b> את הגישות הקודמות, הוא <b>נוסף</b> אליהן. הזירה הציבורית נעשתה <b>סובלנית יותר</b> ופחות מפלה.</p>
+  <p>אבל <b>כור ההיתוך ממשיך</b>:</p>
+  <ul><li>1990: <b>100 מיליון</b> אמריקנים לא ידעו להגדיר את מוצאם, או שהמוצא מעורב</li>
+  <li>איטלקים, 1997: <b>90%</b> מבני 65+ עם שני הורים איטלקים, אבל רק <b>18%</b> מהילדים מתחת לגיל 5</li>
+  <li>יהודים: <b>3.1 מיליון</b> (1990) ← <b>2.8 מיליון</b> (2001) = היטמעות</li></ul></section>
+ <section><h4>⚖️ השוואה בטבלה אחת</h4>
+  <table><tr><th></th><th>🔥 כור ההיתוך</th><th>🧽 טמיעה</th><th>🎻 פלורליזם</th></tr>
+  <tr><th>מתי</th><td>המאה ה-18</td><td>סוף המאה ה-19</td><td>1909-1915 ואחרי מלה״ע 2</td></tr>
+  <tr><th>מי</th><td>קרבקר</td><td>ברית חינוך, מאיו-סמית</td><td>קאלן, מאגנס</td></tr>
+  <tr><th>דימוי</th><td>כור, מתכת חדשה</td><td>"תהיה כמונו"</td><td>תזמורת, קערת סלט</td></tr>
+  <tr><th>תרבות המהגר</td><td>נמסה ותורמת לחדשה</td><td>נמחקת</td><td>נשמרת</td></tr>
+  <tr><th>התוצאה</td><td>אדם חדש</td><td>אמריקאי אנגלו-סקסי</td><td>ריבוי בתוך אחדות</td></tr>
+  <tr><th>עמוד</th><td>12</td><td>19, 21</td><td>25-26</td></tr></table></section>
+ <section><h4>📖 מפת הספר: איפה מה?</h4>
+  <ul><li><b>עמ׳ 12</b>: 🔥 קרבקר, הדימוי של כור ההיתוך, תערובת דמים, 5,000 מהגרים בשנה, "תנאי קבלה"</li>
+  <li><b>עמ׳ 19</b>: 🧽 "הדרישה להטמעה מהירה", "ייקלטו... ייפלטו", <b>מקור 3</b> (ברית חינוך)</li>
+  <li><b>עמ׳ 21</b>: 🧽 תמונת משפחת המהגרים (מקור חזותי)</li>
+  <li><b>עמ׳ 25</b>: 🎻 <b>מקור 6</b>: הוראס קאלן, 1915</li>
+  <li><b>עמ׳ 26</b>: 🎻 <b>מקור 7</b>: מאגנס, "חייה ותן לחיות", חוק 1972, הנתונים של היום</li></ul>
+  <div class="key">📗 הספר: פלורסהיים, י׳, <b>"תולדות ארצות הברית: חזון, משברים וצמיחה"</b>, מרכז זלמן שזר, ירושלים.</div></section>
+ </div>
+ <div class="smn"><button type="button" id="smp">→ הקודם</button><button type="button" class="pr" id="smf">הבא ←</button></div>
+</div></div>
+<!-- 💡 טיפים לבוחן בספר פתוח -->
+<div class="ov" id="ovt"><div class="pop sm">
+ <div class="smh"><h3>💡 איך ניגשים לבוחן בספר פתוח</h3><button class="wx" id="tpx" type="button" aria-label="סגירה">✕</button></div>
+ <div class="smd" id="tpd"></div>
+ <div class="smb" id="tpb">
+ <section><h4>🎯 מה מחכה לך ב-16.11</h4>
+  <ul><li>⏱️ <b>60 דקות</b> (10 דק׳ תוספת לזכאים)</li>
+  <li>📄 <b>שאלת מקור עם 2 סעיפים</b>: קטע, ושאלות עליו ועל הספר</li>
+  <li>📗 <b>ספר פתוח</b>: רק "תולדות ארצות הברית" (פלורסהיים)</li>
+  <li>🖍️ <b>מותר</b> מרקר ועיפרון. <b>אסור</b> לכתוב הערות בספר!</li></ul>
+  <div class="key">⚠️ הספר פתוח, אבל <b>אין זמן לחפש</b>. מי שסימן מראש מוצא תוך שניות, ויש לו זמן לכתוב.</div></section>
+ <section><h4>🖍️ שיטת הצבעים</h4>
+  <p>מרקר בצבע אחר <b>לכל גישה</b>. כך תדע מיד איפה כל דבר:</p>
+  <p><span class="hl hy">🟨 צהוב</span> = 🔥 כור ההיתוך (עמ׳ 12)</p>
+  <p><span class="hl hg">🟩 ירוק</span> = 🧽 טמיעה (עמ׳ 19-21)</p>
+  <p><span class="hl hb">🟦 כחול</span> = 🎻 פלורליזם (עמ׳ 25-26)</p>
+  <p>✏️ <b>עיפרון</b>: קו מתחת לשנים ולשמות (1776, 1820, 1893, 1909, 1915, 1972, קרבקר, קאלן, מאגנס).</p>
+  <div class="key">❗ מסמנים <b>משפטי מפתח</b>, לא פסקאות שלמות. עמוד שכולו צהוב = אי אפשר למצוא בו כלום.</div></section>
+ <section><h4>📍 מה לסמן: עמ׳ 12 🟨</h4>
+  <ul><li>"מאפיינים משותפים וערכים משותפים... תנאי הכרחי ליצירת אומה מלוכדת"</li>
+  <li>"תערובת דמים"</li>
+  <li>"בני אדם מכל האומות מותכים כאן לגזע אנשים חדש"</li>
+  <li>ההסבר של הכור: "מתכת חדשה אחת, שאיננה סכום של מרכיביו"</li>
+  <li>"פעילים, יזמים, חרוצים, עצמאים, בעלי כבוד עצמי"</li>
+  <li>5,000 מהגרים בשנה, פרוטסטנטים, "תנאי קבלה"</li></ul></section>
+ <section><h4>📍 מה לסמן: עמ׳ 19 🟩</h4>
+  <ul><li>הכותרת "הדרישה להטמעה מהירה"</li>
+  <li>"המוכשרים ייקלטו והנכשלים ייפלטו"</li>
+  <li>"ארגונים פרטיים... על בסיס מוצא אתני משותף"</li>
+  <li>במקור 3: "שליטה בשפה האנגלית", "להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות", "צריך לעזור ליהודי להפוך חלק מהקהילה"</li>
+  <li>"לבטל את ערכיהם הישנים לטובת זהותם החדשה", "האידיאל הראשוני של כור ההיתוך" שנעלם בהדרגה</li></ul>
+  <div class="key">🖼️ ובעמ׳ 21: מסגרת קטנה בירוק סביב <b>תמונת המשפחה</b> (המקור החזותי שלך לטמיעה).</div></section>
+ <section><h4>📍 מה לסמן: עמ׳ 25-26 🟦</h4>
+  <ul><li>קאלן: "דרך זו מובילה לעריצות"</li>
+  <li>קאלן: "אינם יכולים להחליף את אבות אבותיהם... עליהם לחדול להיות"</li>
+  <li>קאלן: "דמוקרטיה של לאומים", "ריבוי בתוך אחדות, תזמור של האנושות"</li>
+  <li>מאגנס: "שרשרת המסורת נשברה", "להיראות [אמריקאי] מושלם"</li>
+  <li>"חייה ותן לחיות", "גישה של עריצות"</li>
+  <li>1972: "שימור האתניות הינו כוח חיובי ובונה"</li>
+  <li>הנתונים: 100 מיליון, 90% ← 18%, 3.1 ← 2.8 מיליון</li></ul></section>
+ <section><h4>🧭 בבוחן: צעד אחר צעד</h4>
+  <p>1️⃣ קוראים את <b>כותרת השאלה</b>. היא אומרת על מה מדובר.</p>
+  <p>2️⃣ מקיפים את <b>הפועל</b>: הצג? הסבר? השווה?</p>
+  <p>3️⃣ קוראים את הקטע ו<b>מסמנים</b> 2-3 משפטי מפתח.</p>
+  <p>4️⃣ מזהים את הגישה: <b>מתיכים? מוחקים? מנגנים?</b></p>
+  <p>5️⃣ פותחים בספר <b>על הצבע</b> שלה, ורק אז כותבים.</p>
+  <div class="key">⏱️ <b>5 דק׳</b> קריאה · <b>25 דק׳</b> לכל סעיף · <b>5 דק׳</b> לבדיקה בסוף.</div></section>
+ <section><h4>📝 מה הפועל דורש?</h4>
+  <p><b>הצג / תאר</b> = "צילום מצב": מה, מי, מתי, איך נראה. <b>בלי</b> סיבות.</p>
+  <p><b>הסבר</b> = למה זה קרה, מה זה אומר, מה התוצאות.</p>
+  <p><b>הדגם</b> = דוגמה <b>מפורטת</b> מהספר, לא הכללה.</p>
+  <p><b>השווה</b> = מה <b>דומה</b> ומה <b>שונה</b>, לפי נושאים.</p>
+  <p><b>הערך / הבע עמדה</b> = עמדה, ואחריה עובדות שמבססות אותה.</p>
+  <div class="key">❗ שאלה עם 2 פעלים ("הציגו <b>והסבירו</b>") = עונים על <b>שניהם</b>.</div></section>
+ <section><h4>🧱 מבנה של תשובה</h4>
+  <p>🟢 <b>פתיחה</b> (משפט אחד): מי כתב ואיזו גישה.</p>
+  <p>🔵 <b>גוף</b>: מסבירים <b>במילים שלך</b> ← <b>ציטוט</b> במרכאות ← מה הציטוט מוכיח. וחוזר חלילה.</p>
+  <p>🟣 <b>סיום</b> (משפט אחד): חוזרים לשאלה.</p>
+  <div class="key">דוגמה לפתיחה: "הקטע של מאגנס מבטא את גישת <b>הפלורליזם התרבותי</b>, שהתגבשה בתחילת המאה ה-20 כביקורת על הדרישה להטמעה."</div></section>
+ <section><h4>📚 "בחרו מקור מספר הלימוד"</h4>
+  <p>חובה לציין: <b>שם הספר, ההוצאה והעמוד</b>. משפט מוכן:</p>
+  <div class="qt">"בחרתי במקור 3, מתוך פלורסהיים י׳, 'תולדות ארצות הברית', מרכז זלמן שזר, עמ׳ 19."</div>
+  <p>הכן מראש <b>מקור לכל גישה</b>:</p>
+  <p>🔥 קרבקר, עמ׳ 12 · 🧽 מקור 3, עמ׳ 19 (מילולי) + התמונה, עמ׳ 21 (חזותי) · 🎻 קאלן, עמ׳ 25 · מאגנס, עמ׳ 26</p></section>
+ <section><h4>⚠️ מה מוריד נקודות</h4>
+  <ul><li>❌ ציטוט <b>בלי הסבר</b> מה הוא מוכיח</li>
+  <li>❌ רק לספר מחדש את הקטע, בלי <b>המשמעות הרחבה</b></li>
+  <li>❌ להעתיק פסקה שלמה מהספר</li>
+  <li>❌ לענות רק על חלק (שכחת "את הסיבות"?)</li>
+  <li>❌ לבלבל בין הגישות (טמיעה ≠ כור ההיתוך)</li>
+  <li>❌ לשכוח שם ספר ועמוד</li></ul>
+  <div class="key">✅ לפני שמגישים: עוברים על השאלה מילה במילה, ובודקים שענית על כל חלק. בהצלחה! 💪</div></section>
+ </div>
+ <div class="smn"><button type="button" id="tpp">→ הקודם</button><button type="button" class="pr" id="tpf">הבא ←</button></div>
+</div></div>
+<div class="ov" id="ov2"><div class="pop"></div></div>
+<div class="ov top" id="ov3"><div class="pop wp">
+ <div class="wh"><h3>✍️ התשובה שלך</h3><button class="wx" id="wx" type="button" aria-label="סגירה">✕</button></div>
+ <div class="wq" id="wq"></div>
+ <textarea id="wt" maxlength="1500" placeholder="כתוב כאן, כמו בבוחן…"></textarea>
+ <div class="wf"><span id="wm" class="wm"></span><span id="wc" dir="ltr">0 / 1500</span></div>
+ <button class="cl" id="ws" type="button">📤 לשלוח לבדיקה</button>
+</div></div>
+<script src="../../track.js?v=9"></script>
+<script src="../../guess.js?v=1"></script>
+<script>
+// הכנה לבוחן בהיסטוריה של אביתר (אורן 14.11.2026; הבוחן ב-16.11.2026). כיתה י׳, היסטוריה מורחב, ספר פתוח.
+// החומר: "תולדות ארצות הברית" (פלורסהיים), עמ׳ 12, 19, 25-26 + ההכוונה של המורה (PDF): כור ההיתוך, טמיעה, פלורליזם תרבותי.
+// 4 חלקים (אורן): 📘 סיכום (עמודים קצרים), 📚 תרגול (אמריקאיות + פתוחות), 🎯 בוחן לדוגמה (שאלת מקור עם 2 סעיפים, Claude בודק), 💡 טיפים לבוחן בספר פתוח.
+// מפתח: ev_hist. שאלה = [שלב, שאלה, [נכונה, מסיחים...], הסבר]. פתוחה = [שלב, שאלה, null, תשובה לדוגמה, [מחוון], מזהה]. "קטע||שאלה" = קטע מעל השאלה.
+const ST=['כור ההיתוך','טמיעה','פלורליזם','מי אמר?','השוואה'];
+const BOOK='פלורסהיים י׳, "תולדות ארצות הברית: חזון, משברים וצמיחה", מרכז זלמן שזר';
+const A4=['כור ההיתוך (קרבקר)','טמיעה (ברית חינוך)','פלורליזם (קאלן)','פלורליזם (מאגנס)'];
+const ord=(a,i)=>[a[i]].concat(a.filter((x,k)=>k!==i)); // התשובה הנכונה ראשונה
+const TCR='"מהו איפוא האמריקאי, מהו אדם חדש זה? [...] אוכל להראות לך משפחה אשר סבה היה אנגלי ואשתו הולנדית ובנה נשא אישה צרפתייה. האמריקאי הוא זה אשר עזב מאחוריו את כל דעותיו הקדומות והרגליו הישנים, וקנה לו במקומם חדשים מאורח החיים החדש שעיצב לעצמו, מן הממשל החדש שהוא מציית לו ומן המעמד החדש שזכה בו [...] יחידי סגולה מכל האומות מותכים כאן לגזע אנשים חדש." <small>(קרבקר, "מכתבים מחוואי אמריקני")</small>';
+const TS3='"אנחנו חייבים ללמד את בן המהגרים לשמור על בריאותו, כדי שיהיה חזק מבחינה גופנית. לאחר מכן עלינו להעניק לו את השליטה בשפה האנגלית. כדבר שלישי עלינו להעניק לו חינוך אינטלקטואלי [...] ועלינו ללמד אותו את החובות והזכויות של אזרח אמריקני [...] עליו להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות, מוזרויות המרחיקות מעליו את שכניו. למשל יש לבטא את האנגלית בבירור ובבהירות. מבטא אנגלי רע, אף שהוא שולי כשלעצמו, עלול להוות אבן נגף בדרכו של צעיר המבקש להתקדם [...] צריך לעזור ליהודי להפוך חלק מהקהילה [האמריקנית]." <small>(מקור 3, מייסדי "ברית חינוך", עמ׳ 19)</small>';
+const TMG='"הפער בין התרבות הלאומית המסורתית ובין הסביבה החדשה הוא לעיתים גדול ביותר, ומוביל לסוגים שונים של הידרדרות. ילדי המיעוטים לעיתים קרובות אינם משתווים להוריהם בכל הקשור לרכישת ערכי תרבות מוצקים, משום ששרשרת המסורת נשברה, והחוכמה והיופי המצטברים של הדורות נעלמים. לעיתים נדירות ילעגו לבן המיעוט על שהוא נאמן לעצמו, שומר באהבה על שפתו ומטפח את תרבותו המסורתית. לעומת זאת לעיתים קרובות לועגים ובזים לו על חפזונו המגוחך להיטמע בסביבתו ולהיראות [אמריקני] מושלם." <small>(יהודה ל׳ מאגנס, 1909, עמ׳ 26)</small>';
+const TKL='"אנשים עשויים להחליף את בגדיהם, את מדיניותם, את נשותיהם, דתם, את השקפת עולמם במידה זו או אחרת, [אך] הם אינם יכולים להחליף את אבות אבותיהם. כדי שיהודים או פולנים או אנגלוסקסים יחדלו להיות יהודים או פולנים או אנגלוסקסים, עליהם לחדול להיות [...] לפי צורתה תהיה זו רפובליקה פדרלית; במהותה, דמוקרטיה של לאומים [...] הלשון המשותפת לכל בני הקהילייה [...] תהיה האנגלית. אך בני כל לאום ישתמשו בלשונם ובצורות האינטלקטואליות והאסתטיות המיוחדות להם [...] וכך תוכל הציוויליזציה האמריקנית להיות [...] ריבוי בתוך אחדות, תזמור של האנושות." <small>(הוראס קאלן, 1915, עמ׳ 25)</small>';
+const QS=[
+// שלב 1: כור ההיתוך (עמ׳ 12)
+[0,'מי השתמש לראשונה בדימוי "כור ההיתוך" כדי להסביר איך נוצרה האומה האמריקאית?',['קרבקר, בספרו "מכתבים מחוואי אמריקני" במאה ה-18','הוראס קאלן, במאמר שלו על הדמוקרטיה האמריקאית מ-1915','יהודה ל׳ מאגנס, במאמר שלו על ילדי המיעוטים מ-1909','מייסדי "ברית חינוך" בניו יורק, בהצהרת הכוונות שלהם'],'<b>קרבקר</b>, במאה ה-18, תיאר לראשונה את האמריקאי כ"אדם חדש" שנוצר בכור ההיתוך (עמ׳ 12).'],
+[0,'מה מסמל הדימוי של "כור ההיתוך"?',['מתכות שונות נמסות יחד, ונוצרת מתכת חדשה שונה מכל אחת מהן','מתכת אחת חזקה בולעת את כל השאר, וכולן הופכות להיות בדיוק כמוה','כל מתכת נשמרת בנפרד בתוך הכור, וכולן יושבות זו לצד זו','המתכות החלשות נשרפות בכור, ורק החזקות ביותר שורדות בו'],'בכור נוצרת <b>מתכת חדשה</b>, שאינה סכום המרכיבים אלא <b>תוצר חדש וייחודי</b>, אף שכל מתכת תרמה לה. "בולעת את השאר" = טמיעה, "זו לצד זו" = פלורליזם.'],
+[0,'לפי קרבקר, מה הופך מהגר ל"אדם חדש"?',['הוא עוזב את דעותיו הקדומות והרגליו הישנים, ומאמץ אורח חיים, ממשל ומעמד חדשים','הוא לומד אנגלית, מחליף את בגדיו ואת שמו, ומתרחק מכל מה שהביא איתו מארץ המוצא שלו','הוא שומר על שפתו ותרבותו, ומצטרף לקהילה של אנשים ממוצא דומה לשלו','הוא מקבל אזרחות אמריקאית, ונשבע אמונים לחוקה ולמוסדות הפדרליים'],'קרבקר: "האמריקאי הוא זה אשר <b>עזב מאחוריו את כל דעותיו הקדומות והרגליו הישנים</b>, וקנה לו במקומם חדשים".'],
+[0,'מה הייתה "תערובת הדמים" שקרבקר תיאר?',['נישואי תערובת בין אנשים ממוצא שונה, למשל אנגלים, הולנדים וצרפתים','מגורים משותפים של מהגרים מארצות שונות באותן שכונות צפופות בערים הגדולות','עבודה משותפת של מהגרים ממוצא שונה במפעלים ובחוות הגדולות של המושבות','לימוד משותף של ילדי מהגרים ממוצא שונה באותם בתי ספר ציבוריים'],'"תערובת דמים" = מאפיין <b>ביולוגי</b>: <b>נישואי תערובת</b>. "סבה היה אנגלי ואשתו הולנדית ובנה נשא אישה צרפתייה".'],
+[0,'אילו תכונות, לפי קרבקר, אפיינו את האמריקאים החדשים?',['פעילים, יזמים, חרוצים, עצמאיים ובעלי כבוד עצמי','צייתנים, שקטים, נאמנים למלך ושומרי מסורת אבותיהם','עשירים, משכילים, בעלי קרקעות ובני מעמד האצולה','דתיים, מאוחדים סביב כנסייה אחת ונאמנים לקהילתם'],'בארץ החדשה הם הפכו ל"<b>פעילים, יזמים, חרוצים, עצמאים, בעלי כבוד עצמי</b>, הנהנים מברכות החירות והשוויון" (עמ׳ 12).'],
+[0,'מה אפשר לחברה האמריקאית להתגבש בתנאים נוחים ב-50 השנים שאחרי העצמאות?',['הגיעו רק כ-5,000 מהגרים בשנה, ולכן היה זמן לגבש חברה משותפת','הממשלה הקימה מוסדות קליטה שלימדו כל מהגר אנגלית ואת ערכי המדינה','המהגרים הגיעו ממזרח ומדרום אירופה, וכולם דיברו שפות קרובות זו לזו','נחקק חוק שחייב כל מהגר להתיישב רחוק מבני הארץ שממנה הגיע'],'אחרי העצמאות הגיעו רק <b>כ-5,000 מהגרים בשנה</b>, וזה אפשר להמשיך את הגיבוש של המדינה הצעירה בתנאים נוחים.'],
+[0,'מה היה אחד המאפיינים המשותפים של החברה האמריקאית שהתגבשה עד 1820?',['שייכות דתית פרוטסטנטית, לצד נורמות וערכים מוסכמים','שייכות דתית קתולית, לצד מסורת של כבוד עמוק למלך אנגליה','שפה צרפתית משותפת, לצד מנהגים שהגיעו מצפון אירופה','מוצא משותף מאירלנד, לצד עבודה משותפת בחקלאות'],'עד 1820 התגבשה חברה <b>הומוגנית</b> למדי. "בין המאפיינים המשותפים בלט <b>השיוך הדתי הפרוטסטנטי</b>".'],
+[0,'מה הפך בהמשך ל"תנאי קבלה" למהגרים החדשים?',['האתוס האמריקני: מערכת הערכים והנורמות שהתגבשה עד 1820','מבחן בשפה האנגלית ובהיסטוריה של שלוש עשרה המושבות האנגליות','הוכחה שיש למהגר כסף ועבודה מובטחת בארצות הברית','המלצה מקהילה אתנית ותיקה שמוכנה לקלוט את המהגר'],'מערכת הערכים המוסכמת הייתה "הגרעין להגדרת <b>האתוס האמריקני</b>, שהיה אחר כך <b>תנאי קבלה</b> למהגרים החדשים".'],
+[0,'בשנת 1776 בני המושבות הכריזו על היפרדות מאנגליה. מה היה מיוחד בצעד הזה?',['כינונה של אומה חדשה בארץ חדשה, בלי מורשת היסטורית ובלי מיתוסים עתיקים','איחוד מחדש עם אנגליה אחרי שנים של מלחמה קשה, בתנאים טובים יותר למושבות','הקמה של ממלכה חדשה עם מלך אמריקאי, במקום המלך האנגלי שהודח','החלטה לסגור את הגבולות ולהפסיק לגמרי את ההגירה מאירופה לאמריקה'],'זה היה צעד "ראשון מסוגו": <b>אומה חדשה בארץ חדשה</b>, בלי מורשת היסטורית ומיתוסים. את כל זה היה צריך לברוא מחדש.'],
+[0,'מה יצר מתח אצל המתיישבים הראשונים שהגיעו מאנגליה?',['המעמד שלהם כנתיני המלך האנגלי, מול האווירה השוויונית שהלכה והתפשטה במושבות','השפה שלהם, שהייתה שונה מאוד מהשפה של רוב המתיישבים האחרים שהגיעו למושבות לפניהם','הדת שלהם, שהייתה קתולית, מול רוב פרוטסטנטי שלא הסכים לקבל אותה','העוני שלהם, מול העושר הגדול של המתיישבים שהגיעו מצרפת ומהולנד'],'"אפשר היה לחוש במתח גובר והולך בין מעמדם וזהותם של המהגרים <b>כנתיני המלך האנגלי</b> ובין <b>האווירה השוויונית</b> שהלכה והתפשטה במושבות".'],
+[0,'הציגו את גישת "כור ההיתוך" והסבירו את הדימוי שעליו היא מבוססת.',null,'גישת <b>כור ההיתוך</b> התגבשה במאה ה-18, וקרבקר ("מכתבים מחוואי אמריקני") השתמש לראשונה בדימוי הזה. לפי הגישה, המהגרים מכל העמים <b>מתמזגים</b> ויוצרים <b>אומה חדשה</b>: "בני אדם מכל האומות מותכים כאן לגזע אנשים חדש". הדימוי הוא של כור לוהט, שקולט מתכות שונות ומהן נוצרת <b>מתכת חדשה אחת</b>, שאינה סכום המרכיבים אלא תוצר חדש, אף שכל מתכת תרמה לה תכונות. כך גם האמריקאי: <b>"אדם חדש"</b> שעזב את הרגליו הישנים, וכל תרבות תרמה משהו לאומה החדשה.',['שם הגישה + קרבקר, המאה ה-18','הדימוי: מתכות שונות נמסות ונוצרת מתכת חדשה','המשמעות: "אדם חדש", לא סכום המרכיבים','כל תרבות תורמת משהו לאומה החדשה','ציטוט מהספר'],'o1'],
+[0,TCR+'||דה קרבקר הציג את האמריקאי "כאדם חדש". הסבירו על פי הקטע ועל פי מה שלמדתם כיצד התגבשו המהגרים לארצות הברית לאומה אחת.',null,'<b>פתיחה:</b> קרבקר מבטא את גישת <b>כור ההיתוך</b> בגיבוש האומה האמריקאית. <b>גוף:</b> לפי הגישה, האמריקאי הוא אדם חדש שנוצר ממיזוג <b>ביולוגי</b> ו<b>תרבותי</b>. מיזוג ביולוגי: נישואי תערובת, "סבה היה אנגלי ואשתו הולנדית ובנה נשא אישה צרפתייה". מיזוג תרבותי: המהגר מוותר על אמונותיו והרגליו ומאמץ חדשים: "עזב מאחוריו את כל דעותיו הקדומות והרגליו הישנים". מקומו של אדם נקבע לפי הישגיו ולא לפי מוצאו, והפער בין המעמדות הצטמצם. עניי אירופה הפכו לאזרחים שווי זכויות, בלי עליונות של תרבות אחת על השנייה: "יחידי סגולה מכל האומות מותכים כאן לגזע אנשים חדש". <b>סיום:</b> כך גישת כור ההיתוך הייתה דרך לגיבוש אומה אחת.',['זיהוי הגישה: כור ההיתוך','מיזוג ביולוגי: נישואי תערובת + ציטוט','מיזוג תרבותי: עוזב הרגלים ישנים + ציטוט','מעמד לפי הישגים, שוויון בין התרבויות','מבנה: פתיחה, גוף, סיום'],'o2'],
+// שלב 2: טמיעה (עמ׳ 19)
+[1,'מה הייתה מדיניות הממשל כלפי קליטת המהגרים בשנות ההגירה?',['הארץ פתוחה וההגירה חופשית, והמהגרים צריכים להסתדר בכוחות עצמם','הממשל בחר מהגרים לפי מקצוע, ושלח כל אחד לעבודה שהתאימה לו','הממשל הקים מחנות קליטה, שבהם לימדו את המהגרים אנגלית ואזרחות','ההגירה הוגבלה במכסות, ורק מי שהיה לו קרוב משפחה יכול היה להגיע'],'"הארץ פתוחה וההגירה חופשית, ועם בואם על <b>המהגרים להסתדר בכוחות עצמם</b>". הממשל לא טיפל בקליטה כלל.'],
+[1,'מה פירוש ההנחה "המוכשרים ייקלטו והנכשלים ייפלטו"?',['מי שמסוגל יצליח, מי שלא יצליח ייפול, ואין מקום להתערבות של השלטון','הממשל יעזור רק למוכשרים, ואת הנכשלים ישלח בחזרה באונייה לארץ המוצא שלהם','הקהילות האתניות יקלטו את המוכשרים, והמדינה תטפל בכל הנכשלים','מי שנכשל יקבל הזדמנות שנייה במוסדות החינוך הפרטיים בערים'],'זו הייתה ההנחה מאחורי <b>אי-ההתערבות של הממשל</b>: כל אחד מסתדר לבד, "ואין מקום להתערבות השלטון".'],
+[1,'מי טיפל בפועל במהגרים, כשהממשל לא התערב?',['ארגונים פרטיים, בעיקר על בסיס מוצא משותף, כמו "ברית חינוך"','משרדי ממשלה מיוחדים, שהוקמו בכל עיר נמל שאליה הגיעו אוניות של מהגרים','הצבא האמריקאי, שגייס את המהגרים ולימד אותם את ערכי המדינה','הכנסיות הפרוטסטנטיות, שדרשו מכל המהגרים להמיר את דתם'],'בגלל קשיי ההשתלבות "קמו <b>ארגונים פרטיים</b>... בעיקר על בסיס <b>מוצא אתני משותף</b>". למשל "ברית חינוך".'],
+[1,'מה הייתה "ברית חינוך"?',['ארגון בניו יורק, שהקימו יהודים ותיקים כדי לסייע למהגרים יהודים חדשים','בית ספר ממשלתי גדול בניו יורק, שבו למדו יחד ילדי מהגרים מכל העמים והדתות','ארגון של מהגרים יהודים חדשים, שנאבק על זכותם לשמור על שפתם','איגוד של מורים אמריקאים, שהתנגד לכניסת ילדי מהגרים לבתי הספר'],'"ברית חינוך" (Educational Alliance) נוסד ב-<b>1893</b> בניו יורק על ידי <b>יהודים ותיקים</b>, כדי לסייע ל<b>מהגרים היהודים החדשים</b>.'],
+[1,'במה עסקה "ברית חינוך" בעיקר?',['פעילות תרבותית: שיעורי אנגלית, ספורט, בריאות, חוגים וקייטנות','פעילות פוליטית: הפגנות נגד הממשל ומאבק על זכויות העבודה של המהגרים','פעילות כלכלית: הלוואות לעסקים קטנים ומציאת עבודה במפעלים','פעילות דתית: בתי כנסת, לימוד תורה ושמירה על מנהגי הקהילה'],'פעילותם הייתה "בעיקר בתחום התרבות": <b>שיעורי אנגלית</b>, אמנויות, <b>ספורט, בריאות</b>, טקסים, חוגים לילדים ו<b>קייטנות</b>. המטרה: קידום השילוב והאצת האמריקניזציה.'],
+[1,'לפי מקור 3, מה הדבר הראשון שצריך ללמד את בן המהגרים?',['לשמור על בריאותו, כדי שיהיה חזק מבחינה גופנית','לדבר בשפה של הוריו, כדי לשמור על הקשר במשפחה','להכיר את ההיסטוריה של ארץ המוצא, כדי שיתגאה בה','לכבד את מנהגי הדת, כדי שלא יתרחק מהקהילה שלו'],'מקור 3: "אנחנו חייבים ללמד את בן המהגרים <b>לשמור על בריאותו</b>, כדי שיהיה <b>חזק מבחינה גופנית</b>". אחר כך: אנגלית, ואז חינוך אינטלקטואלי.'],
+[1,'לפי מקור 3, ממה צריך בן המהגרים "להיפטר"?',['ממוזרויות בלבוש, בדיבור ובהתנהגות, שמרחיקות ממנו את שכניו','מהחובות שלו כלפי הקהילה היהודית, כדי שיהיה חופשי לגמרי להתקדם','מהשאיפה להתקדם וללמוד, כי היא מעוררת קנאה אצל הוותיקים','מהחברים שלו מהשכונה, כי הם מעכבים את ההשתלבות שלו'],'"עליו <b>להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות</b>, מוזרויות המרחיקות מעליו את שכניו". זו הדרישה להיטמע.'],
+[1,'איך מקור 3 מסביר למה צריך לבטא אנגלית בבירור?',['מבטא אנגלי רע, גם אם הוא שולי, עלול להיות אבן נגף בדרכו של צעיר שרוצה להתקדם','מבטא אנגלי רע מעליב את האמריקאים הוותיקים, ולכן אסור להשתמש בשפה זרה בכלל, גם לא בבית','מבטא אנגלי רע מונע מהמהגר לקבל אזרחות, ולכן חייבים לעבור מבחן הגייה','מבטא אנגלי רע מראה שהמהגר לא אוהב את אמריקה, ולכן הוא עלול להישלח חזרה'],'"מבטא אנגלי רע, אף שהוא שולי כשלעצמו, עלול להוות <b>אבן נגף</b> בדרכו של צעיר המבקש <b>להתקדם</b>".'],
+[1,'מה גרם לחברה הוותיקה לדרוש מהמהגרים להיטמע מהר?',['קשיי ההשתלבות של המהגרים ותופעות כמו פשיעה, שעוררו דאגה בחברה הוותיקה','רצונם של המהגרים החדשים לשמור על תרבותם ועל שפתם בתוך קהילות סגורות ונבדלות','חוק פדרלי שחייב כל מדינה בארצות הברית לקלוט מכסה של מהגרים','מלחמה עם אנגליה, שבגללה כל מי שדיבר שפה זרה נחשד בבגידה'],'קשיי ההשתלבות ותופעות כמו פשיעה "גרמו ל<b>דאגה</b> בקרב בני החברה הוותיקה, והם הגיבו ב<b>דרישות תקיפות</b>" מהמהגרים ומהממשל.'],
+[1,'איך השתנה הרעיון של "כור ההיתוך" בתקופת הדרישה להטמעה?',['המונח נשאר, אבל קיבל משמעות חדשה: דרישה מהמהגרים להיטמע ולוותר על תרבותם','המונח נעלם לגמרי, והמהגרים התחילו לכנות את עצמם "אמריקאים חדשים" בלבד','המונח התחזק, וכל העמים תרמו מתרבותם באופן שווה ממש לתרבות האמריקאית החדשה','המונח הוחלף ב"קערת סלט", כי הוותיקים רצו שכל קבוצה תישמר בנפרד מהשאר'],'"האידיאל הראשוני של כור ההיתוך נעלם בהדרגה. רבים המשיכו להשתמש במונח... אבל <b>במשמעות חדשה של דרישה להטמעה</b>".'],
+[1,'מה ההבדל בין הציפיות של "כור ההיתוך" הקלאסי לבין הדרישה להטמעה?',['בכור ההיתוך כולם תורמים לתרבות חדשה; בהטמעה המהגר מוותר על תרבותו ומאמץ את זו של הוותיקים','בכור ההיתוך המהגר מוותר על תרבותו לגמרי; בהטמעה כל קבוצה שומרת על תרבותה ושפתה בנפרד מהאחרות','בכור ההיתוך המדינה מטפלת במהגרים; בהטמעה הם מסתדרים לבד, בלי שום ארגון שעוזר להם','בכור ההיתוך מתקבלים רק אנגלים; בהטמעה מתקבלים מהגרים מכל מקום בעולם, בלי הגבלה'],'בכור ההיתוך נוצר <b>משהו חדש מכולם</b>. בטמיעה יש <b>תרבות אחת</b> (של הוותיקים) והמהגר צריך <b>לבטל את ערכיו הישנים</b> לטובתה.'],
+[1,'הציגו את גישת הטמיעה, והסבירו מה היא דורשת מהמהגר.',null,'גישת <b>הטמיעה</b> (הטמעה) התגבשה בסוף המאה ה-19, כשגלי הגירה גדולים יצרו קשיי השתלבות ודאגה בחברה הוותיקה. לפי הגישה, הצלחת המהגר תלויה בכך ש<b>יזנח את התרבות והערכים של ארץ המוצא</b> ויאמץ את התרבות של <b>האמריקאים הוותיקים</b> (האנגלו-סקסית): השפה האנגלית, הלבוש, ההתנהגות וערכי האזרח האמריקני. במקור 3 של "ברית חינוך" נכתב: "עליו להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות". כך המונח "כור ההיתוך" קיבל משמעות חדשה: לא יצירה של משהו חדש מכולם, אלא <b>ויתור</b> של המהגר על זהותו.',['שם הגישה + מתי (סוף המאה ה-19)','למה: הגירה גדולה, קשיים, דאגה של הוותיקים','הדרישה: לוותר על תרבות ארץ המוצא','לאמץ אנגלית ותרבות הוותיקים','ציטוט, למשל ממקור 3'],'o3'],
+[1,TS3+'||הסבירו כיצד גישת הטמיעה באה לידי ביטוי בקטע. שלבו לפחות שני ציטוטים.',null,'הקטע של מייסדי "ברית חינוך" מבטא את <b>גישת הטמיעה</b>. הם רוצים "ללמד" את המהגר להיות אמריקאי, ולבטל את הסממנים ה"גלותיים" שהביא איתו: מראה גופני, שפה, לבוש והתנהגות. למשל "עלינו להעניק לו את <b>השליטה בשפה האנגלית</b>", ו"עליו <b>להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות</b>". המטרה היא שהמהגר יוותר על הזהות שהביא ויקבל זהות חדשה לפי הערכים האמריקאיים: "צריך לעזור ליהודי <b>להפוך חלק מהקהילה</b> [האמריקנית]". זו בדיוק הטמיעה: רק אימוץ אורח החיים המקומי יאפשר למהגר להיקלט.',['זיהוי הגישה: טמיעה','הסבר: ויתור על סממני ארץ המוצא','ציטוט ראשון + הסבר מה הוא מוכיח','ציטוט שני + הסבר מה הוא מוכיח','המטרה: להפוך חלק מהקהילה האמריקאית'],'o4'],
+[1,'אילו מחירים עלולה הדרישה להטמעה לגבות מהמהגר ומהחברה כולה? הסבירו.',null,'<b>מהמהגר:</b> הוא נדרש לוותר על השפה, המנהגים והזהות שלו. נוצר נתק בין הדורות: הילדים נטמעים מהר וההורים נשארים מאחור, ו"שרשרת המסורת נשברה" (מאגנס). המהגר עלול לחוש זר, ולהילעג על "חפזונו המגוחך להיטמע". <b>מהחברה:</b> החברה מאבדת את העושר התרבותי שהמהגרים הביאו, ואין סובלנות לגיוון. לפי קאלן, הדרך הזו (ביטול חינוך פרטי ושפות זרות) "מובילה לעריצות" ולא מתאימה לעקרונות הדמוקרטיה.',['מחיר למהגר: ויתור על זהות, שפה, מנהגים','נתק בין הדורות / שרשרת המסורת נשברת','מחיר לחברה: אובדן העושר התרבותי, אין סובלנות','קישור לקאלן או למאגנס'],'o5'],
+// שלב 3: פלורליזם תרבותי (עמ׳ 25-26)
+[2,'מתי ועל ידי מי נוסחה גישת הפלורליזם התרבותי?',['בתחילת המאה ה-20, על ידי אינטלקטואלים כמו הוראס קאלן','במאה ה-18, על ידי קרבקר והמתיישבים הראשונים מאנגליה','בסוף המאה ה-19, על ידי מייסדי "ברית חינוך" בעיר ניו יורק','אחרי מלחמת העולם השנייה, על ידי הממשל הפדרלי בחוק'],'"בתחילת המאה ה-20 הלכה והתגבשה השקפה חדשה... השקפה זו נוסחה בידי מספר <b>אינטלקטואלים</b>". למשל <b>הוראס קאלן</b>, 1915.'],
+[2,'נגד איזו הנחה יצאה גישת הפלורליזם התרבותי?',['שכל המהגרים יכולים וצריכים ליצור בסוף אומה אחידה ומלוכדת','שהממשל צריך להתערב בקליטה ולממן ארגונים של מהגרים','שכל קבוצה אתנית צריכה לשמור על שפתה ועל תרבותה המקורית לאורך הדורות','שמהגרים מאירופה צריכים לקבל אזרחות מיד כשהם מגיעים'],'"השקפה חדשה, שיצאה נגד ההנחה שכל המהגרים שמגיעים לארצות הברית <b>יכולים וצריכים ליצור בסופו של דבר אומה הומוגנית ולכידה</b>".'],
+[2,'לפי קאלן, מה הדבר שאדם לא יכול להחליף?',['את אבות אבותיו, כלומר את המוצא ואת המורשת שלו','את בגדיו ואת השקפת עולמו, כי הם חלק עמוק ממנו','את דתו ואת אשתו, כי הם נקבעים לפי החוק','את מקום מגוריו ואת עבודתו, כי הם נקבעים בכוח'],'"אנשים עשויים להחליף את בגדיהם... דתם, את השקפת עולמם... [אך] הם <b>אינם יכולים להחליף את אבות אבותיהם</b>".'],
+[2,'לפי קאלן, לאן מובילה הדרך של "אמריקה האנגלוסקסית"?',['לעריצות: ביטול חינוך פרטי ושפות זרות, ולימוד רק לפי המסורת האנגלית','לשגשוג: כולם ידברו שפה אחת, ויבינו זה את זה הרבה יותר טוב בעבודה ובחיים','לאחדות: כל העמים יתמזגו יחד לתרבות חדשה, שונה מכל אחת מהן','לפילוג: כל קבוצה תקים מדינה עצמאית משלה בתוך ארצות הברית'],'הדרך הזו מחייבת "ביטול של כל מוסדות החינוך הפרטיים... ביטול השימוש בכל שפה זרה... [ו]הוראת הספרות וההיסטוריה על פי המסורת האנגלית". "<b>דרך זו מובילה לעריצות</b>".'],
+[2,'מה ההצעה של קאלן?',['"דמוקרטיה של לאומים": אנגלית משותפת, וכל לאום שומר על שפתו ותרבותו','"רפובליקה אנגלית": כל הלאומים לומדים רק אנגלית ושוכחים את שפתם','"מדינה לכל לאום": כל קבוצה מקבלת מדינה נפרדת בתוך הפדרציה, עם חוקים משלה','"כור היתוך חדש": כל הלאומים מתערבבים בנישואים ונעלמים לגמרי'],'"לפי צורתה תהיה זו רפובליקה פדרלית; במהותה, <b>דמוקרטיה של לאומים</b>". השפה המשותפת אנגלית, "אך בני כל לאום ישתמשו בלשונם".'],
+[2,'למה קאלן משווה את החברה האמריקאית?',['לתזמורת: לכל כלי צליל משלו, ויחד הם מנגנים סימפוניה אחת','לכור היתוך: כל המתכות נמסות יחד, ויוצאת מתכת חדשה ואחידה','לבית ספר: כולם לומדים אותו חומר, ומקבלים אותו ציון','לצבא: כולם לובשים מדים זהים, ומצייתים למפקד אחד'],'"<b>ריבוי בתוך אחדות, תזמור של האנושות</b>. כמו בתזמורת, לכל כלי שמור הייחוד שלו... כך גם בחברה, כל קבוצה אתנית עשויה לשמש ככלי נגינה טבעי".'],
+[2,'מה ההבדל שקאלן מצביע עליו בין סימפוניה מוזיקלית לבין "הסימפוניה של הציוויליזציה"?',['במוזיקה כותבים לפני שמנגנים; בחברה הנגינה היא הכתיבה, ואיש לא יודע מראש','במוזיקה יש מנצח אחד; בחברה כל קבוצה מנצחת על עצמה, בלי מנהיג משותף','במוזיקה כל הכלים שווים; בחברה יש כלי אחד חשוב באמת, והשאר רק מלווים אותו','במוזיקה מנגנים בשקט; בחברה כל קבוצה צריכה להשמיע קול חזק מהשנייה'],'"הסימפוניה המוסיקלית נכתבת בטרם תנוגן, ואילו בסימפוניה של הציוויליזציה <b>הנגינה היא היא הכתיבה</b>". היא לא מוכתבת מראש.'],
+[2,'לפי מאגנס (1909), מה קורה לילדי המיעוטים כשהפער בין התרבות המסורתית לסביבה החדשה גדול?',['שרשרת המסורת נשברת, והחוכמה והיופי שנצברו בדורות נעלמים','הם מצליחים יותר מהוריהם, כי הם מתנתקים מהר מהמסורת הישנה','הם נשארים בקהילה שלהם, ולא לומדים בכלל את השפה האנגלית','הם הופכים לאמריקאים מושלמים, והסביבה מעריכה אותם על כך'],'"ילדי המיעוטים... אינם משתווים להוריהם... משום ש<b>שרשרת המסורת נשברה</b>, והחוכמה והיופי המצטברים של הדורות נעלמים".'],
+[2,'לפי מאגנס, על מה לועגים לבן המיעוט לעיתים קרובות?',['על חיפזונו המגוחך להיטמע בסביבתו ולהיראות אמריקאי מושלם','על נאמנותו לעצמו, על שמירת שפתו ועל טיפוח תרבותו המסורתית','על המבטא הזר שלו, שמסגיר שהוא הגיע ממשפחה של מהגרים','על הבגדים המסורתיים שלו, שנראים מוזרים ברחובות העיר'],'זה ההפך ממה שאולי חושבים: על נאמנות לעצמו לועגים <b>לעיתים נדירות</b>, ו"לעיתים קרובות לועגים ובזים לו על <b>חפזונו המגוחך להיטמע</b>".'],
+[2,'מה פירוש העיקרון "חייה ותן לחיות" (live and let live), שעליו מבוסס הפלורליזם?',['כל אחד חופשי לחיות לפי תרבותו ולבחור לאיזו קהילה להשתייך, ומכבד את בחירת האחר','כל אחד דואג רק לעצמו ולא מתערב בבעיות של אחרים, גם כשהם צריכים עזרה','כל קבוצה חיה בשכונה משלה ולא נפגשת עם קבוצות אחרות, כדי למנוע סכסוכים ומתחים ביניהן','כל מהגר מקבל זמן להתרגל, ואחרי כמה שנים חייב לאמץ את התרבות האמריקאית'],'הפלורליזם מאפשר "לכל אחד <b>לבחור את הקהילה שאליה ישתייך</b>", עם תנועה חופשית בין קהילות. תומכיו ראו בטמיעה "גישה של עריצות".'],
+[2,'מה עשה הפלורליזם עם המציאות שהייתה קיימת בפועל?',['לקח מציאות של קבוצות ששמרו על נבדלות, והפך אותה לאידיאל שכדאי לשאוף אליו','לקח מציאות של קבוצות שהתערבבו זו בזו, והפך אותה לחוק פדרלי שמחייב את כל המהגרים','לקח מציאות של קבוצות שנאבקו זו בזו, והפריד ביניהן בגבולות של מדינות','לקח מציאות של קבוצות עניות, ונתן להן תקציבים כדי שיצליחו להשתלב'],'"ההצעה הצביעה על מציאות שהייתה קיימת בפועל, ובה קבוצות אתניות שמרו על נבדלותן, וביקשה <b>להפוך מציאות זו לאידיאל</b>".'],
+[2,'מה קבע החוק הפדרלי של 1972?',['תקציבים לחקר קבוצות אתניות באוניברסיטאות, כי "שימור האתניות הינו כוח חיובי ובונה"','איסור ללמד שפות זרות בבתי ספר ציבוריים, כדי לחזק את השפה האנגלית המשותפת','מכסות הגירה קבועות לכל לאום, כדי לשמור על איזון מספרי בין הקבוצות האתניות בארצות הברית','חובה על כל מהגר ללמוד אזרחות ואנגלית, לפני שהוא מקבל זכות הצבעה בבחירות'],'ב-1972 נחקק חוק שהקצה <b>תקציבים ממשלתיים</b> לפעולות כאלה במוסדות להשכלה גבוהה. בחוק נאמר: "<b>שימור האתניות הינו כוח חיובי ובונה</b> בחברה שלנו".'],
+[2,'מה עשו רבים מבני הדור השלישי והרביעי למהגרים, אחרי מלחמת העולם השנייה?',['המשיכו לשמור על זיקה עמוקה לקבוצה האתנית המקורית שלהם','החליפו את שמות המשפחה שלהם לשמות אנגליים כדי להשתלב','עזבו את ארצות הברית וחזרו לארצות שמהן הגיעו הוריהם','הפסיקו לדבר על מוצאם, כי התביישו בו ורצו להסתיר אותו מכולם'],'הגישה צברה תאוצה אחרי מלחמת העולם השנייה: "רבים מבני הדור השלישי והרביעי למהגרים <b>המשיכו לשמור על זיקה עמוקה</b> אל הקבוצה האתנית המקורית שלהם".'],
+[2,'הסבירו מדוע קאלן טוען שהדרישה להטמעה לא מתאימה לעקרונות הדמוקרטיה.',null,'קאלן (1915) טוען שאדם יכול להחליף בגדים, דת או השקפת עולם, אבל "הם <b>אינם יכולים להחליף את אבות אבותיהם</b>": הזהות והמורשת הן חלק ממנו. לכן לדרוש ממנו להיטמע זה לדרוש ממנו "לחדול להיות". הדרך האנגלוסקסית מחייבת ביטול חינוך פרטי, ביטול שפות זרות ולימוד רק לפי המסורת האנגלית, ו"דרך זו <b>מובילה לעריצות</b>". דמוקרטיה מבוססת על <b>חירות ושוויון</b>: לכל אדם זכות לחירות ולאושר לפי דרכו, והאושר שלו קשור למורשת אבותיו. כפייה של תרבות אחת סותרת את העקרונות האלה.',['אי אפשר להחליף את אבות אבותיך + ציטוט','הדרך האנגלוסקסית: ביטול חינוך פרטי ושפות זרות','"מובילה לעריצות"','קשר לעקרונות דמוקרטיים: חירות, שוויון, זכויות'],'o6'],
+[2,TMG+'||מהי הגישה לעיצוב האומה האמריקאית שבאה לידי ביטוי בקטע? הסבירו את הסיבות לגיבוש גישה זו.',null,'הקטע של מאגנס מבטא את גישת <b>הפלורליזם התרבותי</b>. הגישה התגבשה בתחילת המאה ה-20 <b>כתגובה לדרישה להטמעה</b> ולקשיים החברתיים שהיא יצרה. לפי מאגנס, הפער בין התרבות המסורתית לסביבה החדשה "מוביל לסוגים שונים של הידרדרות": ילדי המהגרים מתנתקים מהוריהם, "<b>שרשרת המסורת נשברה</b>", והחוכמה של הדורות נעלמת. בנוסף, הניסיון להיטמע לא מביא כבוד: "לועגים ובזים לו על <b>חפזונו המגוחך להיטמע</b>". לכן נוצר צורך בגישה שמאפשרת לשמור על התרבות המקורית, ובכך לשמור על הקשר בין הדורות, על הכבוד העצמי ועל עושר התרבויות.',['זיהוי הגישה: פלורליזם תרבותי','הסיבה: תגובה לקשיי הטמיעה','שרשרת המסורת נשברת, נתק בין הדורות + ציטוט','לעג למי שממהר להיטמע + ציטוט','הצורך: לשמור על התרבות ועל הקשר בין הדורות'],'o7'],
+[2,'קאלן משווה את החברה לתזמורת, ואחרים בחרו בדימוי "קערת סלט". במה שונים הדימויים האלה מ"כור ההיתוך" ומהטמיעה?',null,'בתזמורת <b>לכל כלי שמור הייחוד שלו</b>, ויחד הם מנגנים סימפוניה אחת. בקערת סלט <b>כל ירק נשאר כמו שהוא</b>, ויחד הם מנה אחת. בשני הדימויים כל קבוצה <b>שומרת על התרבות שלה</b>, ויש גם <b>אחדות</b> ("ריבוי בתוך אחדות"). לעומת זאת, ב<b>כור ההיתוך</b> כל המתכות <b>נמסות</b> ונוצרת מתכת חדשה, כך שהייחוד של כל קבוצה נעלם בתוך משהו חדש. ובטמיעה המהגר <b>מוותר</b> על תרבותו ומאמץ את התרבות של הוותיקים, כך שנשארת רק תרבות אחת.',['תזמורת/סלט: כל קבוצה שומרת על הייחוד שלה','ויחד יש אחדות','כור ההיתוך: כולם נמסים לתרבות חדשה','טמיעה: המהגר מוותר ומאמץ את תרבות הוותיקים'],'o8'],
+// שלב 4: מי אמר? (זיהוי מקורות)
+[3,'"בני אדם מכל האומות מותכים כאן לגזע אנשים חדש". מה הגישה ומי אמר?',A4,'זה <b>קרבקר</b>, והמילה "מותכים" היא הסימן: <b>כור ההיתוך</b> (עמ׳ 12).'],
+[3,'"עליו להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות". מה הגישה ומי אמר?',ord(A4,1),'זה <b>מקור 3</b> של מייסדי <b>"ברית חינוך"</b>: דרישה לוותר על הסממנים מארץ המוצא = <b>טמיעה</b> (עמ׳ 19).'],
+[3,'"כדי שיהודים או פולנים או אנגלוסקסים יחדלו להיות יהודים או פולנים או אנגלוסקסים, עליהם לחדול להיות". מה הגישה ומי אמר?',ord(A4,2),'זה <b>הוראס קאלן</b> (1915): אי אפשר למחוק את המוצא = <b>פלורליזם</b> (עמ׳ 25).'],
+[3,'"משום ששרשרת המסורת נשברה, והחוכמה והיופי המצטברים של הדורות נעלמים". מה הגישה ומי אמר?',ord(A4,3),'זה <b>מאגנס</b> (1909), בביקורת על הטמיעה = <b>פלורליזם</b> (עמ׳ 26).'],
+[3,'"האמריקאי הוא זה אשר עזב מאחוריו את כל דעותיו הקדומות והרגליו הישנים". מה הגישה ומי אמר?',A4,'זה <b>קרבקר</b>: האמריקאי כ"אדם חדש" = <b>כור ההיתוך</b> (עמ׳ 12).'],
+[3,'"צריך לעזור ליהודי להפוך חלק מהקהילה [האמריקנית]". מה הגישה ומי אמר?',ord(A4,1),'זה סוף <b>מקור 3</b> ("ברית חינוך"): להפוך לחלק מהקהילה האמריקאית = <b>טמיעה</b> (עמ׳ 19).'],
+[3,'"ריבוי בתוך אחדות, תזמור של האנושות". מה הגישה ומי אמר?',ord(A4,2),'זה <b>קאלן</b>, דימוי התזמורת = <b>פלורליזם</b> (עמ׳ 25).'],
+[3,'"המוכשרים ייקלטו והנכשלים ייפלטו". של מי ההנחה הזו?',['מדיניות הממשל: לא להתערב בקליטת המהגרים','קרבקר, כשתיאר את "האדם החדש" האמריקאי','קאלן, כשתיאר את "הדמוקרטיה של הלאומים"','מאגנס, כשתיאר את הנתק בין הדורות'],'זו ההנחה שעמדה מאחורי <b>מדיניות הממשל</b>: הגירה חופשית, ו"אין מקום להתערבות השלטון" (עמ׳ 19).'],
+[3,'"שימור האתניות הינו כוח חיובי ובונה בחברה שלנו". מאיפה המשפט?',['מהחוק הפדרלי של 1972, שתקצב חקר קבוצות אתניות','מהצהרת הכוונות של "ברית חינוך" מ-1893','מהספר של קרבקר מהמאה ה-18 על "האדם החדש"','מהמכתב של מהגר יהודי לעיתון "המגיד" מ-1881'],'זה מתוך <b>החוק הפדרלי של 1972</b> (עמ׳ 26), סימן לכך שהפלורליזם קיבל מעמד רשמי.'],
+[3,'בתמונה "משפחת מהגרים יהודים סביב 1900" (עמ׳ 21), מה רואים לפי ההסבר של המורה?',['פיצול: האב והילדים הקטנים בלבוש אירופאי מסורתי, והאם והצעירים בלבוש אמריקאי','כל המשפחה בלבוש אירופאי מסורתי, כי המשפחה סירבה להשתלב באמריקה','כל המשפחה בלבוש אמריקאי זהה, כי כל בני המשפחה כבר נטמעו לגמרי','כל המשפחה בבגדי עבודה, כי כל בני המשפחה עבדו יחד במפעל אחד'],'יש <b>פיצול</b> במשפחה: האב והקטנים שומרים על לבוש מסורתי, והאם (בלי כיסוי ראש) והצעירים "התיישרו" לפי האופנה. זה <b>צעד ברור לקראת טמיעה</b>.'],
+[3,'באיזה עמוד בספר נמצאת הצהרת "ברית חינוך" (מקור 3)?',['עמוד 19','עמוד 12','עמוד 25','עמוד 26'],'מקור 3 נמצא ב<b>עמוד 19</b>, תחת "הדרישה להטמעה מהירה". 🟩'],
+[3,'באיזה עמוד בספר נמצא המקור של הוראס קאלן (מקור 6)?',['עמוד 25','עמוד 19','עמוד 12','עמוד 21'],'מקור 6, קאלן 1915, נמצא ב<b>עמוד 25</b>, בתחילת פרק 3 "פלורליזם תרבותי". 🟦'],
+// שלב 5: השוואה וחשיבה
+[4,'מה הסדר הנכון של הגישות לפי הזמן?',['כור ההיתוך (המאה ה-18) ← טמיעה (סוף המאה ה-19) ← פלורליזם (תחילת המאה ה-20)','טמיעה (המאה ה-18) ← כור ההיתוך (סוף המאה ה-19) ← פלורליזם (תחילת המאה ה-20)','פלורליזם (המאה ה-18) ← טמיעה (סוף המאה ה-19) ← כור ההיתוך (תחילת המאה ה-20)','כור ההיתוך (המאה ה-18) ← פלורליזם (סוף המאה ה-19) ← טמיעה (תחילת המאה ה-20)'],'<b>מתיכים ← מוחקים ← מנגנים</b>: כור ההיתוך, טמיעה, פלורליזם.'],
+[4,'באיזו גישה תרבות המהגר נעלמת, והוא מאמץ רק את התרבות של הוותיקים?',['טמיעה: המהגר מוותר על תרבותו ומקבל את התרבות של הוותיקים','כור ההיתוך: כל התרבויות נמסות יחד ויוצרות תרבות חדשה','פלורליזם: כל קבוצה שומרת על תרבותה, ויש גם שפה אנגלית משותפת','אי-התערבות: הממשל לא מתעניין בכלל בתרבות של המהגרים'],'בטמיעה יש תרבות <b>אחת</b> שמנצחת. בכור ההיתוך כולם תורמים לתרבות חדשה.'],
+[4,'מה משותף לכור ההיתוך ולטמיעה?',['שתיהן שואפות בסוף לאומה אחת אחידה, שבה ההבדלים בין המהגרים נעלמים','שתיהן דורשות מהמהגר לשמור על שפתו ולהעביר אותה לילדיו בבית','שתיהן התגבשו אחרי מלחמת העולם השנייה, בזמן גל הגירה המוני ממזרח אירופה','שתיהן מבוססות על העיקרון "חייה ותן לחיות" ועל בחירה חופשית'],'בשתיהן התוצאה היא <b>אומה אחת אחידה</b>. ההבדל: בכור ההיתוך נוצר משהו חדש מכולם, ובטמיעה המהגר מאמץ את תרבות הוותיקים.'],
+[4,'מה השתנה בעקבות הפלורליזם, לפי הספר?',['הזירה הציבורית נעשתה סובלנית יותר, פחות מפלה, ומעריכה ייחוד אתני','כל המהגרים הפסיקו להתבולל, ונישואי התערובת כמעט נעלמו לגמרי','הפלורליזם החליף לגמרי את הגישות הקודמות, ואף מהגר כבר לא נטמע היום בחברה','הממשל חייב כל קבוצה אתנית ללמד את שפתה בבתי ספר נפרדים'],'הגישה "לא החליפה את קודמותיה... אלא התווספה אליהן". השינוי היה בעיקר ב<b>זירה הציבורית</b>, שנעשתה סובלנית יותר.'],
+[4,'איזה נתון מראה שכור ההיתוך הקלאסי עדיין ממשיך?',['ב-1997 ל-90% מהאיטלקים מעל גיל 65 היו שני הורים איטלקים, אבל רק ל-18% מהילדים מתחת לגיל 5','ב-1997 ל-18% מהאיטלקים מעל גיל 65 היו שני הורים איטלקים, ולכמעט 90% מהילדים מתחת לגיל 5','ב-1990 הגדירו את עצמם 100 מיליון אמריקאים כאיטלקים, הרבה יותר מכל קבוצה אתנית אחרת במדינה','ב-2001 עלה מספר האמריקאים שהגדירו את עצמם יהודים ל-3.1 מיליון, לעומת 2.8 מיליון ב-1990'],'הירידה מ-<b>90%</b> ל-<b>18%</b> מראה שנישואי התערובת נמשכים, כלומר "תהליך כור ההיתוך הקלאסי" ממשיך.'],
+[4,'איך הפלורליזם יכול לפתור את הקשיים שמאגנס מתאר?',['ילדי המהגרים לא צריכים להתנתק מהמסורת, ולכן שרשרת הדורות לא נשברת','ילדי המהגרים נטמעים מהר יותר, ולכן לועגים להם פחות ברחוב ובבית הספר','ילדי המהגרים לומדים רק בשפת הוריהם, ולכן הם לא צריכים לדעת אנגלית','ילדי המהגרים עוברים לגור בשכונות נפרדות, ולכן אין להם שום קשיים'],'הבעיה לפי מאגנס: "שרשרת המסורת נשברה". בפלורליזם מותר <b>לשמור על השפה והתרבות</b>, ולכן הקשר בין ההורים לילדים נשמר. (והאנגלית נשארת השפה המשותפת.)'],
+[4,'במה שונה הדימוי "קערת סלט" מ"כור ההיתוך"?',['בקערת סלט כל ירק נשאר כמו שהוא ויחד הם מנה אחת; בכור ההיתוך כולם נמסים לחומר חדש','בקערת סלט כל הירקות נטחנים יחד לרסק אחד; בכור ההיתוך כל מתכת נשמרת בנפרד מכל האחרות','בקערת סלט ירק אחד בולע את כל השאר; בכור ההיתוך כל המתכות הופכות לברזל פשוט','בקערת סלט כל ירק מוגש בצלחת נפרדת; בכור ההיתוך המתכות נזרקות ונשאר רק הכור'],'קערת סלט, כמו התזמורת של קאלן: <b>כל אחד שומר על הייחוד שלו</b>, ויחד יש אחדות. בכור ההיתוך הייחוד <b>נמס</b>.'],
+[4,'אילו קשיים עלולים להיות בחברה שמתנהלת ברוח הפלורליזם?',['פילוג: קבוצות שמתבדלות עלולות לאבד את המכנה המשותף ואת הלכידות של האומה','אחידות: כל הקבוצות נאלצות לוותר על תרבותן ולאמץ תרבות אחת בלבד','חוסר עניין: אף אחד לא רוצה להשתייך לקהילה, ולכן הקהילות נסגרות','שליטה: הממשל קובע לכל אדם לאיזו קהילה הוא חייב להשתייך, לפי המוצא של הוריו'],'כשכל קבוצה שומרת על נבדלות, יש סכנה שהמכנה המשותף ייחלש. לכן קאלן מדגיש <b>"ריבוי בתוך אחדות"</b> ושפה משותפת. (אחידות = טמיעה, וכפייה סותרת את הבחירה החופשית.)'],
+[4,'השוו בין גישת כור ההיתוך לגישת הטמיעה: מה דומה ומה שונה?',null,'<b>דומה:</b> שתי הגישות שואפות ל<b>אומה אחת אחידה</b>, שבה ההבדלים בין המהגרים נעלמים, והמהגר צריך לוותר על חלק מזהותו הקודמת. <b>שונה:</b> 1. <b>מה נוצר:</b> בכור ההיתוך נוצרת <b>תרבות חדשה</b> מכל התרבויות ("לגזע אנשים חדש", קרבקר), ובטמיעה המהגר מאמץ את <b>התרבות הקיימת של הוותיקים</b> (אנגלית, לבוש, התנהגות, מקור 3). 2. <b>יחס לתרבות המהגר:</b> בכור ההיתוך כל תרבות <b>תורמת</b>, ובטמיעה היא <b>נמחקת</b>. 3. <b>זמן:</b> כור ההיתוך במאה ה-18, עם מעט מהגרים דומים; הטמיעה בסוף המאה ה-19, מול הגירה גדולה וקשיים.',['דומה: שאיפה לאומה אחידה','שונה: תרבות חדשה מול תרבות הוותיקים','שונה: תרבות המהגר תורמת מול נמחקת','שונה: תקופה ונסיבות','דוגמה או ציטוט לכל גישה'],'o9'],
+[4,'הציגו את גישת הטמיעה ואת גישת הפלורליזם התרבותי ביחס לקליטת המהגרים, והסבירו את מאפייניהן. בססו על מקורות מספר הלימוד (שם הספר, ההוצאה והעמוד).',null,'<b>טמיעה:</b> סוף המאה ה-19. המהגר צריך לוותר על תרבות ארץ המוצא ולאמץ את התרבות האנגלו-אמריקאית: אנגלית, לבוש, התנהגות. מקור 3 ("ברית חינוך"), '+BOOK+', עמ׳ 19: "עליו להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות". <b>פלורליזם תרבותי:</b> תחילת המאה ה-20. כל קבוצה שומרת על שפתה ותרבותה, לצד שפה משותפת ואחדות. קאלן, '+BOOK+', עמ׳ 25: "ריבוי בתוך אחדות, תזמור של האנושות". מאגנס, עמ׳ 26: הטמיעה גרמה לכך ש"שרשרת המסורת נשברה". הפלורליזם מבוסס על "חייה ותן לחיות" ועל בחירה חופשית בקהילה.',['טמיעה: מאפיינים (ויתור, אימוץ תרבות הוותיקים)','פלורליזם: מאפיינים (שמירה על תרבות + אחדות)','לפחות 3 מקורות כתובים מהספר','ציון שם הספר, ההוצאה והעמוד','ציטוט מכל מקור + הסבר'],'o10']
+];
+// 🎯 בחנים לדוגמה: כמו בכיתה, קטע מקור ושני סעיפים. כל סעיף נשלח לבדיקה (0-10), והציון = (א+ב)×5.
+const EXS=[
+ {t:'ילדי המהגרים (מאגנס)',src:'קראו את הקטע מתוך מאמר של יהודה ל׳ מאגנס, רב רפורמי והוגה ציוני, וענו על השאלות.<br><br>'+TMG,
+  a:['א. מהי הגישה לעיצוב האומה האמריקאית שבאה לידי ביטוי בקטע? הסבירו את הסיבות לגיבוש גישה זו, ומהם הצרכים של החברה האמריקאית שהיא נותנת להם מענה.','<b>פתיחה:</b> הקטע של מאגנס מבטא את גישת <b>הפלורליזם התרבותי</b>, שהתגבשה בתחילת המאה ה-20. <b>גוף:</b> הגישה התגבשה כתגובה ל<b>דרישה להטמעה</b> של סוף המאה ה-19, שדרשה מהמהגרים לוותר על תרבותם. מאגנס מתאר את המחיר: הפער בין המסורת לסביבה החדשה "מוביל לסוגים שונים של הידרדרות", הילדים לא רוכשים ערכי תרבות מוצקים, כי "<b>שרשרת המסורת נשברה</b>". והניסיון להיטמע אפילו לא מביא כבוד: לועגים לבן המיעוט "על <b>חפזונו המגוחך להיטמע</b>". הצרכים שהפלורליזם עונה עליהם: <b>שמירה על הקשר בין הדורות</b>, כבוד עצמי למהגר, ושמירה על העושר התרבותי, לצד אחדות (לפי קאלן: "ריבוי בתוך אחדות"). <b>סיום:</b> כך הפלורליזם הציע פתרון לקשיים שהטמיעה יצרה.',['זיהוי הגישה: פלורליזם תרבותי','סיבה: תגובה לקשיי הדרישה להטמעה','ציטוט מהקטע + הסבר (שרשרת המסורת / לעג)','הצרכים: קשר בין הדורות, כבוד עצמי, עושר תרבותי','מבנה: פתיחה, גוף, סיום']],
+  b:['ב. בחרו מקור אחר מספר הלימוד (לא את הקטע הזה), והסבירו כיצד הגישה שכתבתם עליה בסעיף א׳ באה לידי ביטוי בו. ציינו את שם הספר, ההוצאה לאור והעמוד.','<b>פתיחה:</b> בחרתי במקור 6, הוראס קאלן (1915), מתוך '+BOOK+', עמ׳ 25. <b>גוף:</b> קאלן מבטא את <b>הפלורליזם התרבותי</b>. הוא טוען שאי אפשר למחוק את המוצא: "הם <b>אינם יכולים להחליף את אבות אבותיהם</b>... עליהם לחדול להיות". לכן הוא דוחה את הדרך האנגלוסקסית, ש"<b>מובילה לעריצות</b>", ומציע "<b>דמוקרטיה של לאומים</b>": האנגלית משותפת, אבל "בני כל לאום ישתמשו בלשונם". הוא משווה את החברה לתזמורת: "<b>ריבוי בתוך אחדות, תזמור של האנושות</b>", שבה לכל כלי שמור הייחוד שלו. <b>סיום:</b> כך המקור מבטא את הפלורליזם: שמירה על כל תרבות, לצד אחדות.',['מקור נכון מהספר (לא הקטע של מאגנס)','ציון שם הספר, ההוצאה והעמוד','הסבר הגישה במקור במילים שלך','לפחות ציטוט אחד + מה הוא מוכיח','מבנה: פתיחה, גוף, סיום']]},
+ {t:'ברית חינוך (מקור 3)',src:'קראו את הקטע מתוך דברי מייסדי מוסד "ברית חינוך" (Educational Alliance) בניו יורק, ששירת את הקהילה היהודית בסוף המאה ה-19, וענו על השאלות.<br><br>'+TS3,
+  a:['א. הציגו את הגישה לקליטת המהגרים שבאה לידי ביטוי בקטע, והסבירו את מאפייניה. שלבו לפחות שני ציטוטים.','<b>פתיחה:</b> הקטע מבטא את <b>גישת הטמיעה</b> (הדרישה להטמעה מהירה), של סוף המאה ה-19. <b>גוף:</b> לפי הגישה, המהגר צריך <b>לוותר על הסממנים של ארץ המוצא</b> ולאמץ את התרבות של האמריקאים הוותיקים. המייסדים רוצים "ללמד" אותו להיות אמריקאי: גוף בריא, אנגלית, חינוך, וחובות וזכויות של אזרח: "עלינו להעניק לו את <b>השליטה בשפה האנגלית</b>". הם דורשים לוותר גם על החיצוניות: "עליו <b>להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות</b>". אפילו מבטא רע הוא "אבן נגף". המטרה: "צריך לעזור ליהודי <b>להפוך חלק מהקהילה</b> [האמריקנית]". הגישה התגבשה כי הממשל לא התערב ("ייקלטו... ייפלטו"), והוותיקים דאגו מקשיי ההשתלבות. <b>סיום:</b> הטמיעה דורשת מהמהגר להחליף את זהותו בזהות אמריקאית.',['זיהוי הגישה: טמיעה, סוף המאה ה-19','מאפיין: ויתור על תרבות ארץ המוצא','מאפיין: אימוץ אנגלית, לבוש והתנהגות אמריקאיים','שני ציטוטים לפחות, כל אחד עם הסבר','רקע: דאגת הוותיקים / אי-התערבות הממשל']],
+  b:['ב. הסבירו במה שונה הגישה שבקטע מגישת "כור ההיתוך" הקלאסית של קרבקר. בססו את תשובתכם על מקור מספר הלימוד (ציינו את שם הספר, ההוצאה והעמוד).','<b>פתיחה:</b> הטמיעה שונה מכור ההיתוך הקלאסי, אף ששתיהן שואפות לאומה אחת. <b>גוף:</b> בכור ההיתוך של קרבקר ('+BOOK+', עמ׳ 12) כל המהגרים <b>מתמזגים</b> ונוצר <b>משהו חדש</b>: "בני אדם מכל האומות <b>מותכים כאן לגזע אנשים חדש</b>". כמו בכור לוהט, המתכת החדשה "איננה סכום של מרכיביו", וכל אחד תרם לה. לעומת זאת, בטמיעה <b>אין יצירה של תרבות חדשה</b>: יש תרבות אחת קיימת, של הוותיקים, והמהגר צריך <b>לבטל את ערכיו הישנים</b> ולאמץ אותה ("להיפטר ממוזרויות בלבוש, בדיבור ובהתנהגות", מקור 3, עמ׳ 19). לפי הספר, האידיאל של כור ההיתוך "נעלם בהדרגה", והמונח קיבל "משמעות חדשה של דרישה להטמעה". <b>סיום:</b> בכור ההיתוך התרבות של המהגר תורמת, ובטמיעה היא נמחקת.',['כור ההיתוך: נוצרת תרבות חדשה מכולם','טמיעה: אימוץ תרבות הוותיקים, ויתור על הקודמת','ציטוט מקרבקר + ציון ספר, הוצאה ועמוד','המונח קיבל משמעות חדשה','משפט סיכום של ההבדל']]},
+ {t:'הוראס קאלן (מקור 6)',src:'קראו את הקטע מתוך מאמר של הוראס קאלן, 1915, וענו על השאלות.<br><br>'+TKL,
+  a:['א. הסבירו מדוע קאלן מתנגד לגישה הדורשת הטמעה, ומדוע לדעתו היא אינה מתאימה לעקרונות הדמוקרטיה. שלבו ציטוט מהקטע.','<b>פתיחה:</b> קאלן, ממנסחי <b>הפלורליזם התרבותי</b>, יוצא נגד <b>הדרישה להטמעה</b>. <b>גוף:</b> לפי קאלן, אדם יכול להחליף בגדים, דת והשקפת עולם, אבל "הם <b>אינם יכולים להחליף את אבות אבותיהם</b>". המוצא הוא חלק מהזהות, ולכן לדרוש ממנו להיטמע זה לדרוש ממנו "<b>לחדול להיות</b>". הדרך האנגלוסקסית מחייבת לבטל חינוך פרטי ושפות זרות וללמד רק לפי המסורת האנגלית, ולכן היא "<b>מובילה לעריצות</b>". זה סותר את עקרונות הדמוקרטיה: <b>חירות</b> (כל אדם רשאי לחיות לפי זהותו) ו<b>שוויון</b> (אין תרבות אחת עליונה). <b>סיום:</b> לכן קאלן רואה בטמיעה כפייה שלא מתאימה למדינה דמוקרטית.',['קאלן נגד הטמיעה, בעד פלורליזם','"אינם יכולים להחליף את אבות אבותיהם" + הסבר','הדרך האנגלוסקסית מובילה לעריצות','קשר לעקרונות דמוקרטיים: חירות, שוויון','מבנה: פתיחה, גוף, סיום']],
+  b:['ב. הציגו את ההצעה של קאלן, והסבירו כיצד היא יכולה לשמש פתרון לקשיים החברתיים שנבעו מהגישה הדורשת הטמעה. היעזרו גם בדברי מאגנס (עמ׳ 26).','<b>פתיחה:</b> קאלן מציע <b>"דמוקרטיה של לאומים"</b>. <b>גוף:</b> בצורתה, רפובליקה פדרלית; האנגלית תהיה השפה המשותפת, אבל "בני כל לאום ישתמשו בלשונם" ובתרבות שלהם. כך החברה תהיה "<b>ריבוי בתוך אחדות, תזמור של האנושות</b>": כמו בתזמורת, לכל כלי הצליל שלו, ויחד סימפוניה אחת. ההצעה פותרת את הקשיים שהטמיעה יצרה: לפי מאגנס (עמ׳ 26), הטמיעה גרמה לכך ש"<b>שרשרת המסורת נשברה</b>", ילדי המהגרים התנתקו מהוריהם, ולעגו להם על "חפזונם המגוחך להיטמע". כשמותר לשמור על השפה והתרבות, <b>הקשר בין הדורות נשמר</b> והמהגר לא צריך להתבייש בזהותו, ועדיין יש אחדות דרך השפה המשותפת והמדינה המשותפת. <b>סיום:</b> כך הפלורליזם עונה על הקשיים של הטמיעה, בלי לפרק את האומה.',['ההצעה: דמוקרטיה של לאומים / רפובליקה פדרלית','אנגלית משותפת + כל לאום שומר על שפתו','דימוי התזמורת + ציטוט','הקשיים לפי מאגנס (שרשרת המסורת / לעג)','איך ההצעה פותרת אותם']]}
+];
+const EXQ=[];EXS.forEach((x,e)=>['a','b'].forEach(s=>EXQ.push([-1,x.src+'||'+x[s][0],null,x[s][1],x[s][2],'e'+(e+1)+s,e])));
+const ALLQ=QS.concat(EXQ),N=QS.length,$=id=>document.getElementById(id),esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+// S.d[i]=1 נלמדה, S.w[i]=טעויות, S.f[i]=1 נכון בניסיון הראשון. S.rv = חזרה על טעויות. S.tab = 'p' תרגול / 't' בוחן. S.mt = בוחן מהיר (אמריקאיות) פעיל.
+// S.ex = בוחן לדוגמה פתוח (מספר), S.es[e] = {t0 התחלה, t1 שליחה אחרונה, s ציון}. S.oa[מזהה] = תשובה פתוחה {id, at, txt, n, m, sc, fb, seen}.
+// S.gr = [[מזהה, ציון, דקה, זמן]]. S.mkh = [{s, m, at, k}] ציוני הבחנים (k: e = בוחן לדוגמה, q = בוחן מהיר). S.sm = קרא את הסיכום, S.tp = קרא את הטיפים.
+function fresh(){return{v:1,d:{},w:{},f:{},att:0,okc:0,st:{c:0,b:0},rv:null,rvd:{},tab:'p',mt:null,ex:null,es:{},mk:null,oa:{},gr:[],mkh:[],dr:{},started:new Date().toISOString()}}
+let S=LS.get('ev_hist');if(!S||!S.d)S=fresh();['rvd','oa','dr','es'].forEach(k=>S[k]=S[k]||{});S.gr=S.gr||[];S.mkh=S.mkh||[];S.tab=S.tab||'p';
+const save=()=>LS.set('ev_hist',S);
+const done=()=>Object.keys(S.d).length;
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const MCQ=QS.map((q,i)=>i).filter(i=>QS[i][2]);
+let Q=[],cur=-1,answered=false,wi=-1;
+const OA=i=>S.oa[ALLQ[i][5]],pend=i=>{const o=OA(i);return!!(o&&o.id&&o.sc==null)};
+function stageOf(){for(let s=0;s<ST.length;s++)if(QS.some((q,i)=>q[0]===s&&q[2]&&!S.d[i]))return s;return -1}
+function build(){if(S.rv){Q=shuf(S.rv.filter(i=>!S.rvd[i]));return}const s=stageOf(),top=s<0?ST.length:s;
+ const L=MCQ.filter(i=>QS[i][0]===s&&!S.d[i]),O=QS.map((q,i)=>i).filter(i=>!QS[i][2]&&QS[i][0]<=top&&!S.d[i]&&!pend(i));
+ Q=shuf(L).concat(O)} // שאלות פתוחות בסוף השלב
+const pracDone=()=>QS.every((q,i)=>S.d[i]||pend(i));
+function bar(){$('nn').textContent=N;$('dn').textContent=done();$('acc').textContent='🎯 '+(S.att?Math.round(S.okc/S.att*100)+'%':'—');$('stk').textContent='🔥 '+S.st.c;
+ const sc=stageOf();$('stg').innerHTML=ST.map((n,s)=>{const t=QS.filter(q=>q[0]===s).length,d=QS.filter((q,i)=>q[0]===s&&S.d[i]).length;
+  return `<span class="${d===t?'ok':s===sc?'cur':''}"><i style="width:${d/t*100}%"></i><em>${d===t?'✓':n}</em></span>`}).join('');
+ const lk=S.tab!=='t'&&!REV&&!pracDone();$('mtb').textContent=S.mt?'🎯 '+(S.mt.i+1)+'/'+S.mt.q.length:lk?'🔒 בוחן':'🎯 בוחן';$('mtb').classList.toggle('on',S.tab==='t');$('mtb').classList.toggle('lk',lk);$('prb').classList.toggle('on',S.tab!=='t');
+ $('tips').classList.toggle('gl',!S.tp)}
+// תרגול ⇄ בוחן: הבוחן נפתח אחרי שמסיימים את כל התרגול (כמו בכלכלה, אורן 11.11.2026). בתצוגת בדיקה של הורה הכול פתוח.
+function toPrac(){if(S.tab!=='t')return;if(S.mt&&!confirm('לחזור לתרגול? הבוחן המהיר הזה לא ייספר.'))return;S.mt=null;S.ex=null;S.tab='p';save();Q=[];show()}
+function toTest(){if(S.tab==='t')return;if(!REV&&!pracDone()){const n=QS.filter((q,i)=>!S.d[i]&&!pend(i)).length;pop(`<h3>🔒 הבוחן עוד נעול</h3><p>הבחנים לדוגמה נפתחים אחרי שמסיימים את כל התרגול. נשארו עוד <b>${n}</b> שאלות. ממשיכים, אתה בדרך הנכונה! 💪</p><button class="cl" type="button" onclick="unpop()">להמשיך לתרגל</button>`);return}
+ S.tab='t';S.ex=null;save();show()}
+function fit(){const q=$('q'),c=$('card');q.style.fontSize='';document.querySelectorAll('.op').forEach(o=>o.style.fontSize='');if(c.classList.contains('ex'))return;let f=19;
+ while(f>12&&(q.scrollHeight>q.clientHeight+1||c.scrollHeight>c.clientHeight+1)){f--;q.style.fontSize=f+'px';if(f<16)document.querySelectorAll('.op').forEach(o=>o.style.fontSize=Math.max(12,f-1)+'px')}}
+function qhtml(t){const p=t.split('||');return p.length>1?'<div class="ps">'+p[0]+'</div><div>'+p[1]+'</div>':'<div>'+t+'</div>'}
+function show(){answered=false;$('nx').disabled=true;$('nx').textContent='הבא ›';$('card').classList.remove('ex','fin');clearInterval(show.t);
+ if(S.tab==='t'&&!S.mt){if(S.ex!=null)return showEx();return exPick()}
+ if(S.mt){if(S.mt.i>=S.mt.q.length)return mtEnd();cur=S.mt.q[S.mt.i]}
+ else{if(!Q.length)build();if(!Q.length)return finish();cur=Q.shift()}
+ const q=QS[cur];
+ $('tg').textContent=S.mt?'⚡ בוחן מהיר: '+(S.mt.i+1)+' מתוך '+S.mt.q.length:S.rv?'🔁 חזרה על טעויות':'שלב '+(q[0]+1)+': '+ST[q[0]];
+ $('rt').textContent='↺ שוב';$('rt').classList.toggle('on',!S.mt&&S.w[cur]>0&&!S.rv);
+ $('q').innerHTML=qhtml(q[1]);
+ if(q[2]){const os=shuf(q[2].map((t,i)=>({t,i})));$('opts').className='opts'+(q[2].length===2?' two':'');
+  $('opts').innerHTML=os.map((o,k)=>`<button class="op" type="button" data-i="${o.i}"><span class="k">${'אבגד'[k]}</span><span>${o.t}</span></button>`).join('');
+  $('fb').className='fb';$('fb').textContent=S.mt?'בוחן: בלי הסברים עד הסוף. בהצלחה!':'בחר את התשובה הנכונה'}
+ else{const o=OA(cur);$('opts').className='opts';$('opts').innerHTML='<button class="op wr" type="button" id="wrb">✍️ לכתוב תשובה</button>';
+  $('fb').className='fb';if(o&&o.sc!=null)$('fb').innerHTML='<div>בפעם הקודמת: <b>'+o.sc+'/10</b>. '+esc(o.fb||'')+'</div>';else $('fb').textContent='שאלה פתוחה, כמו בבוחן: כותבים כמה משפטים, עם ציטוט. Claude בודק ומחזיר ציון והערה.'}
+ bar();fit();if(window.StudyGuess&&q[2])StudyGuess.q()}
+function mark(ok){const q=QS[cur];S.att++;
+ if(ok){S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);if(S.rv)S.rvd[cur]=1;else{S.d[cur]=1;if(!(S.w[cur]>0))S.f[cur]=1}}
+ else{S.st.c=0;S.w[cur]=(S.w[cur]||0)+1;Q.splice(Math.min(3,Q.length),0,cur)} // חוזרת אחרי 3 שאלות
+ if(S.rv&&!Q.length&&ok){S.rv=null;S.rvd={}}
+ save();bar();$('nx').disabled=false;if(!Q.length&&(S.rv?false:stageOf()!==q[0]))$('nx').textContent=stageOf()<0?'לסיום 🎉':'לשלב הבא ›';report()}
+$('opts').onclick=e=>{const b=e.target.closest('.op');if(!b)return;
+ if(b.dataset.s!=null){secTap(+b.dataset.s);return}
+ if(b.id==='exr'){exRetry();return}
+ if(answered&&b.id!=='mab')return;
+ if(b.id==='wrb'){openWrite(cur);return}
+ if(b.id==='mab'){sentPop(cur);return}
+ // זיהוי ניחושים (אורן 13.11.2026): טעויות מהירות מדי = ההודעה של הילה, והתשובה לא מתקבלת
+ if(window.StudyGuess&&StudyGuess.chk(b.dataset.i==='0'))return;
+ answered=true;const ok=b.dataset.i==='0',q=QS[cur];
+ if(S.mt){b.classList.add('sel');document.querySelectorAll('.op').forEach(x=>{if(x!==b)x.classList.add('dim')});
+  if(ok)S.mt.ok++;else S.mt.wr.push(cur);S.mt.i++;save();$('fb').className='fb';$('fb').textContent='נרשם. התשובות וההסברים בסוף.';$('nx').disabled=false;
+  if(S.mt.i>=S.mt.q.length)$('nx').textContent='לציון 🎯';return}
+ document.querySelectorAll('.op').forEach(x=>{if(x.dataset.i==='0')x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
+ $('fb').className='fb '+(ok?'ok':'no');$('fb').innerHTML='<div>'+(ok?'✓ נכון! ':'✗ לא נכון. ')+q[3]+'</div>';mark(ok)};
+// ✍️ תשובה פתוחה: מקלידים באפליקציה ← study_answer_add ← Claude בודק (ריצה מתוזמנת) ← הציון חוזר דרך study_answer_get. אורח / שרת חסר = בדיקה עצמית.
+const SB='https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
+const rpc=(f,b)=>fetch(SB+f,{method:'POST',headers:{'Content-Type':'application/json',apikey:SK,Authorization:'Bearer '+SK},body:JSON.stringify(b)}).then(r=>r.ok?r.json():{st:r.status});
+const GUEST=!!window.STUDY_GUEST,REV=!!window.STUDY_REVIEW;
+const plain=h=>String(h).replace(/<br>/g,'\n').replace(/<[^>]+>/g,'').replace(/\|\|/g,'\n\n');
+const qOnly=t=>{const p=t.split('||');return p[p.length-1]};
+function minute(){try{const t=JSON.parse(localStorage.getItem('study_t_evyatar_hist'));return Math.round(((t&&t.sec)||0)/60)}catch(e){return 0}}
+function pop(h){const v=$('ov2');v.querySelector('.pop').innerHTML=h;v.classList.add('on');v.querySelector('.pop').scrollTop=0}
+function unpop(){$('ov2').classList.remove('on')}
+$('ov2').onclick=e=>{if(e.target===$('ov2'))unpop()};
+const isEx=i=>i>=N;
+function openWrite(i){wi=i;const q=ALLQ[i],k=q[5],p=q[1].split('||');
+ $('wq').innerHTML=isEx(i)?'<div>'+p[1]+'</div><details><summary>📄 הקטע</summary><div class="ps">'+p[0]+'</div></details>':qhtml(q[1]);
+ $('wt').classList.toggle('lg',isEx(i));$('wt').value=S.dr[k]||'';$('wm').textContent='';$('ws').disabled=false;$('ws').textContent=GUEST?'✓ סיימתי, להראות תשובה לדוגמה':'📤 לשלוח לבדיקה';cnt();$('ov3').classList.add('on');setTimeout(()=>$('wt').focus(),50)}
+function cnt(){const n=$('wt').value.trim().length;$('wc').textContent=n+' / 1500'}
+$('wt').oninput=()=>{S.dr[ALLQ[wi][5]]=$('wt').value;cnt();clearTimeout(cnt.t);cnt.t=setTimeout(save,800)};
+$('wx').onclick=()=>{save();$('ov3').classList.remove('on')};
+function sent(i,t,id){const k=ALLQ[i][5],o=S.oa[k]||{};S.oa[k]={id:id,at:new Date().toISOString(),txt:t,n:(o.n||0)+1,m:minute()};delete S.dr[k];
+ if(isEx(i)){const e=ALLQ[i][6];S.es[e]=S.es[e]||{};S.es[e].t1=Date.now()}save();$('ov3').classList.remove('on')}
+$('ws').onclick=()=>{const i=wi,q=ALLQ[i],k=q[5],t=$('wt').value.trim();
+ if(t.length<15){$('wm').textContent='כתוב לפחות משפט אחד מלא 🙂';return}
+ if(GUEST){$('ov3').classList.remove('on');if(isEx(i)){sent(i,t,null);S.oa[k].self=1;save();showEx();sentPop(i)}else selfCheck();return}
+ $('ws').disabled=true;$('ws').textContent='שולח…';$('wm').textContent='';
+ rpc('study_answer_add',{p_kid:'evyatar',p_app:REV?'hist-rv':'hist',p_qid:k,p_q:plain(q[1]),p_model:plain(q[3]),p_pts:q[4],p_txt:t}).then(j=>{
+  if(j&&j.st===404){$('ov3').classList.remove('on');if(isEx(i)){sent(i,t,null);S.oa[k].self=1;save();showEx();sentPop(i)}else selfCheck();return}
+  if(!j||!j.ok){$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent=j&&j.err==='rate'?'שלחת הרבה תשובות בשעה האחרונה. נסה שוב עוד מעט.':'לא נשלח. בדוק אינטרנט ונסה שוב (התשובה שמורה).';return}
+  sent(i,t,j.id);report();poll.go();
+  if(isEx(i)){showEx();sentPop(i);return}
+  answered=true;$('opts').innerHTML='<button class="op wr" type="button" id="mab">👀 התשובה לדוגמה</button>';
+  $('fb').className='fb';$('fb').textContent='⏳ נשלח לבדיקה! הציון וההערה יגיעו בשעה הקרובה. ממשיכים.';
+  $('nx').disabled=false;bar();sentPop(i)}).catch(()=>{$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent='לא נשלח. בדוק אינטרנט ונסה שוב (התשובה שמורה).'})};
+function sentPop(i){const q=ALLQ[i],o=S.oa[q[5]]||{};pop(`<h3>${o.self?'✍️ תשובה לדוגמה':'📤 נשלח לבדיקה'}</h3><p>${o.self?'השווה לתשובה שלך: מה היה, ומה חסר?':'Claude יקרא את התשובה שלך וייתן ציון מ-0 עד 10 עם הערה (התוצאה תגיע בשעה הקרובה). בינתיים, תשובה לדוגמה:'}</p><div class="ma">${q[3]}</div><h4>מה בודקים בתשובה</h4><ul>${q[4].map(t=>'<li>'+t+'</li>').join('')}</ul><button class="cl" type="button" onclick="unpop()">המשך ›</button>`)}
+function selfCheck(){const q=QS[cur];pop(`<h3>✍️ תשובה לדוגמה</h3><div class="ma">${q[3]}</div><h4>מה היה בתשובה שלך? סמן:</h4><div class="ck">${q[4].map(t=>`<label><input type="checkbox"><span>${t}</span></label>`).join('')}</div><div class="two"><button class="y" type="button" id="oy">✓ היה לי כמעט הכול</button><button class="n" type="button" id="on">✗ עוד לא</button></div>`);
+ $('oy').onclick=()=>selfDone(true);$('on').onclick=()=>selfDone(false)}
+function selfDone(ok){unpop();if(answered)return;answered=true;$('opts').innerHTML='';
+ $('fb').className='fb '+(ok?'ok':'no');$('fb').textContent=ok?'✓ מעולה! השאלה נלמדה.':'השאלה תחזור עוד מעט. קרא שוב את התשובה לדוגמה ונסה לכתוב אותה בעצמך.';mark(ok)}
+// ציון של בוחן לדוגמה = (סעיף א + סעיף ב) × 5, ברגע ששני הסעיפים נבדקו
+function exScore(e){const a=S.oa['e'+(e+1)+'a'],b=S.oa['e'+(e+1)+'b'],x=S.es[e]=S.es[e]||{};if(x.s!=null||!a||!b||a.sc==null||b.sc==null)return;
+ x.s=(a.sc+b.sc)*5;const at=new Date().toISOString();S.mkh.push({s:x.s,m:minute(),at,k:'e'});if(S.mkh.length>40)S.mkh.shift();S.mk={best:Math.max(x.s,(S.mk&&S.mk.best)||0),last:x.s,n:((S.mk&&S.mk.n)||0)+1,at}}
+function poll(){const ids=Object.values(S.oa).filter(o=>o.id&&o.sc==null).map(o=>o.id);if(!ids.length||GUEST)return;
+ rpc('study_answer_get',{p_ids:ids}).then(j=>{if(!j||!j.items)return;let ch=0;
+  j.items.forEach(x=>{if(x.score==null)return;const k=Object.keys(S.oa).find(q=>S.oa[q].id===x.id);if(!k)return;const o=S.oa[k];if(o.sc!=null)return;
+   o.sc=+x.score;o.fb=x.fb||'';o.ga=x.graded_at;ch=1;const i=ALLQ.findIndex(q=>q[5]===k);S.gr.push([k,o.sc,o.m||0,Date.now()]);
+   if(isEx(i)){exScore(ALLQ[i][6]);return}
+   if(o.sc>=7){S.d[i]=1;if(o.n===1)S.f[i]=1}else{S.w[i]=(S.w[i]||0)+1;if(!S.rv&&!Q.includes(i)&&i!==cur)Q.splice(Math.min(2,Q.length),0,i)}});
+  if(ch){save();bar();report();if(S.tab==='t'&&!S.mt)show();else if($('card').classList.contains('fin')&&!S.mt){Q=[];show()}grades()}}).catch(()=>{})}
+poll.go=()=>{clearTimeout(poll.t);poll.t=setTimeout(function L(){if(document.visibilityState==='visible')poll();if(Object.values(S.oa).some(o=>o.id&&o.sc==null))poll.t=setTimeout(L,45000)},45000)};
+addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){poll();grades()}});
+function grades(){if(S.mt||document.querySelector('.ov.on'))return;const k=Object.keys(S.oa).find(q=>S.oa[q].sc!=null&&!S.oa[q].seen);if(!k)return;gradePop(k,true)}
+function gradePop(k,nw){const o=S.oa[k],i=ALLQ.findIndex(x=>x[5]===k),q=ALLQ[i];if(!o||!q)return;if(nw){o.seen=1;save()}const g=o.sc>=7,ex=isEx(i),x=ex?S.es[q[6]]||{}:{};
+ pop(`<h3>${o.sc>=9?'🏆':g?'💪':'📚'} הציון שלך: <span class="scb ${g?'g':'b'}">${o.sc}/10</span></h3>${ex?'<p class="nt">🎯 בוחן לדוגמה '+(q[6]+1)+(x.s!=null?' · ציון הבוחן: <b>'+x.s+'</b>':'')+'</p>':''}<p class="qq">${qOnly(q[1])}</p><h4>💬 הערה</h4><p>${esc(o.fb||'')}</p><h4>✍️ מה כתבת</h4><div class="mine">${esc(o.txt||'')}</div><details><summary>תשובה לדוגמה</summary><div class="ma">${q[3]}</div></details><p class="nt">${ex?'':g?'✓ השאלה נלמדה.':'השאלה תחזור עוד מעט לניסיון נוסף.'}</p><button class="cl" type="button" onclick="unpop();grades()">${g?'מעולה ›':'הבנתי ›'}</button>`)}
+function myGraph(){const E=S.gr.map(g=>({t:g[3],v:g[1]*10,k:'g'})).concat(S.mkh.map(x=>({t:new Date(x.at).getTime(),v:x.s,k:'m'}))).sort((a,b)=>a.t-b.t);E.forEach((e,i)=>e.m=i+1);
+ const G=E.filter(e=>e.k==='g'),M=E.filter(e=>e.k==='m'),A=E;
+ let svg='<p class="nt">עוד אין ציונים. ענה על שאלה פתוחה או עשה בוחן, והגרף יתחיל.</p>';
+ if(A.length){const W=320,H=160,l=30,r=10,t=12,b=26,pw=W-l-r,ph=H-t-b,m0=Math.min(...A.map(p=>p.m)),sp=Math.max(1,Math.max(...A.map(p=>p.m))-m0),X=m=>l+(m-m0)/sp*pw,Y=v=>t+ph-v/100*ph;
+  const ln=(P,c)=>{P=P.slice().sort((a,b)=>a.m-b.m);return`<path d="${P.map((p,i)=>(i?'L':'M')+X(p.m).toFixed(1)+','+Y(p.v).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"/>`+P.map(p=>`<circle cx="${X(p.m).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="3.4" fill="${c}"/>`).join('')};
+  svg=`<svg viewBox="0 0 ${W} ${H}" class="gs">${[0,25,50,75,100].map(v=>`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2e8f0"/><text x="${l-5}" y="${Y(v)+3.5}" text-anchor="end" font-size="10" fill="#64748b">${v}%</text>`).join('')}<text x="${l+pw/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#64748b">← מהציון הראשון לאחרון</text>${ln(G,'#2f5d9e')}${ln(M,'#ea580c')}</svg>
+  <div class="lg"><span><i style="background:#2f5d9e"></i>✍️ תשובות פתוחות${G.length?' · ממוצע '+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1)+'/10':''}</span><span><i style="background:#ea580c"></i>🎯 בחנים${M.length?' · אחרון '+M[M.length-1].v:''}</span></div>`}
+ const L=Object.keys(S.oa).filter(k=>S.oa[k].id).sort((a,b)=>String(S.oa[b].at).localeCompare(String(S.oa[a].at)));
+ pop(`<h3>📈 הציונים שלי</h3>${svg}<h4>✍️ התשובות שלי</h4>${L.length?'<div class="ol">'+L.map(k=>{const o=S.oa[k],q=ALLQ.find(x=>x[5]===k);return`<button type="button" class="oi" data-k="${k}"><span class="scb ${o.sc==null?'p':o.sc>=7?'g':'b'}">${o.sc==null?'⏳':o.sc+'/10'}</span><span>${q[6]!=null?'🎯 ':''}${qOnly(q[1])}</span></button>`}).join('')+'</div>'+(L.some(k=>S.oa[k].sc==null)?'<p class="nt">⏳ = בבדיקה. התוצאה תגיע בשעה הקרובה.</p>':''):'<p class="nt">עוד לא נשלחו תשובות.</p>'}<button class="cl" type="button" onclick="unpop()">סגירה</button>`);
+ document.querySelectorAll('.oi').forEach(b=>b.onclick=()=>{const o=S.oa[b.dataset.k];if(o.sc!=null)gradePop(b.dataset.k,false)})}
+// 🎯 הבחנים לדוגמה: רשימה ← בוחן (קטע + סעיף א + סעיף ב). כמו בכיתה: 60 דקות לשני הסעיפים, הספר פתוח לידך.
+function secSt(e,s){const o=S.oa['e'+(e+1)+s];if(!o||(!o.id&&!o.self))return S.dr['e'+(e+1)+s]?{c:'p',t:'טיוטה'}:{c:'p',t:'לכתוב'};if(o.self)return{c:'g',t:'✓ נכתב'};if(o.sc==null)return{c:'p',t:'⏳ בבדיקה'};return{c:o.sc>=7?'g':'b',t:o.sc+'/10'}}
+function exPick(){bar();$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">🎯</div><h2>בחנים לדוגמה</h2><p>כמו בכיתה: קטע מקור ו-2 סעיפים.<br>📗 פתח את הספר לידך, ⏱️ נסה לסיים ב-60 דקות.</p>`+
+  EXS.map((x,e)=>{const s=(S.es[e]||{}).s,a=secSt(e,'a'),b=secSt(e,'b');return`<button class="bt ex" type="button" data-e="${e}"><span>${e+1}. ${x.t}</span><span class="scb ${s!=null?(s>=70?'g':'b'):'p'}">${s!=null?'ציון '+s:a.t==='לכתוב'&&b.t==='לכתוב'?'להתחיל ›':'א: '+a.t+' · ב: '+b.t}</span></button>`}).join('')+
+  '<button class="bt" type="button" id="qkb">⚡ בוחן מהיר: 15 שאלות אמריקאיות</button>'+(S.mk&&S.mk.best!=null?'<p class="tm">הציון הכי טוב שלך עד עכשיו: <b>'+S.mk.best+'</b></p>':'');
+ document.querySelectorAll('.bt.ex').forEach(b=>b.onclick=()=>{const e=+b.dataset.e;S.ex=e;S.es[e]=S.es[e]||{};if(!S.es[e].t0)S.es[e].t0=Date.now();save();show()});$('qkb').onclick=mtStart}
+function showEx(){const e=S.ex,x=EXS[e],es=S.es[e]||{},c=$('card');c.classList.remove('fin');c.classList.add('ex');
+ $('tg').textContent='🎯 בוחן '+(e+1)+': '+x.t;
+ const tm=()=>{const m=Math.round(((es.s!=null||secSt(e,'a').t!=='לכתוב'&&secSt(e,'b').t!=='לכתוב'?(es.t1||Date.now()):Date.now())-(es.t0||Date.now()))/60000);$('rt').textContent='⏱️ '+m+' דק׳';$('rt').classList.toggle('on',true)};tm();show.t=setInterval(tm,30000);
+ $('q').innerHTML='<div class="ps">'+x.src+'</div><div class="it">📗 הספר פתוח לידך. לחץ על סעיף כדי לכתוב.</div>';
+ $('opts').className='opts';$('opts').innerHTML=['a','b'].map((s,k)=>{const st=secSt(e,s),qt=x[s][0].replace(/^[אב]\. /,'');return`<button class="op sec" type="button" data-s="${k}"><span>${'אב'[k]}. ${qt.length>70?qt.slice(0,68)+'…':qt}</span><span class="scb ${st.c}">${st.t}</span></button>`}).join('')+(es.s!=null?'<button class="op wr" type="button" id="exr">🔁 לכתוב את הבוחן מחדש</button>':'');
+ $('fb').className='fb'+(es.s!=null?(es.s>=70?' ok':' no'):'');$('fb').innerHTML=es.s!=null?'<div>ציון הבוחן: <b>'+es.s+'</b>. '+(es.s>=85?'מוכן לבוחן! 🔥':es.s>=70?'טוב מאוד! קרא את ההערות כדי לשפר עוד.':'קרא את ההערות ואת התשובות לדוגמה, ונסה בוחן נוסף.')+'</div>':secSt(e,'a').t.includes('⏳')||secSt(e,'b').t.includes('⏳')?'⏳ התשובות בבדיקה. הציון יגיע בשעה הקרובה.':'קרא את הקטע, וענה על שני הסעיפים.';
+ $('nx').disabled=false;$('nx').textContent='→ לרשימת הבחנים';bar()}
+function secTap(k){const e=S.ex,s='ab'[k],key='e'+(e+1)+s,i=ALLQ.findIndex(q=>q[5]===key),o=S.oa[key];
+ if(!o||(!o.id&&!o.self))return openWrite(i);if(o.sc!=null)return gradePop(key,false);sentPop(i)}
+function exRetry(){const e=S.ex;if(!confirm('לכתוב את הבוחן הזה מחדש? הציון הקודם נשמר בגרף.'))return;['a','b'].forEach(s=>delete S.oa['e'+(e+1)+s]);S.es[e]={t0:Date.now()};save();show()}
+$('nx').onclick=()=>{if(S.tab==='t'&&!S.mt&&S.ex!=null){S.ex=null;save();show();return}if(answered)show()};
+// ⚡ בוחן מהיר: 15 שאלות אמריקאיות (3 מכל שלב), בלי הסברים עד הסוף.
+function mtStart(){if(S.mt)return;
+ if(!confirm('⚡ בוחן מהיר: 15 שאלות אמריקאיות מכל החומר, בלי הסברים עד הסוף. מתחילים?'))return;
+ let p=[];for(let s=0;s<ST.length;s++)p=p.concat(shuf(MCQ.filter(i=>QS[i][0]===s)).slice(0,3));
+ S.mt={q:shuf(p).slice(0,15),i:0,ok:0,wr:[]};S.tab='t';save();show()}
+function mtEnd(){const m=S.mt,n=m.q.length,sc=Math.round(m.ok/n*100),at=new Date().toISOString();S.mk={best:Math.max(sc,(S.mk&&S.mk.best)||0),last:sc,n:((S.mk&&S.mk.n)||0)+1,at};S.mkh.push({s:sc,m:minute(),at,k:'q'});if(S.mkh.length>40)S.mkh.shift();
+ const wr=m.wr;S.mt=null;save();report();bar();$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">${sc>=85?'🏆':sc>=70?'💪':'📚'}</div><h2>ציון: ${sc}</h2><p><b>${m.ok}</b> נכונות מתוך ${n}.<br>${sc>=85?'יופי! עכשיו בוחן לדוגמה עם כתיבה. 🔥':sc>=70?'טוב! עוד סבב קטן על הטעויות.':'שווה לעבור על הטעויות ועל הסיכום, ולנסות שוב.'}</p>`+
+ (wr.length?'<button class="bt pr" id="rvb" type="button">🔁 תרגול השאלות שטעיתי ('+wr.length+')</button>':'')+'<button class="bt" id="bkb" type="button">🎯 לבחנים לדוגמה</button>';
+ const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};S.tab='p';save();Q=[];show()};
+ $('bkb').onclick=()=>show()}
+function finish(){bar();const f=Object.keys(S.f).length,wr=QS.map((q,i)=>i).filter(i=>S.w[i]>0);$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">🏆</div><h2>סיימת את כל ${N} שאלות התרגול!</h2><p><b>${f}</b> מתוך ${N} נכונות בניסיון הראשון.${(()=>{const p=Object.values(S.oa).filter(o=>o.id&&o.sc==null).length;return p?'<br>⏳ '+p+' תשובות פתוחות עוד בבדיקה.':''})()}<br>עכשיו בוחן לדוגמה, כמו בכיתה.</p>`+
+ '<button class="bt pr" id="mtg" type="button">🎯 לבחנים לדוגמה</button>'+(wr.length?'<button class="bt" id="rvb" type="button">🔁 חזרה על השאלות שטעיתי ('+wr.length+')</button>':'');
+ $('mtg').onclick=()=>{S.tab='t';S.ex=null;save();show()};const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();Q=[];show()}}
+const inc=P=>{let z=-1;return P.map(p=>{z=Math.max(+p[0]||0,z+1);return[z,p[1]]})};
+function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1,mk:S.mk,
+ lv:1,lvn:'שאלות שנלמדו',prog:done(),pmax:N,oad:QS.map((q,i)=>!q[2]&&S.d[i]?q[5]:null).filter(Boolean),oa:{n:S.gr.length,avg:S.gr.length?+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1):null,pend:Object.values(S.oa).filter(o=>o.id&&o.sc==null).length},
+ ex:EXS.map((x,e)=>(S.es[e]||{}).s==null?null:S.es[e].s),
+ hist:[S.gr.length?{lv:2,name:'✍️ ציון בתשובות הפתוחות',u:'',max:10,pts:inc(S.gr.map(g=>[g[2],g[1]]))}:null,S.mkh.length?{lv:3,name:'🎯 ציון בבחנים',u:'',max:100,pts:inc(S.mkh.map(x=>[x.m||0,x.s]))}:null].filter(Boolean)})}
+$('mtb').onclick=toTest;$('prb').onclick=toPrac;$('grb').onclick=myGraph;
+// 📘 סיכום ו-💡 טיפים: עמודים קצרים (אורן: לא קיר של טקסט). גובה קבוע, הכפתורים לא זזים.
+function pager(ov,body,dots,prev,next,x,onDone){const P=[...$(body).querySelectorAll('section')];let p=0;
+ function go(i){p=Math.max(0,Math.min(P.length-1,i));P.forEach((s,k)=>s.classList.toggle('on',k===p));$(dots).innerHTML=P.map((s,k)=>`<i class="${k===p?'on':''}"></i>`).join('');
+  $(prev).style.visibility=p?'visible':'hidden';$(next).textContent=p<P.length-1?'הבא ←':'סיימתי ✓';$(body).scrollTop=0}
+ $(x).onclick=()=>$(ov).classList.remove('on');$(prev).onclick=()=>go(p-1);$(next).onclick=()=>{if(p<P.length-1)go(p+1);else{$(ov).classList.remove('on');onDone()}};
+ $(ov).onclick=e=>{if(e.target===$(ov))$(ov).classList.remove('on')};return()=>{go(0);$(ov).classList.add('on')}}
+const tpOpen=pager('ovt','tpb','tpd','tpp','tpf','tpx',()=>{if(!S.tp){S.tp=1;if(!REV)save();bar()}});
+const smOpen=pager('ov','smb','smd','smp','smf','smx',()=>{if(!S.sm){S.sm=1;if(!REV)save();if(!S.tp)setTimeout(tpOpen,250)}}); // אחרי הסיכום הראשון: הטיפים
+$('rules').onclick=smOpen;$('tips').onclick=tpOpen;
+if(window.StudyGuess)StudyGuess.init('evyatar','hist',{fast:3000});
+if(window.StudyTrack)StudyTrack.init('evyatar','hist',['ev_hist']);
+if(!S.sm&&!S.mt)setTimeout(smOpen,300); // הסיכום נפתח בכל כניסה עד שקוראים אותו עד הסוף
+if(S.tab==='t'&&!REV&&!pracDone()&&!S.mt)S.tab='p';
+addEventListener('resize',fit);
+show();poll();poll.go();setTimeout(grades,600);
+</script>
+</body></html>
