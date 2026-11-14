@@ -1,4 +1,4 @@
-// דף ילד (אורן 11.11.2026): החדש והרלוונטי למעלה. כל תוכן לימוד = .item עם data-c="<ילד>/<תוכן>" (ו-data-t = מבחן/בוחן/הכתבה, data-gen = בלי ניחוש אוטומטי של תאריך).
+// דף ילד (אורן 11.11.2026): החדש והרלוונטי למעלה. כל תוכן לימוד = .item עם data-c="<ילד>/<תוכן>" (ו-data-t = מבחן/בוחן/הכתבה, data-gen = בלי ניחוש אוטומטי של תאריך, data-x = נבנה למבחן מסוים ולכן אף פעם לא "למידה כללית").
 // סדר: חדש עם מבחן קרוב ← חדש ← מבחן קרוב (הקרוב ראשון, עד 14 יום) ← השאר לפי הסדר בקובץ ← "בקרוב" (בבדיקה) בסוף.
 // תאריכי המבחנים נשמרים במכשיר (study_kl_<ילד>), כך שהסדר נקבע מיד כשהדף נפתח ולא קופץ אחרי טעינה.
 (function(){
@@ -10,7 +10,9 @@
     I.forEach(function(a,i){a.dataset.o=i});
     // אורן 13.11.2026: שלושה אזורים ברורים: 🎯 לפנינו (מבחן עם תאריך), 📚 למידה כללית (תמיד לפנינו), 🏆 ההישגים שלי (מבחן שבוצע, עם חותמת הציון).
     var H={};[['up','🎯 לפנינו'],['gen','📚 למידה כללית'],['done','🏆 ההישגים שלי']].forEach(function(x){var h=document.createElement('div');h.className='lh lh-'+x[0];h.textContent=x[1];H[x[0]]=h});
-    function grp(a){var t=C[a.dataset.c]||{},n=t.d?days(t.d):null;if(a.classList.contains('soon'))return 'gen';if(n!=null&&n>=0)return 'up';if(t.s!=null||(n!=null&&n<0))return 'done';return 'gen'}
+    // אורן 14.11.2026: "למידה כללית" רק לתוכן בלי מבחן. תוכן שקיבל תאריך מבחן יוצא משם אוטומטית, ותוכן שנבנה מראש למבחן/בוחן (data-x) אף פעם לא שם:
+    // כשאין לו תאריך קרוב (המבחן עבר, או ההורים סימנו "בוצע") הוא עובר ל"ההישגים שלי" עם "⏳ מחכים לציון" עד שמגיע ציון.
+    function grp(a){var t=C[a.dataset.c]||{},n=t.d?days(t.d):null;if(a.classList.contains('soon'))return 'gen';if(n!=null&&n>=0)return 'up';if(t.s!=null||(n!=null&&n<0)||a.dataset.x)return 'done';return 'gen'}
     function draw(){
       I.forEach(function(a){var t=C[a.dataset.c]||{},ch=a.querySelector('.chip'),n=t.d?days(t.d):null,w=a.dataset.t||'מבחן',g=grp(a);a.dataset.g=g;a.classList.toggle('dn',g==='done');stamp(a,t.s!=null&&!a.classList.contains('soon')?+t.s:null);
         a.dataset.n=g==='up'?n:'';
