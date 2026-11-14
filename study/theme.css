@@ -34,17 +34,25 @@ main:has(> .list){justify-content:flex-start}main:has(> .list) > *{flex-shrink:0
 .tools small{display:none!important}.tools .pbn>span:last-child{flex:none}
 .tools .pglow{animation:tglow 1.8s ease-in-out infinite}@keyframes tglow{0%,100%{background:#f7f9fc}50%{background:#fdecd2}}
 /* חותמת ציון בכרטיס תוכן (אורן 13.11.2026, study/kidlist.js): עיגול חותמת בצד שמאל. top = 85+, ok = 70-84, low = מתחת. */
-.item .stp{flex:none;width:50px;height:50px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-12deg);font-family:system-ui,Arial,sans-serif;line-height:1;margin-left:-4px}
-.item .stp b{display:block;font-size:18px;font-weight:800;letter-spacing:-.5px}.item .stp i{font-style:normal;font-size:9px;font-weight:700;margin-bottom:1px}
-.item .stp.top{background:radial-gradient(circle at 35% 30%,#4a7cc4,#2f5d9e 70%);color:#fff;box-shadow:0 0 0 2px #fff,0 0 0 4px #2f5d9e,0 3px 8px rgba(47,93,158,.35)}.item .stp.top i{font-size:12px;color:#ffd166}
-.item .stp.ok{background:#fff;color:#2f5d9e;box-shadow:inset 0 0 0 2px #2f5d9e,inset 0 0 0 4px #fff,inset 0 0 0 5px #9db7dc}
-.item .stp.low{background:#f4f6f9;color:#5b6675;box-shadow:inset 0 0 0 2px #b7c3d4}
+/* חותמת ציון (אורן 13.11.2026; יושר 14.11.2026): עיגול בלי הטיה, המספר ממורכז במדויק וקטן יותר כשיש 3 ספרות (.d3), הכוכב/"ציון" מעליו.
+   משותף לדף הילד (.item) ולאזור ההורים (.caph). הגודל ב---s בלבד. top = 85+, ok = 70-84, low = מתחת. */
+span.stp{--s:50px;position:relative;flex:none;display:block;width:var(--s);height:var(--s);border-radius:50%;font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;direction:ltr;overflow:visible}
+span.stp>b{position:absolute;left:0;right:0;top:57%;transform:translateY(-50%);display:block;margin:0;text-align:center;font-size:calc(var(--s) * .38);font-weight:800;line-height:1;letter-spacing:-.01em;font-variant-numeric:tabular-nums lining-nums;white-space:nowrap;overflow:visible}
+span.stp.d3>b{font-size:calc(var(--s) * .31);letter-spacing:-.03em}
+span.stp>i{position:absolute;left:0;right:0;top:calc(var(--s) * .12);display:block;text-align:center;font-style:normal;font-size:calc(var(--s) * .15);font-weight:700;line-height:1}
+span.stp.top>i{font-size:calc(var(--s) * .2);top:calc(var(--s) * .08);color:#ffd166}
+span.stp.top{background:radial-gradient(circle at 35% 30%,#4a7cc4,#2f5d9e 70%);color:#fff;box-shadow:0 0 0 2px #fff,0 0 0 4px #2f5d9e,0 3px 8px rgba(47,93,158,.3)}
+span.stp.ok{background:#fff;color:#2f5d9e;box-shadow:inset 0 0 0 2px #2f5d9e,inset 0 0 0 4px #fff,inset 0 0 0 5px #9db7dc}
+span.stp.low{background:#f4f6f9;color:#5b6675;box-shadow:inset 0 0 0 2px #b7c3d4}
+.item .stp{margin-left:-2px}
 /* אזורים בדף הילד (אורן 13.11.2026, kidlist.js): כותרת קטנה לכל אזור, ותוכן שבוצע = כרטיס הישג רגוע עם חותמת */
 .list .lh{font:800 13px system-ui,Arial,sans-serif;color:var(--mut);letter-spacing:.2px;margin:4px 4px -6px;display:flex;align-items:center;gap:8px}.list .lh::after{content:"";flex:1;height:1px;background:var(--bd)}
 .list .lh:first-child{margin-top:0}.list .lh-done{color:#2f5d9e}
 .list .item.dn{background:linear-gradient(105deg,#fff 55%,#f1f6fd);border-right-color:#7fa3d6}
 .item .chip.ok{background:#e6effa;color:#2f5d9e}
 .item .stp.pop{animation:stpop .7s cubic-bezier(.2,1.6,.4,1) both}
-@keyframes stpop{0%{transform:rotate(-30deg) scale(1.8);opacity:0}60%{opacity:1}100%{transform:rotate(-12deg) scale(1)}}
+@keyframes stpop{0%{transform:rotate(-18deg) scale(1.8);opacity:0}60%{opacity:1}100%{transform:none}}
 @media (prefers-reduced-motion:reduce){.item .stp.pop{animation:none}}
-@media (max-height:700px){main:has(> .list) .list{gap:8px}.list .lh{margin:0 4px -3px;font-size:12px}.list .item.dn{padding-top:7px;padding-bottom:7px}.list .item.dn .ic{width:44px;height:44px;font-size:24px}.item .stp{width:44px;height:44px}.item .stp b{font-size:16px}.item .chip{margin-top:4px}.list .item.dn small{display:none}main:has(> .list) .top img{height:72px}main:has(> .list) .top{margin-bottom:8px}}
+@media (max-height:700px){main:has(> .list) .list{gap:8px}.list .lh{margin:0 4px -3px;font-size:12px}.list .item.dn{padding-top:7px;padding-bottom:7px}.list .item.dn .ic{width:44px;height:44px;font-size:24px}.item .stp{--s:46px}.item .chip{margin-top:4px}.list .item.dn small{display:none}main:has(> .list) .top img{height:72px}main:has(> .list) .top{margin-bottom:8px}}
+/* מספרים (אורן 14.11.2026): בכל study ספרות ברוחב אחיד וגובה אחיד, כך שמונים וציונים לא קופצים ומתיישרים יפה. important כי font: מקוצר מאפס את זה. */
+*,*::before,*::after{font-variant-numeric:tabular-nums lining-nums!important}
