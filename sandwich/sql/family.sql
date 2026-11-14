@@ -97,7 +97,7 @@ language sql security definer set search_path = public as $$
   with k as (select case when p_fam = 'b' then array['ron','omer','uri'] else array['lia','daniela','evyatar'] end ks)
   select jsonb_build_object(
     'choices', coalesce((select jsonb_agg(jsonb_build_object('c', child, 'd', for_date, 'x', dish) order by for_date)
-      from sandwich_choices where dish <> '' and child = any((select ks from k)) and for_date between date '2026-10-01' and current_date + 10), '[]'::jsonb),
+      from sandwich_choices where dish <> '' and child = any((select ks from k)::text[]) and for_date between date '2026-10-01' and current_date + 10), '[]'::jsonb),
     'ev', coalesce((select jsonb_agg(r) from (
       select child as c,
         count(*) filter (where type = 'choose') as chooses,
@@ -107,9 +107,9 @@ language sql security definer set search_path = public as $$
         min((meta->>'secs_since_open')::int) filter (where type = 'choose' and meta ? 'secs_since_open') as min_s,
         count(*) filter (where type in ('choose','change') and (meta->>'after_push')::boolean) as after_push
       from sandwich_events
-      where child = any((select ks from k)) and type in ('choose','change') and for_date between date '2026-10-01' and current_date + 10
+      where child = any((select ks from k)::text[]) and type in ('choose','change') and for_date between date '2026-10-01' and current_date + 10
       group by child) r), '[]'::jsonb),
-    'opens', coalesce((select jsonb_object_agg(child, n) from (select child, count(*) n from sandwich_events where type = 'app_open' and child = any((select ks from k)) group by child) o), '{}'::jsonb)
+    'opens', coalesce((select jsonb_object_agg(child, n) from (select child, count(*) n from sandwich_events where type = 'app_open' and child = any((select ks from k)::text[]) group by child) o), '{}'::jsonb)
   )
 $$;
 
