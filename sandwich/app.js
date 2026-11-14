@@ -1,15 +1,38 @@
 (function () {
   var P = "sandwich_";
   var VERSION = ((document.currentScript && document.currentScript.src || "").split("v=")[1] || "").split("&")[0];
-  var KIDS = ["lia", "daniela", "evyatar"];
-  var DISHES = [
+  // משפחות: a = הראשונה (ברירת מחדל), b = השנייה. הלינק ?fam=b פותח ישר את המשפחה השנייה ושומר אותה במכשיר.
+  var FAMS = window.FAMILIES;
+  var switchedByUrl = false;
+  var FAM = (function () {
+    var f = null;
+    try {
+      var m = /[?&]fam=([a-z]+)/.exec(location.search);
+      f = localStorage.getItem(P + "fam");
+      if (m && FAMS[m[1]] && m[1] !== (f || "a")) { f = m[1]; localStorage.setItem(P + "fam", f); localStorage.removeItem(P + "who"); localStorage.removeItem(P + "push_child"); switchedByUrl = true; }
+    } catch (e) {}
+    return FAMS[f] ? f : "a";
+  })();
+  var KIDS = FAMS[FAM].kids, MOM = FAMS[FAM].mom;
+  var DISH_SETS = {a: [
     {n: "חומוס ומלפפון חמוץ", e: ["hummus", "pickle"]}, {n: "חומוס ופסטרמה", e: ["hummus", "pastrami"]}, {n: "חומוס וסלמי", e: ["hummus", "salami"]},
     {n: "גבינה לבנה", e: ["tub"]}, {n: "גבינת נפוליאון", e: ["napoleon"]}, {n: "חומוס", e: ["hummus"]},
     {n: "חביתה", e: "🍳"}, {n: "ריבת תות", e: "🍓", old: ["ריבה", "ריבה תות"]}, {n: "שוקולד נוטלה", e: "🍫", old: ["שוקולד"]},
     {n: "פיתה זעתר", e: "🫓"}, {n: "טוסט", e: "🍞"}, {n: "סלט ביצים", e: ["eggs"]},
     {n: "טונה", e: "🐟"}, {n: "קוטג'", e: ["cottage"]},
     {n: "לאבנה", e: ["labneh"], old: ["לבנה"]}, {n: "חמאה ומלח", e: ["butter"]},
-    {n: "פיצה", e: "🍕", isNew: true}, {n: "בורקס", e: ["burekas"], isNew: true}, {n: "גבינה עם פסטו", e: ["pesto"], isNew: true}, {n: "פסטה עם מלח", e: ["pasta", "salt"], isNew: true}];
+    {n: "פיצה", e: "🍕", isNew: true}, {n: "בורקס", e: ["burekas"], isNew: true}, {n: "גבינה עם פסטו", e: ["pesto"], isNew: true}, {n: "פסטה עם מלח", e: ["pasta", "salt"], isNew: true}],
+  // המשפחה השנייה. ask = אחרי הבחירה נפתחת חלונית הערה (למשל איזו מאפיה)
+  b: [
+    {n: "פיתה פיצה", e: ["pita", "🍕"]}, {n: "פיתה טוסט", e: ["pita", "cheese"]}, {n: "לחמניה טוסט", e: ["bun", "cheese"]}, {n: "לחם טוסט", e: ["bread", "cheese"]},
+    {n: "סלט ביצים פיתה", e: ["pita", "eggs"]}, {n: "סלט ביצים לחמניה", e: ["bun", "eggs"]},
+    {n: "ירקות", e: ["🥕", "🥒"]}, {n: "תפוח", e: "🍎"}, {n: "ענבים", e: "🍇"}, {n: "תפוז", e: "🍊"}, {n: "פרכיות קטנות", e: "🍘"},
+    {n: "פסטה", e: ["pasta"]}, {n: "טוסט זעתר", e: ["bread", "🌿"]}, {n: "טוסט תבלין בייגל", e: ["bread", "🥯"]},
+    {n: "בורקס", e: ["burekas"]}, {n: "מלוואח", e: "🥞"}, {n: "כריך קוטג'", e: ["bread", "cottage"]}, {n: "לחם מטוגן", e: ["bread", "🍳"]},
+    {n: "כריך פסטרמה רוסטביף", e: ["bread", "pastrami"]},
+    {n: "מאפיה", e: "🥐", sub: "כותבים הערה", ask: "איזו מאפיה?", hint: "לדוגמה: בורקס גבינה, או שוקולד"}
+  ]};
+  var DISHES = DISH_SETS[FAM];
   // בחירות ישנות ששמרו שם קודם של מנה
   function canon(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name || (DISHES[i].old || []).indexOf(name) >= 0) return DISHES[i].n; return name; }
 
@@ -28,11 +51,15 @@
     pasta: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 32h52c0 15-11 26-26 26S6 47 6 32z" fill="#f6f1e7" stroke="#c9bfa9" stroke-width="2"/><path d="M12 30c4-14 14-18 20-14s14 2 20 14z" fill="#f7d97a" stroke="#d1a528" stroke-width="2" stroke-linejoin="round"/><path d="M16 29c3-7 9-10 14-8M26 29c2-6 8-9 14-7M38 29c3-5 8-6 12-4" fill="none" stroke="#e3b43c" stroke-width="2.2" stroke-linecap="round"/></svg>',
     salt: '<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="translate(14 4)"><rect x="2" y="16" width="32" height="42" rx="7" fill="#f4f8ff" stroke="#9db0c9" stroke-width="2.4"/><path d="M4 18Q18 -4 32 18z" fill="#cfd8e6" stroke="#9db0c9" stroke-width="2.4" stroke-linejoin="round"/><g fill="#6b7a90"><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="9" r="1.6"/><circle cx="26" cy="12" r="1.6"/><circle cx="19" cy="15" r="1.6"/></g><path d="M8 32h20M8 42h20" stroke="#7d93b3" stroke-width="3" stroke-linecap="round"/></g></svg>',
     cottage: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M13 28h38l-4.2 28q-.6 3.6-4.4 3.6H21.6q-3.8 0-4.4-3.6z" fill="#fffef6" stroke="#c7c1a4" stroke-width="2"/><path d="M15 40h34l-1.2 9H16.2z" fill="#a5d86a"/><path d="M26 44.5h12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><g fill="#fffdf0" stroke="#d4cdb0" stroke-width="1.6"><circle cx="20" cy="26" r="6"/><circle cx="44" cy="26" r="6"/><circle cx="32" cy="22" r="8"/><circle cx="25.5" cy="21" r="5"/><circle cx="38.5" cy="20.5" r="5"/><circle cx="32" cy="27" r="6"/></g><ellipse cx="13" cy="28" rx="1.5" ry="1.5" fill="#c7c1a4"/></svg>',
+    pita: '<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="34" rx="27" ry="23" fill="#f2cf8e" stroke="#b98a3a" stroke-width="2.4"/><ellipse cx="32" cy="32" rx="21" ry="17.5" fill="#f9e0aa"/><path d="M14 34Q32 46 50 34" fill="none" stroke="#c99a4a" stroke-width="2.4" stroke-linecap="round"/><g fill="#d9a84f"><circle cx="22" cy="26" r="1.8"/><circle cx="34" cy="24" r="1.8"/><circle cx="43" cy="29" r="1.8"/><circle cx="29" cy="31" r="1.5"/></g></svg>',
+    bun: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 42C6 20 18 10 32 10s26 10 26 32z" fill="#e8a548" stroke="#a96a16" stroke-width="2.4" stroke-linejoin="round"/><rect x="6" y="42" width="52" height="11" rx="5.5" fill="#f2c27a" stroke="#a96a16" stroke-width="2.4"/><g fill="#fff3d0"><ellipse cx="22" cy="24" rx="2.6" ry="1.4" transform="rotate(-25 22 24)"/><ellipse cx="34" cy="19" rx="2.6" ry="1.4"/><ellipse cx="45" cy="25" rx="2.6" ry="1.4" transform="rotate(25 45 25)"/><ellipse cx="30" cy="31" rx="2.6" ry="1.4"/><ellipse cx="42" cy="35" rx="2.6" ry="1.4"/></g></svg>',
+    bread: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 56V28C4 26 4 10 18 9c4-3 14-3 18 0 14 1 14 17 6 19v28z" fill="#f0c77c" stroke="#a96a16" stroke-width="2.4" stroke-linejoin="round"/><path d="M19 52V30" stroke="#fff3d0" stroke-width="3" stroke-linecap="round" opacity=".8"/><path d="M12 56V28c14 3 30 3 30 0" fill="none" stroke="#c98a2a" stroke-width="0"/></svg>',
+    cheese: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M5 22l54 8v24L5 54z" fill="#ffd34a" stroke="#c99a12" stroke-width="2.4" stroke-linejoin="round"/><path d="M5 22l54 8" stroke="#fff0a8" stroke-width="3" stroke-linecap="round"/><g fill="#f2b92a" stroke="#c99a12" stroke-width="1.6"><circle cx="20" cy="40" r="4.2"/><circle cx="42" cy="44" r="3.4"/><circle cx="33" cy="37" r="2.2"/></g></svg>',
     eggs: '<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="18" cy="32" rx="13" ry="19" fill="#fffdf6" stroke="#d3cbb2" stroke-width="2"/><ellipse cx="18" cy="35" rx="7" ry="8.6" fill="#ffc72b" stroke="#e0a10f" stroke-width="1.6"/><ellipse cx="46" cy="32" rx="13" ry="19" fill="#fffdf6" stroke="#d3cbb2" stroke-width="2"/><ellipse cx="46" cy="35" rx="7" ry="8.6" fill="#ffc72b" stroke="#e0a10f" stroke-width="1.6"/><ellipse cx="15.5" cy="32" rx="2" ry="2.6" fill="#ffe27a"/><ellipse cx="43.5" cy="32" rx="2" ry="2.6" fill="#ffe27a"/></svg>'
   };
   function ico(e) {
     if (typeof e === "string") return e;
-    return '<span class="pair' + (e.length === 1 ? " one" : "") + '">' + e.map(function (k) { return SVG[k]; }).join("") + '</span>';
+    return '<span class="pair' + (e.length === 1 ? " one" : "") + '">' + e.map(function (k) { return SVG[k] || '<span class="eic">' + k + '</span>'; }).join("") + '</span>';
   }
   var DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
   function dayLabel(isoStr) {
@@ -85,15 +112,16 @@
       return r.text().then(function (t) { return t ? JSON.parse(t) : null; });
     });
   }
+  var DM = FAM === "a" ? "demo_" : "demo_" + FAM + "_"; // מצב הדגמה: מפתחות נפרדים לכל משפחה
   function getAll(date) {
-    if (demo) return Promise.resolve(JSON.parse(store("demo_" + date) || "[]"));
+    if (demo) return Promise.resolve(JSON.parse(store(DM + date) || "[]"));
     return rpc("sandwich_get", {p_date: date});
   }
   function setChoice(child, date, dish) {
     if (demo) {
-      var rows = JSON.parse(store("demo_" + date) || "[]").filter(function (r) { return r.child !== child; });
+      var rows = JSON.parse(store(DM + date) || "[]").filter(function (r) { return r.child !== child; });
       rows.push({child: child, dish: dish});
-      store("demo_" + date, JSON.stringify(rows));
+      store(DM + date, JSON.stringify(rows));
       return Promise.resolve();
     }
     return rpc("sandwich_set", {p_child: child, p_date: date, p_dish: dish});
@@ -102,27 +130,27 @@
   // התראה מיידית לאמא ליאורי כשילד בוחר או משנה מנה (לא מחכים לתשובה)
   function notifyMom(child, changed) {
     if (demo) return;
-    fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=chose&child=" + child + (changed ? "&changed=1" : ""), {
+    fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=chose&fam=" + FAM + "&child=" + child + (changed ? "&changed=1" : ""), {
       method: "POST", headers: {apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + (cfg.functionsKey || cfg.supabaseAnonKey)}
     }).catch(function () {});
   }
 
   // זמינות מנות: ליאורי מסמנת מה אזל. ברירת מחדל: הכול זמין. שום דבר לא משתנה לבד.
   function getOff() {
-    if (demo) return Promise.resolve(JSON.parse(store("demo_off") || "[]"));
-    return rpc("sandwich_unavail_get", {}).then(function (rows) { return (rows || []).map(function (r) { return r.dish; }); });
+    if (demo) return Promise.resolve(JSON.parse(store(DM + "off") || "[]"));
+    return rpc("sandwich_unavail_get", {p_fam: FAM}).then(function (rows) { return (rows || []).map(function (r) { return r.dish; }); });
   }
   function setOff(dish, off) {
     if (demo) {
-      var cur = JSON.parse(store("demo_off") || "[]").filter(function (d) { return d !== dish; });
+      var cur = JSON.parse(store(DM + "off") || "[]").filter(function (d) { return d !== dish; });
       if (off) cur.push(dish);
-      store("demo_off", JSON.stringify(cur));
+      store(DM + "off", JSON.stringify(cur));
       return Promise.resolve();
     }
-    return rpc("sandwich_unavail_set", {p_dish: dish, p_off: off}).then(function () {
+    return rpc("sandwich_unavail_set", {p_dish: dish, p_off: off, p_fam: FAM}).then(function () {
       // מי שכבר בחר את המנה מקבל התראה לבחור מחדש (לא מחכים לתשובה)
       // מנה שחזרה (אחרי 4 ימים ומעלה) מתריעה לכל הילדים; השרת בודק אם זה אכן חזרה
-      fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=" + (off ? "dish_off" : "dish_on") + "&dish=" + encodeURIComponent(dish), {
+      fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=" + (off ? "dish_off" : "dish_on") + "&fam=" + FAM + "&dish=" + encodeURIComponent(dish), {
         method: "POST", headers: {apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + (cfg.functionsKey || cfg.supabaseAnonKey)}
       }).catch(function () {});
     });
@@ -130,34 +158,34 @@
 
   // מנה יומית: נבחרת אוטומטית כל יום (בשרת, מ-09:00) עד ביטול או החלפה
   function getDaily(child) {
-    if (demo) return Promise.resolve(store("demo_daily_" + child) || null);
+    if (demo) return Promise.resolve(store(DM + "daily_" + child) || null);
     return rpc("sandwich_daily_get", {}).then(function (rows) {
       var m = (rows || []).filter(function (r) { return r.child === child; })[0];
       return m ? canon(m.dish) : null;
     });
   }
   function setDaily(child, dish) {
-    if (demo) { store("demo_daily_" + child, dish || null); return Promise.resolve(); }
+    if (demo) { store(DM + "daily_" + child, dish || null); return Promise.resolve(); }
     return rpc("sandwich_daily_set", {p_child: child, p_dish: dish || ""});
   }
 
   // מנות שחזרו לתפריט אחרי 4 ימים או יותר בלי להיות זמינות (מסומנות 3 ימים)
   function getReturned() {
     if (demo) return Promise.resolve([]);
-    return rpc("sandwich_returned_get", {}).then(function (rows) { return (rows || []).map(function (r) { return r.dish; }); });
+    return rpc("sandwich_returned_get", {p_fam: FAM}).then(function (rows) { return (rows || []).map(function (r) { return r.dish; }); });
   }
   // הערות קבועות לכל מנה (לכל ילד): נשמרות ומופיעות לאמא בכל פעם שהמנה נבחרת
   function getNotes() {
-    if (demo) return Promise.resolve(JSON.parse(store("demo_notes") || "{}"));
+    if (demo) return Promise.resolve(JSON.parse(store(DM + "notes") || "{}"));
     return rpc("sandwich_note_all", {}).then(function (rows) {
       var m = {}; (rows || []).forEach(function (r) { m[r.child + "|" + r.dish] = r.note; }); return m;
     });
   }
   function setNote(child, dish, text) {
     if (demo) {
-      var m = JSON.parse(store("demo_notes") || "{}");
+      var m = JSON.parse(store(DM + "notes") || "{}");
       if (text) m[child + "|" + dish] = text; else delete m[child + "|" + dish];
-      store("demo_notes", JSON.stringify(m));
+      store(DM + "notes", JSON.stringify(m));
       return Promise.resolve();
     }
     return rpc("sandwich_note_set", {p_child: child, p_dish: dish, p_note: text});
@@ -202,9 +230,9 @@
     var bell = document.getElementById("bell");
     if (!bell) return;
     var panel = null;
-    function kid() { var w = store("who"); return KIDS.indexOf(w) >= 0 || w === "mom" || w === "admin" ? w : null; }
+    function kid() { var w = store("who"); return KIDS.indexOf(w) >= 0 || w === MOM || w === "admin" ? w : null; }
     function closePanel() { if (panel) { panel.remove(); panel = null; } }
-    function schedule() { if ((store("push_child") || kid()) === "admin") return "כל התראה שהילדים ואמא מקבלים תגיע גם אליך, עם 👁️ ושם מי קיבל."; if ((store("push_child") || kid()) === "mom") return "בימים ראשון עד חמישי ב-10:00 וב-12:00 תגיע תזכורת לעדכן מה זמין בבית, לקראת הבחירה של הילדים אחרי הלימודים."; return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
+    function schedule() { if ((store("push_child") || kid()) === "admin") return "כל התראה שהילדים ואמא מקבלים תגיע גם אליך, עם 👁️ ושם מי קיבל."; if ((store("push_child") || kid()) === MOM) return "בימים ראשון עד חמישי ב-10:00 וב-12:00 תגיע תזכורת לעדכן מה זמין בבית, לקראת הבחירה של הילדים אחרי הלימודים."; return "כל יום ב-17:00 וב-19:00 תגיע תזכורת לבחור סנדוויץ' למחר, אם עוד לא בחרתם."; }
     function body(msg) {
       var owner = store("push_child"), k = kid();
       if (bell.classList.contains("on")) {
@@ -260,6 +288,7 @@
   // ---- מה חדש ----
   // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
   var RELEASES = [
+    {v: "20261114a", at: "14.11.2026 · 23:30", items: ["⚙️ הגדרות (כפתור במסך הראשי): אפשר לעבור בין משפחות. אותה אפליקציה, ילדים ותזכורות נפרדים לכל משפחה"]},
     {v: "20261024a", at: "24.10.2026 · 21:10", items: ["אמא ליאורי מקבלת התראה ברגע שילד בוחר או משנה מנה"]},
     {v: "20261016c", at: "16.10.2026 · 12:40", items: ["🔧 מצב מנהל (אורן): רואה מה כולם בחרו, סטטיסטיקה, ומקבל עותק של כל ההתראות של הילדים ושל אמא"]},
     {v: "20261016b", at: "16.10.2026 · 10:10", items: ["🏆 מסך סטטיסטיקה חדש (כפתור במסך הראשי): פודיום של מי בוחר הכי מהר, עוגת המנות, רצפים ומלך ההתלבטות, ומסך אישי לכל ילד", "⭐ מנה יומית: אחרי שבוחרים מנה, לוחצים על ☆ בפינה שלה והיא נבחרת אוטומטית כל יום, עד שמבטלים או מסמנים מנה אחרת"]},
@@ -286,8 +315,9 @@
     {v: "0.3", at: "6.10.2026 · 03:17", items: ["איורי הדמויות ועיצוב כהה"]},
     {v: "0.1", at: "6.10.2026 · 02:09", items: ["הגרסה הראשונה: בחירת סנדוויץ' לבית הספר"]}
   ];
+  function famTxt(t) { return FAM === "a" ? t : t.replace(/אמא ליאורי/g, "אמא").replace(/ \(אורן\)/g, ""); }
   function relHtml(r) {
-    return '<p class="rv">גרסה <bdi>' + esc(r.v) + '</bdi> · <bdi>' + esc(r.at) + '</bdi></p><ul>' + r.items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>';
+    return '<p class="rv">גרסה <bdi>' + esc(r.v) + '</bdi> · <bdi>' + esc(r.at) + '</bdi></p><ul>' + r.items.map(function (t) { return '<li>' + esc(famTxt(t)) + '</li>'; }).join("") + '</ul>';
   }
   // חלון "חדש באפליקציה": נפתח פעם אחת בכניסה הראשונה אחרי שחרור פיצ'רים גדולים, מדגיש מה חדש ומזמין לנסות
   var BIG = "20261016b";
@@ -312,6 +342,46 @@
   function maybeNew() {
     if (store("seen_rel") !== BIG) setTimeout(function () { if (!document.querySelector(".ins")) openNew(); }, 700);
   }
+  // ---- הגדרות: בחירת משפחה ----
+  // מכבים את התזכורות של המכשיר לפני המעבר, כדי שלא יגיעו תזכורות של המשפחה הקודמת
+  function detachPush() {
+    return pushState().then(function (sub) {
+      if (!sub) return null;
+      return rpc("sandwich_push_off", {p_endpoint: sub.endpoint}).catch(function () {}).then(function () { return sub.unsubscribe(); });
+    }).catch(function () {});
+  }
+  function switchFamily(f) {
+    if (f === FAM || !FAMS[f]) return;
+    var keep = store("who") === "admin"; // מצב מנהל נשאר גם כשעוברים בין משפחות
+    function go() {
+      store("fam", f);
+      if (!keep) { store("who", null); store("push_child", null); }
+      location.replace(location.pathname + (f === "a" ? "" : "?fam=" + f));
+    }
+    (keep ? Promise.resolve() : detachPush()).then(go, go);
+  }
+  function famLink(f) { return location.origin + location.pathname + (f === "a" ? "" : "?fam=" + f); }
+  function openSettings() {
+    var html = '<h3>⚙️ הגדרות</h3><h4 class="sethead">איזו משפחה?</h4><div class="famlist">' + Object.keys(FAMS).map(function (f) {
+      var F = FAMS[f];
+      return '<div class="famrow' + (f === FAM ? " on" : "") + '"><button class="fam" type="button" data-f="' + f + '"><span class="faces">' +
+        F.kids.map(function (k) { return '<span class="fc" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '</span>'; }).join("") + '</span><span class="ft"><b>' + esc(F.label) + '</b><small>' +
+        F.kids.map(function (k) { return esc(CHARACTERS[k].name); }).join(", ") + '</small></span><span class="chk">' + (f === FAM ? "✓" : "") + '</span></button>' +
+        '<button class="famcopy" type="button" data-c="' + f + '">🔗 העתקת לינק ישיר</button></div>';
+    }).join("") + '</div><p class="sm">כל משפחה רואה רק את הילדים, הבחירות והתזכורות של עצמה. במעבר בין משפחות התזכורות של המכשיר מתכבות, ומפעילים אותן מחדש במשפחה החדשה.</p>';
+    openSheet(html, function (ov, close) {
+      Array.prototype.forEach.call(ov.querySelectorAll(".fam"), function (b) { b.onclick = function () { if (b.dataset.f === FAM) return close(); switchFamily(b.dataset.f); }; });
+      Array.prototype.forEach.call(ov.querySelectorAll(".famcopy"), function (b) {
+        b.onclick = function () {
+          var u = famLink(b.dataset.c), t = b.textContent;
+          (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { b.textContent = "הלינק הועתק ✓"; }, function () { b.textContent = u; });
+          setTimeout(function () { if (b.textContent !== u) b.textContent = t; }, 2500);
+        };
+      });
+    });
+  }
+  function gearBtn() { return '<button class="gear" id="gear" type="button" aria-label="הגדרות">⚙️</button>'; }
+  function bindGear() { var g = document.getElementById("gear"); if (g) g.onclick = openSettings; }
   function openNotes() {
     var ov = document.createElement("div"); ov.className = "ins";
     ov.innerHTML = '<div class="ins-box notes"><button class="px" type="button" aria-label="סגירה">✕</button><h3>מה חדש?</h3>' + relHtml(RELEASES[0]) +
@@ -320,9 +390,10 @@
     ov.onclick = function (e) { if (e.target === ov) close(); };
     ov.querySelector(".px").onclick = close;
     var box = ov.querySelector(".ins-box");
-    box.insertAdjacentHTML("beforeend", '<button class="plainbtn" id="rePop" type="button">🎉 להציג שוב את חלון "חדש באפליקציה"</button><button class="plainbtn" id="adminIn" type="button">🔧 כניסת מנהל</button>');
+    box.insertAdjacentHTML("beforeend", '<button class="plainbtn" id="rePop" type="button">🎉 להציג שוב את חלון "חדש באפליקציה"</button>' + (FAM === "a" ? '<button class="plainbtn" id="adminIn" type="button">🔧 כניסת מנהל</button>' : ""));
     box.querySelector("#rePop").onclick = function () { close(); openNew(); };
-    box.querySelector("#adminIn").onclick = function () { close(); store("who", "admin"); store("seen_rel", null); route(); maybeNew(); };
+    var ai = box.querySelector("#adminIn");
+    if (ai) ai.onclick = function () { close(); store("who", "admin"); store("seen_rel", null); route(); maybeNew(); };
     document.body.appendChild(ov);
   }
 
@@ -346,8 +417,9 @@
     document.body.appendChild(ov);
     if (bind) bind(ov, close);
   }
-  function editNote(child, dish, cur, done) {
-    openSheet('<h3>הערה ל' + esc(dish) + '</h3><textarea class="notearea" maxlength="160" rows="3" placeholder="לדוגמה: בלי הרבה מלפפון חמוץ">' + esc(cur || "") + '</textarea>' +
+  function editNote(child, dish, cur, done, o) {
+    o = o || {};
+    openSheet('<h3>' + esc(o.title || "הערה ל" + dish) + '</h3><textarea class="notearea" maxlength="160" rows="3" placeholder="' + esc(o.hint || "לדוגמה: בלי הרבה מלפפון חמוץ") + '">' + esc(cur || "") + '</textarea>' +
       '<p class="sm">ההערה נשמרת למנה הזאת, ואמא תראה אותה בכל פעם שתבחרו אותה. אפשר לערוך מתי שרוצים.</p>' +
       '<button class="main" id="nsave" type="button">שמירה</button>' + (cur ? '<button class="main sec" id="ndel" type="button">מחיקת הערה</button>' : ""), function (ov, close) {
       var ta = ov.querySelector("textarea");
@@ -453,14 +525,15 @@
   var TURTLE = '<svg viewBox="0 8 68 50" aria-hidden="true"><ellipse cx="32" cy="55" rx="22" ry="3.2" fill="#000" opacity=".18"/><path d="M8 47l-5 3 6 .5z" fill="#7fc65a" stroke="#3f8f33" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="43" width="10" height="11" rx="5" fill="#8fd467" stroke="#3f8f33" stroke-width="2"/><rect x="40" y="43" width="10" height="11" rx="5" fill="#8fd467" stroke="#3f8f33" stroke-width="2"/><path d="M52 40c1-8 6-14 11-10 3 3 1 10-3 13-3 2-7 2-8-3z" fill="#8fd467" stroke="#3f8f33" stroke-width="2" stroke-linejoin="round"/><circle cx="59.2" cy="33.2" r="2" fill="#1d2b1a"/><circle cx="59.8" cy="32.6" r=".7" fill="#fff"/><path d="M57 38.5q2.5 1.6 4.6 0" fill="none" stroke="#1d2b1a" stroke-width="1.4" stroke-linecap="round"/><path d="M8 46C8 28 18 17 32 17s24 11 24 29z" fill="#58b447" stroke="#2f7a2a" stroke-width="2.4" stroke-linejoin="round"/><path d="M32 22l8 5v9l-8 5-8-5v-9z" fill="#7ad45f" stroke="#2f7a2a" stroke-width="1.8" stroke-linejoin="round"/><path d="M24 27l-10 3M24 36l-8 7M40 27l10 3M40 36l8 7M32 41v5M32 22v-4" fill="none" stroke="#2f7a2a" stroke-width="1.8" stroke-linecap="round"/><path d="M11 46h42" stroke="#2f7a2a" stroke-width="2.4" stroke-linecap="round"/></svg>';
 
   function screenWho() {
-    show('<div class="hero"><h1>בוחרים סנדוויץ\' למחר בבוקר!</h1><p class="sub">לחצו על השם שלכם</p></div><div class="who">' +
+    show(gearBtn() + '<div class="hero"><h1>בוחרים סנדוויץ\' למחר בבוקר!</h1><p class="sub">לחצו על השם שלכם</p></div><div class="who">' +
       KIDS.map(function (id) { return '<button class="person" data-id="' + id + '" style="' + colorOf(id) + '"><div class="stage">' + drawCharacter(id) + '</div><b>' + CHARACTERS[id].name + '</b></button>'; }).join("") +
-      '</div><button class="mom-card" data-id="mom" style="' + colorOf("mom") + '">' + drawCharacter("mom") + '<span class="mc-text"><b>' + CHARACTERS.mom.name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
+      '</div><button class="mom-card" data-id="' + MOM + '" style="' + colorOf(MOM) + '">' + drawCharacter(MOM) + '<span class="mc-text"><b>' + CHARACTERS[MOM].name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
       '<button class="stats-btn" id="statsbtn" type="button"><span class="newtag"><b>חדש!</b></span>🏆 סטטיסטיקה</button>' +
       (demo || isInstalled() ? "" : '<button class="install" id="install" type="button">' + SHARE_ICO + ' התקנה למסך הבית (לתזכורות)</button>') +
       '<footer class="credit"><div class="cr"><div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + ' <button class="info" id="info" type="button" aria-label="מה חדש בגרסה"><i>i</i><span>לחצו לפרטים</span></button></div></div>' +
       (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות - כבוי</button>') + '</footer>');
     app.className = "home";
+    bindGear();
     setupBell();
     setupInstall();
     document.getElementById("info").onclick = openNotes;
@@ -507,7 +580,7 @@
           .sort(function (a, b) { return rank(a.d) - rank(b.d) || a.i - b.i; })
           .map(function (o) {
             var no = off.indexOf(o.d.n) >= 0;
-            return '<button class="dish' + (no ? " off" : "") + (daily === o.d.n ? " daily" : "") + '" data-i="' + o.i + '"' + (no ? " disabled" : "") + '>' + (no ? '' : '<span class="dstar" role="button" aria-label="מנה יומית"></span>') + (no ? '<span class="offtag">לא זמין</span>' : o.d.isNew ? '<span class="newtag"><b>חדש!</b></span>' : back.indexOf(o.d.n) >= 0 ? '<span class="newtag back"><b>חזר!</b></span>' : '') + '<span class="em">' + ico(o.d.e) + '</span><span class="nm">' + esc(o.d.n) + '</span></button>';
+            return '<button class="dish' + (no ? " off" : "") + (daily === o.d.n ? " daily" : "") + '" data-i="' + o.i + '"' + (no ? " disabled" : "") + '>' + (no ? '' : '<span class="dstar" role="button" aria-label="מנה יומית"></span>') + (no ? '<span class="offtag">לא זמין</span>' : o.d.isNew ? '<span class="newtag"><b>חדש!</b></span>' : back.indexOf(o.d.n) >= 0 ? '<span class="newtag back"><b>חזר!</b></span>' : '') + '<span class="em">' + ico(o.d.e) + '</span><span class="nm">' + esc(o.d.n) + '</span>' + (o.d.sub ? '<small class="dsub">' + esc(o.d.sub) + '</small>' : '') + '</button>';
           }).join("") + '</div></div>');
       app.className = "pick";
       bindSwitch();
@@ -552,6 +625,11 @@
           setChoice(child, t.iso, name).then(function () {
             notifyMom(child, wasChanged);
             cur = name; paint(true); burstFrom(status);
+            var dd = DISHES[b.dataset.i];
+            if (dd.ask) {
+              editNote(child, name, notes[child + "|" + name], function (txt) { if (txt) notes[child + "|" + name] = txt; else delete notes[child + "|" + name]; if (cur === name) paint(false); toast(txt ? "ההערה נשמרה" : "ההערה נמחקה"); }, {title: dd.ask, hint: dd.hint});
+              return;
+            }
             if (!daily && (parseInt(store("dailyhint") || "0", 10) < 3)) { store("dailyhint", String(parseInt(store("dailyhint") || "0", 10) + 1)); toast("רוצים את המנה הזאת כל יום? לחצו על ☆ בפינה של המנה"); }
           }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
         };
@@ -571,7 +649,7 @@
   function sendNudge(k, btn, done) {
     var n = CHARACTERS[k].name;
     btn.disabled = true; btn.textContent = "שולח…";
-    fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=nudge&child=" + k, {
+    fetch(cfg.supabaseUrl + "/functions/v1/send-reminders?action=nudge&fam=" + FAM + "&child=" + k, {
       method: "POST", headers: {apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + (cfg.functionsKey || cfg.supabaseAnonKey)}
     }).then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); }).then(function (j) {
       if (j.result === "sent") { store("nudge_" + k, String(Date.now())); toast("נשלחה תזכורת ל" + n + " ✓"); }
@@ -589,8 +667,8 @@
   }
   function screenMom() {
     var t = target(), celebrated = false;
-    show('<header class="phead" style="' + colorOf("mom") + '"><div class="ptop"><button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
-      '<div class="greet">' + picBox("mom") + '' +
+    show('<header class="phead" style="' + colorOf(MOM) + '"><div class="ptop"><button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
+      '<div class="greet">' + picBox(MOM) + '' +
       '<div class="bubble"><h1>הסנדוויצ\'ים של ' + t.label + ' בבוקר</h1><p class="when">' + dayLabel(t.iso) + '</p><div class="ok" id="status"><span class="tx">טוענים…</span></div></div></div></header>' +
       '<div class="plist" id="rows"></div>');
     app.className = "pick";
@@ -672,7 +750,7 @@
   // הנתונים מגיעים מפונקציה אחת בשרת (בלי מידע מזהה, רק קוד דמות, מנה ותאריך)
   function getStats() {
     if (demo) return Promise.resolve({choices: [], ev: [], opens: {}});
-    return rpc("sandwich_stats", {});
+    return rpc("sandwich_stats", {p_fam: FAM});
   }
   function secTxt(n) {
     if (n === null || n === undefined) return "—";
@@ -785,7 +863,7 @@
 
   // ---- מצב מנהל (אורן): רואה מה כולם בחרו, סטטיסטיקה, ומקבל עותק של כל ההתראות. לא נספר בסטטיסטיקה ולא בוחר מנה ----
   function screenAdmin() {
-    show('<div class="hero"><h1>🔧 מצב מנהל</h1><p class="sub">הצצה לאפליקציה כמו שהיא אצל כולם</p></div>' +
+    show(gearBtn() + '<div class="hero"><h1>🔧 מצב מנהל</h1><p class="sub">הצצה לאפליקציה כמו שהיא אצל כולם</p></div>' +
       '<div class="adm"><button class="main" id="aPeek" type="button">👀 מה כולם בחרו</button>' +
       '<button class="main sec" id="aStats" type="button">🏆 סטטיסטיקה</button>' +
       '<button class="main sec" id="aNew" type="button">🎉 חלון "חדש באפליקציה"</button>' +
@@ -793,6 +871,7 @@
       '<footer class="credit"><div class="cr"><div class="ver">גרסה ' + esc(VERSION) + ' <button class="info" id="info" type="button" aria-label="מה חדש בגרסה"><i>i</i><span>לחצו לפרטים</span></button></div></div>' +
       (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות - כבוי</button>') + '</footer>');
     app.className = "home";
+    bindGear();
     setupBell();
     document.getElementById("info").onclick = openNotes;
     document.getElementById("aPeek").onclick = screenMom;
@@ -803,10 +882,10 @@
 
   function route() {
     var who = store("who");
-    if (!who || !CHARACTERS[who]) return screenWho();
+    if (!who || !CHARACTERS[who] || (who !== "admin" && who !== MOM && KIDS.indexOf(who) < 0)) return screenWho();
     if (who === "admin") return screenAdmin();
     logOpen(who);
-    if (who === "mom") return screenMom();
+    if (who === MOM) return screenMom();
     screenPick(who);
   }
 
@@ -838,6 +917,7 @@
   ["gesturestart", "gesturechange", "gestureend"].forEach(function (n) { document.addEventListener(n, function (e) { e.preventDefault(); }); });
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function () {});
   if (demo) document.getElementById("demo").hidden = false;
+  if (switchedByUrl) detachPush();
   route();
   if (/[?&]whatsnew=1/.test(location.search)) store("seen_rel", null);
   maybeNew();

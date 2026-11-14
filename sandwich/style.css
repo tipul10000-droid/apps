@@ -366,3 +366,26 @@ main.stats{height:100vh;height:100dvh;display:flex;flex-direction:column;padding
 .plainbtn{display:block;margin:10px auto 0;border:0;background:none;color:var(--muted);font-family:inherit;font-size:14px;text-decoration:underline}
 .adm{margin-top:18px;display:grid;gap:4px}
 main.home .adm .main{margin-top:8px}
+
+/* ---- משפחות והגדרות (20261114a) ---- */
+.pair .eic{display:block;font-size:.82em;line-height:1}
+.dish .dsub{font-size:12.5px;font-weight:500;color:var(--muted);line-height:1.1;margin-top:-2px}
+/* כפתור הגדרות בפינה השמאלית העליונה של המסך הראשי: קבוע, לא זז ולא משנה גודל */
+.gear{position:absolute;z-index:6;top:calc(var(--st,env(safe-area-inset-top,0px)) + 6px);left:12px;width:40px;height:40px;padding:0;border:0;border-radius:50%;
+  background:rgba(255,255,255,.12);box-shadow:0 0 0 1.5px rgba(255,255,255,.18);color:#fff;font-size:20px;line-height:1;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.gear:active{background:rgba(255,255,255,.22)}
+.sethead{margin:4px 0 8px;font-size:16px;color:var(--muted)}
+.famlist{display:flex;flex-direction:column;gap:10px}
+.famrow{border-radius:18px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.12);overflow:hidden}
+.famrow.on{background:rgba(255,211,77,.14);box-shadow:inset 0 0 0 2px #ffd34d}
+.fam{width:100%;display:flex;align-items:center;gap:12px;border:0;background:none;color:#fff;font-family:inherit;text-align:right;padding:12px 12px 8px;cursor:pointer}
+.fam .faces{display:flex;flex:none}
+.fam .fc{width:44px;height:44px;border-radius:50%;margin-inline-end:-10px;overflow:hidden;background:#241a4d;box-shadow:0 0 0 2.5px var(--c,#fff)}
+.fam .fc .ch{width:100%;height:100%;object-fit:cover}
+.fam .ft{flex:1;min-width:0;margin-inline-start:10px}
+.fam .ft b{display:block;font-size:17px}.fam .ft small{display:block;font-size:13.5px;color:var(--muted)}
+.fam .chk{width:24px;flex:none;text-align:center;font-size:20px;color:#ffd34d;font-weight:800}
+.famcopy{display:block;width:100%;border:0;border-top:1px solid rgba(255,255,255,.1);background:none;color:var(--muted);font-family:inherit;font-size:14px;padding:9px 12px;cursor:pointer}
+/* דמויות רחבות (תנוחת בעיטה) לא גולשות מהכרטיס */
+.person .stage .ch{max-width:135%;object-fit:contain;object-position:50% 100%}
+.greet .pic .ch{max-width:150%;object-fit:contain;object-position:50% 100%}
