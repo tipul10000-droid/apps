@@ -93,7 +93,8 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 16px);display:flex
 <script src="pics.js?v=1"></script>
 <script src="../squishies.js?v=3"></script>
 <script src="../../guess.js?v=1"></script>
-<script src="../../sqsound.js?v=9"></script>
+<script src="../../sqsound.js?v=10"></script>
+<script src="../../effort.js?v=1"></script>
 <script src="../../track.js?v=9"></script>
 <script>
 // האותיות של שילה (אורן 10.11.2026; אפיון: https://claude.ai/artifact/HV7NH8bAutYJYWkAPaACLH).
@@ -246,9 +247,9 @@ $('sqok').onclick=()=>{$('sqov').classList.remove('on');if(SQCB){const f=SQCB;SQ
 function sqCol(){const ev=sqEvery(),left=ev-(S.cc||0);
   $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} תשובות נכונות לסקווישי הבא`+(window.StudyGuess&&!StudyGuess.reward()?` · 🤔 הפרסים עצורים בגלל ניחושים: עוד ${StudyGuess.stat().need} תשובות נכונות במחשבה`:'');$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
   const cl=s=>s.ult?' ult':s.sup?' sup':'';const tile=s=>SQ.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}</div>`;
-  $('sqg').innerHTML=`<div class="sqhd">${ShiloSquishies.rows[0]}</div>`+SQS.map(tile).join('')+`<div class="sqhd">${ShiloSquishies.rows[1]}</div>`+SQS2.map(tile).join('')+`<div class="sqhd">${ShiloSquishies.rows[2]}</div>`+SQS3.map(tile).join('');$('sqcol').classList.add('on')}
+  $('sqg').innerHTML=`<div class="sqhd">${ShiloSquishies.rows[0]}</div>`+SQS.map(tile).join('')+`<div class="sqhd">${ShiloSquishies.rows[1]}</div>`+SQS2.map(tile).join('')+`<div class="sqhd">${ShiloSquishies.rows[2]}</div>`+SQS3.map(tile).join('')+(window.StudyEffort?StudyEffort.row('shilo'):'');$('sqcol').classList.add('on')}
 $('sqb').onclick=sqCol;$('sqcx').onclick=()=>$('sqcol').classList.remove('on');
-$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🧰';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לארגז';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.eff?'💝 פרס מאמץ מאבא ואמא':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🧰';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לארגז';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
 
 // ---------- אלבום ----------
 function album(){$('alb').innerHTML=IT.map(x=>{const open=S.w[x.l].s;const f=COL[x.pk]||[];let svg=ShiloPics.get(x.pk);
@@ -273,6 +274,8 @@ document.addEventListener('touchstart',()=>{if(AC&&AC.state!=='running')AC.resum
 preload();setTimeout(()=>{if(!READY){READY=true;goTxt();RWAIT.splice(0).forEach(f=>f())}},8000);
 if(window.StudyGuess)StudyGuess.init('shilo','letters',{fast:1100,stop:stopSay});
 if(window.StudyTrack){StudyTrack.init('shilo','letters',['shilo_lt','shilo_sq','shilo_lt_col']);StudyTrack.gift(()=>{SQCB=null;squishy();$('sqtt').textContent='🎁 מתנה מאבא ואמא!';confetti(60)})}
+// 💝 פרס מאמץ מההורים (14.11.2026, effort.js): שורה נוספת בלוח, ניתנת רק מאזור ההורים
+if(window.StudyEffort)StudyEffort.sync('shilo',()=>{if($('sqcol').classList.contains('on'))sqCol()});
 upd();goTxt();$('intro').classList.add('on');
 </script>
 </body></html>

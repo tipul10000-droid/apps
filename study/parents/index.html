@@ -99,13 +99,25 @@ html,body,main{overflow-anchor:none}
 .caph .cv{flex:none;color:var(--ac);font-size:18px;transition:transform .3s ease}.cap.open .cv{transform:rotate(180deg)}
 .capb{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s ease}.cap.open .capb{grid-template-rows:1fr}
 .capi{overflow:hidden;min-height:0}.capc{padding:2px 14px 12px;border-top:1px solid #eef0f4;opacity:0;transition:opacity .25s ease}.cap.open .capc{opacity:1}
-.kx{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;box-shadow:var(--sh);margin-bottom:14px}.kx>.qzc:first-child{margin-top:0;padding-top:0;border-top:0}.kx>.rqs:first-child{margin-top:0;padding-top:0;border-top:0}
+.kx{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;box-shadow:var(--sh);margin-bottom:14px}
+/* 💝 פרס מאמץ מיוחד (אורן 14.11.2026, effort.js): ההורים נותנים ידנית סקווישי על מאמץ. אזור הפעולה בגובה קבוע, כפתורים לא זזים. */
+.efk{border-color:#f9c6dc;background:linear-gradient(180deg,#fff7fa,#fff 60%)}.efk .efh{display:flex;align-items:center;gap:8px}.efk .efh b{font-size:16px}.efk .efh small{margin-inline-start:auto;color:var(--mut);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.efk .efx{font-size:13.5px;line-height:1.45;color:#4b5563;margin:6px 0 8px}
+.efk .efg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}.efk .efg button{position:relative;padding:2px;border-radius:10px;border:1px solid #e5e7eb;background:#f3f4f6;cursor:pointer;-webkit-tap-highlight-color:transparent;aspect-ratio:1}.efk .efg button *{pointer-events:none}.efk .efg svg{width:100%;height:100%;display:block}
+.efk .efg button.lk{border-style:dashed;border-color:#f5c2d6;background:#fbf3f6}.efk .efg button.lk svg{filter:brightness(0) invert(.62);opacity:.75}.efk .efg button.hv{background:linear-gradient(160deg,#fff1f5,#ffe4ef,#fef3c7);border-color:#f472b6}
+.efk .efg button.hv::after{content:'✓';position:absolute;top:-5px;left:-5px;width:17px;height:17px;border-radius:50%;background:#db2777;color:#fff;font:700 11px/17px system-ui,Arial,sans-serif;text-align:center}
+.efk .efg button.sel{outline:3px solid #db2777;outline-offset:1px}
+.efk .efa{height:96px;box-sizing:border-box;margin-top:8px;border-radius:12px;background:#fdf2f8;padding:8px;display:flex;align-items:center;gap:10px;overflow:hidden;transition:background .4s}.efk .efa.fl{background:#e9f7ef}
+.efk .efa .efp{flex:none;width:72px;height:72px}.efk .efa .efp svg{width:100%;height:100%}.efk .efa .eft{flex:1;min-width:0;font-size:14px;line-height:1.35}.efk .efa .eft b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.efk .efa .eft small{display:block;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.efk .efa .efb{display:flex;gap:6px;margin-top:6px}.efk .efa .efb button{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;font:700 14px system-ui,Arial,sans-serif;padding:8px 4px;border-radius:10px;border:1px solid #f9a8d4;background:#fff;color:#9d174d;cursor:pointer;white-space:nowrap}.efk .efa .efb button.go{background:#db2777;border-color:#db2777;color:#fff}.efk .efa .efb button:disabled{opacity:.6}
+.efk .efa .efe{color:var(--mut);font-size:14px;text-align:center;width:100%}.kx>.qzc:first-child{margin-top:0;padding-top:0;border-top:0}.kx>.rqs:first-child{margin-top:0;padding-top:0;border-top:0}
 </style></head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
 <div id="v"></div>
 <script src="../profiles.js?v=5"></script>
 <script src="../content.js?v=8"></script>
 <script src="../push.js?v=4"></script>
+<script src="../effort.js?v=1"></script>
 <script>
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
 // הקוד נבדק בשרת (study_parents_get). אחרי קוד נכון הוא נשמר במכשיר (study_par_pin); קוד שגוי מוחק אותו.
@@ -305,9 +317,10 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
    SEC[capGrp(t,RS)].push(h.slice(h0));h=h.slice(0,h0)});
   // אורן 13.11.2026: כמו בדף הילד: 🎯 לפנינו, 📚 למידה כללית, 🏆 בוצעו (עם חותמת הציון)
   [['up','🎯 לפנינו'],['gen','📚 למידה כללית'],['done','🏆 בוצעו']].forEach(([g,l])=>{if(SEC[g].length)h+=`<div class="sech">${l}</div>`+SEC[g].join('')});
+  if(window.StudyEffort&&StudyEffort.lists[k.id])h+=`<div class="kx efk" id="ef_${k.id}"></div>`;
   h+=`<div class="kx">${k.noqz?'':`<div class="qzc" id="qz_${k.id}"></div>`}<div class="rqs" id="rq_${k.id}"></div></div></div>`});
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
- V.innerHTML=h;SAVED='';DELD='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);drawNeed(k)});loadReq();loadQz();loadOA();drawCnt();capWire();gdWire();StudyContent.refresh(drawCnt);
+ V.innerHTML=h;SAVED='';DELD='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);drawNeed(k)});loadReq();loadQz();loadOA();loadEf();drawCnt();capWire();gdWire();StudyContent.refresh(drawCnt);
  V.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{TAB=b.dataset.k;try{localStorage.setItem('study_par_tab',TAB)}catch(e){}V.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));KIDS.forEach(k=>$('kd_'+k.id).classList.toggle('off',k.id!==TAB));scrollTo(0,0)});
  V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':(b.dataset.l||'✏️ עריכה')});if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);{const g=$('pgdgo');if(g)g.onclick=()=>$('nt').click();const d=$('pgd');if(d)d.ontoggle=()=>{try{localStorage.setItem('study_pgd_'+FAM,d.open?'1':'0')}catch(e){}}}$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem(PINK)}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
@@ -339,6 +352,27 @@ function drawCnt(){V.querySelectorAll('.crv').forEach(x=>x.hidden=StudyContent.o
  V.querySelectorAll('[data-cx]').forEach(x=>x.onclick=()=>{const id=x.dataset.cx;try{const at=(JSON.parse(localStorage.getItem('study_cnt_ok'))||{})[id],m=JSON.parse(localStorage.getItem('study_cnt_x'))||{};if(at){m[id]=at;localStorage.setItem('study_cnt_x',JSON.stringify(m))}}catch(e){}const c=x.closest('.cnt');c.hidden=true;c.innerHTML=''});
  V.querySelectorAll('[data-ca]').forEach(x=>x.onclick=()=>{const id=x.dataset.ca,m=$('cm_'+id.replace('/','_'));if(!confirm('לאשר את התוכן? מעכשיו הילד יראה אותו.'))return;m.textContent='שומר...';
   rpc('study_parents_content_approve',{p_pin:PIN,p_id:id}).then(j=>{if(j&&j.ok)StudyContent.refresh(drawCnt);else m.textContent=j&&j.err==='bad'?'צריך להיכנס שוב עם הקוד':'לא הצלחנו לשמור. נסו שוב'}).catch(()=>{m.textContent='אין חיבור לשרת כרגע. נסו שוב בעוד רגע'})})}
+// 💝 פרס מאמץ מיוחד (אורן 14.11.2026): 6 סקווישים לכל ילד שרק ההורים נותנים, על מאמץ ולמידה גם בלי לסיים.
+// נשמר בשרת (effort.js → study_state app 'effort'), והילד מקבל חלון חגיגי בדף שלו בכניסה הבאה. "לבטל" = רק ללחיצה בטעות.
+const EF={},EFS={};
+function loadEf(){KIDS.forEach(k=>{if(!$('ef_'+k.id))return;drawEf(k);StudyEffort.sync(k.id,()=>drawEf(k))})}
+function drawEf(k,msg){const box=$('ef_'+k.id);if(!box)return;const L=StudyEffort.lists[k.id],own=StudyEffort.owned(k.id),at=StudyEffort.at(k.id),boy=!!k.boy,sel=EFS[k.id],s=sel&&L.find(x=>x.id===sel),hv=s&&own.includes(s.id);
+ const h1=boy?'הוא':'היא',l1=boy?'לו':'לה';
+ let act;if(EF[k.id]==='busy')act=`<div class="efe">שומר...</div>`;
+ else if(!s)act=`<div class="efe">${msg||`לחצו על סקווישי אפור כדי לבחור מה לתת ${l1} 👆`}</div>`;
+ else act=`<div class="efp">${StudyEffort.svg(s)}</div><div class="eft"><b>${esc(s.n)}</b>${hv?`<small>✓ ניתן${at[s.id]?' ב-'+fmtD(at[s.id]):''}</small>`:`<small>${boy?'יקבל':'תקבל'} אותו בכניסה הבאה 🎁</small>`}
+  <div class="efb">${hv?`<button type="button" data-efu="${k.id}">↩ לבטל</button><button type="button" data-efc="${k.id}">סגירה</button>`:`<button class="go" type="button" data-efg="${k.id}">💝 לתת ל${k.n}</button><button type="button" data-efc="${k.id}">ביטול</button>`}</div></div>`;
+ box.innerHTML=`<div class="efh"><b>💝 פרס מאמץ מיוחד</b><small>ניתנו ${own.filter(x=>L.some(s=>s.id===x)).length} מתוך ${L.length}</small></div>
+ <div class="efx">ראיתם ש${k.n} ${boy?'למד והתאמץ':'למדה והתאמצה'} במיוחד, גם אם ${boy?'הוא עוד לא סיים':'היא עוד לא סיימה'}? כאן נותנים ${l1} סקווישי מיוחד שאי אפשר להשיג באפליקציה, רק מכם. ${h1} ${boy?'יראה':'תראה'} אותו בלוח הסקווישים ${boy?'שלו':'שלה'} בשורה "💝 פרס מאמץ מאבא ואמא".</div>
+ <div class="efg">${L.map(x=>{const o=own.includes(x.id);return `<button type="button" class="${o?'hv':'lk'}${sel===x.id?' sel':''}" data-efs="${k.id}|${x.id}" aria-label="${esc(x.n)}">${StudyEffort.svg(x,!o)}</button>`}).join('')}</div>
+ <div class="efa${msg&&!s?' fl':''}">${act}</div>`;
+ box.querySelectorAll('[data-efs]').forEach(b=>b.onclick=()=>{const [kid,id]=b.dataset.efs.split('|');EFS[kid]=EFS[kid]===id?null:id;drawEf(k)});
+ box.querySelectorAll('[data-efc]').forEach(b=>b.onclick=()=>{EFS[k.id]=null;drawEf(k)});
+ const go=(on)=>{const id=EFS[k.id],nm=(L.find(x=>x.id===id)||{}).n||'';EF[k.id]='busy';drawEf(k);
+  StudyEffort.give(k.id,id,on).then(()=>{EF[k.id]='';EFS[k.id]=null;drawEf(k,on?`✓ ${nm} ניתן ל${k.n}! ${h1} ${boy?'יקבל':'תקבל'} אותו בכניסה הבאה 💝`:`בוטל. ${nm} חזר להיות אפור`)})
+   .catch(()=>{EF[k.id]='';drawEf(k);const a=box.querySelector('.efa .eft small');if(a)a.textContent='לא הצלחנו לשמור. בדקו חיבור ונסו שוב'})};
+ box.querySelectorAll('[data-efg]').forEach(b=>b.onclick=()=>go(true));
+ box.querySelectorAll('[data-efu]').forEach(b=>b.onclick=()=>go(false))}
 // חידון כניסה: שחרור או נעילה ידנית (אורן 6.11.2026). החלטה רכה מעל החוק האוטומטי (4 שעות / 20 דקות לימוד).
 // המסך הראשי במכשיר של הילד מדווח מצב (study_quiz_sync) ומבצע את הפקודה האחרונה. הכפתורים קבועים, רק שורת המצב מתחלפת.
 let QZF='',QZO={};

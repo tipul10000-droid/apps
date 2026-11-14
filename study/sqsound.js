@@ -1,6 +1,7 @@
 // צליל מצחיק ושונה לכל סקווישי (אורן 6.11.2026): כל מזהה = צליל אחר לגמרי, בלי חזרות (WebAudio), ובערבוב גם צלילים מוקלטים (sqfx, למטה).
 // דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco
 // ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi + חרקי חלל bg_lady bg_bee bg_ant bg_fire bg_fly bg_queen
+// פרס מאמץ מההורים (14.11.2026): ef_l_* ליה, ef_d_* דני, ef_v_* לביא, ef_s_* שילה. תמיד הצליל המצויר שלהם.
 // לביא ושילה (9.11.2026; שילה = כלי עבודה מ-10.11): lv_* ו-sh_* (18 לכל אחד, כולל האולטרה). כולם תמיד מנגנים רק את הצליל המצויר שלהם, בלי ההקלטות מהאינטרנט (אורן 11.11.2026).
 // שימוש: <script src="../../sqsound.js"></script>  SqSound.play(id, muted)
 (function(){
@@ -93,6 +94,31 @@
   sh_u_jack:function(){for(var i=0;i<14;i++){noise(i*.07,.03,.4,'bandpass',800,800,2);osc('square',i*.07,.03,[[0,90],[1,70]],.12,800)}},// טה-טה-טה פטיש אוויר
   sh_u_robot:function(){[880,440,1320,660,990,330,1760].forEach(function(f,i){beep(i*.09,f,.07,.12,'square')});osc('sine',.7,.4,[[0,200],[1,1200]],.12)},// ביפ-בופ-ביפ
   sh_u_tractor:function(){osc('sawtooth',0,.6,[[0,50],[1,56]],.18,350,[10,6]);osc('square',.7,.25,[[0,392],[1,392]],.14,1800);osc('square',1,.45,[[0,392],[1,392]],.14,1800)},// מנוע וטוט-טוט
+  // ---- 💝 פרס מאמץ מההורים (14.11.2026, effort.js): צליל מצויר משלו לכל אחד, תמיד, בלי ערבוב הקלטות ----
+  ef_l_sun:function(){[523,659,784,1047,1319].forEach(function(f,i){beep(i*.08,f,.35,.11,'triangle')});osc('sine',.45,.6,[[0,1047],[1,1047]],.08,0,[6,18])},// שמש עולה: טה-דה בהיר
+  ef_l_tulip:function(){noise(0,.05,.45,'bandpass',1200,800,3);osc('sine',0,.18,[[0,300],[1,1100]],.28);[0,.12,.22].forEach(function(t,i){osc('sine',.3+t,.07,[[0,900+i*250],[1,1500+i*250]],.12)})},// פופ! ובועות
+  ef_l_shroom:function(){osc('sine',0,.7,[[0,110],[.2,260],[.45,140],[.7,220],[1,120]],.32,0,[9,30])},// בּוֹוֹמְפּ גומי של פטרייה
+  ef_l_cactus:function(){[0,.13,.26].forEach(function(t,i){osc('square',t,.06,[[0,2200+i*200],[1,2800+i*200]],.08)});for(var i=0;i<6;i++)beep(.45+i*.07,i%2?1175:988,.06,.11,'triangle')},// אאוץ׳ קטנטן ואז טרילול שמח
+  ef_l_daisy:function(){[[262,0],[392,.22],[392,.38],[330,.6],[523,.82],[523,.98]].forEach(function(p,i){beep(p[1],p[0],i%3?.12:.18,i%3?.1:.15,i%3?'triangle':'sine')})},// אום-פה-פה של ריקוד
+  ef_l_puff:function(){noise(0,.7,.2,'bandpass',600,2600,1.2);for(var i=0;i<6;i++)beep(.55+i*.09,2400+Math.random()*1400,.14,.06,'sine')},// פוּוּוּ ונצנוצי זרעים
+  ef_d_sneaker:function(){[0,.16,.3].forEach(function(t,i){osc('sine',t,.1,[[0,2600-i*200],[.5,3400-i*200],[1,2900-i*200]],.12);noise(t,.08,.12,'bandpass',3000,3000,8)})},// צִ׳יק צִ׳יק של סוליה על הפרקט
+  ef_d_bag:function(){noise(0,.5,.22,'bandpass',1500,4500,3,55);noise(.58,.03,.5,'highpass',3000);beep(.62,1760,.15,.12,'triangle')},// רוכסן זזזיפ וקליק
+  ef_d_shades:function(){osc('sine',0,.9,[[0,1800],[.6,500],[1,700]],.22);osc('triangle',.95,.35,[[0,660],[1,880]],.12,0,[6,20])},// שריקה מגניבה "אוּ-לָה-לָה"
+  ef_d_dress:function(){for(var i=0;i<9;i++)beep(i*.06,2093+i*180,.18,.06,'sine');osc('sawtooth',.6,.6,[[0,330],[.5,440],[1,392]],.12,1500,[5,10],4)},// נצנוצים ו"וואו"
+  ef_d_lip:function(){osc('sine',0,.22,[[0,700],[.7,1300],[1,300]],.24);noise(.2,.04,.5,'bandpass',2200,2200,4);osc('sine',.35,.4,[[0,900],[1,1300]],.1,0,[7,40])},// מְוַואה! נשיקה
+  ef_d_bow:function(){osc('sine',0,.35,[[0,200],[.3,900],[.6,350],[1,650]],.26,0,[18,50]);osc('sine',.4,.35,[[0,260],[.3,1100],[.6,420],[1,780]],.24,0,[18,50])},// בּוֹיְנְג-בּוֹיְנְג כפול
+  ef_v_flag:function(){noise(0,.55,.16,'lowpass',900,500,1,14);[[392,.5],[392,.62],[523,.74],[659,.92]].forEach(function(p,i){osc('sawtooth',p[1],i===3?.45:.1,[[0,p[0]],[1,p[0]]],.11,2200)})},// פְּרְפְּר של דגל ותרועה
+  ef_v_hoopoe:function(){[0,.3,.6].forEach(function(t){osc('sine',t,.18,[[0,520],[.3,620],[1,480]],.3,1400)})},// הוּפּ-הוּפּ-הוּפּ של דוכיפת
+  ef_v_kotel:function(){[0,.25,.5].forEach(function(t,i){noise(t,.08,.45,'lowpass',500-i*80,200,2);osc('sine',t,.2,[[0,150-i*15],[1,70]],.3)})},// בּוּם בּוּם בּוּם של אבנים כבדות
+  ef_v_deer:function(){[0,.14,.38,.52,.76,.9].forEach(function(t,i){noise(t,.03,.4,'bandpass',i%2?1800:1300,1300,5);beep(t,i%2?900:700,.04,.1,'triangle')})},// קְלִיפּ-קְלוֹפּ של פרסות קופצות
+  ef_v_olive:function(){[0,.3,.55].forEach(function(t,i){osc('sine',t,.2,[[0,1200-i*150],[1,300]],.18);noise(t+.2,.05,.3,'lowpass',700,300,3)})},// זיתים נופלים: פְּיוּ... פְּלוֹפּ
+  ef_v_tower:function(){[0,.6].forEach(function(t,i){var f=i?392:523;osc('sine',t,.9,[[0,f],[1,f*.99]],.2);osc('sine',t,.9,[[0,f*2.76],[1,f*2.7]],.05)})},// דִּינְג-דוֹנְג של פעמון במגדל
+  ef_s_orange:function(){noise(0,.2,.32,'lowpass',1600,300,2);osc('sine',.05,.25,[[0,400],[1,150]],.22);noise(.35,.45,.18,'bandpass',900,2600,4)},// סְקְוִויש עסיסי וסְלְרְרְפּ
+  ef_s_anemone:function(){osc('triangle',0,.7,[[0,300],[1,1200]],.18,0,[5,15]);beep(.72,1568,.3,.12,'sine');beep(.72,1976,.3,.07,'sine')},// פרח נפתח: וִוִוִי-דינג
+  ef_s_deadsea:function(){noise(0,.35,.35,'lowpass',2500,400,1);osc('sine',.45,.9,[[0,330],[.5,300],[1,340]],.2,0,[3,18])},// שְׁפְּלָאש ואז אַההה רגוע
+  ef_s_hermon:function(){osc('sine',0,.8,[[0,260],[1,240]],.22,0,[24,45]);noise(.1,.9,.1,'bandpass',800,1800,2)},// ברררר קר! ורוח
+  ef_s_dolphin:function(){for(var i=0;i<8;i++)noise(i*.045,.015,.4,'highpass',4000);osc('sine',.42,.55,[[0,1800],[.3,3200],[.6,2400],[1,3000]],.12,0,[12,200])},// טְרְרְר קליקים וציוץ של דולפין
+  ef_s_choco:function(){noise(0,.6,.2,'bandpass',500,1800,5,20);osc('sine',.7,.45,[[0,250],[1,200]],.22,0,[5,10])},// שאיבה בקש... מממ
   };
   // צלילים מוקלטים מהאינטרנט (אורן 6.11.2026): 15 צלילים מצחיקים ב-CC0 מ-Freesound (study/sqfx, קרדיטים ב-sqfx/CREDITS.txt).
   // לכל אולטרה סקווישי צליל מוקלט משלו (ULT). לסקווישים הישנים: לפעמים הצליל שלהם, ולפעמים צליל מוקלט אקראי (ערבוב).
@@ -117,5 +143,5 @@
   function mix(){var n;do{n=POOL[Math.floor(Math.random()*POOL.length)]}while(n===LAST&&POOL.length>1);LAST=n;return n}
   window.SqSound={has:function(id){return !!(S[id]||ULT[id])},ids:Object.keys(S).concat(Object.keys(ULT)),
     play:function(id,muted){if(muted)return false;if(ULT[id]){file(ULT[id]);return true}if(!S[id]||!ac())return false;
-      if(!/^(lv|sh)_|^bg_/.test(id)&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
+      if(!/^(lv|sh|ef)_|^bg_/.test(id)&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
 })();
