@@ -41,3 +41,6 @@
     return f.apply(this,arguments)};
   var gs=document.createElement('style');gs.textContent='body{background-color:#f7efe2!important;background-image:linear-gradient(rgba(180,83,9,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(180,83,9,.08) 1px,transparent 1px)!important}';(document.head||document.documentElement).appendChild(gs);// רקע חם במצב אורח
 })();
+
+// 🎤 תמלול קולי בכל תיבת טקסט (voice.js, אורן 14.11.2026): נטען אוטומטית בכל דף study
+(function(){try{var me=document.currentScript&&document.currentScript.src;if(!me||window.StudyVoice)return;var v=document.createElement('script');v.src=me.replace(/guest\.js(\?.*)?$/,'voice.js?v=1');v.defer=true;(document.head||document.documentElement).appendChild(v)}catch(e){}})();
