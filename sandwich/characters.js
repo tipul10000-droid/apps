@@ -13,7 +13,7 @@ window.CHARACTERS = {
   ron:     {g: "m", name: "רון",    color: "#ff4d57", color2: "#ffffff"},
   omer:    {g: "m", name: "עומר",   color: "#ffd34d", color2: "#3fbf5a"},
   uri:     {g: "f", name: "אורי",   color: "#ff6fb5", color2: "#2fc4d8"},
-  mom_b:   {name: "אמא", color: "#b57bff", color2: "#ff6fb5"},
+  mom_b:   {name: "אמא ליאורי", color: "#b57bff", color2: "#ff6fb5"},
   admin:   {name: "מנהל", color: "#ffd34d", color2: "#ff9f1c"}
 };
 window.drawCharacter = function (id, kind) {
