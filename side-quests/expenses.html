@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=2"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.2";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.3";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,6 +92,10 @@ details.more{margin-top:4px}details.more summary{cursor:pointer;font-weight:800;
 details.more>div{padding:6px 2px;font-size:14px;color:var(--muted);line-height:1.55}
 
 .hero .kpis .kpi b{white-space:normal;overflow:visible;font-size:14.5px}
+/* 1.3: small dashed "+ new receipt" placeholder at the top of every tab, opens the receipts chat */
+.addrc{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;margin:0 0 14px;border:1.5px dashed var(--line);border-radius:12px;color:var(--muted);font-family:var(--f-display);font-weight:700;font-size:14px;-webkit-tap-highlight-color:transparent}
+.addrc b{font-size:18px;line-height:1;color:var(--hi)}
+.addrc:active{background:var(--sunk)}
 /* 1.1: Elbit trips layer (handoff from the cashflow app, 13.11.2026) */
 .trip{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:12px}
 .trip.red{border-color:var(--bad)}
@@ -192,7 +196,9 @@ function group(title,sub,list,trip){if(!list.length)return "";const due=list.fil
   return `<div class="list" style="margin-bottom:12px"><div class="gh"><span class="b"><span class="t">${esc(title)}</span><span class="s">${esc([sub,due.length?"להגיש "+sumTxt(sums(due)):"✓ הכול הוגש"].filter(Boolean).join(" · "))}</span></span>${open}</div>
     ${list.map(item).join("")}
     ${due.length>1?`<div class="bulk"><span>הכול:</span><div class="chips c3">${["sent","submitted","received"].map(k=>`<button data-bulk="${k}" data-ids="${esc(due.map(x=>x.id).join(","))}">${ST[k][0]}</button>`).join("")}</div></div>`:""}</div>`;}
-function tab(){const cat=ui.tab,EL=cat==="abroad"?elbitView():"",elbitTrips=new Set(trips().filter(t=>/^elbit-trip-/.test(t.topic_id||"")&&tripRows().some(r=>r.id===t.topic_id)).map(t=>t.id)),E=exps().filter(x=>(x.cat||"abroad")===cat&&!(EL&&elbitTrips.has(x.trip))).sort((a,b)=>String(b.d||"").localeCompare(String(a.d||"")));
+function addRc(){const u=safe(meta.chat_url);return u?`<a class="addrc" href="${esc(u)}" target="_blank" rel="noopener"><b>＋</b><span>קבלה חדשה</span><span>🧾</span></a>`:"";}
+function tab(){return addRc()+tabBody();}
+function tabBody(){const cat=ui.tab,EL=cat==="abroad"?elbitView():"",elbitTrips=new Set(trips().filter(t=>/^elbit-trip-/.test(t.topic_id||"")&&tripRows().some(r=>r.id===t.topic_id)).map(t=>t.id)),E=exps().filter(x=>(x.cat||"abroad")===cat&&!(EL&&elbitTrips.has(x.trip))).sort((a,b)=>String(b.d||"").localeCompare(String(a.d||"")));
   if(!E.length)return EL||`<div class="empty">אין עדיין הוצאות כאן.<br>שולחים קבלות לצ׳אט והן נכנסות לכאן.</div>`;
   const miss=E.filter(missing);let o="";
   if(miss.length)o+=`<section><div class="sh"><h2>⚠️ חויבת ואין קבלה</h2><small>${miss.length}</small></div><div class="list red">${miss.map(item).join("")}</div></section>`;
