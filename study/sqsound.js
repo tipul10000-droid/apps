@@ -1,5 +1,6 @@
 // צליל מצחיק ושונה לכל סקווישי (אורן 6.11.2026): כל מזהה = צליל אחר לגמרי, בלי חזרות (WebAudio), ובערבוב גם צלילים מוקלטים (sqfx, למטה).
-// דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco
+// דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco + אולטרה u_ramyeon u_hotteok u_bungeo u_corndog u_mandu u_banana
+// דני (אורן 14.11.2026): רק הצלילים המצוירים החמודים המקוריים, בלי ההקלטות מהאינטרנט (ממים, גרעפסים, פלוצים). גם לאולטרה שלה יש צליל מצויר משלה.
 // ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi + חרקי חלל bg_lady bg_bee bg_ant bg_fire bg_fly bg_queen
 // פרס מאמץ מההורים (14.11.2026): ef_l_* ליה, ef_d_* דני, ef_v_* לביא, ef_s_* שילה. תמיד הצליל המצויר שלהם.
 // לביא ושילה (9.11.2026; שילה = כלי עבודה מ-10.11): lv_* ו-sh_* (18 לכל אחד, כולל האולטרה). כולם תמיד מנגנים רק את הצליל המצויר שלהם, בלי ההקלטות מהאינטרנט (אורן 11.11.2026).
@@ -35,6 +36,13 @@
   s_dalgona:function(){noise(0,.06,.35,'highpass',2500);noise(.08,.05,.3,'highpass',3000);[523,659,784,1047].forEach(function(f,i){beep(.2+i*.09,f,.12,.13,'triangle')})},// קראק ואז טה-דה
   s_melona:function(){osc('sawtooth',0,.35,[[0,392],[1,370]],.16,1400,[6,8]);osc('sawtooth',.38,.35,[[0,370],[1,349]],.16,1400,[6,8]);osc('sawtooth',.76,.8,[[0,349],[1,262]],.16,1200,[7,14])},// קזו: וואה וואה וואאאה
   s_choco:function(){[0,.17,.34].forEach(function(t,i){osc('sine',t,.13,[[0,330-i*20],[.5,190],[1,240]],.3,900)});osc('triangle',.55,.8,[[0,210],[.5,250],[1,300]],.24,1500,[5,10])},// נום נום נום... ממממ! (אוכלת עוגייה)
+  // ---- דני: אולטרה סקווישים, צלילים מצוירים (14.11.2026, במקום ההקלטות) ----
+  u_ramyeon:function(){noise(0,.45,.14,'highpass',3500,5000);osc('sine',.3,.7,[[0,400],[.7,1600],[1,1500]],.18,0,[9,40])},// ששש חריף ואז פִּיוּוּוּ של קומקום
+  u_hotteok:function(){[0,.28,.5].forEach(function(t,i){osc('sine',t,.24,[[0,180+i*60],[.35,820+i*160],[1,300+i*80]],.26,0,[20,40])})},// בּוֹינג-בּוֹינג-בּוֹינג קפיצות עולות
+  u_bungeo:function(){noise(0,.35,.12,'bandpass',600,2400,1.5);osc('sine',.35,.22,[[0,600],[.7,1250],[1,350]],.24);noise(.55,.04,.45,'bandpass',2200,2200,4);osc('sine',.7,.45,[[0,1000],[1,1400]],.1,0,[7,40])},// סלטה פְפְפ ומְוַואה! נשיקה
+  u_corndog:function(){[[196,0],[196,.16],[233,.32],[262,.48]].forEach(function(p){osc('sawtooth',p[1],.14,[[0,p[0]],[1,p[0]]],.12,1600,0,3);osc('sawtooth',p[1],.14,[[0,p[0]*1.5],[1,p[0]*1.5]],.08,1600,0,3)});osc('sawtooth',.66,.7,[[0,294],[1,294]],.12,1800,[6,10],3);osc('sawtooth',.66,.7,[[0,441],[1,441]],.08,1800,[6,10],3)},// ריף גיטרה של כוכב רוק
+  u_mandu:function(){noise(0,.18,.3,'lowpass',1400,300,2);osc('sine',0,.2,[[0,500],[1,160]],.22);for(var i=0;i<5;i++)osc('triangle',.3+i*.09,.08,[[0,1000+i*60],[.5,1400+i*60],[1,1100+i*60]],.14)},// סקוויש רך ואז צחקוק
+  u_banana:function(){osc('triangle',0,.75,[[0,330],[.35,520],[1,420]],.22,2400,[5,12]);[1319,1568,2093].forEach(function(f,i){beep(.8+i*.07,f,.3,.08,'sine')})},// וּוּאוּ! ונצנוץ
   // ---- ליה: אוכל וחלל ----
   rocket:function(){[0,.25,.5].forEach(function(t,i){beep(t,880-i*110,.12,.12)});noise(.75,1,.3,'lowpass',300,4000);osc('sawtooth',.75,1,[[0,60],[1,600]],.12,900)},// 3, 2, 1 המראה!
   pizza:function(){osc('sine',0,.45,[[0,600],[.5,300],[1,620]],.22,0,[8,60]);osc('sine',.48,.5,[[0,620],[1,250]],.22,0,[8,60])},// מאמא מיה! וואו-וואו
@@ -124,8 +132,7 @@
   // לכל אולטרה סקווישי צליל מוקלט משלו (ULT). לסקווישים הישנים: לפעמים הצליל שלהם, ולפעמים צליל מוקלט אקראי (ערבוב).
   var BASE=((document.currentScript&&document.currentScript.src)||'').replace(/sqsound\.js.*$/,'')+'sqfx/';
   var POOL=['f_wet','f_tiny','f_three','b_burp','b_loud','v_omg','v_omg2','v_wow','v_yay','c_boing','c_squeak','c_fall','c_dizzy','c_kiss','c_blbl','v_faaa','v_faaa','v_aaah','v_woui','v_scream'];
-  var ULT={u_ramyeon:'v_omg',u_hotteok:'c_boing',u_bungeo:'c_kiss',u_corndog:'b_burp',u_mandu:'f_wet',u_banana:'v_wow',
-    u_hole:'c_fall',u_astro:'v_yay',u_donut:'c_squeak',u_meteor:'b_loud',u_robot:'c_dizzy',u_starfruit:'f_three'};
+  var ULT={u_hole:'c_fall',u_astro:'v_yay',u_donut:'c_squeak',u_meteor:'b_loud',u_robot:'c_dizzy',u_starfruit:'f_three'};
   // בלי דיליי (אורן 7.11.2026): כל ההקלטות נטענות מראש לזיכרון (WebAudio) במגע הראשון בדף, ומתנגנות מיד ובלי השקט שבתחילת הקובץ.
   // עד שהן נטענות (או אם אין WebAudio) מנגנים כמו קודם עם Audio.
   var CUR=null,SRC=null,LAST=null,BUF={},PRE=false;
@@ -140,8 +147,10 @@
   function file(n){stop();var B=BUF[n];
     if(B&&ac()){try{var s=AC.createBufferSource(),g=AC.createGain();g.gain.value=.9;s.buffer=B.b;s.connect(g);g.connect(AC.destination);s.start(0,B.o);SRC=s;return}catch(e){}}
     preload();try{CUR=new Audio(BASE+n+'.mp3');CUR.volume=.9;var p=CUR.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+  // דני: אף פעם לא מערבבים הקלטות (אורן 14.11.2026)
+  var DANI={peach:1,cat:1,avo:1,panda:1,donut:1,mochi:1,s_kimbap:1,s_tteok:1,s_bingsu:1,s_dalgona:1,s_melona:1,s_choco:1};
   function mix(){var n;do{n=POOL[Math.floor(Math.random()*POOL.length)]}while(n===LAST&&POOL.length>1);LAST=n;return n}
   window.SqSound={has:function(id){return !!(S[id]||ULT[id])},ids:Object.keys(S).concat(Object.keys(ULT)),
     play:function(id,muted){if(muted)return false;if(ULT[id]){file(ULT[id]);return true}if(!S[id]||!ac())return false;
-      if(!/^(lv|sh|ef)_|^bg_/.test(id)&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
+      if(!/^(lv|sh|ef|u)_|^bg_/.test(id)&&!DANI[id]&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
 })();

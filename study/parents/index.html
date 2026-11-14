@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Study Monster">
 <meta name="theme-color" content="#eef1f5">
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../theme.css?v=6"><style>:root{padding-top:max(calc(env(safe-area-inset-top,0px) + 6px),44px)}</style>
+<link rel="stylesheet" href="../theme.css?v=7"><style>:root{padding-top:max(calc(env(safe-area-inset-top,0px) + 6px),44px)}</style>
 <style>
 .pin{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px 16px;box-shadow:var(--sh);text-align:center;margin-top:20px}
 .pin h1{margin:0 0 6px;font-size:22px}.pin p{margin:0 0 14px;color:var(--mut);font-size:15px}
@@ -177,7 +177,7 @@ let CAP={};try{CAP=JSON.parse(localStorage.getItem('study_par_cap'))||{}}catch(e
 function capGrp(t,RS){const dl=t&&t.d&&!t.done?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null;
  if(dl!==null&&dl>=0)return'up';if((RS&&RS.length)||(t&&t.done)||dl!==null)return'done';return'gen'}
 // חותמת ציון (אורן 13.11.2026), אותה חותמת כמו בדף הילד: 85+ כחולה מלאה עם ★, 70-84 מסגרת כחולה, מתחת אפורה.
-function stampH(sc){const g=sc>=85?'top':sc>=70?'ok':'low',v=Math.round(sc);return`<span class="stp ${g}${String(v).length>2?' d3':''}" aria-label="ציון ${v}">${g==='top'?'<i>★</i>':'<i>ציון</i>'}<b>${v}</b></span>`}
+function stampH(sc){const g=sc>=85?'hi':sc>=70?'ok':'low',v=Math.round(sc);return`<span class="stp ${g}${String(v).length>2?' d3':''}" aria-label="ציון ${v}">${g==='hi'?'<i>★</i>':'<i>ציון</i>'}<b>${v}</b></span>`}
 function capHead(k,a,id,rows,t,RS){const she=!!k.boy?'':'ה',bits=[];
  const dl=t&&t.d&&!t.done?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null,G=RS&&RS[0];
  if(G);else if(dl!==null&&dl>0)bits.push('📅 '+esc(t.note||a.test)+(dl===1?' מחר':' בעוד '+dl+' ימים'));else if(t&&(t.done||dl!==null))bits.push('📝 חסר ציון');
