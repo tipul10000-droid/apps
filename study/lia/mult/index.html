@@ -34,6 +34,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex
 .ask{font-size:16px;color:var(--fg);font-weight:600;line-height:1.35;max-width:400px}
 .ex{font:800 48px/1.1 system-ui,Arial,sans-serif;direction:ltr;unicode-bidi:isolate;color:var(--fg);white-space:nowrap}.ex .q{color:var(--pk)}
 .ex.sm{font-size:36px}
+.gd{display:flex;flex-direction:column;gap:3px;width:100%;max-width:330px}.gl{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f0fdfa;border-radius:10px;padding:3px 10px}.gl small{font-size:13px;color:#115e59;text-align:right}.gl b{font:800 21px/1.25 system-ui,Arial,sans-serif;direction:ltr;unicode-bidi:isolate;white-space:nowrap}.gl .q{color:var(--pk)}
 .tip{font-size:14px;color:#115e59;background:#f0fdfa;border-radius:12px;padding:3px 10px;max-width:400px}
 .arr{display:inline-grid;gap:2px;direction:ltr;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:5px}.arr span{font-size:20px;line-height:1}
 .slot{height:50px;min-width:130px;border-bottom:3px solid #5eead4;font:800 38px/50px system-ui,Arial,sans-serif;direction:ltr;flex:none;margin:0 auto}
@@ -87,8 +88,8 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex
 .pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:var(--pu);z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap;direction:rtl;unicode-bidi:isolate;background:#fff;border:2px solid #99f6e4;border-radius:999px;padding:4px 16px;box-shadow:0 6px 18px rgba(15,118,110,.18)}
 @keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
 .tbar{height:5px;background:#f3e8ff;border-radius:4px;overflow:hidden;width:160px;margin:0 auto}.tbar i{display:block;height:100%;background:#8b5cf6;width:100%}
-@media(max-height:700px){:root{--kh:42px}.ex{font-size:38px}.ex.sm{font-size:26px}.slot{height:42px;font-size:30px;line-height:42px}.ask{font-size:15px;line-height:1.25}.arr span{font-size:15px}.arr{padding:3px}.fb{height:40px;font-size:13px}.fb .t{font-size:16px}.tip{font-size:13px;padding:2px 8px}.top2{height:26px}.prog{padding:4px 10px 6px}}
-@media(max-height:640px){:root{--kh:38px}.pls span{height:20px;font-size:13px}.ex{font-size:32px}.mid{gap:2px}.k,.opt{font-size:22px}}
+@media(max-height:700px){:root{--kh:42px}.ex.gh{font-size:28px}.gl b{font-size:18px;line-height:1.2}.gl{padding:1px 8px}.gd{gap:2px}.ex{font-size:38px}.ex.sm{font-size:26px}.slot{height:42px;font-size:30px;line-height:42px}.ask{font-size:15px;line-height:1.25}.arr span{font-size:15px}.arr{padding:3px}.fb{height:40px;font-size:13px}.fb .t{font-size:16px}.tip{font-size:13px;padding:2px 8px}.top2{height:26px}.prog{padding:4px 10px 6px}}
+@media(max-height:640px){:root{--kh:38px}.gl b{font-size:17px}.gl{padding:1px 8px}.gl small{font-size:12px}.pls span{height:20px;font-size:13px}.ex{font-size:32px}.mid{gap:2px}.k,.opt{font-size:22px}}
 @media(prefers-reduced-motion:reduce){#sqimg,.ib.gift{animation:none!important}}
 </style></head><body><main>
 <div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="lsb" type="button" aria-label="ההסבר">📘</button><button class="ib gift" id="sqb" type="button">🐞 סקווישים <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
@@ -110,7 +111,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex
 <p>בגלקסיה מסתתרים <b>6 חרקי חלל</b> נדירים. כל אחד גר על כוכב משלו, ושומר על סוד אחד של <b>לוח הכפל</b>.</p>
 <p style="margin-bottom:2px">🎁 <b>את מקבלת 6 סקווישים חדשים ומיוחדים!</b> על כל כוכב שתסיימי, חרק החלל שלו מצטרף ללוח הסקווישים שלך, בשורה חדשה:</p>
 <div class="sqg big" id="isq"></div>
-<p style="font-size:14px;color:var(--mut)">בכל כוכב: קודם הסבר קצר 📘, ואז משימות. כל תרגיל צריך לפתור נכון פעמיים, בתורות שונות.</p>
+<p style="font-size:14px;color:var(--mut)">בכל כוכב מתחילים בקל: הסבר קצר 📘, חימום 🌱 ותרגילים עם עזרה 💡. לאט לאט זה עולה, ובסוף 🏁 אתגר הכוכב, בלי עזרה.</p>
 <button class="btn" id="go" type="button">יאללה, להמראה! 🚀</button>
 </div></div>
 <div class="ov" id="les"><div class="pn">
@@ -203,22 +204,52 @@ const WORDS=[['בכל צנצנת מחקר יש 6 חרקים. לליה יש 7 צ�
  ['זכוכית מגדלת עולה 20 שקלים. כמה עולות 3 זכוכיות?',60],
  ['48 גחליליות עומדות ב-6 שורות שוות. כמה בכל שורה?',8]];
 
-// פריטים לכל משימה: f = עובדת כפל (צריך 2 נכונות), c = שאלת הבנה (1), d חילוק (2), m חסר גורם (1), t עשרות (1), w בעיה (1)
+// מסלול מדורג (אורן 14.11.2026: "קשה לה מדי"): כל כוכב בנוי משלבים, מהקל לקשה.
+// שלב = קודם עמודי הסבר קצרים (les), ואז חימום קל (w: קפיצות / מערך לספירה), שאלות הבנה (c) ותרגילים (f: A = המספר השני 2-5 או 10, B = 6-9).
+// הפעם הראשונה של כל תרגיל היא "עם עזרה" (הדרך כתובה, משלימים רק את הצעד האחרון), הפעם השנייה בלי עזרה.
+// שלב חדש נפתח כשכל הפריטים בשלבים הקודמים נענו נכון לפחות פעם אחת. בסוף כל כוכב 🏁 אתגר: כל התרגילים שוב, בלי עזרה (boss),
+// כך שהרמה בסוף הכוכב לא נמוכה מהגרסה הקודמת (שם: כל תרגיל נכון פעמיים בלי עזרה). אחרי 6 הכוכבים ⚡ שליפה מהירה, כמו קודם.
+const SK=(d,n)=>({id:'s'+d,k:'s',d,seq:[1,2,3,4].map(i=>i*d),ans:5*d,need:1}); // קפיצות: d, 2d, 3d, 4d, ?
+const AR=(a,b)=>({id:'a'+a+'x'+b,k:'a',a,b,need:1}); // מערך קטן לספירה
+const P=[
+ [{les:[0,1],w:[AR(2,3),AR(3,4)],c:[0,1,2]},{les:[2],w:[SK(2),SK(10)],f:{h:'A'}},{les:[3],c:[3,4,5],f:{h:'B'}},{boss:1}],
+ [{les:[0],w:[SK(5)],c:[0,2],f:{h:'A',t:5}},{les:[1],w:[SK(4)],c:[1],f:{h:'A',t:4}},{les:[2],c:[3],f:{h:'B'}},{boss:1}],
+ [{les:[0],w:[SK(3)],c:[1],f:{h:'A',t:3}},{les:[1],c:[0],f:{h:'A',t:6}},{les:[2],c:[2],f:{h:'B'}},{boss:1}],
+ [{les:[0],w:[SK(9)],c:[0],f:{h:'A',t:9}},{les:[1],c:[2],f:{h:'B',t:9}},{les:[2],w:[SK(8)],c:[1],f:{t:8}},{boss:1}],
+ [{les:[0],w:[SK(7)],c:[0],f:{h:'A',t:7}},{les:[1],c:[1],f:{sq:1}},{les:[2],c:[2],f:{h:'B',t:7}},{boss:1}],
+ [{les:[0],e:1,c:[0]},{les:[1],c:[1,3],dv:1,m:1},{les:[2],c:[2],t:1},{les:[3],wd:1},{boss:1}]];
+// כוכב המלכה מתחיל בחילוק קל (×2, ×5, ×10)
+const EZ=[[2,4],[5,3],[10,6],[2,8],[5,6]];
+// העמודה (t) והמספר השני (n) של תרגיל בכוכב: לפי הסדר של m.t; ריבוע שאינו בעמודות = t=n
+function tn(m,a,b){const t=m.t?m.t.find(x=>x===a||x===b):undefined;if(t===undefined)return[a,a];return[t,t===a?b:a]}
+const hard=n=>!(n<=5||n===10);
 const FACTS=[];for(let a=2;a<=10;a++)for(let b=a;b<=10;b++)FACTS.push([a,b]);
-function items(mi){const m=M[mi],o=[];
+function items(mi){const m=M[mi],pl=P[mi],res=[];const add=(x,st)=>{x.st=st;res.push(x)};
+  const inter=(arr,cs,st)=>{cs=cs.slice();const step=Math.max(2,Math.ceil(arr.length/(cs.length+1)));if(cs.length)add(cs.shift(),st);arr.forEach((x,i)=>{add(x,st);if(cs.length&&(i+1)%step===0)add(cs.shift(),st)});cs.forEach(c=>add(c,st))};
+  const C=i=>({id:'c'+i,k:'c',c:m.c[i],need:1});
   if(!m.dv){const fs=FACTS.filter(([a,b])=>m.t.includes(a)||m.t.includes(b)||(m.sq&&a===b&&m.sq.includes(a)));
-    fs.forEach(([a,b])=>o.push({id:'f'+a+'x'+b,k:'f',a,b,need:2}))}
-  else{DIV.forEach(([a,b])=>o.push({id:'d'+a+'x'+b,k:'d',a,b,need:2}));MIS.forEach(([a,b])=>o.push({id:'m'+a+'x'+b,k:'m',a,b,need:1}));
-    TENS.forEach(([a,b])=>o.push({id:'t'+a+'x'+b,k:'t',a,b,need:1}));WORDS.forEach((w,i)=>o.push({id:'w'+i,k:'w',q:w[0],ans:w[1],need:1}))}
-  // שאלות ההבנה משולבות: אחת אחרי כל כמה תרגילים (הראשונה בהתחלה, כי היא מסבירה)
-  const cs=m.c.map((c,i)=>({id:'c'+i,k:'c',c,need:1}));const res=[];const step=Math.max(2,Math.floor(o.length/cs.length));
-  o.forEach((x,i)=>{if(i%step===0&&cs.length)res.push(cs.shift());res.push(x)});return res.concat(cs)}
+    const used=new Set(),bins=pl.map(()=>[]);
+    pl.forEach((g,si)=>{if(!g.f)return;fs.forEach(([a,b])=>{const k=a+'x'+b;if(used.has(k))return;const[t,n]=tn(m,a,b),f=g.f;
+      if(f.sq&&!(a===b&&!m.t.includes(a)))return;if(!f.sq&&a===b&&!m.t.includes(a))return;if(f.t&&t!==f.t)return;if(f.h&&(f.h==='B')!==hard(n))return;used.add(k);bins[si].push([a,b])})});
+    const last=pl.map((g,i)=>g.boss?-1:i).filter(i=>i>=0).pop();fs.forEach(([a,b])=>{if(!used.has(a+'x'+b))bins[last].push([a,b])});
+    pl.forEach((g,si)=>{if(g.boss){shuf(fs).forEach(([a,b])=>add({id:'Bf'+a+'x'+b,k:'f',a,b,need:1,boss:1},si));return}
+      (g.w||[]).forEach(x=>add(Object.assign({},x),si));
+      const f=bins[si].sort((x,y)=>x[0]*x[1]-y[0]*y[1]).map(([a,b])=>({id:'f'+a+'x'+b,k:'f',a,b,need:2}));inter(f,(g.c||[]).map(C),si)})}
+  else pl.forEach((g,si)=>{let o=[];
+    if(g.e)o=EZ.map(([a,b])=>({id:'d'+a+'x'+b,k:'d',a,b,need:1,ez:1}));
+    if(g.dv)o=DIV.slice().sort((x,y)=>x[0]*x[1]-y[0]*y[1]).map(([a,b])=>({id:'d'+a+'x'+b,k:'d',a,b,need:2}));
+    if(g.m)o=o.concat(MIS.map(([a,b])=>({id:'m'+a+'x'+b,k:'m',a,b,need:1})));
+    if(g.t)o=TENS.map(([a,b])=>({id:'t'+a+'x'+b,k:'t',a,b,need:1}));
+    if(g.wd)o=WORDS.map((w,i)=>({id:'w'+i,k:'w',q:w[0],ans:w[1],need:1}));
+    if(g.boss)o=shuf(DIV).map(([a,b])=>({id:'Bd'+a+'x'+b,k:'d',a,b,need:1,boss:1}));
+    inter(o,(g.c||[]).map(C),si)});
+  return res}
 const IT=M.map((m,i)=>items(i));
 const FL=FACTS; // שלב השליפה: כל 45 העובדות
 
 // ---------- מצב ----------
 function fresh(){return{v:1,m:0,w:{},T:0,pts:0,st:{c:0,b:0},att:0,okc:0,intro:0,les:{},md:{},fl:{},started:new Date().toISOString()}}
-let S=LS.get('lia_mx');if(!S||!S.w)S=fresh();S.les=S.les||{};S.md=S.md||{};S.fl=S.fl||{};
+let S=LS.get('lia_mx');if(!S||!S.w)S=fresh();S.les=S.les||{};S.md=S.md||{};S.fl=S.fl||{};S.ls=S.ls||{};Object.keys(S.les).forEach(k=>{if(S.ls[k]==null)S.ls[k]=0});
 const save=()=>LS.set('lia_mx',S);save();
 let SQ=LS.get('lia_mx_sq')||[];let MUTE=!!LS.get('lia_mx_mute');
 const W=(mi,id)=>{const k=mi+':'+id;return S.w[k]||(S.w[k]={c:0,due:0,err:0})};
@@ -226,6 +257,8 @@ const FLW=id=>S.fl[id]||(S.fl[id]={c:0,err:0});
 const PH2=()=>S.m>=M.length;
 const misPct=mi=>{const L=IT[mi];let n=0,t=0;L.forEach(x=>{t+=x.need;n+=Math.min(W(mi,x.id).c,x.need)});return t?n/t:0};
 const misDone=mi=>IT[mi].every(x=>W(mi,x.id).c>=x.need);
+// השלב הפתוח בכוכב: הראשון שיש בו פריט שעוד לא נענה נכון אף פעם
+const stageU=mi=>{const L=IT[mi],n=P[mi].length;for(let s=0;s<n;s++)if(L.some(x=>x.st===s&&W(mi,x.id).c<1))return s;return n-1};
 const flDone=()=>FL.filter(([a,b])=>FLW(a+'x'+b).c>=2).length;
 
 // ---------- שמע ----------
@@ -245,6 +278,17 @@ function strat(a,b){const t=PRI.find(x=>x===a||x===b)||a,n=t===a?b:a,p=a*b;
   const r={10:['מוסיפים 0',`10 × ${n} = ${p}`],2:['כפול',`${n} + ${n} = ${p}`],5:['חצי מ-×10',`10 × ${n} = ${10*n} → ${p}`],9:['×10 פחות קבוצה',`${10*n} − ${n} = ${p}`],
    4:['כפול של כפול',`${n} → ${2*n} → ${p}`],3:['3 קבוצות',`${n} + ${n} + ${n} = ${p}`],6:['×5 ועוד קבוצה',`${5*n} + ${n} = ${p}`],
    8:['כפול 3 פעמים',`${n} → ${2*n} → ${4*n} → ${p}`],7:['פילוג: ×5 ועוד ×2',`${5*n} + ${2*n} = ${p}`]}[t];return r}
+// "עם עזרה": הדרך של העמודה כתובה, וליה משלימה רק את הצעד האחרון
+function guide(t,n){const d=n*2,f=n*5,x=n*10;return({
+  10:[['×10 = מוסיפים 0 בסוף',`${n} → ?`]],
+  2:[['×2 = המספר ועוד המספר',`${n} + ${n} = ?`]],
+  5:[['קודם ×10',`10 × ${n} = ${x}`],['ועכשיו חצי מ-'+x,`${x} → ?`]],
+  4:[['כפול',`${n} + ${n} = ${d}`],['ושוב כפול',`${d} + ${d} = ?`]],
+  3:[['כפול',`${n} + ${n} = ${d}`],['ועוד פעם אחת',`${d} + ${n} = ?`]],
+  6:[['קודם ×5',`5 × ${n} = ${f}`],['ועוד קבוצה אחת',`${f} + ${n} = ?`]],
+  9:[['קודם ×10',`10 × ${n} = ${x}`],['פחות קבוצה אחת',`${x} − ${n} = ?`]],
+  8:[['כפול, ושוב כפול',`${n} → ${d} → ${d*2}`],['ועוד כפול אחד',`${d*2} + ${d*2} = ?`]],
+  7:[['×5',`5 × ${n} = ${f}`],['×2',`2 × ${n} = ${d}`],['מחברים',`${f} + ${d} = ?`]]}[t])}
 const M_=m=>`<bdi dir="ltr">${m}</bdi>`;
 const MW=t=>String(t).replace(/(\d+(?:\s*[×:+−=→-]\s*(?:\d+|\?))+)/g,'<bdi dir="ltr">$1</bdi>'); // תרגיל בתוך משפט בעברית: מבודד, כדי שלא יתהפך
 const stH=st=>st?`<div class="s">💡 ${st[0]}: ${M_(st[1])}</div>`:'';
@@ -271,36 +315,43 @@ function upd(){const ph=PH2();
   else $('bugp').innerHTML=`<span>⚡ ${flDone()}/${FL.length}</span>`;
   report()}
 function report(){if(!window.StudyTrack)return;const ph=PH2(),md=Object.keys(S.md).length;
-  const errs={};Object.keys(S.w).forEach(k=>{const e=S.w[k].err||0;if(!e)return;const id=k.split(':')[1];const m=/^[fd](\d+)x(\d+)$/.exec(id);if(!m)return;const key=id[0]==='d'?`${m[1]*m[2]} : ${m[1]}`:`${m[1]} × ${m[2]}`;errs[key]=(errs[key]||0)+e});
+  const errs={};Object.keys(S.w).forEach(k=>{const e=S.w[k].err||0;if(!e)return;const id=k.split(':')[1].replace(/^B/,'');const m=/^[fd](\d+)x(\d+)$/.exec(id);if(!m)return;const key=id[0]==='d'?`${m[1]*m[2]} : ${m[1]}`:`${m[1]} × ${m[2]}`;errs[key]=(errs[key]||0)+e});
   Object.keys(S.fl).forEach(k=>{const e=S.fl[k].err||0;if(e){const p=k.split('x');const key=`${p[0]} × ${p[1]}`;errs[key]=(errs[key]||0)+e}});
   const hard=Object.keys(errs).sort((a,b)=>errs[b]-errs[a]).slice(0,8).map(e=>({e,n:errs[e]}));
   StudyTrack.report({total:6,done:md,learning:ph?0:1,att:S.att,ok:S.okc,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:SQ.length,hard,mission:Math.min(S.m+1,7),
     lv:ph?2:1,lvn:ph?'שלב 2: ⚡ שליפה מהירה (45 עובדות)':'שלב 1: 6 כוכבים (משימות)',prog:ph?flDone():md,pmax:ph?FL.length:6,started:S.started})}
 
-// בחירת הפריט הבא: עד 4 פריטים "בלמידה", כל אחד חוזר אחרי 2 תורות לפחות (תשובה נכונה בתורות נפרדות)
-function choose(){const mi=S.m,L=IT[mi];
+// בחירת הפריט הבא: פריטים חדשים רק מהשלב הפתוח ומטה, לפי הסדר (מהקל לקשה). מעט פריטים "בלמידה" בהתחלה (2), אחר כך 3, ובאתגר 4.
+// כל פריט חוזר אחרי 2 תורות לפחות (תשובה נכונה בתורות נפרדות)
+function choose(){const mi=S.m,L=IT[mi],U=stageU(mi),g=P[mi][U];
   const open=L.filter(x=>W(mi,x.id).c<x.need),act=open.filter(x=>W(mi,x.id).seen);
   if(!open.length)return null;
   const due=act.filter(x=>W(mi,x.id).due<=S.T&&x.id!==LASTID).sort((a,b)=>W(mi,a.id).due-W(mi,b.id).due);
   if(due.length)return due[0];
-  const nw=open.filter(x=>!W(mi,x.id).seen);
-  if(nw.length&&act.length<4)return nw[0];
+  const nw=open.filter(x=>!W(mi,x.id).seen&&x.st<=U),lim=g.boss?4:U===0?2:3;
+  if(nw.length&&act.length<lim)return nw[0];
   const any=act.filter(x=>x.id!==LASTID);if(any.length)return pick(any);
-  return nw[0]||open[0]}
+  return nw[0]||act[0]||open[0]}
 function next(){clearInterval(TIMER);DONE=false;INP='';$('act').textContent='בדיקה ✓';$('act').disabled=true;$('fb').innerHTML='';$('slot').className='slot';$('slot').textContent='';
   if(PH2())return nextFl();
   if(misDone(S.m))return missionDone();
+  const U=stageU(S.m),ls=S.ls[S.m]==null?-1:S.ls[S.m];
+  if(ls<U){const pg=[];for(let i=ls+1;i<=U;i++)(P[S.m][i].les||[]).forEach(x=>pg.push(x));if(pg.length){NEEDNEXT=true;openLes(S.m,pg,U);upd();return}S.ls[S.m]=U;save()}
   const it=choose();if(!it)return missionDone();CUR={it,mi:S.m};const w=W(S.m,it.id),first=!w.seen;w.seen=1;LASTID=it.id;render(it,first,w);upd()}
 function render(it,first,w){const mi=S.m;let h='',mode=first?'🆕 תרגיל חדש':'🔁 תרגול',kind='kp';CUR.f=null;
   $('mode').className='mode'+(first?' new':'');
-  if(it.k==='f'){let [a,b]=Math.random()<.5?[it.a,it.b]:[it.b,it.a];CUR.ans=a*b;
-    let f=first?'in':pick(['in','in','miss','mcq']);if(mi===0&&first&&a*b<=24&&a<=3)f='arr';CUR.f=f;
+  if(it.k==='s'){CUR.ans=it.ans;mode='🌱 חימום';const sq=it.seq.join(', ');h=`<div class="ask">חרק החלל קופץ בקפיצות של ${it.d}. לאן הוא יקפוץ עכשיו?</div><div class="ex sm">${sq}, <span class="q">?</span></div><div class="tip">💡 מוסיפים עוד ${it.d}: ${M_(it.seq[3]+' + '+it.d)}</div>`;CUR.st=['קופצים ב-'+it.d,`${it.seq[3]} + ${it.d} = ${it.ans}`];CUR.show=sq+', '+it.ans}
+  else if(it.k==='a'){CUR.ans=it.a*it.b;mode='🌱 חימום';h=`<div class="ask">${it.a} שורות, ובכל שורה ${it.b} חרקים. כמה חרקים? (אפשר לספור 🙂)</div>${arrH(it.a,it.b,BUG[mi])}<div class="ex sm">${X(it.a,it.b)} = <span class="q">?</span></div>`;CUR.st=['שורה ועוד שורה',Array(it.a).fill(it.b).join(' + ')+' = '+it.a*it.b];CUR.show=X(it.a,it.b)+' = '+it.a*it.b}
+  else if(it.k==='f'){let [a,b]=Math.random()<.5?[it.a,it.b]:[it.b,it.a];CUR.ans=a*b;const[t,n]=tn(M[mi],a,b);
+    let f=it.boss?'in':first?'gd':pick(['in','in','miss','mcq']);if(mi===0&&first&&!it.boss&&t===2&&n<=6){f='arr';[a,b]=[2,n]}CUR.f=f;
+    if(it.boss){mode='🏁 אתגר הכוכב';$('mode').className='mode fast'}else if(first)mode='💡 לומדים עם עזרה';
+    if(f==='gd'){h=`<div class="ex sm gh">${X(a,b)} = <span class="q">?</span></div><div class="gd">${guide(t,n).map(([l,e])=>`<div class="gl"><small>${l.replace(/(×\d+)/g,'<bdi dir="ltr">$1</bdi>')}</small><b>${e.replace('?','<span class="q">?</span>')}</b></div>`).join('')}</div>`}else
     if(f==='arr'){h=`<div class="ask">${a} שורות, ובכל שורה ${b} חרקים. כמה חרקים?</div>${arrH(a,b,BUG[mi])}<div class="ex sm">${X(a,b)} = <span class="q">?</span></div>`}
     else if(f==='miss'){CUR.ans=b;h=`<div class="ask">איזה מספר חסר?</div><div class="ex">${a} × <span class="q">?</span> = ${a*b}</div>`}
     else if(f==='mcq'){kind='op';h=`<div class="ask">כמה זה?</div><div class="ex">${X(a,b)} = <span class="q">?</span></div>`;mcq([a*b,...near(a,b)].map(String),String(a*b))}
-    else h=`<div class="ex">${X(a,b)} = <span class="q">?</span></div>`;
-    const tp=first?tipFor(mi,a,b):'';if(tp&&f!=='mcq'&&f!=='arr')h+=`<div class="tip">💡 ${tp}</div>`;CUR.st=strat(a,b);CUR.show=X(a,b)+' = '+a*b}
-  else if(it.k==='d'){const p=it.a*it.b;CUR.ans=it.b;h=`<div class="ask">${first?'חילוק: '+it.a+' כפול כמה זה '+p+'?':'כמה זה?'}</div><div class="ex">${p} : ${it.a} = <span class="q">?</span></div>`;CUR.st=['כי',`${it.a} × ${it.b} = ${p}`];CUR.show=`${p} : ${it.a} = ${it.b}`}
+    else h=`<div class="ex">${X(a,b)} = <span class="q">?</span></div>`;CUR.st=strat(a,b);CUR.show=X(a,b)+' = '+a*b}
+  else if(it.k==='d'){const p=it.a*it.b;CUR.ans=it.b;if(it.boss){mode='🏁 אתגר הכוכב';$('mode').className='mode fast'}else if(it.ez)mode='🌱 חילוק קל';
+    h=`<div class="ask">${first&&!it.boss?'חילוק: '+it.a+' כפול כמה זה '+p+'?':'כמה זה?'}</div><div class="ex">${p} : ${it.a} = <span class="q">?</span></div>`+(it.ez&&first?`<div class="tip">💡 סופרים בקפיצות של ${it.a} עד ${p}, וסופרים כמה קפיצות</div>`:'');CUR.st=['כי',`${it.a} × ${it.b} = ${p}`];CUR.show=`${p} : ${it.a} = ${it.b}`}
   else if(it.k==='m'){CUR.ans=it.b;h=`<div class="ask">איזה מספר חסר?</div><div class="ex">${it.a} × <span class="q">?</span> = ${it.a*it.b}</div>`;CUR.st=['בודקות בחילוק',`${it.a*it.b} : ${it.a} = ${it.b}`];CUR.show=`${it.a} × ${it.b} = ${it.a*it.b}`}
   else if(it.k==='t'){const p=it.a*it.b,s=it.a>=10?it.a/10:it.a,u=it.a>=10?it.b:it.b/10;CUR.ans=p;h=`<div class="ask">כפל בעשרות</div><div class="ex">${X(it.a,it.b)} = <span class="q">?</span></div><div class="tip">💡 כופלים בלי ה-0, ובסוף מחזירים אותו</div>`;CUR.st=['בלי ה-0, ואז מחזירים',`${s} × ${u} = ${s*u} → ${p}`];CUR.show=X(it.a,it.b)+' = '+p}
   else if(it.k==='w'){CUR.ans=it.ans;mode='📜 בעיה מהיומן';h=`<div class="ask" style="font-size:17px">${it.q}</div>`;CUR.st=null;CUR.show=String(it.ans)}
@@ -324,7 +375,7 @@ function check(v,btn){if(DONE)return;
   const w=W(CUR.mi,CUR.it.id);
   if(ok){w.c++;w.due=S.T+2+(w.c>1?2:0);S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);S.pts+=10;SND.ok();
     if(S.st.c>0&&S.st.c%5===0)popTxt('🔥 '+S.st.c+' ברצף!');
-    $('fb').innerHTML=`<div class="t ok">${pick(OK)}</div>`+(w.c>=CUR.it.need?'<div>✅ התרגיל הזה שלך!</div>':'<div>עוד פעם אחת בהמשך, וזה שלך</div>')}
+    $('fb').innerHTML=`<div class="t ok">${pick(OK)}</div>`+(w.c>=CUR.it.need?(CUR.it.boss?'<div>🏁 עברת את האתגר בתרגיל הזה!</div>':'<div>✅ התרגיל הזה שלך!</div>'):CUR.f==='gd'?'<div>הצלחת עם עזרה! בהמשך תנסי לבד 💪</div>':'<div>עוד פעם אחת בהמשך, וזה שלך</div>')}
   else{w.err=(w.err||0)+1;w.c=Math.max(0,w.c-1);w.due=S.T+2;S.st.c=0;SND.bad();
     $('fb').innerHTML=`<div class="t no">כמעט! ${btn?'':'התשובה: '+M_(CUR.show)}</div>`+(CUR.st?stH(CUR.st):'<div>זה יחזור עוד מעט 🙂</div>')}
   save();upd();$('act').disabled=false;$('act').textContent='הבא ←';
@@ -351,7 +402,7 @@ function missionDone(){const mi=S.m;if(!S.md[mi])S.md[mi]=new Date().toISOString
     $('mde').textContent=S.m<M.length?'🚀':'⚡';$('mdt').textContent=`סיימת את ${M[mi].n}! 🎉`;
     $('mdp').textContent=S.m<M.length?`${b.n} הצטרף ללוח הסקווישים שלך. הכוכב הבא: ${M[S.m].n} (${M[S.m].s}). חרק חדש מחכה שם!`:'כל 6 חרקי החלל אצלך! 🐞🐝🐜✨🦋👑 עכשיו השלב של האלופות: ⚡ שליפה מהירה של כל לוח הכפל.';
     $('mdy').textContent=S.m<M.length?'לכוכב הבא 🚀':'לשליפה המהירה ⚡';$('mdov').classList.add('on')})}
-$('mdy').onclick=()=>{$('mdov').classList.remove('on');if(!PH2()&&!S.les[S.m]){NEEDNEXT=true;openLes(S.m)}else next()};
+$('mdy').onclick=()=>{$('mdov').classList.remove('on');next()};
 let SQAFTER=null,CURSQ=null;
 function showSq(s,tt,okt,after){CURSQ=s.id;SQAFTER=after||null;$('sqtt').textContent=tt;$('sqimg').innerHTML=`<svg viewBox="0 0 100 100">${s.svg}</svg>`;$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent=okt;
   const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on');setTimeout(()=>sqSound(s.id),350)}
@@ -372,21 +423,20 @@ $('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALL
   showSq(s,s.bug?'חרק החלל שלך 🐞':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🪐','חזרה ללוח',()=>{sqRender();$('sqcol').classList.add('on')})};
 
 // ---------- ההסבר: עמודים קצרים ----------
-let LM=0,LPG=0;
-function openLes(mi){LM=Math.min(mi,M.length-1);LPG=0;drawLes();$('les').classList.add('on')}
-function drawLes(){const P=M[LM].L,p=P[LPG];$('lt').textContent=`📘 ${BUG[LM]} ${p[0]}`;$('lp').textContent=(LPG+1)+'/'+P.length;$('lb').innerHTML=p[1];$('lb').scrollTop=0;
-  $('ld').innerHTML=P.map((_,i)=>`<i class="${i===LPG?'on':''}"></i>`).join('');$('lpr').classList.toggle('hid',LPG===0);$('lnx').textContent=LPG===P.length-1?'סיימתי ✓ למשימות':'הבא ←'}
+let LM=0,LPG=0,LPS=[],LUP=null;
+function openLes(mi,pages,upto){LM=Math.min(mi,M.length-1);LPS=pages||M[LM].L.map((_,i)=>i);LUP=upto==null?null:upto;LPG=0;drawLes();$('les').classList.add('on')}
+function drawLes(){const P_=LPS.map(i=>M[LM].L[i]),p=P_[LPG];$('lt').textContent=`📘 ${BUG[LM]} ${p[0]}`;$('lp').textContent=(LPG+1)+'/'+P_.length;$('lb').innerHTML=p[1];$('lb').scrollTop=0;
+  $('ld').innerHTML=P_.map((_,i)=>`<i class="${i===LPG?'on':''}"></i>`).join('');$('lpr').classList.toggle('hid',LPG===0);$('lnx').textContent=LPG===P_.length-1?(LUP==null?'סיימתי ✓':'הבנתי ✓ לתרגול'):'הבא ←'}
 $('lpr').onclick=()=>{if(LPG>0){LPG--;drawLes()}};
-$('lnx').onclick=()=>{const P=M[LM].L;if(LPG<P.length-1){LPG++;drawLes();return}$('les').classList.remove('on');if(!S.les[LM]){S.les[LM]=1;save()}if(NEEDNEXT){NEEDNEXT=false;next()}};
+$('lnx').onclick=()=>{if(LPG<LPS.length-1){LPG++;drawLes();return}$('les').classList.remove('on');if(LUP!=null)S.ls[LM]=Math.max(S.ls[LM]==null?-1:S.ls[LM],LUP);S.les[LM]=1;save();if(NEEDNEXT){NEEDNEXT=false;next()}};
 $('lsb').onclick=()=>openLes(PH2()?M.length-1:S.m);
 
 $('mute').onclick=()=>{MUTE=!MUTE;LS.set('lia_mx_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.key()};$('mute').textContent=MUTE?'🔇':'🔊';
 $('isq').innerHTML='<div class="sqhd">'+LiaSquishies.rows[3]+'</div>'+L4.map(s=>tile(s,own())).join('');
-$('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();S.intro=1;save();if(!PH2()&&!S.les[S.m])openLes(S.m);else next()};
+$('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();S.intro=1;save();next()};
 if(window.StudyGuess)StudyGuess.init('lia','mult',{fast:1500});
 if(window.StudyTrack){StudyTrack.init('lia','mult',['lia_mx','lia_mx_sq']);StudyTrack.gift(()=>{const b=L4.find(x=>!SQ.includes(x.id))||pick(L4);if(!SQ.includes(b.id)){SQ.push(b.id);LS.set('lia_mx_sq',SQ)}confetti(60);upd();showSq(b,'🎁 מתנה מאבא ואמא!','ללוח! 🐞')})}
 upd();LiaSquishies.sync(()=>{upd();if($('sqcol').classList.contains('on'))sqRender()});
-if(!S.intro)$('intro').classList.add('on');else if(!PH2()&&!S.les[S.m])openLes(S.m);
-next();
+if(!S.intro)$('intro').classList.add('on');else next();
 </script>
 </main></body></html>
