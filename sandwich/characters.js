@@ -2,8 +2,8 @@
 // full = גוף מלא, face = חיתוך פנים עגול.
 // משפחות: a = המשפחה הראשונה (ברירת מחדל), b = המשפחה השנייה. מזהי הדמויות ייחודיים בין המשפחות.
 window.FAMILIES = {
-  a: {label: "משפחה 1", kids: ["lia", "daniela", "evyatar"], mom: "mom"},
-  b: {label: "משפחה 2", kids: ["ron", "omer", "uri"], mom: "mom_b"}
+  a: {label: "משפחת יצחקי", kids: ["lia", "daniela", "evyatar"], mom: "mom"},
+  b: {label: "משפחת חלפון", kids: ["ron", "omer", "uri"], mom: "mom_b"}
 };
 window.CHARACTERS = {
   lia:     {g: "f", name: "ליקי",   color: "#8fe04a", color2: "#ffd43b"},
