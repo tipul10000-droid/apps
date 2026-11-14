@@ -159,6 +159,8 @@ function tabYear(){const A=arr(meta.annual).slice().sort((a,b)=>a.m<b.m?-1:1);le
   o+=`<section><div class="sh"><h2>12 החודשים הבאים</h2><small>${ils(annualSum())}</small></div><div class="list">${A.map(x=>{const h=x.m!==last?`<div class="mh">${esc(mLbl(x.m))}</div>`:"";last=x.m;return h+row({...x,note:[x.note,x.conf==="low"?"לא בטוח":x.conf==="medium"?"הערכה":""].filter(Boolean).join(" · ")});}).join("")}</div></section>`;
   const D=arr(meta.once_2026);
   if(D.length)o+=`<section><div class="sh"><h2>חד-פעמי, לא חוזר</h2></div><div class="list">${D.map(x=>row(x)).join("")}</div></section>`;
+  const F=arr(meta.future).slice().sort((a,b)=>a.m<b.m?-1:1);
+  if(F.length)o+=`<section><div class="sh"><h2>🔭 בהמשך, אחרי 12 החודשים</h2></div><div class="list">${F.map(x=>row({...x,note:[mLbl(x.m),x.note].filter(Boolean).join(" · ")})).join("")}</div></section>`;
   return o;}
 function tabMil(){const m=mil(),mo=arr((m.mofet||{}).months),max=Math.max(1,...mo.map(x=>x[1]));let o="";
   o+=`<section><div class="sh"><h2>12 חודשים</h2><small>${ils((+(m.elbit||{}).y12||0)+(+(m.mofet||{}).y12||0)+(+(m.grant||{}).paid||0))}</small></div><div class="list">
