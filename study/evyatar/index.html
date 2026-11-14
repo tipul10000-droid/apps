@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Study Monster">
 <meta name="theme-color" content="#eef1f5">
 <link rel="stylesheet" href="../theme.css?v=5">
-<script src="../content.js?v=7"></script>
+<script src="../content.js?v=8"></script>
 <style>
 /* תוכן בבדיקה = "בקרוב" (לא לחיץ). אחרי אישור ההורים: סרט "חדש!" */
 .item.soon{opacity:.6;pointer-events:none;border-style:dashed}.item.soon .go{visibility:hidden}
@@ -26,6 +26,7 @@
 <a class="item" data-c="evyatar/vocab" href="vocab/"><span class="ic">📚</span><span class="tx"><b>אוצר מילים באנגלית</b><small>בלוקים ורמות, לוח דירוג</small></span><span class="go">›</span></a>
 <a class="item" id="psi" data-c="evyatar/past" data-gen="1" href="past/"><span class="ic">⏳</span><span class="tx"><b>זמני עבר: חזרה</b><small id="ps">50 שאלות, מהקל לקשה</small><div class="bar" id="psbr" style="display:none"><i id="psb" style="width:0"></i></div></span><span class="go">›</span></a>
 <a class="item" id="eci" data-c="evyatar/econ" data-t="בוחן" data-gen="1" href="econ/"><span class="ic">📈</span><span class="tx"><b>כלכלה: הכנה לבוחן</b><small id="ec">מחסור, גורמי ייצור, הגישות</small><div class="bar" id="ecbr" style="display:none"><i id="ecb" style="width:0"></i></div></span><span class="go">›</span></a>
+<a class="item" id="hsi" data-c="evyatar/hist" data-t="בוחן" data-gen="1" href="hist/"><span class="ic">🇺🇸</span><span class="tx"><b>היסטוריה: הכנה לבוחן</b><small id="hs">כור ההיתוך, טמיעה, פלורליזם</small><div class="bar" id="hsbr" style="display:none"><i id="hsb" style="width:0"></i></div></span><span class="go">›</span></a>
 </div>
 <script>
 // לפני אישור ההורים: "בקרוב". אחרי אישור: לחיץ, עם סרט "חדש!" עד הכניסה הראשונה (אורן 6.11.2026)
@@ -37,7 +38,11 @@ function ecGate(){var a=document.getElementById('eci'),ok=StudyContent.ok('evyat
  if(!ok){document.getElementById('ec').textContent='בקרוב! 🚧';return}
  if(StudyContent.isNew('evyatar/econ')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
  try{var s=JSON.parse(localStorage.getItem('ev_econ'));if(s&&s.d&&s.v>=2&&(s.att||Object.keys(s.oa||{}).length)){var n=Object.keys(s.d).length;document.getElementById('ec').textContent=n+' מתוך 64 שאלות'+(s.mk?' · מבחן: '+s.mk.best:'');document.getElementById('ecbr').style.display='';document.getElementById('ecb').style.width=(n/64*100)+'%'}}catch(e){}}
-psGate();ecGate();StudyContent.refresh(function(){location.reload()});
+function hsGate(){var a=document.getElementById('hsi'),ok=StudyContent.ok('evyatar/hist');a.classList.toggle('soon',!ok);
+ if(!ok){document.getElementById('hs').textContent='בקרוב! 🚧';return}
+ if(StudyContent.isNew('evyatar/hist')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
+ try{var s=JSON.parse(localStorage.getItem('ev_hist'));if(s&&s.d&&(s.att||Object.keys(s.oa||{}).length)){var n=Object.keys(s.d).length;document.getElementById('hs').textContent=n+' מתוך 64 שאלות'+(s.mk?' · בוחן: '+s.mk.best:'');document.getElementById('hsbr').style.display='';document.getElementById('hsb').style.width=(n/64*100)+'%'}}catch(e){}}
+psGate();ecGate();hsGate();StudyContent.refresh(function(){location.reload()});
 </script>
 <script src="../kidlist.js?v=5"></script><script>StudyList.init('evyatar')</script>
 
