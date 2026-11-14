@@ -75,7 +75,8 @@ h1{margin:4px 0 8px;font-size:22px;flex:none}
 <script src="../lia/squishies.js?v=4"></script>
 <script src="../levi/squishies.js?v=1"></script>
 <script src="../shilo/squishies.js?v=3"></script>
-<script src="../sqsound.js?v=9"></script>
+<script src="../sqsound.js?v=10"></script>
+<script src="../effort.js?v=1"></script>
 <script>
 (function(){
 var P=StudyProfiles,$=function(i){return document.getElementById(i)};
@@ -112,9 +113,9 @@ function board(id){var k=P.kids[id],S=SQ(id),d=D[id]||{sq:[]},boy=k.boy;
   $('bs').innerHTML=own?(k.n+' '+(boy?'אסף':'אספה')+' <b>'+own+' מתוך '+S.all.length+'</b>. לוחצים על סקווישי צבעוני כדי למעוך אותו 😆'):(k.n+' עוד לא '+(boy?'אסף':'אספה')+' סקווישים. הם מחכים '+(boy?'לו':'לה')+' כאן בצללית 👀');
   var rows=S.rows||ROWS[id]||['רגילים','⭐ סופר סקווישים','💎 אולטרה סקווישים'],cl=function(s){return s.bug?' bug':s.ult?' ult':s.sup?' sup':''};
   var tile=function(s){return d.sq.indexOf(s.id)>=0?'<div class="own'+cl(s)+'" data-id="'+s.id+'"><svg viewBox="0 0 100 100">'+s.svg+'</svg></div>':'<div class="lock'+cl(s)+'"><svg viewBox="0 0 100 100">'+s.svg.split(S.aura).join('').split(S.uaura).join('')+'</svg></div>'};
-  $('bg').innerHTML=[S.list,S.list2,S.list3,S.list4].filter(Boolean).map(function(l,i){return '<div class="sqhd">'+rows[i]+'</div>'+l.map(tile).join('')}).join('');
-  $('bg').onclick=function(e){var t=e.target.closest('.own');if(!t)return;var s=S.all.filter(function(x){return x.id===t.getAttribute('data-id')})[0];if(!s)return;CUR=s.id;
-    $('qt').textContent=(s.bug?'🐞 חרק חלל':s.ult?'💎 אולטרה סקווישי':s.sup?'⭐ סופר סקווישי':'סקווישי')+' של '+k.n;$('bigimg').innerHTML='<svg viewBox="0 0 100 100">'+s.svg+'</svg>';$('qn').textContent=s.n;$('qd').textContent=s.d;
+  $('bg').innerHTML=[S.list,S.list2,S.list3,S.list4].filter(Boolean).map(function(l,i){return '<div class="sqhd">'+rows[i]+'</div>'+l.map(tile).join('')}).join('')+(window.StudyEffort?StudyEffort.row(id):'');
+  $('bg').onclick=function(e){var t=e.target.closest('.own');if(!t)return;var s=S.all.filter(function(x){return x.id===t.getAttribute('data-id')})[0]||(window.StudyEffort&&StudyEffort.find(t.getAttribute('data-id')));if(!s)return;CUR=s.id;
+    $('qt').textContent=(s.eff?'💝 פרס מאמץ מאבא ואמא':s.bug?'🐞 חרק חלל':s.ult?'💎 אולטרה סקווישי':s.sup?'⭐ סופר סקווישי':'סקווישי')+' של '+k.n;$('bigimg').innerHTML='<svg viewBox="0 0 100 100">'+s.svg+'</svg>';$('qn').textContent=s.n;$('qd').textContent=s.d;
     var im=$('bigimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('qov').classList.add('on');if(window.SqSound)SqSound.play(s.id,false)};
   $('bov').classList.add('on')}
 $('lst').onclick=function(e){var b=e.target.closest('.row');if(b)board(b.getAttribute('data-k'))};
@@ -123,6 +124,8 @@ $('bx').onclick=function(){$('bov').classList.remove('on')};$('qx').onclick=func
 $('hw').onclick=function(){$('hov').classList.add('on')};$('hx').onclick=function(){$('hov').classList.remove('on')};
 ['bov','qov','hov'].forEach(function(i){$(i).addEventListener('click',function(e){if(e.target===$(i))$(i).classList.remove('on')})});
 local();draw();
+// 💝 פרס מאמץ מההורים (14.11.2026, effort.js): לכל ילד עם לוח, מהשרת. שורה נוספת בלוח שלו.
+if(window.StudyEffort)Object.keys(StudyEffort.lists).forEach(function(id){StudyEffort.sync(id,function(){if($('bov').classList.contains('on'))draw()})});
 // מהשרת: הכוכבים והסקווישים של כל הילדים מכל המכשירים (study_family_board, קריאה בלבד)
 fetch(SB+'/rest/v1/rpc/study_family_board',{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY,Authorization:'Bearer '+KEY},body:'{}'})
   .then(function(r){return r.ok?r.json():null}).then(function(j){if(!j||!j.items)return;j.items.forEach(function(x){if(P.kids[x.kid])merge(x.kid,x)});draw()}).catch(function(){});

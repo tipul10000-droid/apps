@@ -125,7 +125,8 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex
 <div class="ov" id="mdov"><div class="pn"><div style="font-size:46px" id="mde">🏅</div><h2 id="mdt"></h2><p id="mdp"></p><button class="btn" id="mdy" type="button">לכוכב הבא 🚀</button></div></div>
 
 <script src="../squishies.js?v=4"></script>
-<script src="../../sqsound.js?v=9"></script>
+<script src="../../sqsound.js?v=10"></script>
+<script src="../../effort.js?v=1"></script>
 <script src="../../track.js?v=9"></script>
 <script src="../../guess.js?v=1"></script>
 <script>
@@ -416,11 +417,11 @@ const cl=s=>s.bug?' bug':s.ult?' ult':s.sup?' sup':'';
 function tile(s,o){return o.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}"><svg viewBox="0 0 100 100">${s.svg}</svg></div>`:`<div class="lock${cl(s)}"><svg viewBox="0 0 100 100">${s.svg.split(aura).join('').split(uaura).join('')}</svg></div>`}
 function sqRender(){const o=own(),R=LiaSquishies.rows,n=L4.filter(x=>o.includes(x.id)).length;
   $('sqtx').innerHTML=`הלוח שלך, אחד לכל התכנים. בלוח הכפל: <b>חרק חלל על כל כוכב</b> שמסיימים (${n} מתוך 6). אספת ${sqN()} מתוך ${ALLSQ.length}.`;$('sqpb').style.width=(PH2()?100:misPct(S.m)*100)+'%';
-  $('sqg').innerHTML=[LiaSquishies.list,LiaSquishies.list2,LiaSquishies.list3,L4].map((l,i)=>`<div class="sqhd">${R[i]}</div>`+l.map(s=>tile(s,o)).join('')).join('')}
+  $('sqg').innerHTML=[LiaSquishies.list,LiaSquishies.list2,LiaSquishies.list3,L4].map((l,i)=>`<div class="sqhd">${R[i]}</div>`+l.map(s=>tile(s,o)).join('')).join('')+(window.StudyEffort?StudyEffort.row('lia'):'')}
 $('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
-$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id);if(!s)return;$('sqcol').classList.remove('on');
-  showSq(s,s.bug?'חרק החלל שלך 🐞':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🪐','חזרה ללוח',()=>{sqRender();$('sqcol').classList.add('on')})};
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;$('sqcol').classList.remove('on');
+  showSq(s,s.eff?'💝 פרס מאמץ מאבא ואמא':s.bug?'חרק החלל שלך 🐞':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🪐','חזרה ללוח',()=>{sqRender();$('sqcol').classList.add('on')})};
 
 // ---------- ההסבר: עמודים קצרים ----------
 let LM=0,LPG=0,LPS=[],LUP=null;
@@ -437,6 +438,7 @@ $('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();S.intro=1;s
 if(window.StudyGuess)StudyGuess.init('lia','mult',{fast:1500});
 if(window.StudyTrack){StudyTrack.init('lia','mult',['lia_mx','lia_mx_sq']);StudyTrack.gift(()=>{const b=L4.find(x=>!SQ.includes(x.id))||pick(L4);if(!SQ.includes(b.id)){SQ.push(b.id);LS.set('lia_mx_sq',SQ)}confetti(60);upd();showSq(b,'🎁 מתנה מאבא ואמא!','ללוח! 🐞')})}
 upd();LiaSquishies.sync(()=>{upd();if($('sqcol').classList.contains('on'))sqRender()});
+if(window.StudyEffort)StudyEffort.sync('lia',()=>{if($('sqcol').classList.contains('on'))sqRender()});
 if(!S.intro)$('intro').classList.add('on');else next();
 </script>
 </main></body></html>

@@ -21,6 +21,7 @@ REP = [  # (מה, במה) — כל אחד חייב להופיע במקור, כד
   ("new Audio('audio/'+f", "new Audio('../../lia/phonics/audio/'+f"),
   ('<script src="../squishies.js?v=4"></script>', '<script src="../squishies.js?v=1"></script>'),
   ('LiaSquishies', 'LeviSquishies'),
+  ("const EK='lia'", "const EK='levi'"),
   ('היי ליה! 🚀', 'היי לביא! 🚀'),
   ('<li>6 קבוצות.', '<li>7 קבוצות.'),
   ('יאללה, מתחילות!', 'יאללה, מתחילים!'),
