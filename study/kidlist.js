@@ -23,7 +23,7 @@
     // חותמת ציון (אורן 13.11.2026): תוכן שכבר קיבל ציון במבחן מקבל חותמת עגולה בצד שמאל של הכרטיס. 85 ומעלה = חותמת כחולה מלאה עם כוכב.
     function stamp(a,s){var e=a.querySelector('.stp');if(s==null||a.classList.contains('soon')){if(e)e.remove();return}
       if(!e){e=document.createElement('span');e.className='stp';a.insertBefore(e,a.querySelector('.go'))}
-      var g=s>=85?'top':s>=70?'ok':'low',v=String(Math.round(s));e.className='stp '+g;e.setAttribute('aria-label','ציון '+v);
+      var g=s>=85?'top':s>=70?'ok':'low',v=String(Math.round(s));e.className='stp '+g+(v.length>2?' d3':'');e.setAttribute('aria-label','ציון '+v);
       e.innerHTML=(g==='top'?'<i>★</i>':'<i>ציון</i>')+'<b>'+v+'</b>';
       // פעם ראשונה שהציון הזה מופיע במכשיר: החותמת "ננחתת" על הכרטיס (פעם אחת בלבד, study_stp_seen)
       var sn=lj('study_stp_seen');if(sn[a.dataset.c]!==v){sn[a.dataset.c]=v;try{localStorage.setItem('study_stp_seen',JSON.stringify(sn))}catch(x){}e.classList.add('pop')}}
