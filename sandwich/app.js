@@ -530,7 +530,7 @@
       '</div><button class="mom-card" data-id="' + MOM + '" style="' + colorOf(MOM) + '">' + drawCharacter(MOM) + '<span class="mc-text"><b>' + CHARACTERS[MOM].name + '</b><small>לראות מה כולם בחרו</small></span></button>' +
       '<button class="stats-btn" id="statsbtn" type="button"><span class="newtag"><b>חדש!</b></span>🏆 סטטיסטיקה</button>' +
       (demo || isInstalled() ? "" : '<button class="install" id="install" type="button">' + SHARE_ICO + ' התקנה למסך הבית (לתזכורות)</button>') +
-      '<footer class="credit"><div class="cr"><div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div><div class="ver">גרסה ' + esc(VERSION) + ' <button class="info" id="info" type="button" aria-label="מה חדש בגרסה"><i>i</i><span>לחצו לפרטים</span></button></div></div>' +
+      '<footer class="credit"><div class="cr">' + (FAM === "a" ? '<div class="by"><span>נבנה על ידי אבא אורן</span><span class="tzav">' + TURTLE + '</span></div>' : '') + '<div class="ver">גרסה ' + esc(VERSION) + ' <button class="info" id="info" type="button" aria-label="מה חדש בגרסה"><i>i</i><span>לחצו לפרטים</span></button></div></div>' +
       (demo ? "" : '<button class="pill bell off" id="bell" type="button">תזכורות - כבוי</button>') + '</footer>');
     app.className = "home";
     bindGear();
