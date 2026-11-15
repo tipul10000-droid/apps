@@ -25,7 +25,7 @@ const K='shilo_nm_chk',LBL=v=>Array.isArray(v)?(/[\u0591-\u05C7]/.test(v[0])?'א
 let AC,ITEMS=[],CH={},cur=null;try{CH=JSON.parse(localStorage.getItem(K))||{}}catch(e){}
 const BUF={};
 function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state!=='running')AC.resume();return AC}
-const url=(id,j)=>j?id+'_'+j+'.mp3?v=1':'../'+id+'.mp3?v=2';
+const url=(id,j)=>j?id+'_'+j+'.mp3?v=1':'../'+id+'.mp3?v=3';
 function load(id,j){const k=id+'_'+j;if(BUF[k])return Promise.resolve(BUF[k]);return fetch(url(id,j)).then(r=>r.arrayBuffer()).then(ab=>new Promise((ok,no)=>ac().decodeAudioData(ab,b=>{BUF[k]=b;ok(b)},no)))}
 function play(id,j){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}ac();if(cur)try{cur.stop()}catch(e){}load(id,j).then(b=>{const s=AC.createBufferSource();s.buffer=b;s.connect(AC.destination);s.start();cur=s})}
 const save=()=>{try{localStorage.setItem(K,JSON.stringify(CH))}catch(e){}};
