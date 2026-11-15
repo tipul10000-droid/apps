@@ -1,10 +1,12 @@
 # קולות למשחק של שילה (10.11.2026): מייצר mp3 לכל טקסט ב-shilo/letters/audio/clips.json
 # בקול העברי של מיקרוסופט (he-IL-HilaNeural, דרך edge-tts, בלי חשבון ובלי תשלום), ואז כותב audio/list.js.
-# הרצה (במחשב, לא בענן: השירות חסום שם):  pip install edge-tts  &&  python study/tools/shilo_tts.py
+# הרצה (במחשב, לא בענן: השירות חסום שם):  pip install edge-tts  &&  python study/tools/shilo_tts.py [letters|numbers]
+# ערך ב-clips.json יכול להיות ["שם", "טקסט להקראה"] כשההקראה צריכה כתיב אחר (למשל ספרות).
 import asyncio, json, os, sys, time
 import edge_tts
 HERE = os.path.dirname(os.path.abspath(__file__))
-AUD = os.path.join(HERE, '..', 'shilo', 'letters', 'audio')
+# תיקייה: ארגומנט ראשון (letters ברירת מחדל, numbers = המספרים של שילה 15.11.2026)
+AUD = os.path.join(HERE, '..', 'shilo', sys.argv[1] if len(sys.argv) > 1 else 'letters', 'audio')
 VOICE = os.environ.get('SHILO_VOICE', 'he-IL-HilaNeural')
 async def one(text, path):
     for i in range(4):
@@ -18,8 +20,10 @@ async def main():
     clips = json.load(open(os.path.join(AUD, 'clips.json'), encoding='utf-8'))
     ok = {}
     for text, name in clips.items():
+        spoken = text
+        if isinstance(name, list): name, spoken = name
         p = os.path.join(AUD, name + '.mp3')
-        if (os.path.exists(p) and os.path.getsize(p) > 500) or await one(text, p): ok[text] = name
+        if (os.path.exists(p) and os.path.getsize(p) > 500) or await one(spoken, p): ok[text] = name
         else: print('FAILED', name, text, file=sys.stderr)
     v = int(time.time()) % 100000
     with open(os.path.join(AUD, 'list.js'), 'w', encoding='utf-8') as f:

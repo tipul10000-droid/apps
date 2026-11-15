@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=6"></script>
+<script src="../../content.js?v=11"></script><script>StudyContent.guard('shilo/numbers')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · המספרים של שילה</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css?v=7">
+<style>
+:root{--ac:#2f5d9e;--al:#eaf1fb;--ok:#16a34a;--sm:#9a3412}
+main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;flex-direction:column;justify-content:safe center}
+.nav{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex:none}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:14px;height:34px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.ib .cnt{display:inline-block;box-sizing:content-box;min-width:5ch;text-align:center;direction:ltr;font-variant-numeric:tabular-nums;line-height:16px;background:#ea580c;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 8px;flex:none;box-shadow:var(--sh)}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut)}.row b{color:var(--fg);font-size:17px}
+.stars{font-size:15px;font-weight:700;color:#b45309;background:#fff7e6;border-radius:20px;padding:1px 10px}
+/* במתמטיקה ישר המספרים הולך משמאל לימין, גם בעברית */
+.abc{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:5px;direction:ltr}
+.abc span{height:26px;border-radius:7px;background:#f1f3f7;color:#c0c6d2;font:800 16px/26px system-ui,Arial,sans-serif;text-align:center}
+.abc span.on{background:#fff7e6;color:#b45309}.abc span.ok{background:#dcfce7;color:#166534}
+.card{flex:0 1 520px;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px;box-shadow:var(--sh);text-align:center;margin-top:10px}
+.dots{display:flex;gap:6px;justify-content:center;height:14px;flex:none}.dots i{width:12px;height:12px;border-radius:50%;background:#e5e7eb}.dots i.d{background:#facc15}.dots i.c{outline:2px solid #f59e0b}
+.mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:4px}
+.big{font:900 104px/1 system-ui,Arial,sans-serif;color:var(--fg)}
+.pic{font-size:80px;line-height:1}
+.say{font-size:30px;width:74px;height:74px;border-radius:50%;border:0;background:var(--al);box-shadow:0 3px 0 #c9d8ef;cursor:pointer;flex:none}
+/* מסגרת עשר (כמו בגן): 5 בשורה, משמאל לימין. עד 5 = שורה אחת */
+.tf{--c:58px;display:grid;grid-template-columns:repeat(5,var(--c));gap:4px;direction:ltr;padding:4px;background:#f8fafc;border:2px solid #cbd5e1;border-radius:12px}
+.tf i{width:var(--c);height:var(--c);border-radius:9px;background:#fff;border:1px dashed #d6dce6;display:grid;place-items:center;font-style:normal;font-size:calc(var(--c)*.68);line-height:1;transition:transform .2s,background .2s}
+.tf i.h{visibility:hidden}.tf i.e{font-size:0}
+.tf i.ct{background:#fff7e6;border:2px solid #f59e0b;transform:scale(1.08)}
+.tf i.pp{animation:pp .35s ease-out}@keyframes pp{0%{transform:scale(.2)}70%{transform:scale(1.18)}100%{transform:scale(1)}}
+.tf.tap i:not(.e){cursor:pointer}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:none;margin-top:6px}.opts.o3{grid-template-columns:1fr 1fr 1fr}
+.opt{height:112px;border:3px solid var(--bd);background:#fff;border-radius:18px;cursor:pointer;line-height:1;color:var(--fg);padding:0;transition:opacity .3s,background .2s;display:grid;place-items:center}
+.opt.nm{font:900 74px/1 system-ui,Arial,sans-serif}
+.opt .tf{--c:24px;gap:3px;padding:3px;border-width:1px;pointer-events:none}.o3 .opt .tf{--c:15px;gap:2px;padding:2px}
+.opt.ok{background:#dcfce7;border-color:var(--ok)}.opts.wait,.btns.wait{visibility:hidden}.opts.lk .opt{pointer-events:none}.opt.no{opacity:.25;pointer-events:none}.opt.hint{animation:hint 1s ease-in-out infinite;border-color:#f59e0b}
+@keyframes hint{50%{transform:scale(1.06)}}
+.btn{flex:1;font:inherit;font-weight:800;font-size:19px;padding:12px;border:0;border-radius:16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#2f5d9e,#4f7fc4);box-shadow:0 3px 0 #1e3f6e;height:58px}
+.btn.soft{color:var(--mut);background:#f1f3f7;box-shadow:none;font-weight:700}
+.btns{display:flex;gap:8px;flex:none;margin-top:8px;height:58px}
+.fb{height:30px;flex:none;font-size:20px;font-weight:800;color:var(--ok)}
+/* סוף סיבוב: רכבת המספרים */
+.trn{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;direction:ltr;width:100%;max-width:340px}
+.trn b{height:58px;border-radius:14px;background:#f1f3f7;color:#c0c6d2;font:900 34px/58px system-ui,Arial,sans-serif;transition:all .2s}
+.trn b.on{background:#fff7e6;color:#b45309;box-shadow:0 0 0 3px #f59e0b;transform:scale(1.08)}.trn b.ok{background:#dcfce7;color:#166534}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 14px)}
+.ov.on{display:flex}
+.pn{background:var(--card);border-radius:20px;padding:18px 16px;width:100%;max-width:500px;max-height:100%;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.3);text-align:center}
+.pn h2{margin:0 0 8px;font-size:22px}.pn p{margin:6px 0;line-height:1.5;font-size:16px}.pn .btn{width:100%;margin-top:10px;flex:none;display:block}
+#sqimg{width:150px;height:150px;margin:6px auto;display:block;animation:sqin .9s cubic-bezier(.2,1.6,.4,1)}#sqimg.squish{animation:squish .5s}
+@keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
+@keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
+.pb{height:8px;background:#e8eaf6;border-radius:8px;overflow:hidden}.pb i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,#2f5d9e,#f97316);transition:width .5s}
+.sqg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px;max-width:360px;margin-inline:auto}
+.sqg div{background:#f7f7ff;border:1px solid #e4e6fb;border-radius:10px;padding:2px}.sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}
+.sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
+.sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
+.sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
+.sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
+.conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:50;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.pop{position:fixed;left:50%;top:36%;transform:translate(-50%,-50%);font-size:30px;font-weight:900;color:#b45309;z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap;background:#fff;border:2px solid #fde68a;border-radius:999px;padding:4px 18px;box-shadow:0 6px 18px rgba(180,83,9,.18)}
+@keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
+@media(max-height:700px){.big{font-size:80px}.pic{font-size:60px}.opt{height:96px}.opt.nm{font-size:60px}.say{width:62px;height:62px;font-size:26px}.btn,.btns{height:50px}.tf{--c:50px}.abc span{height:22px;line-height:22px;font-size:14px}.trn b{height:50px;line-height:50px}}
+@media(max-height:620px){.big{font-size:66px}.pic{font-size:50px}.opt{height:84px}.opt.nm{font-size:52px}.tf{--c:44px}.opt .tf{--c:21px}.o3 .opt .tf{--c:14px}}
+@media(max-width:360px){.tf{--c:50px}.opt .tf{--c:20px}.o3 .opt .tf{--c:14px}}
+@media(prefers-reduced-motion:reduce){#sqimg,.opt.hint,.tf i.pp{animation:none!important}}
+</style></head><body><main>
+<div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="sqb" type="button">🧰 <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
+<div class="prog">
+  <div class="row"><span><b id="dn">0</b> מתוך 10 מספרים</span><span class="stars" id="pts">⭐ 0</span></div>
+  <div class="abc" id="abc"></div>
+</div>
+<div class="card" id="card"></div>
+
+<div class="ov" id="intro"><div class="pn">
+<div style="font-size:54px">🔢🔨</div>
+<h2>המספרים של שילה</h2>
+<p>👀 רואים את המספר ← 👂 שומעים איך קוראים לו ← 👆 סופרים כמה</p>
+<button class="btn" id="go" type="button">▶ מתחילים</button>
+</div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>🧰 ארגז הסקווישים של שילה</h2><p id="sqct" style="color:var(--mut);margin:0"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחץ עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">לארגז! 🧰</button></div></div>
+
+<script src="audio/list.js?v=1"></script>
+<script src="../squishies.js?v=3"></script>
+<script src="../../guess.js?v=1"></script>
+<script src="../../sqsound.js?v=13"></script>
+<script src="../../effort.js?v=1"></script>
+<script src="../../track.js?v=9"></script>
+<script>
+// המספרים של שילה (אורן 15.11.2026): מספרים 1 עד 10, לשילה שמתקשה בהם.
+// לפי עקרונות תוכנית המתמטיקה לגן של משרד החינוך (תחושת מספר): מניה בעל פה, התאמה של אחד לאחד בספירה (נוגעים בכל פריט),
+// עיקרון הכמות (המספר האחרון שסופרים = כמה יש), זיהוי הסמל של הספרה, התאמה בין סמל, שם וכמות, והשוואת כמויות (איפה יותר).
+// הכמויות מוצגות ב"מסגרת עשר" (5 בשורה) כמו בגן, כדי לראות את 5 ואת 10 בבת אחת.
+// בהדרגה: 1-3 ← 4-5 ← 6-7 ← 8-10. קבוצה נפתחת כשהקודמת נלמדה. מספר נלמד = 3 תשובות נכונות בניסיון ראשון.
+// סוגי שאלות: intro (סופרים יחד והמספר), hear (שומעים שם ← בוחרים ספרה), cnt (כמה יש כאן? סופרים ובוחרים ספרה), qty (רואים ספרה ← בוחרים את הכמות), more (איפה יותר).
+// קול: רק ההקלטות של הילה (audio/nNNN.mp3, he-IL-HilaNeural, נבדקו בזיהוי דיבור). בלי שבחים: נכון = צליל, ירוק והמספר.
+// מפתחות: shilo_nm (התקדמות), shilo_nm_mute. הסקווישים משותפים עם האותיות (shilo_sq, לוח אחד).
+const G=[[1,2,3],[4,5],[6,7],[8,9,10]];
+const NM=[null,'אַחַת','שְׁתַּיִם','שָׁלוֹשׁ','אַרְבַּע','חָמֵשׁ','שֵׁשׁ','שֶׁבַע','שְׁמוֹנֶה','תֵּשַׁע','עֶשֶׂר'];
+const OBJ=['🍎','🐟','⭐','🚗','🔨','🎈','🐞','🍓','🦆','🌼','🔧','🐢','⚽','🍪','🐥','🚜'];
+const ALLN=[1,2,3,4,5,6,7,8,9,10],gOf=n=>G.findIndex(g=>g.includes(n)),LEARN=3;
+const CONFN=[[6,9],[1,7]];const confN=(a,b)=>CONFN.some(p=>p.includes(a)&&p.includes(b));
+const $=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function fresh(){const w={};ALLN.forEach(n=>w[n]={s:0,c:0,err:0});return{v:1,pts:0,att:0,okc:0,cc:0,rounds:0,more:0,tapHint:0,w,started:new Date().toISOString()}}
+let S=LS.get('shilo_nm');if(!S||!S.w)S=fresh();ALLN.forEach(n=>{if(!S.w[n])S.w[n]={s:0,c:0,err:0}});
+const save=()=>LS.set('shilo_nm',S);save();
+let SQ=LS.get('shilo_sq')||[];let MUTE=!!LS.get('shilo_nm_mute');
+
+// ---------- קול ----------
+let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state!=='running')try{AC.resume()}catch(e){}return AC}
+function tone(f,t0,d,type,vol,f2){const a=ac();if(!a||MUTE)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t0+d);g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.16,a.currentTime+t0+.015);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
+const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.22,'triangle')},soft(){tone(392,0,.18,'sine',.1)},pop(){tone(220,0,.18,'sine',.25,880)},win(){[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.15))},tick(){tone(880,0,.06,'sine',.07)}};
+let SAYID=0,SRC=[],SAYT=null,MARKT=[];
+// כל ההקלטות נטענות מראש ל-WebAudio, השקט בהתחלה ובסוף נחתך, ומנגנים מיד (כמו באותיות של שילה).
+const AMAP=window.SHILO_AUD||{},BUF={},RAW={};let NLOAD=0,NTOT=0,READY=false;const RWAIT=[];
+function trim(b){const d=b.getChannelData(0),th=.012,sr=b.sampleRate;let a=0,e=d.length-1;while(a<e&&Math.abs(d[a])<th)a++;while(e>a&&Math.abs(d[e])<th)e--;
+  a=Math.max(0,a-Math.round(sr*.02));e=Math.min(d.length,e+Math.round(sr*.04));return{b,o:a/sr,d:Math.max(.05,(e-a)/sr)}}
+function decode(f){const ab=RAW[f];if(!ab||BUF[f]||!AC)return;delete RAW[f];
+  try{const ok=b=>{BUF[f]=trim(b);done1()},no=()=>done1();const pr=AC.decodeAudioData(ab,ok,no);if(pr&&pr.catch)pr.catch(()=>{})}catch(e){done1()}}
+function done1(){NLOAD++;goTxt();if(NLOAD>=NTOT&&!READY){READY=true;RWAIT.splice(0).forEach(f=>f())}}
+function preload(){const fs=[...new Set(Object.values(AMAP))];NTOT=fs.length;if(!NTOT){READY=true;return}
+  try{AC=AC||new(window.AudioContext||window.webkitAudioContext)()}catch(e){}
+  fs.forEach(f=>fetch('audio/'+f+'.mp3?v='+(window.SHILO_AUD_V||1)).then(r=>r.ok?r.arrayBuffer():Promise.reject()).then(ab=>{RAW[f]=ab;decode(f)}).catch(()=>done1()))}
+function stopSay(){SAYID++;clearTimeout(SAYT);MARKT.forEach(clearTimeout);MARKT=[];SRC.forEach(x=>{try{x.stop()}catch(e){}});SRC=[]}
+// say(['טקסט', 600 (הפסקה), {t:'טקסט', f:פונקציה שנקראת כשהמשפט מתחיל}], then): מתזמן את ההקלטות ברצף, then = כשהילה סיימה.
+// f מאפשר לסנכרן: כל פריט נדלק בדיוק כשהילה אומרת את המספר שלו.
+function say(parts,then){stopSay();const id=SAYID;
+  const run=()=>{if(id!==SAYID)return;const a=ac();
+    if(MUTE||!a){let d=0;parts.forEach(p=>{if(p&&p.f){const f=p.f;MARKT.push(setTimeout(()=>{if(id===SAYID)f()},d));d+=320}});SAYT=setTimeout(()=>{if(id===SAYID&&then)then()},d+250);return}
+    let t=a.currentTime+.03;const t0=t,now=a.currentTime;
+    parts.forEach(p=>{if(typeof p==='number'){t+=p/1000;return}const tx=typeof p==='string'?p:p.t,k=BUF[AMAP[tx]];
+      if(p.f){const f=p.f;MARKT.push(setTimeout(()=>{if(id===SAYID)f()},Math.max(0,(t-now)*1000)))}
+      if(!k){t+=.35;return}
+      const s=a.createBufferSource();s.buffer=k.b;s.connect(a.destination);s.start(t,k.o,k.d);SRC.push(s);t+=k.d+.06});
+    SAYT=setTimeout(()=>{if(id===SAYID&&then)then()},(t-t0)*1000+60)};
+  if(READY)run();else{RWAIT.push(run);setTimeout(()=>{if(!READY){READY=true;RWAIT.splice(0).forEach(f=>f())}},6000)}}
+const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
+
+// ---------- עזר ----------
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const POPQ=[];let POPON=false;function popTxt(t){POPQ.push(t);if(!POPON)popNext()}
+function popNext(){const t=POPQ.shift();if(t===undefined){POPON=false;return}POPON=true;const p=document.createElement('div');p.className='pop';p.textContent=t;document.body.appendChild(p);setTimeout(()=>{p.remove();popNext()},1050)}
+function confetti(n){const c=['#facc15','#fb923c','#60a5fa','#34d399','#f472b6'];for(let i=0;i<(n||40);i++){const e=document.createElement('i');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(c);e.style.animationDuration=(1.6+Math.random()*1.6)+'s';e.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3800)}}
+// ספירה בקול: [{t:'אַחַת', f}, {t:'שְׁתַּיִם', f}...] עד n, ו-f(i) נקרא כשהילה אומרת את המספר ה-i
+const countParts=(n,f,gap)=>{const p=[];for(let i=1;i<=n;i++){p.push({t:NM[i],f:()=>f(i)});if(gap)p.push(gap)}return p};
+
+// ---------- מצב ----------
+const learned=n=>S.w[n].c>=LEARN;
+const nLearned=()=>ALLN.filter(learned).length;
+const gOpen=g=>g===0||G[g-1].every(learned);
+const avail=()=>ALLN.filter(n=>gOpen(gOf(n)));
+const maxOpen=()=>Math.max(...avail());
+const rows=()=>maxOpen()>5?2:1;// עד 5: מסגרת של שורה אחת. אחר כך מסגרת עשר מלאה
+const nOpt=()=>S.okc>=12?3:2;// 2 אפשרויות בהתחלה, אחרי 12 תשובות נכונות 3
+let R=null,CUR=null,TRY=0,LOCK=false,EMO='🍎';
+
+function buildRound(){const av=avail(),seen=av.filter(n=>S.w[n].s),nw=av.filter(n=>!S.w[n].s);
+  const learning=seen.filter(n=>!learned(n));const q=[];
+  let intro=null;if(nw.length&&(learning.length<2||!seen.length))intro=nw[0];// מספר חדש רק כשיש פחות מ-2 בלמידה (בעדינות)
+  if(intro)q.push({t:'intro',n:intro});
+  const pool=seen.concat(intro?[intro]:[]),weak=pool.filter(n=>!learned(n));
+  const canMore=G[0].every(learned)&&pool.length>=3;let mores=0;
+  while(q.length<6){let n;const r=Math.random();
+    if(canMore&&!mores&&q.length>=2&&r<.25){q.push({t:'more'});mores++;continue}
+    if(intro&&q.filter(z=>z.n===intro).length<3&&r<.55)n=intro;else if(weak.length&&r<.8)n=pick(weak);else n=pick(pool);
+    // בהתחלה בעיקר לשמוע ולספור; הכמות מהספרה (qty) אחרי שהמספר כבר מוכר
+    const ts=S.w[n].c>=1?['hear','cnt','qty']:['hear','cnt'];let t=pick(ts);const last=q[q.length-1];
+    if(last&&last.n===n&&last.t===t)t=ts[(ts.indexOf(t)+1)%ts.length];q.push({t,n})}
+  return q}
+function startRound(){R={q:buildRound(),i:0,ok:0};nextQ()}
+function nextQ(){if(R.i>=R.q.length)return endRound();CUR=R.q[R.i];TRY=0;LOCK=false;EMO=pick(OBJ);render()}
+function dots(){return '<div class="dots">'+R.q.map((_,i)=>`<i class="${i<R.i?'d':''}${i===R.i?' c':''}"></i>`).join('')+'</div>'}
+// מסגרת עשר: n פריטים, שאר המשבצות ריקות. hide = הפריטים מוסתרים עד שסופרים אותם
+function frame(n,emo,o){o=o||{};const k=(o.rows||rows())*5;let h='';for(let i=0;i<k;i++)h+=`<i class="${i<n?(o.hide?'h':''):'e'}" data-i="${i}">${i<n?emo:''}</i>`;return `<div class="tf${o.tap?' tap':''}" id="${o.id||''}">${h}</div>`}
+function others(n,k){// מסיחים: מספרים שנפתחו (או מהקבוצה הבאה), בהתחלה לא צמודים ולא 6/9
+  const far=S.okc<20;let c=ALLN.filter(x=>x!==n&&x<=maxOpen());// רק מספרים שכבר נפתחו (כך גם המסגרת לא צריכה יותר משבצות)
+  if(k===1)c=c.filter(x=>!confN(x,n));
+  let a=c.filter(x=>!far||Math.abs(x-n)>=2);if(a.length<k)a=c;
+  const s=a.filter(x=>S.w[x].s);return shuf(s).concat(shuf(a.filter(x=>!S.w[x].s))).slice(0,k)}
+function hold(on){const o=$('op');if(o)o.classList.toggle('lk',on);LOCK=on}
+
+function render(){const c=$('card'),t=CUR.t;
+  if(t==='intro'){const n=CUR.n;
+    c.innerHTML=dots()+`<div class="mid"><div class="big">${n}</div>${frame(n,EMO,{hide:1,rows:n>5?2:1,id:'fr'})}<button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="btns wait" id="bt"><button class="btn" id="nx" type="button">▶</button></div>`;
+    // סופרים יחד: כל פריט מופיע בדיוק כשהילה אומרת את המספר שלו, ואז "זה המספר N"
+    const sp=()=>{[...$('fr').children].forEach((x,i)=>{if(i<n){x.classList.add('h');x.classList.remove('pp')}});
+      say(['בּוֹא נִסְפֹּר',300].concat(countParts(n,i=>{const x=$('fr').children[i-1];x.classList.remove('h');x.classList.add('pp');SND.tick()},150),[600,'זֶה הַמִּסְפָּר',NM[n]]),()=>$('bt').classList.remove('wait'))};
+    $('rp').onclick=()=>{ac();sp()};$('nx').onclick=()=>{S.w[n].s=1;save();upd();R.i++;nextQ()};sp();return}
+  let opts,ask,body,cls='',o3=nOpt()>2;
+  if(t==='more'){// איפה יש יותר? שתי מסגרות. בהתחלה הפרש של 2 לפחות
+    const pool=ALLN.filter(x=>S.w[x].s);let a,b;do{a=pick(pool);b=pick(pool)}while(a===b||(S.more<6&&Math.abs(a-b)<2&&pool.length>2));
+    CUR.a=a;CUR.b=b;CUR.n=Math.max(a,b);opts=shuf([a,b]);o3=false;
+    ask=()=>['אֵיפֹה יֵשׁ יוֹתֵר?'];body=`<div class="pic">🤔</div>`;
+    c.innerHTML=dots()+`<div class="mid">${body}<button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="opts wait" id="op">${opts.map((x,i)=>`<button class="opt" data-i="${i}" type="button">${frame(x,EMO)}</button>`).join('')}</div>`}
+  else{const n=CUR.n;if(t==='qty')o3=false;// בכמויות תמיד 2 אפשרויות, כדי שהמסגרות יהיו גדולות וברורות
+    opts=shuf([n].concat(others(n,o3?2:1)));
+    if(t==='hear'){ask=()=>['אֵיפֹה הַמִּסְפָּר',NM[n]];body=`<div class="pic">👂</div>`;cls='nm'}
+    else if(t==='cnt'){ask=()=>(S.tapHint<3?['כַּמָּה יֵשׁ כָּאן?',400,'אֶפְשָׁר לָגַעַת בְּכֹל אֶחָד וְלִסְפֹּר']:['כַּמָּה יֵשׁ כָּאן?']);body=frame(n,EMO,{tap:1,id:'fr'});cls='nm'}
+    else{ask=()=>['אֵיפֹה יֵשׁ',NM[n]];body=`<div class="big">${n}</div>`}
+    c.innerHTML=dots()+`<div class="mid">${body}<button class="say" id="rp" type="button">🔊</button></div><div class="fb" id="fb"></div><div class="opts${o3?' o3':''} wait" id="op">${opts.map((x,i)=>`<button class="opt ${cls}" data-i="${i}" type="button">${cls==='nm'?x:frame(x,EMO)}</button>`).join('')}</div>`}
+  // ספירה באצבע (התאמה של אחד לאחד): כל נגיעה בפריט חדש = המספר הבא בקול
+  let TAPN=0;const fr=$('fr');
+  if(t==='cnt'&&fr)fr.onclick=e=>{const x=e.target.closest('i');if(!x||x.classList.contains('e')||x.classList.contains('ct')||$('op').classList.contains('done'))return;ac();TAPN++;x.classList.add('ct');SND.tick();if(S.tapHint<3){S.tapHint=3;save()}say([NM[TAPN]],()=>{if($('op').classList.contains('wait')){$('op').classList.remove('wait');hold(false);if(window.StudyGuess)StudyGuess.heard()}})};
+  const q=()=>{hold(true);if(window.StudyGuess)StudyGuess.q({audio:true});say(ask(),()=>{$('op').classList.remove('wait');hold(false);if(t==='cnt'&&S.tapHint<3){S.tapHint++;save()}if(window.StudyGuess)StudyGuess.heard()})};
+  $('rp').onclick=()=>{ac();if(!$('op').classList.contains('done'))q()};q();
+  const right=x=>t==='more'?x===CUR.n:x===CUR.n;
+  $('op').onclick=e=>{const b=e.target.closest('.opt');if(!b)return;if(LOCK){if(window.StudyGuess&&!$('op').classList.contains('done'))StudyGuess.tap();return}ac();const i=+b.dataset.i,x=opts[i];
+    if(window.StudyGuess&&StudyGuess.chk(right(x),()=>render()))return;
+    if(right(x))return good(b);
+    TRY++;S.att++;S.w[CUR.n].err++;b.classList.add('no');SND.soft();
+    const ri=opts.findIndex(right),hint=()=>{if(TRY>=2)[...$('op').children][ri].classList.add('hint')};
+    const fin=()=>{hold(false);hint();if(window.StudyGuess)StudyGuess.heard()};
+    hold(true);if(window.StudyGuess)StudyGuess.q({audio:true});
+    if(t==='cnt'){// טעות בספירה = סופרים יחד, כל פריט נדלק עם המספר שלו
+      const cs=[...$('fr').children];cs.forEach(z=>z.classList.remove('ct'));TAPN=0;
+      say(['בּוֹא נִסְפֹּר',300].concat(countParts(CUR.n,k=>{cs[k-1].classList.add('ct');SND.tick()},120),[500,'נַסֵּה שׁוּב']),fin)}
+    else if(t==='qty')say(['כָּאן יֵשׁ',NM[x],300,'נַסֵּה שׁוּב'],fin);
+    else if(t==='more'){const y=opts[1-i];say(['כָּאן יֵשׁ',NM[x],400,'כָּאן יֵשׁ',NM[y],300,'נַסֵּה שׁוּב'],fin)}
+    else say([NM[x],300,'נַסֵּה שׁוּב'],fin);
+    save();report()}}
+function good(b){hold(true);$('op').classList.add('done');const n=CUR.n,first=TRY===0;b.classList.remove('hint');b.classList.add('ok');SND.ok();
+  S.att++;S.okc++;S.pts++;R.ok++;if(CUR.t==='more')S.more=(S.more||0)+1;else{if(first)S.w[n].c++;S.w[n].s=1}
+  const was=CUR.t!=='more'&&S.w[n].c===LEARN&&first;
+  const after=()=>{R.i++;if(was){popTxt(n+' ✓');confetti(30)}maybeSquishy(()=>setTimeout(nextQ,250),first)};
+  say([350,NM[n]],after);save();upd();report()}
+
+// ---------- סוף סיבוב: רכבת המספרים, סופרים יחד בעל פה ----------
+function endRound(){S.rounds++;save();SND.win();confetti(50);
+  const top=Math.max(3,...ALLN.filter(n=>S.w[n].s)),c=$('card');
+  c.innerHTML=`<div class="mid"><div class="pic">🚂</div><div class="trn" id="trn">${ALLN.slice(0,Math.max(5,top)).map(n=>`<b class="${learned(n)?'ok':''}" style="${n>top?'visibility:hidden':''}">${n}</b>`).join('')}</div><button class="say" id="rp" type="button">🔊</button></div><div class="btns wait" id="bt"><button class="btn" id="nx" type="button">▶ עוד סיבוב</button></div>`;
+  const tr=[...$('trn').children];
+  const sp=()=>{tr.forEach(x=>x.classList.remove('on'));say(['בּוֹא נִסְפֹּר',300].concat(countParts(top,i=>{tr.forEach(x=>x.classList.remove('on'));tr[i-1].classList.add('on');SND.tick()},120)),()=>{setTimeout(()=>tr.forEach(x=>x.classList.remove('on')),500);$('bt').classList.remove('wait')})};
+  $('rp').onclick=()=>{ac();sp()};$('nx').onclick=()=>{stopSay();startRound()};setTimeout(sp,700);report()}
+
+// ---------- סקווישים (לוח אחד עם האותיות: shilo_sq) ----------
+const SQS=ShiloSquishies.list,SQS2=ShiloSquishies.list2,SQS3=ShiloSquishies.list3,aura=ShiloSquishies.aura,uaura=ShiloSquishies.uaura,ALLSQ=ShiloSquishies.all;
+const baseDone=()=>SQS.every(x=>SQ.includes(x.id)),supDone=()=>baseDone()&&SQS2.every(x=>SQ.includes(x.id)),sqEvery=()=>supDone()?50:baseDone()?12:6,sqN=()=>ALLSQ.filter(x=>SQ.includes(x.id)).length,sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
+let CURSQ=null,SQCB=null;
+// סקווישי רק על תשובה נכונה בניסיון הראשון, ולא כשהפרסים עצורים בגלל ניחושים
+function maybeSquishy(cb,first){if(!first||(window.StudyGuess&&!StudyGuess.reward()))return cb();S.cc=(S.cc||0)+1;if(S.cc>=sqEvery()){S.cc=0;save();SQCB=cb;setTimeout(squishy,500)}else cb()}
+function squishy(){SQ=LS.get('shilo_sq')||SQ;const L=supDone()?SQS3:baseDone()?SQS2:SQS;let s=L.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(L);
+  $('sqtt').textContent=s.ult?(isNew?'💎 אולטרה סקווישי חדש! 💎':'💎 אולטרה סקווישי!'):s.sup?(isNew?'⭐ סופר סקווישי חדש! ⭐':'⭐ סופר סקווישי!'):(isNew?'סקווישי חדש! 🎉':'סקווישי! 🎉');
+  if(isNew){SQ.push(s.id);LS.set('shilo_sq',SQ)}
+  CURSQ=s.id;$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לארגז! 🧰';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
+  $('sqov').classList.add('on');confetti(70);SND.win();setTimeout(()=>sqSound(s.id),700);upd();report()}
+$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
+$('sqok').onclick=()=>{$('sqov').classList.remove('on');if(SQCB){const f=SQCB;SQCB=null;f()}};
+function sqCol(){SQ=LS.get('shilo_sq')||SQ;const ev=sqEvery(),left=ev-(S.cc||0);
+  $('sqct').textContent=`אספת ${sqN()} מתוך ${ALLSQ.length} · עוד ${left} תשובות נכונות לסקווישי הבא`+(window.StudyGuess&&!StudyGuess.reward()?` · 🤔 הפרסים עצורים בגלל ניחושים: עוד ${StudyGuess.stat().need} תשובות נכונות במחשבה`:'');$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
+  const cl=s=>s.ult?' ult':s.sup?' sup':'';const tile=s=>SQ.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}</div>`;
+  $('sqg').innerHTML=`<div class="sqhd">${ShiloSquishies.rows[0]}</div>`+SQS.map(tile).join('')+`<div class="sqhd">${ShiloSquishies.rows[1]}</div>`+SQS2.map(tile).join('')+`<div class="sqhd">${ShiloSquishies.rows[2]}</div>`+SQS3.map(tile).join('')+(window.StudyEffort?StudyEffort.row('shilo'):'');$('sqcol').classList.add('on')}
+$('sqb').onclick=sqCol;$('sqcx').onclick=()=>$('sqcol').classList.remove('on');
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.eff?'💝 פרס מאמץ מאבא ואמא':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🧰';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לארגז';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+
+// ---------- תצוגה ודיווח ----------
+function upd(){$('dn').textContent=nLearned();$('pts').textContent='⭐ '+S.pts;$('sqn').textContent=sqN()+'/'+ALLSQ.length;
+  $('abc').innerHTML=ALLN.map(n=>`<span class="${learned(n)?'ok':S.w[n].s?'on':''}">${n}</span>`).join('')}
+function report(){if(!window.StudyTrack)return;const hard=ALLN.filter(n=>S.w[n].err).sort((a,b)=>S.w[b].err-S.w[a].err).slice(0,4).map(n=>n+' ('+NM[n]+')');
+  let g=0;while(g<G.length-1&&gOpen(g+1))g++;
+  StudyTrack.report({total:10,done:nLearned(),learning:ALLN.filter(n=>S.w[n].s&&!learned(n)).length,att:S.att,ok:S.okc,pts:S.pts,squishies:sqN(),hard,group:g+1,rounds:S.rounds,lv:1,lvn:'מספרים 1 עד 10',prog:nLearned(),pmax:10,started:S.started})}
+$('mute').onclick=()=>{MUTE=!MUTE;LS.set('shilo_nm_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(MUTE)stopSay()};$('mute').textContent=MUTE?'🔇':'🔊';
+function goTxt(){const b=$('go');if(!b)return;const r=READY||NLOAD>=NTOT;b.textContent=r?'▶ מתחילים':'טוען… '+Math.round(NLOAD/Math.max(1,NTOT)*100)+'%';b.classList.toggle('soft',!r)}
+$('go').onclick=()=>{try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}ac();
+  try{const a=AC,s=a.createBufferSource();s.buffer=a.createBuffer(1,1,22050);s.connect(a.destination);s.start(0)}catch(e){}
+  $('intro').classList.remove('on');startRound()};
+document.addEventListener('touchstart',()=>{if(AC&&AC.state!=='running')AC.resume()},{passive:true});
+preload();setTimeout(()=>{if(!READY){READY=true;goTxt();RWAIT.splice(0).forEach(f=>f())}},8000);
+if(window.StudyGuess)StudyGuess.init('shilo','numbers',{fast:1100,stop:stopSay});
+if(window.StudyTrack){StudyTrack.init('shilo','numbers',['shilo_nm']);StudyTrack.gift(()=>{SQCB=null;squishy();$('sqtt').textContent='🎁 מתנה מאבא ואמא!';confetti(60)})}
+if(window.StudyEffort)StudyEffort.sync('shilo',()=>{if($('sqcol').classList.contains('on'))sqCol()});
+upd();goTxt();$('intro').classList.add('on');
+</script>
+</body></html>
