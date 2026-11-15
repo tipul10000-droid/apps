@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="16.12";window.SQ_BUILD_AT="15.11.2026 15:58";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.0";window.SQ_BUILD_AT="16.11.2026 01:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1873,40 +1873,78 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
 #setM .ssw small{font-size:11.5px;color:var(--muted)}
 #setM .ssw small.d{font-size:10.5px}
 .rc.mny{background:rgba(31,157,85,.12);color:#1f7a45}
-/* 16.6 (Oren 14.11.2026): desktop / browser layout. Same page, same content and buttons as the iPhone.
-   Only from 1024px wide: the quest band + controls become a fixed column on the right, tasks in the middle,
-   a project page opens as a panel on the left (tasks stay visible), a dashboard fills everything but the column.
-   Nothing here applies to a phone. */
-@media (min-width:1024px){
-  :root{--sbw:400px;--pgw:min(600px,42vw)}
-  .qband,body .qband{position:fixed!important;top:0;right:0;width:var(--sbw);z-index:5}
-  .hero{position:fixed!important;top:102px;right:0;bottom:0;width:var(--sbw);z-index:4;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;padding-bottom:110px!important;box-shadow:inset 1px 0 0 rgba(255,255,255,.06)}
-  .hero .inner{max-width:none}
-  .topbtns{position:fixed!important;top:54px!important;left:auto!important;right:var(--sbw)!important;transform:translateX(calc(100% + 12px))}
-  main,footer.ver{margin-right:var(--sbw)}
-  main{padding-top:28px!important}
-  main>.inner{max-width:880px}
-  /* the floating + and search sit at the bottom of the column, under the controls */
-  .tadd.fab{left:auto!important;right:calc(var(--sbw) - 76px)!important;bottom:22px!important}
-  .tfind.fab{left:auto!important;right:calc(var(--sbw) - 140px)!important;bottom:29px!important}
-  .toast{left:calc((100% - var(--sbw)) / 2)!important}
-  /* pages on top never cover the column: a dashboard fills the rest, a project page is a side panel */
-  #pgShade{display:none}
-  .aipg{right:var(--sbw)!important;left:0!important;width:auto!important}
-  #pg3{right:auto!important;width:var(--pgw)!important;box-shadow:1px 0 0 var(--line),12px 0 32px rgba(0,0,0,.08)}
-  body:has(#pg3:not([hidden])) main{margin-left:var(--pgw)}
-  .aipg.enter{animation:pgInD .22s cubic-bezier(.2,.8,.2,1)}
-  @keyframes pgInD{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
-  .pgedge{display:none!important}
-  /* sheets become centered dialogs */
-  .sqmodal{align-items:center!important;padding:24px}
-  .sqpanel{border-radius:20px!important;max-height:84vh}
-  /* keyboard hints, only here */
-  .kbh{display:block;margin-top:14px;font:500 11.5px/1.6 var(--f-mono);color:var(--hero-muted);opacity:.75;text-align:center;direction:rtl}
-  .kbh kbd{font:inherit;padding:0 5px;border:1px solid currentColor;border-radius:4px;margin:0 2px}
-}
-@media (min-width:1440px){:root{--sbw:420px}main>.inner{max-width:920px}}
-@media (max-width:1023.98px){.kbh{display:none}}
+/* 17.0 (Oren 16.11.2026, concept A): a desktop layout built for the computer, only from 1024px (html.desk, set by JS).
+   Dark L-frame: top bar (logo, search, icons, + new) and a quest/dashboard rail on the right.
+   Middle = the task list. Left = the open task, always in its own pane (rows never expand inline here).
+   Dashboards and project pages open over the middle + left. The phone layout is untouched. */
+html.desk{--dtop:56px;--drail:260px;--dpane:min(460px,34vw)}
+html.desk .qband,html.desk .tadd.fab,html.desk .tfind.fab{display:none!important}
+#dtop,#deskDet,#dhead{display:none}
+html.desk #dtop{display:flex;position:fixed;inset:0 0 auto 0;height:var(--dtop);z-index:40;align-items:center;gap:16px;padding:0 18px;background:var(--hero);color:var(--hero-ink);border-bottom:1px solid rgba(255,255,255,.08)}
+html.desk .dlogo{font:800 20px/1 var(--f-display);letter-spacing:-.3px;white-space:nowrap;width:calc(var(--drail) - 34px);flex:none}
+html.desk .dlogo i{font-style:normal;color:var(--accent)}
+html.desk .dsrch{flex:1;max-width:520px;height:36px;border-radius:9px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:var(--hero-muted);display:flex;align-items:center;gap:9px;padding:0 12px;font-size:14.5px;text-align:right}
+html.desk .dsrch kbd{margin-inline-start:auto;font:600 11.5px var(--f-mono);border:1px solid rgba(255,255,255,.25);border-radius:5px;padding:0 6px}
+html.desk .dsrch:hover{background:rgba(255,255,255,.14)}
+html.desk #dtop .topbtns{position:static!important;transform:none!important;margin-inline-start:auto;top:auto!important;left:auto!important;right:auto!important}
+html.desk .dadd{height:36px;padding:0 16px;border-radius:9px;background:var(--accent);color:#141414;font:700 15px var(--f-display);display:flex;align-items:center;gap:6px;flex:none}
+html.desk .dadd:hover{filter:brightness(1.07)}
+/* right rail = the old hero */
+html.desk .hero{position:fixed!important;top:var(--dtop);right:0;bottom:0;width:var(--drail);z-index:30;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;padding:14px 12px 24px!important;border-inline-start:1px solid rgba(255,255,255,.06)}
+html.desk .hero .inner{max-width:none;gap:18px!important}
+html.desk .hero::before,html.desk .hero::after{display:none}
+html.desk .qnav{display:flex!important;flex-direction:column;gap:2px!important;border:0!important;background:none!important;border-radius:0!important;overflow:visible!important}
+html.desk .qnav .qbtn{flex-direction:row!important;justify-content:flex-start!important;gap:11px!important;min-height:40px!important;height:40px;padding:0 12px!important;border-radius:9px!important;border:0!important;box-shadow:none!important;background:transparent!important;color:var(--hero-ink)!important;opacity:.78!important;filter:none!important;font:600 15px var(--f-body)!important}
+html.desk .qnav .qbtn .qn{flex:1!important;text-align:right;font-size:15px!important;direction:ltr}
+html.desk .qnav .qbtn::after{display:none!important}
+html.desk .qnav .qbtn[aria-current="true"]{background:rgba(255,255,255,.12)!important;opacity:1!important;box-shadow:inset -3px 0 0 var(--accent)!important}
+html.desk .qnav .qbtn:hover{opacity:1!important;background:rgba(255,255,255,.07)!important}
+html.desk .dsec{font:700 11.5px var(--f-display);letter-spacing:.6px;color:var(--hero-muted);padding:0 12px;margin:0 0 6px;text-transform:uppercase}
+/* dashboards as a compact list in the rail */
+html.desk .hero #dashSec{margin:0!important;gap:6px}
+html.desk .hero #dashSec>*:not(.dz-grid){display:none!important}
+html.desk .hero .dz-grid{display:flex!important;flex-direction:column;gap:2px!important}
+html.desk .hero .dz-tile{min-height:36px!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;padding:0 12px!important;border-radius:9px!important;background:transparent!important;color:var(--hero-ink)!important;box-shadow:none!important;position:relative;outline:0!important}
+html.desk .hero .dz-tile::before{content:"";width:11px;height:11px;border-radius:3px;flex:none;background:var(--c1,#888)}
+html.desk .hero .dz-tile b{flex-direction:row!important;align-items:center!important;gap:7px!important;font:600 14.5px var(--f-body)!important;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.desk .hero .dz-tile b .ti{font-size:15px!important}
+html.desk .hero .dz-tile span.s,html.desk .hero .dz-tile .bd{display:none!important}
+html.desk .hero .dz-tile:hover{background:rgba(255,255,255,.07)!important}
+html.desk .hero .dz-tile .nw{position:static!important;margin-inline-start:auto}
+/* middle */
+html.desk main,html.desk footer.ver{margin-right:var(--drail);margin-left:var(--dpane)}
+html.desk main{padding-top:calc(var(--dtop) + 20px)!important;padding-inline:28px!important;zoom:1!important}
+html.desk main>.inner{max-width:820px}
+html.desk #dhead{display:flex;flex-direction:column;gap:10px;background:var(--hero);color:var(--hero-ink);border-radius:14px;padding:10px 12px}
+html.desk #dhead .ctxrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+html.desk #dhead .ctxrow{flex-wrap:nowrap}
+html.desk #dhead .avail{flex:0 1 auto;min-width:0}
+html.desk #dhead .toolrow{margin-inline-start:auto}
+html.desk #dzbtn{display:none!important}
+html.desk .qnav .qbtn{margin:0!important;height:38px!important;min-height:38px!important}
+html.desk .row.is-open{box-shadow:inset -3px 0 0 var(--accent),0 0 0 1px var(--line)!important;background:color-mix(in srgb,var(--accent) 7%,var(--surface))!important}
+html.desk .row.is-open::after{display:none}
+html.desk .row.is-open .r-title{white-space:nowrap;font-weight:600}
+html.desk .row.is-open .r-chev{transform:none}
+/* left pane: the open task */
+html.desk #deskDet{display:flex;flex-direction:column;position:fixed;top:var(--dtop);left:0;bottom:0;width:var(--dpane);z-index:20;background:var(--surface);border-inline-end:1px solid var(--line);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:22px 24px 40px}
+html.desk #deskDet .dd-meta{font-size:12.5px;color:var(--muted);font-weight:600}
+html.desk #deskDet h2.dd-t{font:800 22px/1.25 var(--f-display);margin:4px 0 14px}
+html.desk #deskDet .drawer{border:0!important;padding:0!important;margin:0!important;background:none!important}
+html.desk #deskDet .dd-empty{margin:auto;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:6px;align-items:center}
+html.desk #deskDet .dd-empty b{font:700 16px var(--f-display);color:var(--ink)}
+html.desk #deskDet .dd-empty kbd{font:600 12px var(--f-mono);border:1px solid var(--line);border-radius:5px;padding:0 6px}
+html.desk #deskDet.in>*{animation:ddIn .18s ease-out}
+@keyframes ddIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+/* pages on top: over the middle and the left, never over the frame */
+html.desk #pgShade{display:none}
+html.desk .aipg{top:var(--dtop)!important;right:var(--drail)!important;left:0!important;width:auto!important;z-index:35}
+html.desk .aipg .pgbar{padding-top:0!important}
+html.desk .pgedge{display:none!important}
+html.desk .toast{left:calc((100% - var(--drail)) / 2)!important}
+html.desk .sqmodal{align-items:center!important;padding:24px}
+html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
+@media (prefers-reduced-motion:reduce){html.desk #deskDet.in>*{animation:none}}
 /* mouse: hover feedback (color only, nothing moves) */
 @media (hover:hover) and (pointer:fine){
   .row{transition:border-color .15s,box-shadow .15s}
@@ -2001,7 +2039,6 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
-    <div class="kbh" aria-hidden="true"><kbd>/</kbd> חיפוש · <kbd>N</kbd> חדש · <kbd>1</kbd>-<kbd>6</kbd> קווסט · <kbd>Esc</kbd> חזרה</div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
   </div>
 </div>
@@ -3073,7 +3110,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
         rx&&rx.upd?h("span",{class:"r-tw"},h("span",{class:"r-title"},open&&!asleep(t)?dlTag(t):null,t.title||"(ללא כותרת)"),h("small",{class:"r-upd"},updLine(rx.upd))):h("span",{class:"r-title"},open&&!asleep(t)?dlTag(t):null,t.title||"(ללא כותרת)"),
         chip,h("span",{class:"r-chev","aria-hidden":"true"},"‹")));
     if(!isO&&laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.classList.add("r-later");el.append(m);}
-    if(isO)el.append(drawer(t));
+    if(isO){if(deskOn)deskFill(t);else el.append(drawer(t));}
     return el;
   }
   // the 4 row buttons of 5.x now live here, as one calm action bar at the top of an opened task
@@ -3215,7 +3252,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
   }
   function toggle(id){openId=openId===id?null:id;if(openId)seeUpd(openId);renderList();if(openId)centerOpen(openId);}
   // 13.1: bring the opened task to the middle of the screen; a task taller than the screen starts just under the top
-  function centerOpen(id){requestAnimationFrame(()=>{const r=document.querySelector('.row.is-open[data-id="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');if(!r)return;
+  function centerOpen(id){if(deskOn)return;requestAnimationFrame(()=>{const r=document.querySelector('.row.is-open[data-id="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');if(!r)return;
     const b=r.getBoundingClientRect(),vh=window.innerHeight,top=b.height>vh-80?b.top-60:b.top-(vh-b.height)/2;
     if(Math.abs(top)<8)return;window.scrollTo({top:window.scrollY+top,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});});}
   const folded={};try{Object.assign(folded,JSON.parse(localStorage.getItem("sq_fold")||"{}"));}catch(e){}
@@ -3288,7 +3325,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
       P.length===1&&P[0].now?h("div",{class:"glist"},P[0].it.map(row)):
       P.map(x=>h("div",{class:"wc-part"},h("div",{class:"wc-sec"},x.t),h("div",{class:"glist"},x.it.map(row)))));
     return {el,L};}
-  function renderList(){renderMain();renderStrip();renderDash();if(nav.lvl>=2)renderNav();if(nav.dash&&!dashPg.frame)renderDashPg();}
+  function renderList(){deskShown=null;if(deskOn){const L=document.querySelector("#dtop .dlogo"),Q=QUESTS[quest]||QUESTS.side;if(L)L.replaceChildren((Q.a||"").toUpperCase()+" ",h("i",{},(Q.b||"").toUpperCase()));}renderMain();renderStrip();renderDash();if(nav.lvl>=2)renderNav();if(nav.dash&&!dashPg.frame)renderDashPg();deskEmpty();}
   function renderMain(){
     const allK=topics.filter(isOpen).filter(t=>!inStrip(t)).sort(byDate);
     const side=WQ.includes(quest),w=curWin(),winOn=side&&(wMode!=="off"&&wMode!=="new"||w.manual);
@@ -4219,7 +4256,33 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
     if(typing||e.ctrlKey||e.metaKey||e.altKey||modal)return;
     if(e.key==="/"){e.preventDefault();$("findBtn").click();}
     else if(e.key==="n"||e.key==="N"||e.key==="מ"){e.preventDefault();$("addBtn").click();}
-    else if(/^[1-6]$/.test(e.key)){const b=document.querySelectorAll("#qnav .qbtn")[+e.key-1];if(b){e.preventDefault();b.click();}}});
+    else if(/^[1-6]$/.test(e.key)){const b=document.querySelectorAll("#qnav .qbtn")[+e.key-1];if(b){e.preventDefault();b.click();}}
+    else if(deskOn&&(e.key==="ArrowDown"||e.key==="ArrowUp")){const rs=[...document.querySelectorAll("main .row[data-id]")].filter(vis);if(!rs.length)return;e.preventDefault();
+      let i=rs.findIndex(r=>r.dataset.id===openId);i=i<0?0:Math.max(0,Math.min(rs.length-1,i+(e.key==="ArrowDown"?1:-1)));const r=rs[i];if(r.dataset.id!==openId)r.querySelector(".r-body").click();r.scrollIntoView({block:"nearest"});}
+    else if(deskOn&&(e.key==="e"||e.key==="E"||e.key==="ק")&&openId){const c=document.querySelector('main .row.is-open .ck:not(.on):not(.ph)');if(c){e.preventDefault();c.click();}}});
+  // 17.0 (Oren 16.11.2026, concept A): desktop frame. Built once; the same nodes move between the phone and desktop spots.
+  var deskOn=false,deskShown=null,deskMoves=[],deskPane=null;
+  function deskMove(el,to,first){if(!el||!to)return;const m=document.createComment("desk");el.before(m);deskMoves.push([el,m]);first?to.prepend(el):to.append(el);}
+  function deskFill(t){if(!deskPane)return;deskShown=t.id;const q=QUESTS[questOf(t)]||{};const SZ={quick:"⚡ מהירה",trip:"🚗 נקודתית",long:"🧭 מתמשכת"};
+    const was=deskPane.dataset.id;deskPane.dataset.id=t.id;
+    deskPane.replaceChildren(h("div",{class:"dd-meta"},[q.e&&(q.e+" "+(q.a||"")).trim(),SZ[t.size],STATUS[t.status]].filter(Boolean).join(" · ")),h("h2",{class:"dd-t"},t.title||"(ללא כותרת)"),drawer(t));
+    if(was!==t.id){deskPane.classList.remove("in");void deskPane.offsetWidth;deskPane.classList.add("in");deskPane.scrollTop=0;}}
+  function deskEmpty(){if(!deskOn||!deskPane||deskShown)return;deskPane.dataset.id="";
+    deskPane.replaceChildren(h("div",{class:"dd-empty"},h("b",{},"אין משימה פתוחה"),h("span",{},"לחיצה על שורה פותחת אותה כאן"),h("span",{},h("kbd",{},"↑"),"  ",h("kbd",{},"↓")," מעבר בין משימות · ",h("kbd",{},"E")," בוצע")));}
+  function deskApply(){const on=DESK.matches;if(on===deskOn)return;deskOn=on;document.documentElement.classList.toggle("desk",on);
+    if(on){if(!$("dtop")){document.body.prepend(h("header",{id:"dtop"},h("div",{class:"dlogo"},"SIDE ",h("i",{},"QUESTS")),
+        h("button",{class:"dsrch",type:"button",onclick:()=>$("findBtn").click()},h("span",{"aria-hidden":"true"},"🔍"),h("span",{},"חיפוש בכל הקווסטים"),h("kbd",{},"/")),
+        h("button",{class:"dadd",type:"button",onclick:()=>$("addBtn").click()},"＋ חדש")));
+        deskPane=h("aside",{id:"deskDet","aria-label":"משימה פתוחה"});document.body.append(deskPane);
+        document.querySelector("main .inner").prepend(h("div",{id:"dhead"}));}
+      const top=$("dtop"),hin=document.querySelector(".hero .inner"),hd=$("dhead");
+      deskMove(document.querySelector(".topbtns"),top.querySelector(".dadd"),false);top.querySelector(".dadd").before(top.querySelector(".topbtns"));
+      deskMove(document.querySelector(".ctxrow"),hd);deskMove($("find"),hd);deskMove($("fres"),hd);deskMove($("quick"),hd);
+      const sq=h("p",{class:"dsec",id:"dsecQ"},"קווסטים");hin.prepend(sq);deskMoves.push([sq,null]);
+      const sd=h("p",{class:"dsec",id:"dsecD"},"דשבורדים");hin.append(sd);deskMoves.push([sd,null]);deskMove($("dashSec"),hin);}
+    else{for(const [el,m] of deskMoves.reverse()){if(m){m.after(el);m.remove();}else el.remove();}deskMoves=[];}
+    if(db)renderAll();}
+  DESK.addEventListener?DESK.addEventListener("change",deskApply):DESK.addListener(deskApply);deskApply();
   function lockScroll(k){if(k==="pg"&&DESK.matches)return;lockBy.add(k||"m");if(lockY!==null)return;lockY=window.scrollY;document.body.style.top=-lockY+"px";document.documentElement.classList.add("sqlock");}
   function unlockScroll(k){lockBy.delete(k||"m");if(lockBy.size||lockY===null)return;const y=lockY;lockY=null;document.documentElement.classList.remove("sqlock");document.body.style.top="";window.scrollTo(0,y);}
   function showHere(sample){
