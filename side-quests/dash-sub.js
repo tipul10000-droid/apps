@@ -7,7 +7,9 @@
   var last=null;
   function sub(){return document.querySelector(".hero .sqsub");}
   function send(){var b=sub(),m;
-    if(b){var sp=b.querySelectorAll("span"),em=b.querySelector(".em");m={label:(sp.length?sp[sp.length-1].textContent:b.textContent).trim(),icon:em?em.textContent.trim():""};}
+    if(b){var sp=b.querySelectorAll("span"),em=b.querySelector(".em");m={label:(sp.length?sp[sp.length-1].textContent:b.textContent).trim(),icon:em?em.textContent.trim():""};
+      /* 16.11: a sub view may name itself and its own chat (data-title / data-chat on the back button), shown in the app bar */
+      if(b.dataset.title)m.title=b.dataset.title;if(b.dataset.chat)m.chat=b.dataset.chat;}
     var k=JSON.stringify(m||null);if(k===last)return;last=k;
     try{parent.postMessage({type:"sq-sub",sub:m||null},"*");}catch(e){}}
   addEventListener("message",function(e){if(e.source!==parent||!e.data||e.data.type!=="sq-back")return;var b=sub();if(b)b.click();else send();});
