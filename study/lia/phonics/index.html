@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <script src="../../guest.js?v=6"></script>
-<script src="../../content.js?v=9"></script><script>StudyContent.guard('lia/phonics')</script>
+<script src="../../content.js?v=10"></script><script>StudyContent.guard('lia/phonics')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · אותיות וצלילים</title>
 <link rel="manifest" href="../../manifest.json">
@@ -111,7 +111,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex
 
 <script src="audio/list.js?v=1"></script>
 <script src="../squishies.js?v=5"></script>
-<script src="../../sqsound.js?v=12"></script>
+<script src="../../sqsound.js?v=13"></script>
 <script src="../../effort.js?v=1"></script>
 <script src="../../track.js?v=9"></script>
 <script src="../../guess.js?v=1"></script>
@@ -285,7 +285,7 @@ function answer(ok,b){const it=CUR.it,w=S.w[it.id],fb=$('fb'),c=$('card');ANS=tr
     maybeSquishy()}
   else{b.classList.add('no');SND.bad();streak(false);w.err++;if(w.s==='done'&&allL())w.m=Math.max(0,(w.m||0)-2);else if(w.s==='done'){w.s='learn';w.c=1}else w.c=Math.max(0,(w.c||0)-1);w.due=S.T+2;
     if(wq){fb.innerHTML=`<div class="t no">${pick(BAD)}</div><div>${CUR.mode==='end'?`<b dir="ltr">${esc(wq)}</b> נגמרת ב-<b dir="ltr">${esc(lbl(it))}</b>`:CUR.mode==='mid'?`באמצע <b dir="ltr">${esc(wq)}</b> שומעים <b dir="ltr">${esc(lbl(it))}</b>`:`זו המילה <b dir="ltr">${esc(wq)}</b> ${EMO[wq]||''}`}</div>`;setTimeout(()=>word(wq),500)}
-    else{fb.innerHTML=`<div class="t no">${pick(BAD)}</div><div>${esc(lbl(it))} = ${esc(it.word)} ${it.pic}</div>`;setTimeout(()=>sound(it,()=>word(it.word)),500)}}
+    else{fb.innerHTML=`<div class="t no">${pick(BAD)}</div><div>הצליל <b dir="ltr">${esc(lbl(it))}</b> נשמע כמו בהתחלה של <b dir="ltr">${esc(it.word)}</b> ${it.pic}</div>`;setTimeout(()=>sound(it,()=>word(it.word)),500)}}
   save();upd();showNext()}
 function checkBuild(){if(window.StudyGuess&&StudyGuess.chk(CUR.got.map(i=>CUR.tiles[i]).join('')===CUR.u.join(''),()=>render()))return;const u=CUR.u,got=CUR.got.map(i=>CUR.tiles[i]),ok=got.join('')===u.join(''),fb=$('fb');ANS=true;S.att++;S.T++;S.bn=(S.bn||0)+1;bLevel(ok);credit(CUR.w.split('|'),ok,u.length===CUR.w.split('|').length?got:null);
   $('sl').classList.add(ok?'ok':'no');
