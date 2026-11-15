@@ -129,7 +129,7 @@ const G=[
 [['a_e','a_e','A','cake','🎂','same',null,'הַ-e בַּסּוֹף שְׁקֵטָה, וְ-a אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אֵיי',null],['ee','ee','E','bee','🐝','same',null,'אוֹמֶרֶת אֶת הַשֵּׁם שֶׁל e: אִי אֲרֻכָּה',null],['i_e','i_e','I','bike','🚲','same',null,'הַ-e שְׁקֵטָה, וְ-i אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אַיי',null],['o_e','o_e','O','home','🏠','same',null,'הַ-e שְׁקֵטָה, וְ-o אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: אוֹ',null],['u_e','u_e','U','cute','🐱','same',null,'הַ-e שְׁקֵטָה, וְ-u אוֹמֶרֶת אֶת הַשֵּׁם שֶׁלָּהּ: יוּ',null]],
 // קבוצה 7 (אורן 6.11.2026): שתי אותיות, צליל אחד. ai/oa = אותו צליל כמו a_e/o_e
 [['ai','ai','A','rain','🌧️','same',null,'שְׁתֵּי אוֹתִיּוֹת, צְלִיל אֶחָד: <u>אֵיי</u>, כְּמוֹ בַּמִּלָּה cake',null],['oa','oa','O','boat','⛵','same',null,'שְׁתֵּי אוֹתִיּוֹת, צְלִיל אֶחָד: <u>אוֹ</u>, כְּמוֹ בַּמִּלָּה home',null],['oo','oo','oo','moon','🌙','same',null,'אוּ אֲרֻכָּה, כְּמוֹ בְּ<u>אוּ</u>לָם (moon = מוּן)',null],['ar','ar','ar','car','🚗','near',null,'אַר, עִם ר׳ אֲמֶרִיקָאִית (car = קַאר)',null],['or','or','or','fork','🍴','near',null,'אוֹר, עִם ר׳ אֲמֶרִיקָאִית (fork = פוֹרְק)',null],['er','er','er','fern','🌿','new',null,'אֵין בְּעִבְרִית! צְלִיל עָמֹק בְּלִי תְּנוּעָה בְּרוּרָה, הַלָּשׁוֹן מִתְגַּלְגֶּלֶת אָחוֹרָה (her)',null],['ou','ou','ou','cloud','☁️','near',null,'<u>אַאוּ</u>, כְּמוֹ כְּשֶׁמַּשֶּׁהוּ כּוֹאֵב (cloud = קְלַאוּד)',null],['oi','oi','oi','coin','🪙','same',null,'כְּמוֹ <u>אוֹי</u> בְּעִבְרִית (coin = קוֹיְן)',null]]];
-// מילים לבנייה (תרגיל "הרכב את המילה"), לכל קבוצה. יחידות מופרדות ב-|
+// מילים לבנייה (תרגיל "הרכיבי את המילה"), לכל קבוצה. יחידות מופרדות ב-|
 const BW=[['p|a|t','p|i|n','t|a|p','s|i|p','p|i|t','p|a|n','n|a|p'],['c|a|t','h|a|t','t|e|n','h|e|n','k|i|d','m|a|n','r|a|t','n|e|t'],['d|o|g','b|u|g','s|u|n','c|u|p','l|e|g','h|o|p','b|u|s','t|o|p'],['j|e|t','z|i|p','w|e|t','v|a|n','y|u|m','b|o|x','f|o|x','j|u|g'],['sh|i|p','ch|i|p','th|i|n','s|i|ng','f|i|sh','sh|o|p','b|a|th','k|i|ng'],['c|a|k|e','b|i|k|e','h|o|m|e','c|u|t|e','r|i|d|e','r|o|d|e','m|u|l|e','k|i|t|e'],['r|ai|n','t|r|ai|n','s|n|ai|l','t|ai|l','b|oa|t','c|oa|t','s|oa|p','r|oa|d','m|oo|n','s|p|oo|n','z|oo','r|oo|f','c|ar','s|t|ar','f|ar|m','p|ar|k','f|or|k','c|or|n','h|or|n','h|er','f|er|n','c|l|ou|d','l|ou|d','ou|t','c|oi|n','oi|l','s|oi|l','j|oi|n']];
 const GN=['s a t p i n','c k e h r m d','g o u l f b','j z w v y x','sh ch th ng','a_e ee','ai oa oo ar'];
 const IT=[],BY={};G.forEach((g,gi)=>g.forEach(r=>{const o={id:r[0],show:r[1],snd:r[2],word:r[3],pic:r[4],tier:r[5],he:r[6],htx:r[7],tt:r[8],g:gi};IT.push(o);BY[o.id]=o}));
@@ -234,7 +234,7 @@ function render(){ANS=false;SEL=null;const c=$('card'),m=CUR.mode,it=CUR.it;let 
     let cf=lv>=2?shuf([...new Set(u0.flatMap(l=>(Array.isArray(CONF[l])?CONF[l]:(CONF[l]||'').split('')).filter(Boolean)))]).filter(okx):[];
     const ex=[...new Set(cf.concat(shuf(IT.filter(x=>x.g<=curG()).map(x=>x.id)).filter(okx)))].slice(0,Math.max(0,7-u.length));
     CUR.u=u;CUR.got=[];CUR.tiles=shuf(u.concat(ex));
-    h=head('🧩 הכתבה'+(allL()||(S.bl||1)>1?' · רמה '+(S.bl||1):''))+`<div class="ask">הרכב את המילה ששמעת</div><div class="mid"><button class="say lg" id="pw" type="button">🔊</button><div class="slots" id="sl">${u.map(()=>'<span></span>').join('')}</div></div>
+    h=head('🧩 הכתבה'+(allL()||(S.bl||1)>1?' · רמה '+(S.bl||1):''))+`<div class="ask">הקשב למילה, ובנה אותה מהאותיות שלמטה.</div><div class="mid"><button class="say lg" id="pw" type="button">🔊</button><div class="slots" id="sl">${u.map(()=>'<span></span>').join('')}</div></div>
     <div class="tiles" id="tl">${CUR.tiles.map((t,i)=>`<button type="button" data-i="${i}">${esc(t)}</button>`).join('')}<button type="button" class="bk" id="bk">⌫</button></div>
     <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button" disabled>בדיקה</button></div>`;
     c.innerHTML=h;$('pw').onclick=()=>word(w);$('tl').querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>{if(ANS||CUR.got.length>=u.length)return;SND.click();b.classList.add('used');CUR.got.push(+b.dataset.i);slots()});
@@ -243,15 +243,15 @@ function render(){ANS=false;SEL=null;const c=$('card'),m=CUR.mode,it=CUR.it;let 
   // שאלות בחירה
   let ask,mid,opts,cls='';
   if(m==='end'||m==='mid'||m==='read'){const L=m==='end'?endW(it):m==='mid'?midW(it):readW(it);const u=pick(L);CUR.w=u.join('');}
-  if(m==='end'){ask='באיזו אות המילה נגמרת?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(IT.filter(x=>x.id.length===1&&!VOW.includes(x.id)&&x.id!=='x'&&x.snd!==it.snd)).slice(0,3)));}
-  else if(m==='mid'){ask='איזה צליל שומעים באמצע המילה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(VOW.filter(v=>v!==it.id)).slice(0,3).map(v=>BY[v])));}
-  else if(m==='read'){ask='קרא את המילה. מה היא?';mid=`<div class="big" dir="ltr" style="text-transform:none">${esc(CUR.w)}</div>`;
+  if(m==='end'){ask='הקשב למילה. באיזו אות היא נגמרת?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(IT.filter(x=>x.id.length===1&&!VOW.includes(x.id)&&x.id!=='x'&&x.snd!==it.snd)).slice(0,3)));}
+  else if(m==='mid'){ask='הקשב למילה. איזה צליל שומעים באמצע שלה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(VOW.filter(v=>v!==it.id)).slice(0,3).map(v=>BY[v])));}
+  else if(m==='read'){ask='קרא את המילה באנגלית, ובחר את התמונה שמתאימה לה.';mid=`<div class="big" dir="ltr" style="text-transform:none">${esc(CUR.w)}</div>`;
     const oth=shuf(Object.keys(EMO).filter(x=>x!==CUR.w&&ALLW.some(w=>w.split('|').join('')===x))).sort((a,b)=>(b.length===CUR.w.length)-(a.length===CUR.w.length)).slice(0,2);
     opts=shuf([CUR.w].concat(oth)).map(x=>({id:it.id,w:x}));}
-  else if(m==='hear'){ask='איזו אות עושה את הצליל הזה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(distract(it,3)));}
-  else if(m==='see'){ask='איזה צליל עושה האות? לחץ לשמוע ובחר';mid=`<div class="big">${esc(it.show)}</div>`;opts=shuf([it].concat(distract(it,2)));cls='snd'}
-  else if(m==='pic'){ask='באיזו אות מתחילה המילה?';mid=`<div class="pic" style="font-size:64px">${it.pic}</div><button class="say" id="rp" type="button">🔊 לשמוע שוב</button>`;opts=shuf([it].concat(distract(it,3)));}
-  else{ask='איזו אות בעברית עושה אותו צליל?';mid=`<div class="big">${esc(it.show)}</div><button class="say" id="rp" type="button">🔊 הצליל</button>`;opts=shuf([it].concat(distract(it,3,'he')));cls='he'}
+  else if(m==='hear'){ask='הקשב לצליל. איזו אות עושה את הצליל הזה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(distract(it,3)));}
+  else if(m==='see'){ask='איזה צליל עושה האות הזאת? לחץ על כל כפתור כדי לשמוע, ובחר את הנכון.';mid=`<div class="big">${esc(it.show)}</div>`;opts=shuf([it].concat(distract(it,2)));cls='snd'}
+  else if(m==='pic'){ask='הקשב למילה והסתכל בתמונה. באיזו אות מתחילה המילה?';mid=`<div class="pic" style="font-size:64px">${it.pic}</div><button class="say" id="rp" type="button">🔊 לשמוע שוב</button>`;opts=shuf([it].concat(distract(it,3)));}
+  else{ask='איזו אות בעברית עושה את אותו צליל כמו האות באנגלית?';mid=`<div class="big">${esc(it.show)}</div><button class="say" id="rp" type="button">🔊 הצליל</button>`;opts=shuf([it].concat(distract(it,3,'he')));cls='he'}
   h=head(TEST?'⏱️ <span id="tmr">60</span> · '+TEST.ok+' נכונות':allL()?'⭐ חיזוק':S.w[it.id].s==='done'?'🔁 חזרה':'🎯 תרגול',TEST?'tst':'')+`<div class="ask">${ask}</div><div class="mid">${mid}</div>
   <div class="opts${opts.length===3?' o3':''}">${opts.map((o,i)=>`<button class="opt ${cls}" type="button" data-id="${o.id}"${o.w?` data-w="${o.w}" style="font-size:40px"`:''}>${o.w?EMO[o.w]:m==='see'?'🔊 '+(i+1):m==='heb'?esc(o.he):esc(lbl(o))}</button>`).join('')}</div>
   <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button" style="visibility:${m==='see'?'visible':'hidden'}"${m==='see'?' disabled':''}>${m==='see'?'זה הצליל!':'הבא ←'}</button></div>`;
