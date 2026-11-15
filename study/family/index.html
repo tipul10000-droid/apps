@@ -76,13 +76,13 @@ h1{margin:4px 0 8px;font-size:22px;flex:none}
 <script src="../lia/squishies.js?v=5"></script>
 <script src="../levi/squishies.js?v=1"></script>
 <script src="../shilo/squishies.js?v=3"></script>
-<script src="../sqsound.js?v=12"></script>
+<script src="../sqsound.js?v=13"></script>
 <script src="../effort.js?v=1"></script>
 <script>
 (function(){
 var P=StudyProfiles,$=function(i){return document.getElementById(i)};
 var SB='https://emgtyfksnofzzlutngbf.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
-var ROWS={lia:['🪐 צוות החלל','⭐ סופר סקווישים','💎 אולטרה סקווישים','🐞 חרקי חלל: לוח הכפל','🚀 מסע בין הכוכבים: חיזוק מתמטיקה']};
+var ROWS={lia:['🪐 צוות החלל','⭐ סופר סקווישים','💎 אולטרה סקווישים','🐞 חרקי חלל: לוח הכפל','🚀 מסע בין הכוכבים: חיזוק מתמטיקה'],dani:['💜 הלהקה','⭐ סופר סקווישים','💎 אולטרה סקווישים','🎤 סיבוב הופעות: חיזוק מתמטיקה']};
 var VK='study_fam_view',VIEW='fam';try{VIEW=localStorage.getItem(VK)==='all'?'all':'fam'}catch(e){}
 var D={};// kid -> {sec, ok, sq:[]}
 function lj(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
@@ -116,7 +116,7 @@ function board(id){var k=P.kids[id],S=SQ(id),d=D[id]||{sq:[]},boy=k.boy;
   var tile=function(s){return d.sq.indexOf(s.id)>=0?'<div class="own'+cl(s)+'" data-id="'+s.id+'"><svg viewBox="0 0 100 100">'+s.svg+'</svg></div>':'<div class="lock'+cl(s)+'"><svg viewBox="0 0 100 100">'+s.svg.split(S.aura).join('').split(S.uaura).join('').split(S.orb||'\u0000').join('')+'</svg></div>'};
   $('bg').innerHTML=[S.list,S.list2,S.list3,S.list4,S.list5].filter(Boolean).map(function(l,i){return '<div class="sqhd">'+rows[i]+'</div>'+l.map(tile).join('')}).join('')+(window.StudyEffort?StudyEffort.row(id):'');
   $('bg').onclick=function(e){var t=e.target.closest('.own');if(!t)return;var s=S.all.filter(function(x){return x.id===t.getAttribute('data-id')})[0]||(window.StudyEffort&&StudyEffort.find(t.getAttribute('data-id')));if(!s)return;CUR=s.id;
-    $('qt').textContent=(s.eff?'💝 פרס מאמץ מאבא ואמא':s.trip?'🚀 סקווישי מהמסע':s.bug?'🐞 חרק חלל':s.ult?'💎 אולטרה סקווישי':s.sup?'⭐ סופר סקווישי':'סקווישי')+' של '+k.n;$('bigimg').innerHTML='<svg viewBox="0 0 100 100">'+s.svg+'</svg>';$('qn').textContent=s.n;$('qd').textContent=s.d;
+    $('qt').textContent=(s.eff?'💝 פרס מאמץ מאבא ואמא':s.trip?(/^dm_/.test(s.id)?'🎤 סקווישי מסיבוב ההופעות':'🚀 סקווישי מהמסע'):s.bug?'🐞 חרק חלל':s.ult?'💎 אולטרה סקווישי':s.sup?'⭐ סופר סקווישי':'סקווישי')+' של '+k.n;$('bigimg').innerHTML='<svg viewBox="0 0 100 100">'+s.svg+'</svg>';$('qn').textContent=s.n;$('qd').textContent=s.d;
     var im=$('bigimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('qov').classList.add('on');if(window.SqSound)SqSound.play(s.id,false)};
   $('bov').classList.add('on')}
 $('lst').onclick=function(e){var b=e.target.closest('.row');if(b)board(b.getAttribute('data-k'))};

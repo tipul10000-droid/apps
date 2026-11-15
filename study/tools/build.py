@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # בונה קבצים שנגזרים מקבצים אחרים ב-study (9.11.2026). מריצים אחרי כל שינוי במקור:  python3 study/tools/build.py
 # 1. levi/phonics/index.html  ← lia/phonics/index.html (אותו שיעור אחד לאחד: מפתחות levi_ph, לשון זכר, הסקווישים של לביא, השמע מהתיקייה של ליה)
-# 2. dani/squishies.js        ← הסקווישים שבתוך dani/spelling/index.html (ללוח המשפחתי; ההכתבה עצמה לא משתנה)
+# 2. dani/squishies.js        ← הסקווישים שבתוך dani/spelling/index.html + dani/math6/squishies.part.js (הלוח האחד של דני: הכתבה, חיזוק מתמטיקה, לוח משפחתי)
 import os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def rd(p): return open(os.path.join(ROOT, p), encoding='utf-8').read()
@@ -62,7 +62,9 @@ d = rd('dani/spelling/index.html')
 a = d.index('function face(cx,cy,s)', d.index('// ---------- סקווישים ----------'))
 b = d.index('const ALLSQ=', a)
 body = d[a:b].rstrip()
-js = ('// נוצר אוטומטית מ-dani/spelling/index.html ע"י study/tools/build.py (ללוח ההתקדמות המשפחתי). לא לערוך כאן.\n'
-      '(function(){\n' + body + '\n'
-      'window.DaniSquishies={list:SQS,list2:SQS2,list3:SQS3,aura,uaura,all:SQS.concat(SQS2,SQS3),rows:["💜 הלהקה","⭐ סופר סקווישים","💎 אולטרה סקווישים"]};\n})();\n')
+# + השורה הרביעית "🎤 סיבוב הופעות" של חיזוק המתמטיקה (dani/math6/squishies.part.js, 15.11.2026), ו-owned/sync של הלוח האחד
+part = rd('dani/math6/squishies.part.js').rstrip()
+js = ('// נוצר אוטומטית מ-dani/spelling/index.html + dani/math6/squishies.part.js ע"י study/tools/build.py (הלוח האחד של דני). לא לערוך כאן.\n'
+      '(function(){\n' + body + '\n' + part + '\n'
+      'window.DaniSquishies={list:SQS,list2:SQS2,list3:SQS3,list4:SQS4,aura,uaura,orb:stage,owned,sync,keys:KEYS,all:SQS.concat(SQS2,SQS3,SQS4),rows:["💜 הלהקה","⭐ סופר סקווישים","💎 אולטרה סקווישים","🎤 סיבוב הופעות: חיזוק מתמטיקה"]};\n})();\n')
 wr('dani/squishies.js', js)

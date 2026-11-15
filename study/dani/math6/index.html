@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=6"></script>
+<script src="../../content.js?v=10"></script><script>StudyContent.guard('dani/math6')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · חיזוק מתמטיקה</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css?v=7">
+<style>
+:root{--pu:#2f5d9e;--pu2:#3b82f6;--pk:#f97316;--pl:#e8f0fb;--ok:#16a34a;--no:#e11d48;--sm:#1e3a8a;--kh:50px}
+main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;flex-direction:column;justify-content:safe center}
+.nav{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex:none}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 9px;cursor:pointer;white-space:nowrap}
+.ib.gift{background:#eef2ff;border-color:#a5b4fc;color:#3730a3;font-weight:700;font-size:13px;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;width:38px;text-align:center;direction:ltr;background:#3b82f6;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
+@keyframes gw{0%,88%,100%{transform:none}91%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}97%{transform:rotate(-3deg)}}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh)}
+.prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:24px}
+.prog .row b{color:var(--fg);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chips{display:flex;gap:5px;flex:none}.chip{font-size:13px;background:var(--pl);color:var(--sm);border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
+.pls{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px}
+.pls span{height:24px;border-radius:8px;background:#f1f3f7;color:var(--mut);font:600 12px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;position:relative}
+.pls span i{position:absolute;inset:0 0 0 auto;background:rgba(59,130,246,.18);width:0}.pls span em{position:relative;font-style:normal}
+.pls span{font-size:15px}.pls span.cur{background:#dbeafe;color:var(--sm);outline:2px solid #93c5fd}.pls span.ok{background:#dcfce7;color:#166534}.pls span.lk{opacity:.55}
+.card{flex:0 1 520px;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:8px 12px 10px;box-shadow:var(--sh);text-align:center;margin-top:8px}
+.top2{display:flex;align-items:center;justify-content:space-between;height:30px;flex:none}
+.mode{font-size:13px;font-weight:700;color:var(--sm);background:var(--pl);border-radius:20px;padding:2px 10px;white-space:nowrap}.mode.new{color:#9a3412;background:#fff1e6}.mode.fast{color:#6d28d9;background:#f3e8ff}
+.bugp{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--mut);direction:ltr}
+.bugp .bx{position:relative;width:30px;height:30px}.bugp svg{position:absolute;inset:0;width:30px;height:30px}.bugp .gr{filter:brightness(0) invert(.7);opacity:.7}
+.mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:4px;overflow:hidden}
+.ask{font-size:16px;color:var(--fg);font-weight:600;line-height:1.35;max-width:400px}
+.ex{font:800 48px/1.1 system-ui,Arial,sans-serif;direction:ltr;unicode-bidi:isolate;color:var(--fg);white-space:nowrap}.ex .q{color:var(--pk)}
+.ex.sm{font-size:36px}
+.gd{display:flex;flex-direction:column;gap:3px;width:100%;max-width:330px}.gl{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#eff6ff;border-radius:10px;padding:3px 10px}.gl small{font-size:13px;color:#1e3a8a;text-align:right}.gl b{font:800 21px/1.25 system-ui,Arial,sans-serif;direction:ltr;unicode-bidi:isolate;white-space:nowrap}.gl .q{color:var(--pk)}
+.tip{font-size:14px;color:#1e3a8a;background:#eff6ff;border-radius:12px;padding:3px 10px;max-width:400px}
+.arr{display:inline-grid;gap:2px;direction:ltr;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:5px}.arr span{font-size:20px;line-height:1}
+.slot{height:50px;min-width:130px;border-bottom:3px solid #93c5fd;font:800 38px/50px system-ui,Arial,sans-serif;direction:ltr;flex:none;margin:0 auto}
+.slot.ok{color:var(--ok);border-color:var(--ok)}.slot.no{color:var(--no);border-color:var(--no)}.slot.hid{visibility:hidden}
+.fb{height:44px;flex:none;display:flex;flex-direction:column;justify-content:center;font-size:14px;line-height:1.3;margin:3px 0}
+.fb .t{font-size:17px;font-weight:800}.fb .ok{color:var(--ok)}.fb .no{color:var(--no)}.fb .s{direction:rtl}
+.zone{flex:none;height:calc(var(--kh)*3 + 14px);position:relative}
+.kp,.op{position:absolute;inset:0;display:grid;gap:7px}
+.kp{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);direction:ltr}
+.op{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}.op.o1{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:6px}
+.k,.opt{font:700 26px system-ui,Arial,sans-serif;color:inherit;background:#fff;border:2px solid var(--bd);border-radius:14px;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.k:active{background:#eff6ff}
+.opt{direction:ltr;font-size:24px;line-height:1.15}.op.o1 .opt,.opt.he{direction:rtl;font:600 15px system-ui,Arial,sans-serif;padding:0 8px}.op.o1 .opt{text-align:right}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}.opt.no{background:var(--no);border-color:var(--no);color:#fff}.opt:disabled{cursor:default}
+.r4{flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px;height:var(--kh);direction:ltr}
+.r4 .k{height:var(--kh)}.r4 .hid{visibility:hidden}
+.act{font:inherit;font-weight:800;font-size:18px;border:0;border-radius:14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pu),var(--pu2));box-shadow:0 3px 0 #1e3a8a;direction:rtl}
+.act:disabled{opacity:.4}
+.btn{flex:1;font:inherit;font-weight:700;padding:12px;border:0;border-radius:14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pu),var(--pu2));box-shadow:0 3px 0 #1e3a8a;height:50px}
+.btn.soft{color:var(--mut);background:#f1f3f7;box-shadow:none;font-weight:600}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 14px)}
+.ov.on{display:flex}
+.pn{background:var(--card);border-radius:20px;padding:16px 16px;width:100%;max-width:500px;max-height:100%;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.pn h2{margin:0 0 8px;font-size:20px}.pn p{margin:7px 0;line-height:1.5;font-size:16px}
+.pn .btn{width:100%;margin-top:10px}
+/* עמודי ההסבר: גובה קבוע, כפתורים קבועים למטה */
+#les .pn{height:min(520px,100%);display:flex;flex-direction:column;overflow:hidden}
+.lh{display:flex;justify-content:space-between;align-items:center;flex:none}.lh small{color:var(--mut);font-size:13px;direction:ltr}
+.lb{flex:1;min-height:0;overflow:auto;padding:4px 2px}.lb p{font-size:17px;line-height:1.55;margin:8px 0}
+.lb .eq{direction:ltr;unicode-bidi:isolate;font:800 24px/1.3 system-ui,Arial,sans-serif;text-align:center;margin:8px 0;color:var(--fg)}.lb .eq b{color:var(--pk)}
+.lb .vis{text-align:center;font-size:24px;line-height:1.25;margin:6px 0}
+.lb .box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:8px 12px;margin:8px 0}
+.dots{display:flex;gap:5px;justify-content:center;margin:6px 0;flex:none}.dots i{width:8px;height:8px;border-radius:50%;background:#d1d5db}.dots i.on{background:var(--pu2)}
+.lnav{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:none}.lnav .btn{margin:0;width:auto}.lnav .hid{visibility:hidden}
+#sqov .pn,#mdov .pn{text-align:center;overflow:hidden}
+#sqimg{width:150px;height:150px;margin:6px auto;display:block;animation:sqin .9s cubic-bezier(.2,1.6,.4,1)}#sqimg.squish{animation:squish .5s}
+@keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
+@keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
+.sqg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px;max-width:360px;margin-inline:auto}
+.sqg div{background:#f7f7ff;border:1px solid #e4e6fb;border-radius:10px;padding:2px}
+.sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}
+.sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
+.sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
+.sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
+.sqg .bug{background:linear-gradient(160deg,#ecfdf5,#e0f2fe,#f5f3ff);border-color:#34d399}.sqg .lock.bug{background:#f0faf6;border-color:#a7f3d0}
+.sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
+.sqg.big{max-width:330px}
+.pb{height:8px;background:#e0e7f5;border-radius:8px;overflow:hidden}.pb i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--pu2),var(--pk));transition:width .5s}
+.conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:50;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:var(--pu);z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap;direction:rtl;unicode-bidi:isolate;background:#fff;border:2px solid #bfdbfe;border-radius:999px;padding:4px 16px;box-shadow:0 6px 18px rgba(47,93,158,.18)}
+@keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
+.tbar{height:5px;background:#f3e8ff;border-radius:4px;overflow:hidden;width:160px;margin:0 auto}.tbar i{display:block;height:100%;background:#8b5cf6;width:100%}
+@media(max-height:700px){:root{--kh:42px}.ex.gh{font-size:28px}.gl b{font-size:18px;line-height:1.2}.gl{padding:1px 8px}.gd{gap:2px}.ex{font-size:38px}.ex.sm{font-size:26px}.slot{height:42px;font-size:30px;line-height:42px}.ask{font-size:15px;line-height:1.25}.arr span{font-size:15px}.arr{padding:3px}.fb{height:40px;font-size:13px}.fb .t{font-size:16px}.tip{font-size:13px;padding:2px 8px}.top2{height:26px}.prog{padding:4px 10px 6px}}
+@media(max-height:640px){:root{--kh:38px}.gl b{font-size:17px}.gl{padding:1px 8px}.gl small{font-size:12px}.pls span{height:20px;font-size:13px}.ex{font-size:32px}.mid{gap:2px}.k,.opt{font-size:22px}}
+@media(prefers-reduced-motion:reduce){#sqimg,.ib.gift{animation:none!important}}
+.sqg .trip{background:linear-gradient(160deg,#eef2ff,#fdf2f8,#fefce8);border-color:#a5b4fc}.sqg .lock.trip{background:#f5f7ff;border-color:#c7d2fe}
+/* חיזוק מתמטיקה: תוספות */
+.fb{height:52px}
+.colt{border-collapse:collapse;direction:ltr;margin:0 auto;font:800 30px/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;flex:none}
+.colt td{width:27px;height:34px;text-align:center;padding:0}
+.colt td.sm{font-size:15px;height:17px;color:#ea580c;font-family:system-ui,Arial,sans-serif;font-weight:800}
+.colt tr.ln td{border-bottom:3px solid #0f172a}
+.colt td.rs{color:#2563eb}.colt.ok td.rs{color:var(--ok)}.colt.no td.rs{color:var(--no)}
+.colt td.ac{background:#fff7ed}
+.colt s{color:#94a3b8;text-decoration-thickness:2px}
+.say{font-size:15px;color:var(--sm);font-weight:700;line-height:1.3}.say .sx{display:inline-block;direction:ltr;unicode-bidi:isolate;font:800 22px/1.1 system-ui,Arial,sans-serif;color:var(--fg);margin-inline-start:4px}.fb .pre{margin:0 auto}
+.card{flex-basis:560px}
+.pre{font-size:13px;color:#9a3412;background:#fff7ed;border-radius:10px;padding:2px 8px;line-height:1.35;max-width:400px}
+.fig{display:block;width:100%;max-width:300px;height:auto;max-height:150px;margin:0 auto;flex:0 1 auto;min-height:0}
+.fig.sq{max-width:210px;width:auto;height:100%;max-height:140px}
+.lay{display:inline-block;font:700 19px/1.15 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;white-space:pre}
+.lay u{text-decoration:none;display:block;border-bottom:2px solid currentColor}
+.op.o3{grid-template-columns:repeat(3,1fr);grid-template-rows:1fr}
+.op.sym .opt{font:800 40px system-ui,Arial,sans-serif}
+.op.o3.he .opt{font:600 16px system-ui,Arial,sans-serif;direction:rtl;padding:0 4px}
+.cbox{display:inline-block;min-width:44px;height:44px;line-height:42px;border:2px solid #94a3b8;border-radius:8px;color:var(--pk);vertical-align:middle;margin:0 6px}
+.lb .lay{font-size:22px}.lb .two{display:flex;justify-content:space-around;gap:10px;align-items:flex-end}.lb .two>div{text-align:center;font-size:14px}
+.lb table.colt{font-size:26px}.lb table.colt td{height:30px}
+.win{color:#9a3412}
+@media(max-height:700px){.say{white-space:nowrap}.say .sx{font-size:18px}.colt{font-size:23px}.colt td{height:25px;width:23px}.colt td.sm{height:14px;font-size:13px}.fig{max-height:118px}.say{font-size:14px}.pre{font-size:12px}.cbox{min-width:36px;height:36px;line-height:34px}.fb{height:48px}}
+@media(max-height:640px){.colt{font-size:21px}.colt td{height:23px}.colt td.sm{height:12px;font-size:12px}.fig{max-height:100px}.op.sym .opt{font-size:32px}}
+/* דני: שברים, צעד אחרי צעד, במה */
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.62em;line-height:1.05;margin:0 .1em}.fr i{font-style:normal;padding:0 .15em}.fr i:first-child{border-bottom:.09em solid currentColor}
+.mx{display:inline-flex;align-items:center;direction:ltr;unicode-bidi:isolate;vertical-align:middle}.wh{margin-right:.06em}
+.ask .fr,.lb p .fr,.box .fr,.opt.he .fr,.op.o1 .fr,.gl small .fr,.pre .fr,.fb .fr{font-size:.82em}.opt .fr{font-size:.7em}.sx .fr,.gl b .fr{font-size:.72em}
+.say{min-height:26px}.gd{max-width:340px}
+.sqg .trip{background:linear-gradient(160deg,#fdf2f8,#f5f3ff,#ecfeff);border-color:#f0abfc}.sqg .lock.trip{background:#fdf7fb;border-color:#f5d0fe}
+.lb .fig{margin:6px auto}
+.op.o4{grid-template-columns:repeat(4,1fr);grid-template-rows:1fr}
+#why .pn{text-align:right}#why h2{margin:0 0 8px;text-align:center}.wy{font-size:17px;line-height:1.5;margin:0 0 10px}.wa{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:8px 10px;font-size:17px;margin:0 0 10px;text-align:center}.wa b{font-size:22px}.weq{direction:ltr;unicode-bidi:isolate;text-align:center;background:#f1f5f9;border-radius:12px;padding:10px 8px;font:700 19px/1.5 system-ui,Arial,sans-serif;margin:0 0 12px}
+#why .weq.he{direction:rtl;font-size:17px}#why .btn{width:100%}
+@media(max-height:700px){.gl b{font-size:17px}}
+</style></head><body><main>
+<div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="lsb" type="button" aria-label="ההסבר">📘</button><button class="ib gift" id="sqb" type="button">🎤 סקווישים <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
+<div class="prog">
+  <div class="row"><b id="mt"></b><span class="chips"><span class="chip" id="pts">⭐ 0</span><span class="chip" id="stc">🔥 0</span></span></div>
+  <div class="pls" id="pls"></div>
+</div>
+<div class="card">
+  <div class="top2"><span class="mode" id="mode"></span><span class="bugp" id="bugp"></span></div>
+  <div class="mid" id="mid"></div>
+  <div class="slot" id="slot"></div>
+  <div class="fb" id="fb"></div>
+  <div class="zone"><div class="kp" id="kp"></div><div class="op" id="op" style="display:none"></div></div>
+  <div class="r4"><button class="k" id="kdel" type="button" aria-label="מחיקה">⌫</button><button class="k" id="k0" type="button">0</button><button class="act" id="act" type="button" disabled>בדיקה ✓</button></div>
+</div>
+
+<div class="ov" id="intro"><div class="pn" style="text-align:center">
+<h2>🎤 דני, יוצאות לסיבוב הופעות!</h2>
+<p>במבחן המיפוי ראינו שאת יודעת <b>המון</b>: ערך המקום, חיבור, בעיות מילוליות (הספרים!), ממוצע ודיאגרמה, מסלולים, צורות, ונימוק מעולה למה אין מלבן אחר בשטח 7 ⭐</p>
+<p>המורה כתבה שהיא מעריכה מאוד את המאמץ והרצון שלך להצליח 💜 עכשיו נחזק: שברים ועשרוניים, כפל וחילוק גדולים, יחס ומשקלים, ושטחים.</p>
+<p style="margin-bottom:2px">🎁 <b>6 במות, ובכל במה סקווישי חדש</b> בשורה חדשה בלוח שלך:</p>
+<div class="sqg big" id="isq"></div>
+<button class="btn" id="go" type="button">יאללה, עולות לבמה! 🎤</button>
+</div></div>
+<div class="ov" id="les"><div class="pn">
+<div class="lh"><h2 id="lt" style="margin:0"></h2><small id="lp"></small></div>
+<div class="lb" id="lb"></div>
+<div class="dots" id="ld"></div>
+<div class="lnav"><button class="btn soft" id="lpr" type="button">→ הקודם</button><button class="btn" id="lnx" type="button">הבא ←</button></div>
+</div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>🎤 לוח הסקווישים שלי</h2><p id="sqtx" style="margin:0 0 6px;font-size:15px"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">🎤 סקווישי חדש!</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">ללוח! 🎤</button></div></div>
+<div class="ov" id="why"><div class="pn"><h2>כמעט! בואי נבין 💡</h2><div class="wa" id="wya"></div><p class="wy" id="wyt"></p><div class="weq" id="wye"></div><button class="btn" id="wyok" type="button">הבנתי, ממשיכות ←</button></div></div>
+<div class="ov" id="mdov"><div class="pn"><div style="font-size:46px" id="mde">🏅</div><h2 id="mdt"></h2><p id="mdp"></p><button class="btn" id="mdy" type="button">לבמה הבאה 🎤</button></div></div>
+
+<script src="../squishies.js?v=2"></script>
+<script src="../../sqsound.js?v=13"></script>
+<script src="../../effort.js?v=1"></script>
+<script src="../../track.js?v=9"></script>
+<script src="../../guess.js?v=1"></script>
+<script>
+// חיזוק מתמטיקה לדני, כיתה ו׳ (אורן 15.11.2026), "סיבוב הופעות". אותה שיטה כמו המסע של ליה (lia/math4).
+// נבנה לפי מבחן המיפוי של נובמבר 2026. הטעויות שלה הן הבמות לחיזוק:
+//   שברים שקולים ועשרוניים (4/10 = ?/30, לצבוע 0.3 מריבוע של 100, מה שווה ל-3/4), חיבור וחיסור שברים ומספרים מעורבים (2½ − 1⅕, 2⅛ − ⅜, 4/5 + ? < 1),
+//   ישר המספרים עם רבעים (4½), עשרוני בין 1.5 ל-1.6, שבר משלמים שונים (½ מספר אחד מול ⅓ מספר אחר),
+//   כפל דו-ספרתי (19 × 25) וחוק הפילוג (32 × 15 = 30 × 15 + 2 × 15), חילוק ארוך עם 0 במנה (416 : 4 = 104),
+//   יחס ומשקלים (¼ ק״ג = 250 גרם, 6 לחמניות ← 12 ← 48), ושטחים (שטח 7, משולש שטחו 10, שטח מורכב 26, המצולע הגדול ביותר).
+// החוזקות שלה (שאלות הצלחה ⭐ בכל שלב): ערך המקום, חיבור, בעיית הספרים, ממוצע, מסלולים, צורות, צעדים ומרחק, הנימוק על 7.
+// מבנה: 6 במות, כל במה = שלבים מהקל לקשה (הסבר קצר ← שאלות), ובסוף 🏁 אתגר בלי עזרה. תרגילים ארוכים: בפעם הראשונה "צעד אחרי צעד".
+// אחרי 6 הבמות: 🎯 מיפוי חוזר (24 תשובות נכונות מעורבות, מה שטעתה בו חוזר יותר).
+// מפתחות: dani_m6 (התקדמות), dani_m6_sq (הסקווישים של התוכן; הלוח האחד מציג את כולם), dani_m6_mute.
+// שברים בטקסט: [4/10] = שבר, [2 1/2] = מספר מעורב (fx).
+const $=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const FRX=/\[(?:(\d+) )?([\d?]+)\/([\d?]+)\]/g;
+const fx=s=>String(s).replace(FRX,(m,w,a,b)=>`<span class="mx">${w?`<span class="wh">${w}</span>`:''}<span class="fr"><i>${a}</i><i>${b}</i></span></span>`);
+const pl=s=>String(s).replace(FRX,(m,w,a,b)=>(w?w+' ':'')+a+'/'+b).replace(/<[^>]+>/g,'');
+const E=s=>`<bdi dir="ltr">${fx(s)}</bdi>`; // תרגיל בתוך משפט בעברית
+const fmt=n=>Number(n).toLocaleString('en-US');
+const PE=['🍰','➕','📍','✖️','⚖️','📐'];
+
+// ---------- ציורים ----------
+// ריבוע של 100 משבצות, n צבועות (טור אחרי טור)
+function hund(n){let g='';for(let k=0;k<100;k++){const c=Math.floor(k/10),r=k%10;g+=`<rect x="${2+c*10}" y="${2+r*10}" width="10" height="10" fill="${k<n?'#a78bfa':'#fff'}" stroke="#94a3b8" stroke-width=".6"/>`}
+  return `<svg class="fig sq" viewBox="0 0 104 104" aria-hidden="true">${g}<rect x="2" y="2" width="100" height="100" fill="none" stroke="#0f172a" stroke-width="1.6"/></svg>`}
+// ישר מספרים: מ-lo עד hi בקפיצות st, מספרים רק ב-lab (ברירת מחדל: השלמים), חץ אדום ב-mk
+function nlF(lo,hi,st,mk,lab){const n=Math.round((hi-lo)/st),X=v=>22+(v-lo)/(hi-lo)*256;let t='';
+  for(let i=0;i<=n;i++){const v=lo+i*st,x=X(v).toFixed(1),L=lab?lab.some(q=>Math.abs(q-v)<1e-9):Math.abs(v-Math.round(v))<1e-9;
+    t+=`<path d="M${x} ${L?29:32}v${L?18:12}" stroke="#334155" stroke-width="${L?2.2:1.4}"/>`+(L?`<text x="${x}" y="64" font-size="14" font-weight="800" text-anchor="middle" fill="#0f172a">${Math.round(v*100)/100}</text>`:'')}
+  const m=mk==null?'':`<path d="M${X(mk).toFixed(1)} 28l-6-11h12z" fill="#e11d48"/><text x="${X(mk).toFixed(1)}" y="13" font-size="13" font-weight="800" text-anchor="middle" fill="#e11d48">?</text>`;
+  return `<svg class="fig" viewBox="0 0 300 70" aria-hidden="true"><path d="M10 38H288" stroke="#334155" stroke-width="2"/><path d="M294 38l-9-5v10z" fill="#334155"/>${t}${m}</svg>`}
+// צורות על דף משבצות (משבצת = 1 ס״מ). S = [{p:[[x,y]...], l:'א', lx}]
+function gsv(W,H,S){const c=20,lab=S.some(s=>s.l);let g='';
+  for(let i=0;i<=W;i++)g+=`<path d="M${4+i*c} 4v${H*c}" stroke="#cbd5e1"/>`;for(let j=0;j<=H;j++)g+=`<path d="M4 ${4+j*c}h${W*c}" stroke="#cbd5e1"/>`;
+  const sh=S.map(s=>`<polygon points="${s.p.map(q=>(4+q[0]*c)+','+(4+q[1]*c)).join(' ')}" fill="${s.f||'#c4b5fd'}" fill-opacity=".7" stroke="#1e293b" stroke-width="2.2" stroke-linejoin="round"/>`+(s.l?`<text x="${4+s.lx*c}" y="${4+H*c+18}" font-size="15" font-weight="800" text-anchor="middle" fill="#0f172a">${s.l}</text>`:'')).join('');
+  return `<svg class="fig${lab?'':' sq'}" viewBox="0 0 ${W*c+8} ${H*c+(lab?26:8)}" aria-hidden="true">${g}${sh}</svg>`}
+const RECT=(x,y,w,h)=>[[x,y],[x+w,y],[x+w,y+h],[x,y+h]];
+// ריבוע S×S, צבוע: בין הקו מ-a בצלע העליונה ל-b מלמטה בצלע השמאלית, לבין האלכסון (כמו שאלה 21)
+function comp(S,a,b){const k=150/S,x0=44,y0=22,P=(x,y)=>(x0+x*k).toFixed(1)+','+(y0+y*k).toFixed(1);
+  return `<svg class="fig sq" viewBox="0 0 230 196" aria-hidden="true"><rect x="${x0}" y="${y0}" width="150" height="150" fill="#fff" stroke="#0f172a" stroke-width="2"/><polygon points="${P(a,0)} ${P(S,0)} ${P(0,S)} ${P(0,S-b)}" fill="#64748b" stroke="#0f172a" stroke-width="1.5"/>
+  <path d="M${x0} ${y0-8}h${a*k}M${x0} ${y0-12}v8M${x0+a*k} ${y0-12}v8" stroke="#2563eb" stroke-width="1.6"/><text x="${x0+a*k/2}" y="${y0-12}" font-size="14" font-weight="800" text-anchor="middle" fill="#2563eb">${a}</text>
+  <path d="M${x0-8} ${y0+(S-b)*k}v${b*k}M${x0-12} ${y0+(S-b)*k}h8M${x0-12} ${y0+150}h8" stroke="#2563eb" stroke-width="1.6"/><text x="${x0-16}" y="${y0+(S-b/2)*k+5}" font-size="14" font-weight="800" text-anchor="end" fill="#2563eb">${b}</text>
+  <path d="M${x0+158} ${y0}v150M${x0+154} ${y0}h8M${x0+154} ${y0+150}h8" stroke="#2563eb" stroke-width="1.6"/><text x="${x0+166}" y="${y0+80}" font-size="14" font-weight="800" fill="#2563eb">${S}</text></svg>`}
+const Q2=gsv(15,4,[{p:[[1,1],[1,4],[3,4]],l:'ד',lx:2},{p:RECT(5,2,2,2),l:'ג',lx:6},{p:[[9,4],[10,1],[11,4]],l:'ב',lx:10},{p:RECT(13,1,1,3),l:'א',lx:13.5}]);
+const Q2B=gsv(15,4,[{p:[[1,1],[1,4],[4,4]],l:'ד',lx:2.5},{p:RECT(5,2,2,2),l:'ג',lx:6},{p:[[8,4],[10,1],[12,4]],l:'ב',lx:10},{p:RECT(13,0,1,4),l:'א',lx:13.5}]);
+
+// ---------- סוגי שאלות ----------
+// N = תשובה במספר (מקלדת). ok = בדיקה לשאלה עם כמה תשובות נכונות; show = דוגמה לתשובה. fig = ציור.
+// C = אמריקאית, opts[0] הנכונה (התשובות השגויות באותו אורך ופירוט). CM = < > =.
+// STP = תרגיל ארוך: בפעם הראשונה צעד אחרי צעד (steps: [מה עושים, תרגיל עם ?, תשובה]), באתגר ובמיפוי החוזר רק התשובה הסופית (ex/ans).
+// st = ההסבר שמופיע אחרי טעות [כותרת, תרגיל]. w = שאלת הצלחה ⭐ (משהו שהיא יודעת מהמבחן). need = כמה פעמים נכון (ברירת מחדל 1).
+const N=(id,q,ex,ans,st,o)=>Object.assign({id,k:'n',q,ex,ans,st},o||{});
+const C=(id,q,opts,st,o)=>Object.assign({id,k:'c',q,opts,st},o||{});
+const CM=(id,l,r,ans,st,o)=>Object.assign({id,k:'cmp',l,r,ans,st},o||{});
+const STP=(id,q,ex,ans,steps,res,st,o)=>Object.assign({id,k:'stp',q,ex,ans,steps,res,st},o||{});
+
+// ---------- 6 הבמות ----------
+const M=[
+ {n:'במת השברים השקולים',s:'שבר שקול, עשרוני ומאיות',
+  L:[['שבר שקול = אותה כמות','<p>🍕 חותכים פיצה ל-10 משולשים ואוכלים 4 מהם. אכלנו <b>[4/10]</b> מהפיצה.</p><p>עכשיו חותכים פיצה זהה רק ל-5 משולשים גדולים, ואוכלים 2. אכלנו <b>[2/5]</b> מהפיצה.</p><p>בשתי הפעמים אכלנו בדיוק <b>אותה כמות</b> של פיצה! לכן השברים שווים. קוראים להם <b>שברים שקולים</b>:</p><div class="eq">[4/10] = [2/5] = [12/30]</div><div class="box">כדי לקבל שבר שקול, כופלים (או מחלקים) את המונה (למעלה) <b>וגם</b> את המכנה (למטה) <b>באותו מספר</b>.</div>'],
+     ['איך מוצאים את המספר החסר?','<div class="eq">[4/10] = [<b>?</b>/30]</div><p>שואלות: מה קרה למכנה? מ-10 הוא הפך ל-30, כלומר כפלו אותו <b>פי 3</b>.</p><p>אז גם את המונה כופלים פי 3: <span dir="ltr">4 × 3 = <b>12</b></span>.</p><div class="eq">[4/10] = [2/<b>?</b>]</div><p>כאן המונה השתנה: מ-4 הוא הפך ל-2, כלומר חילקו אותו <b>ב-2</b>.</p><p>אז גם את המכנה מחלקים ב-2: <span dir="ltr">10 : 2 = <b>5</b></span>.</p><div class="box">מה שעושים למעלה, עושים גם למטה. אסור להעתיק מספר מהשבר השני (במבחן נכתב 30 במקום 5).</div>'],
+     ['עשרוני = עשיריות ומאיות','<p>המספר 0.3 קוראים "שלוש עשיריות". אפשר לכתוב אותו גם כשבר:</p><div class="eq">0.3 = [3/10] = [30/100]</div><p>בריבוע שמחולק ל-100 משבצות, 0.3 מהריבוע זה <b>30 משבצות</b>, כלומר 3 טורים שלמים של 10:</p><div class="vis" id="h30"></div><div class="box">במבחן כתבת נכון ש-0.3 = [30/100] ⭐ רק צבעת 16 משבצות במקום 30. סופרים בדיוק 30.</div>'],
+     ['מי שווה ל-[3/4]?','<p>כל השברים האלה שווים ל-[3/4], כי כופלים למעלה ולמטה באותו מספר:</p><div class="eq">[3/4] = [6/8] = [9/12] = 0.75</div><p>❌ <b>3.4</b> הוא <b>לא</b> [3/4]! זה "שלוש שלם וארבע עשיריות", מספר גדול מ-3. ו-[3/4] קטן מ-1.</p><p>❌ <b>[35/45]</b> גם לא: אם מחלקים למעלה ולמטה ב-5 מקבלים [7/9], ולא [3/4].</p><div class="box">איך בודקים? מצמצמים (מחלקים) או מרחיבים (כופלים) את השבר, ורואים אם מגיעים בדיוק ל-[3/4].</div>']],
+  P:[{les:[0,1],it:[
+      N('a1','במספר 4,721 מחליפים את הספרה 2 בספרה 5, ומקבלים מספר חדש. בכמה המספר החדש גדול מ-4,721?','',30,['הספרה 2 נמצאת במקום העשרות, ולכן היא שווה 20. אחרי ההחלפה במקום שלה יש 50. ההפרש הוא 30.','4,751 − 4,721 = 30'],{w:1}),
+      N('a2','השלימי את המונה החסר, כך ששני השברים יהיו שווים.','[1/2] = [?/4]',2,['המכנה הפך מ-2 ל-4, כלומר כפלו אותו פי 2. לכן גם את המונה כופלים פי 2.','1 × 2 = 2, ולכן [1/2] = [2/4]']),
+      N('a3','השלימי את המכנה החסר, כך ששני השברים יהיו שווים.','[4/10] = [2/?]',5,['המונה הפך מ-4 ל-2, כלומר חילקו אותו ב-2. לכן גם את המכנה מחלקים ב-2.','10 : 2 = 5, ולכן [4/10] = [2/5]'],{need:2}),
+      N('a4','השלימי את המונה החסר, כך ששני השברים יהיו שווים.','[4/10] = [?/30]',12,['המכנה הפך מ-10 ל-30, כלומר כפלו אותו פי 3. לכן גם את המונה כופלים פי 3.','4 × 3 = 12, ולכן [4/10] = [12/30]'],{need:2}),
+      N('a5','השלימי את המונה החסר, כך ששני השברים יהיו שווים.','[3/5] = [?/20]',12,['המכנה הפך מ-5 ל-20, כלומר כפלו אותו פי 4. לכן גם את המונה כופלים פי 4.','3 × 4 = 12, ולכן [3/5] = [12/20]']),
+      C('a6','איזה מהשברים שווה בדיוק ל-[2/3]?',['[8/12]','[5/6]','[4/9]','[3/4]'],['שבר שווה מקבלים כשכופלים את המונה ואת המכנה באותו מספר. כאן כפלו את שניהם פי 4.','[2/3] = (2 × 4) / (3 × 4) = [8/12]'])]},
+     {les:[2],it:[
+      N('a7','חשבי את התרגיל. כמה יוצא?','2,410 + 500 + 90 = ?',3000,['אפשר לחבר קודם 500 + 90 = 590, ואז להוסיף ל-2,410.','2,410 + 590 = 3,000'],{w:1}),
+      C('a8','בריבוע יש 100 משבצות. איזה חלק מהריבוע צבוע?',['0.3 = [30/100]','0.03 = [3/100]','3.0 = [30/10]','0.13 = [13/100]'],['סופרים את המשבצות הצבועות: 3 טורים של 10 = 30 משבצות מתוך 100.','[30/100] = 0.3'],{fig:hund(30)}),
+      N('a9','בריבוע יש 100 משבצות. כמה משבצות צריך לצבוע כדי שיהיה צבוע <b>0.3</b> מהריבוע?','',30,['0.3 זה שלוש עשיריות, כמו [30/100]. כלומר 30 משבצות מתוך 100, שזה 3 טורים שלמים.','0.3 = [30/100] ← 30 משבצות'],{fig:hund(0),need:2}),
+      N('a10','בריבוע יש 100 משבצות. כמה משבצות צריך לצבוע כדי שיהיה צבוע <b>0.45</b> מהריבוע?','',45,['0.45 זה ארבעים וחמש מאיות, כלומר [45/100]: 45 משבצות מתוך 100.','0.45 = [45/100] ← 45 משבצות']),
+      N('a11','השלימי את המונה החסר, כך ששני השברים יהיו שווים.','[3/10] = [?/100]',30,['המכנה הפך מ-10 ל-100, כלומר כפלו אותו פי 10. לכן גם את המונה כופלים פי 10.','3 × 10 = 30, ולכן [3/10] = [30/100]']),
+      C('a12',`לאיזה שבר שווה המספר העשרוני ${E('0.7')}?`,['[70/100]','[7/100]','[70/10]','[17/100]'],['0.7 זה שבע עשיריות, כלומר [7/10]. אם כופלים למעלה ולמטה פי 10 מקבלים [70/100].','0.7 = [7/10] = [70/100]'])]},
+     {les:[3],it:[
+      N('a13','בבניין יש 4 דירות. בדירות גרים 2, 4, 3 ו-3 ילדים. מה הממוצע של מספר הילדים בדירה?','',3,['ממוצע: מחברים את כל המספרים, ומחלקים בכמה מספרים יש.','2 + 4 + 3 + 3 = 12, ו-12 : 4 = 3'],{w:1}),
+      C('a14','איזה מספר עשרוני שווה בדיוק ל-[3/4]?',['0.75','3.4','0.34','7.5'],['[3/4] שווה ל-[75/100] (כופלים פי 25), ו-[75/100] כותבים כעשרוני 0.75.','[3/4] = [75/100] = 0.75']),
+      C('a15','איזה מהשברים שווה בדיוק ל-[3/4]?',['[9/12]','[35/45]','[4/5]','[13/14]'],['כופלים את המונה ואת המכנה של [3/4] פי 3. ב-[35/45] רק הוסיפו מספרים, וזה לא שומר על השבר.','[3/4] = [9/12]'],{need:2}),
+      C('a16',`מה המשמעות של המספר ${E('3.4')}?`,['שלושה שלמים וארבע עשיריות','שלושה רבעים, כמו [3/4] בדיוק','שלוש עשיריות וארבע מאיות','ארבעה שלמים ושלוש עשיריות'],['הספרה שלפני הנקודה היא השלמים, והספרה הראשונה אחרי הנקודה היא העשיריות.','3.4 = 3 שלמים + 0.4']),
+      C('a17','למה השבר [35/45] <b>לא</b> שווה ל-[3/4]?',['כי [35/45] מצטמצם ל-[7/9] ולא ל-[3/4]','כי במונה ובמכנה יש מספרים גדולים מדי','כי 35 ו-45 אי-זוגיים, ו-3 ו-4 לא','כי 35 − 3 לא שווה בכלל ל-45 − 4'],['כדי לבדוק, מצמצמים: מחלקים את 35 ואת 45 ב-5. יוצא [7/9], ו-[7/9] הוא שבר אחר מ-[3/4].','[35/45] = [7/9]']),
+      CM('a18','[3/4]','0.75','=',['[3/4] = [75/100], ו-[75/100] כותבים 0.75. אלה שני שמות לאותו מספר.','[3/4] = 0.75']),
+      CM('a19','3.4','[3/4]','>',['3.4 זה יותר משלושה שלמים. [3/4] זה פחות משלם אחד.','3.4 > 1 > [3/4]'])]},
+     {boss:1,it:[
+      N('ab1','השלימי את המונה החסר, כך ששני השברים יהיו שווים.','[4/10] = [?/30]',12,['מ-10 ל-30 כופלים פי 3, ולכן גם את 4 כופלים פי 3.','4 × 3 = 12']),
+      N('ab2','השלימי את המכנה החסר, כך ששני השברים יהיו שווים.','[4/10] = [2/?]',5,['מ-4 ל-2 מחלקים ב-2, ולכן גם את 10 מחלקים ב-2.','10 : 2 = 5']),
+      N('ab3','בריבוע יש 100 משבצות. כמה משבצות צריך לצבוע כדי שיהיה צבוע <b>0.6</b> מהריבוע?','',60,['0.6 זה שש עשיריות, כמו [60/100]: 60 משבצות, 6 טורים שלמים.','0.6 = [60/100]'],{fig:hund(0)}),
+      C('ab4','איזה מספר עשרוני שווה בדיוק ל-[2/5]?',['0.4','2.5','0.25','0.52'],['כופלים את [2/5] פי 2 למעלה ולמטה ומקבלים [4/10], כלומר ארבע עשיריות.','[2/5] = [4/10] = 0.4']),
+      N('ab5','השלימי את המונה החסר, כך ששני השברים יהיו שווים.','[6/8] = [?/4]',3,['מ-8 ל-4 מחלקים ב-2, ולכן גם את 6 מחלקים ב-2.','6 : 2 = 3'])]}]},
+
+ {n:'במת חיבור וחיסור שברים',s:'מכנה משותף ומספרים מעורבים',
+  L:[['מחברים רק חלקים באותו גודל','<p>אי אפשר לחבר חצי פיצה ורבע פיצה כמו שהם, כי החתיכות בגודל שונה.</p><p>לכן קודם הופכים את החצי לרבעים: חצי = שני רבעים, כלומר [1/2] = [2/4].</p><div class="eq">[1/2] + [1/4] = [2/4] + [1/4] = <b>[3/4]</b></div><p>כשהמכנה (המספר למטה) זהה, מחברים רק את המונים (המספרים למעלה). המכנה נשאר.</p><div class="box">את המכנים לא מחברים! [1/2] + [1/4] זה <b>לא</b> [2/6].</div>'],
+     ['חיבור של שלושה שברים','<div class="eq">[2/3] + [2/6] + [1/2]</div><p>צריך מכנה שכל המכנים (3, 6, 2) "נכנסים" בו. המכנה המשותף הוא <b>6</b>.</p><p>הופכים כל שבר לשישיות: [2/3] = [4/6], ו-[1/2] = [3/6].</p><div class="eq">[4/6] + [2/6] + [3/6] = [9/6]</div><p>[9/6] זה יותר משלם (שלם = [6/6]). מוציאים שלם אחד, ונשארות 3 שישיות:</p><div class="eq">[9/6] = <b>[1 3/6]</b> = [1 1/2]</div><div class="box">במבחן יצא [5/6], כי השברים לא הפכו למכנה משותף לפני החיבור.</div>'],
+     ['חיסור מספרים מעורבים','<div class="eq">[2 1/2] − [1 1/5]</div><p>מספר מעורב = שלמים ועוד שבר. מחסרים <b>בנפרד</b>: את השלמים מהשלמים, ואת השבר מהשבר.</p><p>השלמים: <span dir="ltr">2 − 1 = <b>1</b></span></p><p>השברים: קודם מכנה משותף 10, ואז [1/2] − [1/5] = [5/10] − [2/10] = <b>[3/10]</b></p><div class="eq">התשובה: <b>[1 3/10]</b></div><div class="box">סימן מינוס = מחסרים גם את השלמים וגם את השברים. במבחן חיברו אותם (יצא [3 2/5]).</div>'],
+     ['כשהשבר קטן מדי: פורטים שלם','<div class="eq">[2 1/8] − [3/8]</div><p>אי אפשר להוריד [3/8] מ-[1/8], כי [1/8] קטן יותר.</p><p>לכן "פורטים" שלם אחד לשמיניות, כמו שפורטים שטר לכסף קטן: שלם אחד = [8/8].</p><p>[2 1/8] הופך ל-1 שלם ועוד [8/8] + [1/8] = <b>[1 9/8]</b>.</p><div class="eq">[1 9/8] − [3/8] = <b>[1 6/8]</b> = [1 3/4]</div>'],
+     ['סכום קטן מ-1','<div class="eq">[4/5] + <b>?</b> &lt; 1</div><p>חסרה עוד חמישית אחת כדי להגיע לשלם: [4/5] + [1/5] = [5/5] = <b>בדיוק 1</b>. זה שווה ל-1, לא קטן ממנו!</p><p>לכן צריך להוסיף משהו <b>קטן</b> מ-[1/5], למשל [1/10] או [1/6].</p><div class="box">ככל שהמכנה גדול יותר, החתיכה קטנה יותר: [1/10] קטן מ-[1/5]. ו-[1/4] גדול מ-[1/5], ולכן הוא גדול מדי.</div>']],
+  P:[{les:[0],it:[
+      N('b1','בחנות ספרים: ספר ראשון עולה 75 ₪, וכל ספר נוסף עולה 50 ₪. כמה שקלים עולים 3 ספרים?','',175,['הספר הראשון 75 ₪, ושני הספרים הנוספים 50 ₪ כל אחד.','75 + 50 + 50 = 175'],{w:1}),
+      N('b2','חברי את השברים. השלימי את המונה החסר.','[1/4] + [2/4] = [?/4]',3,['המכנה זהה (רבעים), אז מחברים רק את המונים. המכנה נשאר 4.','1 + 2 = 3, ולכן [3/4]']),
+      N('b3','חברי את השברים. השלימי את המונה החסר.','[1/2] + [1/4] = [?/4]',3,['קודם הופכים את החצי לרבעים: [1/2] = [2/4]. אחר כך מחברים רבעים.','[2/4] + [1/4] = [3/4]'],{need:2}),
+      C('b4','כמה יוצא [1/3] + [1/6]?',['[3/6]','[2/9]','[2/6]','[1/9]'],['הופכים את השליש לשישיות: [1/3] = [2/6]. ואז מחברים שישיות. לא מחברים את המכנים!','[2/6] + [1/6] = [3/6]']),
+      N('b5','חברי את השברים. השלימי את המונה החסר.','[2/5] + [3/10] = [?/10]',7,['הופכים את החמישיות לעשיריות: [2/5] = [4/10]. ואז מחברים עשיריות.','[4/10] + [3/10] = [7/10]'])]},
+     {les:[1],it:[
+      STP('b6','חברי את שלושת השברים:','[2/3] + [2/6] + [1/2] = [1 ?/6]',3,[['מכנה משותף: 6. כמה שישיות הן [2/3]?','[2/3] = [?/6]',4],['גם את החצי הופכים לשישיות','[1/2] = [?/6]',3],['עכשיו מחברים את המונים: 4 + 2 + 3','4 + 2 + 3 = ?',9],['[9/6] זה שלם ([6/6]) ועוד כמה שישיות?','[9/6] = [1 ?/6]',3]],'[2/3] + [2/6] + [1/2] = [9/6] = [1 3/6] = [1 1/2]',['הופכים את כל השברים לשישיות, מחברים את המונים, ומוציאים שלם.','[4/6] + [2/6] + [3/6] = [9/6] = [1 3/6]']),
+      N('b7','חברי את השברים. כמה שישיות יוצאות בסך הכול?','[1/3] + [1/6] + [1/2] = [?/6]',6,['הופכים הכול לשישיות: [1/3] = [2/6], [1/2] = [3/6]. ואז מחברים.','2 + 1 + 3 = 6, כלומר [6/6] = שלם אחד']),
+      C('b8','כמה יוצא [3/4] + [1/2]?',['[1 1/4]','[4/6]','[1 1/2]','[4/8]'],['הופכים את החצי לרבעים: [1/2] = [2/4]. מחברים ויוצא [5/4], שזה שלם ועוד רבע.','[3/4] + [2/4] = [5/4] = [1 1/4]'],{need:2})]},
+     {les:[2,3],it:[
+      STP('b9','חסרי את המספרים המעורבים:','[2 1/2] − [1 1/5] = [1 ?/10]',3,[['קודם מחסרים את השלמים','2 − 1 = ?',1],['עכשיו השברים. הופכים את החצי לעשיריות','[1/2] = [?/10]',5],['גם את החמישית הופכים לעשיריות','[1/5] = [?/10]',2],['מחסרים את העשיריות','5 − 2 = ?',3]],'[2 1/2] − [1 1/5] = [1 3/10]',['מחסרים בנפרד: שלמים משלמים (2 − 1 = 1), ושבר משבר אחרי מכנה משותף.','[5/10] − [2/10] = [3/10], ולכן [1 3/10]']),
+      STP('b10','חסרי את המספרים:','[2 1/8] − [3/8] = [1 ?/8]',6,[['[1/8] קטן מ-[3/8], לכן פורטים שלם אחד ל-[8/8]','[2 1/8] = [1 ?/8]',9],['עכשיו מחסרים את השמיניות','9 − 3 = ?',6],['ומצמצמים את [6/8] (מחלקים ב-2)','[6/8] = [?/4]',3]],'[2 1/8] − [3/8] = [1 6/8] = [1 3/4]',['פורטים שלם: [2 1/8] = [1 9/8]. עכשיו אפשר להוריד [3/8].','[1 9/8] − [3/8] = [1 6/8]']),
+      N('b11','חסרי את המספרים. השלימי את המונה החסר.','[3 3/4] − [1 1/4] = [2 ?/4]',2,['מחסרים שלמים משלמים: 3 − 1 = 2. ורבעים מרבעים: 3 − 1 = 2.','[3 3/4] − [1 1/4] = [2 2/4]'],{w:1}),
+      C('b12','כמה יוצא [5 1/3] − [2 2/3]?',['[2 2/3]','[3 1/3]','[3 2/3]','[2 1/3]'],['[1/3] קטן מ-[2/3], לכן פורטים שלם: [5 1/3] = [4 4/3]. עכשיו מחסרים.','[4 4/3] − [2 2/3] = [2 2/3]'])]},
+     {les:[4],it:[
+      C('b13','תומר ורונן צעדו יחד ועברו אותו מרחק. מד הצעדים של תומר הראה 6,200 צעדים, ושל רונן 6,000 צעדים. למי יש צעדים גדולים יותר?',['לרונן, כי הוא עשה פחות צעדים לאותו מרחק','לתומר, כי הוא עשה יותר צעדים לאותו מרחק','לשניהם אותו גודל, כי הם הלכו אותו מרחק','אי אפשר לדעת בלי לדעת כמה מטרים הלכו'],['המרחק זהה. מי שצריך פחות צעדים כדי לעבור אותו, עושה צעדים גדולים יותר.','6,000 < 6,200 ← לרונן צעדים גדולים'],{w:1}),
+      C('b14','כמה יוצא [4/5] + [1/5]? והאם התוצאה קטנה מ-1?',['1 בדיוק, לכן הוא לא קטן מ-1','[5/10] בדיוק, לכן הוא קטן מ-1','[5/5] בדיוק, לכן הוא קטן מ-1','[4/25] בדיוק, לכן הוא קטן מ-1'],['ארבע חמישיות ועוד חמישית = חמש חמישיות, שזה שלם אחד בדיוק. "שווה ל-1" זה לא "קטן מ-1".','[4/5] + [1/5] = [5/5] = 1']),
+      N('b15','רשמי מכנה כך שהסכום יהיה <b>קטן</b> מ-1.','[4/5] + [1/?] < 1',null,['צריך להוסיף חתיכה קטנה מ-[1/5]. כמה שהמכנה גדול יותר, החתיכה קטנה יותר. כל מכנה גדול מ-5 מתאים.','למשל [4/5] + [1/10] = [9/10], וזה קטן מ-1'],{ok:v=>+v>5,show:'10',need:2}),
+      CM('b16','[4/5] + [1/4]','1','>',['[1/4] גדול מ-[1/5] (רבע גדול מחמישית). [4/5] + [1/5] כבר שלם, אז עם רבע עוברים את השלם.','[16/20] + [5/20] = [21/20] > 1']),
+      CM('b17','[4/5] + [1/10]','1','<',['[1/10] קטן מ-[1/5], ולכן לא מגיעים לשלם.','[8/10] + [1/10] = [9/10] < 1'])]},
+     {boss:1,it:[
+      N('bb1','חסרי את המספרים. השלימי את המונה החסר.','[2 1/2] − [1 1/5] = [1 ?/10]',3,['שלמים: 2 − 1 = 1. שברים: [5/10] − [2/10] = [3/10].','[1 3/10]']),
+      N('bb2','חסרי את המספרים. השלימי את המונה החסר.','[2 1/8] − [3/8] = [1 ?/8]',6,['פורטים שלם: [2 1/8] = [1 9/8]. ואז 9 − 3 = 6.','[1 6/8]']),
+      N('bb3','חברי את השברים. השלימי את המונה החסר.','[2/3] + [2/6] + [1/2] = [1 ?/2]',1,['בשישיות: [4/6] + [2/6] + [3/6] = [9/6] = [1 3/6], ו-[3/6] זה חצי.','[1 1/2]']),
+      C('bb4','כמה יוצא [1/2] + [1/3]?',['[5/6]','[2/5]','[2/6]','[1/5]'],['מכנה משותף 6: [1/2] = [3/6], [1/3] = [2/6]. ואז מחברים את המונים.','[3/6] + [2/6] = [5/6]']),
+      N('bb5','רשמי מכנה כך שהסכום יהיה <b>קטן</b> מ-1.','[3/4] + [1/?] < 1',null,['לשלם חסר בדיוק [1/4]. צריך חתיכה קטנה מרבע, כלומר מכנה גדול מ-4.','למשל [3/4] + [1/8] = [7/8] < 1'],{ok:v=>+v>4,show:'8'})]}]},
+
+ {n:'במת ישר המספרים',s:'רבעים, עשרוניים ושבר של מה',
+  L:[['כמה שווה כל קפיצה?','<p>בישר המספרים הזה כתובים רק 3 ו-5. בין 3 ל-5 יש <b>8 קפיצות</b> שוות (8 רווחים בין הקווים).</p><p>המרחק מ-3 עד 5 הוא <span dir="ltr">5 − 3 = 2</span> שלמים. מחלקים אותו ל-8 קפיצות:</p><div class="eq">2 : 8 = [1/4]</div><p>כל קפיצה שווה <b>רבע</b>.</p><div class="vis" id="nl35"></div>'],
+     ['מוצאים את [4 1/2]','<p>מתחילים ב-3. ארבע קפיצות של רבע הן שלם אחד, ולכן אחרי 4 קפיצות מגיעים ל-<b>4</b>.</p><p>עוד שתי קפיצות של רבע הן חצי. אחרי 6 קפיצות מגיעים ל-<b>[4 1/2]</b>, בדיוק באמצע בין 4 ל-5.</p><div class="vis" id="nl45"></div><div class="box">במבחן [4 1/2] סומן קרוב ל-4. סופרים קפיצות, כל אחת רבע.</div>'],
+     ['מספר בין 1.5 ל-1.6','<p>כדי למצוא מספר בין 1.5 ל-1.6, מוסיפים לשניהם 0 בסוף. זה לא משנה את המספר:</p><div class="eq">1.5 = 1.50 · 1.6 = 1.60</div><p>עכשיו קל לראות מה ביניהם: 1.51, 1.52, … , <b>1.55</b>, … 1.59</p><div class="box">במבחן נכתב 1.5<sup>1</sup>⁄<sub>5</sub>. זה לא מספר תקין: לא כותבים שבר בתוך מספר עשרוני. כותבים פשוט <b>1.52</b>.</div><p>ובטיוטה בצד כתבת 1.53, 1.54, 1.55. זה בדיוק נכון! ⭐</p>'],
+     ['חצי של מה?','<p>רונית קראה [1/2] מהספר <b>שלה</b>, ויצחק קרא [1/3] מהספר <b>שלו</b>. אלה שני ספרים שונים.</p><p>📕 נגיד שלספר של רונית יש 100 עמודים: חצי ממנו = <b>50</b> עמודים.<br>📗 ולספר של יצחק יש 300 עמודים: שליש ממנו = <b>100</b> עמודים.</p><div class="box">אז כן, יצחק יכול לקרוא יותר! חצי לא תמיד יותר משליש. שבר תמיד שואל: <b>מתוך כמה?</b></div>']],
+  P:[{les:[0,1],it:[
+      N('c1','בבניין יש 5 דירות. בממוצע גרים 3 ילדים בכל דירה. כמה ילדים גרים בבניין כולו?','',15,['אם הממוצע 3 ויש 5 דירות, אז בסך הכול יש 5 פעמים 3.','3 × 5 = 15'],{w:1}),
+      C('c2','כל קפיצה בישר המספרים שווה רבע. איזה מספר מסמן החץ האדום?',['[4 1/2]','[4 1/4]','[3 1/2]','[4 3/4]'],['מ-3 סופרים קפיצות של רבע: 4 קפיצות = 4, ועוד 2 קפיצות (חצי).','4 + [2/4] = [4 1/2]'],{fig:nlF(3,5,.25,4.5,[3,5]),need:2}),
+      C('c3','כל קפיצה בישר המספרים שווה רבע. איזה מספר מסמן החץ האדום?',['[3 3/4]','[3 1/2]','[4 1/4]','[3 1/4]'],['מ-3 סופרים 3 קפיצות של רבע, ועדיין לא מגיעים ל-4.','3 + [3/4] = [3 3/4]'],{fig:nlF(3,5,.25,3.75,[3,5])}),
+      N('c4','בין 3 ל-5 יש 8 קפיצות שוות, כל קפיצה רבע. כמה קפיצות צריך לעשות מ-3 כדי להגיע ל-[4 1/2]?','',6,['מ-3 עד [4 1/2] יש שלם וחצי. בשלם יש 4 רבעים, ובחצי יש 2 רבעים.','4 + 2 = 6 קפיצות'],{fig:nlF(3,5,.25,null,[3,5])}),
+      C('c5','בישר המספרים יש 4 קפיצות שוות בין 0 ל-2. כמה שווה כל קפיצה?',['[1/2]','[1/4]','1','2'],['המרחק מ-0 עד 2 הוא 2 שלמים, ומחלקים אותו ל-4 קפיצות.','2 : 4 = [1/2]'],{fig:nlF(0,2,.5,null,[0,2])})]},
+     {les:[2],it:[
+      CM('c6','4,721','4,751','<',['משווים ספרה ספרה משמאל: האלפים והמאות שווים, ובעשרות 2 קטן מ-5.','4,721 < 4,751'],{w:1}),
+      C('c7','איזה מהמספרים נמצא בין 1.5 ל-1.6?',['1.55','1.65','1.05','15.5'],['מוסיפים 0: 1.5 = 1.50 ו-1.6 = 1.60. מספר שביניהם מתחיל ב-1.5 ויש אחריו עוד ספרה.','1.50 < 1.55 < 1.60'],{need:2}),
+      C('c8','הגובה של גיא 1.5 מ׳ והגובה של אלעד 1.6 מ׳. ערן גבוה מגיא אבל נמוך מאלעד. מה יכול להיות הגובה של ערן?',['1.58 מ׳','1.65 מ׳','1.49 מ׳','1.6 מ׳'],['ערן צריך להיות יותר מ-1.50 ופחות מ-1.60.','1.50 < 1.58 < 1.60']),
+      N('c9','כמה מאיות יש ב-0.5? (כלומר: 0.5 = כמה חלקי 100?)','',50,['0.5 = 0.50, כלומר חמישים מאיות.','0.5 = [50/100]']),
+      CM('c10','1.55','1.6','<',['מוסיפים 0 ל-1.6 ומקבלים 1.60. עכשיו משווים 55 מאיות מול 60 מאיות.','1.55 < 1.60']),
+      CM('c11','1.5','1.50','=',['אפס בסוף של מספר עשרוני לא משנה אותו. חמש עשיריות = חמישים מאיות.','1.5 = 1.50']),
+      CM('c12','1.09','1.1','<',['מוסיפים 0: 1.1 = 1.10. עכשיו משווים 9 מאיות מול 10 מאיות.','1.09 < 1.10'])]},
+     {les:[3],it:[
+      C('c13','רונית קראה [1/2] מהספר שלה, ויצחק קרא [1/3] מהספר שלו (ספר אחר). האם ייתכן שיצחק קרא יותר עמודים מרונית?',['כן, אם הספר של יצחק ארוך הרבה יותר','לא, כי [1/2] תמיד יותר מ-[1/3] של משהו','לא, כי שליש זה תמיד מספר קטן מאוד','כן, אבל רק אם שני הספרים בדיוק זהים'],['כל שבר הוא חלק מספר אחר. אם הספר של יצחק ארוך מספיק, השליש שלו יכול להיות יותר מהחצי של רונית.','[1/3] מ-300 = 100, ו-[1/2] מ-100 = 50'],{need:2}),
+      N('c14','בספר של רונית יש 100 עמודים. היא קראה חצי ממנו. כמה עמודים קראה?','',50,['חצי = מחלקים ל-2.','100 : 2 = 50']),
+      N('c15','בספר של יצחק יש 300 עמודים. הוא קרא שליש ממנו. כמה עמודים קרא?','',100,['שליש = מחלקים ל-3.','300 : 3 = 100']),
+      C('c16','מה יותר: חצי מ-10, או שליש מ-30?',['[1/3] מ-30, כי זה 10, ו-[1/2] מ-10 זה 5','[1/2] מ-10, כי חצי תמיד גדול משליש','שניהם שווים, כי בשניהם יש חלק אחד','אי אפשר להשוות בכלל בין חצאים לשלישים'],['מחשבים כל אחד לחוד, ורק אז משווים.','10 : 2 = 5, ו-30 : 3 = 10'])]},
+     {boss:1,it:[
+      C('cb1','כל קפיצה בישר המספרים שווה רבע. איזה מספר מסמן החץ האדום?',['[1 1/2]','[1 1/4]','[1 3/4]','[2 1/2]'],['מ-0: 4 קפיצות = 1, ועוד 2 קפיצות = חצי.','[1 1/2]'],{fig:nlF(0,2,.25,1.5,[0,2])}),
+      C('cb2','איזה מהמספרים נמצא בין 2.3 ל-2.4?',['2.35','2.45','2.03','23.5'],['2.3 = 2.30 ו-2.4 = 2.40. מה שביניהם: 2.31 עד 2.39.','2.30 < 2.35 < 2.40']),
+      N('cb3','כמה זה רבע מ-40?','',10,['רבע = מחלקים ל-4.','40 : 4 = 10']),
+      C('cb4','כל קפיצה בישר המספרים שווה רבע. איזה מספר מסמן החץ האדום?',['[4 1/4]','[4 1/2]','[3 1/4]','[4 3/4]'],['מ-3: 4 קפיצות = 4, ועוד קפיצה אחת = רבע.','[4 1/4]'],{fig:nlF(3,5,.25,4.25,[3,5])}),
+      CM('cb5','0.7','0.65','>',['מוסיפים 0: 0.7 = 0.70. עכשיו משווים 70 מאיות מול 65 מאיות.','0.70 > 0.65'])]}]},
+
+ {n:'במת הכפל והחילוק',s:'פילוג, כפל דו-ספרתי, חילוק ארוך',
+  L:[['מפרקים כדי לכפול','<p>כפל במספר גדול קשה לעשות בראש. אז <b>מפרקים</b> את המספר לחלקים נוחים:</p><div class="eq">32 = 30 + 2</div><p>כופלים כל חלק ב-15 בנפרד, ומחברים:</p><div class="eq">32 × 15 = 30 × 15 + 2 × 15</div><div class="eq">= 450 + 30 = <b>480</b></div><div class="box">במבחן היה צריך להשלים <span dir="ltr">32 × 15 = ___ × 15 + 2 × 15</span>. בקו כותבים את <b>החלק של המספר (30)</b>, ולא את התוצאה (480).</div>'],
+     ['19 × 25 בדרך חכמה','<p>19 קרוב מאוד ל-20, ו-20 × 25 קל לחשב:</p><div class="eq">20 × 25 = 500</div><p>אבל צריך רק 19 פעמים 25, כלומר פעם אחת פחות. לכן מורידים 25 אחד:</p><div class="eq">19 × 25 = 500 − 25 = <b>475</b></div><div class="box">בדיקה באומדן: התשובה צריכה להיות קרובה ל-500. במבחן יצא 124, שזה הרבה פחות, ולכן ברור שהייתה טעות.</div>'],
+     ['חילוק ארוך: לא שוכחים את ה-0','<div class="eq">416 : 4</div><p>מחלקים ספרה אחרי ספרה, משמאל לימין:</p><p>1️⃣ מאות: <span dir="ltr">4 : 4 = <b>1</b></span></p><p>2️⃣ עשרות: <span dir="ltr">1 : 4</span>? 4 לא נכנס ב-1, אז כותבים <b>0</b> במנה! וה-1 עובר הלאה.</p><p>3️⃣ אחדות: ה-1 שעבר וה-6 יוצרים 16, ו-<span dir="ltr">16 : 4 = <b>4</b></span></p><div class="eq">416 : 4 = <b>104</b></div><div class="box">ה-0 באמצע שומר על מקום העשרות. בלעדיו יוצא 14, שזה ממש לא נכון.</div>'],
+     ['בודקות באומדן ובכפל','<p>לפני שמסיימים, בודקות אם התשובה הגיונית:</p><div class="eq">416 : 4 ≈ 400 : 4 = 100</div><p>יצא 141? זה רחוק מ-100, אז יש טעות.</p><p>ואפשר לבדוק בכפל, כי כפל הוא ההפך של חילוק:</p><div class="eq">104 × 4 = 416 ✅</div><div class="box">ושימי לב: <span dir="ltr">10 : 4</span> זה <b>לא</b> 40. בחילוק התוצאה <b>קטנה</b> מהמספר שמחלקים.</div>']],
+  P:[{les:[0],it:[
+      N('d1','בחנות ספרים: ספר ראשון עולה 75 ₪, וכל ספר נוסף 50 ₪. אביב שילמה 275 ₪. כמה ספרים היא קנתה?','',5,['הספר הראשון 75 ₪. נשארו 275 − 75 = 200 ₪, וזה 4 ספרים של 50 ₪. ועוד הספר הראשון.','1 + 4 = 5 ספרים'],{w:1}),
+      N('d2','השלימי את המספר החסר בתרגיל. (רמז: מפרקים את 32 לשני חלקים)','32 × 15 = ? × 15 + 2 × 15',30,['מפרקים את 32 ל-30 ועוד 2. בקו כותבים את החלק השני של 32, לא את התוצאה.','32 = 30 + 2'],{need:2}),
+      N('d3','חשבי את התרגיל. כמה יוצא?','30 × 15 = ?',450,['כופלים 3 × 15 = 45, ומוסיפים 0 בגלל ה-0 שב-30.','30 × 15 = 450']),
+      N('d4','חשבי את התרגיל. כמה יוצא? (אפשר להיעזר בפירוק 30 + 2)','32 × 15 = ?',480,['מפרקים: 30 × 15 = 450, ו-2 × 15 = 30. מחברים.','450 + 30 = 480']),
+      N('d5','השלימי את המספר החסר בתרגיל. (רמז: מפרקים את 24 לשני חלקים)','24 × 12 = 20 × 12 + ? × 12',4,['מפרקים את 24 ל-20 ועוד 4.','24 = 20 + 4'])]},
+     {les:[1],it:[
+      STP('d6','חשבי בדרך חכמה:','19 × 25 = ?',475,[['19 קרוב ל-20. כמה זה 20 פעמים 25?','20 × 25 = ?',500],['כפלנו 25 אחד יותר מדי. כמה זה 1 × 25?','1 × 25 = ?',25],['עכשיו מורידים את ה-25 העודף','500 − 25 = ?',475]],'19 × 25 = 475',['19 = 20 − 1. מחשבים 20 × 25 ומורידים 25 אחד.','500 − 25 = 475']),
+      C('d7','בלי לחשב בדיוק: לאיזה מספר קרובה התוצאה של 19 × 25?',['500','125','5,000','50'],['אומדן: מעגלים את 19 ל-20, ומחשבים 20 × 25.','20 × 25 = 500']),
+      STP('d8','חשבי בדרך חכמה:','21 × 15 = ?',315,[['21 = 20 + 1. כמה זה 20 פעמים 15?','20 × 15 = ?',300],['עוד 15 אחד (בשביל ה-1)','300 + 15 = ?',315]],'21 × 15 = 315',['21 = 20 + 1. מחשבים 20 × 15 ומוסיפים עוד 15.','300 + 15 = 315']),
+      N('d9','חשבי את התרגיל. כמה יוצא?','18 × 25 = ?',450,['18 = 20 − 2. מחשבים 20 × 25 = 500, ומורידים 2 פעמים 25 = 50.','500 − 50 = 450'],{tip:'💡 18 קרוב ל-20'})]},
+     {les:[2,3],it:[
+      N('d10','חשבי את התרגיל. כמה יוצא?','84 : 4 = ?',21,['מחלקים ספרה ספרה: 8 עשרות : 4 = 2 עשרות, ו-4 אחדות : 4 = 1.','84 : 4 = 21'],{w:1}),
+      STP('d11','חילוק ארוך, ספרה אחרי ספרה:','416 : 4 = ?',104,[['מאות: כמה פעמים 4 נכנס ב-4?','4 : 4 = ?',1],['עשרות: 4 לא נכנס ב-1. מה כותבים במנה?','1 : 4 = ?',0],['ה-1 עובר לאחדות ויחד עם ה-6 יוצא 16','16 : 4 = ?',4]],'416 : 4 = 104',['במקום העשרות 4 לא נכנס ב-1, ולכן כותבים 0 במנה. ה-1 עובר לאחדות: 16 : 4 = 4.','416 : 4 = 104']),
+      STP('d12','חילוק ארוך, ספרה אחרי ספרה:','618 : 3 = ?',206,[['מאות: כמה פעמים 3 נכנס ב-6?','6 : 3 = ?',2],['עשרות: 3 לא נכנס ב-1. מה כותבים במנה?','1 : 3 = ?',0],['ה-1 עובר לאחדות ויחד עם ה-8 יוצא 18','18 : 3 = ?',6]],'618 : 3 = 206',['3 לא נכנס ב-1, ולכן 0 במנה. ה-1 עובר: 18 : 3 = 6.','618 : 3 = 206']),
+      C('d13','בלי לחשב בדיוק: לאיזה מספר קרובה התוצאה של 416 : 4?',['100','10','1,000','140'],['אומדן: 416 קרוב ל-400, ו-400 : 4 קל לחשב.','400 : 4 = 100'],{need:2}),
+      N('d14','חשבי את התרגיל. כמה יוצא?','535 : 5 = ?',107,['מאות: 5 : 5 = 1. עשרות: 5 לא נכנס ב-3, כותבים 0. אחדות: 35 : 5 = 7.','535 : 5 = 107'])]},
+     {boss:1,it:[
+      N('db1','חשבי את התרגיל. כמה יוצא?','19 × 25 = ?',475,['20 × 25 = 500, ומורידים 25 אחד.','500 − 25 = 475']),
+      N('db2','חשבי את התרגיל. כמה יוצא?','416 : 4 = ?',104,['מאות 1, עשרות 0 (4 לא נכנס ב-1), אחדות 16 : 4 = 4.','104']),
+      N('db3','השלימי את המספר החסר בתרגיל.','32 × 15 = 30 × 15 + ? × 15',2,['מפרקים את 32 ל-30 ועוד 2.','32 = 30 + 2']),
+      N('db4','חשבי את התרגיל. כמה יוצא?','612 : 6 = ?',102,['מאות: 6 : 6 = 1. עשרות: 6 לא נכנס ב-1, כותבים 0. אחדות: 12 : 6 = 2.','612 : 6 = 102']),
+      N('db5','חשבי את התרגיל. כמה יוצא?','29 × 20 = ?',580,['29 = 30 − 1. מחשבים 30 × 20 = 600, ומורידים 20 אחד.','600 − 20 = 580'])]}]},
+
+ {n:'במת היחס והמשקל',s:'ק״ג וגרם, פי כמה',
+  L:[['קילוגרם וגרם','<p>קילוגרם (ק״ג) וגרם הם יחידות של משקל. בקילוגרם אחד יש <b>1,000 גרם</b>.</p><div class="eq">1 ק״ג = 1,000 גרם</div><p>חצי ק״ג = מחלקים 1,000 ל-2:</p><div class="eq">[1/2] ק״ג = 500 גרם</div><p>רבע ק״ג = מחלקים 1,000 ל-4:</p><div class="eq">[1/4] ק״ג = <b>250</b> גרם</div><div class="box">ושלושה רבעים = 3 פעמים 250 = 750 גרם.</div>'],
+     ['הטבלה של שחר','<p>שחר צריך [1/4] ק״ג קמח (250 גרם) כדי להכין 6 לחמניות. מסדרים טבלה:</p><div class="box" style="direction:rtl">250 גרם קמח ← 6 לחמניות<br>500 גרם קמח ← 12 לחמניות<br>1,000 גרם קמח ← 24 לחמניות</div><p>כשהקמח גדל <b>פי 2</b>, גם הלחמניות גדלות <b>פי 2</b>. זה נקרא <b>יחס</b>.</p><div class="box">במבחן יצא 8 לחמניות מ-500 גרם. אבל 500 גרם זה פי 2 מ-250, ולכן 6 × 2 = 12.</div>'],
+     ['מהלחמניות אל הקמח','<p>כמה קמח צריך ל-48 לחמניות? קודם בודקות פי כמה 48 גדול מ-6:</p><div class="eq">48 : 6 = <b>8</b></div><p>כלומר צריך פי 8 קמח: 8 פעמים רבע ק״ג.</p><div class="eq">8 × [1/4] ק״ג = <b>2</b> ק״ג</div><div class="box">בודקות שזה הגיוני: במבחן נכתב 1,000 ק״ג. זה טון שלם! הרבה יותר מדי בשביל 48 לחמניות 😄</div>']],
+  P:[{les:[0],it:[
+      C('e1','אלון נוסע לבית הספר בשני מסלולים על רשת של רחובות. מסלול א: פעם אחת למעלה ופעם אחת ימינה. מסלול ב: במדרגות, קצת למעלה, קצת ימינה, וחוזר חלילה. מה נכון?',['שני המסלולים באותו אורך','מסלול המדרגות ארוך יותר','מסלול המדרגות קצר יותר','אי אפשר לדעת איזה ארוך יותר'],['בשני המסלולים כל הקטעים למעלה מצטברים לאותו גובה, וכל הקטעים ימינה לאותו רוחב.','לכן האורך זהה'],{w:1}),
+      N('e2','כמה גרם יש ברבע קילוגרם ([1/4] ק״ג)?','',250,['בקילוגרם יש 1,000 גרם. רבע = מחלקים ל-4.','1,000 : 4 = 250'],{need:2}),
+      N('e3','כמה גרם יש בחצי קילוגרם ([1/2] ק״ג)?','',500,['בקילוגרם יש 1,000 גרם. חצי = מחלקים ל-2.','1,000 : 2 = 500']),
+      N('e4','כמה גרם יש בשלושה רבעים של קילוגרם ([3/4] ק״ג)?','',750,['רבע ק״ג = 250 גרם. שלושה רבעים = 3 פעמים 250.','3 × 250 = 750']),
+      N('e5','כמה גרם יש ב-2 קילוגרם?','',2000,['בכל קילוגרם 1,000 גרם, ויש 2 קילוגרם.','2 × 1,000 = 2,000']),
+      C('e6','1,000 גרם שווים ל…',['1 ק״ג','10 ק״ג','100 ק״ג','[1/10] ק״ג'],['בקילוגרם אחד יש בדיוק 1,000 גרם.','1,000 גרם = 1 ק״ג'])]},
+     {les:[1],it:[
+      N('e7','בחנות ספרים: ספר ראשון עולה 75 ₪, וכל ספר נוסף 50 ₪. כמה שקלים עולים 4 ספרים?','',225,['הספר הראשון 75 ₪, ועוד 3 ספרים של 50 ₪.','75 + 150 = 225'],{w:1}),
+      N('e8','מ-250 גרם קמח שחר מכין 6 לחמניות. כמה לחמניות הוא יכין מ-500 גרם קמח?','',12,['500 גרם זה פי 2 מ-250 גרם. פי 2 קמח = פי 2 לחמניות.','6 × 2 = 12'],{need:2}),
+      N('e9','מ-250 גרם קמח שחר מכין 6 לחמניות. כמה לחמניות הוא יכין מ-1,000 גרם (קילוגרם שלם)?','',24,['1,000 גרם זה פי 4 מ-250 גרם. פי 4 קמח = פי 4 לחמניות.','6 × 4 = 24']),
+      N('e10','מ-250 גרם קמח שחר מכין 6 לחמניות. כמה לחמניות הוא יכין מ-750 גרם קמח?','',18,['750 גרם זה פי 3 מ-250 גרם. פי 3 קמח = פי 3 לחמניות.','6 × 3 = 18']),
+      C('e11','שחר מכפיל את כמות הקמח פי 2. מה קורה למספר הלחמניות?',['גם הן גדלות פי 2','הן נשארות באותו מספר','הן קטנות פי 2 בדיוק','הן גדלות ב-2 בלבד'],['ביחס, כל מה שעושים לקמח קורה גם ללחמניות: פי 2 קמח = פי 2 לחמניות.','6 ← 12'])]},
+     {les:[2],it:[
+      N('e12','כמה פעמים 6 נכנס ב-48?','',8,['זו שאלת חילוק: 48 : 6.','6 × 8 = 48, ולכן 48 : 6 = 8']),
+      N('e13','מ-250 גרם קמח שחר מכין 6 לחמניות. כמה <b>גרם</b> קמח הוא צריך בשביל 48 לחמניות?','',2000,['48 לחמניות זה פי 8 מ-6 לחמניות. לכן צריך פי 8 קמח.','8 × 250 = 2,000 גרם'],{need:2}),
+      C('e14','מ-[1/4] ק״ג קמח שחר מכין 6 לחמניות. כמה <b>קילוגרם</b> קמח הוא צריך בשביל 48 לחמניות?',['2 ק״ג','1,000 ק״ג','8 ק״ג','12 ק״ג'],['48 : 6 = 8, כלומר צריך 8 פעמים רבע ק״ג. 4 רבעים = ק״ג, ולכן 8 רבעים = 2 ק״ג.','8 × [1/4] = 2']),
+      N('e15','לעוגה אחת צריך [1/4] ק״ג סוכר. כמה גרם סוכר צריך בשביל 3 עוגות?','',750,['רבע ק״ג = 250 גרם. לשלוש עוגות צריך 3 פעמים 250.','3 × 250 = 750'])]},
+     {boss:1,it:[
+      N('eb1','מ-[1/4] ק״ג קמח שחר מכין 6 לחמניות. כמה לחמניות הוא יכין מ-500 גרם?','',12,['[1/4] ק״ג = 250 גרם, ו-500 גרם זה פי 2.','6 × 2 = 12']),
+      N('eb2','מ-[1/4] ק״ג קמח שחר מכין 6 לחמניות. כמה גרם קמח צריך בשביל 48 לחמניות?','',2000,['48 : 6 = 8, כלומר פי 8 קמח.','8 × 250 = 2,000']),
+      N('eb3','כמה גרם יש ברבע קילוגרם ([1/4] ק״ג)?','',250,['1,000 גרם מחולקים ל-4.','1,000 : 4 = 250']),
+      N('eb4','מ-[1/4] ק״ג קמח שחר מכין 6 לחמניות. כמה גרם קמח צריך בשביל 12 לחמניות?','',500,['12 לחמניות זה פי 2 מ-6, ולכן פי 2 קמח.','2 × 250 = 500']),
+      N('eb5','כמה גרם יש בקילוגרם וחצי ([1 1/2] ק״ג)?','',1500,['קילוגרם = 1,000 גרם, וחצי קילוגרם = 500 גרם.','1,000 + 500 = 1,500'])]}]},
+
+ {n:'במת השטחים',s:'מלבן, משולש ושטח מורכב',
+  L:[['שטח = כמה משבצות בפנים','<p>שטח הוא כמה משבצות יש <b>בתוך</b> הצורה (לא מסביב לה). כשכל משבצת היא 1 סמ״ר, סופרים משבצות.</p><p>במלבן לא צריך לספור אחת-אחת: כופלים <b>אורך × רוחב</b>.</p><div class="eq">3 × 4 = 12</div><p>מלבן בשטח <b>7</b>? יש רק אפשרות אחת: <span dir="ltr">1 × 7</span>. כי 7 מתחלק רק ב-1 וב-7. מספר כזה נקרא <b>מספר ראשוני</b>.</p><div class="box">במבחן צויר מלבן של 12 משבצות במקום 7. ובסעיף ב צדקת שאין מלבן אחר ⭐ אבל לא בגלל ש-7 אי-זוגי: גם 9 אי-זוגי, ובכל זאת יש מלבן <span dir="ltr">3 × 3 = 9</span>.</div>'],
+     ['שטח משולש ישר-זווית','<p>משולש ישר-זווית הוא בדיוק <b>חצי מלבן</b>. רואים את זה בציור: האלכסון חוצה את המלבן לשניים.</p><div class="vis" id="tri"></div><p>המלבן: <span dir="ltr">5 × 4 = 20</span>. המשולש הוא חצי ממנו:</p><div class="eq">5 × 4 : 2 = <b>10</b></div><div class="box">שטח משולש = בסיס × גובה : 2. במבחן צויר משולש עם צלעות 5 ו-5, שהשטח שלו 12.5. בשביל 10 צריך 5 ו-4.</div>'],
+     ['גם משולש שאינו ישר-זווית','<p>גם כשהקודקוד העליון זז הצידה, אם הבסיס והגובה נשארים אותו דבר, השטח <b>לא משתנה</b>:</p><div class="vis" id="tri2"></div><div class="eq">5 × 4 : 2 = <b>10</b></div><div class="box">הגובה הוא המרחק <b>ישר למעלה</b> מהבסיס עד הקודקוד, לא האורך של הצלע המשופעת. ובסעיף ב צריך משולש שאין לו זווית ישרה.</div>'],
+     ['שטח מורכב: השלם פחות החלקים','<div class="vis" id="cmp"></div><p>קשה לחשב את החלק האפור ישירות. אז מחשבים את <b>כל הריבוע</b>, ומורידים את החלקים הלבנים:</p><p>הריבוע כולו: <span dir="ltr">8 × 8 = 64</span></p><p>המשולש הלבן למטה (חצי ריבוע): <span dir="ltr">8 × 8 : 2 = 32</span></p><p>המשולש הלבן הקטן למעלה: <span dir="ltr">3 × 4 : 2 = 6</span></p><div class="eq">64 − 32 − 6 = <b>26</b></div>']],
+  P:[{les:[0],it:[
+      C('f1','צורות מצולעות נקראות לפי מספר הצלעות. איזו צורה נקראת <b>מחומש</b>?',['צורה עם 5 צלעות','צורה עם 6 צלעות','צורה עם 4 צלעות','צורה עם 8 צלעות'],['מחומש = חמש (כמו "חמישה"). משושה = 6, מתומן = 8.','מחומש = 5 צלעות'],{w:1}),
+      N('f2','כל משבצת היא 1 סמ״ר. מה השטח של המלבן הסגול (בסמ״ר)?','',12,['שטח מלבן = אורך × רוחב. סופרים: 4 משבצות לרוחב ו-3 לגובה.','4 × 3 = 12'],{fig:gsv(6,5,[{p:RECT(1,1,4,3)}])}),
+      N('f3','כל משבצת היא 1 סמ״ר. מה השטח של המלבן הסגול (בסמ״ר)?','',10,['שטח מלבן = אורך × רוחב. סופרים: 5 משבצות לרוחב ו-2 לגובה.','5 × 2 = 10'],{fig:gsv(7,4,[{p:RECT(1,1,5,2)}])}),
+      C('f4','צריך לסרטט מלבן ששטחו 7 סמ״ר, וכל הצלעות שלו מספרים שלמים. מה צריכים להיות האורך והרוחב?',[E('1 × 7'),E('3 × 4'),E('2 × 5'),E('3 × 3')],['שטח = אורך × רוחב, אז מחפשות שני מספרים שלמים שהכפל שלהם הוא 7.','1 × 7 = 7. (3 × 4 = 12, 2 × 5 = 10, 3 × 3 = 9)'],{need:2}),
+      C('f5','אפשר לסרטט מלבן <b>אחר</b> ששטחו 7 סמ״ר, עם צלעות במספרים שלמים?',['לא, כי 7 מתחלק רק ב-1 וב-7','כן, למשל מלבן של 3 על 4','לא, כי 7 הוא מספר אי-זוגי','כן, למשל מלבן של 2 על 5'],['7 הוא מספר ראשוני: הוא מתחלק רק ב-1 ובעצמו. אי-זוגי זו לא הסיבה: 9 אי-זוגי, ויש 3 × 3.','רק 1 × 7']),
+      N('f6','כמה מלבנים <b>שונים</b> אפשר לסרטט בשטח 12 סמ״ר, כשהצלעות מספרים שלמים?','',3,['מחפשות את כל הזוגות שהכפל שלהם 12.','1 × 12, 2 × 6, 3 × 4 = 3 מלבנים'])]},
+     {les:[1,2],it:[
+      N('f7','כל משבצת היא 1 סמ״ר. מה השטח של המשולש (בסמ״ר)?','',10,['משולש ישר-זווית = חצי מלבן. הבסיס 4 משבצות והגובה 5 משבצות.','4 × 5 : 2 = 10'],{fig:gsv(6,7,[{p:[[1,1],[1,6],[5,6]]}]),need:2}),
+      N('f8','כל משבצת היא 1 סמ״ר. מה השטח של המשולש (בסמ״ר)?','',9,['הבסיס 6 משבצות והגובה 3 משבצות. כופלים ומחלקים ב-2.','6 × 3 : 2 = 9'],{fig:gsv(8,5,[{p:[[1,1],[1,4],[7,4]]}])}),
+      N('f9','כל משבצת היא 1 סמ״ר. מה השטח של המשולש (בסמ״ר)?','',12,['הבסיס (למטה) 6 משבצות, והגובה (ישר למעלה עד הקודקוד) 4 משבצות.','6 × 4 : 2 = 12'],{fig:gsv(8,6,[{p:[[1,5],[7,5],[3,1]]}])}),
+      C('f10','צלע אחת של משולש ישר-זווית היא 5 ס״מ. מה צריכה להיות הצלע השנייה (שיוצרת את הזווית הישרה) כדי שהשטח יהיה 10 סמ״ר?',['4, כי 5 × 4 : 2 = 10','2, כי 5 × 2 = 10','5, כי 5 × 5 : 2 = 10','10, כי 10 × 5 = 10'],['שטח משולש = בסיס × גובה : 2. מחפשות מספר שכפול 5 ייתן 20 (כי 20 : 2 = 10).','5 × 4 = 20, ו-20 : 2 = 10'],{need:2})]},
+     {les:[3],it:[
+      C('f11','כל משבצת היא 1 סמ״ר. באיזה מצולע השטח <b>הגדול ביותר</b>?',['ג','ב','א','ד'],['סופרים משבצות בתוך כל צורה. במשולש: בסיס × גובה : 2.','ג = 2 × 2 = 4 · א = 1 × 3 = 3 · ב = 2 × 3 : 2 = 3 · ד = 2 × 2 : 2 = 2'],{fig:Q2,cls:'o4 sym'}),
+      N('f12','לפניכם ריבוע, ובתוכו חלק צבוע באפור. המידות בס״מ. מה השטח של החלק האפור (בסמ״ר)?','',26,['מחשבים את כל הריבוע ומורידים את שני המשולשים הלבנים.','64 − 32 − 6 = 26'],{fig:comp(8,3,4),need:2}),
+      N('f13','לפניכם ריבוע, ובתוכו חלק צבוע באפור. המידות בס״מ. מה השטח של החלק האפור (בסמ״ר)?','',14,['הריבוע 6 × 6 = 36. המשולש הלבן למטה 36 : 2 = 18. המשולש הלבן הקטן 2 × 4 : 2 = 4.','36 − 18 − 4 = 14'],{fig:comp(6,2,2)}),
+      C('f14','כל משבצת היא 1 סמ״ר. באיזה מצולע השטח <b>הגדול ביותר</b>?',['ב','א','ג','ד'],['סופרים משבצות בתוך כל צורה. במשולש: בסיס × גובה : 2.','ב = 4 × 3 : 2 = 6 · א = 4 · ג = 4 · ד = [4 1/2]'],{fig:Q2B,cls:'o4 sym'})]},
+     {boss:1,it:[
+      N('fb1','למלבן יש שטח של 7 סמ״ר, ואחת הצלעות שלו היא 1 ס״מ. כמה ס״מ הצלע השנייה?','',7,['אורך × רוחב = שטח, כלומר 1 × ? = 7.','1 × 7 = 7']),
+      N('fb2','כל משבצת היא 1 סמ״ר. מה השטח של המשולש (בסמ״ר)?','',10,['הבסיס 5 משבצות והגובה 4 משבצות.','5 × 4 : 2 = 10'],{fig:gsv(8,6,[{p:[[1,5],[6,5],[4,1]]}])}),
+      N('fb3','לפניכם ריבוע, ובתוכו חלק צבוע באפור. המידות בס״מ. מה השטח של החלק האפור (בסמ״ר)?','',26,['כל הריבוע פחות שני המשולשים הלבנים.','64 − 32 − 6 = 26'],{fig:comp(8,3,4)}),
+      N('fb4','כל משבצת היא 1 סמ״ר. מה השטח של המשולש (בסמ״ר)?','',12,['הבסיס 8 משבצות והגובה 3 משבצות.','8 × 3 : 2 = 12'],{fig:gsv(10,5,[{p:[[1,4],[9,4],[6,1]]}])}),
+      C('fb5','כל משבצת היא 1 סמ״ר. באיזה מצולע השטח <b>הגדול ביותר</b>?',['ג','ב','א','ד'],['סופרים משבצות בתוך כל צורה.','ג = 4, א = 3, ב = 3, ד = 2'],{fig:Q2,cls:'o4 sym'})]}]}
+];
+// ציורים בעמודי ההסבר
+const LFIG={h30:hund(30),nl35:nlF(3,5,.25,null,[3,5]),nl45:nlF(3,5,.25,4.5,[3,5]),tri:gsv(7,6,[{p:RECT(1,1,5,4),f:'#fff'},{p:[[1,1],[1,5],[6,5]]}]),tri2:gsv(8,6,[{p:[[1,5],[6,5],[3,1]]}]),cmp:comp(8,3,4)};
+
+// ---------- פריטים ושלבים ----------
+const lbOf=it=>it.k==='cmp'?pl(`${it.l} ? ${it.r}`):pl(it.ex||it.q).slice(0,32);
+const IT=M.map(m=>{const r=[];m.P.forEach((g,si)=>g.it.forEach(x=>{x.st_=si;x.boss=!!g.boss;x.need=x.need||1;x.lb=lbOf(x);r.push(x)}));return r});
+const RVN=24; // מיפוי חוזר: 24 תשובות נכונות
+const RVP=[].concat(...IT.map((L,mi)=>L.filter(x=>!x.w).map(x=>({mi,x}))));
+
+// ---------- מצב ----------
+function fresh(){return{v:1,m:0,w:{},T:0,pts:0,st:{c:0,b:0},att:0,okc:0,intro:0,ls:{},md:{},rv:{n:0,w:{}},started:new Date().toISOString()}}
+let S=LS.get('dani_m6');if(!S||!S.w)S=fresh();S.ls=S.ls||{};S.md=S.md||{};S.rv=S.rv||{n:0,w:{}};
+const save=()=>LS.set('dani_m6',S);save();
+let SQ=LS.get('dani_m6_sq')||[];let MUTE=!!LS.get('dani_m6_mute');
+const W=(mi,id)=>{const k=mi+':'+id;return S.w[k]||(S.w[k]={c:0,due:0,err:0})};
+const RW=k=>S.rv.w[k]||(S.rv.w[k]={c:0,err:0});
+const PH2=()=>S.m>=M.length;
+const misPct=mi=>{let n=0,t=0;IT[mi].forEach(x=>{t+=x.need;n+=Math.min(W(mi,x.id).c,x.need)});return t?n/t:0};
+const misDone=mi=>IT[mi].every(x=>W(mi,x.id).c>=x.need);
+const stageU=mi=>{const L=IT[mi],n=M[mi].P.length;for(let s=0;s<n;s++)if(L.some(x=>x.st_===s&&W(mi,x.id).c<1))return s;return n-1};
+
+// ---------- שמע ----------
+let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,t0,d,type,vol,f2){const a=ac();if(!a||MUTE)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t0+d);g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.16,a.currentTime+t0+.015);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
+const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.22,'triangle')},step(){tone(1318,0,.1,'triangle');tone(1760,.07,.14,'triangle')},bad(){tone(330,0,.25,'sine',.14,220)},pop(){tone(220,0,.18,'sine',.25,880);tone(880,.16,.2,'sine',.15,440)},win(){[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.15))},key(){tone(1500,0,.03,'square',.03)}};
+const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
+
+// ---------- עזר ----------
+const POPQ=[];let POPON=false;function popTxt(t){POPQ.push(t);if(!POPON)popNext()}
+function popNext(){const t=POPQ.shift();if(t===undefined){POPON=false;return}POPON=true;const p=document.createElement('div');p.className='pop';p.textContent=t;document.body.appendChild(p);setTimeout(()=>{p.remove();popNext()},1050)}
+function confetti(n){const c=['#f472b6','#a78bfa','#facc15','#60a5fa','#fb923c'];for(let i=0;i<(n||40);i++){const e=document.createElement('i');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(c);e.style.animationDuration=(1.6+Math.random()*1.6)+'s';e.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3800)}}
+const OK=['מעולה! 🌟','בול! 🎯','אלופה! 🎤','יופי של חשיבה! ✨','כוכבת על הבמה! 💜','מדויק! 💫'];
+const exH=s=>fx(s).replace(/\?/g,'<span class="q">?</span>');
+const stH=st=>st?`<div class="s">💡 ${fx(st[0])}: ${E(st[1])}</div>`:'';
+
+// ---------- ממשק ----------
+const kp=$('kp'),op=$('op');
+kp.innerHTML=[7,8,9,4,5,6,1,2,3].map(d=>`<button class="k" type="button" data-d="${d}">${d}</button>`).join('');
+let CUR=null,INP='',DONE=false,LASTID=null,NEEDNEXT=false,WAIT=false;
+function setMode(kind){if(window.StudyGuess)StudyGuess.q();const isOp=kind==='op';kp.style.display=isOp?'none':'grid';op.style.display=isOp?'grid':'none';
+  $('kdel').classList.toggle('hid',isOp);$('k0').classList.toggle('hid',isOp);$('slot').classList.toggle('hid',isOp)}
+function upd(){const ph=PH2();
+  $('mt').textContent=ph?'🎯 מיפוי חוזר: '+Math.min(S.rv.n,RVN)+' מתוך '+RVN:'במה '+(S.m+1)+' מתוך 6: '+M[S.m].n.replace('במת ','');
+  $('pls').innerHTML=M.map((m,i)=>{const d=!!S.md[i],cur=i===S.m,p=d?1:cur?misPct(i):0;return `<span class="${d?'ok':cur?'cur':'lk'}"><i style="width:${p*100}%"></i><em>${d?'✓':PE[i]}</em></span>`}).join('')+
+    `<span class="${ph?'cur':'lk'}"><i style="width:${ph?Math.min(1,S.rv.n/RVN)*100:0}%"></i><em>🎯</em></span>`;
+  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);
+  $('sqn').textContent=sqN()+'/'+ALLSQ.length;
+  const b=ph?null:L4[S.m];
+  if(b){const pc=misPct(S.m);$('bugp').innerHTML=`<span>${Math.round(pc*100)}%</span><span class="bx"><svg class="gr" viewBox="0 0 100 100">${b.svg}</svg><svg viewBox="0 0 100 100" style="clip-path:inset(${100-pc*100}% 0 0 0)">${b.svg}</svg></span>`}
+  else $('bugp').innerHTML=`<span>🎯 ${Math.min(S.rv.n,RVN)}/${RVN}</span>`;
+  report()}
+function report(){if(!window.StudyTrack)return;const ph=PH2(),md=Object.keys(S.md).length,errs={};
+  const add=(k,e)=>{const[mi,id]=k.split(':'),x=(IT[mi]||[]).find(y=>y.id===id);if(!x||!e)return;const key=M[mi].n.replace('במת ','')+': '+x.lb;errs[key]=(errs[key]||0)+e};
+  Object.keys(S.w).forEach(k=>add(k,S.w[k].err||0));Object.keys(S.rv.w).forEach(k=>add(k,S.rv.w[k].err||0));
+  const hard=Object.keys(errs).sort((a,b)=>errs[b]-errs[a]).slice(0,8).map(e=>({e,n:errs[e]}));
+  StudyTrack.report({total:6,done:md,learning:ph?0:1,att:S.att,ok:S.okc,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:SQ.length,hard,mission:Math.min(S.m+1,7),
+    lv:ph?2:1,lvn:ph?'שלב 2: 🎯 מיפוי חוזר (24 שאלות מעורבות)':'שלב 1: 6 במות (נושאים לחיזוק)',prog:ph?Math.min(S.rv.n,RVN):md,pmax:ph?RVN:6,started:S.started})}
+
+function choose(){const mi=S.m,L=IT[mi],U=stageU(mi),g=M[mi].P[U];
+  const open=L.filter(x=>W(mi,x.id).c<x.need),act=open.filter(x=>W(mi,x.id).seen);
+  if(!open.length)return null;
+  const due=act.filter(x=>W(mi,x.id).due<=S.T&&x.id!==LASTID).sort((a,b)=>W(mi,a.id).due-W(mi,b.id).due);
+  if(due.length)return due[0];
+  const nw=open.filter(x=>!W(mi,x.id).seen&&x.st_<=U),lim=g.boss?4:3;
+  if(nw.length&&act.length<lim)return nw[0];
+  const any=act.filter(x=>x.id!==LASTID);if(any.length)return pick(any);
+  return nw[0]||act[0]||open[0]}
+function resetIn(){INP='';$('slot').textContent='';$('slot').className='slot';$('act').textContent='בדיקה ✓';$('act').disabled=true}
+function next(){DONE=false;WAIT=false;resetIn();$('fb').innerHTML='';
+  if(PH2())return nextRv();
+  if(misDone(S.m))return missionDone();
+  const U=stageU(S.m),ls=S.ls[S.m]==null?-1:S.ls[S.m];
+  if(ls<U){const pg=[];for(let i=ls+1;i<=U;i++)(M[S.m].P[i].les||[]).forEach(x=>pg.push(x));if(pg.length){NEEDNEXT=true;openLes(S.m,pg,U);upd();return}S.ls[S.m]=U;save()}
+  const it=choose();if(!it)return missionDone();const w=W(S.m,it.id),first=!w.seen;w.seen=1;LASTID=it.id;CUR={it,mi:S.m,first};render(it,first);upd()}
+function nextRv(){const pool=shuf(RVP).sort((a,b)=>RW(b.mi+':'+b.x.id).err-RW(a.mi+':'+a.x.id).err-(RW(b.mi+':'+b.x.id).c-RW(a.mi+':'+a.x.id).c)*.5).slice(0,8).filter(p=>p.mi+':'+p.x.id!==LASTID);
+  const p=pick(pool.length?pool:RVP);LASTID=p.mi+':'+p.x.id;CUR={it:p.x,mi:p.mi,first:false,rv:1};render(p.x,false);upd()}
+function exBox(ex){return ex?`<div class="ex${pl(ex).length>13||/\[/.test(ex)?' sm':''}">${exH(ex)}</div>`:''}
+function render(it,first){let h='',kind='kp',mode=first?'🆕 חדש':'🔁 שוב';CUR.st=it.st||null;CUR.ci=null;CUR.sp=null;CUR.ok=null;
+  $('mode').className='mode'+(first?' new':'');
+  if(CUR.rv){mode='🎯 מיפוי חוזר';$('mode').className='mode fast'}
+  else if(it.boss){mode='🏁 אתגר הבמה';$('mode').className='mode fast'}
+  else if(it.w){mode='⭐ את טובה בזה!';$('mode').className='mode'}
+  const fig=it.fig||'';
+  if(it.k==='stp'&&!CUR.rv&&!it.boss){$('mode').textContent='💡 צעד אחרי צעד';$('mode').className='mode new';CUR.sp={i:0,err:0,done:[]};return spStep()}
+  if(it.k==='n'||it.k==='stp'){h=`<div class="ask">${fx(it.q)}</div>`+fig+exBox(it.ex)+(it.tip&&first?`<div class="tip">${fx(it.tip)}</div>`:'');
+    CUR.ok=it.ok||(v=>+v===it.ans);CUR.show=it.show||fmt(it.ans)}
+  else if(it.k==='c'){h=`<div class="ask">${fx(it.q)}</div>`+fig;kind='op';mcq(it.opts,0,it.cls)}
+  else if(it.k==='cmp'){h=`<div class="ask">איזה סימן מתאים במשבצת?</div><div class="ex sm">${fx(it.l)}<span class="cbox">?</span>${fx(it.r)}</div>`;kind='op';const S3=['>','<','='];mcq(S3,S3.indexOf(it.ans),'o3 sym',1)}
+  $('mode').textContent=mode;$('mid').innerHTML=h;setMode(kind)}
+// צעד אחרי צעד: כל צעד תרגיל קטן, הצעדים שנפתרו נשארים למעלה
+function spLines(c,n){return c.done.length?`<div class="gd">${c.done.slice(-n).map(d=>`<div class="gl"><small>${fx(d[0])}</small><b>${fx(d[1])}</b></div>`).join('')}</div>`:''}
+function spStep(){const c=CUR.sp,it=CUR.it;if(c.i>=it.steps.length)return spFinish();c.pend=0;const st=it.steps[c.i];
+  $('mid').innerHTML=`<div class="ask">${fx(it.q)} ${E(it.ex)}</div>`+spLines(c,innerHeight<720?1:2)+`<div class="say">${fx(st[0])}: <span class="sx">${exH(st[1])}</span></div>`;
+  resetIn();setMode('kp')}
+function stepCheck(v){const c=CUR.sp,st=CUR.it.steps[c.i],ok=+v===st[2],done=st[1].replace('?',st[2]);
+  if(window.StudyGuess&&StudyGuess.chk(ok,()=>resetIn()))return;
+  c.done.push([st[0],done]);c.i++;
+  if(ok){SND.step();c.pend=1;$('slot').className='slot ok';$('fb').innerHTML=`<div class="t ok">✓ ${E(done)}</div>`;
+    $('act').disabled=true;setTimeout(()=>{if(CUR&&CUR.sp===c&&!DONE){$('fb').innerHTML='';spStep()}},900)}
+  else{c.err++;SND.bad();$('slot').className='slot no';$('fb').innerHTML=`<div class="t no">כמעט! ${E(done)}</div><div>זוכרות את זה, וממשיכות 💪</div>`;WAIT=true;$('act').disabled=false;$('act').textContent='המשך ←'}}
+function spFinish(){const c=CUR.sp,ok=c.err===0;$('mid').innerHTML=`<div class="ask">${ok?'פתרת! 🎉':'הפתרון המלא:'}</div>`+spLines(c,3)+`<div class="say"><span class="sx">${fx(CUR.it.res)}</span></div>`;
+  $('slot').className='slot hid';DONE=true;CUR.st=null;grade(ok,true)}
+function mcq(opts,ci,cls,keep){const idx=opts.map((_,i)=>i),o=keep?idx:shuf(idx),lng=!cls&&opts.some(x=>pl(x).length>9);
+  op.className='op'+(cls?' '+cls:lng?' o1':'');
+  op.innerHTML=o.map(i=>{const t=String(opts[i]);return `<button class="opt${/[֐-׿]/.test(pl(t))?' he':''}" type="button" data-i="${i}">${fx(t)}</button>`}).join('');CUR.ci=ci;CUR.opts=opts}
+op.onclick=e=>{const b=e.target.closest('.opt');if(!b||DONE)return;check(null,b)};
+kp.onclick=e=>{const b=e.target.closest('.k');if(b)key(b.dataset.d)};
+$('k0').onclick=()=>key('0');$('kdel').onclick=()=>key('del');
+function key(d){if(DONE||WAIT||(CUR&&CUR.sp&&CUR.sp.pend))return;ac();if(d==='del')INP=INP.slice(0,-1);else if(INP.length<5)INP=(INP==='0'?'':INP)+d;
+  SND.key();$('slot').className='slot';$('slot').textContent=INP?fmt(INP):'';$('act').disabled=!INP}
+$('act').onclick=()=>{if(WAIT){WAIT=false;$('fb').innerHTML='';spStep();return}if(DONE){next();return}if(INP)check(INP)};
+document.addEventListener('keydown',e=>{if(document.querySelector('.ov.on'))return;if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('del');else if(e.key==='Enter')$('act').click()});
+function check(v,btn){if(DONE)return;
+  if(CUR.sp)return stepCheck(v);
+  const ok=btn?+btn.dataset.i===CUR.ci:CUR.ok(v);
+  // זיהוי ניחושים (אורן 13.11.2026): התשובה לא מתקבלת, ההודעה של הילה, ואותה שאלה שוב
+  if(window.StudyGuess&&StudyGuess.chk(ok,()=>resetIn()))return;DONE=true;
+  if(btn){[...op.children].forEach(x=>{x.disabled=true;if(+x.dataset.i===CUR.ci)x.classList.add('ok')});if(!ok)btn.classList.add('no')}
+  else $('slot').className='slot '+(ok?'ok':'no');
+  grade(ok,false,!!btn)}
+function grade(ok,guided,isBtn){S.T++;S.att++;const it=CUR.it;
+  const w=CUR.rv?RW(CUR.mi+':'+it.id):W(CUR.mi,it.id);
+  if(ok){w.c++;w.due=S.T+2+(w.c>1?2:0);S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);S.pts+=10;SND.ok();if(CUR.rv)S.rv.n++;
+    if(S.st.c>0&&S.st.c%5===0)popTxt('🔥 '+S.st.c+' ברצף!');
+    const more=CUR.rv?`<div>🎯 ${Math.min(S.rv.n,RVN)} מתוך ${RVN}</div>`:w.c>=it.need?(it.boss?'<div>🏁 עברת את האתגר בשאלה הזאת!</div>':it.w?'<div>⭐ ידעתי שאת יודעת את זה!</div>':'<div>✅ השאלה הזאת שלך!</div>'):'<div>עוד פעם אחת בהמשך, וזה שלך</div>';
+    $('fb').innerHTML=`<div class="t ok">${pick(OK)}</div>`+more}
+  else{w.err=(w.err||0)+1;w.c=Math.max(0,w.c-1);w.due=S.T+2;S.st.c=0;SND.bad();
+    if(guided){w.c=0}
+    $('fb').innerHTML=guided?`<div class="t no">כמעט! עברנו על זה יחד</div><div>זה יחזור עוד מעט, ונצליח לבד 🙂</div>`:`<div class="t no">כמעט! ${isBtn?'':(it.ok?'למשל: ':'התשובה: ')+E(CUR.show)}</div>`+(CUR.st?'<div>💡 מיד נסביר למה</div>':'<div>זה יחזור עוד מעט, ונצליח 🙂</div>')}
+  if(!ok&&!guided&&CUR.st){const st=CUR.st,ans=isBtn?String(CUR.opts[CUR.ci]):CUR.show,tk=S.T;
+    setTimeout(()=>{if(S.T!==tk||document.querySelector('.ov.on'))return;$('wya').innerHTML=(it.ok?'תשובה נכונה, למשל: ':'התשובה הנכונה: ')+'<b>'+fx(ans)+'</b>';$('wyt').innerHTML=fx(st[0]);$('wye').innerHTML=fx(st[1]||'');$('wye').style.display=st[1]?'':'none';$('wye').classList.toggle('he',/[֐-׿]/.test(st[1]||''));$('why').classList.add('on')},650)}
+  save();upd();$('act').disabled=false;$('act').textContent='הבא ←';
+  if(CUR.rv&&ok&&S.rv.n===RVN&&!S.rvw){S.rvw=1;save();setTimeout(()=>{SND.win();confetti(80);$('mde').textContent='🏆';$('mdt').textContent='סיימת את המיפוי החוזר!';$('mdp').textContent='24 תשובות נכונות מכל הנושאים. את מוכנה להמשך כיתה ו׳ חזקה יותר! אפשר להמשיך להתאמן כדי לשמור על הכושר.';$('mdy').textContent='להמשיך להתאמן 🎯';$('mdov').classList.add('on')},900);return}
+  const tk=S.T;if(ok)setTimeout(()=>{if(DONE&&S.T===tk&&!document.querySelector('.ov.on'))next()},guided?1800:1200)}
+
+// ---------- סיום במה = סקווישי חדש ----------
+function missionDone(){const mi=S.m;if(!S.md[mi])S.md[mi]=new Date().toISOString();S.m=mi+1;save();
+  const b=L4[mi];if(b&&!SQ.includes(b.id)){SQ.push(b.id);LS.set('dani_m6_sq',SQ)}
+  SND.win();confetti(70);upd();showSq(b,'🎤 סקווישי חדש מסיבוב ההופעות!','ללוח! 🎤',()=>{
+    $('mde').textContent=S.m<M.length?'🎤':'🎯';$('mdt').textContent=`סיימת את ${M[mi].n}! 🎉`;
+    $('mdp').textContent=S.m<M.length?`${b.n} הצטרפה ללוח הסקווישים שלך. הבמה הבאה: ${M[S.m].n} (${M[S.m].s}). סקווישי חדש מחכה שם!`:'כל 6 הסקווישים של סיבוב ההופעות אצלך! 🍫🧋♨️🎤🍞👑 עכשיו השלב של האלופות: 🎯 מיפוי חוזר, שאלות מעורבות מכל הנושאים.';
+    $('mdy').textContent=S.m<M.length?'לבמה הבאה 🎤':'למיפוי החוזר 🎯';$('mdov').classList.add('on')})}
+$('wyok').onclick=()=>{$('why').classList.remove('on');if(DONE)next()};
+$('mdy').onclick=()=>{$('mdov').classList.remove('on');next()};
+let SQAFTER=null,CURSQ=null;
+function showSq(s,tt,okt,after){CURSQ=s.id;SQAFTER=after||null;$('sqtt').textContent=tt;$('sqimg').innerHTML=`<svg viewBox="0 0 100 100">${s.svg}</svg>`;$('sqname').textContent=s.n;$('sqdesc').innerHTML=fx(s.d);$('sqok').textContent=okt;
+  const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on');setTimeout(()=>sqSound(s.id),350)}
+$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
+$('sqok').onclick=()=>{$('sqov').classList.remove('on');const f=SQAFTER;SQAFTER=null;if(f)f()};
+
+// ---------- הלוח האחד (כל התכנים של דני) ----------
+const DS=window.DaniSquishies,L4=DS.list4,ALLSQ=DS.all;
+const own=()=>{const o=DS.owned();SQ.forEach(x=>{if(!o.includes(x))o.push(x)});return o},sqN=()=>{const o=own();return ALLSQ.filter(x=>o.includes(x.id)).length};
+const cl=s=>s.ult?' ult':s.sup?' sup':s.trip?' trip':'';
+function tile(s,o){return o.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}"><svg viewBox="0 0 100 100">${s.svg}</svg></div>`:`<div class="lock${cl(s)}"><svg viewBox="0 0 100 100">${s.svg.split(DS.aura).join('').split(DS.uaura).join('').split(DS.orb).join('')}</svg></div>`}
+function sqRender(){const o=own(),R=DS.rows,n=L4.filter(x=>o.includes(x.id)).length;
+  $('sqtx').innerHTML=`הלוח שלך, אחד לכל התכנים. בסיבוב ההופעות: <b>סקווישי על כל במה</b> שמסיימים (${n} מתוך 6). אספת ${sqN()} מתוך ${ALLSQ.length}.`;$('sqpb').style.width=(PH2()?100:misPct(S.m)*100)+'%';
+  $('sqg').innerHTML=[DS.list,DS.list2,DS.list3,L4].map((l,i)=>`<div class="sqhd">${R[i]}</div>`+l.map(s=>tile(s,o)).join('')).join('')+(window.StudyEffort?StudyEffort.row('dani'):'')}
+$('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
+$('sqcx').onclick=()=>$('sqcol').classList.remove('on');
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;$('sqcol').classList.remove('on');
+  showSq(s,s.eff?'💝 פרס מאמץ מאבא ואמא':s.trip?'הסקווישי שלך מסיבוב ההופעות 🎤':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 💜','חזרה ללוח',()=>{sqRender();$('sqcol').classList.add('on')})};
+
+// ---------- ההסבר: עמודים קצרים ----------
+let LM=0,LPG=0,LPS=[],LUP=null;
+function openLes(mi,pages,upto){LM=Math.min(mi,M.length-1);LPS=pages||M[LM].L.map((_,i)=>i);LUP=upto==null?null:upto;LPG=0;drawLes();$('les').classList.add('on')}
+function drawLes(){const P_=LPS.map(i=>M[LM].L[i]),p=P_[LPG];$('lt').innerHTML=`📘 ${PE[LM]} ${fx(p[0])}`;$('lp').textContent=(LPG+1)+'/'+P_.length;$('lb').innerHTML=fx(p[1]);$('lb').scrollTop=0;
+  $('lb').querySelectorAll('.vis[id]').forEach(v=>{if(LFIG[v.id])v.innerHTML=LFIG[v.id]});
+  $('ld').innerHTML=P_.map((_,i)=>`<i class="${i===LPG?'on':''}"></i>`).join('');$('lpr').classList.toggle('hid',LPG===0);$('lnx').textContent=LPG===P_.length-1?(LUP==null?'סיימתי ✓':'הבנתי ✓ לתרגול'):'הבא ←'}
+$('lpr').onclick=()=>{if(LPG>0){LPG--;drawLes()}};
+$('lnx').onclick=()=>{if(LPG<LPS.length-1){LPG++;drawLes();return}$('les').classList.remove('on');if(LUP!=null)S.ls[LM]=Math.max(S.ls[LM]==null?-1:S.ls[LM],LUP);save();if(NEEDNEXT){NEEDNEXT=false;next()}};
+$('lsb').onclick=()=>openLes(PH2()?M.length-1:S.m);
+
+$('mute').onclick=()=>{MUTE=!MUTE;LS.set('dani_m6_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.key()};$('mute').textContent=MUTE?'🔇':'🔊';
+$('isq').innerHTML='<div class="sqhd">'+DS.rows[3]+'</div>'+L4.map(s=>tile(s,own())).join('');
+$('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();S.intro=1;save();next()};
+if(window.StudyGuess)StudyGuess.init('dani','math6',{fast:1500});
+if(window.StudyTrack){StudyTrack.init('dani','math6',['dani_m6','dani_m6_sq']);StudyTrack.gift(()=>{const b=L4.find(x=>!SQ.includes(x.id))||pick(L4);if(!SQ.includes(b.id)){SQ.push(b.id);LS.set('dani_m6_sq',SQ)}confetti(60);upd();showSq(b,'🎁 מתנה מאבא ואמא!','ללוח! 🎤')})}
+upd();DS.sync(()=>{upd();if($('sqcol').classList.contains('on'))sqRender()});
+if(window.StudyEffort)StudyEffort.sync('dani',()=>{if($('sqcol').classList.contains('on'))sqRender()});
+if(!S.intro)$('intro').classList.add('on');else next();
+</script>
+</main></body></html>

@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <script src="../guest.js?v=6"></script>
+<script src="../content.js?v=10"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · דני</title>
 <link rel="manifest" href="../manifest.json">
@@ -13,11 +14,19 @@
 <a class="back" href="../">→ כל הילדים</a>
 <div class="top"><img src="../kids/dani.webp" alt=""><div><h1>היי דני!</h1><p>מה לומדים היום?</p></div></div>
 <div class="list">
+<a class="item" id="m6i" data-c="dani/math6" data-gen="1" href="math6/"><span class="ic">🎤</span><span class="tx"><b>חיזוק מתמטיקה: סיבוב הופעות</b><small id="m6">6 במות לפי מבחן המיפוי, 6 סקווישים חדשים</small><div class="bar"><i id="m6b" style="width:0"></i></div></span><span class="go">›</span></a>
 <a class="item" data-c="dani/spelling" data-t="הכתבה" data-gen="1" href="spelling/"><span class="ic">✏️</span><span class="tx"><b>הכתבה ואוצר מילים באנגלית</b><small id="sp">36 מילים: בבית, בגדים ותיאורים</small><div class="bar"><i id="spb" style="width:0"></i></div></span><span class="go">›</span></a>
 </div>
 <div id="exm"></div>
 <div class="tools"><div id="rqm"></div><div id="pbm"></div></div>
 <script>try{var s=JSON.parse(localStorage.getItem('dani_sp'));if(s&&s.w){var n=0,t=0;for(var k in s.w){t++;if(s.w[k].s==='done')n++}if(t){document.getElementById('sp').textContent='ענית נכון על '+n+' מתוך 36 מילים';document.getElementById('spb').style.width=(n/36*100)+'%'}}}catch(e){}</script>
+<script>
+// חיזוק מתמטיקה (15.11.2026): שער אישור הורים, כמו אצל ליה
+(function(){var a=document.getElementById('m6i'),ok=StudyContent.ok('dani/math6');a.classList.toggle('soon',!ok);
+ if(!ok){document.getElementById('m6').textContent='בקרוב! 🚧 אבא ואמא מכינים לך משהו מיוחד';return}
+ if(StudyContent.isNew('dani/math6')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
+ try{var s=JSON.parse(localStorage.getItem('dani_m6'));if(s&&s.md){var n=Object.keys(s.md).length;document.getElementById('m6').textContent=n>=6?'כל 6 הבמות! 🎯 מיפוי חוזר':'סיימת '+n+' מתוך 6 במות 🎤';document.getElementById('m6b').style.width=(n/6*100)+'%'}}catch(e){}})();
+</script>
 <script src="../kidlist.js?v=7"></script><script>StudyList.init('dani')</script>
 <script src="../req.js?v=5"></script><script>StudyReq.mount('dani',false)</script>
 <script src="../push.js?v=4"></script><script>StudyPush.kid(document.getElementById('pbm'),'dani',false)</script>
