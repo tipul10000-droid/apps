@@ -239,6 +239,28 @@ section{scroll-margin-top:130px}
 .lqlock summary{cursor:pointer;font-weight:800;font-size:14px;color:var(--muted);padding:4px 0}
 .lqlock .lq{opacity:.75;margin-top:6px}
 .lqn{font-size:12px;color:var(--muted)}
+.hf{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px;display:grid;gap:9px}
+.hf h3{margin:0;font-size:15px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.hf h3 span{font-family:var(--f-mono);font-weight:500;direction:ltr;color:var(--muted);font-size:14px}
+.hf2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.hf2>div{background:var(--surface);border-radius:12px;padding:8px;display:grid;gap:2px;align-content:start}
+.hf2 .lb{font-size:12.5px;font-weight:800}
+.hf2 b{font-family:var(--f-mono);font-weight:600;font-size:18px;direction:ltr;text-align:right}
+.hf2 small{font-size:11.5px;color:var(--muted);line-height:1.35}
+.hf .w b{color:#1d7a45}.hf .l b{color:var(--c-pension)}
+.hseg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.hseg button{flex:1;font:700 13px inherit;font-family:inherit;padding:6px 4px;border:0;background:var(--surface);color:var(--ink);cursor:pointer}
+.hseg button+button{border-inline-start:1px solid var(--line)}
+.hseg button[aria-pressed="true"]{background:var(--c-pension);color:#fff}
+.hfl{font-size:12.5px;font-weight:800;color:var(--muted)}
+.hrng{display:grid;gap:2px;font-size:13px}.hrng input{width:100%;accent-color:var(--c-pension)}
+.hrng b{font-family:var(--f-mono);direction:ltr;display:inline-block}
+.hver{background:var(--surface);border-radius:10px;padding:7px 9px;font-size:13px;font-weight:700;line-height:1.45}
+.htab{display:grid;gap:0;font-size:13px}.htab div{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px solid var(--line)}
+.htab div:last-child{border:0}.htab b{font-family:var(--f-mono);font-weight:500;direction:ltr}.htab small{color:var(--muted);font-size:11.5px}
+.hf details summary{cursor:pointer;font-weight:800;font-size:13px}
+.hf .nt{font-size:11.5px;color:var(--muted);line-height:1.45}
+.hwarn{color:#b3261e}
 .task .stage.s1{background:var(--sunk)}.task .stage.s2{background:var(--bad-soft);color:var(--bad)}.task .stage.s3{background:var(--ok-soft);color:var(--ok)}
 .empty{padding:28px;text-align:center;color:var(--muted)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
@@ -339,6 +361,53 @@ function chips(){
   $("cats").querySelectorAll("button").forEach(b=>b.onclick=()=>{fCat=b.dataset.c;render();});
 }
 
+// קרן ההשתלמות: משיכה מול הלוואה. מנגנון החישוב מדשבורד התזרים (lib/finance/study-fund.ts), נתונים ב-fund של המסמך
+const FS={track:null,sc:4,amt:null,mo:36};
+function hfCalc(F){
+  const R=Math.round, net=(a)=>(a-F.fee)/100/12;
+  const pay=(P,rate,n)=>{if(n<=0)return P;const r=rate/100/12;return r?R(P*r/(1-(1+r)**-n)):R(P/n);};
+  const bal=(P,rate,n,k)=>{const r=rate/100/12,p=pay(P,rate,n);if(!r)return Math.max(0,P-p*k);return Math.max(0,R(P*(1+r)**k-p*(((1+r)**k-1)/r)));};
+  const loansAt=m=>F.loans.reduce((t,l)=>m>=l.left?t:t+(l.kind==="balloon"?l.balance:bal(l.balance,F.prime+l.margin,l.left,m)),0);
+  const fundAt=(m,a)=>{const r=net(a);let v=F.balance;for(let i=0;i<m;i++)v=v*(1+r)+F.deposit;return R(v);};
+  const avail=(m,a,tr)=>Math.max(0,R(fundAt(m,a)*F.share[tr])-loansAt(m));
+  return {pay,loansAt,fundAt,avail};
+}
+function drawFund(VV){if(VV)FS.V=VV;
+  const box=$("hfund");if(!box)return;const p=(FS.V||[]).find(x=>x.fund);if(!p){box.remove();return;}
+  const F=p.fund,C=hfCalc(F),tr=FS.track||F.track,L0=C.loansAt(0);
+  const wNet=F.free-L0, aEq=C.avail(0,FS.sc,"equity"), aSo=C.avail(0,FS.sc,"solid"), aNow=tr==="equity"?aEq:aSo;
+  const step=5000,maxA=Math.max(step,Math.floor(Math.max(wNet,aNow)/step)*step);
+  if(FS.amt==null)FS.amt=Math.min(100000,maxA);const A=Math.min(FS.amt,maxA),M=FS.mo;
+  const rate=F.prime+F.margin, sp=C.pay(A,rate,M), spInt=sp*M-A, blM=Math.round(A*rate/100/12), blInt=blM*M;
+  const r=(FS.sc-F.fee)/100/12, lost=Math.round(A*((1+r)**M-1));
+  const yrs=(M/12).toLocaleString("he-IL",{maximumFractionDigits:1});
+  const over=A>aNow;
+  const verdict=over?`<span class="hwarn">${ils(A)} זה יותר ממה שאפשר ללוות היום במסלול הזה (${ils(aNow)}). אפשר רק במשיכה${tr==="equity"&&A<=aSo?", או במעבר למסלול סולידי":""}.</span>`
+    :FS.sc===0?`בלי תשואה, משיכה זולה יותר: ההלוואה עולה ${ils(spInt)} ריבית, והכסף בקרן לא היה גדל.`
+    :lost>blInt?`בתרחיש ${FS.sc}% הלוואה עדיפה: הכסף בקרן צומח (כ-${ils(lost)} ב-${yrs} שנים) יותר ממה שעולה הריבית (${ils(blInt)} אם כל הסכום בחוץ כל התקופה). כלל אצבע: תשואה נטו ${(FS.sc-F.fee).toFixed(1)}% מול ריבית ${rate.toFixed(2)}%.`
+    :`בתרחיש ${FS.sc}% משיכה עדיפה: הצמיחה שמפסידים (כ-${ils(lost)}) קטנה מהריבית (${ils(blInt)} אם כל הסכום בחוץ כל התקופה). כלל אצבע: תשואה נטו ${(FS.sc-F.fee).toFixed(1)}% מול ריבית ${rate.toFixed(2)}%.`;
+  const seg=(items,cur,key)=>`<div class="hseg">${items.map(([v,l])=>`<button type="button" data-hf="${key}" data-v="${v}" aria-pressed="${String(v)===String(cur)}">${l}</button>`).join("")}</div>`;
+  const H=[[0,"היום"],[1,"בעוד חודש"],[6,"בעוד חצי שנה"],[12,"בעוד שנה"],[24,"בעוד שנתיים"]];
+  const monthly=F.loans.reduce((t,l)=>t+(l.monthly||0),0), balloons=F.loans.filter(l=>l.kind==="balloon"&&l.left<=12);
+  const fd=d=>d.split("-").reverse().join(".");
+  box.innerHTML=`<h3>🏦 קרן ההשתלמות בהראל: שתי דרכים לכסף<span>${ils(F.balance)}</span></h3>
+  <div class="hf2"><div class="w"><span class="lb">💸 משיכה מלאה</span><b>${ils(wNet)}</b><small>החלק הפטור (${ils(F.free)}) פחות סגירת ההלוואות (${ils(L0)}). בלי מס. הכסף יוצא מהקרן ומפסיק לצמוח.</small><small>+ עוד ${ils(F.over)} מעל התקרה, עם 25% מס על הרווח בלבד</small></div>
+  <div class="l"><span class="lb">🏦 הלוואה מהקרן</span><b>${ils(aNow)}</b><small>היום, במסלול ${tr==="equity"?"מנייתי (עד 50%)":"סולידי (עד 80%)"}, אחרי ההלוואות הקיימות. הכסף נשאר מושקע וממשיך לצמוח.</small><small>${tr==="equity"?`במסלול סולידי: ${ils(aSo)}`:`במסלול מנייתי: ${ils(aEq)}`}</small></div></div>
+  <div class="hfl">מסלול השקעה בקרן (קובע כמה אפשר ללוות)</div>${seg([["equity","מנייתי · 50%"],["solid","סולידי · 80%"]],tr,"track")}
+  ${tr!==F.track?`<div class="nt">כדי לקבל את זה צריך לעבור מסלול: ${esc(F.switch_note)}. מסלול סולידי צפוי להרוויח פחות לאורך זמן.</div>`:`<div class="nt">היום: ${esc(F.track_name)} (מנייתי). מעבר מסלול ${esc(F.switch_note)}.</div>`}
+  <div class="hfl">🧮 מחשבון: כמה צריך ולכמה זמן</div>
+  <label class="hrng">סכום: <b>${ils(A)}</b><input type="range" data-hr="amt" min="${step}" max="${maxA}" step="${step}" value="${A}"></label>
+  <label class="hrng">תקופה: <b>${M}</b> חודשים (${yrs} שנים)<input type="range" data-hr="mo" min="12" max="120" step="6" value="${M}"></label>
+  <div class="hfl">תשואה שנתית צפויה בקרן</div>${seg([[0,"אפס"],[4,"זהיר 4%"],[8,"ממוצע 8%"]],FS.sc,"sc")}
+  <div class="hf2"><div class="l"><span class="lb">הלוואה, שפיצר</span><b>${over?"—":ils(sp)}</b><small>בחודש, קבוע. ריבית כוללת ${ils(spInt)}</small><small>בלון: ${ils(blM)} בחודש ו-${ils(A)} בסוף. ריבית כוללת ${ils(blInt)}</small></div>
+  <div class="w"><span class="lb">משיכה: צמיחה שמפסידים</span><b>${ils(lost)}</b><small>מה שהסכום היה מרוויח בקרן ב-${yrs} שנים. אין החזר חודשי.</small><small>ריבית ההלוואה: פריים ${F.margin<0?"פחות":"ועוד"} ${Math.abs(F.margin)}% = ${rate.toFixed(2)}%</small></div></div>
+  <div class="hver">${verdict}</div>
+  <details><summary>📈 כמה אפשר ללוות היום ובהמשך</summary><div class="htab">${H.map(([m,l])=>`<div><span>${l}<br><small>קרן ${ils(C.fundAt(m,FS.sc))} · הלוואות ${ils(C.loansAt(m))}</small></span><b>${ils(C.avail(m,FS.sc,tr))}</b></div>`).join("")}</div><div class="nt">תשואה ${FS.sc}% פחות דמי ניהול ${F.fee}%, ועוד הפקדה של ${ils(F.deposit)} בחודש (${esc(F.deposit_note)}). הערכה בלבד.</div></details>
+  <details><summary>🧾 ההלוואות הקיימות: ${ils(monthly)} בחודש, ב-14 לחודש</summary><div class="htab">${F.loans.map(l=>`<div><span>${esc(l.label)}<br><small>פריים ${l.margin<0?"פחות":"ועוד"} ${Math.abs(l.margin)}% · עוד ${l.left} תשלומים, עד ${fd(l.end)} · ${ils(l.monthly)} בחודש</small></span><b>${ils(l.balance)}</b></div>`).join("")}</div>${balloons.map(l=>`<div class="nt hwarn">⚠️ ב-${fd(l.end)} מסתיימת הלוואת בלון: צריך להחזיר ${ils(l.balance)} בבת אחת.</div>`).join("")}</details>
+  <div class="nt">${esc(F.src)}. ריבית פריים ${F.prime}%: ${esc(F.prime_src)}. בלי הצמדה ועמלות. משיכה חלקית: הראל מקזזת או מבקשת לסגור קודם את ההלוואות.</div>`;
+  box.querySelectorAll("[data-hf]").forEach(b=>b.onclick=()=>{const k=b.dataset.hf,v=b.dataset.v;if(k==="track")FS.track=v;else FS.sc=+v;drawFund();});
+  box.querySelectorAll("[data-hr]").forEach(i=>{i.oninput=()=>{const b=i.parentNode.querySelector("b");if(b)b.textContent=i.dataset.hr==="amt"?ils(+i.value):i.value;};i.onchange=()=>{FS[i.dataset.hr]=+i.value;drawFund();};});
+}
 function render(){
   chips();
   const V=visible(), act=V.filter(p=>p.status!=="ended");
@@ -367,11 +436,11 @@ function render(){
     const TI={now:["🟢","אפשר למשוך עכשיו, בלי מס"],tax:["🟡","אפשר עכשיו, אבל עם מס או תנאים"],later:["⏳","משתחרר בהמשך"],locked:["🔒","נעול (פרישה / ילדים)"]};
     const sum=t=>LQ.filter(l=>l.tier===t).reduce((s,l)=>s+(+(l.net??l.amount)||0),0);
     const card=l=>`<button class="lq t-${l.tier}" data-p="${esc(l.p.id)}"><span>${l.new?'<i class="nw">חדש</i> ':""}${esc(l.label||l.p.short||l.p.title)}</span><b>${ils(+l.amount||0)}</b><small>${[l.when?`<span class="when">${esc(l.when)}</span>`:"",l.tax?esc(l.tax):"",l.net!=null&&+l.net!==+l.amount?`נטו בערך ${ils(+l.net)}`:""].filter(Boolean).join(" · ")}</small>${l.advice?`<em class="adv">${esc(l.advice)}</em>`:""}</button>`;
-    const grp=t=>{const L=LQ.filter(l=>l.tier===t);return L.length?`<div class="lqg"><div class="lqh">${TI[t][0]} ${TI[t][1]}<span>${ils(sum(t))}</span></div>${L.map(card).join("")}</div>`:"";};
+    const grp=t=>{const L=LQ.filter(l=>l.tier===t&&!l.p.fund);return L.length?`<div class="lqg"><div class="lqh">${TI[t][0]} ${TI[t][1]}${t==="now"&&V.some(x=>x.fund)?" (חוץ מהקרן)":""}<span>${ils(L.reduce((s,l)=>s+(+(l.net??l.amount)||0),0))}</span></div>${L.map(card).join("")}</div>`:"";};
     const lk=LQ.filter(l=>l.tier==="locked");
     h+=`<section id="s-liq" class="liqbox"><div class="sh"><h2>💰 כסף נזיל למשיכה</h2><span class="hint">אורן וליאור</span></div>`+
       `<div class="lqk"><div><b>${ils(sum("now"))}</b><span>עכשיו, בלי מס</span></div><div><b>${ils(sum("tax"))}</b><span>עכשיו, עם מס (נטו)</span></div><div><b>${ils(sum("later"))}</b><span>משתחרר בהמשך</span></div></div>`+
-      grp("now")+grp("tax")+grp("later")+
+      (V.some(x=>x.fund)?`<div class="hf" id="hfund"></div>`:"")+grp("now")+grp("tax")+grp("later")+
       (lk.length?`<details class="lqg lqlock"><summary>${TI.locked[0]} ${TI.locked[1]} · ${ils(sum("locked"))}</summary>${lk.map(card).join("")}</details>`:"")+
       `<div class="lqn">לחיצה על שורה פותחת הוראות משיכה. סכומים לפי הדוחות האחרונים, לא כולל קרן הפנסיה עצמה.</div></section>`;
   }
@@ -478,7 +547,7 @@ function render(){
     h+=`<section id="s-tasks"><div class="sh"><h2>כל המשימות</h2><span class="hint">${open.length} פתוחות · ${done.length} בוצעו</span></div><div class="tasks">`+
       open.map(row).join("")+(done.length?`<button class="more" id="donebtn">${showDone?"הסתר":"הצג"} ${done.length} שבוצעו</button>`+(showDone?done.map(row).join(""):""):"")+`</div></section>`;
   }
-  $("app").innerHTML=h;bindRet();bindKids();
+  $("app").innerHTML=h;bindRet();bindKids();drawFund(V);
   if($("more"))$("more").onclick=()=>{showAll=!showAll;render();};
   if($("donebtn"))$("donebtn").onclick=()=>{showDone=!showDone;render();};
   const J=[["s-liq","נזיל"],["s-mine","מחכה לכם"],["s-flags","ממצאים"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-cov","מפת כיסוי"],["s-ret","פרישה"],["s-kids","ילדים"],["s-inv","השקעות"],["s-loans","הלוואות"],["s-sav","פנסיה"],["s-pol","פוליסות"],["s-tasks","משימות"]].filter(([i])=>$(i));
