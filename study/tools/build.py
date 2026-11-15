@@ -19,7 +19,7 @@ REP = [  # (מה, במה) — כל אחד חייב להופיע במקור, כד
   ('lia_ph_mute.', 'levi_ph_mute.'),
   ('<script src="audio/list.js', '<script src="../../lia/phonics/audio/list.js'),
   ("new Audio('audio/'+f", "new Audio('../../lia/phonics/audio/'+f"),
-  ('<script src="../squishies.js?v=4"></script>', '<script src="../squishies.js?v=1"></script>'),
+  ('<script src="../squishies.js?v=5"></script>', '<script src="../squishies.js?v=1"></script>'),
   ('LiaSquishies', 'LeviSquishies'),
   ("const EK='lia'", "const EK='levi'"),
   ('היי ליה! 🚀', 'היי לביא! 🚀'),

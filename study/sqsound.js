@@ -1,7 +1,7 @@
 // צליל מצחיק ושונה לכל סקווישי (אורן 6.11.2026): כל מזהה = צליל אחר לגמרי, בלי חזרות (WebAudio), ובערבוב גם צלילים מוקלטים (sqfx, למטה).
 // דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco + אולטרה u_ramyeon u_hotteok u_bungeo u_corndog u_mandu u_banana
 // דני (אורן 14.11.2026): רק הצלילים המצוירים החמודים המקוריים, בלי ההקלטות מהאינטרנט (ממים, גרעפסים, פלוצים). גם לאולטרה שלה יש צליל מצויר משלה.
-// ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi + חרקי חלל bg_lady bg_bee bg_ant bg_fire bg_fly bg_queen
+// ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi + חרקי חלל bg_lady bg_bee bg_ant bg_fire bg_fly bg_queen + מסע בין הכוכבים mt_cheese mt_shake mt_cookie mt_egg mt_jelly mt_berry
 // פרס מאמץ מההורים (14.11.2026): ef_l_* ליה, ef_d_* דני, ef_v_* לביא, ef_s_* שילה. תמיד הצליל המצויר שלהם.
 // לביא ושילה (9.11.2026; שילה = כלי עבודה מ-10.11): lv_* ו-sh_* (18 לכל אחד, כולל האולטרה). כולם תמיד מנגנים רק את הצליל המצויר שלהם, בלי ההקלטות מהאינטרנט (אורן 11.11.2026).
 // שימוש: <script src="../../sqsound.js"></script>  SqSound.play(id, muted)
@@ -64,6 +64,13 @@
   bg_fire:function(){[1568,2093,1760,2349,1976,2637].forEach(function(f,i){osc('sine',i*.12,.2,[[0,f],[1,f*1.02]],.11,0,[9,20])});noise(.7,.4,.05,'highpass',6000,8000)},// נצנוץ-נצנוץ של אור
   bg_fly:function(){noise(0,.9,.16,'bandpass',500,1500,1.2,9);osc('triangle',.1,.8,[[0,700],[.5,1100],[1,800]],.1,0,[4,40])},// פְפְפְפ של כנפיים גדולות
   bg_queen:function(){noise(0,.04,.4,'bandpass',1200,1200,3);noise(.12,.04,.4,'bandpass',1500,1500,3);[523,659,784,1047].forEach(function(f,i){osc('square',.3+i*.12,i===3?.5:.13,[[0,f],[1,f]],.1,2400)})},// קליק-קלאק ותרועת מלכה
+  // ליה, מסע בין הכוכבים (חיזוק מתמטיקה, 15.11.2026): mt_*, תמיד הצליל המצויר שלהם
+  mt_cheese:function(){osc('sine',0,.25,[[0,400],[1,800]],.2);osc('sine',.22,.25,[[0,600],[1,1200]],.18);osc('triangle',.45,.35,[[0,900],[.5,1400],[1,700]],.16,0,[7,30])},// בּוֹיוֹנְג של ירח קופץ
+  mt_shake:function(){noise(0,.5,.12,'bandpass',600,2400,3);for(var i=0;i<5;i++)osc('sine',.15+i*.07,.06,[[0,700+i*160],[1,900+i*160]],.13);osc('triangle',.55,.4,[[0,500],[1,1800]],.15)},// שלוק-שלוק ושיגור
+  mt_cookie:function(){for(var i=0;i<4;i++)noise(i*.08,.06,.35,'bandpass',1800-i*200,900,4);osc('square',.36,.18,[[0,700],[1,520]],.1,1500);osc('square',.52,.25,[[0,880],[1,1040]],.1,1500)},// קראנץ׳ ו"יאם"
+  mt_egg:function(){noise(0,.6,.1,'highpass',3000,5000);osc('sine',.05,.6,[[0,300],[.4,520],[1,440]],.18,0,[12,25]);beep(.62,1320,.12,.12,'triangle');beep(.72,1760,.18,.1,'triangle')},// טששש של מחבת וצליל זריחה
+  mt_jelly:function(){osc('sine',0,.8,[[0,260],[.2,420],[.4,240],[.6,380],[.8,230],[1,300]],.26,0,[9,28])},// וּוֹבּ-וּוֹבּ של ג׳לי
+  mt_berry:function(){[784,988,1175].forEach(function(f,i){beep(i*.1,f,.1,.12,'triangle')});osc('sine',.35,.45,[[0,1400],[1,500]],.14);noise(.38,.25,.06,'bandpass',2000,800,3)},// טינג-טינג וזום של טלסקופ
   // ---- לביא: לגו + ישראל + תאילנד (9.11.2026) ----
   lv_dreidel:function(){osc('square',0,1.1,[[0,520],[.5,420],[1,160]],.1,1400,[18,90]);osc('sine',0,1.1,[[0,1040],[1,320]],.06,0,[18,140])},// סביבון מסתובב ומאט
   lv_falafel:function(){noise(0,.9,.12,'highpass',3500,5000,0,0);for(var i=0;i<9;i++)noise(Math.random()*.8,.02,.3,'bandpass',2500+Math.random()*2500,2000,6);osc('sine',.85,.12,[[0,300],[1,900]],.22)},// טיגון שששש ופופ
@@ -152,5 +159,5 @@
   function mix(){var n;do{n=POOL[Math.floor(Math.random()*POOL.length)]}while(n===LAST&&POOL.length>1);LAST=n;return n}
   window.SqSound={has:function(id){return !!(S[id]||ULT[id])},ids:Object.keys(S).concat(Object.keys(ULT)),
     play:function(id,muted){if(muted)return false;if(ULT[id]){file(ULT[id]);return true}if(!S[id]||!ac())return false;
-      if(!/^(lv|sh|ef|u)_|^bg_/.test(id)&&!DANI[id]&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
+      if(!/^(lv|sh|ef|u|mt)_|^bg_/.test(id)&&!DANI[id]&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
 })();

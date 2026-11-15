@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <script src="../../guest.js?v=6"></script>
-<script src="../../content.js?v=8"></script><script>StudyContent.guard('lia/mult')</script>
+<script src="../../content.js?v=9"></script><script>StudyContent.guard('lia/mult')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · לוח הכפל</title>
 <link rel="manifest" href="../../manifest.json">
@@ -82,6 +82,7 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex
 .sqg .bug{background:linear-gradient(160deg,#ecfdf5,#e0f2fe,#f5f3ff);border-color:#34d399}.sqg .lock.bug{background:#f0faf6;border-color:#a7f3d0}
 .sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
 .sqg.big{max-width:330px}
+.sqg .trip{background:linear-gradient(160deg,#eef2ff,#fdf2f8,#fefce8);border-color:#a5b4fc}.sqg .lock.trip{background:#f5f7ff;border-color:#c7d2fe}
 .pb{height:8px;background:#e2f3ef;border-radius:8px;overflow:hidden}.pb i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--pu2),var(--pk));transition:width .5s}
 .conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:50;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
@@ -124,8 +125,8 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex
 <div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">🐞 חרק חלל חדש!</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">ללוח! 🐞</button></div></div>
 <div class="ov" id="mdov"><div class="pn"><div style="font-size:46px" id="mde">🏅</div><h2 id="mdt"></h2><p id="mdp"></p><button class="btn" id="mdy" type="button">לכוכב הבא 🚀</button></div></div>
 
-<script src="../squishies.js?v=4"></script>
-<script src="../../sqsound.js?v=11"></script>
+<script src="../squishies.js?v=5"></script>
+<script src="../../sqsound.js?v=12"></script>
 <script src="../../effort.js?v=1"></script>
 <script src="../../track.js?v=9"></script>
 <script src="../../guess.js?v=1"></script>
@@ -413,15 +414,15 @@ $('sqok').onclick=()=>{$('sqov').classList.remove('on');const f=SQAFTER;SQAFTER=
 // ---------- הלוח האחד (כל התכנים של ליה) ----------
 const L4=LiaSquishies.list4,ALLSQ=LiaSquishies.all,aura=LiaSquishies.aura,uaura=LiaSquishies.uaura;
 const own=()=>LiaSquishies.owned(),sqN=()=>{const o=own();return ALLSQ.filter(x=>o.includes(x.id)).length};
-const cl=s=>s.bug?' bug':s.ult?' ult':s.sup?' sup':'';
-function tile(s,o){return o.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}"><svg viewBox="0 0 100 100">${s.svg}</svg></div>`:`<div class="lock${cl(s)}"><svg viewBox="0 0 100 100">${s.svg.split(aura).join('').split(uaura).join('')}</svg></div>`}
+const cl=s=>s.bug?' bug':s.ult?' ult':s.sup?' sup':s.trip?' trip':'';
+function tile(s,o){return o.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}"><svg viewBox="0 0 100 100">${s.svg}</svg></div>`:`<div class="lock${cl(s)}"><svg viewBox="0 0 100 100">${s.svg.split(aura).join('').split(uaura).join('').split(LiaSquishies.orb||'\u0000').join('')}</svg></div>`}
 function sqRender(){const o=own(),R=LiaSquishies.rows,n=L4.filter(x=>o.includes(x.id)).length;
   $('sqtx').innerHTML=`הלוח שלך, אחד לכל התכנים. בלוח הכפל: <b>חרק חלל על כל כוכב</b> שמסיימים (${n} מתוך 6). אספת ${sqN()} מתוך ${ALLSQ.length}.`;$('sqpb').style.width=(PH2()?100:misPct(S.m)*100)+'%';
-  $('sqg').innerHTML=[LiaSquishies.list,LiaSquishies.list2,LiaSquishies.list3,L4].map((l,i)=>`<div class="sqhd">${R[i]}</div>`+l.map(s=>tile(s,o)).join('')).join('')+(window.StudyEffort?StudyEffort.row('lia'):'')}
+  $('sqg').innerHTML=[LiaSquishies.list,LiaSquishies.list2,LiaSquishies.list3,L4,LiaSquishies.list5||[]].filter(l=>l.length).map((l,i)=>`<div class="sqhd">${R[i]}</div>`+l.map(s=>tile(s,o)).join('')).join('')+(window.StudyEffort?StudyEffort.row('lia'):'')}
 $('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 $('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;$('sqcol').classList.remove('on');
-  showSq(s,s.eff?'💝 פרס מאמץ מאבא ואמא':s.bug?'חרק החלל שלך 🐞':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🪐','חזרה ללוח',()=>{sqRender();$('sqcol').classList.add('on')})};
+  showSq(s,s.eff?'💝 פרס מאמץ מאבא ואמא':s.trip?'הסקווישי שלך מהמסע 🚀':s.bug?'חרק החלל שלך 🐞':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🪐','חזרה ללוח',()=>{sqRender();$('sqcol').classList.add('on')})};
 
 // ---------- ההסבר: עמודים קצרים ----------
 let LM=0,LPG=0,LPS=[],LUP=null;

@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Study Monster">
 <meta name="theme-color" content="#eef1f5">
 <link rel="stylesheet" href="../theme.css?v=7">
-<script src="../content.js?v=8"></script>
+<script src="../content.js?v=9"></script>
 <style>
 /* תוכן בבדיקה = "בקרוב" (לא לחיץ). אחרי אישור ההורים: סרט "חדש!" חגיגי */
 .item.soon{opacity:.6;pointer-events:none;border-style:dashed}.item.soon .go{visibility:hidden}
@@ -20,6 +20,7 @@
 <a class="back" href="../">→ כל הילדים</a>
 <div class="top"><img src="../kids/lia.webp" alt=""><div><h1>היי ליה!</h1><p>מה לומדים היום?</p></div></div>
 <div class="list">
+<a class="item" id="m4i" data-c="lia/math4" data-gen="1" href="math4/"><span class="ic">🚀</span><span class="tx"><b>חיזוק מתמטיקה: מסע בין הכוכבים</b><small id="m4">6 כוכבים מהמבחן של תחילת השנה, 6 סקווישים חדשים</small><div class="bar"><i id="m4b" style="width:0"></i></div></span><span class="go">›</span></a>
 <a class="item" id="mxi" data-c="lia/mult" data-gen="1" href="mult/"><span class="ic">✖️</span><span class="tx"><b>לוח הכפל: חוקרת חרקי חלל</b><small id="mx">6 כוכבים, 6 סקווישים חדשים 🐞</small><div class="bar"><i id="mxb" style="width:0"></i></div></span><span class="go">›</span></a>
 <a class="item" id="phi" data-c="lia/phonics" data-gen="1" href="phonics/"><span class="ic">🔤</span><span class="tx"><b>אותיות וצלילים באנגלית</b><small id="ph">35 צלילים, בהגייה אמריקאית</small><div class="bar"><i id="phb" style="width:0"></i></div></span><span class="go">›</span></a>
 </div>
@@ -35,6 +36,13 @@ phGate();StudyContent.refresh(function(){location.reload()});
  if(!ok){document.getElementById('mx').textContent='בקרוב! 🚧 אבא ואמא מכינים לך משהו מיוחד';return}
  if(StudyContent.isNew('lia/mult')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
  try{var s=JSON.parse(localStorage.getItem('lia_mx'));if(s&&s.md){var n=Object.keys(s.md).length;document.getElementById('mx').textContent=n>=6?'כל 6 הכוכבים! ⚡ שליפה מהירה':'סיימת '+n+' מתוך 6 כוכבים 🐞';document.getElementById('mxb').style.width=(n/6*100)+'%'}}catch(e){}})();
+</script>
+<script>
+// חיזוק מתמטיקה (15.11.2026): אותו שער של אישור הורים
+(function(){var a=document.getElementById('m4i'),ok=StudyContent.ok('lia/math4');a.classList.toggle('soon',!ok);
+ if(!ok){document.getElementById('m4').textContent='בקרוב! 🚧 אבא ואמא מכינים לך משהו מיוחד';return}
+ if(StudyContent.isNew('lia/math4')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
+ try{var s=JSON.parse(localStorage.getItem('lia_m4'));if(s&&s.md){var n=Object.keys(s.md).length;document.getElementById('m4').textContent=n>=6?'כל 6 הכוכבים! 🎯 מיפוי חוזר':'סיימת '+n+' מתוך 6 כוכבים 🚀';document.getElementById('m4b').style.width=(n/6*100)+'%'}}catch(e){}})();
 </script>
 <script>if(StudyContent.ok('lia/phonics'))try{var s=JSON.parse(localStorage.getItem('lia_ph'));if(s&&s.w){var n=0;for(var k in s.w)if(s.w[k].s==='done')n++;if(s.T){document.getElementById('ph').textContent='את יודעת '+n+' מתוך 35 צלילים';document.getElementById('phb').style.width=(n/35*100)+'%'}}}catch(e){}</script>
 <script src="../kidlist.js?v=7"></script><script>StudyList.init('lia')</script>
