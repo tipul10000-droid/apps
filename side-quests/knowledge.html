@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2E3A87">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.3";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.4";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ידע ותחומי עניין</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,6 +44,8 @@ button{font:inherit;color:inherit}
 .hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
 .chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.kchat{display:flex;align-items:center;gap:10px;margin:12px 0 4px;padding:11px 14px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:16px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.22);min-height:48px}
+.kchat .ic{font-size:20px}.kchat small{display:block;font-family:var(--f-body);font-weight:600;font-size:12.5px;opacity:.8}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
 .kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
 .kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -128,7 +130,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=6">
-<script src="dash-sub.js?v=2" defer></script>
+<script src="dash-sub.js?v=3" defer></script>
 <script src="fold.js?v=1" defer></script>
 <script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
@@ -173,10 +175,12 @@ function heroHome(){const T=all("ticket"),tp=new Set(T.map(x=>x.topic||"other"))
   <h1>🧠 ידע ותחומי עניין</h1>
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis"><div class="kpi"><b>${T.length}</b><span>פיסות ידע</span></div><div class="kpi"><b>${tp.size}</b><span>תחומים</span></div><div class="kpi"><b>${T.filter(x=>x.fav).length}</b><span>מועדפים</span></div></div>`;}
-function heroTicket(x){const tp=topicOf(x.topic);
-  const back=`<button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button>`;
+function heroTicket(x){const tp=topicOf(x.topic),ch=chatOf(x);
+  const back=`<button class="sqhome sqsub" type="button" data-home data-title="${esc((x.icon||"💡")+" "+(x.short||x.title))}" data-chat="${esc(ch)}"><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button>`;
   return `<div class="top">${back}<span class="back">${tp[2]} ${esc(tp[1])}</span></div>
-  <h1>${esc(x.icon||"💡")} ${esc(x.title)}</h1><p class="sub">${esc(x.summary||"")}</p>
+  <h1>${esc(x.icon||"💡")} ${esc(x.title)}</h1>
+  <a class="kchat" href="${esc(ch||safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span class="ic">💬</span><span>${ch?"השיחה על הפיסה הזו":"פתיחת שיחה על הפיסה"}<small>${ch?"לשאול, להעמיק ולהוסיף מקורות":"עוד אין שיחה משלה, נפתח בצ׳אט הכללי"}</small></span></a>
+  <p class="sub">${esc(x.summary||"")}</p>
   ${srcs(x).map((s,i,a)=>{const u=safe(s.url),inner=`<span style="font-size:22px">${u?"🔗":"📚"}</span><span>${a.length>1?"מקור "+(i+1):"למקור"}${s.author?": "+esc(s.author):""}${s.handle?" "+esc(s.handle):""}<small>${esc([PLAT[plat(s)],s.date?fmtD(s.date):"",s.label].filter(Boolean).join(" · "))}</small></span>`;
     return u?`<a class="src" href="${esc(u)}" target="_blank" rel="noopener">${inner}</a>`:`<div class="src">${inner}</div>`;}).join("")}`;}
 
@@ -215,8 +219,7 @@ function tabText(x){const P=x.parts||[];if(!P.length)return `<div class="empty">
 function renderTicket(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
   $("hero").innerHTML=heroTicket(x);
   $("bar").innerHTML=`<div class="seg"><button data-tab="ins" class="${ui.tab!=="text"?"on":""}">💡 תובנות</button><button data-tab="text" class="${ui.tab==="text"?"on":""}">📜 הטקסט המלא</button></div>`;
-  const ch=chatOf(x);
-  const acts=`<div class="acts"><a href="${esc(ch||safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener">💬 ${ch?"הצ׳אט שלה":"צ׳אט"}</a><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button data-share>📤 לשתף</button></div>`;
+  const acts=`<div class="acts"><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button data-share>📤 לשתף</button></div>`;
   $("app").innerHTML=acts+(ui.tab==="text"?tabText(x):tabIns(x));}
 function chatOf(x){/* 1.3: every piece has its own chat (Oren 15.11.2026) */const u=safe(x.chat_url);if(u)return u;const l=(x.links||[]).find(l=>l&&/^שיחה/.test(l.label||"")&&safe(l.url));return l?safe(l.url):"";}
 function shareText(x){const U=srcs(x).map(s=>safe(s.url)).filter(Boolean);
