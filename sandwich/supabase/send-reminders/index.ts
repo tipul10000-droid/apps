@@ -8,10 +8,11 @@ const MOM_SLOTS = [10, 12];
 const DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 // משפחות: a = הראשונה, b = השנייה. מזהי הילדים ייחודיים, והבחירה נעשית לפי הפרמטר fam (ברירת מחדל a).
 // off = היסט למספרי ה-slot בטבלת היומן (sandwich_push_log), כדי שהגבלות "פעם אחת" לא יתנגשו בין משפחות.
-type Fam = { key: string; kids: Record<string, string>; fem: string[]; mom: string; momName: string; off: number };
+// wake = משפחה שבה ילד שבחר 4 פריטים ומעלה מקבל תזכורות הערה בבוקר (6:00 עד 6:30, כל 5 דקות). הבחירות נשמרות כטקסט אחד עם | ביניהם.
+type Fam = { key: string; kids: Record<string, string>; fem: string[]; mom: string; momName: string; off: number; wake?: number };
 const FAMS: Record<string, Fam> = {
   a: { key: "a", kids: { lia: "ליקי", daniela: "דנדי", evyatar: "אביה" }, fem: ["lia", "daniela"], mom: "mom", momName: "אמא ליאורי", off: 0 },
-  b: { key: "b", kids: { ron: "רון", omer: "עומר", uri: "אורי" }, fem: ["uri"], mom: "mom_b", momName: "אמא", off: 10_000_000 },
+  b: { key: "b", kids: { ron: "רון", omer: "עומר", uri: "אורי" }, fem: ["uri"], mom: "mom_b", momName: "אמא", off: 10_000_000, wake: 4 },
 };
 const famOf = (url: URL): Fam => FAMS[url.searchParams.get("fam") || "a"] || FAMS.a;
 const ALLNAMES: Record<string, string> = Object.assign({}, ...Object.values(FAMS).map((f) => f.kids));
@@ -31,10 +32,10 @@ const logEv = async (sb: any, rows: any[]) => { if (rows.length) await sb.from("
 
 function israelNow(ms: number = Date.now()) {
   const p = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hour12: false,
+    timeZone: "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false,
   }).formatToParts(new Date(ms));
   const g = (t: string) => p.find((x) => x.type === t)!.value;
-  return { y: +g("year"), m: +g("month"), d: +g("day"), hour: parseInt(g("hour")) % 24 };
+  return { y: +g("year"), m: +g("month"), d: +g("day"), hour: parseInt(g("hour")) % 24, minute: +g("minute") };
 }
 
 // היום הלימודים הבא אחרי היום: ראשון עד שישי, בלי שבת.
@@ -93,7 +94,9 @@ async function replacementPush(sb: any, keys: { pub: string; priv: string }, F: 
   const { data: off } = await sb.from("sandwich_unavailable").select("dish").eq("fam", F.key);
   const gone = new Set((off || []).map((r: any) => r.dish));
   const { data: rows } = await sb.from("sandwich_choices").select("child,dish").eq("for_date", iso).neq("dish", "");
-  const need = (rows || []).filter((r: any) => F.kids[r.child] && gone.has(r.dish) && (!onlyDish || r.dish === onlyDish));
+  const items = (d: string) => String(d).split("|");
+  const need = (rows || []).map((r: any) => ({ child: r.child, dish: items(r.dish).find((x) => gone.has(x) && (!onlyDish || x === onlyDish)) }))
+    .filter((r: any) => F.kids[r.child] && r.dish);
   if (!need.length) return { need: 0, sent: 0 };
   const { data: subs } = await sb.from("sandwich_push").select("*").eq("active", true).in("child", need.map((r: any) => r.child));
   webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
@@ -225,7 +228,7 @@ Deno.serve(async (req) => {
       try {
         await sendPush(
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
-          JSON.stringify({ title: `🥪 ${F.kids[child]} ${verb} סנדוויץ'`, body: `${dish} · יום ${DAYS[t.getUTCDay()]}`, url: APP_URL, tag: `sandwich-chose-${child}` }),
+          JSON.stringify({ title: `🥪 ${F.kids[child]} ${verb} סנדוויץ'`, body: `${dish.split("|").join(" + ")} · יום ${DAYS[t.getUTCDay()]}`, url: APP_URL, tag: `sandwich-chose-${child}` }),
           { TTL: 3600 },
         );
         sent++;
@@ -270,6 +273,10 @@ Deno.serve(async (req) => {
     if (sent) await logEv(sb, [{ child, type: "nudge_sent", for_date: iso }]);
     return json({ ok: true, result: sent ? "sent" : "no_device", sent });
   }
+
+  // תזכורות הערה בבוקר: ילד שבחר 4 פריטים ומעלה מקבל תזכורת ב-6:00 ובכל 5 דקות עד 6:30, כדי שיקום ויכין לעצמו.
+  // נקרא כל 5 דקות (pg_cron, ראו sql/multi.sql) ופועל רק בין 6:00 ל-6:34 שעון ישראל, ראשון עד שישי. dry=1 בודק בלי לשלוח.
+  if (action === "wake") return json(await wakeFamily(sb, keys, F, url.searchParams.get("dry") === "1", url.searchParams.get("at")));
 
   // תזמון (כל שעה עגולה): כל משפחה בנפרד. dry=1 בודק בלי לשלוח; fam=b מגביל למשפחה אחת (בבדיקות).
   const dry = url.searchParams.get("dry") === "1";
@@ -372,4 +379,49 @@ async function cronFamily(sb: any, keys: { pub: string; priv: string }, F: Fam, 
   }));
   await logEv(sb, evs);
   return { slot, target: iso, sent, removed, failed, gone, daily };
+}
+
+async function wakeFamily(sb: any, keys: { pub: string; priv: string }, F: Fam, dry: boolean, at: string | null) {
+  if (!F.wake) return { skipped: "family has no wake" };
+  const now = israelNow();
+  // at=HH:MM רק לבדיקה (עם dry=1)
+  const hour = dry && at ? +at.split(":")[0] : now.hour, minute = dry && at ? +at.split(":")[1] : now.minute;
+  if (hour !== 6 || minute > 34) return { skipped: "not wake time", hour, minute };
+  const dow = new Date(Date.UTC(now.y, now.m - 1, now.d, 12)).getUTCDay();
+  if (dow === 6) return { skipped: "saturday" };
+  const iso = todayStr(now);
+  const idx = Math.floor(minute / 5); // 0..6
+  const { data: rows } = await sb.from("sandwich_choices").select("child,dish").eq("for_date", iso).neq("dish", "");
+  const want = (rows || []).map((r: any) => ({ child: r.child, items: String(r.dish).split("|").filter(Boolean) }))
+    .filter((r: any) => F.kids[r.child] && r.items.length >= F.wake!);
+  if (!want.length) return { skipped: "nobody chose enough", idx };
+  if (dry) return { dry: true, idx, kids: want.map((r: any) => ({ child: r.child, n: r.items.length })) };
+  // כל סבב נשלח פעם אחת, גם אם הפונקציה נקראת כמה פעמים
+  const { error: dup } = await sb.from("sandwich_push_log").insert({ for_date: iso, slot: F.off + 700 + idx });
+  if (dup) return { skipped: "already sent", idx };
+  const { data: subs } = await sb.from("sandwich_push").select("*").eq("active", true).in("child", want.map((r: any) => r.child));
+  webpush.setVapidDetails(APP_URL, keys.pub, keys.priv);
+  let sent = 0;
+  const ev: any[] = [];
+  await Promise.allSettled((subs || []).map(async (s: any) => {
+    const w = want.find((r: any) => r.child === s.child)!;
+    const fem = F.fem.includes(s.child);
+    try {
+      await sendPush(
+        { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+        JSON.stringify({
+          title: `⏰ ${F.kids[s.child]}, ${fem ? "קומי" : "קום"} להכין לבד!`,
+          body: `אמא והאפליקציה: ביקשת ${w.items.length} דברים (${w.items.join(", ")}), אז ${fem ? "מכינה" : "מכין"} בעצמך`,
+          url: APP_URL, tag: `sandwich-wake-${iso}-${idx}`,
+        }),
+        { TTL: 300 },
+      );
+      sent++;
+      ev.push({ child: s.child, type: "wake_sent", for_date: iso, meta: { n: w.items.length, idx } });
+    } catch (e: any) {
+      if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("sandwich_push").delete().eq("endpoint", s.endpoint);
+    }
+  }));
+  await logEv(sb, ev);
+  return { sent, idx, kids: want.length };
 }

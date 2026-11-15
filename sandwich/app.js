@@ -33,6 +33,8 @@
     {n: "מאפיה", e: "🥐", sub: "כותבים הערה", ask: "איזו מאפיה?", hint: "לדוגמה: בורקס גבינה, או שוקולד"}
   ]};
   var DISHES = DISH_SETS[FAM];
+  // משפחת חלפון: אפשר לבחור כמה פריטים. נשמרים כטקסט אחד עם | ביניהם (בלי שינוי סכמה). 4 פריטים ומעלה = הטלפון מעיר ב-6:00.
+  var MULTI = !!FAMS[FAM].multi, WAKE_MIN = 4, MAXLEN = 100; // MAXLEN = אורך מקסימלי של השדה במסד
   // בחירות ישנות ששמרו שם קודם של מנה
   function canon(name) { for (var i = 0; i < DISHES.length; i++) if (DISHES[i].n === name || (DISHES[i].old || []).indexOf(name) >= 0) return DISHES[i].n; return name; }
 
@@ -61,6 +63,7 @@
     if (typeof e === "string") return e;
     return '<span class="pair' + (e.length === 1 ? " one" : "") + '">' + e.map(function (k) { return SVG[k] || '<span class="eic">' + k + '</span>'; }).join("") + '</span>';
   }
+  function splitDish(s) { return s ? (MULTI ? String(s).split("|") : [String(s)]).map(canon).filter(Boolean) : []; }
   var DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
   function dayLabel(isoStr) {
     var d = new Date(isoStr + "T12:00:00");
@@ -288,6 +291,7 @@
   // ---- מה חדש ----
   // כל גרסה חדשה מוסיפה כאן שורה בראש הרשימה (הגרסה = המספר ב-?v= באינדקס). at = תאריך ושעה בשעון ישראל.
   var RELEASES = [
+    {v: "20261115a", at: "15.11.2026 · 16:50", fam: "b", items: ["אפשר לבחור כמה מנות שרוצים (לחיצה נוספת מורידה מנה)", "⏰ מי שבוחר 4 מנות ומעלה מקבל הודעה מאמא ומהאפליקציה, ובבוקר הטלפון מעיר אותו בתזכורות מ-6:00 עד 6:30, כל 5 דקות, כדי שיכין לעצמו"]},
     {v: "20261114a", at: "14.11.2026 · 23:30", items: ["⚙️ הגדרות (כפתור במסך הראשי): אפשר לעבור בין משפחות. אותה אפליקציה, ילדים ותזכורות נפרדים לכל משפחה"]},
     {v: "20261024a", at: "24.10.2026 · 21:10", items: ["אמא ליאורי מקבלת התראה ברגע שילד בוחר או משנה מנה"]},
     {v: "20261016c", at: "16.10.2026 · 12:40", items: ["🔧 מצב מנהל (אורן): רואה מה כולם בחרו, סטטיסטיקה, ומקבל עותק של כל ההתראות של הילדים ושל אמא"]},
@@ -315,6 +319,7 @@
     {v: "0.3", at: "6.10.2026 · 03:17", items: ["איורי הדמויות ועיצוב כהה"]},
     {v: "0.1", at: "6.10.2026 · 02:09", items: ["הגרסה הראשונה: בחירת סנדוויץ' לבית הספר"]}
   ];
+  RELEASES = RELEASES.filter(function (r) { return !r.fam || r.fam === FAM; }); // גרסה עם fam מוצגת רק למשפחה הזאת
   function famTxt(t) { return FAM === "a" ? t : t.replace(/ \(אורן\)/g, ""); }
   function relHtml(r) {
     return '<p class="rv">גרסה <bdi>' + esc(r.v) + '</bdi> · <bdi>' + esc(r.at) + '</bdi></p><ul>' + r.items.map(function (t) { return '<li>' + esc(famTxt(t)) + '</li>'; }).join("") + '</ul>';
@@ -569,8 +574,8 @@
     Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; }), getReturned().catch(function () { return []; }), getDaily(child).catch(function () { return null; })]).then(function (res) {
       var rows = res[0], off = res[1], notes = res[2], back = res[3], daily = res[4];
       var mine = rows.filter(function (r) { return r.child === child; })[0];
-      var cur = mine && canon(mine.dish);
-      var bad = cur && off.indexOf(cur) >= 0 ? cur : null;
+      var sel = splitDish(mine && mine.dish);
+      var bads = sel.filter(function (x) { return off.indexOf(x) >= 0; });
       function rank(d) { return off.indexOf(d.n) >= 0 ? 3 : d.isNew ? 0 : back.indexOf(d.n) >= 0 ? 1 : 2; }
       show('<header class="phead" style="' + colorOf(child) + '"><div class="ptop">' +
         '<button class="pill back" id="switch" type="button"><span>חזרה למסך הדמויות</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 5.5L4.5 12 11 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
@@ -587,50 +592,71 @@
       var status = document.getElementById("status");
 
       var dishes = Array.prototype.slice.call(app.querySelectorAll(".dish"));
+      function hasNote(x) { return !!notes[child + "|" + x]; }
       function paint(saved) {
-        if (cur !== bad) bad = null;
-        dishes.forEach(function (b) { b.classList.toggle("sel", DISHES[b.dataset.i].n === cur && !bad); b.classList.toggle("daily", DISHES[b.dataset.i].n === daily); });
-        status.className = "ok" + (cur && !bad ? "" : " idle") + (bad ? " warn" : "") + (saved ? " pop" : "");
-        status.innerHTML = bad
-          ? '<span class="e">⚠️</span><span class="tx">' + esc(bad) + ' אזלה. ' + (CHARACTERS[child].g === "f" ? "בחרי" : "בחר") + ' מנה אחרת</span>'
-          : cur
-          ? '<span class="e">' + emoji(cur) + '</span><span class="tx">בחרת ' + esc(cur) + '!</span><button class="notebtn' + (notes[child + "|" + cur] ? " has" : "") + '" type="button">' + (notes[child + "|" + cur] ? "📝 יש הערה" : "📝 הערה") + '</button>'
-          : '<span class="tx">לחצו על מנה כדי לבחור</span>';
+        bads = bads.filter(function (x) { return sel.indexOf(x) >= 0; });
+        dishes.forEach(function (b) { var n = DISHES[b.dataset.i].n; b.classList.toggle("sel", sel.indexOf(n) >= 0 && bads.indexOf(n) < 0); b.classList.toggle("daily", n === daily); });
+        var anyNote = sel.some(hasNote), last = sel[sel.length - 1];
+        status.className = "ok" + (sel.length && !bads.length ? "" : " idle") + (bads.length ? " warn" : "") + (saved ? " pop" : "");
+        status.innerHTML = bads.length
+          ? '<span class="e">⚠️</span><span class="tx">' + esc(bads[0]) + ' אזלה. ' + (CHARACTERS[child].g === "f" ? "בחרי" : "בחר") + ' מנה אחרת</span>'
+          : sel.length
+          ? '<span class="e">' + emoji(last) + '</span><span class="tx">' + (sel.length === 1 ? 'בחרת ' + esc(last) + '!' : 'בחרת ' + sel.length + ' מנות' + (sel.length >= WAKE_MIN ? ' ⏰' : '!')) + '</span><button class="notebtn' + (anyNote ? " has" : "") + '" type="button">' + (anyNote ? "📝 יש הערה" : "📝 הערה") + '</button>'
+          : '<span class="tx">' + (MULTI ? 'לחצו על מנות כדי לבחור' : 'לחצו על מנה כדי לבחור') + '</span>';
       }
       paint(false);
+      function noteSaved(dish) { return function (txt) { if (txt) notes[child + "|" + dish] = txt; else delete notes[child + "|" + dish]; if (sel.indexOf(dish) >= 0) paint(false); toast(txt ? "ההערה נשמרה" : "ההערה נמחקה"); }; }
       status.addEventListener("click", function (e) {
-        if (!e.target.closest || !e.target.closest(".notebtn") || !cur) return;
-        var dish = cur;
-        editNote(child, dish, notes[child + "|" + dish], function (txt) { if (txt) notes[child + "|" + dish] = txt; else delete notes[child + "|" + dish]; if (cur === dish) paint(false); toast(txt ? "ההערה נשמרה" : "ההערה נמחקה"); });
+        if (!e.target.closest || !e.target.closest(".notebtn") || !sel.length) return;
+        if (sel.length === 1) { var dish = sel[0]; editNote(child, dish, notes[child + "|" + dish], noteSaved(dish)); return; }
+        // כמה פריטים: בוחרים לאיזה מהם כותבים הערה
+        openSheet('<h3>הערה לאיזו מנה?</h3>' + sel.map(function (x, i) { return '<button class="main sec2" type="button" data-i="' + i + '">' + (hasNote(x) ? "📝 " : "") + esc(x) + '</button>'; }).join(""), function (ov, close) {
+          Array.prototype.forEach.call(ov.querySelectorAll("[data-i]"), function (nb) {
+            nb.onclick = function () { var dish = sel[nb.dataset.i]; close(); editNote(child, dish, notes[child + "|" + dish], noteSaved(dish)); };
+          });
+        });
       });
+      // 4 פריטים ומעלה: הודעה מאמא ומהאפליקציה, והטלפון יעיר ב-6:00 (השרת שולח, ראו send-reminders)
+      function wakeMsg(n) {
+        var when = t.label === "מחר" ? "מחר" : t.label === "היום" ? "בפעם הבאה" : t.label;
+        pushState().then(function (sub) { return !!sub; }, function () { return false; }).then(function (on) {
+          openSheet('<h3>⏰ בחרת ' + n + ' דברים!</h3><p class="rv">הודעה מאמא ומהאפליקציה:</p>' +
+            '<blockquote class="notetxt">ביקשת הרבה דברים, אז ' + when + ' ב-6:00 בבוקר הטלפון יעיר אותך בתזכורות (כל 5 דקות, עד 6:30), כדי ש' + (CHARACTERS[child].g === "f" ? "תקומי" : "תקום") + ' ו' + (CHARACTERS[child].g === "f" ? "תכיני" : "תכין") + ' לעצמך את מה שביקשת. בהצלחה! 💪</blockquote>' +
+            (on ? "" : '<p class="sm">⚠️ כדי שהטלפון יעיר אותך צריך להפעיל תזכורות: חוזרים למסך הדמויות ולוחצים "תזכורות - כבוי".</p>') +
+            '<button class="main" id="wkok" type="button">הבנתי</button>', function (ov, close) { ov.querySelector("#wkok").onclick = close; });
+        });
+      }
       dishes.forEach(function (b) {
         b.onclick = function (e) {
           var name = DISHES[b.dataset.i].n;
           if (e.target.closest && e.target.closest(".dstar")) {
             var on = daily !== name;
-            if (on && cur !== name) return;
+            if (on && sel.indexOf(name) < 0) return;
             setDaily(child, on ? name : "").then(function () {
               daily = on ? name : null; paint(false);
               toast(on ? "⭐ " + name + " תיבחר לך אוטומטית כל יום, עד שתבטל או תסמן מנה יומית אחרת" : "המנה היומית בוטלה");
             }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
             return;
           }
-          if (name === cur) {
-            // לחיצה על המנה שכבר נבחרה: מורידים את הבחירה (נשמר כמנה ריקה)
-            setChoice(child, t.iso, "").then(function () { cur = null; paint(false); })
+          if (sel.indexOf(name) >= 0) {
+            // לחיצה על מנה שכבר נבחרה: מורידים אותה (בלי מנות, נשמר כמנה ריקה)
+            var rest = sel.filter(function (x) { return x !== name; });
+            setChoice(child, t.iso, rest.join("|")).then(function () { sel = rest; paint(false); })
               .catch(function () { toast("לא הצלחנו לבטל. נסו שוב"); });
             return;
           }
-          var wasChanged = !!cur;
-          setChoice(child, t.iso, name).then(function () {
+          var wasChanged = sel.length > 0;
+          var next = MULTI ? sel.filter(function (x) { return bads.indexOf(x) < 0; }).concat([name]) : [name];
+          if (next.join("|").length > MAXLEN) { toast("לא נכנסות עוד מנות. אפשר להוריד אחת ולהוסיף אחרת"); return; }
+          var before = sel.length;
+          setChoice(child, t.iso, next.join("|")).then(function () {
             notifyMom(child, wasChanged);
-            cur = name; paint(true); burstFrom(status);
+            sel = next; bads = []; paint(true); burstFrom(status);
             var dd = DISHES[b.dataset.i];
             if (dd.ask) {
-              editNote(child, name, notes[child + "|" + name], function (txt) { if (txt) notes[child + "|" + name] = txt; else delete notes[child + "|" + name]; if (cur === name) paint(false); toast(txt ? "ההערה נשמרה" : "ההערה נמחקה"); }, {title: dd.ask, hint: dd.hint});
-              return;
-            }
-            if (!daily && (parseInt(store("dailyhint") || "0", 10) < 3)) { store("dailyhint", String(parseInt(store("dailyhint") || "0", 10) + 1)); toast("רוצים את המנה הזאת כל יום? לחצו על ☆ בפינה של המנה"); }
+              editNote(child, name, notes[child + "|" + name], noteSaved(name), {title: dd.ask, hint: dd.hint});
+            } else if (!daily && (parseInt(store("dailyhint") || "0", 10) < 3)) { store("dailyhint", String(parseInt(store("dailyhint") || "0", 10) + 1)); toast("רוצים את המנה הזאת כל יום? לחצו על ☆ בפינה של המנה"); }
+            if (MULTI && before < WAKE_MIN && next.length >= WAKE_MIN) wakeMsg(next.length);
           }).catch(function () { toast("לא הצלחנו לשמור. נסו שוב"); });
         };
       });
@@ -663,7 +689,7 @@
     var n = notes[k + "|" + d];
     if (!n || bad) return "";
     var fresh = store("noteseen_" + k + "|" + d) !== n;
-    return '<button class="notechip' + (fresh ? " new" : "") + '" data-k="' + k + '" type="button">' + (fresh ? "📝 התקבלה הערה" : "📝 הערה") + '</button>';
+    return '<button class="notechip' + (fresh ? " new" : "") + '" data-k="' + k + '" data-d="' + esc(d) + '" type="button">' + (fresh ? "📝 התקבלה הערה" : "📝 הערה") + '</button>';
   }
   function screenMom() {
     var t = target(), celebrated = false;
@@ -679,8 +705,9 @@
     function render() {
       Promise.all([getAll(t.iso), getOff().catch(function () { return []; }), getNotes().catch(function () { return {}; })]).then(function (res) {
         var rows = res[0], off = res[1], notes = res[2];
-        var by = {}; rows.forEach(function (r) { by[r.child] = canon(r.dish); });
-        var done = KIDS.filter(function (k) { return by[k] && off.indexOf(by[k]) < 0; }).length;
+        var by = {}; rows.forEach(function (r) { by[r.child] = splitDish(r.dish); });
+        function anyOff(k) { return by[k].some(function (x) { return off.indexOf(x) >= 0; }); }
+        var done = KIDS.filter(function (k) { return by[k] && by[k].length && !anyOff(k); }).length;
         var all = done === KIDS.length;
         status.className = "ok" + (all ? " all" : " idle");
         status.innerHTML = '<span class="tx">' + (all ? "כולם בחרו 🎉" : done + " מתוך " + KIDS.length + " בחרו") + '</span>';
@@ -688,17 +715,17 @@
         // כפתור "שלח תזכורת": רק כשליאורי רואה את אותו יום שהילדים בוחרים עליו עכשיו (אחרת אי אפשר כבר לבחור)
         var canNudge = !demo && t.iso === target().iso;
         document.getElementById("list").innerHTML = KIDS.map(function (k) {
-          var d = by[k], last = parseInt(store("nudge_" + k) || "0", 10), recent = last && (Date.now() - last) < 10 * 60 * 1000;
-          var bad = d && off.indexOf(d) >= 0;
+          var items = by[k] || [], d = items.length ? items.join(" + ") : "", last = parseInt(store("nudge_" + k) || "0", 10), recent = last && (Date.now() - last) < 10 * 60 * 1000;
+          var bad = items.length && anyOff(k);
           var chip = bad ? '<span class="chip bad">צריך להחליף</span>' : d ? '<span class="chip y">' + verb(k) + ' ✓</span>'
             : (canNudge ? (recent ? '<span class="chip y soft">תזכורת נשלחה ✓</span>' : '<button class="nudge" type="button" data-k="' + k + '">שלח תזכורת</button>')
               : '<span class="chip n">ממתין</span>');
           return '<div class="row ' + (d && !bad ? "done" : "wait") + '" style="' + colorOf(k) + '">' + drawCharacter(k, "face") + '<div><b>' + CHARACTERS[k].name + '</b>' +
-            (d ? '<span class="d"><span class="em">' + emoji(d) + '</span>' + esc(d) + (bad ? ' (אזלה)' : '') + '</span>' + noteChip(k, d, bad, notes) : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' + chip + '</div>';
+            (d ? '<span class="d"><span class="em">' + emoji(items[0]) + '</span>' + esc(d) + (bad ? ' (אזלה)' : '') + '</span>' + items.map(function (x) { return noteChip(k, x, bad, notes); }).join(" ") : '<span class="none">עדיין לא ' + verb(k) + '…</span>') + '</div>' + chip + '</div>';
         }).join("");
         Array.prototype.forEach.call(document.querySelectorAll("#list .notechip"), function (b) {
           b.onclick = function () {
-            var k = b.dataset.k, dish = by[k], note = notes[k + "|" + dish];
+            var k = b.dataset.k, dish = b.dataset.d, note = notes[k + "|" + dish];
             if (!note) return;
             openSheet('<h3>הערה מ' + esc(CHARACTERS[k].name) + '</h3><p class="rv">' + esc(dish) + '</p><blockquote class="notetxt">' + esc(note) + '</blockquote>', function () {});
             store("noteseen_" + k + "|" + dish, note); render();
@@ -765,7 +792,7 @@
   function statsOf(S, k) {
     var mine = (S.choices || []).filter(function (r) { return r.c === k; });
     var counts = {}, dates = {};
-    mine.forEach(function (r) { var n = canon(r.x); counts[n] = (counts[n] || 0) + 1; dates[r.d] = 1; });
+    mine.forEach(function (r) { splitDish(r.x).forEach(function (n) { counts[n] = (counts[n] || 0) + 1; }); dates[r.d] = 1; });
     var ds = Object.keys(dates).sort(), best = 0, run = 0, prev = null;
     ds.forEach(function (d) { run = prev && prevSchoolDay(d) === prev ? run + 1 : 1; prev = d; if (run > best) best = run; });
     var cur = 0, t = target().iso, last = ds[ds.length - 1];

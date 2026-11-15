@@ -3,7 +3,7 @@
 // משפחות: a = המשפחה הראשונה (ברירת מחדל), b = המשפחה השנייה. מזהי הדמויות ייחודיים בין המשפחות.
 window.FAMILIES = {
   a: {label: "משפחת יצחקי", kids: ["lia", "daniela", "evyatar"], mom: "mom"},
-  b: {label: "משפחת חלפון", kids: ["ron", "omer", "uri"], mom: "mom_b"}
+  b: {label: "משפחת חלפון", kids: ["ron", "omer", "uri"], mom: "mom_b", multi: true}
 };
 window.CHARACTERS = {
   lia:     {g: "f", name: "ליקי",   color: "#8fe04a", color2: "#ffd43b"},
