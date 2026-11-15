@@ -233,7 +233,7 @@ function render(){ANS=false;SEL=null;const c=$('card'),m=CUR.mode,it=CUR.it;let 
     let cf=lv>=2?shuf([...new Set(u0.flatMap(l=>(Array.isArray(CONF[l])?CONF[l]:(CONF[l]||'').split('')).filter(Boolean)))]).filter(okx):[];
     const ex=[...new Set(cf.concat(shuf(IT.filter(x=>x.g<=curG()).map(x=>x.id)).filter(okx)))].slice(0,Math.max(0,7-u.length));
     CUR.u=u;CUR.got=[];CUR.tiles=shuf(u.concat(ex));
-    h=head('🧩 הכתבה'+(allL()||(S.bl||1)>1?' · רמה '+(S.bl||1):''))+`<div class="ask">הרכיבי את המילה ששמעת</div><div class="mid"><button class="say lg" id="pw" type="button">🔊</button><div class="slots" id="sl">${u.map(()=>'<span></span>').join('')}</div></div>
+    h=head('🧩 הכתבה'+(allL()||(S.bl||1)>1?' · רמה '+(S.bl||1):''))+`<div class="ask">הקשיבי למילה, ובני אותה מהאותיות שלמטה.</div><div class="mid"><button class="say lg" id="pw" type="button">🔊</button><div class="slots" id="sl">${u.map(()=>'<span></span>').join('')}</div></div>
     <div class="tiles" id="tl">${CUR.tiles.map((t,i)=>`<button type="button" data-i="${i}">${esc(t)}</button>`).join('')}<button type="button" class="bk" id="bk">⌫</button></div>
     <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button" disabled>בדיקה</button></div>`;
     c.innerHTML=h;$('pw').onclick=()=>word(w);$('tl').querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>{if(ANS||CUR.got.length>=u.length)return;SND.click();b.classList.add('used');CUR.got.push(+b.dataset.i);slots()});
@@ -242,15 +242,15 @@ function render(){ANS=false;SEL=null;const c=$('card'),m=CUR.mode,it=CUR.it;let 
   // שאלות בחירה
   let ask,mid,opts,cls='';
   if(m==='end'||m==='mid'||m==='read'){const L=m==='end'?endW(it):m==='mid'?midW(it):readW(it);const u=pick(L);CUR.w=u.join('');}
-  if(m==='end'){ask='באיזו אות המילה נגמרת?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(IT.filter(x=>x.id.length===1&&!VOW.includes(x.id)&&x.id!=='x'&&x.snd!==it.snd)).slice(0,3)));}
-  else if(m==='mid'){ask='איזה צליל שומעים באמצע המילה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(VOW.filter(v=>v!==it.id)).slice(0,3).map(v=>BY[v])));}
-  else if(m==='read'){ask='קראי את המילה. מה היא?';mid=`<div class="big" dir="ltr" style="text-transform:none">${esc(CUR.w)}</div>`;
+  if(m==='end'){ask='הקשיבי למילה. באיזו אות היא נגמרת?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(IT.filter(x=>x.id.length===1&&!VOW.includes(x.id)&&x.id!=='x'&&x.snd!==it.snd)).slice(0,3)));}
+  else if(m==='mid'){ask='הקשיבי למילה. איזה צליל שומעים באמצע שלה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(shuf(VOW.filter(v=>v!==it.id)).slice(0,3).map(v=>BY[v])));}
+  else if(m==='read'){ask='קראי את המילה באנגלית, ובחרי את התמונה שמתאימה לה.';mid=`<div class="big" dir="ltr" style="text-transform:none">${esc(CUR.w)}</div>`;
     const oth=shuf(Object.keys(EMO).filter(x=>x!==CUR.w&&ALLW.some(w=>w.split('|').join('')===x))).sort((a,b)=>(b.length===CUR.w.length)-(a.length===CUR.w.length)).slice(0,2);
     opts=shuf([CUR.w].concat(oth)).map(x=>({id:it.id,w:x}));}
-  else if(m==='hear'){ask='איזו אות עושה את הצליל הזה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(distract(it,3)));}
-  else if(m==='see'){ask='איזה צליל עושה האות? לחצי לשמוע ובחרי';mid=`<div class="big">${esc(it.show)}</div>`;opts=shuf([it].concat(distract(it,2)));cls='snd'}
-  else if(m==='pic'){ask='באיזו אות מתחילה המילה?';mid=`<div class="pic" style="font-size:64px">${it.pic}</div><button class="say" id="rp" type="button">🔊 לשמוע שוב</button>`;opts=shuf([it].concat(distract(it,3)));}
-  else{ask='איזו אות בעברית עושה אותו צליל?';mid=`<div class="big">${esc(it.show)}</div><button class="say" id="rp" type="button">🔊 הצליל</button>`;opts=shuf([it].concat(distract(it,3,'he')));cls='he'}
+  else if(m==='hear'){ask='הקשיבי לצליל. איזו אות עושה את הצליל הזה?';mid=`<button class="say lg" id="rp" type="button">🔊</button>`;opts=shuf([it].concat(distract(it,3)));}
+  else if(m==='see'){ask='איזה צליל עושה האות הזאת? לחצי על כל כפתור כדי לשמוע, ובחרי את הנכון.';mid=`<div class="big">${esc(it.show)}</div>`;opts=shuf([it].concat(distract(it,2)));cls='snd'}
+  else if(m==='pic'){ask='הקשיבי למילה והסתכלי בתמונה. באיזו אות מתחילה המילה?';mid=`<div class="pic" style="font-size:64px">${it.pic}</div><button class="say" id="rp" type="button">🔊 לשמוע שוב</button>`;opts=shuf([it].concat(distract(it,3)));}
+  else{ask='איזו אות בעברית עושה את אותו צליל כמו האות באנגלית?';mid=`<div class="big">${esc(it.show)}</div><button class="say" id="rp" type="button">🔊 הצליל</button>`;opts=shuf([it].concat(distract(it,3,'he')));cls='he'}
   h=head(TEST?'⏱️ <span id="tmr">60</span> · '+TEST.ok+' נכונות':allL()?'⭐ חיזוק':S.w[it.id].s==='done'?'🔁 חזרה':'🎯 תרגול',TEST?'tst':'')+`<div class="ask">${ask}</div><div class="mid">${mid}</div>
   <div class="opts${opts.length===3?' o3':''}">${opts.map((o,i)=>`<button class="opt ${cls}" type="button" data-id="${o.id}"${o.w?` data-w="${o.w}" style="font-size:40px"`:''}>${o.w?EMO[o.w]:m==='see'?'🔊 '+(i+1):m==='heb'?esc(o.he):esc(lbl(o))}</button>`).join('')}</div>
   <div class="fb" id="fb"></div><div class="btns"><button class="btn" id="nx" type="button" style="visibility:${m==='see'?'visible':'hidden'}"${m==='see'?' disabled':''}>${m==='see'?'זה הצליל!':'הבא ←'}</button></div>`;
