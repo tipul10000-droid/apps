@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#25272D">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.3";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.4";</script>
 <script src="sq-db.js?v=9"></script>
 <title>קניות ורכישות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -179,6 +179,7 @@ table.cmp td.pk{background:var(--pick-soft)}
 @keyframes sqgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.offer .ph{width:72px;height:86px}.facts div{padding:6px 8px;font-size:13px}}
+.qdone{margin:0 0 18px}.qdone>.card{margin-top:8px}.qdone .q .opt:not(.on){opacity:.7}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=6">
 <script src="dash-sub.js?v=3" defer></script>
@@ -253,8 +254,11 @@ function guideBlock(){const g=meta.guide;if(!Array.isArray(g)||!g.length)return 
 // ---------- item tabs ----------
 function tabOver(x){const p=pickOf(x),v=x.verdict||{};let h="";
   if(v.text)h+=`<section><div class="verdict"><div class="l">ההכרעה${v.conf?" · ביטחון "+esc(v.conf):""}</div><h3>${esc(p?p.name:v.title||"")}</h3><p>${esc(v.text)}</p>${v.alt?`<p class="small" style="margin-top:6px">${esc(v.alt)}</p>`:""}</div></section>`;
-  const qs=(x.questions||[]).filter(q=>!q.superseded);
-  if(qs.length)h+=`<section><div class="sh"><h2>❓ שאלות אליך</h2></div><div class="card">${qs.map(q=>`<div class="q"><div class="qt">${esc(q.q)}</div><div class="opts">${(q.options||[]).map(o=>`<button class="opt ${q.answer===o?"on":""}" data-ans="${esc(q.id)}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div></div>`).join("")}</div></section>`;
+  // 1.4 (Oren 15.11.2026): an answered question closes right away; the answers fold into "✓ ענית" (open to change)
+  const qs=(x.questions||[]).filter(q=>!q.superseded),qOpen=qs.filter(q=>!q.answer),qDone=qs.filter(q=>q.answer);
+  const qRow=q=>`<div class="q"><div class="qt">${esc(q.q)}</div><div class="opts">${(q.options||[]).map(o=>`<button class="opt ${q.answer===o?"on":""}" data-ans="${esc(q.id)}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div></div>`;
+  if(qOpen.length)h+=`<section><div class="sh"><h2>❓ שאלות אליך</h2></div><div class="card">${qOpen.map(qRow).join("")}</div></section>`;
+  if(qDone.length)h+=`<details class="more qdone"${ui.qdone?" open":""}><summary>✓ ענית על ${qDone.length===1?"שאלה אחת":qDone.length+" שאלות"} (אפשר לשנות)</summary><div class="card">${qDone.map(qRow).join("")}</div></details>`;
   if((x.insights||[]).length)h+=`<section><div class="sh"><h2>💡 מה חשוב לדעת</h2></div><ul class="ins">${x.insights.map(i=>`<li class="${esc(i.lvl||"")}">${i.h?`<b>${esc(i.h)}: </b>`:""}${esc(i.text)}</li>`).join("")}</ul></section>`;
   if((x.need||[]).length)h+=`<section><div class="sh"><h2>🎯 מה אני מחפש</h2></div><div class="card"><ul class="req">${x.need.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div></section>`;
   if((x.links||[]).length)h+=`<section><div class="sh"><h2>🔗 קישורים</h2></div><div class="card links">${x.links.filter(l=>safe(l.url)).map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div></section>`;
@@ -318,7 +322,8 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
   if(b=g("[data-tab]")){ui.tab=b.dataset.tab;saveUi();render();scrollTo(0,0);return;}
   if(b=g("[data-ans]")){const id=curId(),x=items[id]||{};const now=new Date().toISOString();
     const qs=(x.questions||[]).map(q=>q.id===b.dataset.ans?{...q,answer:q.answer===b.dataset.v?"":b.dataset.v,answered_at:now}:q);
-    b.classList.add("on");setTimeout(()=>upd(id,{questions:qs,updated_at:now},"התשובה נשמרה"),300);return;}
+    const prevQ=x.questions||[];b.classList.add("on");setTimeout(()=>upd(id,{questions:qs,updated_at:now},"התשובה נשמרה",()=>upd(id,{questions:prevQ,updated_at:new Date().toISOString()},"בוטל")),300);return;}
+  if(b=g(".qdone>summary")){setTimeout(()=>{ui.qdone=b.parentElement.open;},0);}
   if(g("[data-council]")){const id=curId(),x={id,...items[id]};const ok=await copy(councilPrompt(x));
     toast(ok?"הועתק. מדביקים בשיחה ושולחים":"לא הצלחתי להעתיק");setTimeout(()=>window.open(safe(x.chat_url)||safe(meta.chat_url)||CHAT_FALLBACK,"_blank","noopener"),600);return;}
   if(g("[data-add]")){const t=(prompt("מה אתה רוצה לקנות?")||"").trim();if(!t)return;if(!db){toast("אין חיבור");return;}
