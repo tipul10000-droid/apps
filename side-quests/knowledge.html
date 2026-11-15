@@ -6,15 +6,15 @@
 <script src="nozoom.js?v=2"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2E3A87">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.1";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.2";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ידע ותחומי עניין</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
 <style>
 /* דשבורד ידע ותחומי עניין (Knowledge & Interests): פיסות ידע שאורן שולח (לינקים, כתבות, פוסטים) נשמרות כטיקטים לפי תחום,
-   עם הטקסט המלא באנגלית ובעברית, תובנות ומה לעשות עם זה. נושא גדול עם הרבה ידע = דשבורד פנימי (hub).
-   נתונים: sq_docs (app=sidequests, collection=knowledge): מסמך לכל טיקט / hub + _meta. לא משימות. */
+   עם הטקסט המלא באנגלית ובעברית, תובנות ומה לעשות עם זה. בלי דשבורדים פנימיים: רק פיסות, מסודרות לפי תחום (1.2).
+   נתונים: sq_docs (app=sidequests, collection=knowledge): מסמך לכל טיקט + _meta. לא משימות. */
 :root{
   --bg:#F5F5FA; --surface:#FFFFFF; --sunk:#ECECF5; --ink:#1D1F2E; --muted:#5E6278; --line:#DDDEEA;
   --hero:#2E3A87; --hero2:#6A58C9; --art:url(img/art-knowledge.svg); --mark:#6A58C9; --hero-ink:#F4F2FF; --hero-muted:#CFC8F5; --accent:#FFC857; --accent-ink:#3A2200;
@@ -67,21 +67,14 @@ section{margin-bottom:22px}
 .muted{color:var(--muted)}
 .note{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.45}
 .empty{color:var(--muted);text-align:center;padding:24px 12px;line-height:1.6}
-/* hubs (big inner dashboards) */
-.hubs{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-.hub{border:0;border-radius:16px;padding:14px;text-align:start;cursor:pointer;color:#fff;min-height:104px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(135deg,var(--c1,#3a3f7a),var(--c2,#6a58c9))}
-.hub .i{font-size:28px;line-height:1}
-.hub .t{font-family:var(--f-display);font-weight:800;font-size:17px;line-height:1.25;margin-top:8px}
-.hub .s{font-size:12.5px;opacity:.85;font-weight:600}
-.hubadd{border:2px dashed var(--line);border-radius:16px;background:none;min-height:104px;padding:12px;color:var(--muted);font-weight:700;font-size:14px;line-height:1.4;text-align:center}
-/* tickets */
 .tlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--line);gap:1px}
-.tk{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:0;padding:12px 14px;text-align:start;cursor:pointer;width:100%}
-.tk .i{flex:none;width:40px;height:40px;border-radius:12px;background:var(--hi-soft);display:grid;place-items:center;font-size:21px}
-.tk .b{flex:1;min-width:0}
-.tk .t{font-family:var(--f-display);font-weight:800;font-size:16.5px;line-height:1.3}
-.tk .s{color:var(--muted);font-size:13.5px;margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.tk .m{font-size:12px;color:var(--muted);font-weight:700;margin-top:4px}
+.tk{display:flex;gap:10px;align-items:center;background:var(--surface);border:0;padding:10px 12px;text-align:start;cursor:pointer;width:100%;min-height:52px}
+.tk .i{flex:none;width:34px;height:34px;border-radius:10px;background:var(--hi-soft);display:grid;place-items:center;font-size:19px}
+.tk .t{flex:1;min-width:0;font-family:var(--f-display);font-weight:800;font-size:15.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk .m{flex:none;font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
+.tk .ch{flex:none;color:var(--muted);font-size:16px}
+.grp{font-size:13px;font-weight:800;color:var(--muted);padding:12px 2px 6px}
+.grp:first-child{padding-top:0}
 .tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:800;background:var(--hi-soft);color:var(--hi);margin-inline-end:4px}
 .tag.new{background:var(--warn-soft);color:var(--warn)}
 .addrow{width:100%;border:2px dashed var(--line);border-radius:16px;background:none;padding:14px;margin-top:10px;cursor:pointer;font-weight:800;font-size:15.5px;color:var(--muted)}
@@ -162,7 +155,7 @@ try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
 ui.q="";
 function saveUi(){try{const {q,...r}=ui;localStorage.setItem(UI_KEY,JSON.stringify(r));}catch(e){}}
 const EMB=window.self!==window.top;function goHash(x){if(EMB)location.replace(location.pathname+location.search+"#"+x);else location.hash=x;}
-function route(){const m=location.hash.match(/^#(t|h)=(.+)$/);return m?{k:m[1],id:decodeURIComponent(m[2])}:null;}
+function route(){const m=location.hash.match(/^#(t)=(.+)$/);return m?{k:m[1],id:decodeURIComponent(m[2])}:null;}
 
 function topics(){const extra=(Array.isArray(meta.topics)?meta.topics:[]).filter(t=>t&&t.id).map(t=>[t.id,t.label||t.id,t.icon||"📌"]);
   const ids=new Set(extra.map(t=>t[0]));return [...extra,...TOPICS0.filter(t=>!ids.has(t[0]))];}
@@ -175,19 +168,17 @@ function fmtD(s){if(!s)return "";const d=new Date(s);return isNaN(d)?String(s):d
 function match(x,q){if(!q)return true;q=q.toLowerCase();return [x.title,x.summary,x.tldr,(x.tags||[]).join(" "),srcs(x).map(s=>s.author).join(" ")].join(" ").toLowerCase().includes(q);}
 
 // ---------- hero ----------
-function heroHome(){const T=all("ticket"),H=all("hub"),tp=new Set(T.map(x=>x.topic||"other"));
+function heroHome(){const T=all("ticket"),tp=new Set(T.map(x=>x.topic||"other"));
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
   <h1>🧠 ידע ותחומי עניין</h1>
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
-  <div class="kpis"><div class="kpi"><b>${T.length}</b><span>פיסות ידע</span></div><div class="kpi"><b>${tp.size}</b><span>תחומים</span></div><div class="kpi"><b>${H.length}</b><span>דשבורדים פנימיים</span></div></div>`;}
-function heroTicket(x){const tp=topicOf(x.topic),hub=x.hub&&items[x.hub];
-  const back=hub?`<button class="sqhome sqsub" type="button" data-goh="${esc(x.hub)}"><span class="ar">→</span><span class="em">${esc(hub.icon||"📚")}</span><span>${esc(hub.title)}</span></button>`:`<button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button>`;
+  <div class="kpis"><div class="kpi"><b>${T.length}</b><span>פיסות ידע</span></div><div class="kpi"><b>${tp.size}</b><span>תחומים</span></div><div class="kpi"><b>${T.filter(x=>x.fav).length}</b><span>מועדפים</span></div></div>`;}
+function heroTicket(x){const tp=topicOf(x.topic);
+  const back=`<button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button>`;
   return `<div class="top">${back}<span class="back">${tp[2]} ${esc(tp[1])}</span></div>
   <h1>${esc(x.icon||"💡")} ${esc(x.title)}</h1><p class="sub">${esc(x.summary||"")}</p>
   ${srcs(x).map((s,i,a)=>{const u=safe(s.url),inner=`<span style="font-size:22px">${u?"🔗":"📚"}</span><span>${a.length>1?"מקור "+(i+1):"למקור"}${s.author?": "+esc(s.author):""}${s.handle?" "+esc(s.handle):""}<small>${esc([PLAT[plat(s)],s.date?fmtD(s.date):"",s.label].filter(Boolean).join(" · "))}</small></span>`;
     return u?`<a class="src" href="${esc(u)}" target="_blank" rel="noopener">${inner}</a>`:`<div class="src">${inner}</div>`;}).join("")}`;}
-function heroHub(h){return `<div class="top"><button class="sqhome sqsub" type="button" data-home><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button><span class="back">${esc(topicOf(h.topic)[1])}</span></div>
-  <h1>${esc(h.icon||"📚")} ${esc(h.title)}</h1><p class="sub">${esc(h.summary||"")}</p>`;}
 
 // ---------- home ----------
 function renderHome(){$("hero").innerHTML=heroHome();
@@ -197,19 +188,14 @@ function renderHome(){$("hero").innerHTML=heroHome();
     +(T.length>6?`<input class="search" id="q" type="search" placeholder="🔍 חיפוש בידע" value="${esc(ui.q)}">`:"");
   $("app").innerHTML=renderList();bindSearch();}
 function bindSearch(){const q=$("q");if(!q)return;q.oninput=()=>{ui.q=q.value;$("app").innerHTML=renderList();};}
-function ticketRow(x){const tp=topicOf(x.topic);
-  return `<button class="tk" data-got="${esc(x.id)}"><span class="i">${esc(x.icon||tp[2])}</span><span class="b">
-    <span class="t">${esc(x.title)}</span><span class="s">${esc(x.summary||"")}</span>
-    <span class="m">${x.status==="new"?`<span class="tag new">⏳ בעבודה</span>`:""}<span class="tag">${tp[2]} ${esc(tp[1])}</span>${esc([x.fav?"⭐":"",srcs(x).length>1?srcs(x).length+" מקורות":(srcs(x)[0]||{}).author,fmtD(x.created_at)].filter(Boolean).join(" · "))}</span></span></button>`;}
-function renderList(){const H=all("hub").sort((a,b)=>(a.order||99)-(b.order||99));
-  const T=all("ticket").filter(x=>(ui.topic==="all"||(x.topic||"other")===ui.topic)&&match(x,ui.q)).sort(byNew);
-  let h="";
-  const Hs=H.filter(x=>ui.topic==="all"||x.topic===ui.topic);
-  if(Hs.length)h+=`<section><div class="sh"><h2>📚 דשבורדים פנימיים</h2></div><div class="hubs">${Hs.map(x=>{const n=all("ticket").filter(t=>t.hub===x.id).length;
-    return `<button class="hub" data-goh="${esc(x.id)}" style="--c1:${esc(x.c1||"#3a3f7a")};--c2:${esc(x.c2||"#6a58c9")}"><span class="i">${esc(x.icon||"📚")}</span><span><span class="t">${esc(x.title)}</span><span class="s">${n} פיסות ידע</span></span></button>`;}).join("")}</div></section>`;
-  h+=`<section><div class="sh"><h2>🎫 פיסות ידע</h2><small>${T.length}</small></div>${T.length?`<div class="tlist">${T.map(ticketRow).join("")}</div>`:`<div class="card empty">${loaded?(ui.q?"לא נמצא":"עוד אין"):"טוען…"}</div>`}
-    <button class="addrow" data-add>＋ מלינק</button></section>`;
-  return h;}
+function ticketRow(x){const tp=topicOf(x.topic),n=srcs(x).length;
+  return `<button class="tk" data-got="${esc(x.id)}"><span class="i">${esc(x.icon||tp[2])}</span><span class="t">${esc(x.short||x.title)}</span><span class="m">${x.status==="new"?"⏳":""}${x.fav?"⭐":""}${n>1?" "+n+" 🔗":""}</span><span class="ch">‹</span></button>`;}
+function renderList(){const T=all("ticket").filter(x=>(ui.topic==="all"||(x.topic||"other")===ui.topic)&&match(x,ui.q)).sort(byNew);
+  let body;
+  if(!T.length)body=`<div class="card empty">${loaded?(ui.q?"לא נמצא":"עוד אין"):"טוען…"}</div>`;
+  else if(ui.topic==="all")body=topics().map(tp=>{const L=T.filter(x=>(x.topic||"other")===tp[0]);return L.length?`<div class="grp">${tp[2]} ${esc(tp[1])} · ${L.length}</div><div class="tlist">${L.map(ticketRow).join("")}</div>`:"";}).join("");
+  else body=`<div class="tlist">${T.map(ticketRow).join("")}</div>`;
+  return `<section><div class="sh"><h2>🎫 פיסות ידע</h2><small>${T.length}</small></div>${body}<button class="addrow" data-add>＋ מלינק</button></section>`;}
 
 // ---------- ticket ----------
 function tabIns(x){let h="";
@@ -234,15 +220,7 @@ function renderTicket(id){const x={id,...(items[id]||{})};if(!x.title){$("app").
 function shareText(x){const U=srcs(x).map(s=>safe(s.url)).filter(Boolean);
   return [`${x.icon||"💡"} ${x.title}`,x.tldr||x.summary||"",...(x.insights||[]).slice(0,5).map((i,n)=>`${n+1}. ${i.h}`),U.length?"\nמקורות: "+U.join(" "):""].filter(Boolean).join("\n");}
 
-// ---------- hub ----------
-function renderHub(id){const h={id,...(items[id]||{})};if(!h.title){$("app").innerHTML=`<div class="empty">${loaded?"לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
-  $("hero").innerHTML=heroHub(h);$("bar").innerHTML="";
-  const T=all("ticket").filter(t=>t.hub===id).sort(byNew);let o="";
-  if((h.sections||[]).length)o+=`<section><div class="sh"><h2>🧭 מה שלמדנו</h2></div><div class="card">${h.sections.map(s=>`<div class="hsec"><h3>${esc(s.h)}</h3><div>${esc(s.text)}</div></div>`).join("")}</div></section>`;
-  o+=`<section><div class="sh"><h2>🎫 פיסות ידע</h2><small>${T.length}</small></div>${T.length?`<div class="tlist">${T.map(ticketRow).join("")}</div>`:`<div class="card empty">עוד אין</div>`}</section>`;
-  $("app").innerHTML=o;}
-
-function render(){const r=route();if(r&&r.k==="t")renderTicket(r.id);else if(r&&r.k==="h")renderHub(r.id);else renderHome();
+function render(){const r=route();if(r&&r.k==="t")renderTicket(r.id);else renderHome();
   $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}ידע ${esc(window.KN_BUILD)}`;}
 let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
 async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
@@ -254,7 +232,6 @@ function keepPut(sel,fn){/* a tapped button stays put (rule 6.11) */const b=docu
 document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
   if(b=g("[data-topic]")){ui.topic=b.dataset.topic;saveUi();render();return;}
   if(b=g("[data-got]")){ui.tab="ins";goHash("t="+encodeURIComponent(b.dataset.got));return;}
-  if(b=g("[data-goh]")){goHash("h="+encodeURIComponent(b.dataset.goh));return;}
   if(g("[data-home]")){EMB?goHash(""):history.length>1&&route()?history.back():(location.hash="");return;}
   if(b=g("[data-tab]")){const k=b.dataset.tab;keepPut(`[data-tab="${k}"]`,()=>{ui.tab=k;saveUi();render();});return;}
   if(b=g("[data-lang]")){const k=b.dataset.lang;keepPut(`[data-lang="${k}"]`,()=>{ui.lang=k;saveUi();render();});return;}
