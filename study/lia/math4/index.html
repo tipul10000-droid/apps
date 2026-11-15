@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=6"></script>
+<script src="../../content.js?v=9"></script><script>StudyContent.guard('lia/math4')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · חיזוק מתמטיקה</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css?v=7">
+<style>
+:root{--pu:#2f5d9e;--pu2:#3b82f6;--pk:#f97316;--pl:#e8f0fb;--ok:#16a34a;--no:#e11d48;--sm:#1e3a8a;--kh:50px}
+main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;flex-direction:column;justify-content:safe center}
+.nav{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex:none}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 9px;cursor:pointer;white-space:nowrap}
+.ib.gift{background:#eef2ff;border-color:#a5b4fc;color:#3730a3;font-weight:700;font-size:13px;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;width:38px;text-align:center;direction:ltr;background:#3b82f6;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
+@keyframes gw{0%,88%,100%{transform:none}91%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}97%{transform:rotate(-3deg)}}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh)}
+.prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:24px}
+.prog .row b{color:var(--fg);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chips{display:flex;gap:5px;flex:none}.chip{font-size:13px;background:var(--pl);color:var(--sm);border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
+.pls{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px}
+.pls span{height:24px;border-radius:8px;background:#f1f3f7;color:var(--mut);font:600 12px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;position:relative}
+.pls span i{position:absolute;inset:0 0 0 auto;background:rgba(59,130,246,.18);width:0}.pls span em{position:relative;font-style:normal}
+.pls span{font-size:15px}.pls span.cur{background:#dbeafe;color:var(--sm);outline:2px solid #93c5fd}.pls span.ok{background:#dcfce7;color:#166534}.pls span.lk{opacity:.55}
+.card{flex:0 1 520px;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:8px 12px 10px;box-shadow:var(--sh);text-align:center;margin-top:8px}
+.top2{display:flex;align-items:center;justify-content:space-between;height:30px;flex:none}
+.mode{font-size:13px;font-weight:700;color:var(--sm);background:var(--pl);border-radius:20px;padding:2px 10px;white-space:nowrap}.mode.new{color:#9a3412;background:#fff1e6}.mode.fast{color:#6d28d9;background:#f3e8ff}
+.bugp{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--mut);direction:ltr}
+.bugp .bx{position:relative;width:30px;height:30px}.bugp svg{position:absolute;inset:0;width:30px;height:30px}.bugp .gr{filter:brightness(0) invert(.7);opacity:.7}
+.mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:4px;overflow:hidden}
+.ask{font-size:16px;color:var(--fg);font-weight:600;line-height:1.35;max-width:400px}
+.ex{font:800 48px/1.1 system-ui,Arial,sans-serif;direction:ltr;unicode-bidi:isolate;color:var(--fg);white-space:nowrap}.ex .q{color:var(--pk)}
+.ex.sm{font-size:36px}
+.gd{display:flex;flex-direction:column;gap:3px;width:100%;max-width:330px}.gl{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#eff6ff;border-radius:10px;padding:3px 10px}.gl small{font-size:13px;color:#1e3a8a;text-align:right}.gl b{font:800 21px/1.25 system-ui,Arial,sans-serif;direction:ltr;unicode-bidi:isolate;white-space:nowrap}.gl .q{color:var(--pk)}
+.tip{font-size:14px;color:#1e3a8a;background:#eff6ff;border-radius:12px;padding:3px 10px;max-width:400px}
+.arr{display:inline-grid;gap:2px;direction:ltr;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:5px}.arr span{font-size:20px;line-height:1}
+.slot{height:50px;min-width:130px;border-bottom:3px solid #93c5fd;font:800 38px/50px system-ui,Arial,sans-serif;direction:ltr;flex:none;margin:0 auto}
+.slot.ok{color:var(--ok);border-color:var(--ok)}.slot.no{color:var(--no);border-color:var(--no)}.slot.hid{visibility:hidden}
+.fb{height:44px;flex:none;display:flex;flex-direction:column;justify-content:center;font-size:14px;line-height:1.3;margin:3px 0}
+.fb .t{font-size:17px;font-weight:800}.fb .ok{color:var(--ok)}.fb .no{color:var(--no)}.fb .s{direction:rtl}
+.zone{flex:none;height:calc(var(--kh)*3 + 14px);position:relative}
+.kp,.op{position:absolute;inset:0;display:grid;gap:7px}
+.kp{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);direction:ltr}
+.op{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}.op.o1{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:6px}
+.k,.opt{font:700 26px system-ui,Arial,sans-serif;color:inherit;background:#fff;border:2px solid var(--bd);border-radius:14px;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.k:active{background:#eff6ff}
+.opt{direction:ltr;font-size:24px;line-height:1.15}.op.o1 .opt,.opt.he{direction:rtl;font:600 15px system-ui,Arial,sans-serif;padding:0 8px}.op.o1 .opt{text-align:right}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}.opt.no{background:var(--no);border-color:var(--no);color:#fff}.opt:disabled{cursor:default}
+.r4{flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px;height:var(--kh);direction:ltr}
+.r4 .k{height:var(--kh)}.r4 .hid{visibility:hidden}
+.act{font:inherit;font-weight:800;font-size:18px;border:0;border-radius:14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pu),var(--pu2));box-shadow:0 3px 0 #1e3a8a;direction:rtl}
+.act:disabled{opacity:.4}
+.btn{flex:1;font:inherit;font-weight:700;padding:12px;border:0;border-radius:14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pu),var(--pu2));box-shadow:0 3px 0 #1e3a8a;height:50px}
+.btn.soft{color:var(--mut);background:#f1f3f7;box-shadow:none;font-weight:600}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 14px)}
+.ov.on{display:flex}
+.pn{background:var(--card);border-radius:20px;padding:16px 16px;width:100%;max-width:500px;max-height:100%;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.pn h2{margin:0 0 8px;font-size:20px}.pn p{margin:7px 0;line-height:1.5;font-size:16px}
+.pn .btn{width:100%;margin-top:10px}
+/* עמודי ההסבר: גובה קבוע, כפתורים קבועים למטה */
+#les .pn{height:min(520px,100%);display:flex;flex-direction:column;overflow:hidden}
+.lh{display:flex;justify-content:space-between;align-items:center;flex:none}.lh small{color:var(--mut);font-size:13px;direction:ltr}
+.lb{flex:1;min-height:0;overflow:auto;padding:4px 2px}.lb p{font-size:17px;line-height:1.55;margin:8px 0}
+.lb .eq{direction:ltr;unicode-bidi:isolate;font:800 24px/1.3 system-ui,Arial,sans-serif;text-align:center;margin:8px 0;color:var(--fg)}.lb .eq b{color:var(--pk)}
+.lb .vis{text-align:center;font-size:24px;line-height:1.25;margin:6px 0}
+.lb .box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:8px 12px;margin:8px 0}
+.dots{display:flex;gap:5px;justify-content:center;margin:6px 0;flex:none}.dots i{width:8px;height:8px;border-radius:50%;background:#d1d5db}.dots i.on{background:var(--pu2)}
+.lnav{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:none}.lnav .btn{margin:0;width:auto}.lnav .hid{visibility:hidden}
+#sqov .pn,#mdov .pn{text-align:center;overflow:hidden}
+#sqimg{width:150px;height:150px;margin:6px auto;display:block;animation:sqin .9s cubic-bezier(.2,1.6,.4,1)}#sqimg.squish{animation:squish .5s}
+@keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
+@keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
+.sqg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px;max-width:360px;margin-inline:auto}
+.sqg div{background:#f7f7ff;border:1px solid #e4e6fb;border-radius:10px;padding:2px}
+.sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}
+.sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}
+.sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}.sqg .lock.sup{background:#fbf8ee;border-color:#e9d9a6}
+.sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .lock.ult{background:#f1f7fb;border-color:#bfdbfe}
+.sqg .bug{background:linear-gradient(160deg,#ecfdf5,#e0f2fe,#f5f3ff);border-color:#34d399}.sqg .lock.bug{background:#f0faf6;border-color:#a7f3d0}
+.sqg .sqhd{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--sm);text-align:right;background:none;border:0;padding:0;margin-top:4px}
+.sqg.big{max-width:330px}
+.pb{height:8px;background:#e0e7f5;border-radius:8px;overflow:hidden}.pb i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--pu2),var(--pk));transition:width .5s}
+.conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:50;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:var(--pu);z-index:15;pointer-events:none;animation:popup 1s forwards;white-space:nowrap;direction:rtl;unicode-bidi:isolate;background:#fff;border:2px solid #bfdbfe;border-radius:999px;padding:4px 16px;box-shadow:0 6px 18px rgba(47,93,158,.18)}
+@keyframes popup{0%{opacity:0;transform:translate(-50%,-20%) scale(.6)}30%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
+.tbar{height:5px;background:#f3e8ff;border-radius:4px;overflow:hidden;width:160px;margin:0 auto}.tbar i{display:block;height:100%;background:#8b5cf6;width:100%}
+@media(max-height:700px){:root{--kh:42px}.ex.gh{font-size:28px}.gl b{font-size:18px;line-height:1.2}.gl{padding:1px 8px}.gd{gap:2px}.ex{font-size:38px}.ex.sm{font-size:26px}.slot{height:42px;font-size:30px;line-height:42px}.ask{font-size:15px;line-height:1.25}.arr span{font-size:15px}.arr{padding:3px}.fb{height:40px;font-size:13px}.fb .t{font-size:16px}.tip{font-size:13px;padding:2px 8px}.top2{height:26px}.prog{padding:4px 10px 6px}}
+@media(max-height:640px){:root{--kh:38px}.gl b{font-size:17px}.gl{padding:1px 8px}.gl small{font-size:12px}.pls span{height:20px;font-size:13px}.ex{font-size:32px}.mid{gap:2px}.k,.opt{font-size:22px}}
+@media(prefers-reduced-motion:reduce){#sqimg,.ib.gift{animation:none!important}}
+.sqg .trip{background:linear-gradient(160deg,#eef2ff,#fdf2f8,#fefce8);border-color:#a5b4fc}.sqg .lock.trip{background:#f5f7ff;border-color:#c7d2fe}
+/* חיזוק מתמטיקה: תוספות */
+.fb{height:52px}
+.colt{border-collapse:collapse;direction:ltr;margin:0 auto;font:800 30px/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;flex:none}
+.colt td{width:27px;height:34px;text-align:center;padding:0}
+.colt td.sm{font-size:15px;height:17px;color:#ea580c;font-family:system-ui,Arial,sans-serif;font-weight:800}
+.colt tr.ln td{border-bottom:3px solid #0f172a}
+.colt td.rs{color:#2563eb}.colt.ok td.rs{color:var(--ok)}.colt.no td.rs{color:var(--no)}
+.colt td.ac{background:#fff7ed}
+.colt s{color:#94a3b8;text-decoration-thickness:2px}
+.say{font-size:15px;color:var(--sm);font-weight:700;line-height:1.3}.say .sx{display:inline-block;direction:ltr;unicode-bidi:isolate;font:800 22px/1.1 system-ui,Arial,sans-serif;color:var(--fg);margin-inline-start:4px}.fb .pre{margin:0 auto}
+.card{flex-basis:560px}
+.pre{font-size:13px;color:#9a3412;background:#fff7ed;border-radius:10px;padding:2px 8px;line-height:1.35;max-width:400px}
+.fig{display:block;width:100%;max-width:300px;height:auto;max-height:150px;margin:0 auto;flex:0 1 auto;min-height:0}
+.fig.sq{max-width:210px;width:auto;height:100%;max-height:140px}
+.lay{display:inline-block;font:700 19px/1.15 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;white-space:pre}
+.lay u{text-decoration:none;display:block;border-bottom:2px solid currentColor}
+.op.o3{grid-template-columns:repeat(3,1fr);grid-template-rows:1fr}
+.op.sym .opt{font:800 40px system-ui,Arial,sans-serif}
+.op.o3.he .opt{font:600 16px system-ui,Arial,sans-serif;direction:rtl;padding:0 4px}
+.cbox{display:inline-block;min-width:44px;height:44px;line-height:42px;border:2px solid #94a3b8;border-radius:8px;color:var(--pk);vertical-align:middle;margin:0 6px}
+.lb .lay{font-size:22px}.lb .two{display:flex;justify-content:space-around;gap:10px;align-items:flex-end}.lb .two>div{text-align:center;font-size:14px}
+.lb table.colt{font-size:26px}.lb table.colt td{height:30px}
+.win{color:#9a3412}
+@media(max-height:700px){.say{white-space:nowrap}.say .sx{font-size:18px}.colt{font-size:23px}.colt td{height:25px;width:23px}.colt td.sm{height:14px;font-size:13px}.fig{max-height:118px}.say{font-size:14px}.pre{font-size:12px}.cbox{min-width:36px;height:36px;line-height:34px}.fb{height:48px}}
+@media(max-height:640px){.colt{font-size:21px}.colt td{height:23px}.colt td.sm{height:12px;font-size:12px}.fig{max-height:100px}.op.sym .opt{font-size:32px}}
+</style></head><body><main>
+<div class="nav"><a class="back" href="../">→ חזרה</a><button class="ib" id="lsb" type="button" aria-label="ההסבר">📘</button><button class="ib gift" id="sqb" type="button">🚀 סקווישים <span id="sqn" class="cnt">0</span></button><button class="ib" id="mute" type="button">🔊</button></div>
+<div class="prog">
+  <div class="row"><b id="mt"></b><span class="chips"><span class="chip" id="pts">⭐ 0</span><span class="chip" id="stc">🔥 0</span></span></div>
+  <div class="pls" id="pls"></div>
+</div>
+<div class="card">
+  <div class="top2"><span class="mode" id="mode"></span><span class="bugp" id="bugp"></span></div>
+  <div class="mid" id="mid"></div>
+  <div class="slot" id="slot"></div>
+  <div class="fb" id="fb"></div>
+  <div class="zone"><div class="kp" id="kp"></div><div class="op" id="op" style="display:none"></div></div>
+  <div class="r4"><button class="k" id="kdel" type="button" aria-label="מחיקה">⌫</button><button class="k" id="k0" type="button">0</button><button class="act" id="act" type="button" disabled>בדיקה ✓</button></div>
+</div>
+
+<div class="ov" id="intro"><div class="pn" style="text-align:center">
+<h2>🚀 ליה, יוצאות למסע בין הכוכבים!</h2>
+<p>במבחן המיפוי ראינו שאת יודעת <b>המון</b>: ערך המקום, סדרות, בעיות מילוליות, כפל וחילוק, זוויות, היקף ודיאגרמות ⭐</p>
+<p>עכשיו נחזק כמה דברים קטנים, כדי שתהיי עוד יותר חזקה: חיבור וחיסור במאונך, המספר החסר, הקסם של 0 ו-1, ומדידה בסרגל.</p>
+<p style="margin-bottom:2px">🎁 <b>6 כוכבים, ובכל כוכב סקווישי חדש</b> בשורה חדשה בלוח שלך:</p>
+<div class="sqg big" id="isq"></div>
+<button class="btn" id="go" type="button">יאללה, להמראה! 🚀</button>
+</div></div>
+<div class="ov" id="les"><div class="pn">
+<div class="lh"><h2 id="lt" style="margin:0"></h2><small id="lp"></small></div>
+<div class="lb" id="lb"></div>
+<div class="dots" id="ld"></div>
+<div class="lnav"><button class="btn soft" id="lpr" type="button">→ הקודם</button><button class="btn" id="lnx" type="button">הבא ←</button></div>
+</div></div>
+<div class="ov" id="sqcol"><div class="pn"><h2>🚀 לוח הסקווישים שלי</h2><p id="sqtx" style="margin:0 0 6px;font-size:15px"></p><div class="pb" style="margin:6px 0"><i id="sqpb"></i></div><div class="sqg" id="sqg"></div><button class="btn soft" style="width:100%;margin-top:12px" id="sqcx" type="button">סגירה</button></div></div>
+<div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:var(--sm);font-weight:700">🚀 סקווישי חדש!</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">ללוח! 🚀</button></div></div>
+<div class="ov" id="mdov"><div class="pn"><div style="font-size:46px" id="mde">🏅</div><h2 id="mdt"></h2><p id="mdp"></p><button class="btn" id="mdy" type="button">לכוכב הבא 🚀</button></div></div>
+
+<script src="../squishies.js?v=5"></script>
+<script src="../../sqsound.js?v=12"></script>
+<script src="../../effort.js?v=1"></script>
+<script src="../../track.js?v=9"></script>
+<script src="../../guess.js?v=1"></script>
+<script>
+// חיזוק מתמטיקה לליה, תחילת כיתה ד׳ (אורן 15.11.2026), "מסע בין הכוכבים".
+// נבנה לפי מבחן המיפוי של תחילת השנה (ציון: שולטת חלקית). הטעויות שלה הן הכוכבים לחיזוק:
+//   חיבור במאונך עם העברה (758 + 87), חיסור עם פריטה (6,870 − 780), המספר החסר ו-< > (600 − ? > 460),
+//   כפל/חילוק ב-1 ומספר חלקי עצמו (22 : 22 = 1), השוואה 4×7×1×1 מול 4×7×2, מדידה בסרגל שלא מתחיל ב-0.
+// החוזקות שלה (נקודות הצלחה ⭐ בכל שלב): ערך המקום, סדרות, ישר המספרים, בעיות מילוליות, כפל וחילוק, סוגריים, היקף, זוויות, דיאגרמה.
+// מבנה: 6 כוכבים, כל כוכב = שלבים מהקל לקשה (הסבר קצר ← שאלות), שאלת הצלחה ראשונה בכל שלב, ובסוף 🏁 אתגר בלי עזרה.
+// חיבור וחיסור במאונך: בפעם הראשונה "צעד אחרי צעד" (עמודה אחרי עמודה, עם ההעברה/הפריטה על המסך), ואחר כך לבד.
+// אחרי 6 הכוכבים: 🎯 מיפוי חוזר (24 שאלות מעורבות מכל הנושאים, מה שטעתה בו חוזר יותר).
+// מפתחות: lia_m4 (התקדמות), lia_m4_sq (הסקווישים של התוכן; הלוח האחד מציג את כולם), lia_m4_mute.
+const $=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const E=s=>`<bdi dir="ltr">${s}</bdi>`; // תרגיל בתוך משפט בעברית
+const fmt=n=>Number(n).toLocaleString('en-US');
+const PL=['האחדות','העשרות','המאות','האלפים','הרבבות'];
+const PE=['🔢','➕','➖','🔎','✨','📏'];
+
+// ---------- סוגי שאלות ----------
+// N = תשובה במספר (מקלדת). ok = בדיקה לשאלה פתוחה עם כמה תשובות נכונות; show = דוגמה לתשובה.
+// C = אמריקאית, opts[0] הנכונה (התשובות השגויות באותו אורך ופירוט). CM = < > =. COL = במאונך (g = צעד אחרי צעד).
+// st = ההסבר שמופיע אחרי טעות [כותרת, תרגיל]. w = שאלת הצלחה ⭐ (משהו שהיא יודעת מהמבחן). need = כמה פעמים נכון (ברירת מחדל 1).
+const N=(id,q,ex,ans,st,o)=>Object.assign({id,k:'n',q,ex,ans,st},o||{});
+const C=(id,q,opts,st,o)=>Object.assign({id,k:'c',q,opts,st},o||{});
+const CM=(id,l,r,ans,st,o)=>Object.assign({id,k:'cmp',l,r,ans,st},o||{});
+const COL=(id,op,a,b,g,o)=>Object.assign({id,k:'col',op,a,b,g:!!g},o||{});
+const RUL=(id,s,e,mc,o)=>Object.assign({id,k:'rul',s,e,mc:!!mc},o||{});
+const PER=(id,w,h,o)=>Object.assign({id,k:'per',w,h},o||{});
+const ANG=(id,d,o)=>Object.assign({id,k:'ang',d},o||{});
+const BAR=(id,q,ans,st,o)=>Object.assign({id,k:'bar',q,ans,st},o||{});
+const NL=(id,lo,hi,opts,o)=>Object.assign({id,k:'nl',lo,hi,opts},o||{});
+const digs=n=>String(n).split('').sort().join('');
+const lay=(t,b)=>`<span class="lay">${t.replace(/_/g,'&nbsp;')}<u>${b.replace(/_/g,'&nbsp;')}</u></span>`;
+
+// ---------- 6 הכוכבים ----------
+const M=[
+ {n:'כוכב המספרים',s:'ערך המקום, סדרות, ישר המספרים',
+  L:[['כל ספרה במקום שלה','<p>במספר <b dir="ltr">3,210</b> לכל ספרה יש מקום:</p><div class="eq">3 , 2 1 0</div><div class="box">3 = אלפים · 2 = מאות · 1 = עשרות · 0 = אחדות</div><p>לכן הספרה 2 שווה <b>200</b>, כי היא במקום המאות.</p>'],
+     ['הגדול והקטן ביותר','<p><b>הגדול ביותר:</b> הספרה הכי גדולה ראשונה משמאל.</p><div class="eq">0, 1, 2, 3 → <b>3,210</b></div><p><b>הקטן ביותר:</b> הספרה הכי קטנה ראשונה, אבל <b>לא 0</b> בהתחלה!</p><div class="eq">0, 1, 2, 3 → <b>1,023</b></div>'],
+     ['סדרות וישר המספרים','<p>בסדרה בודקים <b>בכמה קופצים</b>:</p><div class="eq">1,853 → 1,863 → 1,873 → <b>1,883</b></div><p>קופצים ב-10. את זה עשית מצוין במבחן ⭐</p><div class="box">בישר המספרים: מספר בקטע המודגש גדול מההתחלה וקטן מהסוף.</div>']],
+  P:[{les:[0,1],it:[
+      N('a1','השתמשי בספרות 0, 1, 2, 3 (כל ספרה פעם אחת). מה המספר <b>הגדול ביותר</b>?','',3210,['הגדולה ראשונה','3 2 1 0 → 3,210'],{w:1}),
+      C('a2',`מה הערך של הספרה 2 במספר ${E('3,210')}?`,['200, כי היא במקום המאות','20, כי היא במקום העשרות','2,000, כי היא במקום האלפים','2, כי היא במקום האחדות'],['ערך המקום','3,210: 2 במקום המאות = 200']),
+      N('a3','השתמשי בספרות 4, 1, 0, 7 (כל ספרה פעם אחת). מה המספר <b>הגדול ביותר</b>?','',7410,['הגדולה ראשונה','7 4 1 0 → 7,410']),
+      N('a4','השתמשי בספרות 5, 0, 2, 8 (כל ספרה פעם אחת). מה המספר <b>הקטן ביותר</b>?','',2058,['הקטנה ראשונה, אבל לא 0','2 0 5 8 → 2,058'],{tip:'💡 מספר לא מתחיל ב-0'})]},
+     {les:[2],it:[
+      N('a5','השלימי את הסדרה','1,853, 1,863, 1,873, ?',1883,['קופצים ב-10','1,873 + 10 = 1,883'],{w:1}),
+      N('a6','השלימי את הסדרה','3,800, 3,700, 3,600, ?',3500,['יורדים ב-100','3,600 − 100 = 3,500']),
+      N('a7','השלימי את הסדרה','1,990, 1,995, 2,000, ?',2005,['קופצים ב-5','2,000 + 5 = 2,005']),
+      NL('a8',3003,3300,['3,030','3,330','3,000','3,303']),
+      CM('a9','4,058','4,508','<',['משווים מהאלפים','שווה 4, ואז מאות: 0 < 5'])]},
+     {it:[
+      N('a10',`כתבי מספר <b>זוגי</b> הקטן מ-${E('2,000')}, עם הספרות 0, 1, 2, 3 (כל ספרה פעם אחת)`,'',null,['זוגי + קטן מ-2,000','מתחיל ב-1 ונגמר ב-0 או 2, למשל 1,230'],{ok:v=>digs(v)==='0123'&&v%2===0&&v<2000,show:'1,230',w:1}),
+      C('a11',`מה הערך של הספרה 6 במספר ${E('4,620')}?`,['600','60','6,000','6'],['ערך המקום','4,620: 6 במקום המאות = 600']),
+      N('a12','השתמשי בספרות 9, 3, 0, 6 (כל ספרה פעם אחת). מה המספר <b>הקטן ביותר</b>?','',3069,['הקטנה ראשונה, אבל לא 0','3 0 6 9 → 3,069'])]},
+     {boss:1,it:[
+      N('ab1','השתמשי בספרות 5, 9, 0, 2 (כל ספרה פעם אחת). מה המספר <b>הגדול ביותר</b>?','',9520,['הגדולה ראשונה','9 5 2 0 → 9,520']),
+      N('ab2','השלימי את הסדרה','6,240, 6,250, 6,260, ?',6270,['קופצים ב-10','6,260 + 10 = 6,270']),
+      NL('ab3',5050,5500,['5,105','5,005','5,550','5,045']),
+      CM('ab4','7,099','7,100','<',['משווים מהאלפים','7 = 7, ואז מאות: 0 < 1']),
+      N('ab5','השתמשי בספרות 3, 0, 6, 1 (כל ספרה פעם אחת). מה המספר <b>הקטן ביותר</b>?','',1036,['הקטנה ראשונה, אבל לא 0','1 0 3 6 → 1,036'])]}]},
+
+ {n:'כוכב החיבור',s:'חיבור במאונך עם העברה',
+  L:[['אחדות מתחת לאחדות','<p>במאונך מיישרים <b>מימין</b>: אחדות מתחת לאחדות, עשרות מתחת לעשרות.</p><div class="two"><div>'+lay('__758','+__87')+'<br>✅ נכון</div><div>'+lay('__758','+_87_')+'<br>❌ זז שמאלה</div></div><div class="box">8 מתחת ל-8, ו-7 מתחת ל-5.</div>'],
+     ['ההעברה','<p>מתחילים מימין, מהאחדות: <span dir="ltr">8 + 7 = 15</span></p><p>כותבים <b>5</b> למטה, ואת ה-<b>1</b> (עשרת) <b>מעבירים</b> לעמודת העשרות, קטן למעלה.</p><table class="colt" style="margin:4px auto"><tr><td class="sm"></td><td class="sm">1</td><td class="sm">1</td><td class="sm"></td></tr><tr><td></td><td>7</td><td>5</td><td>8</td></tr><tr class="ln"><td>+</td><td></td><td>8</td><td>7</td></tr><tr><td></td><td class="rs">8</td><td class="rs">4</td><td class="rs">5</td></tr></table>'],
+     ['בודקות באומדן','<p>לפני שמסיימים, בודקות אם התשובה הגיונית:</p><div class="eq">758 ≈ 760 · 87 ≈ 90</div><div class="eq">760 + 90 = <b>850</b></div><div class="box">יצא 845? קרוב ל-850, מצוין ✅<br>יצא 1,135? רחוק מדי, יש טעות ❌</div>']],
+  P:[{les:[0],it:[
+      N('b1','כמה זה?','34 + 25 = ?',59,['אחדות ועשרות','4 + 5 = 9, 3 + 2 = 5 → 59'],{w:1}),
+      C('b2',`איזה סידור במאונך של ${E('758 + 87')} נכון?`,[lay('__758','+__87'),lay('__758','+_87_'),lay('__758','+87__')],['מיישרים מימין','8 מתחת ל-8, 7 מתחת ל-5'],{cls:'o3'}),
+      COL('b3','+',46,27,1)]},
+     {les:[1],it:[
+      N('b4','בחנות החלל קסדה עולה 80 ₪ ומשקפת 20 ₪. כמה עולות 2 קסדות ומשקפת אחת?','',180,['מחברים הכול','80 + 80 + 20 = 180'],{w:1}),
+      COL('b5','+',758,87,1),
+      COL('b6','+',365,248,1)]},
+     {les:[2],it:[
+      C('b7',`${E('758 + 87')} קרוב ל-…`,['850','1,150','750','950'],['אומדן','760 + 90 = 850']),
+      COL('b8','+',487,56),
+      COL('b9','+',1265,378,0,{need:2}),
+      COL('b10','+',2408,795)]},
+     {boss:1,it:[
+      COL('bb1','+',758,87),
+      COL('bb2','+',649,275),
+      COL('bb3','+',1586,347),
+      N('bb4','בספרייה של תחנת החלל יש 1,248 ספרים. הגיעו עוד 365. כמה ספרים יש עכשיו?','',1613,['מחברים במאונך','1,248 + 365 = 1,613'])]}]},
+
+ {n:'כוכב החיסור',s:'חיסור במאונך עם פריטה',
+  L:[['מחסרים מימין','<p>מתחילים מהאחדות. הספרה למעלה <b>גדולה</b>? מחסרים רגיל:</p><table class="colt" style="margin:4px auto"><tr><td></td><td>8</td><td>5</td></tr><tr class="ln"><td>−</td><td>3</td><td>2</td></tr><tr><td></td><td class="rs">5</td><td class="rs">3</td></tr></table>'],
+     ['לווים מהשכנה','<p><span dir="ltr">52 − 27</span>: באחדות 2 <b>קטן</b> מ-7.</p><p>לווים עשרת מהשכנה משמאל: 5 הופך ל-<b>4</b>, ו-2 הופך ל-<b>12</b>.</p><table class="colt" style="margin:4px auto"><tr><td class="sm"></td><td class="sm">4</td><td class="sm">12</td></tr><tr><td></td><td><s>5</s></td><td><s>2</s></td></tr><tr class="ln"><td>−</td><td>2</td><td>7</td></tr><tr><td></td><td class="rs">2</td><td class="rs">5</td></tr></table>'],
+     ['פריטה מ-0','<p><span dir="ltr">600 − 146</span>: באחדות 0, וגם בעשרות 0!</p><p>לווים מהמאות: 6 הופך ל-<b>5</b>, העשרות הופכות ל-<b>9</b>, והאחדות ל-<b>10</b>.</p><table class="colt" style="margin:4px auto"><tr><td class="sm"></td><td class="sm">5</td><td class="sm">9</td><td class="sm">10</td></tr><tr><td></td><td><s>6</s></td><td><s>0</s></td><td><s>0</s></td></tr><tr class="ln"><td>−</td><td>1</td><td>4</td><td>6</td></tr><tr><td></td><td class="rs">4</td><td class="rs">5</td><td class="rs">4</td></tr></table>'],
+     ['בודקות בחיבור','<p>חיבור וחיסור הם <b>פעולות הפוכות</b>. אחרי חיסור בודקים בחיבור:</p><div class="eq">6,870 − 780 = <b>6,090</b></div><div class="eq">6,090 + 780 = 6,870 ✅</div><div class="box">אם יצא המספר שהתחלנו ממנו, צדקנו!</div>']],
+  P:[{les:[0,1],it:[
+      N('c1','כמה זה?','85 − 32 = ?',53,['אחדות ועשרות','5 − 2 = 3, 8 − 3 = 5 → 53'],{w:1}),
+      N('c2','למורה 40 עפרונות. היא נתנה לכל אחד מ-28 התלמידים עיפרון. כמה עפרונות נשארו לה?','',12,['מחסרים','40 − 28 = 12'],{w:1}),
+      COL('c3','−',52,27,1),
+      COL('c4','−',341,128,1)]},
+     {les:[2],it:[
+      COL('c5','−',6870,780,1),
+      COL('c6','−',600,146,1),
+      COL('c7','−',503,275,1)]},
+     {les:[3],it:[
+      N('c8','בשכבה 100 תלמידים: 32 בכיתה ד1, 33 בכיתה ד2, והשאר בכיתה ד3. כמה תלמידים בכיתה ד3?','',35,['מחסרים פעמיים','100 − 32 − 33 = 35'],{w:1}),
+      C('c9',`איך בודקים ש-${E('6,870 − 780 = 6,090')}?`,[E('6,090 + 780 = 6,870'),E('6,870 + 780 = 7,650'),E('6,090 − 780 = 5,310'),E('6,870 − 6,090 = 870')],['בודקים בחיבור','התוצאה + מה שהורדנו = מה שהיה']),
+      COL('c10','−',734,259),
+      COL('c11','−',5000,1250,0,{need:2}),
+      COL('c12','−',1403,368)]},
+     {boss:1,it:[
+      COL('cb1','−',6870,780),
+      COL('cb2','−',900,365),
+      COL('cb3','−',2050,475),
+      COL('cb4','−',813,96)]}]},
+
+ {n:'כוכב המספר החסר',s:'מה חסר, וגדול/קטן מ-',
+  L:[['מה חסר?','<div class="eq">600 − <b>?</b> = 460</div><p>שואלות: <b>כמה צריך להוריד</b> מ-600 כדי להגיע ל-460?</p><div class="eq">600 − 460 = <b>140</b></div><div class="box">בודקות: <span dir="ltr">600 − 140 = 460</span> ✅</div>'],
+     ['מורידים יותר, נשאר פחות','<p>🍪 יש 600 עוגיות. אוכלות 140, נשארות 460.</p><p>אוכלות <b>פחות</b> (100)? נשארות <b>יותר</b> (500).</p><p>אוכלות <b>יותר</b> (200)? נשארות <b>פחות</b> (400).</p><div class="box"><span dir="ltr">600 − ? &gt; 460</span>: רוצות שיישאר <b>יותר</b>, אז מורידים <b>פחות מ-140</b>. למשל 100.</div>'],
+     ['בודקות שזה הגיוני','<p>מ-600 אפשר להוריד רק מספר <b>קטן מ-600</b>. אין 3,000 עוגיות להוריד! 🍪</p><p>בחרת מספר? מציבות ובודקות:</p><div class="eq">600 − 100 = 500</div><div class="eq">500 &gt; 460 ✅</div>']],
+  P:[{les:[0],it:[
+      N('d1','איזה מספר חסר?','50 − ? = 30',20,['כמה מורידים?','50 − 30 = 20'],{w:1}),
+      N('d2','איזה מספר חסר?','600 − ? = 460',140,['כמה מורידים?','600 − 460 = 140'],{need:2}),
+      N('d3','איזה מספר חסר?','? + 25 = 100',75,['כמה חסר עד 100?','100 − 25 = 75']),
+      N('d4','איזה מספר חסר?','1,000 − ? = 750',250,['כמה מורידים?','1,000 − 750 = 250'])]},
+     {les:[1],it:[
+      N('d5','כמה זה?','6 × 8 = ?',48,['לוח הכפל','6 × 8 = 48'],{w:1}),
+      C('d6',`${E('600 − 140 = 460')}. אם נוריד <b>יותר</b> מ-140, מה יקרה?`,['התוצאה תהיה קטנה מ-460','התוצאה תהיה גדולה מ-460','התוצאה תישאר בדיוק 460','אי אפשר לדעת בלי לחשב'],['מורידים יותר, נשאר פחות','600 − 200 = 400, ו-400 < 460']),
+      C('d7',`איזה מספר מתאים? ${E('600 − ? &gt; 460')}`,['100','140','200','3,000'],['מורידים פחות מ-140','600 − 100 = 500 > 460']),
+      CM('d8','600 − 100','460','>',['מחשבים ומשווים','600 − 100 = 500 > 460']),
+      CM('d9','600 − 200','460','<',['מחשבים ומשווים','600 − 200 = 400 < 460'])]},
+     {les:[2],it:[
+      N('d10','רשמי מספר שמתאים','600 − ? > 460',null,['מורידים פחות מ-140','למשל 600 − 100 = 500 > 460'],{ok:v=>+v<140,show:'100',need:2}),
+      N('d11','רשמי מספר שמתאים','600 − ? < 460',null,['מורידים יותר מ-140 (אבל לא יותר מ-600)','למשל 600 − 200 = 400 < 460'],{ok:v=>+v>140&&+v<=600,show:'200'}),
+      N('d12','רשמי מספר שמתאים','80 + ? < 100',null,['מוסיפים פחות מ-20','למשל 80 + 10 = 90 < 100'],{ok:v=>+v<20,show:'10'}),
+      N('d13','לליה 600 ₪. היא רוצה שיישארו לה בדיוק 460 ₪. כמה כסף היא יכולה לבזבז?','',140,['כמה מורידים?','600 − 460 = 140'])]},
+     {boss:1,it:[
+      N('db1','רשמי מספר שמתאים','900 − ? > 650',null,['מורידים פחות מ-250','למשל 900 − 100 = 800 > 650'],{ok:v=>+v<250,show:'100'}),
+      N('db2','איזה מספר חסר?','900 − ? = 650',250,['כמה מורידים?','900 − 650 = 250']),
+      N('db3','רשמי מספר שמתאים','500 − ? < 300',null,['מורידים יותר מ-200 (עד 500)','למשל 500 − 300 = 200 < 300'],{ok:v=>+v>200&&+v<=500,show:'300'}),
+      CM('db4','700 − 50','700 − 80','>',['מורידים פחות, נשאר יותר','650 > 620']),
+      N('db5','איזה מספר חסר?','? − 30 = 70',100,['מה היה לפני שהורדנו?','70 + 30 = 100'])]}]},
+
+ {n:'כוכב הקסם של 0 ו-1',s:'×1, :1, חלקי עצמו, סוגריים',
+  L:[['כפל וחילוק ב-1','<div class="eq">22 × 1 = <b>22</b></div><p>קבוצה אחת של 22, זה 22.</p><div class="eq">22 : 1 = <b>22</b></div><p>מחלקים לקבוצה <b>אחת</b>: הכול נשאר בה.</p><div class="box">כפול 1 וחלקי 1 <b>לא משנים</b> את המספר!</div>'],
+     ['מספר עם עצמו','<div class="eq">22 : 22 = <b>1</b></div><p>22 עוגיות ל-22 ילדים: לכל אחד <b>1</b>.</p><div class="eq">22 − 22 = <b>0</b> · 22 × 0 = <b>0</b></div><div class="box">חלקי עצמו = 1 · פחות עצמו = 0 · כפול 0 = 0</div>'],
+     ['משווים בחוכמה','<div class="eq">4 × 7 × 1 × 1 <b>?</b> 4 × 7 × 2</div><p>בשני הצדדים יש <span dir="ltr">4 × 7 = 28</span>.</p><p>משמאל: כפול 1 ועוד כפול 1 לא משנים → <b>28</b>.</p><p>מימין: כפול 2 מכפיל → <b>56</b>.</p><div class="eq">28 &lt; 56, אז הסימן הוא <b>&lt;</b></div>'],
+     ['סוגריים קודם','<div class="eq">40 : (4 + 36) = 40 : 40 = <b>1</b></div><p>קודם מה שבסוגריים. את זה עשית <b>מצוין</b> במבחן ⭐</p><div class="box">בלי סוגריים: כפל וחילוק <b>לפני</b> חיבור וחיסור.</div><div class="eq">30 − 5 × 4 = 30 − 20 = <b>10</b></div>']],
+  P:[{les:[0,1],it:[
+      N('e1','כמה זה?','63 : 7 = ?',9,['כפל וחילוק אחים','7 × 9 = 63'],{w:1}),
+      N('e2','כמה זה?','15 : 1 = ?',15,['חלקי 1 לא משנה','15 : 1 = 15']),
+      N('e3','כמה זה?','15 : 15 = ?',1,['חלקי עצמו = 1','15 : 15 = 1']),
+      N('e4','כמה זה?','48 − 48 = ?',0,['פחות עצמו = 0','48 − 48 = 0']),
+      C('e5','איזה תרגיל שווה <b>1</b>?',[E('35 : 35'),E('35 : 1'),E('35 × 1'),E('35 − 35')],['חלקי עצמו = 1','35 : 35 = 1, אבל 35 : 1 = 35'],{need:2})]},
+     {les:[2],it:[
+      N('e6','כמה זה?','9 × 1 = ?',9,['כפול 1 לא משנה','9 × 1 = 9'],{w:1}),
+      CM('e7','4 × 7 × 1 × 1','4 × 7 × 2','<',['×1 לא משנה, ×2 מכפיל','28 < 56'],{need:2}),
+      CM('e8','6 × 5 × 1','6 × 5','=',['×1 לא משנה','30 = 30']),
+      CM('e9','9 × 2 × 2','9 × 4','=',['2 × 2 = 4','36 = 36']),
+      CM('e10','5 × 6 × 0','5 × 6 × 1','<',['×0 = 0, ×1 לא משנה','0 < 30']),
+      CM('e11','12 : 12','12 − 12','>',['חלקי עצמו 1, פחות עצמו 0','1 > 0']),
+      C('e12','איזה תרגיל שווה <b>0</b>?',[E('17 − 17'),E('17 : 17'),E('17 × 1'),E('17 : 1')],['פחות עצמו = 0','17 − 17 = 0, אבל 17 : 17 = 1'])]},
+     {les:[3],it:[
+      N('e13','כמה זה?','40 : (4 + 36) = ?',1,['קודם הסוגריים','4 + 36 = 40, ו-40 : 40 = 1'],{w:1}),
+      N('e14','כמה זה?','(10 − 4) × 3 = ?',18,['קודם הסוגריים','10 − 4 = 6, ו-6 × 3 = 18']),
+      N('e15','כמה זה?','30 − 5 × 4 = ?',10,['כפל לפני חיסור','5 × 4 = 20, ו-30 − 20 = 10']),
+      N('e16','כמה זה?','20 : (2 + 3) = ?',4,['קודם הסוגריים','2 + 3 = 5, ו-20 : 5 = 4'])]},
+     {boss:1,it:[
+      C('eb1','איזה תרגיל שווה <b>1</b>?',[E('50 : 50'),E('50 : 1'),E('50 × 1'),E('50 − 50')],['חלקי עצמו = 1','50 : 50 = 1']),
+      CM('eb2','3 × 8 × 1','3 × 8 × 2','<',['×1 לא משנה, ×2 מכפיל','24 < 48']),
+      CM('eb3','7 × 1 × 1','7 : 1','=',['×1 ו-:1 לא משנים','7 = 7']),
+      N('eb4','כמה זה?','99 : 99 = ?',1,['חלקי עצמו = 1','99 : 99 = 1']),
+      N('eb5','כמה זה?','(6 + 4) × 5 = ?',50,['קודם הסוגריים','6 + 4 = 10, ו-10 × 5 = 50']),
+      N('eb6','כמה זה?','8 × 0 × 5 = ?',0,['כפול 0 = 0','8 × 0 = 0, ו-0 × 5 = 0'])]}]},
+
+ {n:'כוכב המדידות',s:'סרגל, היקף, זוויות, דיאגרמה',
+  L:[['סרגל שלא מתחיל ב-0','<p>העיפרון מתחיל ב-<b>1</b> ונגמר ב-<b>13</b>.</p><div class="eq">13 − 1 = <b>12</b> ס״מ</div><div class="box">אורך = <b>סוף פחות התחלה</b>. סופרים <b>קפיצות</b> (רווחים) ולא קווים.</div><p>מ-1 עד 2 זו קפיצה אחת = 1 ס״מ.</p>'],
+     ['היקף = הדרך מסביב','<p>היקף הוא האורך של <b>הקו שמסביב</b> לצורה, כמו נמלה שמטיילת על הגדר 🐜</p><div class="eq">4 + 3 + 4 + 3 = <b>14</b> ס״מ</div><p>את זה פתרת נכון במבחן ⭐</p>'],
+     ['זוויות','<p>📐 <b>ישרה</b>: כמו פינה של דף (מסמנים בריבוע קטן).</p><p>🔺 <b>חדה</b>: קטנה מזווית ישרה.</p><p>↗️ <b>קהה</b>: גדולה מזווית ישרה.</p>'],
+     ['קוראים דיאגרמה','<p>מסתכלות על <b>ראש העמודה</b>, וממנו ישר לציר המספרים.</p><div class="box">"בכמה יותר?" = מחסרים: הגבוה פחות הנמוך.</div>']],
+  P:[{les:[0],it:[
+      RUL('f1',0,7,0,{w:1}),
+      RUL('f2',2,9),
+      RUL('f3',1,13,1,{need:2}),
+      RUL('f4',3,11)]},
+     {les:[1],it:[
+      PER('f5',4,3,{w:1}),
+      PER('f6',5,2),
+      C('f7','מה מודדים כשמחשבים <b>היקף</b>?',['את אורך הקו שמסביב לצורה','את מספר המשבצות שבתוך הצורה','את הצלע הארוכה ביותר בצורה','את מספר הפינות שיש לצורה'],['היקף = הדרך מסביב','מחברים את כל הצלעות']),
+      PER('f8',6,4)]},
+     {les:[2,3],it:[
+      ANG('f9',90,{w:1}),
+      ANG('f10',40),
+      ANG('f11',130),
+      BAR('f12','כמה סקווישים יש לנועה?',8,['קוראים בציר','העמודה של נועה מגיעה ל-8'],{w:1}),
+      BAR('f13','בכמה סקווישים יש למאיה <b>יותר</b> מלטל?',8,['בכמה יותר = מחסרים','14 − 6 = 8'])]},
+     {boss:1,it:[
+      RUL('fb1',4,12),
+      RUL('fb2',2,11,1),
+      PER('fb3',3,3),
+      N('fb4','גינה מלבנית באורך 8 מטר וברוחב 3 מטר. כמה מטר גדר צריך מסביב?','',22,['היקף','8 + 3 + 8 + 3 = 22']),
+      ANG('fb5',120),
+      BAR('fb6','בכמה סקווישים יש לליה <b>יותר</b> מנועה?',4,['בכמה יותר = מחסרים','12 − 8 = 4'])]}]}
+];
+
+// ---------- ציורים ----------
+function rulerSvg(s,e,guide){const cm=19,x0=12,W=x0*2+14*cm;let t='',nm='';
+  for(let i=0;i<=140;i++){const x=x0+i*cm/10,h=i%10===0?13:i%5===0?9:5;t+=`<path d="M${x.toFixed(1)} 34v${h}" stroke="#334155" stroke-width="${i%10?0.6:1.2}"/>`}
+  for(let i=0;i<=14;i++)nm+=`<text x="${x0+i*cm}" y="62" font-size="11" text-anchor="middle" fill="#0f172a" font-weight="700">${i}</text>`;
+  const ps=x0+s*cm,pe=x0+e*cm,gd=guide?`<path d="M${ps} 4v34M${pe} 4v34" stroke="#e11d48" stroke-width="1.4" stroke-dasharray="3 2"/>`:'';
+  return `<svg class="fig" viewBox="0 0 ${W} 70" aria-hidden="true"><rect x="2" y="32" width="${W-4}" height="36" rx="4" fill="#fefce8" stroke="#a16207"/>${t}${nm}<rect x="${ps}" y="10" width="${pe-ps-12}" height="16" fill="#fbbf24" stroke="#92400e"/><rect x="${ps}" y="10" width="6" height="16" fill="#f9a8d4" stroke="#92400e"/><path d="M${pe-12} 10L${pe} 18L${pe-12} 26z" fill="#fde68a" stroke="#92400e" stroke-linejoin="round"/><path d="M${pe-4} 16.5l4 1.5-4 1.5z" fill="#334155"/>${gd}</svg>`}
+function perSvg(w,h){const c=20,gw=w+2,gh=h+2;let g='';
+  for(let i=0;i<=gw;i++)g+=`<path d="M${4+i*c} 4v${gh*c}" stroke="#94a3b8" stroke-dasharray="3 3" stroke-width=".9"/>`;
+  for(let j=0;j<=gh;j++)g+=`<path d="M4 ${4+j*c}h${gw*c}" stroke="#94a3b8" stroke-dasharray="3 3" stroke-width=".9"/>`;
+  return `<svg class="fig sq" viewBox="0 0 ${gw*c+8} ${gh*c+8}" aria-hidden="true">${g}<rect x="${4+c}" y="${4+c}" width="${w*c}" height="${h*c}" fill="#94a3b8" fill-opacity=".6" stroke="#1f2937" stroke-width="2.5"/><path d="M4 4h${c}" stroke="#2563eb" stroke-width="3"/></svg>`}
+function angSvg(d){const vx=70,vy=100,L=120,r=d*Math.PI/180,x2=vx+L*Math.cos(r),y2=vy-L*Math.sin(r),ar=24,ax=vx+ar*Math.cos(r),ay=vy-ar*Math.sin(r);
+  const mk=d===90?`<path d="M${vx+16} ${vy}V${vy-16}H${vx}" fill="none" stroke="#2563eb" stroke-width="2.2"/>`:`<path d="M${vx+ar} ${vy}A${ar} ${ar} 0 0 0 ${ax.toFixed(1)} ${ay.toFixed(1)}" fill="none" stroke="#2563eb" stroke-width="2.2"/>`;
+  return `<svg class="fig" viewBox="0 0 230 108" style="max-width:240px" aria-hidden="true"><path d="M${vx} ${vy}H${vx+L+20}M${vx} ${vy}L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>${mk}<circle cx="${vx}" cy="${vy}" r="3" fill="#0f172a"/></svg>`}
+const BARS=[['ליה',12],['נועה',8],['מאיה',14],['טל',6]];
+function barSvg(){const H=110,y0=122,sc=H/16;let g='',b='';
+  for(let v=0;v<=16;v+=4){const y=y0-v*sc;g+=`<path d="M30 ${y}H290" stroke="#e2e8f0"/><text x="24" y="${y+4}" font-size="11" text-anchor="end" fill="#334155">${v}</text>`}
+  BARS.forEach(([n,v],i)=>{const x=50+i*60;b+=`<rect x="${x}" y="${y0-v*sc}" width="34" height="${v*sc}" rx="3" fill="${['#60a5fa','#f472b6','#a78bfa','#fbbf24'][i]}" stroke="#334155" stroke-width=".8"/><text x="${x+17}" y="${y0+15}" font-size="12" font-weight="700" text-anchor="middle" fill="#0f172a">${n}</text>`});
+  return `<svg class="fig" viewBox="0 0 300 140" aria-hidden="true">${g}<path d="M30 8V${y0}H290" stroke="#334155" stroke-width="1.5" fill="none"/>${b}</svg>`}
+function nlSvg(lo,hi){const bx=(x,t)=>`<rect x="${x-34}" y="40" width="68" height="24" rx="3" fill="#fff" stroke="#334155"/><text x="${x}" y="57" font-size="14" font-weight="700" text-anchor="middle" fill="#0f172a">${fmt(t)}</text>`;
+  return `<svg class="fig" viewBox="0 0 300 70" aria-hidden="true"><path d="M14 22H286" stroke="#334155" stroke-width="2"/><path d="M8 22l10-6v12zM292 22l-10-6v12z" fill="#334155"/><path d="M80 22H220" stroke="#0f172a" stroke-width="7"/><path d="M80 12v20M220 12v20" stroke="#0f172a" stroke-width="2"/>${bx(80,lo)}${bx(220,hi)}</svg>`}
+
+// ---------- חיבור וחיסור במאונך ----------
+// התוכנית: צעד לכל עמודה מימין. בחיבור: ההעברה נכתבת קטן מעל העמודה הבאה. בחיסור: פריטה (גם משרשרת של אפסים) מוצגת לפני השאלה.
+function colPlan(it){const A=String(it.a).split('').reverse().map(Number),B=String(it.b).split('').reverse().map(Number),n=Math.max(A.length,B.length),steps=[];
+  if(it.op==='+'){let c=0;for(let j=0;j<n;j++){const da=A[j],db=B[j],s=(da||0)+(db||0)+c,parts=[da,db].filter(x=>x!==undefined),st={j,car:{},ch:{},wr:{}};
+      st.wr[j]=s%10;if(s>=10){if(j===n-1)st.wr[j+1]=1;else st.car[j+1]=1}
+      if(parts.length<2&&!c)st.auto=1;else{st.ex=parts.concat(c?[c]:[]).join(' + ')+' = ?';st.ans=s;st.say='עמודת '+PL[j]+(c?' (כולל ה-1 שהעברנו ⬆️)':'');if(s>=10&&j<n-1)st.tip=`כותבים ${s%10} ומעבירים 1 לעמודת ${PL[j+1]}`}
+      c=s>=10?1:0;steps.push(st)}}
+  else{const T=A.slice();for(let j=0;j<n;j++){const db=B[j]||0,st={j,car:{},ch:{},wr:{}};let pre='';
+      if(T[j]<db){let k=j+1;while(T[k]===0)k++;const o=T[j];T[k]--;st.ch[k]=T[k];for(let m=k-1;m>j;m--){T[m]=9;st.ch[m]=9}T[j]+=10;st.ch[j]=T[j];
+        pre=`${o} קטן מ-${db}, אז לווים מהשכנה משמאל`+(k>j+1?' (היא 0, אז לווים מזו שאחריה)':'')+`: ${o} הופך ל-${T[j]}`}
+      const r=T[j]-db;if(!(j===n-1&&r===0))st.wr[j]=r;
+      if(B[j]===undefined&&!pre)st.auto=1;else{st.ex=`${T[j]} − ${db} = ?`;st.ans=r;st.say='עמודת '+PL[j];st.pre=pre}
+      steps.push(st)}}
+  return steps}
+const colRes=it=>it.op==='+'?it.a+it.b:it.a-it.b;
+function colG(){return{car:{},ch:{},R:{},act:null}}
+function colApply(g,st,part){if(part!=='w')Object.assign(g.ch,st.ch);if(part!=='c'){Object.assign(g.car,st.car);Object.assign(g.R,st.wr)}}
+function colSolved(it){const g=colG();colPlan(it).forEach(st=>colApply(g,st));return g}
+function colH(it,g,cls){const A=String(it.a),B=String(it.b),W=Math.max(A.length,B.length,String(colRes(it)).length)+1,dg=(s,j)=>{const i=s.length-1-j;return i>=0?s[i]:''};
+  let r0='',r1='',r2='',r3='';
+  for(let j=W-1;j>=0;j--){const ac=g&&g.act===j?' ac':'',da=dg(A,j);
+    r0+=`<td class="sm${ac}">${it.op==='+'?(g&&g.car[j]?'1':''):(g&&g.ch[j]!=null?g.ch[j]:'')}</td>`;
+    r1+=`<td class="${ac}">${da&&g&&g.ch[j]!=null?'<s>'+da+'</s>':da}</td>`;
+    r2+=`<td class="${ac}">${j===W-1?(it.op==='+'?'+':'−'):dg(B,j)}</td>`;
+    r3+=`<td class="rs${ac}">${g&&g.R[j]!=null?g.R[j]:''}</td>`}
+  return `<table class="colt${cls?' '+cls:''}"><tr>${r0}</tr><tr>${r1}</tr><tr class="ln">${r2}</tr><tr>${r3}</tr></table>`}
+
+// ---------- פריטים ושלבים ----------
+const lbOf=it=>it.k==='col'?`${fmt(it.a)} ${it.op} ${fmt(it.b)}`:it.k==='cmp'?`${it.l} ? ${it.r}`:it.k==='rul'?`סרגל ${it.s}–${it.e}`:it.k==='per'?`היקף ${it.w}×${it.h}`:it.k==='ang'?'זווית':it.k==='bar'?'דיאגרמה':it.k==='nl'?'ישר המספרים':it.ex||String(it.q).replace(/<[^>]+>/g,'').slice(0,28);
+const IT=M.map(m=>{const r=[];m.P.forEach((g,si)=>g.it.forEach(x=>{x.st_=si;x.boss=!!g.boss;x.need=x.need||1;x.lb=lbOf(x);r.push(x)}));return r});
+const RVN=24; // מיפוי חוזר: 24 תשובות נכונות
+const RVP=[].concat(...IT.map((L,mi)=>L.filter(x=>!(x.k==='col'&&x.g)).map(x=>({mi,x}))));
+
+// ---------- מצב ----------
+function fresh(){return{v:1,m:0,w:{},T:0,pts:0,st:{c:0,b:0},att:0,okc:0,intro:0,ls:{},md:{},rv:{n:0,w:{}},started:new Date().toISOString()}}
+let S=LS.get('lia_m4');if(!S||!S.w)S=fresh();S.ls=S.ls||{};S.md=S.md||{};S.rv=S.rv||{n:0,w:{}};
+const save=()=>LS.set('lia_m4',S);save();
+let SQ=LS.get('lia_m4_sq')||[];let MUTE=!!LS.get('lia_m4_mute');
+const W=(mi,id)=>{const k=mi+':'+id;return S.w[k]||(S.w[k]={c:0,due:0,err:0})};
+const RW=k=>S.rv.w[k]||(S.rv.w[k]={c:0,err:0});
+const PH2=()=>S.m>=M.length;
+const misPct=mi=>{let n=0,t=0;IT[mi].forEach(x=>{t+=x.need;n+=Math.min(W(mi,x.id).c,x.need)});return t?n/t:0};
+const misDone=mi=>IT[mi].every(x=>W(mi,x.id).c>=x.need);
+const stageU=mi=>{const L=IT[mi],n=M[mi].P.length;for(let s=0;s<n;s++)if(L.some(x=>x.st_===s&&W(mi,x.id).c<1))return s;return n-1};
+
+// ---------- שמע ----------
+let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,t0,d,type,vol,f2){const a=ac();if(!a||MUTE)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t0+d);g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.16,a.currentTime+t0+.015);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
+const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.22,'triangle')},step(){tone(1318,0,.1,'triangle');tone(1760,.07,.14,'triangle')},bad(){tone(330,0,.25,'sine',.14,220)},pop(){tone(220,0,.18,'sine',.25,880);tone(880,.16,.2,'sine',.15,440)},win(){[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.15))},key(){tone(1500,0,.03,'square',.03)}};
+const sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
+
+// ---------- עזר ----------
+const POPQ=[];let POPON=false;function popTxt(t){POPQ.push(t);if(!POPON)popNext()}
+function popNext(){const t=POPQ.shift();if(t===undefined){POPON=false;return}POPON=true;const p=document.createElement('div');p.className='pop';p.textContent=t;document.body.appendChild(p);setTimeout(()=>{p.remove();popNext()},1050)}
+function confetti(n){const c=['#60a5fa','#fb923c','#facc15','#f472b6','#a78bfa'];for(let i=0;i<(n||40);i++){const e=document.createElement('i');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(c);e.style.animationDuration=(1.6+Math.random()*1.6)+'s';e.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3800)}}
+const OK=['מעולה! 🌟','בול! 🎯','אלופה! 🚀','יופי של חשיבה! ✨','חוקרת חלל אמיתית! 🔭','מדויק! 💫'];
+const exH=s=>s.replace(/\?/g,'<span class="q">?</span>');
+const stH=st=>st?`<div class="s">💡 ${st[0]}: ${E(st[1])}</div>`:'';
+
+// ---------- ממשק ----------
+const kp=$('kp'),op=$('op');
+kp.innerHTML=[7,8,9,4,5,6,1,2,3].map(d=>`<button class="k" type="button" data-d="${d}">${d}</button>`).join('');
+let CUR=null,INP='',DONE=false,LASTID=null,NEEDNEXT=false,WAIT=false;
+function setMode(kind){if(window.StudyGuess)StudyGuess.q();const isOp=kind==='op';kp.style.display=isOp?'none':'grid';op.style.display=isOp?'grid':'none';
+  $('kdel').classList.toggle('hid',isOp);$('k0').classList.toggle('hid',isOp);$('slot').classList.toggle('hid',isOp)}
+function upd(){const ph=PH2();
+  $('mt').textContent=ph?'🎯 מיפוי חוזר: '+Math.min(S.rv.n,RVN)+' מתוך '+RVN:'כוכב '+(S.m+1)+' מתוך 6: '+M[S.m].n;
+  $('pls').innerHTML=M.map((m,i)=>{const d=!!S.md[i],cur=i===S.m,p=d?1:cur?misPct(i):0;return `<span class="${d?'ok':cur?'cur':'lk'}"><i style="width:${p*100}%"></i><em>${d?'✓':PE[i]}</em></span>`}).join('')+
+    `<span class="${ph?'cur':'lk'}"><i style="width:${ph?Math.min(1,S.rv.n/RVN)*100:0}%"></i><em>🎯</em></span>`;
+  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);
+  $('sqn').textContent=sqN()+'/'+ALLSQ.length;
+  const b=ph?null:L5[S.m];
+  if(b){const pc=misPct(S.m);$('bugp').innerHTML=`<span>${Math.round(pc*100)}%</span><span class="bx"><svg class="gr" viewBox="0 0 100 100">${b.svg}</svg><svg viewBox="0 0 100 100" style="clip-path:inset(${100-pc*100}% 0 0 0)">${b.svg}</svg></span>`}
+  else $('bugp').innerHTML=`<span>🎯 ${Math.min(S.rv.n,RVN)}/${RVN}</span>`;
+  report()}
+function report(){if(!window.StudyTrack)return;const ph=PH2(),md=Object.keys(S.md).length,errs={};
+  Object.keys(S.w).forEach(k=>{const e=S.w[k].err||0;if(!e)return;const[mi,id]=k.split(':'),x=(IT[mi]||[]).find(y=>y.id===id);if(!x)return;const key=M[mi].n.replace('כוכב ','')+': '+x.lb;errs[key]=(errs[key]||0)+e});
+  Object.keys(S.rv.w).forEach(k=>{const e=S.rv.w[k].err||0;if(!e)return;const[mi,id]=k.split(':'),x=(IT[mi]||[]).find(y=>y.id===id);if(!x)return;const key=M[mi].n.replace('כוכב ','')+': '+x.lb;errs[key]=(errs[key]||0)+e});
+  const hard=Object.keys(errs).sort((a,b)=>errs[b]-errs[a]).slice(0,8).map(e=>({e,n:errs[e]}));
+  StudyTrack.report({total:6,done:md,learning:ph?0:1,att:S.att,ok:S.okc,pts:S.pts,streak:S.st.c,best:S.st.b,squishies:SQ.length,hard,mission:Math.min(S.m+1,7),
+    lv:ph?2:1,lvn:ph?'שלב 2: 🎯 מיפוי חוזר (24 שאלות מעורבות)':'שלב 1: 6 כוכבים (נושאים לחיזוק)',prog:ph?Math.min(S.rv.n,RVN):md,pmax:ph?RVN:6,started:S.started})}
+
+function choose(){const mi=S.m,L=IT[mi],U=stageU(mi),g=M[mi].P[U];
+  const open=L.filter(x=>W(mi,x.id).c<x.need),act=open.filter(x=>W(mi,x.id).seen);
+  if(!open.length)return null;
+  const due=act.filter(x=>W(mi,x.id).due<=S.T&&x.id!==LASTID).sort((a,b)=>W(mi,a.id).due-W(mi,b.id).due);
+  if(due.length)return due[0];
+  const nw=open.filter(x=>!W(mi,x.id).seen&&x.st_<=U),lim=g.boss?4:3;
+  if(nw.length&&act.length<lim)return nw[0];
+  const any=act.filter(x=>x.id!==LASTID);if(any.length)return pick(any);
+  return nw[0]||act[0]||open[0]}
+function resetIn(){INP='';$('slot').textContent='';$('slot').className='slot';$('act').textContent='בדיקה ✓';$('act').disabled=true}
+function next(){DONE=false;WAIT=false;resetIn();$('fb').innerHTML='';
+  if(PH2())return nextRv();
+  if(misDone(S.m))return missionDone();
+  const U=stageU(S.m),ls=S.ls[S.m]==null?-1:S.ls[S.m];
+  if(ls<U){const pg=[];for(let i=ls+1;i<=U;i++)(M[S.m].P[i].les||[]).forEach(x=>pg.push(x));if(pg.length){NEEDNEXT=true;openLes(S.m,pg,U);upd();return}S.ls[S.m]=U;save()}
+  const it=choose();if(!it)return missionDone();const w=W(S.m,it.id),first=!w.seen;w.seen=1;LASTID=it.id;CUR={it,mi:S.m,first};render(it,first);upd()}
+function nextRv(){const pool=shuf(RVP).sort((a,b)=>RW(b.mi+':'+b.x.id).err-RW(a.mi+':'+a.x.id).err-(RW(b.mi+':'+b.x.id).c-RW(a.mi+':'+a.x.id).c)*.5).slice(0,8).filter(p=>p.mi+':'+p.x.id!==LASTID);
+  const p=pick(pool.length?pool:RVP);LASTID=p.mi+':'+p.x.id;CUR={it:p.x,mi:p.mi,first:false,rv:1};render(p.x,false);upd()}
+function render(it,first){let h='',kind='kp',mode=first?'🆕 חדש':'🔁 שוב';CUR.st=it.st||null;CUR.ci=null;CUR.col=null;CUR.ok=null;
+  $('mode').className='mode'+(first?' new':'');
+  if(CUR.rv){mode='🎯 מיפוי חוזר';$('mode').className='mode fast'}
+  else if(it.boss){mode='🏁 אתגר הכוכב';$('mode').className='mode fast'}
+  else if(it.w){mode='⭐ את טובה בזה!';$('mode').className='mode'}
+  if(it.k==='n'){h=`<div class="ask">${it.q}</div>`+(it.ex?`<div class="ex${it.ex.length>13?' sm':''}">${exH(it.ex)}</div>`:'')+(it.tip&&first?`<div class="tip">${it.tip}</div>`:'');
+    CUR.ok=it.ok||(v=>+v===it.ans);CUR.show=it.show||fmt(it.ans)}
+  else if(it.k==='c'){h=`<div class="ask">${it.q}</div>`;kind='op';mcq(it.opts,0,it.cls)}
+  else if(it.k==='cmp'){h=`<div class="ask">איזה סימן מתאים במשבצת?</div><div class="ex sm">${it.l}<span class="cbox">?</span>${it.r}</div>`;kind='op';const S3=['>','<','='];mcq(S3,S3.indexOf(it.ans),'o3 sym',1)}
+  else if(it.k==='rul'){const ln=it.e-it.s;h=`<div class="ask">מה אורך העיפרון? (ציור מוקטן)</div>${rulerSvg(it.s,it.e,first&&!it.boss&&!CUR.rv)}`;CUR.st=['אורך = סוף פחות התחלה',`${it.e} − ${it.s} = ${ln}`];
+    if(it.mc){kind='op';mcq([ln,ln+1,ln-1,ln+2].map(x=>x+' ס״מ'),0)}else{CUR.ok=v=>+v===ln;CUR.show=ln+' ס״מ'}}
+  else if(it.k==='per'){const p=2*(it.w+it.h);h=`<div class="ask">מה <b>ההיקף</b> של המלבן האפור? (משבצת = 1 ס״מ)</div>${perSvg(it.w,it.h)}`;CUR.ok=v=>+v===p;CUR.show=p+' ס״מ';CUR.st=['מסביב',`${it.w} + ${it.h} + ${it.w} + ${it.h} = ${p}`]}
+  else if(it.k==='ang'){h=`<div class="ask">איזו זווית זו?</div>${angSvg(it.d)}`;kind='op';const o=['זווית ישרה','זווית חדה','זווית קהה'];mcq(o,it.d===90?0:it.d<90?1:2,'o3 he',1);CUR.st=['ישרה = פינת דף',it.d===90?'בדיוק כמו פינה':it.d<90?'קטנה מפינה = חדה':'גדולה מפינה = קהה']}
+  else if(it.k==='bar'){h=`<div class="ask">${it.q}</div>${barSvg()}`;CUR.ok=v=>+v===it.ans;CUR.show=String(it.ans)}
+  else if(it.k==='nl'){h=`<div class="ask">איזה מספר נמצא בקטע <b>המודגש</b>?</div>${nlSvg(it.lo,it.hi)}`;kind='op';mcq(it.opts,0);CUR.st=['גדול מההתחלה וקטן מהסוף',`${fmt(it.lo)} < ${it.opts[0]} < ${fmt(it.hi)}`]}
+  else if(it.k==='col'){const res=colRes(it);CUR.show=fmt(res);CUR.ok=v=>+v===res;
+    if(it.g&&!CUR.rv){mode='💡 צעד אחרי צעד';$('mode').className='mode new';CUR.col={steps:colPlan(it),i:0,g:colG(),err:0};$('mode').textContent=mode;return colStep()}
+    CUR.col={g:colG()};h=`<div class="ask">פתרי במאונך ${E(fmt(it.a)+' '+it.op+' '+fmt(it.b))}</div>`+colH(it,null);
+    CUR.st=it.op==='+'?['מימין לשמאל','אחדות, עשרות, מאות, עם ההעברות']:['מימין לשמאל','קטן למעלה? לווים מהשכנה']}
+  $('mode').textContent=mode;$('mid').innerHTML=h;setMode(kind)}
+// צעד אחרי צעד: עמודה אחרי עמודה
+function colStep(){const c=CUR.col,it=CUR.it;
+  while(c.i<c.steps.length&&c.steps[c.i].auto){colApply(c.g,c.steps[c.i]);c.i++}
+  if(c.i>=c.steps.length){c.g.act=null;return colFinish()}
+  c.pend=0;const st=c.steps[c.i];colApply(c.g,st,'c');c.g.act=st.j;
+  $('mid').innerHTML=`<div class="say">${st.say}: <span class="sx">${exH(st.ex)}</span></div>`+colH(it,c.g);
+  resetIn();setMode('kp');$('fb').innerHTML=st.pre?`<div class="pre">🔁 ${st.pre}</div>`:''}
+function stepCheck(v){const c=CUR.col,st=c.steps[c.i],ok=+v===st.ans;
+  if(window.StudyGuess&&StudyGuess.chk(ok,()=>resetIn()))return;
+  colApply(c.g,st,'w');
+  if(ok){SND.step();c.pend=1;$('slot').className='slot ok';$('fb').innerHTML=`<div class="t ok">✓ ${E(st.ex.replace('?',st.ans))}</div>`+(st.tip?`<div>${st.tip}</div>`:'');c.i++;
+    $('act').disabled=true;setTimeout(()=>{if(CUR&&CUR.col===c&&!DONE){$('fb').innerHTML='';colStep()}},st.tip?1500:700)}
+  else{c.err++;SND.bad();$('slot').className='slot no';$('fb').innerHTML=`<div class="t no">כמעט! ${E(st.ex.replace('?',st.ans))}</div>`+(st.tip?`<div>${st.tip}</div>`:'');c.i++;WAIT=true;
+    $('mid').querySelector('.colt').outerHTML=colH(CUR.it,c.g);$('act').disabled=false;$('act').textContent='המשך ←'}}
+function colFinish(){const c=CUR.col,ok=c.err===0;$('mid').innerHTML=`<div class="say">${ok?'פתרת! 🎉':'הפתרון המלא:'} <span class="sx">${fmt(CUR.it.a)+' '+CUR.it.op+' '+fmt(CUR.it.b)+' = '+fmt(colRes(CUR.it))}</span></div>`+colH(CUR.it,c.g,ok?'ok':'');
+  DONE=true;CUR.st=null;grade(ok,true)}
+function mcq(opts,ci,cls,keep){const idx=opts.map((_,i)=>i),o=keep?idx:shuf(idx),lng=!cls&&opts.some(x=>String(x).replace(/<[^>]+>/g,'').length>9);
+  op.className='op'+(cls?' '+cls:lng?' o1':'');
+  op.innerHTML=o.map(i=>{const t=String(opts[i]);return `<button class="opt${/[֐-׿]/.test(t.replace(/<[^>]+>/g,''))?' he':''}" type="button" data-i="${i}">${t}</button>`}).join('');CUR.ci=ci}
+op.onclick=e=>{const b=e.target.closest('.opt');if(!b||DONE)return;check(null,b)};
+kp.onclick=e=>{const b=e.target.closest('.k');if(b)key(b.dataset.d)};
+$('k0').onclick=()=>key('0');$('kdel').onclick=()=>key('del');
+function key(d){if(DONE||WAIT||(CUR&&CUR.col&&CUR.col.pend))return;ac();if(d==='del')INP=INP.slice(0,-1);else if(INP.length<5)INP=(INP==='0'?'':INP)+d;
+  SND.key();$('slot').className='slot';$('slot').textContent=INP?fmt(INP):'';$('act').disabled=!INP}
+$('act').onclick=()=>{if(WAIT){WAIT=false;$('fb').innerHTML='';colStep();return}if(DONE){next();return}if(INP)check(INP)};
+document.addEventListener('keydown',e=>{if(document.querySelector('.ov.on'))return;if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('del');else if(e.key==='Enter')$('act').click()});
+function check(v,btn){if(DONE)return;
+  if(CUR.col&&CUR.col.steps)return stepCheck(v);
+  const ok=btn?+btn.dataset.i===CUR.ci:CUR.ok(v);
+  // זיהוי ניחושים (אורן 13.11.2026): התשובה לא מתקבלת, ההודעה של הילה, ואותה שאלה שוב
+  if(window.StudyGuess&&StudyGuess.chk(ok,()=>resetIn()))return;DONE=true;
+  if(btn){[...op.children].forEach(x=>{x.disabled=true;if(+x.dataset.i===CUR.ci)x.classList.add('ok')});if(!ok)btn.classList.add('no')}
+  else $('slot').className='slot '+(ok?'ok':'no');
+  if(CUR.col){const t=$('mid').querySelector('.colt');if(t)t.outerHTML=colH(CUR.it,colSolved(CUR.it),ok?'ok':'')}
+  grade(ok,false,!!btn)}
+function grade(ok,guided,isBtn){S.T++;S.att++;const it=CUR.it;
+  const w=CUR.rv?RW(CUR.mi+':'+it.id):W(CUR.mi,it.id);
+  if(ok){w.c++;w.due=S.T+2+(w.c>1?2:0);S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);S.pts+=10;SND.ok();if(CUR.rv)S.rv.n++;
+    if(S.st.c>0&&S.st.c%5===0)popTxt('🔥 '+S.st.c+' ברצף!');
+    const more=CUR.rv?`<div>🎯 ${Math.min(S.rv.n,RVN)} מתוך ${RVN}</div>`:w.c>=it.need?(it.boss?'<div>🏁 עברת את האתגר בשאלה הזאת!</div>':it.w?'<div>⭐ ידעתי שאת יודעת את זה!</div>':'<div>✅ השאלה הזאת שלך!</div>'):guided?'<div>הצלחת צעד אחרי צעד! בהמשך לבד 💪</div>':'<div>עוד פעם אחת בהמשך, וזה שלך</div>';
+    $('fb').innerHTML=`<div class="t ok">${pick(OK)}</div>`+more}
+  else{w.err=(w.err||0)+1;w.c=Math.max(0,w.c-1);w.due=S.T+2;S.st.c=0;SND.bad();
+    if(guided){w.c=0}
+    $('fb').innerHTML=`<div class="t no">כמעט! ${isBtn||guided?'':(it.ok?'למשל: ':'התשובה: ')+E(CUR.show)}</div>`+(CUR.st?stH(CUR.st):'<div>זה יחזור עוד מעט, ונצליח 🙂</div>')}
+  save();upd();$('act').disabled=false;$('act').textContent='הבא ←';
+  if(CUR.rv&&ok&&S.rv.n===RVN&&!S.rvw){S.rvw=1;save();setTimeout(()=>{SND.win();confetti(80);$('mde').textContent='🏆';$('mdt').textContent='סיימת את המיפוי החוזר!';$('mdp').textContent='24 תשובות נכונות מכל הנושאים. את מוכנה להמשך כיתה ד׳ חזקה יותר! אפשר להמשיך להתאמן כדי לשמור על הכושר.';$('mdy').textContent='להמשיך להתאמן 🎯';$('mdov').classList.add('on')},900);return}
+  const tk=S.T;if(ok)setTimeout(()=>{if(DONE&&S.T===tk&&!document.querySelector('.ov.on'))next()},guided?1800:1200)}
+
+// ---------- סיום כוכב = סקווישי חדש ----------
+function missionDone(){const mi=S.m;if(!S.md[mi])S.md[mi]=new Date().toISOString();S.m=mi+1;save();
+  const b=L5[mi];if(b&&!SQ.includes(b.id)){SQ.push(b.id);LS.set('lia_m4_sq',SQ)}
+  SND.win();confetti(70);upd();showSq(b,'🚀 סקווישי חדש מהמסע!','ללוח! 🚀',()=>{
+    $('mde').textContent=S.m<M.length?'🚀':'🎯';$('mdt').textContent=`סיימת את ${M[mi].n}! 🎉`;
+    $('mdp').textContent=S.m<M.length?`${b.n} הצטרף ללוח הסקווישים שלך. הכוכב הבא: ${M[S.m].n} (${M[S.m].s}). סקווישי חדש מחכה שם!`:'כל 6 הסקווישים של המסע אצלך! 🧀🥤🍪🍳🪼🍓 עכשיו השלב של האלופות: 🎯 מיפוי חוזר, שאלות מעורבות מכל הנושאים.';
+    $('mdy').textContent=S.m<M.length?'לכוכב הבא 🚀':'למיפוי החוזר 🎯';$('mdov').classList.add('on')})}
+$('mdy').onclick=()=>{$('mdov').classList.remove('on');next()};
+let SQAFTER=null,CURSQ=null;
+function showSq(s,tt,okt,after){CURSQ=s.id;SQAFTER=after||null;$('sqtt').textContent=tt;$('sqimg').innerHTML=`<svg viewBox="0 0 100 100">${s.svg}</svg>`;$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent=okt;
+  const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on');setTimeout(()=>sqSound(s.id),350)}
+$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
+$('sqok').onclick=()=>{$('sqov').classList.remove('on');const f=SQAFTER;SQAFTER=null;if(f)f()};
+
+// ---------- הלוח האחד (כל התכנים של ליה) ----------
+const L5=LiaSquishies.list5,ALLSQ=LiaSquishies.all,aura=LiaSquishies.aura,uaura=LiaSquishies.uaura,orb=LiaSquishies.orb;
+const own=()=>LiaSquishies.owned(),sqN=()=>{const o=own();return ALLSQ.filter(x=>o.includes(x.id)).length};
+const cl=s=>s.bug?' bug':s.ult?' ult':s.sup?' sup':s.trip?' trip':'';
+function tile(s,o){return o.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}"><svg viewBox="0 0 100 100">${s.svg}</svg></div>`:`<div class="lock${cl(s)}"><svg viewBox="0 0 100 100">${s.svg.split(aura).join('').split(uaura).join('').split(orb).join('')}</svg></div>`}
+function sqRender(){const o=own(),R=LiaSquishies.rows,n=L5.filter(x=>o.includes(x.id)).length;
+  $('sqtx').innerHTML=`הלוח שלך, אחד לכל התכנים. במסע בין הכוכבים: <b>סקווישי על כל כוכב</b> שמסיימים (${n} מתוך 6). אספת ${sqN()} מתוך ${ALLSQ.length}.`;$('sqpb').style.width=(PH2()?100:misPct(S.m)*100)+'%';
+  $('sqg').innerHTML=[LiaSquishies.list,LiaSquishies.list2,LiaSquishies.list3,LiaSquishies.list4,L5].map((l,i)=>`<div class="sqhd">${R[i]}</div>`+l.map(s=>tile(s,o)).join('')).join('')+(window.StudyEffort?StudyEffort.row('lia'):'')}
+$('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
+$('sqcx').onclick=()=>$('sqcol').classList.remove('on');
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;$('sqcol').classList.remove('on');
+  showSq(s,s.eff?'💝 פרס מאמץ מאבא ואמא':s.trip?'הסקווישי שלך מהמסע 🚀':s.bug?'חרק החלל שלך 🐞':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 🪐','חזרה ללוח',()=>{sqRender();$('sqcol').classList.add('on')})};
+
+// ---------- ההסבר: עמודים קצרים ----------
+let LM=0,LPG=0,LPS=[],LUP=null;
+function openLes(mi,pages,upto){LM=Math.min(mi,M.length-1);LPS=pages||M[LM].L.map((_,i)=>i);LUP=upto==null?null:upto;LPG=0;drawLes();$('les').classList.add('on')}
+function drawLes(){const P_=LPS.map(i=>M[LM].L[i]),p=P_[LPG];$('lt').textContent=`📘 ${PE[LM]} ${p[0]}`;$('lp').textContent=(LPG+1)+'/'+P_.length;$('lb').innerHTML=p[1];$('lb').scrollTop=0;
+  $('ld').innerHTML=P_.map((_,i)=>`<i class="${i===LPG?'on':''}"></i>`).join('');$('lpr').classList.toggle('hid',LPG===0);$('lnx').textContent=LPG===P_.length-1?(LUP==null?'סיימתי ✓':'הבנתי ✓ לתרגול'):'הבא ←'}
+$('lpr').onclick=()=>{if(LPG>0){LPG--;drawLes()}};
+$('lnx').onclick=()=>{if(LPG<LPS.length-1){LPG++;drawLes();return}$('les').classList.remove('on');if(LUP!=null)S.ls[LM]=Math.max(S.ls[LM]==null?-1:S.ls[LM],LUP);save();if(NEEDNEXT){NEEDNEXT=false;next()}};
+$('lsb').onclick=()=>openLes(PH2()?M.length-1:S.m);
+
+$('mute').onclick=()=>{MUTE=!MUTE;LS.set('lia_m4_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊';if(!MUTE)SND.key()};$('mute').textContent=MUTE?'🔇':'🔊';
+$('isq').innerHTML='<div class="sqhd">'+LiaSquishies.rows[4]+'</div>'+L5.map(s=>tile(s,own())).join('');
+$('go').onclick=()=>{$('intro').classList.remove('on');ac();SND.ok();S.intro=1;save();next()};
+if(window.StudyGuess)StudyGuess.init('lia','math4',{fast:1500});
+if(window.StudyTrack){StudyTrack.init('lia','math4',['lia_m4','lia_m4_sq']);StudyTrack.gift(()=>{const b=L5.find(x=>!SQ.includes(x.id))||pick(L5);if(!SQ.includes(b.id)){SQ.push(b.id);LS.set('lia_m4_sq',SQ)}confetti(60);upd();showSq(b,'🎁 מתנה מאבא ואמא!','ללוח! 🚀')})}
+upd();LiaSquishies.sync(()=>{upd();if($('sqcol').classList.contains('on'))sqRender()});
+if(window.StudyEffort)StudyEffort.sync('lia',()=>{if($('sqcol').classList.contains('on'))sqRender()});
+if(!S.intro)$('intro').classList.add('on');else next();
+</script>
+</main></body></html>
