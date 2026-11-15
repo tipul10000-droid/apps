@@ -15,7 +15,7 @@
 main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;flex-direction:column;justify-content:safe center}
 .nav{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex:none}.nav .back{margin:0;flex:1}
 .ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 9px;cursor:pointer;white-space:nowrap}
-.ib.gift{background:#eef2ff;border-color:#a5b4fc;color:#3730a3;font-weight:700;font-size:13px;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;width:38px;text-align:center;direction:ltr;background:#3b82f6;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
+.ib.gift{background:#eef2ff;border-color:#a5b4fc;color:#3730a3;font-weight:700;font-size:13px;animation:gw 4s ease-in-out infinite}.ib.gift .cnt{display:inline-block;box-sizing:content-box;min-width:5ch;text-align:center;direction:ltr;font-variant-numeric:tabular-nums;line-height:16px;background:#3b82f6;color:#fff;border-radius:9px;font-size:11px;padding:0 5px;margin-right:2px}
 @keyframes gw{0%,88%,100%{transform:none}91%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}97%{transform:rotate(-3deg)}}
 .prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh)}
 .prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:24px}
@@ -447,11 +447,13 @@ kp.innerHTML=[7,8,9,4,5,6,1,2,3].map(d=>`<button class="k" type="button" data-d=
 let CUR=null,INP='',DONE=false,LASTID=null,NEEDNEXT=false,WAIT=false;
 function setMode(kind){if(window.StudyGuess)StudyGuess.q();const isOp=kind==='op';kp.style.display=isOp?'none':'grid';op.style.display=isOp?'grid':'none';
   $('kdel').classList.toggle('hid',isOp);$('k0').classList.toggle('hid',isOp);$('slot').classList.toggle('hid',isOp)}
+function fitT(e){const sz=()=>{e.style.fontSize='';let f=16;while(e.scrollWidth>e.clientWidth+1&&f>12){f-=.5;e.style.fontSize=f+'px'}return f};if(e.dataset.f)e.textContent=e.dataset.f;if(sz()<14&&e.dataset.s){e.textContent=e.dataset.s;sz()}} // כותרת השלב נכנסת בשלמותה בכל רוחב (אורן 15.11.2026)
+addEventListener('resize',()=>fitT($('mt')));if(document.fonts)document.fonts.ready.then(()=>fitT($('mt')));
 function upd(){const ph=PH2();
-  $('mt').textContent=ph?'🎯 מיפוי חוזר: '+Math.min(S.rv.n,RVN)+' מתוך '+RVN:'כוכב '+(S.m+1)+' מתוך 6: '+M[S.m].n;
+  {const e=$('mt');e.dataset.f=ph?'🎯 מיפוי חוזר: '+Math.min(S.rv.n,RVN)+' מתוך '+RVN:'כוכב '+(S.m+1)+' מתוך 6: '+M[S.m].n.replace('כוכב ','');e.dataset.s=ph?'🎯 מיפוי חוזר: '+Math.min(S.rv.n,RVN)+' מתוך '+RVN:'כוכב '+(S.m+1)+': '+M[S.m].n.replace('כוכב ','');e.textContent=e.dataset.f};
   $('pls').innerHTML=M.map((m,i)=>{const d=!!S.md[i],cur=i===S.m,p=d?1:cur?misPct(i):0;return `<span class="${d?'ok':cur?'cur':'lk'}"><i style="width:${p*100}%"></i><em>${d?'✓':PE[i]}</em></span>`}).join('')+
     `<span class="${ph?'cur':'lk'}"><i style="width:${ph?Math.min(1,S.rv.n/RVN)*100:0}%"></i><em>🎯</em></span>`;
-  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);
+  $('pts').textContent='⭐ '+S.pts;$('stc').textContent='🔥 '+S.st.c;$('stc').classList.toggle('hot',S.st.c>=3);fitT($('mt'));
   $('sqn').textContent=sqN()+'/'+ALLSQ.length;
   const b=ph?null:L5[S.m];
   if(b){const pc=misPct(S.m);$('bugp').innerHTML=`<span>${Math.round(pc*100)}%</span><span class="bx"><svg class="gr" viewBox="0 0 100 100">${b.svg}</svg><svg viewBox="0 0 100 100" style="clip-path:inset(${100-pc*100}% 0 0 0)">${b.svg}</svg></span>`}

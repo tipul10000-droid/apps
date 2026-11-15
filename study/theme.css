@@ -57,3 +57,7 @@ span.stp.low{background:#f4f6f9;color:#5b6675;box-shadow:inset 0 0 0 2px #b7c3d4
 @media (max-height:700px){main:has(> .list) .list{gap:8px}.list .lh{margin:0 4px -3px;font-size:12px}.list .item.dn{padding-top:7px;padding-bottom:7px}.list .item.dn .ic{width:44px;height:44px;font-size:24px}.item .stp{--s:46px}.item .chip{margin-top:4px}.list .item.dn small{display:none}main:has(> .list) .top img{height:72px}main:has(> .list) .top{margin-bottom:8px}}
 /* מספרים (אורן 14.11.2026): בכל study ספרות ברוחב אחיד וגובה אחיד, כך שמונים וציונים לא קופצים ומתיישרים יפה. important כי font: מקוצר מאפס את זה. */
 *,*::before,*::after{font-variant-numeric:tabular-nums lining-nums!important}
+
+/* שורת הניווט לא נשברת ולא חורגת גם במסך צר (320px). אורן 15.11.2026 */
+.nav .back{white-space:nowrap;min-width:0}
+@media (max-width:359px){.nav{gap:4px!important}.nav .ib{padding-left:7px!important;padding-right:7px!important}}
