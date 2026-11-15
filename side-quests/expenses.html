@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.5";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.6";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -129,7 +129,10 @@ details.fd>summary::before{content:"▸ ";color:var(--muted)}details.fd[open]>su
 .prow .b{flex:1;min-width:0;font-weight:700;font-size:14px}
 .prow .dec{width:170px}
 .calc{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin:0 14px 8px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}.calc span{background:var(--surface);padding:6px 8px;display:flex;flex-direction:column;line-height:1.3}.calc em{font-style:normal;font-size:11.5px;color:var(--muted)}.calc b{font-size:15px;color:var(--ink)}.calc span:last-child b{color:var(--hi,#2E6FB0)}.calc small{font-size:10.5px;color:var(--muted);white-space:nowrap}
-.tsel{padding:0 14px 10px;background:var(--sunk)}.tsel .dec{margin-top:0}
+/* 1.6: no frame in a frame: calc + status row are full-bleed segments of the trip card, split by lines */
+.calc{margin:0;border:0;border-top:1px solid var(--line);border-radius:0}
+.tsel{padding:0}.tsel .dec{width:100%;margin:0;border:0;border-top:1px solid var(--line);border-radius:0}.tsel .dec button{padding:11px 0;font-size:14px}
+.trip .tb{border-top:1px solid var(--line)}
 .st3 button.on{background:var(--hi-soft);color:var(--hi)}.st3 button.cur{background:var(--hi);color:#fff}
 .dep{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 .dep button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 10px;font-weight:800;font-size:13px;cursor:pointer}
@@ -265,7 +268,7 @@ function tripCard(t){const st=tState(t),L=itemsOf(t),w=tripWork(t),on=ui.trip===
   const ask=L.filter(i=>!i.dec&&i.auto==="ask"),special=L.filter(i=>!i.dec&&i.auto==="special"),mine=L.filter(i=>i.dec),aw=L.filter(i=>!i.dec&&i.auto==="work"),ap=L.filter(i=>!i.dec&&i.auto==="private");
   const extra=arr(t.steps).filter(s=>!s.tx&&!s.superseded&&!["submit","paid","classify"].includes(s.id));
   const v=tripTot(t),sub=[v?(st==="received"?"הוחזר ":"💭 ")+ils0(v):"",w.ask?w.ask+" לסיווג":""].filter(Boolean).join(" · ");
-  let o=`<div class="trip${special.length?" red":""}" id="tr-${esc(t.id)}"><button class="th" data-trip="${esc(t.id)}"><span class="b"><span class="t">${nameH(t)}</span><span class="s">${esc(sub)}</span></span><span class="pill ${TS[st][1]}">${TS[st][0]}</span></button>${calcLine(t)}<div class="tsel">${stateChips(t,st)}</div>`;
+  let o=`<div class="trip${special.length?" red":""}" id="tr-${esc(t.id)}"><button class="th" data-trip="${esc(t.id)}"><span class="b"><span class="t">${nameH(t)}</span><span class="s">${esc(sub)}</span></span></button>${calcLine(t)}<div class="tsel">${stateChips(t,st)}</div>`;
   if(on){o+=`<div class="tb">${t.stand&&!L.length?`<p class="stand">${esc(t.stand)}</p>`:""}`;
     if(st==="submitted")o+=depBox(t);
     extra.forEach(s=>{o+=`<div class="irow"><span class="b"><span class="t" style="white-space:normal">${esc(s.text)}</span></span><span class="dec" style="width:76px;grid-template-columns:1fr"><button data-step="${esc(s.id)}" data-t="${esc(t.id)}" class="${s.done?"on":""}">${s.done?"✓ טופל":"טופל"}</button></span></div>`;});
