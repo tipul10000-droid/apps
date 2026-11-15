@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=3"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#3B2F5C">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.BG_BUILD="1.0";</script>
+<script src="sq-db.js?v=9"></script>
+<script src="dash-lock.js?v=1"></script>
+<title>הוצאות ותקציב</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* דשבורד הוצאות ותקציב (Side Quest, 16.11.2026). נתונים: sq_docs topics/cf-budget (data.cf.summary), שהתזרים כותב.
+   ארנק חודשי (משכורות מול הוצאות חודשיות) וארנק שנתי (כסף שנתי מול טיולים ומיוחדות). נעול בקוד (dash-lock.js).
+   החזרי הוצאות עבודה הם דשבורד נפרד (expenses.html, Work Quest). */
+:root{
+  --bg:#F3F6F8; --surface:#FFFFFF; --sunk:#E7EDF1; --ink:#15212A; --muted:#5A6873; --line:#D6DFE5;
+  --hero:#3B2F5C; --hero2:#6A55A0; --art:url(img/art-payments.svg); --mark:#E2C14B; --hero-ink:#F2F8FB; --hero-muted:#CFC6E6; --accent:#F4C152; --accent-ink:#3A2700;
+  --good:#23855A; --good-soft:#DDF1E6; --warn:#A8600E; --warn-soft:#FBEAD3; --bad:#B83A2E; --bad-soft:#F8E0DD; --link:#5A44A0; --hi:#5A44A0; --hi-soft:#ECE7F8;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10161A; --surface:#182127; --sunk:#212C33; --ink:#EAF1F5; --muted:#9FB0BA; --line:#2A3740;
+  --hero:#241C3A; --hero2:#463970; --hero-ink:#EEF6FA; --hero-muted:#B7ADD6; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#B9A8F0; --hi:#B9A8F0; --hi-soft:#2A2340; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10161A; --surface:#182127; --sunk:#212C33; --ink:#EAF1F5; --muted:#9FB0BA; --line:#2A3740;
+  --hero:#241C3A; --hero2:#463970; --hero-ink:#EEF6FA; --hero-muted:#B7ADD6; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#B9A8F0; --hi:#B9A8F0; --hi-soft:#2A2340; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{flex:1;border:0;background:none;padding:9px 4px;font-weight:800;font-size:15px;cursor:pointer;font-family:var(--f-display);white-space:nowrap}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.docsbtn{display:block;text-align:center;margin-top:8px;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.35);color:#fff;text-decoration:none;font-weight:600;font-size:.95rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}.sh small{color:var(--muted);font-size:13px}
+.muted{color:var(--muted)}.empty{color:var(--muted);text-align:center;padding:20px 12px}
+.note{font-size:13.5px;color:var(--muted);line-height:1.5}
+/* one frame, rows split by lines (no frame in frame) */
+.list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:none;border:0;padding:11px 14px;color:inherit;font-weight:400}
+.row+.row,.mh+.row{border-top:1px solid var(--line)}
+.row .b{flex:1;min-width:0}
+.row .t{font-family:var(--f-display);font-weight:700;font-size:16px;display:block}
+.row .s{color:var(--muted);font-size:13px;display:block;line-height:1.4}
+.row .v{flex:none;text-align:left;font-family:var(--f-display);font-weight:800;font-size:15.5px;white-space:nowrap}
+.row .v small{display:block;font-family:var(--f-body);font-weight:700;font-size:11.5px;color:var(--muted)}
+.row.sum{background:var(--sunk)}
+a.row{cursor:pointer}
+.mh{font-family:var(--f-display);font-weight:800;font-size:13.5px;color:var(--muted);padding:8px 14px 4px;background:var(--sunk);border-top:1px solid var(--line)}
+.mh:first-child{border-top:0}
+.pill{display:inline-block;font-family:var(--f-body);font-size:11.5px;font-weight:800;border-radius:999px;padding:1px 8px;margin-inline-start:6px;vertical-align:2px}
+.p-good{background:var(--good-soft);color:var(--good)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-hi{background:var(--hi-soft);color:var(--hi)}.p-mute{background:var(--sunk);color:var(--muted)}
+.neg{color:var(--bad)}.pos{color:var(--good)}
+/* wallet table: one frame, cells split by lines */
+.wt{display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;font-size:14px}
+.wt>*{background:var(--surface);padding:8px 8px;min-width:0}
+.wt .h{background:var(--sunk);font-family:var(--f-display);font-weight:800;font-size:12.5px;color:var(--muted);text-align:center}
+.wt .l{font-weight:700}
+.wt .n{font-family:var(--f-display);font-weight:800;text-align:center;white-space:nowrap;direction:ltr}
+.wt .tot{background:var(--hi-soft)}
+.note{font-size:13.5px;color:var(--muted);line-height:1.55;margin:8px 2px 0}
+.bar2{height:6px;border-radius:3px;background:var(--sunk);margin-top:5px;overflow:hidden;position:relative}
+.bar2 i{position:absolute;inset:0 0 0 auto;display:block;border-radius:3px;background:var(--hi)}
+.bar2 i.over{background:var(--bad)}
+.ins .row{align-items:flex-start}
+.ins .dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--muted)}
+.ins .dot.bad{background:var(--bad)}.ins .dot.warn{background:var(--warn)}.ins .dot.good{background:var(--good)}
+.ins .t{font-size:15.5px}.ins .s{font-size:14px;color:var(--ink);opacity:.85;margin-top:2px}
+.step .n0{flex:none;width:26px;height:26px;border-radius:50%;background:var(--sunk);font-family:var(--f-display);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.step .t{font-size:15px;font-weight:600;font-family:var(--f-body)}
+.step.done{opacity:.55}.step.done .n0{background:var(--good-soft);color:var(--good)}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.links a{background:var(--surface);padding:11px 8px;text-align:center;font-size:14.5px;font-weight:800;color:var(--ink)}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+.hero .kpis .kpi b{white-space:normal;font-size:17px}
+@media (max-width:420px){.kpi b{font-size:15px}.hero h1{font-size:22px}.seg button{font-size:13.5px}.wt{font-size:13px}.wt>*{padding:7px 5px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=6">
+<script src="dash-sub.js?v=3" defer></script>
+<script src="fold.js?v=1" defer></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const arr=a=>Array.isArray(a)?a:[];
+const CF="https://household-cashflow-control.vercel.app/spending/budget";
+const ils=v=>v==null||v===""?"—":'<bdi dir="ltr">'+(v<0?"−":"")+"₪"+Math.round(Math.abs(+v)).toLocaleString("he-IL")+"</bdi>";
+const sgn=v=>`<span class="${v<0?"neg":v>0?"pos":""}">${ils(v)}</span>`;
+// verdicts from the cashflow app's budgetCompare
+const VD={fixed:["קבוע","p-mute"],ok:["בתקציב","p-good"],tight:["צמוד","p-warn"],over:["חריגה","p-bad"],missing:["לא בתכנון","p-warn"]};
+// what we agreed while building the budget (Oren 15.11.2026). Rules only, the numbers come from the cashflow app.
+const RULES=[
+  ["🏦","הלוואות לא נספרות כהכנסה","כסף שנכנס מהלוואה הוא חוב, לא הכנסה. גם העברות נכנסות שאינן משכורת לא נספרות."],
+  ["🔁","העברות מחשבון ההשקעות = המינוס גדל","העברות מהחשבון השני הן לא הכנסה. שני החשבונות נספרים יחד במינוס."],
+  ["🤝","גישור מהמשפחה שהוחזר לא חלק מהפער","גישור קצר של כמה שבועות שהוחזר במלואו בביט לא נספר כהכנסה וגם לא כחוב."],
+  ["📉","חודש רגיל = החודש הנמוך","המשכורת שלך בחודש רגיל לפי הרבעון התחתון, כדי שהתמונה לא תהיה ורודה מדי. מה שמעל זה כסף שנתי."],
+  ["✈️","שני ארנקים","חודשי: משכורות מול הוצאות חודשיות וחיסכון. שנתי: בונוסים, מילואים, החזרים ועבודות נוספות מול טיולים ומיוחדות."],
+  ["🧾","נסיעות עבודה חוזרות","נסיעות עבודה נכללות בטיולים בפועל, אבל ההחזר שלהן נכנס כהכנסה שנתית. הטיפול בהחזרים: בדשבורד החזרי עבודה ב-Work Quest."]];
+let T=null;
+const UI="sq_bg_ui";let ui={tab:"month"};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
+function save(){try{localStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
+const S=()=>(T&&T.cf&&T.cf.summary)||{};
+const mLbl=m=>{const [y,mm]=String(m||"").split("-");return mm?+mm+"."+String(y).slice(2):"";};
+function hero(){const s=S(),m=(s.monthly||{}).actual||{},y=(s.yearly||{}).actual||{},at=T&&T.cf&&T.cf.computed_at;
+  const when=at?new Date(at).toLocaleString("he-IL",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Jerusalem"}):"";
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${when?"עודכן "+esc(when):""}</span></div>
+  <h1>💰 הוצאות ותקציב</h1>
+  <div class="kpis"><div class="kpi"><b>${ils(m.left)}</b><span>נשאר בחודש רגיל</span></div><div class="kpi"><b>${ils(y.left)}</b><span>נשאר בשנה</span></div><div class="kpi"><b>${ils(s.travel_private_year)}</b><span>לטיולים פרטיים השנה</span></div></div>`;}
+const TABS=[["month","📅 חודשי"],["year","📆 שנתי"],["ins","💡 תובנות"],["steps","✅ צעדים"]];
+function bar(){return `<div class="seg">${TABS.map(([k,l])=>`<button data-tab="${k}" class="${ui.tab===k?"on":""}">${l}</button>`).join("")}</div>`;}
+// wallet table: rows × (בפועל, תכנון שלך, תקציב עבודה)
+function wallet(W,rows,totKey){const C=[["actual","בפועל"],["plan","התכנון שלך"],["work","תקציב עבודה"]];
+  return `<div class="wt"><div class="h"></div>${C.map(c=>`<div class="h">${c[1]}</div>`).join("")}${rows.map(([k,l,neg])=>{const cls=k===totKey?" tot":"";
+    return `<div class="l${cls}">${esc(l)}</div>${C.map(c=>{const v=(W[c[0]]||{})[k];return `<div class="n${cls}">${k===totKey?sgn(v):ils(v==null?null:neg&&v?-v:v)}</div>`;}).join("")}`;}).join("")}</div>`;}
+function lineRow(x){const v=VD[x.verdict]||["",""],ref=+x.work||+x.plan||0,pct=ref?Math.min(100,x.actual/ref*100):0;
+  return `<div class="row"><span class="b"><span class="t">${esc(x.label)}${v[0]?`<span class="pill ${v[1]}">${v[0]}</span>`:""}</span><span class="s">תכנון ${ils(x.plan)} · תקציב עבודה ${ils(x.work)}${x.bench?" · מקובל "+ils(x.bench):""}</span>${ref&&x.verdict!=="fixed"?`<div class="bar2"><i class="${x.actual>ref?"over":""}" style="width:${pct}%"></i></div>`:""}</span><span class="v">${ils(x.actual)}<small>בפועל</small></span></div>`;}
+function tabMonth(){const s=S(),L=arr(s.lines),fx=L.filter(x=>x.verdict==="fixed"),vr=L.filter(x=>x.verdict!=="fixed").sort((a,b)=>(b.actual-(+b.work||0))-(a.actual-(+a.work||0)));
+  const sum=A=>A.reduce((a,x)=>a+(+x.actual||0),0);
+  let o=`<section><div class="sh"><h2>הארנק החודשי</h2><small>ממוצע לחודש</small></div>${wallet(s.monthly||{},[["income","משכורות ושכירות"],["spending","הוצאות חודשיות",1],["savings","חיסכון",1],["left","נשאר","",1]],"left")}
+    <p class="note">משכורות של חודש רגיל מול ההוצאות הקבועות והמשתנות. תקציב עבודה = הקבועות כמו שהן, והמשתנות לפי הנמוך מבין הבפועל למקובל, ועוד ${ils(s.savings_target_month)} לחיסכון.</p></section>`;
+  if(vr.length)o+=`<section><div class="sh"><h2>הוצאות משתנות</h2><small>${ils(sum(vr))} בחודש</small></div><div class="list">${vr.map(lineRow).join("")}</div></section>`;
+  if(fx.length)o+=`<section><div class="sh"><h2>הוצאות קבועות</h2><small>${ils(sum(fx))} בחודש</small></div><div class="list">${fx.map(lineRow).join("")}</div></section>`;
+  return o;}
+function tabYear(){const s=S(),Y=s.yearly||{},YL=arr(s.yearly_lines);
+  let o=`<section><div class="sh"><h2>הארנק השנתי</h2><small>12 חודשים</small></div>${wallet(Y,[["income","הכנסות שנתיות"],["surplus","עודף מהחודש"],["cover","השלמת החודש",1],["paydown","סגירת המינוס",1],["specials","מיוחדות",1],["trips","טיולים",1],["left","נשאר","",1]],"left")}
+    <p class="note">כסף שנתי: מה שמעל המשכורת הרגילה, מילואים, החזרים ועבודות נוספות. ממנו משלימים את החודש, סוגרים את המינוס, ומה שנשאר הולך למיוחדות ולטיולים.</p></section>`;
+  if(YL.length)o+=`<section><div class="sh"><h2>הוצאות שנתיות</h2></div><div class="list">${YL.map(lineRow).join("")}</div></section>`;
+  o+=`<section><div class="sh"><h2>✈️ טיולים פרטיים</h2></div><div class="list"><div class="row"><span class="b"><span class="t">אפשר להוציא השנה</span><span class="s">אחרי השלמת החודש, סגירת המינוס והמיוחדות</span></span><span class="v">${ils(s.travel_private_year)}</span></div></div></section>`;
+  return o;}
+function tabIns(){const I=arr(S().insights);
+  return `<section><div class="sh"><h2>מה רואים</h2><small>${I.length}</small></div><div class="list ins">${I.map(x=>`<div class="row"><span class="dot ${esc(x.tone||"")}"></span><span class="b"><span class="t">${esc(x.title)}</span><span class="s">${esc(x.body)}</span></span></div>`).join("")||'<div class="empty">אין עדיין</div>'}</div></section>
+  <section><div class="sh"><h2>מה סיכמנו</h2><small>איך סופרים</small></div><div class="list ins">${RULES.map(r=>`<div class="row"><span style="flex:none;font-size:18px">${r[0]}</span><span class="b"><span class="t">${esc(r[1])}</span><span class="s">${esc(r[2])}</span></span></div>`).join("")}</div></section>`;}
+function tabSteps(){const St=arr(T&&T.steps),grp=[["חודשי",x=>/^חודשי:/.test(x.text)],["שנתי",x=>/^שנתי:/.test(x.text)],["קבוע",x=>!/^(חודשי|שנתי):/.test(x.text)]];let o="",n=0;
+  grp.forEach(([h,f])=>{const L=St.filter(f);if(!L.length)return;o+=`<div class="mh">${h}</div>`+L.map(x=>{n++;return `<div class="row step${x.done?" done":""}"><span class="n0">${x.done?"✓":n}</span><span class="b"><span class="t">${esc(String(x.text).replace(/^(חודשי|שנתי):\s*/,""))}</span></span></div>`;}).join("");});
+  return `<section><div class="sh"><h2>הצעדים שלך</h2><small>${St.filter(x=>!x.done).length} פתוחים</small></div><div class="list">${o||'<div class="empty">אין צעדים</div>'}</div>
+    <p class="note">מסמנים צעד שבוצע במשימה "תקציב הבית" ב-Side Quests.</p></section>`;}
+function links(){return `<section><div class="links"><a href="${CF}" target="_blank" rel="noopener">📊 התקציב בתזרים</a><a href="./#t=cf-budget" target="_top">✅ המשימה</a><a href="payments.html">🔁 תשלומים קבועים</a><a href="credit.html">💳 כרטיסי אשראי</a></div></section>`;}
+function render(){if(!T)return;$("hero").innerHTML=hero();$("bar").innerHTML=bar();
+  const s=S();if(!s.monthly){$("app").innerHTML='<div class="empty">אין עדיין נתונים מהתזרים. פותחים את התזרים פעם אחת והם מגיעים.</div>'+links();return;}
+  $("app").innerHTML=(ui.tab==="year"?tabYear():ui.tab==="ins"?tabIns():ui.tab==="steps"?tabSteps():tabMonth())+links();
+  $("foot").innerHTML=`הנתונים מהתזרים${(s.months||[]).length?' · <bdi dir="ltr">'+esc(mLbl(s.months[0]))+"–"+esc(mLbl(s.months[1]))+"</bdi>":""}<br>תקציב ${esc(window.BG_BUILD)}`;}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b){ui.tab=b.dataset.tab;save();render();}});
+window.claude.use("db").then(db=>{if(!db)return;
+  db.collection("topics").doc("cf-budget").onSnapshot(d=>{T=d&&d.exists!==false&&d.data?d.data()||{}:{};render();},()=>{$("app").innerHTML='<div class="empty">הטעינה נכשלה</div>';});});
+})();
+</script>
+</body>
+</html>
