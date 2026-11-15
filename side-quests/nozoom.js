@@ -40,12 +40,17 @@
     if(d!==last){last=d;document.documentElement.style.setProperty('--vvfix',d+'px');}
     if(d>0&&!editing()&&!fix.n){fix.n=1;setTimeout(function(){fix.n=0;try{window.scrollTo(window.scrollX,window.scrollY);}catch(e){}},60);}
   }
+  // 16.10 (אורן 15.11.2026): בקפיצה של סוף הגלילה (rubber band) iOS מזיז את ה-visual viewport, והתיקון הזה
+  // "תיקן" אותה: הכפתורים הצפים קפצו ו-scrollTo נלחם בקפיצה, והכל רטט. ליד הקצוות מחכים שהגלילה תיעצר.
+  var idle=0;
+  function edge(){var y=window.scrollY,mx=document.documentElement.scrollHeight-window.innerHeight;return y<=1||y>=mx-1;}
   function q(){if(!raf)raf=requestAnimationFrame(fix);}
-  window.addEventListener('scroll',q,{passive:true});
+  function qs(){clearTimeout(idle);if(edge()&&!editing()){idle=setTimeout(q,300);return;}q();}
+  window.addEventListener('scroll',qs,{passive:true});
   window.addEventListener('resize',q);
   window.addEventListener('orientationchange',function(){setTimeout(q,300);});
   document.addEventListener('focusout',function(){setTimeout(q,50);setTimeout(q,400);});
   document.addEventListener('visibilitychange',q);
-  if(window.visualViewport){visualViewport.addEventListener('resize',q);visualViewport.addEventListener('scroll',q);}
+  if(window.visualViewport){visualViewport.addEventListener('resize',qs);visualViewport.addEventListener('scroll',qs);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',q);else q();
 })();
