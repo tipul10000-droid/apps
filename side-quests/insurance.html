@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="2.3";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="2.4";</script>
 <script src="sq-db.js?v=9"></script>
 <script src="dash-lock.js?v=1"></script>
 <title>ביטוחים ופיננסים</title>
@@ -161,13 +161,30 @@ table.cov{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
 
 /* stages */
 .stages{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
-.stg{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px;min-width:0;border:1px solid transparent}
+.stg{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px;min-width:0;border:1px solid transparent;font:inherit;color:inherit;text-align:start;cursor:pointer;width:100%}
+.stg em{display:block;font-style:normal;font-weight:800;font-size:12.5px;color:#fff;margin-top:2px}
+.stg.sel{background:rgba(255,255,255,.18);box-shadow:inset 0 -3px 0 var(--accent)}
 .stg.cur{border-color:var(--accent);background:rgba(242,169,59,.12)}
 .stg b{display:block;font-size:13.5px;font-family:var(--f-display)}
 .stg span{color:var(--hero-muted);font-size:12px}
 .stg .pb{height:5px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:6px;overflow:hidden}
 .stg .pb i{display:block;height:100%;background:var(--accent)}
-.snote{color:var(--hero-muted);font-size:13.5px;margin:10px 0 0}
+.snote{display:none}
+.stp{background:var(--surface);border:2px solid var(--accent);border-radius:16px;padding:12px;display:grid;gap:8px;animation:stpin .2s ease}
+@keyframes stpin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.stp h2{margin:0;font-size:17px}.stp .sn{font-size:13px;color:var(--muted);margin:0}
+.stp .tk{display:grid;grid-template-columns:auto 1fr;gap:3px 9px;padding:8px 0;border-top:1px solid var(--line);align-items:start}
+.stp .tk:first-of-type{border-top:0}
+.stp .tk .wh{font-size:11.5px;font-weight:800;border-radius:7px;padding:2px 7px;background:var(--bg);white-space:nowrap}
+.stp .tk .wh.me{background:#fde7c4;color:#7a4a05}
+.stp .tk b{font-size:14px}.stp .tk small{grid-column:2;color:var(--muted);font-size:12.5px}
+.stp .tk.dn b{text-decoration:line-through;color:var(--muted);font-weight:600}
+.stp details summary{cursor:pointer;font-weight:800;font-size:13.5px;color:var(--muted);padding:4px 0}
+.stp .ok{font-weight:800;color:#1d7a45}
+.flcl summary{cursor:pointer;font-weight:800;font-size:13.5px;color:var(--muted);padding:6px 2px}
+.flcl .al{opacity:.7}
+.ggrp{font-size:13px;font-weight:900;letter-spacing:.02em;color:var(--muted);margin:14px 2px -4px;border-bottom:1px solid var(--line);padding-bottom:4px}
+
 /* retirement */
 .ret{padding:14px}
 .rtop{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -339,7 +356,7 @@ const COV={ok:"מכוסה",partial:"חלקי",gap:"חסר",unknown:"לא ידו�
 const LVL={high:"🔴",mid:"🟠",low:"⚪"};
 const TYPE_I={dup:"⧉",cost:"₪",gap:"⚠️",renew:"📅",check:"🔍",pay:"💳"};
 
-let showAll=false, showDone=false, fWho=localStorage.getItem("ins_who")||"all", fCat="all", data={pol:[],meta:{}};
+let showAll=false, showDone=false, stSel=null, fWho=localStorage.getItem("ins_who")||"all", fCat="all", data={pol:[],meta:{}};
 
 function monthly(p){if(p.status==="ended")return 0;if(p.monthly!=null)return +p.monthly;if(p.annual!=null)return +p.annual/12;return 0;}
 function matchWho(p){
@@ -416,7 +433,7 @@ function render(){
   const flags=[];
   (data.meta.flags||[]).forEach(f=>{if(fWho==="all"||!f.who||f.who.includes(fWho)){const p=f.pid&&data.pol.find(x=>x.id===f.pid);flags.push(p?{...f,p}:f);}});
   const rank={high:0,mid:1,low:2};flags.sort((a,b)=>(rank[a.lvl]??3)-(rank[b.lvl]??3));
-  $("k-month").textContent=ils(m);$("k-year").textContent=ils(m*12);$("k-count").textContent=act.filter(p=>p.status!=="per_trip").length;$("k-alerts").textContent=flags.filter(f=>f.lvl!=="low").length;
+  $("k-month").textContent=ils(m);$("k-year").textContent=ils(m*12);$("k-count").textContent=act.filter(p=>p.status!=="per_trip").length;$("k-alerts").textContent=flags.filter(f=>!f.closed&&f.lvl!=="low").length;
   const meta=data.meta;
   if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
   // הלינק לשיחה נשמר בנתונים (_meta.chat_url), לא בקוד.
@@ -427,9 +444,18 @@ function render(){
   // שלבים: התקדמות לפי המשימות ב-_meta.tasks
   const T=meta.tasks||[], cur=String(meta.stage||1);
   const SN={"1":"איסוף ותמונת מצב","2":"חורים בכיסוי","3":"כפלים וחיסכון"};
-  $("stages").innerHTML=["1","2","3"].map(k=>{const ts=T.filter(t=>String(t.stage)===k),d=ts.filter(t=>t.done).length;return `<div class="stg ${k===cur?"cur":""}"><b>שלב ${k}${k===cur?" · עכשיו":""}</b><span>${SN[k]} · ${d}/${ts.length}</span><div class="pb"><i style="width:${ts.length?Math.round(d/ts.length*100):0}%"></i></div></div>`;}).join("");
+  $("stages").innerHTML=["1","2","3"].map(k=>{const ts=T.filter(t=>String(t.stage)===k),d=ts.filter(t=>t.done).length;return `<button type="button" class="stg ${k===cur?"cur":""} ${k===stSel?"sel":""}" data-stg="${k}"><b>שלב ${k}${k===cur?" · עכשיו":""}</b><span>${SN[k]}</span><em>${ts.length-d?ts.length-d+" פתוחות":"✓ הכול סגור"}</em><div class="pb"><i style="width:${ts.length?Math.round(d/ts.length*100):0}%"></i></div></button>`;}).join("");
+  $("stages").querySelectorAll("[data-stg]").forEach(b=>b.onclick=()=>{stSel=stSel===b.dataset.stg?null:b.dataset.stg;render();});
   $("snote").textContent=meta.stage_note||"";
   let h="";
+  // שלב שנבחר: מה עוד פתוח, ומקופל מה נסגר
+  if(stSel){
+    const ts=T.filter(t=>String(t.stage)===stSel), op=ts.filter(t=>!t.done), dn=ts.filter(t=>t.done);
+    const row=t=>{const m=(t.text||"").match(/^(אורן|ליאור|פיננסי|ילדים)[:：]\s*(.*)$/);return `<div class="tk ${t.done?"dn":""}"><span class="wh ${m&&m[1]==="אורן"?"me":""}">${m?esc(m[1]):"Claude"}</span><b>${esc(m?m[2]:t.text)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:""}</div>`;};
+    h+=`<section id="s-stage" class="stp"><h2>שלב ${stSel}: ${SN[stSel]}</h2>${stSel===cur&&meta.stage_note?`<p class="sn">${esc(meta.stage_note)}</p>`:""}`+
+      (op.length?op.map(row).join(""):`<div class="ok">✓ אין משימות פתוחות בשלב הזה</div>`)+
+      (dn.length?`<details><summary>✓ נסגרו (${dn.length})</summary>${dn.map(row).join("")}</details>`:"")+`</section>`;
+  }
   // כסף נזיל: אזור ראשון. כל מסמך עם liquid [{label,amount,tier:now|tax|later|locked,when,tax,advice,how,net,new}]
   const LQ=[];V.forEach(p=>(p.liquid||[]).forEach(l=>LQ.push({...l,tier:l.tier||(l.now?"now":l.locked?"locked":"later"),p})));
   if(LQ.length){
@@ -444,16 +470,12 @@ function render(){
       (lk.length?`<details class="lqg lqlock"><summary>${TI.locked[0]} ${TI.locked[1]} · ${ils(sum("locked"))}</summary>${lk.map(card).join("")}</details>`:"")+
       `<div class="lqn">לחיצה על שורה פותחת הוראות משיכה. סכומים לפי הדוחות האחרונים, לא כולל קרן הפנסיה עצמה.</div></section>`;
   }
-  // מחכה לך: משימות פתוחות שמתחילות בשם של מי שצריך לפעול
-  const mine=T.filter(t=>!t.done&&/^(אורן|ליאור|פיננסי|ילדים)[:：]/.test(t.text||""));
-  if(mine.length){
-    h+=`<section id="s-mine"><div class="sh"><h2>מחכה לכם</h2><span class="hint">${mine.length}</span></div><div class="mine">`+
-      mine.map(t=>{const m=(t.text||"").match(/^([^:：]+)[:：]\s*(.*)$/);return `<div class="task"><span class="who-ic">${esc(m?m[1]:"")}</span><span><b>${esc(m?m[2]:t.text)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:""}</span></div>`;}).join("")+`</div></section>`;
-  }
   // alerts
+  const FC=flags.filter(f=>f.closed), FO=flags.length-FC.length;
   if(flags.length){
-    h+=`<section id="s-flags"><div class="sh"><h2>דורש תשומת לב</h2><span class="hint">${flags.length}</span></div><div class="alerts">`+
-      flags.slice(0,showAll?99:5).map((f,i)=>`<button class="al ${f.lvl||"low"}" ${f.p?`data-p="${esc(f.p.id)}"`:""}><span class="dot">${TYPE_I[f.type]||LVL[f.lvl]||"•"}</span><span><b>${esc(f.text)}</b><small>${esc(f.sub||(f.p?f.p.title:""))}</small></span>${f.save?`<span class="save">${esc(f.save)}</span>`:"<span></span>"}</button>`).join("")+(flags.length>5?`<button class="more" id="more">${showAll?"פחות":"עוד "+(flags.length-5)+" ממצאים"}</button>`:"")+`</div></section>`;
+    h+=`<section id="s-flags"><div class="sh"><h2>דורש תשומת לב</h2><span class="hint">${FO}</span></div><div class="alerts">`+
+      flags.filter(f=>!f.closed).slice(0,showAll?99:5).map((f,i)=>`<button class="al ${f.lvl||"low"}" ${f.p?`data-p="${esc(f.p.id)}"`:""}><span class="dot">${TYPE_I[f.type]||LVL[f.lvl]||"•"}</span><span><b>${esc(f.text)}</b><small>${esc(f.sub||(f.p?f.p.title:""))}</small></span>${f.save?`<span class="save">${esc(f.save)}</span>`:"<span></span>"}</button>`).join("")+(FO>5?`<button class="more" id="more">${showAll?"פחות":"עוד "+(FO-5)+" ממצאים"}</button>`:"")+`</div>`+
+      (FC.length?`<details class="flcl"><summary>✓ טופלו או לידיעה (${FC.length})</summary><div class="alerts">${FC.map(f=>`<button class="al low" ${f.p?`data-p="${esc(f.p.id)}"`:""}><span class="dot">✓</span><span><b>${esc(f.text)}</b><small>${esc(f.sub||"")}</small></span><span></span></button>`).join("")}</div></details>`:"")+`</section>`;
   }
   // סקירת כפילויות: הנתונים ב-_meta.dups {note, items[{id,title,who,verdict,vlvl,rec,rec_l,cost,save,pids,q1,q2[],q3,q4,decision}], nodup[{t,d}]}
   const DP=meta.dups;
@@ -539,18 +561,13 @@ function render(){
         return `<button class="pol" data-p="${esc(p.id)}" style="--cc:var(${CATS[c].c})"><span class="ic">${esc(p.icon||CATS[c].i)}</span><span><span class="t">${esc(p.title)}</span><span class="m"><span>${esc(p.insurer||"")}</span><span class="who">${(p.who||[]).map(w=>`<i>${WHO_TAG[w]||w}</i>`).join("")}</span>${p.status!=="active"?`<span class="tag ${st[1]}">${st[0]}</span>`:""}${worst?`<span class="tag ${worst}">${LVL[worst]} ${(p.flags||[]).length}</span>`:""}</span></span><span class="p"><b>${p.status==="per_trip"?ils(p.annual):p.balance!=null&&p.cat==="pension"?ils(p.balance):monthly(p)?ils(monthly(p)):(p.monthly!=null&&+p.monthly===0?"₪0":"?")}</b><small>${p.status==="per_trip"?"בשנה האחרונה":p.balance!=null&&p.cat==="pension"?"צבירה":esc(p.freq_label||"לחודש")}</small></span></button>`;}).join("")+`</div>`;
   });
   h+=`</section>`;
-  // tasks
-  const tasks=T;
-  if(tasks.length){
-    const open=tasks.filter(t=>!t.done).sort((a,b)=>String(a.stage).localeCompare(String(b.stage))), done=tasks.filter(t=>t.done);
-    const row=t=>`<div class="task ${t.done?"done":""}"><span class="stage s${esc(t.stage)}">שלב ${esc(t.stage)}</span><span><b>${esc(t.text)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:""}</span></div>`;
-    h+=`<section id="s-tasks"><div class="sh"><h2>כל המשימות</h2><span class="hint">${open.length} פתוחות · ${done.length} בוצעו</span></div><div class="tasks">`+
-      open.map(row).join("")+(done.length?`<button class="more" id="donebtn">${showDone?"הסתר":"הצג"} ${done.length} שבוצעו</button>`+(showDone?done.map(row).join(""):""):"")+`</div></section>`;
-  }
-  $("app").innerHTML=h;bindRet();bindKids();drawFund(V);
+  $("app").innerHTML=h;
+  {const app=$("app"),G=(t)=>{const d=document.createElement("div");d.className="ggrp";d.textContent=t;return d;};
+   const ORD=[["s-stage"],["s-liq"],["s-flags"],["🛡️ ביטוחים","s-cov"],["s-dup"],["s-cost"],["s-pol"],["💼 פנסיה, חיסכון והשקעות","s-sav"],["s-ret"],["s-kids"],["s-inv"],["s-loans"]];
+   ORD.forEach(o=>{const id=o[o.length-1],e=$(id);if(!e)return;if(o.length>1)app.appendChild(G(o[0]));app.appendChild(e);});}
+  bindRet();bindKids();drawFund(V);
   if($("more"))$("more").onclick=()=>{showAll=!showAll;render();};
-  if($("donebtn"))$("donebtn").onclick=()=>{showDone=!showDone;render();};
-  const J=[["s-liq","נזיל"],["s-mine","מחכה לכם"],["s-flags","ממצאים"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-cov","מפת כיסוי"],["s-ret","פרישה"],["s-kids","ילדים"],["s-inv","השקעות"],["s-loans","הלוואות"],["s-sav","פנסיה"],["s-pol","פוליסות"],["s-tasks","משימות"]].filter(([i])=>$(i));
+  const J=[["s-liq","נזיל"],["s-flags","ממצאים"],["s-cov","מפת כיסוי"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-pol","פוליסות"],["s-sav","פנסיה"],["s-ret","פרישה"],["s-kids","ילדים"],["s-inv","השקעות"],["s-loans","הלוואות"]].filter(([i])=>$(i));
   $("jump").innerHTML=J.map(([i,l])=>`<a href="#${i}">${l}</a>`).join("");
   $("app").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openPol(b.dataset.p));
   $("app").querySelectorAll("[data-cov]").forEach(b=>b.onclick=()=>{const r=cov[+b.dataset.cov];$("covnote").innerHTML=`<b>${esc(r.risk)}:</b> ${esc(r.note||"")}`;$("covnote").scrollIntoView({block:"nearest",behavior:"smooth"});});
