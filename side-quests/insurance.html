@@ -219,13 +219,26 @@ section{scroll-margin-top:130px}
 .sv b{display:block;font-family:var(--f-mono);font-weight:500;font-size:19px;direction:ltr;text-align:right}
 .sv span{font-size:13.5px;font-weight:700;display:block}
 .sv small{color:var(--muted);font-size:12px}
-.liq{display:grid;gap:8px}
-.lq{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;text-align:start;border-inline-start:4px solid var(--c-pension);width:100%;font:inherit;color:inherit;cursor:pointer}
-.lq b{font-family:var(--f-mono);font-weight:500;font-size:18px;direction:ltr;text-align:right;grid-row:1/3;grid-column:2;align-self:center}
-.lq span{font-size:14px;font-weight:700}
+.liqbox{background:var(--surface);border:2px solid var(--c-pension);border-radius:18px;padding:12px;display:grid;gap:10px}
+.lqk{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.lqk div{background:var(--bg);border-radius:12px;padding:8px;display:grid;gap:2px}
+.lqk b{font-family:var(--f-mono);font-weight:600;font-size:17px;direction:ltr;text-align:right}
+.lqk span{font-size:11.5px;color:var(--muted);font-weight:700}
+.lqk div:first-child b{color:#1d7a45}
+.lqg{display:grid;gap:6px}
+.lqh{font-weight:800;font-size:14px;display:flex;justify-content:space-between;gap:8px}
+.lqh span{font-family:var(--f-mono);direction:ltr;color:var(--muted)}
+.lq{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:9px 11px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;text-align:start;width:100%;font:inherit;color:inherit;cursor:pointer;border-inline-start:4px solid var(--line)}
+.lq.t-now{border-inline-start-color:#1d7a45}.lq.t-tax{border-inline-start-color:#c08a12}.lq.t-later{border-inline-start-color:var(--c-pension)}
+.lq b{font-family:var(--f-mono);font-weight:500;font-size:17px;direction:ltr;text-align:right;grid-row:1/3;grid-column:2;align-self:center}
+.lq>span{font-size:14px;font-weight:700}
 .lq small{color:var(--muted);font-size:12.5px}
-.lq.locked{opacity:.6;border-inline-start-color:var(--line)}
-.lq .when{font-weight:700}.lq .when.now{color:var(--ok,#1d7a45)}.lq .when.later{color:var(--muted)}
+.lq .when{font-weight:700;color:var(--ink)}
+.lq .adv{grid-column:1/3;font-style:normal;font-size:12.5px;font-weight:700;color:var(--ink);background:var(--surface);border-radius:8px;padding:4px 8px;margin-top:3px}
+.lq .nw{font-style:normal;background:#c0392b;color:#fff;border-radius:6px;padding:0 5px;font-size:11px}
+.lqlock summary{cursor:pointer;font-weight:800;font-size:14px;color:var(--muted);padding:4px 0}
+.lqlock .lq{opacity:.75;margin-top:6px}
+.lqn{font-size:12px;color:var(--muted)}
 .task .stage.s1{background:var(--sunk)}.task .stage.s2{background:var(--bad-soft);color:var(--bad)}.task .stage.s3{background:var(--ok-soft);color:var(--ok)}
 .empty{padding:28px;text-align:center;color:var(--muted)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
@@ -348,6 +361,20 @@ function render(){
   $("stages").innerHTML=["1","2","3"].map(k=>{const ts=T.filter(t=>String(t.stage)===k),d=ts.filter(t=>t.done).length;return `<div class="stg ${k===cur?"cur":""}"><b>שלב ${k}${k===cur?" · עכשיו":""}</b><span>${SN[k]} · ${d}/${ts.length}</span><div class="pb"><i style="width:${ts.length?Math.round(d/ts.length*100):0}%"></i></div></div>`;}).join("");
   $("snote").textContent=meta.stage_note||"";
   let h="";
+  // כסף נזיל: אזור ראשון. כל מסמך עם liquid [{label,amount,tier:now|tax|later|locked,when,tax,advice,how,net,new}]
+  const LQ=[];V.forEach(p=>(p.liquid||[]).forEach(l=>LQ.push({...l,tier:l.tier||(l.now?"now":l.locked?"locked":"later"),p})));
+  if(LQ.length){
+    const TI={now:["🟢","אפשר למשוך עכשיו, בלי מס"],tax:["🟡","אפשר עכשיו, אבל עם מס או תנאים"],later:["⏳","משתחרר בהמשך"],locked:["🔒","נעול (פרישה / ילדים)"]};
+    const sum=t=>LQ.filter(l=>l.tier===t).reduce((s,l)=>s+(+(l.net??l.amount)||0),0);
+    const card=l=>`<button class="lq t-${l.tier}" data-p="${esc(l.p.id)}"><span>${l.new?'<i class="nw">חדש</i> ':""}${esc(l.label||l.p.short||l.p.title)}</span><b>${ils(+l.amount||0)}</b><small>${[l.when?`<span class="when">${esc(l.when)}</span>`:"",l.tax?esc(l.tax):"",l.net!=null&&+l.net!==+l.amount?`נטו בערך ${ils(+l.net)}`:""].filter(Boolean).join(" · ")}</small>${l.advice?`<em class="adv">${esc(l.advice)}</em>`:""}</button>`;
+    const grp=t=>{const L=LQ.filter(l=>l.tier===t);return L.length?`<div class="lqg"><div class="lqh">${TI[t][0]} ${TI[t][1]}<span>${ils(sum(t))}</span></div>${L.map(card).join("")}</div>`:"";};
+    const lk=LQ.filter(l=>l.tier==="locked");
+    h+=`<section id="s-liq" class="liqbox"><div class="sh"><h2>💰 כסף נזיל למשיכה</h2><span class="hint">אורן וליאור</span></div>`+
+      `<div class="lqk"><div><b>${ils(sum("now"))}</b><span>עכשיו, בלי מס</span></div><div><b>${ils(sum("tax"))}</b><span>עכשיו, עם מס (נטו)</span></div><div><b>${ils(sum("later"))}</b><span>משתחרר בהמשך</span></div></div>`+
+      grp("now")+grp("tax")+grp("later")+
+      (lk.length?`<details class="lqg lqlock"><summary>${TI.locked[0]} ${TI.locked[1]} · ${ils(sum("locked"))}</summary>${lk.map(card).join("")}</details>`:"")+
+      `<div class="lqn">לחיצה על שורה פותחת הוראות משיכה. סכומים לפי הדוחות האחרונים, לא כולל קרן הפנסיה עצמה.</div></section>`;
+  }
   // מחכה לך: משימות פתוחות שמתחילות בשם של מי שצריך לפעול
   const mine=T.filter(t=>!t.done&&/^(אורן|ליאור|פיננסי|ילדים)[:：]/.test(t.text||""));
   if(mine.length){
@@ -402,14 +429,6 @@ function render(){
       sv.map(p=>`<button class="sv" data-p="${esc(p.id)}"><span>${esc(p.short||p.title)}</span><b>${p.balance!=null?ils(p.balance):"?"}</b><small>${esc(p.balance_note||p.insurer||"")}</small></button>`).join("")+`</div></section>`;
   }
 
-  // כסף זמין למשיכה: כל מסמך עם liquid [{amount,label,when,now,how}]
-  const LQ=[];V.forEach(p=>(p.liquid||[]).forEach(l=>LQ.push({...l,p})));
-  if(LQ.length){
-    const nowSum=LQ.filter(l=>l.now).reduce((s,l)=>s+(+l.amount||0),0), all=LQ.filter(l=>!l.locked).reduce((s,l)=>s+(+l.amount||0),0), rk=l=>l.now?0:l.locked?2:1;
-    h+=`<section id="s-liq"><div class="sh"><h2>כסף זמין למשיכה</h2><span class="hint">${ils(nowSum)} עכשיו · ${ils(all)} בהמשך</span></div><div class="liq">`+
-      LQ.sort((a,b)=>rk(a)-rk(b)).map(l=>`<button class="lq${l.locked?" locked":""}" data-p="${esc(l.p.id)}"><span>${esc(l.label||l.p.short||l.p.title)}</span><b>${ils(+l.amount||0)}</b><small><span class="when ${l.now?"now":"later"}">${esc(l.when||"")}</span>${l.tax?" · "+esc(l.tax):""}</small></button>`).join("")+`</div></section>`;
-  }
-
   // פנסיה: חישוב דינמי מ-_meta.retire. הכול בכסף של היום (תשואה ריאלית, מעל האינפלציה).
   const R=meta.retire;
   if(R&&(R.people||[]).length&&(fWho==="all"||fWho==="oren"||fWho==="lior")){
@@ -462,7 +481,7 @@ function render(){
   $("app").innerHTML=h;bindRet();bindKids();
   if($("more"))$("more").onclick=()=>{showAll=!showAll;render();};
   if($("donebtn"))$("donebtn").onclick=()=>{showDone=!showDone;render();};
-  const J=[["s-mine","מחכה לכם"],["s-flags","ממצאים"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-cov","מפת כיסוי"],["s-ret","פרישה"],["s-kids","ילדים"],["s-inv","השקעות"],["s-loans","הלוואות"],["s-sav","פנסיה"],["s-liq","נזיל"],["s-pol","פוליסות"],["s-tasks","משימות"]].filter(([i])=>$(i));
+  const J=[["s-liq","נזיל"],["s-mine","מחכה לכם"],["s-flags","ממצאים"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-cov","מפת כיסוי"],["s-ret","פרישה"],["s-kids","ילדים"],["s-inv","השקעות"],["s-loans","הלוואות"],["s-sav","פנסיה"],["s-pol","פוליסות"],["s-tasks","משימות"]].filter(([i])=>$(i));
   $("jump").innerHTML=J.map(([i,l])=>`<a href="#${i}">${l}</a>`).join("");
   $("app").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openPol(b.dataset.p));
   $("app").querySelectorAll("[data-cov]").forEach(b=>b.onclick=()=>{const r=cov[+b.dataset.cov];$("covnote").innerHTML=`<b>${esc(r.risk)}:</b> ${esc(r.note||"")}`;$("covnote").scrollIntoView({block:"nearest",behavior:"smooth"});});
@@ -601,7 +620,7 @@ function openPol(id){
   </dl>
   ${(p.flags||[]).length?`<div class="box"><h4>ממצאים</h4><ul>${p.flags.map(f=>`<li>${LVL[f.lvl]||""} ${esc(f.text)}${f.save?` <b>(${esc(f.save)})</b>`:""}</li>`).join("")}</ul></div>`:""}
   ${(p.coverage||[]).length?`<div class="box"><h4>מה מכוסה (לפי מה שידוע)</h4><ul>${p.coverage.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
-  ${(p.liquid||[]).length?`<div class="box"><h4>משיכת כסף</h4><ul>${p.liquid.map(l=>`<li><b>${esc(l.label||"")} ${ils(+l.amount||0)}</b>: ${esc(l.when||"")}${l.tax?" · "+esc(l.tax):""}${l.how?`<br>${esc(l.how)}`:""}</li>`).join("")}</ul></div>`:""}
+  ${(p.liquid||[]).length?`<div class="box"><h4>משיכת כסף</h4><ul>${p.liquid.map(l=>`<li><b>${esc(l.label||"")} ${ils(+l.amount||0)}</b>: ${[l.when,l.tax].filter(Boolean).map(esc).join(" · ")}${l.advice?`<br><b>${esc(l.advice)}</b>`:""}${l.how?`<br>${esc(l.how)}`:""}</li>`).join("")}</ul></div>`:""}
   ${p.notes?`<div class="box"><h4>הערות</h4>${esc(p.notes)}</div>`:""}
   ${p.charges?`<div class="box"><h4>חיובים שנמצאו באשראי</h4>${esc(p.charges)}</div>`:""}
   ${links.length?`<div class="lnks">${links.map(l=>`<a class="lnk" href="${esc(safe(l.url))}" target="_blank" rel="noopener">${({policy:"📄",login:"🔑",mail:"✉️",agent:"☎️",folder:"📁"})[l.kind]||"🔗"} ${esc(l.label)}</a>`).join("")}</div>`:""}
