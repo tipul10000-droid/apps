@@ -1,0 +1,45 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>בדיקת הסאונדים: המספרים של שילה</title>
+<style>
+body{margin:0;font:16px -apple-system,system-ui,Arial;background:#eef2f7;color:#0f172a;padding:max(env(safe-area-inset-top),16px) 14px 150px}
+h1{font-size:20px;margin:6px 0}p{margin:4px 0 10px;color:#475569;line-height:1.45}
+.w{background:#fff;border:1px solid #d6dee9;border-radius:14px;padding:10px;margin:10px 0}
+.w.done{border-color:#16a34a;background:#f6fef8}.w.bad{border-color:#f59e0b;background:#fffbeb}
+.h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.h b{font-size:22px}.h small{color:#64748b;font-size:12px;direction:ltr}
+.r{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
+.r button{height:54px;border-radius:10px;border:1px solid #c7d2e1;background:#f8fafc;font:700 18px Arial;color:#2f5d9e;touch-action:manipulation;padding:2px;line-height:1.1}
+.r button i{display:block;font:500 11px Arial;color:#64748b;font-style:normal}
+.r button.pl{background:#dbeafe}.r button.ok{background:#dcfce7;border-color:#16a34a;color:#166534}
+.x{display:flex;gap:6px;margin-top:6px}.x button{flex:none;height:38px;border-radius:10px;border:1px solid #f5c26b;background:#fff7e6;color:#9a3412;font:600 14px Arial;padding:0 10px}
+.x button.on{background:#f59e0b;color:#fff}.x input{flex:1;min-width:0;height:38px;border:1px solid #d6dee9;border-radius:10px;padding:0 10px;font:15px Arial}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #d6dee9;padding:10px 14px calc(env(safe-area-inset-bottom) + 10px)}
+.bar div{font-size:14px;color:#334155;min-height:20px;max-height:60px;overflow:auto;word-break:break-word}.bar button{width:100%;height:46px;margin-top:6px;border:0;border-radius:12px;background:#2f5d9e;color:#fff;font:700 17px Arial}
+</style></head><body>
+<h1>🎧 הסאונדים של "המספרים של שילה"</h1>
+<p>לכל סאונד יש 5 גרסאות. <b>1 = מה שיש עכשיו במשחק.</b> לוחצים על מספר כדי לשמוע, ולוחצים שוב על אותו מספר כדי לבחור אותו ✓.<br>אם אף גרסה לא טובה: "✗ אף אחת" ואפשר לכתוב מה לא בסדר (למשל "הטעם צריך להיות בהתחלה"). הבחירות נשמרות בטלפון. בסוף "העתק" ושולחים לי.</p>
+<div id="L"></div>
+<div class="bar"><div id="S">עוד לא סומן כלום</div><button id="C" type="button">📋 העתק את הבחירות</button></div>
+<script>
+// עמוד בדיקה (אורן 15.11.2026): 0 = ההקלטה הנוכחית (../nNNN.mp3), 1-4 = גרסאות (check/<id>_<j>.mp3, study/tools/shilo_variants.py).
+const K='shilo_nm_chk',LBL=v=>Array.isArray(v)?(/[\u0591-\u05C7]/.test(v[0])?'איטי א':'איטי ב'):/^[0-9]+$/.test(v)?'ספרה':/[A-Za-z]/.test(v)?'לטינית':/[֑-ׇ]/.test(v)?'עם נקודה':'בלי ניקוד';
+let AC,ITEMS=[],CH={},cur=null;try{CH=JSON.parse(localStorage.getItem(K))||{}}catch(e){}
+const BUF={};
+function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state!=='running')AC.resume();return AC}
+const url=(id,j)=>j?id+'_'+j+'.mp3?v=1':'../'+id+'.mp3?v=2';
+function load(id,j){const k=id+'_'+j;if(BUF[k])return Promise.resolve(BUF[k]);return fetch(url(id,j)).then(r=>r.arrayBuffer()).then(ab=>new Promise((ok,no)=>ac().decodeAudioData(ab,b=>{BUF[k]=b;ok(b)},no)))}
+function play(id,j){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}ac();if(cur)try{cur.stop()}catch(e){}load(id,j).then(b=>{const s=AC.createBufferSource();s.buffer=b;s.connect(AC.destination);s.start();cur=s})}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(CH))}catch(e){}};
+function txt(){return ITEMS.filter(x=>CH[x.id]).map(x=>{const c=CH[x.id];return x.id+' '+x.p+': '+(c.no?'✗ אף אחת':c.j==null?'':(c.j===0?'1 (הנוכחי)':(c.j+1)))+(c.n?' ('+c.n+')':'')}).filter(Boolean).join('; ')}
+function sum(){const n=ITEMS.filter(x=>CH[x.id]&&(CH[x.id].j!=null||CH[x.id].no)).length;const t=txt();document.getElementById('S').textContent=n+' מתוך '+ITEMS.length+' סומנו'+(t?' · '+t:'');return t}
+function paint(x){const el=document.getElementById('w_'+x.id),c=CH[x.id]||{};el.classList.toggle('done',c.j!=null&&!c.no);el.classList.toggle('bad',!!c.no);
+  [...el.querySelectorAll('.r button')].forEach(b=>b.classList.toggle('ok',c.j===+b.dataset.j&&!c.no));el.querySelector('.x button').classList.toggle('on',!!c.no)}
+fetch('try.json?v=1').then(r=>r.json()).then(a=>{ITEMS=a.map(x=>Object.assign(x,{p:x.w.replace(/[֑-ׇ]/g,'')}));
+  document.getElementById('L').innerHTML=a.map(x=>`<div class="w" id="w_${x.id}"><div class="h"><b>${x.w}</b><small>${x.id}</small></div><div class="r" data-id="${x.id}"><button type="button" data-j="0">1<i>עכשיו</i></button>${x.v.map((v,j)=>`<button type="button" data-j="${j+1}">${j+2}<i>${LBL(v)}</i></button>`).join('')}</div><div class="x" data-id="${x.id}"><button type="button">✗ אף אחת</button><input placeholder="הערה (רשות)" value="${((CH[x.id]||{}).n||'').replace(/"/g,'&quot;')}"></div></div>`).join('');
+  a.forEach(paint);sum()});
+document.getElementById('L').onclick=e=>{const b=e.target.closest('.r button');if(b){const id=b.parentNode.dataset.id,j=+b.dataset.j;
+    if(b.classList.contains('pl')){CH[id]=Object.assign(CH[id]||{},{j,no:false});save();paint(ITEMS.find(x=>x.id===id));sum()}
+    document.querySelectorAll('.r button.pl').forEach(x=>x.classList.remove('pl'));b.classList.add('pl');play(id,j);return}
+  const n=e.target.closest('.x button');if(n){const id=n.parentNode.dataset.id;const c=CH[id]=CH[id]||{};c.no=!c.no;if(c.no)c.j=null;save();paint(ITEMS.find(x=>x.id===id));sum()}};
+document.getElementById('L').oninput=e=>{const i=e.target.closest('.x input');if(!i)return;const id=i.parentNode.dataset.id;(CH[id]=CH[id]||{}).n=i.value.trim();save();sum()};
+document.getElementById('C').onclick=()=>{const t=sum();try{navigator.clipboard.writeText(t)}catch(e){}document.getElementById('C').textContent='✓ הועתק, אפשר להדביק לי'};
+</script></body></html>
