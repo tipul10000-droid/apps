@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.7";window.SQ_BUILD_AT="16.11.2026 23:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.8";window.SQ_BUILD_AT="17.11.2026 01:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1912,14 +1912,16 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
 html.desk{--dtop:56px;--drail:240px;--dpane:clamp(380px,30vw,580px)}
 html.desk .qband,html.desk .tadd.fab,html.desk .tfind.fab{display:none!important}
 #dtop,#deskDet,#dhead{display:none}
-html.desk #dtop{display:flex;position:fixed;inset:0 0 auto 0;height:var(--dtop);z-index:40;align-items:center;gap:16px;padding:0 18px;background:var(--hero);color:var(--hero-ink);border-bottom:1px solid rgba(255,255,255,.08)}
+html.desk #dtop{display:grid;grid-template-columns:minmax(max-content,1fr) minmax(200px,560px) minmax(max-content,1fr);position:fixed;inset:0 0 auto 0;height:var(--dtop);z-index:40;align-items:center;gap:16px;padding:0 18px;background:var(--hero);color:var(--hero-ink);border-bottom:1px solid rgba(255,255,255,.08)}
 html.desk .dlogo{font:800 20px/1 var(--f-display);letter-spacing:-.3px;white-space:nowrap;width:calc(var(--drail) - 34px);flex:none}
 html.desk .dlogo i{font-style:normal;color:var(--accent)}
-html.desk .dsrch{flex:1;max-width:520px;height:36px;border-radius:9px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:var(--hero-muted);display:flex;align-items:center;gap:9px;padding:0 12px;font-size:14.5px;text-align:right}
+html.desk .dsrch{width:100%;height:38px;border-radius:9px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:var(--hero-muted);display:flex;align-items:center;gap:9px;padding:0 12px;font-size:14.5px;text-align:right}
 html.desk .dsrch kbd{margin-inline-start:auto;font:600 11.5px var(--f-mono);border:1px solid rgba(255,255,255,.25);border-radius:5px;padding:0 6px}
 html.desk .dsrch:hover{background:rgba(255,255,255,.14)}
-html.desk #dtop .topbtns{position:static!important;transform:none!important;margin-inline-start:auto;top:auto!important;left:auto!important;right:auto!important}
-html.desk .dadd{height:36px;padding:0 16px;border-radius:9px;background:var(--accent);color:#141414;font:700 15px var(--f-display);display:flex;align-items:center;gap:6px;flex:none}
+html.desk #dtop .topbtns{position:static!important;transform:none!important;margin:0!important;top:auto!important;left:auto!important;right:auto!important}
+html.desk .dtr{display:flex;align-items:center;gap:10px;justify-self:end}
+html.desk .dlogo{justify-self:start}
+html.desk .dadd{height:38px;padding:0 16px;border-radius:9px;background:var(--accent);color:#141414;font:700 15px var(--f-display);display:flex;align-items:center;gap:6px;flex:none}
 html.desk .dadd:hover{filter:brightness(1.07)}
 /* right rail = the old hero */
 html.desk .hero{position:fixed!important;top:var(--dtop);right:0;bottom:0;width:var(--drail);z-index:30;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;padding:14px 12px 24px!important;border-inline-start:1px solid rgba(255,255,255,.06)}
@@ -1936,15 +1938,19 @@ html.desk .dsec{font:700 11.5px var(--f-display);letter-spacing:.6px;color:var(-
 html.desk .hero #dashSec{margin:0!important;gap:6px}
 html.desk .hero #dashSec>*:not(.dz-grid){display:none!important}
 html.desk .hero .dz-grid{display:flex!important;flex-direction:column;gap:2px!important}
-html.desk .hero .dz-tile{min-height:36px!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;padding:0 12px!important;border-radius:9px!important;background:transparent!important;color:var(--hero-ink)!important;box-shadow:none!important;position:relative;outline:0!important}
-html.desk .hero .dz-tile::before{content:"";width:11px;height:11px;border-radius:3px;flex:none;background:var(--c1,#888)}
-html.desk .hero .dz-tile b{flex-direction:row!important;align-items:center!important;gap:7px!important;font:600 14.5px var(--f-body)!important;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-html.desk .hero .dz-tile b .ti{font-size:15px!important}
+html.desk .hero .dz-tile{min-height:40px!important;height:40px;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;padding:0 12px!important;border-radius:9px!important;background:transparent!important;color:var(--hero-ink)!important;box-shadow:none!important;position:relative;outline:0!important}
+html.desk .hero .dz-tile::before{display:none!important}
+html.desk .hero .dz-tile b{order:1;flex:1;flex-direction:row!important;align-items:center!important;gap:11px!important;font:600 15px var(--f-body)!important;text-align:right;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.desk .hero .dz-tile b .ti{font-size:17px!important;width:24px;text-align:center;flex:none}
 html.desk .hero .dz-tile span.s,html.desk .hero .dz-tile .bd{display:none!important}
 html.desk .hero .dz-tile:hover{background:rgba(255,255,255,.07)!important}
-html.desk .hero .dz-tile .nw{position:static!important;margin-inline-start:auto}
+html.desk .hero .dz-tile .nw{order:3;position:static!important;margin-inline-start:auto;width:10px;height:10px;border:0;box-shadow:none;flex:none}
+html.desk .qnav .qbtn .qe{width:24px;text-align:center;font-size:17px;flex:none}
+html.desk .hero .dz-grid,html.desk .qnav{gap:2px!important}
 /* middle */
-html.desk main,html.desk footer.ver{margin-right:var(--drail);margin-left:var(--dpane)}
+html.desk main{margin-right:var(--drail);margin-left:var(--dpane);padding-bottom:44px!important}
+html.desk footer.ver{position:fixed;bottom:0;right:var(--drail);left:var(--dpane);z-index:15;margin:0;padding:4px 0 6px!important;pointer-events:none;background:linear-gradient(to top,var(--bg) 55%,transparent)}
+html.desk footer.ver #ver{pointer-events:auto}
 html.desk main{padding-top:calc(var(--dtop) + 14px)!important;padding-inline:20px!important;zoom:1!important}
 html.desk main>.inner{max-width:1100px}
 html.desk #dhead{display:flex;flex-direction:column;gap:10px;background:var(--hero);color:var(--hero-ink);border-radius:14px;padding:10px 12px}
@@ -2009,7 +2015,8 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 .wcard.nxf .fc{color:var(--muted);opacity:.45;font-size:22px;line-height:1;transition:transform .2s}
 .wcard.nxf[open]>summary .fc{transform:rotate(-90deg)}
 .wcard.nxf[open]>summary{border-bottom:1px solid var(--line)}
-.wcard.nxf .nxb{padding:8px;animation:nxin .22s ease-out}
+.wcard.nxf .nxb{padding:0;animation:nxin .22s ease-out}
+.wcard.nxf .nxb>.glist{border:0;border-radius:0}
 .wcard.nxf .nxb .wc-empty{border:0;padding:10px}
 @keyframes nxin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .r-roll{flex:none;font-style:normal;color:#8B5CF6;font-weight:800;font-size:15px}
@@ -4415,7 +4422,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   function deskApply(){const on=DESK.matches;if(on===deskOn)return;deskOn=on;document.documentElement.classList.toggle("desk",on);
     if(on){if(!$("dtop")){document.body.prepend(h("header",{id:"dtop"},h("div",{class:"dlogo"},"SIDE ",h("i",{},"QUESTS")),
         h("button",{class:"dsrch",type:"button",onclick:()=>$("findBtn").click()},h("span",{"aria-hidden":"true"},"🔍"),h("span",{},"חיפוש בכל הקווסטים"),h("kbd",{},"/")),
-        h("button",{class:"dadd",type:"button",onclick:()=>$("addBtn").click()},"＋ חדש")));
+        h("div",{class:"dtr"},h("button",{class:"dadd",type:"button",onclick:()=>$("addBtn").click()},"＋ חדש"))));
         deskPane=h("aside",{id:"deskDet","aria-label":"משימה פתוחה"});document.body.append(deskPane);
         document.querySelector("main .inner").prepend(h("div",{id:"dhead"}));}
       const top=$("dtop"),hin=document.querySelector(".hero .inner"),hd=$("dhead");
