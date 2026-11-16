@@ -6,99 +6,156 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#3B2F5C">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.BG_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.BG_BUILD="2.0";window.BG_BUILD_AT="16.11.2026 02:40";</script>
 <script src="sq-db.js?v=9"></script>
 <script src="dash-lock.js?v=1"></script>
 <title>הוצאות ותקציב</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
 <style>
-/* דשבורד הוצאות ותקציב (Side Quest, 16.11.2026). נתונים: sq_docs topics/cf-budget (data.cf.summary), שהתזרים כותב.
-   ארנק חודשי (משכורות מול הוצאות חודשיות) וארנק שנתי (כסף שנתי מול טיולים ומיוחדות). נעול בקוד (dash-lock.js).
-   החזרי הוצאות עבודה הם דשבורד נפרד (expenses.html, Work Quest). */
+/* דשבורד הוצאות ותקציב (Side Quest). 2.0 (אורן 16.11.2026): אוחד עם "תשלומים חודשיים קבועים" (payments.html, שמפנה לכאן).
+   נתונים: sq_docs topics/cf-budget (data.cf.summary + steps, התזרים כותב), payments (תשלום לכל מסמך + _meta), insurance (שורת ביטוחים חיה).
+   תובנות, המלצות, צעדים וכללים = שורה אחת קצרה, לחיצה פותחת את הטקסט המלא מתחת (הכותרת לא זזה).
+   נעול בקוד (dash-lock.js). החזרי הוצאות עבודה הם דשבורד נפרד (expenses.html, Work Quest). */
 :root{
   --bg:#F3F6F8; --surface:#FFFFFF; --sunk:#E7EDF1; --ink:#15212A; --muted:#5A6873; --line:#D6DFE5;
   --hero:#3B2F5C; --hero2:#6A55A0; --art:url(img/art-payments.svg); --mark:#E2C14B; --hero-ink:#F2F8FB; --hero-muted:#CFC6E6; --accent:#F4C152; --accent-ink:#3A2700;
   --good:#23855A; --good-soft:#DDF1E6; --warn:#A8600E; --warn-soft:#FBEAD3; --bad:#B83A2E; --bad-soft:#F8E0DD; --link:#5A44A0; --hi:#5A44A0; --hi-soft:#ECE7F8;
+  --c-digital:#5B5BD6; --c-streaming:#C2378B; --c-telecom:#2773B8; --c-housing:#2E8B57; --c-car:#D08419; --c-insurance:#16706A; --c-leisure:#8E4FC0; --c-kids:#E0663C; --c-finance:#6B6B6B; --c-other:#8A8494;
   --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#10161A; --surface:#182127; --sunk:#212C33; --ink:#EAF1F5; --muted:#9FB0BA; --line:#2A3740;
-  --hero:#241C3A; --hero2:#463970; --hero-ink:#EEF6FA; --hero-muted:#B7ADD6; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#B9A8F0; --hi:#B9A8F0; --hi-soft:#2A2340; color-scheme:dark}}
+  --hero:#241C3A; --hero2:#463970; --hero-ink:#EEF6FA; --hero-muted:#B7ADD6; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#B9A8F0; --hi:#B9A8F0; --hi-soft:#2A2340;
+  --c-digital:#9A9AF0; --c-streaming:#E77DB9; --c-telecom:#6FAEE6; --c-housing:#62C08A; --c-car:#EBA74A; --c-insurance:#5FC2B9; --c-leisure:#BC8FE6; --c-kids:#F2946F; --c-finance:#B0B0B0; --c-other:#A39BB0; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#10161A; --surface:#182127; --sunk:#212C33; --ink:#EAF1F5; --muted:#9FB0BA; --line:#2A3740;
-  --hero:#241C3A; --hero2:#463970; --hero-ink:#EEF6FA; --hero-muted:#B7ADD6; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#B9A8F0; --hi:#B9A8F0; --hi-soft:#2A2340; color-scheme:dark}
+  --hero:#241C3A; --hero2:#463970; --hero-ink:#EEF6FA; --hero-muted:#B7ADD6; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#B9A8F0; --hi:#B9A8F0; --hi-soft:#2A2340;
+  --c-digital:#9A9AF0; --c-streaming:#E77DB9; --c-telecom:#6FAEE6; --c-housing:#62C08A; --c-car:#EBA74A; --c-insurance:#5FC2B9; --c-leisure:#BC8FE6; --c-kids:#F2946F; --c-finance:#B0B0B0; --c-other:#A39BB0; color-scheme:dark}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
 h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
 a{color:var(--link);text-decoration:none;font-weight:700}
-button{font:inherit;color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+bdi{unicode-bidi:isolate}
 .wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
 .hero{background:var(--hero);color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
 .hero .in{max-width:880px;margin:0 auto}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .back{color:var(--hero-muted);font-size:14px;font-weight:700}
 .hero h1{font-size:25px;margin:10px 0 2px}
-.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
-.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
-.chatbtn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
-.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 11px;min-width:0}
-.kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.kpi{background:rgba(255,255,255,.08);border-radius:14px;padding:8px 10px;min-width:0;border:0;color:inherit;text-align:start;display:block;width:100%}
+.kpi:active{background:rgba(255,255,255,.16)}
+.kpi b{display:block;font-family:var(--f-display);font-size:18px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi.save b{color:var(--accent)}
+@media (max-width:600px){.kpis{grid-template-columns:repeat(2,1fr)}}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
-.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
-.seg button{flex:1;border:0;background:none;padding:9px 4px;font-weight:800;font-size:15px;cursor:pointer;font-family:var(--f-display);white-space:nowrap}
+.seg{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:9px 2px;font-weight:800;font-size:14.5px;font-family:var(--f-display);white-space:nowrap;min-width:0}
 .seg button+button{border-inline-start:1px solid var(--line)}
 .seg button.on{background:var(--ink);color:var(--bg)}
-.docsbtn{display:block;text-align:center;margin-top:8px;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.35);color:#fff;text-decoration:none;font-weight:600;font-size:.95rem}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
-section{margin-bottom:22px}
+section{margin-bottom:22px;scroll-margin-top:70px}
 .sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
-.sh h2{font-size:19px}.sh small{color:var(--muted);font-size:13px}
+.sh h2{font-size:18px}.sh small{color:var(--muted);font-size:13px}
 .muted{color:var(--muted)}.empty{color:var(--muted);text-align:center;padding:20px 12px}
-.note{font-size:13.5px;color:var(--muted);line-height:1.5}
+.hint{font-size:13px;color:var(--muted);line-height:1.5;margin:8px 2px 0}
 /* one frame, rows split by lines (no frame in frame) */
 .list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.list>*+*{border-top:1px solid var(--line)}
 .row{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:none;border:0;padding:11px 14px;color:inherit;font-weight:400}
-.row+.row,.mh+.row{border-top:1px solid var(--line)}
 .row .b{flex:1;min-width:0}
-.row .t{font-family:var(--f-display);font-weight:700;font-size:16px;display:block}
+.row .t{font-family:var(--f-display);font-weight:700;font-size:15.5px;display:block}
 .row .s{color:var(--muted);font-size:13px;display:block;line-height:1.4}
-.row .v{flex:none;text-align:left;font-family:var(--f-display);font-weight:800;font-size:15.5px;white-space:nowrap}
+.row .v{flex:none;text-align:left;font-family:var(--f-display);font-weight:800;font-size:15px;white-space:nowrap}
 .row .v small{display:block;font-family:var(--f-body);font-weight:700;font-size:11.5px;color:var(--muted)}
-.row.sum{background:var(--sunk)}
-a.row{cursor:pointer}
-.mh{font-family:var(--f-display);font-weight:800;font-size:13.5px;color:var(--muted);padding:8px 14px 4px;background:var(--sunk);border-top:1px solid var(--line)}
-.mh:first-child{border-top:0}
-.pill{display:inline-block;font-family:var(--f-body);font-size:11.5px;font-weight:800;border-radius:999px;padding:1px 8px;margin-inline-start:6px;vertical-align:2px}
+.row .sw{flex:none;width:4px;align-self:stretch;border-radius:2px;background:var(--cc,var(--line))}
+.mh{font-family:var(--f-display);font-weight:800;font-size:13.5px;color:var(--muted);padding:7px 14px 4px;background:var(--sunk);display:flex;justify-content:space-between;gap:8px}
+.pill{display:inline-block;font-family:var(--f-body);font-size:11.5px;font-weight:800;border-radius:999px;padding:1px 8px;margin-inline-start:6px;vertical-align:2px;white-space:nowrap}
 .p-good{background:var(--good-soft);color:var(--good)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-hi{background:var(--hi-soft);color:var(--hi)}.p-mute{background:var(--sunk);color:var(--muted)}
 .neg{color:var(--bad)}.pos{color:var(--good)}
-/* wallet table: one frame, cells split by lines */
+/* 2.0: collapsible bullet. One line, tap opens the full text below; the line itself never moves or changes size */
+.xh{display:flex;align-items:center;gap:10px;width:100%;min-height:46px;border:0;background:none;padding:9px 14px;text-align:right;color:inherit}
+.xh .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.dot.bad{background:var(--bad)}.dot.warn{background:var(--warn)}.dot.good{background:var(--good)}.dot.hi{background:var(--hi)}
+.xh .em{flex:none;font-size:16px;width:20px;text-align:center}
+.xh .xt{flex:1;min-width:0;font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xh .xv{flex:none;font-family:var(--f-display);font-weight:800;font-size:13.5px;white-space:nowrap}
+.xh .xv.save{color:var(--good)}
+.xh .ch{flex:none;color:var(--muted);font-size:15px;transition:transform .2s;width:12px;text-align:center}
+.xr.open .xh .ch{transform:rotate(-90deg)}
+.xb{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease}
+.xr.open .xb{grid-template-rows:1fr}
+.xb>div{overflow:hidden;min-height:0}
+.xb .in{padding:0 14px 12px 14px;padding-inline-start:33px;font-size:14.5px;line-height:1.55}
+.xb .in>b{display:block;margin-bottom:2px}
+.xb .in p{margin:4px 0 0}
+.xb .meta{color:var(--muted);font-size:13px}
+.who{display:inline-block;font-size:11.5px;font-weight:800;border-radius:6px;padding:0 7px;line-height:20px;white-space:nowrap;margin-inline-end:4px}
+.who.oren{background:var(--warn-soft);color:var(--warn)}.who.claude{background:var(--hi-soft);color:var(--hi)}.who.both{background:var(--good-soft);color:var(--good)}
+.acts{display:flex;flex-wrap:wrap;gap:0;margin-top:8px;border:1px solid var(--line);border-radius:10px;overflow:hidden;width:fit-content;max-width:100%}
+.acts>*{border:0;background:var(--surface);padding:7px 12px;font-weight:700;font-size:13.5px;color:var(--ink);text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+.acts>*+*{border-inline-start:1px solid var(--line)}
+.acts .ok{color:var(--good)}
+/* decisions: question + options in one frame split by lines */
+.qr{padding:11px 14px}
+.qr .qt{font-weight:700;font-size:15px;line-height:1.35}
+.qr .qs{color:var(--muted);font-size:13px}
+.opts{display:flex;flex-wrap:wrap;margin-top:8px;border:1px solid var(--hero2);border-radius:10px;overflow:hidden;width:fit-content;max-width:100%}
+.opts button{border:0;background:var(--surface);color:var(--hi);padding:7px 12px;font-weight:700;font-size:14px;min-height:36px;transition:background .15s}
+.opts button+button{border-inline-start:1px solid var(--hero2)}
+.opts button.on{background:var(--hero);color:#fff}
+/* wallet table */
 .wt{display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;font-size:14px}
 .wt>*{background:var(--surface);padding:8px 8px;min-width:0}
 .wt .h{background:var(--sunk);font-family:var(--f-display);font-weight:800;font-size:12.5px;color:var(--muted);text-align:center}
 .wt .l{font-weight:700}
 .wt .n{font-family:var(--f-display);font-weight:800;text-align:center;white-space:nowrap;direction:ltr}
 .wt .tot{background:var(--hi-soft)}
-.note{font-size:13.5px;color:var(--muted);line-height:1.55;margin:8px 2px 0}
 .bar2{height:6px;border-radius:3px;background:var(--sunk);margin-top:5px;overflow:hidden;position:relative}
 .bar2 i{position:absolute;inset:0 0 0 auto;display:block;border-radius:3px;background:var(--hi)}
 .bar2 i.over{background:var(--bad)}
-.ins .row{align-items:flex-start}
-.ins .dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--muted)}
-.ins .dot.bad{background:var(--bad)}.ins .dot.warn{background:var(--warn)}.ins .dot.good{background:var(--good)}
-.ins .t{font-size:15.5px}.ins .s{font-size:14px;color:var(--ink);opacity:.85;margin-top:2px}
-.step .n0{flex:none;width:26px;height:26px;border-radius:50%;background:var(--sunk);font-family:var(--f-display);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
-.step .t{font-size:15px;font-weight:600;font-family:var(--f-body)}
-.step.done{opacity:.55}.step.done .n0{background:var(--good-soft);color:var(--good)}
+.step.done{opacity:.55}
+/* fixed payments */
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin-bottom:12px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:13.5px;font-weight:700;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .n{font-weight:600;font-size:12px;opacity:.75;margin-inline-start:4px}
+.bars{padding:10px 14px}
+.brow{display:grid;grid-template-columns:110px 1fr 70px;gap:10px;align-items:center;margin:6px 0;font-size:14px;background:none;border:0;width:100%;text-align:start;padding:0}
+.brow>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.fill{display:block;height:100%;border-radius:5px}
+.brow .v{font-family:var(--f-display);font-weight:700;font-size:13.5px;direction:ltr;text-align:left}
+.tag{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;border-radius:6px;padding:0 6px;line-height:19px}
+.tag.high{background:var(--bad-soft);color:var(--bad)}.tag.mid{background:var(--warn-soft);color:var(--warn)}.tag.low{background:var(--sunk);color:var(--muted)}.tag.okk{background:var(--good-soft);color:var(--good)}
+.row .m{display:flex;flex-wrap:wrap;gap:3px 8px;color:var(--muted);font-size:12.5px;margin-top:1px}
+details.fold2>summary{list-style:none;cursor:pointer;font-family:var(--f-display);font-weight:800;font-size:15px;color:var(--muted);padding:10px 2px}
+details.fold2>summary::-webkit-details-marker{display:none}
+details.fold2>summary::before{content:"‹ ";display:inline-block;transition:transform .2s}
+details.fold2[open]>summary::before{transform:rotate(-90deg)}
 .links{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.links a{background:var(--surface);padding:11px 8px;text-align:center;font-size:14.5px;font-weight:800;color:var(--ink)}
-.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw}
+.links a{background:var(--surface);padding:11px 8px;text-align:center;font-size:14px;font-weight:800;color:var(--ink)}
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:40;display:none}
+.sheet{position:fixed;z-index:41;inset:auto 0 0 0;height:78vh;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));transform:translateY(102%);transition:transform .22s ease;max-width:720px;margin:0 auto}
+.open>.scrim{display:block}.open>.sheet{transform:none}
+.sheet h3{font-size:19px;display:flex;align-items:center;gap:8px;padding-inline-end:44px;min-height:34px}
+.sheet .x{position:sticky;top:0;float:left;border:0;background:var(--sunk);border-radius:999px;width:34px;height:34px;font-size:17px;z-index:2}
+.kv{display:grid;grid-template-columns:100px 1fr;gap:6px 12px;margin:14px 0;font-size:15px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;font-weight:600}
+.box{border-top:1px solid var(--line);padding:10px 0;font-size:14.5px}
+.box h4{margin:0 0 4px;font-size:13.5px;color:var(--muted);font-family:var(--f-display)}
+.box pre{white-space:pre-wrap;font-family:var(--f-body);margin:0;font-size:14px}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;gap:12px;align-items:center;max-width:calc(100% - 32px)}
+.toast.on{display:flex}
+.toast button{border:0;background:none;color:var(--accent);font-weight:800;padding:0}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
-.hero .kpis .kpi b{white-space:normal;font-size:17px}
-@media (max-width:420px){.kpi b{font-size:15px}.hero h1{font-size:22px}.seg button{font-size:13.5px}.wt{font-size:13px}.wt>*{padding:7px 5px}}
+@media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.seg button{font-size:13.5px}.wt{font-size:13px}.wt>*{padding:7px 5px}.brow{grid-template-columns:96px 1fr 62px}}
+@media (prefers-reduced-motion:reduce){.xb,.sheet,.xh .ch{transition:none}}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=6">
 <script src="dash-sub.js?v=3" defer></script>
@@ -112,70 +169,256 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
   <main id="app"><div class="empty">טוען…</div></main>
   <footer id="foot"></footer>
 </div>
+<div id="sheetwrap"><div class="scrim" id="scrim"></div><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status"><span id="toastT"></span><button id="toastU" type="button">ביטול</button></div>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const arr=a=>Array.isArray(a)?a:[];
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
 const CF="https://household-cashflow-control.vercel.app/spending/budget";
-const ils=v=>v==null||v===""?"—":'<bdi dir="ltr">'+(v<0?"−":"")+"₪"+Math.round(Math.abs(+v)).toLocaleString("he-IL")+"</bdi>";
+const ils=v=>v==null||v===""||isNaN(+v)?"—":'<bdi dir="ltr">'+(v<0?"−":"")+"₪"+Math.round(Math.abs(+v)).toLocaleString("he-IL")+"</bdi>";
+const kils=v=>{if(v==null||v===""||isNaN(+v))return "—";const a=Math.abs(+v);if(a<1000)return ils(v);return '<bdi dir="ltr">'+(v<0?"−":"")+"₪"+(a/1000).toFixed(a>=10000?0:1).replace(/\.0$/,"")+"K</bdi>";};
 const sgn=v=>`<span class="${v<0?"neg":v>0?"pos":""}">${ils(v)}</span>`;
-// verdicts from the cashflow app's budgetCompare
 const VD={fixed:["קבוע","p-mute"],ok:["בתקציב","p-good"],tight:["צמוד","p-warn"],over:["חריגה","p-bad"],missing:["לא בתכנון","p-warn"]};
-// what we agreed while building the budget (Oren 15.11.2026). Rules only, the numbers come from the cashflow app.
+// how we count (Oren 15.11.2026). Rules only; the numbers come from the cashflow app.
 const RULES=[
-  ["🏦","הלוואות לא נספרות כהכנסה","כסף שנכנס מהלוואה הוא חוב, לא הכנסה. גם העברות נכנסות שאינן משכורת לא נספרות."],
-  ["🔁","העברות מחשבון ההשקעות = המינוס גדל","העברות מהחשבון השני הן לא הכנסה. שני החשבונות נספרים יחד במינוס."],
-  ["🤝","גישור מהמשפחה שהוחזר לא חלק מהפער","גישור קצר של כמה שבועות שהוחזר במלואו בביט לא נספר כהכנסה וגם לא כחוב."],
-  ["📉","חודש רגיל = החודש הנמוך","המשכורת שלך בחודש רגיל לפי הרבעון התחתון, כדי שהתמונה לא תהיה ורודה מדי. מה שמעל זה כסף שנתי."],
+  ["🏦","הלוואות הן לא הכנסה","כסף שנכנס מהלוואה הוא חוב, לא הכנסה. גם העברות נכנסות שאינן משכורת לא נספרות."],
+  ["🔁","העברות מההשקעות = המינוס גדל","העברות מהחשבון השני הן לא הכנסה. שני החשבונות נספרים יחד במינוס."],
+  ["🤝","גישור שהוחזר לא בפער","גישור קצר של כמה שבועות מהמשפחה שהוחזר במלואו בביט לא נספר כהכנסה וגם לא כחוב."],
+  ["📉","חודש רגיל = החודש הנמוך","המשכורת בחודש רגיל לפי הרבעון התחתון, כדי שהתמונה לא תהיה ורודה מדי. מה שמעל זה כסף שנתי."],
   ["✈️","שני ארנקים","חודשי: משכורות מול הוצאות חודשיות וחיסכון. שנתי: בונוסים, מילואים, החזרים ועבודות נוספות מול טיולים ומיוחדות."],
-  ["🧾","נסיעות עבודה חוזרות","נסיעות עבודה נכללות בטיולים בפועל, אבל ההחזר שלהן נכנס כהכנסה שנתית. הטיפול בהחזרים: בדשבורד החזרי עבודה ב-Work Quest."]];
-let T=null;
-const UI="sq_bg_ui";let ui={tab:"month"};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
+  ["🧾","נסיעות עבודה","נסיעות עבודה נכללות בטיולים בפועל, וההחזר שלהן נכנס כהכנסה שנתית. ההגשה עצמה: בדשבורד החזרי עבודה ב-Work Quest."]];
+// fixed payments (was payments.html)
+const CATS={
+  telecom:{l:"אינטרנט, טלוויזיה וסלולר",s:"תקשורת",i:"📶",c:"--c-telecom"},
+  streaming:{l:"סטרימינג",s:"סטרימינג",i:"🎬",c:"--c-streaming"},
+  digital:{l:"מנויים דיגיטליים ו-AI",s:"דיגיטלי",i:"☁️",c:"--c-digital"},
+  housing:{l:"דיור: שכירות, ארנונה, חשמל, מים",s:"דיור",i:"🏠",c:"--c-housing"},
+  insurance:{l:"ביטוחים",s:"ביטוחים",i:"🛡️",c:"--c-insurance"},
+  car:{l:"רכב ותחבורה",s:"רכב",i:"🚗",c:"--c-car"},
+  leisure:{l:"פנאי",s:"פנאי",i:"🎾",c:"--c-leisure"},
+  kids:{l:"ילדים וחינוך",s:"ילדים",i:"🎒",c:"--c-kids"},
+  finance:{l:"בנק ופיננסים",s:"בנק",i:"🏦",c:"--c-finance"},
+  other:{l:"אחר",s:"אחר",i:"📄",c:"--c-other"}};
+const CYC={m:"לחודש","2m":"כל חודשיים",y:"בשנה",var:"משתנה",once:"חד פעמי"};
+const STATUS={active:["פעיל","okk"],check:["לבדוק","mid"],unknown:["לא מזוהה","high"],free:["חינם","low"],ended:["בוטל","low"]};
+const SRC={gmail:"מהמייל",bills:"My Bills",card:"פירוט אשראי",bank:"בנק",cashflow:"מאפליקציית התזרים",manual:"ידני",insurance:"דשבורד הביטוחים"};
+const WHO={oren:"עליך",claude:"Claude",both:"שנינו"};
+
+let T=null,P={items:[],meta:{},ins:[]},db=null,fCat="all";
+const UI="sq_bg_ui";let ui={tab:"sum"};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
+const TABS=[["sum","סיכום"],["month","חודשי"],["fixed","קבועים"],["year","שנתי"],["steps","צעדים"]];
+if(!TABS.some(t=>t[0]===ui.tab))ui.tab="sum";
+{const hsh=(location.hash||"").replace("#","");if(TABS.some(t=>t[0]===hsh))ui.tab=hsh;}
 function save(){try{localStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
+const OPEN=new Set(); // open bullets survive re-renders
 const S=()=>(T&&T.cf&&T.cf.summary)||{};
 const mLbl=m=>{const [y,mm]=String(m||"").split("-");return mm?+mm+"."+String(y).slice(2):"";};
-function hero(){const s=S(),m=(s.monthly||{}).actual||{},y=(s.yearly||{}).actual||{},at=T&&T.cf&&T.cf.computed_at;
+
+// ---- fixed payments math ----
+const fxr=()=>+(P.meta.fx_usd||3.7);
+function monthly(p){
+  if(p.status==="ended"||p.status==="free")return 0;
+  if(p.amt==null||p.amt===""||isNaN(+p.amt))return null;
+  let v=+p.amt*(p.cur==="USD"?fxr():1);
+  if(p.cycle==="2m")v/=2;else if(p.cycle==="y")v/=12;else if(p.cycle==="once")v=0;
+  return v;}
+function insRow(){
+  const pol=P.ins.filter(x=>x.id!=="_meta"&&x.title&&!x.merged_into&&x.status!=="ended"&&x.status!=="unknown"&&x.status!=="per_trip");
+  if(!pol.length)return null;
+  const m=pol.reduce((s,x)=>s+(x.monthly!=null?+x.monthly||0:x.annual!=null?(+x.annual||0)/12:0),0);
+  return {id:"_insurance",name:"כל הביטוחים (מדשבורד הביטוחים)",cat:"insurance",amt:Math.round(m),cur:"ILS",cycle:"m",status:"active",src:"insurance",
+    note:`${pol.filter(x=>+x.monthly>0||+x.annual>0).length} פוליסות בתשלום`,link:"insurance.html",virtual:true};}
+const allItems=()=>{const r=insRow();return [...P.items,...(r?[r]:[])];};
+const live=()=>allItems().filter(p=>p.status!=="ended");
+const openQ=p=>p.status!=="ended"&&p.q&&p.q.q&&!p.q.answer;
+const openT=p=>p.status!=="ended"&&p.todo&&p.todo.text&&p.todo.status!=="done";
+const saveOf=p=>p.status==="ended"||(p.q&&p.q.answer&&p.q.no_save)?0:(+p.save||0);
+function payTotals(){const L=live(),m=L.map(monthly).filter(v=>v!=null).reduce((s,v)=>s+v,0);return {m,save:L.reduce((s,p)=>s+saveOf(p),0),L};}
+
+// ---- collapsible bullet: [key, title, body html, {dot, em, v, vcls}] ----
+function xr(key,title,body,o){o=o||{};const op=OPEN.has(key);
+  return `<div class="xr${op?" open":""}" data-xk="${esc(key)}"><button type="button" class="xh" data-x="${esc(key)}" aria-expanded="${op}">${o.em?`<span class="em">${o.em}</span>`:`<span class="dot ${esc(o.dot||"")}"></span>`}<span class="xt">${esc(title)}</span>${o.v?`<span class="xv ${o.vcls||""}">${o.v}</span>`:""}<span class="ch">‹</span></button><div class="xb"><div><div class="in">${body}</div></div></div></div>`;}
+// a short line for long texts that have no title of their own: text up to the first ":" or ".", else the first words
+function shortOf(t){t=String(t||"").replace(/^(חודשי|שנתי):\s*/,"").trim();const m=t.match(/^(.{6,60}?)[:.](\s|$)/);if(m)return m[1];return t.length>58?t.slice(0,56).replace(/\s\S*$/,"")+"…":t;}
+
+function hero(){const s=S(),m=(s.monthly||{}).actual||{},y=(s.yearly||{}).actual||{},pt=payTotals(),at=T&&T.cf&&T.cf.computed_at;
   const when=at?new Date(at).toLocaleString("he-IL",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Jerusalem"}):"";
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${when?"עודכן "+esc(when):""}</span></div>
   <h1>💰 הוצאות ותקציב</h1>
-  <div class="kpis"><div class="kpi"><b>${ils(m.left)}</b><span>נשאר בחודש רגיל</span></div><div class="kpi"><b>${ils(y.left)}</b><span>נשאר בשנה</span></div><div class="kpi"><b>${ils(s.travel_private_year)}</b><span>לטיולים פרטיים השנה</span></div></div>`;}
-const TABS=[["month","📅 חודשי"],["year","📆 שנתי"],["ins","💡 תובנות"],["steps","✅ צעדים"]];
+  <div class="kpis"><button class="kpi" data-tab="month"><b>${kils(m.left)}</b><span>חודש רגיל</span></button><button class="kpi" data-tab="year"><b>${kils(y.left)}</b><span>נשאר בשנה</span></button><button class="kpi" data-tab="fixed"><b>${kils(pt.m)}</b><span>קבועים</span></button><button class="kpi save" data-tab="fixed" data-go="s-save"><b>${pt.save?"~"+ils(pt.save):ils(0)}</b><span>לחסוך</span></button></div>`;}
 function bar(){return `<div class="seg">${TABS.map(([k,l])=>`<button data-tab="${k}" class="${ui.tab===k?"on":""}">${l}</button>`).join("")}</div>`;}
-// wallet table: rows × (בפועל, תכנון שלך, תקציב עבודה)
+
+// ---- tab: summary ----
+function insBody(x){return `${String(x.title||"").length>34?`<b>${esc(x.title)}</b>`:""}${esc(x.body||"")}`;}
+function todoBody(p){return `<span class="who ${esc(p.todo.who||"oren")}">${WHO[p.todo.who]||WHO.oren}</span>${esc(p.todo.text)}${saveOf(p)?`<p class="meta">חיסכון עד ${ils(saveOf(p))} בחודש</p>`:""}
+  <div class="acts">${p.todo.who!=="claude"?`<button class="ok" data-done="${esc(p.id)}">✓ בוצע</button>`:""}<button data-p="${esc(p.id)}">פרטים</button></div>`;}
+function qRow(p){const v=monthly(p),opts=(p.q.options||[]).map(o=>typeof o==="string"?o:o.label);
+  return `<div class="qr"><div class="qt">${esc(p.q.q)}</div><div class="qs">${esc(p.opt_title||p.name)}${v!=null&&v>0?` · היום ${ils(v)} ${p.cycle==="var"?"בממוצע":"לחודש"}`:""}${saveOf(p)?` · עד ${ils(saveOf(p))} בחודש`:""}</div>
+  ${opts.length?`<div class="opts">${opts.map((o,i)=>`<button data-ans="${esc(p.id)}" data-i="${i}">${esc(o)}</button>`).join("")}</div>`:`<div class="acts"><button data-p="${esc(p.id)}">פרטים</button></div>`}</div>`;}
+function tabSum(){const I=arr(S().insights),pt=payTotals();
+  const Q=P.items.filter(openQ).sort((a,b)=>saveOf(b)-saveOf(a));
+  const Td=P.items.filter(openT).sort((a,b)=>(a.todo.who==="claude")-(b.todo.who==="claude")||saveOf(b)-saveOf(a));
+  const st=arr(T&&T.steps).filter(x=>!x.done);
+  let o="";
+  if(Q.length)o+=`<section><div class="sh"><h2>❓ מחכה להחלטה שלך</h2><small>${Q.length}</small></div><div class="list">${Q.map(qRow).join("")}</div></section>`;
+  o+=`<section><div class="sh"><h2>💡 מה רואים</h2><small>${I.length}</small></div><div class="list">${I.map((x,i)=>xr("i"+i,x.title,insBody(x),{dot:x.tone})).join("")||'<div class="empty">אין עדיין נתונים מהתזרים</div>'}</div></section>`;
+  if(Td.length)o+=`<section><div class="sh"><h2>▶️ פעולות פתוחות</h2><small>${Td.filter(p=>p.todo.who!=="claude").length} עליך · ${Td.filter(p=>p.todo.who==="claude").length} Claude</small></div><div class="list">${Td.map(p=>xr("t"+p.id,p.opt_title||p.name,todoBody(p),{dot:p.todo.who==="claude"?"hi":"warn",v:saveOf(p)?ils(saveOf(p)):"",vcls:"save"})).join("")}</div></section>`;
+  if(st.length)o+=`<section><div class="sh"><h2>✅ הצעדים הבאים</h2><small>${st.length} פתוחים</small></div><div class="list">${st.slice(0,4).map(x=>xr("s"+x.id,shortOf(x.text),esc(x.text),{dot:"hi"})).join("")}</div>${st.length>4?`<p class="hint"><button class="chip" data-tab="steps">כל הצעדים (${st.length}) ‹</button></p>`:""}</section>`;
+  const O=P.items.filter(p=>saveOf(p)>0).sort((a,b)=>saveOf(b)-saveOf(a)).slice(0,3);
+  if(O.length)o+=`<section><div class="sh"><h2>💰 איפה הכי כדאי לחסוך</h2><small>עד ${ils(pt.save)} בחודש</small></div><div class="list">${O.map(saveRow).join("")}</div></section>`;
+  return o;}
+
+// ---- tab: monthly ----
 function wallet(W,rows,totKey){const C=[["actual","בפועל"],["plan","התכנון שלך"],["work","תקציב עבודה"]];
   return `<div class="wt"><div class="h"></div>${C.map(c=>`<div class="h">${c[1]}</div>`).join("")}${rows.map(([k,l,neg])=>{const cls=k===totKey?" tot":"";
     return `<div class="l${cls}">${esc(l)}</div>${C.map(c=>{const v=(W[c[0]]||{})[k];return `<div class="n${cls}">${k===totKey?sgn(v):ils(v==null?null:neg&&v?-v:v)}</div>`;}).join("")}`;}).join("")}</div>`;}
 function lineRow(x){const v=VD[x.verdict]||["",""],ref=+x.work||+x.plan||0,pct=ref?Math.min(100,x.actual/ref*100):0;
-  return `<div class="row"><span class="b"><span class="t">${esc(x.label)}${v[0]?`<span class="pill ${v[1]}">${v[0]}</span>`:""}</span><span class="s">תכנון ${ils(x.plan)} · תקציב עבודה ${ils(x.work)}${x.bench?" · מקובל "+ils(x.bench):""}</span>${ref&&x.verdict!=="fixed"?`<div class="bar2"><i class="${x.actual>ref?"over":""}" style="width:${pct}%"></i></div>`:""}</span><span class="v">${ils(x.actual)}<small>בפועל</small></span></div>`;}
+  return `<div class="row"><span class="b"><span class="t">${esc(x.label)}${v[0]?`<span class="pill ${v[1]}">${v[0]}</span>`:""}</span><span class="s">תכנון ${ils(x.plan)} · תקציב ${ils(x.work)}${x.bench?" · מקובל "+ils(x.bench):""}</span>${ref&&x.verdict!=="fixed"?`<div class="bar2"><i class="${x.actual>ref?"over":""}" style="width:${pct}%"></i></div>`:""}</span><span class="v">${ils(x.actual)}<small>בפועל</small></span></div>`;}
 function tabMonth(){const s=S(),L=arr(s.lines),fx=L.filter(x=>x.verdict==="fixed"),vr=L.filter(x=>x.verdict!=="fixed").sort((a,b)=>(b.actual-(+b.work||0))-(a.actual-(+a.work||0)));
   const sum=A=>A.reduce((a,x)=>a+(+x.actual||0),0);
   let o=`<section><div class="sh"><h2>הארנק החודשי</h2><small>ממוצע לחודש</small></div>${wallet(s.monthly||{},[["income","משכורות ושכירות"],["spending","הוצאות חודשיות",1],["savings","חיסכון",1],["left","נשאר","",1]],"left")}
-    <p class="note">משכורות של חודש רגיל מול ההוצאות הקבועות והמשתנות. תקציב עבודה = הקבועות כמו שהן, והמשתנות לפי הנמוך מבין הבפועל למקובל, ועוד ${ils(s.savings_target_month)} לחיסכון.</p></section>`;
+    <div class="list" style="margin-top:8px">${xr("w-m","מה זה תקציב עבודה",`הקבועות כמו שהן, והמשתנות לפי הנמוך מבין הבפועל למקובל, ועוד ${ils(s.savings_target_month)} לחיסכון.`,{em:"ℹ️"})}</div></section>`;
   if(vr.length)o+=`<section><div class="sh"><h2>הוצאות משתנות</h2><small>${ils(sum(vr))} בחודש</small></div><div class="list">${vr.map(lineRow).join("")}</div></section>`;
-  if(fx.length)o+=`<section><div class="sh"><h2>הוצאות קבועות</h2><small>${ils(sum(fx))} בחודש</small></div><div class="list">${fx.map(lineRow).join("")}</div></section>`;
+  if(fx.length)o+=`<section><div class="sh"><h2>הוצאות קבועות</h2><small>${ils(sum(fx))} בחודש</small></div><div class="list">${fx.map(lineRow).join("")}</div><p class="hint"><button class="chip" data-tab="fixed">🔁 פירוט כל התשלומים הקבועים ‹</button></p></section>`;
   return o;}
+
+// ---- tab: fixed payments ----
+function saveRow(p){const c=CATS[p.cat]||CATS.other,v=monthly(p);
+  const step=openT(p)?`<p><span class="who ${esc(p.todo.who)}">${WHO[p.todo.who]||WHO.oren}</span>${esc(p.todo.text)}</p>`:openQ(p)?`<p>❓ מחכה להחלטה שלך בסיכום</p>`:"";
+  return xr("o"+p.id,p.opt_title||p.name,`${p.why?esc(p.why):""}${v!=null&&v>0?`<p class="meta">היום ${ils(v)} ${p.cycle==="var"?"בממוצע":"לחודש"}</p>`:""}${p.market?`<p><b style="display:inline">מחיר שוק:</b> ${esc(p.market)}</p>`:""}${step}${actsHtml(p,true)}`,{em:esc(p.icon||c.i),v:"עד "+ils(saveOf(p)),vcls:"save"});}
+function actsHtml(p,det){const a=[];
+  if(p.email&&safe(p.email.draft_url))a.push(`<a href="${esc(safe(p.email.draft_url))}" target="_blank" rel="noopener">✉️ טיוטה</a>`);
+  if(p.email&&p.email.body)a.push(`<button data-copy="${esc(p.id)}">📋 העתק נוסח</button>`);
+  arr(p.links).filter(l=>safe(l.url)).forEach(l=>a.push(`<a href="${esc(safe(l.url))}" target="_blank" rel="noopener">🔗 ${esc(l.label)}</a>`));
+  if(det)a.push(`<button data-p="${esc(p.id)}">פרטים</button>`);
+  return a.length?`<div class="acts">${a.join("")}</div>`:"";}
+function tabFixed(){const {L,save:sv}=payTotals(),meta=P.meta;
+  if(!P.items.length)return '<div class="empty">טוען תשלומים…</div>';
+  const V=L.filter(p=>fCat==="all"||p.cat===fCat);
+  const cs=["all",...Object.keys(CATS).filter(c=>L.some(p=>p.cat===c))];
+  let o=`<div class="chips">${cs.map(c=>{const n=c==="all"?L.length:L.filter(p=>p.cat===c).length;return `<button class="chip" data-c="${c}" aria-pressed="${fCat===c}">${c==="all"?"הכל":CATS[c].i+" "+CATS[c].s}<span class="n">${n}</span></button>`;}).join("")}</div>`;
+  const O=V.filter(p=>saveOf(p)>0).sort((a,b)=>saveOf(b)-saveOf(a));
+  if(O.length){const tot=O.reduce((s,p)=>s+saveOf(p),0);o+=`<section id="s-save"><div class="sh"><h2>💰 איפה אפשר לחסוך</h2><small>עד ${ils(tot)} בחודש</small></div><div class="list">${O.map(saveRow).join("")}</div></section>`;}
+  if(fCat==="all"){const byCat={};L.forEach(p=>{const v=monthly(p);if(v>0)byCat[p.cat]=(byCat[p.cat]||0)+v;});const mx=Math.max(1,...Object.values(byCat));
+    o+=`<section><div class="sh"><h2>לאן הולך הכסף</h2><small>לחודש</small></div><div class="list bars">${Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<button class="brow" data-c="${c}"><span>${CATS[c]?.i||""} ${esc(CATS[c]?.s||c)}</span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;background:var(${CATS[c]?.c||"--c-other"})"></span></span><span class="v">${ils(v)}</span></button>`).join("")||'<div class="empty">אין עדיין סכומים</div>'}</div>${meta.cost_note?`<div class="list" style="margin-top:8px">${xr("cn","הערה על החישוב",esc(meta.cost_note),{em:"ℹ️"})}</div>`:""}</section>`;}
+  const U=V.filter(p=>monthly(p)==null);
+  if(U.length)o+=`<section><div class="sh"><h2>בלי סכום עדיין</h2><small>${U.length}</small></div><div class="list">${U.map(p=>`<button class="row" data-p="${esc(p.id)}"><span class="b"><span class="t">${esc(p.name)}</span><span class="s">${openT(p)?esc((WHO[p.todo.who]||"")+": "+shortOf(p.todo.text)):esc(shortOf(p.note||""))}</span></span><span class="v muted">‹</span></button>`).join("")}</div></section>`;
+  const groups={};V.forEach(p=>{(groups[p.cat]=groups[p.cat]||[]).push(p);});
+  o+=`<section><div class="sh"><h2>כל התשלומים</h2></div><div class="list">`;
+  Object.keys(CATS).filter(c=>groups[c]).forEach(c=>{const g=groups[c].sort((a,b)=>(monthly(b)??-1)-(monthly(a)??-1)),sum=g.reduce((s,p)=>s+(monthly(p)||0),0);
+    o+=`<div class="mh"><span>${CATS[c].i} ${esc(CATS[c].l)}</span><span>${sum?ils(sum):""}</span></div>`+g.map(p=>{const st=STATUS[p.status]||STATUS.active,v=monthly(p);
+      return `<button class="row" data-p="${esc(p.id)}" style="--cc:var(${CATS[c].c})"><span class="sw"></span><span class="b"><span class="t">${esc(p.name)}</span><span class="m">${p.pay?`<span>${esc(p.pay)}</span>`:""}${p.status!=="active"?`<span class="tag ${st[1]}">${st[0]}</span>`:""}${saveOf(p)>0?`<span class="tag okk">אפשר לחסוך</span>`:""}${openT(p)?`<span class="tag mid">▶ ${WHO[p.todo.who]||""}</span>`:""}</span></span><span class="v">${v!=null?ils(v):p.amt_label?esc(p.amt_label):"?"}<small>${p.cur==="USD"&&p.amt!=null?"$"+esc(p.amt)+" · ":""}${esc(CYC[p.cycle]||"לחודש")}</small></span></button>`;}).join("");});
+  o+=`</div></section>`;
+  const miss=arr(meta.missing);
+  if(miss.length&&fCat==="all")o+=`<details class="fold2"><summary>חסר בתמונה (${miss.length})</summary><div class="list">${miss.map(x=>`<div class="row"><span class="b"><span class="s" style="color:var(--ink)">○ ${esc(x)}</span></span></div>`).join("")}</div></details>`;
+  const E=P.items.filter(p=>p.status==="ended"&&(fCat==="all"||p.cat===fCat));
+  if(E.length)o+=`<details class="fold2"><summary>בוטלו או הוזלו (${E.length})</summary><div class="list">${E.map(p=>`<button class="row" data-p="${esc(p.id)}"><span class="b"><span class="t" style="text-decoration:line-through">${esc(p.name)}</span><span class="s">${esc(shortOf(p.note||""))}</span></span></button>`).join("")}</div></details>`;
+  return o;}
+
+// ---- tab: yearly ----
 function tabYear(){const s=S(),Y=s.yearly||{},YL=arr(s.yearly_lines);
   let o=`<section><div class="sh"><h2>הארנק השנתי</h2><small>12 חודשים</small></div>${wallet(Y,[["income","הכנסות שנתיות"],["surplus","עודף מהחודש"],["cover","השלמת החודש",1],["paydown","סגירת המינוס",1],["specials","מיוחדות",1],["trips","טיולים",1],["left","נשאר","",1]],"left")}
-    <p class="note">כסף שנתי: מה שמעל המשכורת הרגילה, מילואים, החזרים ועבודות נוספות. ממנו משלימים את החודש, סוגרים את המינוס, ומה שנשאר הולך למיוחדות ולטיולים.</p></section>`;
+    <div class="list" style="margin-top:8px">${xr("w-y","מה זה כסף שנתי","מה שמעל המשכורת הרגילה, מילואים, החזרים ועבודות נוספות. ממנו משלימים את החודש, סוגרים את המינוס, ומה שנשאר הולך למיוחדות ולטיולים.",{em:"ℹ️"})}</div></section>`;
   if(YL.length)o+=`<section><div class="sh"><h2>הוצאות שנתיות</h2></div><div class="list">${YL.map(lineRow).join("")}</div></section>`;
   o+=`<section><div class="sh"><h2>✈️ טיולים פרטיים</h2></div><div class="list"><div class="row"><span class="b"><span class="t">אפשר להוציא השנה</span><span class="s">אחרי השלמת החודש, סגירת המינוס והמיוחדות</span></span><span class="v">${ils(s.travel_private_year)}</span></div></div></section>`;
   return o;}
-function tabIns(){const I=arr(S().insights);
-  return `<section><div class="sh"><h2>מה רואים</h2><small>${I.length}</small></div><div class="list ins">${I.map(x=>`<div class="row"><span class="dot ${esc(x.tone||"")}"></span><span class="b"><span class="t">${esc(x.title)}</span><span class="s">${esc(x.body)}</span></span></div>`).join("")||'<div class="empty">אין עדיין</div>'}</div></section>
-  <section><div class="sh"><h2>מה סיכמנו</h2><small>איך סופרים</small></div><div class="list ins">${RULES.map(r=>`<div class="row"><span style="flex:none;font-size:18px">${r[0]}</span><span class="b"><span class="t">${esc(r[1])}</span><span class="s">${esc(r[2])}</span></span></div>`).join("")}</div></section>`;}
-function tabSteps(){const St=arr(T&&T.steps),grp=[["חודשי",x=>/^חודשי:/.test(x.text)],["שנתי",x=>/^שנתי:/.test(x.text)],["קבוע",x=>!/^(חודשי|שנתי):/.test(x.text)]];let o="",n=0;
-  grp.forEach(([h,f])=>{const L=St.filter(f);if(!L.length)return;o+=`<div class="mh">${h}</div>`+L.map(x=>{n++;return `<div class="row step${x.done?" done":""}"><span class="n0">${x.done?"✓":n}</span><span class="b"><span class="t">${esc(String(x.text).replace(/^(חודשי|שנתי):\s*/,""))}</span></span></div>`;}).join("");});
+
+// ---- tab: steps + rules ----
+function tabSteps(){const St=arr(T&&T.steps),grp=[["חודשי",x=>/^חודשי:/.test(x.text)],["שנתי",x=>/^שנתי:/.test(x.text)],["קבוע",x=>!/^(חודשי|שנתי):/.test(x.text)]];let o="";
+  grp.forEach(([h,f])=>{const L=St.filter(f);if(!L.length)return;o+=`<div class="mh"><span>${h}</span></div>`+L.map(x=>`<div class="step${x.done?" done":""}">${xr("s"+x.id,(x.done?"✓ ":"")+shortOf(x.text),esc(String(x.text).replace(/^(חודשי|שנתי):\s*/,"")),{dot:x.done?"good":"hi"})}</div>`).join("");});
   return `<section><div class="sh"><h2>הצעדים שלך</h2><small>${St.filter(x=>!x.done).length} פתוחים</small></div><div class="list">${o||'<div class="empty">אין צעדים</div>'}</div>
-    <p class="note">מסמנים צעד שבוצע במשימה "תקציב הבית" ב-Side Quests.</p></section>`;}
-function links(){return `<section><div class="links"><a href="${CF}" target="_blank" rel="noopener">📊 התקציב בתזרים</a><a href="./#t=cf-budget" target="_top">✅ המשימה</a><a href="payments.html">🔁 תשלומים קבועים</a><a href="credit.html">💳 כרטיסי אשראי</a></div></section>`;}
-function render(){if(!T)return;$("hero").innerHTML=hero();$("bar").innerHTML=bar();
-  const s=S();if(!s.monthly){$("app").innerHTML='<div class="empty">אין עדיין נתונים מהתזרים. פותחים את התזרים פעם אחת והם מגיעים.</div>'+links();return;}
-  $("app").innerHTML=(ui.tab==="year"?tabYear():ui.tab==="ins"?tabIns():ui.tab==="steps"?tabSteps():tabMonth())+links();
-  $("foot").innerHTML=`הנתונים מהתזרים${(s.months||[]).length?' · <bdi dir="ltr">'+esc(mLbl(s.months[0]))+"–"+esc(mLbl(s.months[1]))+"</bdi>":""}<br>תקציב ${esc(window.BG_BUILD)}`;}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b){ui.tab=b.dataset.tab;save();render();}});
-window.claude.use("db").then(db=>{if(!db)return;
-  db.collection("topics").doc("cf-budget").onSnapshot(d=>{T=d&&d.exists!==false&&d.data?d.data()||{}:{};render();},()=>{$("app").innerHTML='<div class="empty">הטעינה נכשלה</div>';});});
+    <p class="hint">מסמנים צעד שבוצע במשימה "תקציב הבית".</p></section>
+  <section><div class="sh"><h2>מה סיכמנו</h2><small>איך סופרים</small></div><div class="list">${RULES.map((r,i)=>xr("r"+i,r[1],esc(r[2]),{em:r[0]})).join("")}</div></section>`;}
+
+function links(){return `<section><div class="links"><a href="${CF}" target="_blank" rel="noopener">📊 התקציב בתזרים</a><a href="./#t=cf-budget" target="_top">✅ המשימה</a><a href="credit.html">💳 כרטיסי אשראי</a><a href="insurance.html">🛡️ ביטוחים</a></div></section>`;}
+function render(){$("hero").innerHTML=hero();$("bar").innerHTML=bar();
+  const s=S(),t=ui.tab;
+  if(!T&&t!=="fixed"){$("app").innerHTML='<div class="empty">טוען…</div>';}
+  else if(!s.monthly&&t!=="fixed"){$("app").innerHTML='<div class="empty">אין עדיין נתונים מהתזרים. פותחים את התזרים פעם אחת והם מגיעים.</div>'+links();}
+  else $("app").innerHTML=(t==="month"?tabMonth():t==="fixed"?tabFixed():t==="year"?tabYear():t==="steps"?tabSteps():tabSum())+links();
+  const pm=P.meta;
+  $("foot").innerHTML=`${(s.months||[]).length?'התזרים <bdi dir="ltr">'+esc(mLbl(s.months[0]))+"–"+esc(mLbl(s.months[1]))+"</bdi>":""}${pm.updated?" · תשלומים עודכנו "+esc(pm.updated):""}${pm.sources&&t==="fixed"?`<details class="more"><summary>מקורות</summary><div>${esc(pm.sources)}</div></details>`:""}<br>הוצאות ותקציב ${esc(window.BG_BUILD)} · ${esc(window.BG_BUILD_AT)}`;}
+
+// ---- taps ----
+document.addEventListener("click",e=>{
+  const x=e.target.closest("[data-x]");
+  if(x){const k=x.dataset.x,r=x.closest(".xr"),op=!OPEN.has(k);op?OPEN.add(k):OPEN.delete(k);r.classList.toggle("open",op);x.setAttribute("aria-expanded",op);return;}
+  const tb=e.target.closest("[data-tab]");
+  if(tb){const go=tb.dataset.go;ui.tab=tb.dataset.tab;save();render();
+    const tgt=go&&$(go);if(tgt)tgt.scrollIntoView({behavior:"smooth",block:"start"});else if(!tb.closest(".seg")&&!tb.closest(".kpis"))scrollTo({top:0});
+    else if(tb.closest(".kpis")){const b=$("bar");if(b)b.scrollIntoView({block:"start"});}
+    return;}
+  const c=e.target.closest("[data-c]");if(c){fCat=c.dataset.c;render();return;}
+  const a=e.target.closest("[data-ans]");if(a){answer(a);return;}
+  const d=e.target.closest("[data-done]");if(d){markDone(d.dataset.done);if(d.closest("#sheet"))setTimeout(()=>openItem(d.dataset.done),50);return;}
+  const u=e.target.closest("[data-undo]");if(u){setAnswer(u.dataset.undo,null);setTimeout(()=>openItem(u.dataset.undo),50);return;}
+  const cp=e.target.closest("[data-copy]");if(cp){copyMail(cp.dataset.copy);return;}
+  const p=e.target.closest("[data-p]");if(p){openItem(p.dataset.p);return;}
+});
+
+// ---- payments writes (decisions → todo; done; undo). Each write touches only the fields that changed. ----
+let undoFn=null,tt=null;
+function toast(t,u){$("toastT").textContent=t;undoFn=u||null;$("toastU").style.display=u?"":"none";$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>{$("toast").className="toast";undoFn=null;},5000);}
+$("toastU").onclick=()=>{const f=undoFn;$("toast").className="toast";undoFn=null;f&&f();};
+function answer(b){b.classList.add("on");const id=b.dataset.ans,i=+b.dataset.i,p=P.items.find(x=>x.id===id);if(!p||!p.q)return;
+  const o=(p.q.options||[])[i],label=typeof o==="string"?o:o.label,inSheet=!!b.closest("#sheet");
+  setTimeout(()=>{setAnswer(id,label,o&&o.no_save,typeof o==="object"?o:null);if(inSheet)openItem(id);},300);}
+async function setAnswer(id,label,noSave,opt){const p=P.items.find(x=>x.id===id);if(!p||!db)return;
+  const now=new Date().toISOString(),prev={q:{...p.q},todo:p.todo?{...p.todo}:null,status:p.status};
+  const q={...p.q,answer:label||"",answered_at:label?now:"",no_save:!!noSave},up={q,updated_at:now};
+  if(label&&opt&&opt.todo)up.todo={...opt.todo,status:"open",from:label,at:now};
+  else if(label&&!(opt&&opt.close))up.todo={who:"claude",text:`להגדיר את הצעד הבא אחרי ההחלטה: ${label}`,status:"open",from:label,at:now};
+  if(label&&opt&&opt.status)up.status=opt.status;
+  if(!label)up.todo=prev.todo&&prev.todo.from?null:prev.todo;
+  up.log=[...arr(p.log),{at:now,text:label?`ענית: ${p.q.q} → ${label}${up.todo&&up.todo.text?" · הצעד הבא: "+up.todo.text:""}`:"ביטלת תשובה"}];
+  Object.assign(p,up);render();
+  try{await db.collection("payments").doc(id).update(up);
+    if(label)toast(up.todo?"נשמר. עבר לפעולות הפתוחות":"נשמר וסגור",async()=>{Object.assign(p,prev);render();try{await db.collection("payments").doc(id).update({q:prev.q,todo:prev.todo,status:prev.status});}catch(e){}});}
+  catch(e){Object.assign(p,prev);render();toast("השמירה נכשלה, נסה שוב");}}
+async function markDone(id){const p=P.items.find(x=>x.id===id);if(!p||!p.todo||!db)return;
+  const now=new Date().toISOString(),prev={...p.todo},todo={...p.todo,status:"done",done_at:now},log=[...arr(p.log),{at:now,text:"בוצע: "+p.todo.text}];
+  p.todo=todo;render();
+  try{await db.collection("payments").doc(id).update({todo,log,updated_at:now});
+    toast("סומן כבוצע",async()=>{p.todo=prev;render();try{await db.collection("payments").doc(id).update({todo:prev});}catch(e){}});}
+  catch(e){p.todo=prev;render();toast("השמירה נכשלה, נסה שוב");}}
+async function copyMail(id){const p=P.items.find(x=>x.id===id);if(!p||!p.email)return;
+  const t=(p.email.subject?p.email.subject+"\n\n":"")+p.email.body;
+  try{await navigator.clipboard.writeText(t);toast("הנוסח הועתק");}catch(e){toast("לא הצלחתי להעתיק");}}
+const fmtD=d=>{if(!d)return "";const [y,m,dd]=String(d).split("-");return dd?`${+dd}.${+m}`:`${+m}.${(y||"").slice(2)}`;};
+function openItem(id){const p=allItems().find(x=>x.id===id);if(!p)return;
+  if(p.virtual&&p.link){location.href=p.link;return;}
+  const c=CATS[p.cat]||CATS.other,st=STATUS[p.status]||STATUS.active,v=monthly(p);
+  const row=(k,val)=>val==null||val===""?"":`<dt>${k}</dt><dd>${val}</dd>`;
+  const q=p.q&&p.q.q?(p.q.answer?`<div class="box"><h4>החלטה</h4>${esc(p.q.q)}<br><b>✓ ${esc(p.q.answer)}</b><div class="acts"><button data-undo="${esc(p.id)}">שינוי</button></div></div>`:`<div class="box"><h4>החלטה</h4>${qRow(p).replace('class="qr"','class="qr" style="padding:0"')}</div>`):"";
+  $("sheet").innerHTML=`<button class="x" id="sx" aria-label="סגירה">✕</button>
+  <h3><span>${esc(p.icon||c.i)}</span>${esc(p.name)}</h3>
+  <dl class="kv">${row("סטטוס",`<span class="tag ${st[1]}">${st[0]}</span>`)}
+    ${row("סכום",p.amt!=null&&p.amt!==""?`${p.cur==="USD"?"$"+esc(p.amt):ils(+p.amt)} ${esc(CYC[p.cycle]||"")}${p.cur==="USD"||p.cycle!=="m"?` · ${ils(v)} לחודש`:""}`:esc(p.amt_label||"לא ידוע עדיין"))}
+    ${row("משלמים דרך",esc(p.pay))}${row("מי משתמש",esc(p.who))}${row("החיוב הבא",p.next?fmtD(p.next):"")}${row("קטגוריה",c.i+" "+esc(c.l))}</dl>
+  ${p.todo&&p.todo.text?`<div class="box"><h4>הצעד הבא · ${WHO[p.todo.who]||WHO.oren}${p.todo.status==="done"?" · בוצע ✓":""}</h4>${esc(p.todo.text)}${p.todo.status!=="done"&&p.todo.who!=="claude"?`<div class="acts"><button class="ok" data-done="${esc(p.id)}">✓ בוצע</button></div>`:""}</div>`:""}
+  ${q}
+  ${p.why?`<div class="box"><h4>למה</h4>${esc(p.why)}</div>`:""}
+  ${p.note?`<div class="box"><h4>מה ידוע</h4>${esc(p.note)}</div>`:""}
+  ${p.market?`<div class="box"><h4>מחיר שוק</h4>${esc(p.market)}</div>`:""}
+  ${p.email&&p.email.body?`<div class="box"><h4>נוסח מוכן${p.email.to_label?" · "+esc(p.email.to_label):""}</h4><pre>${esc(p.email.body)}</pre></div>`:""}
+  ${actsHtml(p,false)}
+  ${arr(p.log).length?`<div class="box"><h4>היסטוריה</h4>${p.log.slice(-5).reverse().map(l=>`<div style="font-size:13px;color:var(--muted)">${esc(String(l.at||"").slice(0,10))} · ${esc(l.text)}</div>`).join("")}</div>`:""}
+  <div class="box meta">מקור: ${esc(SRC[p.src]||p.src||"")}${p.seen?` · נבדק ${esc(p.seen)}`:""}</div>`;
+  $("sheetwrap").className="open";$("sx").onclick=close;}
+function close(){$("sheetwrap").className="";}
+$("scrim").onclick=close;document.addEventListener("keydown",e=>{if(e.key==="Escape")close();});
+
+render();
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("topics").doc("cf-budget").onSnapshot(x=>{T=x&&x.exists!==false&&x.data?x.data()||{}:{};render();},()=>{$("app").innerHTML='<div class="empty">הטעינה נכשלה</div>';});
+  db.collection("payments").onSnapshot(s=>{const items=[],meta={};
+    s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted||v.excluded)return;if(x.id==="_meta")Object.assign(meta,v);else if(v.name)items.push({id:x.id,...v});});
+    P.items=items;P.meta=meta;render();},()=>{});
+  db.collection("insurance").onSnapshot(s=>{P.ins=s.docs.map(x=>({id:x.id,...x.data()}));render();},()=>{});
+});
 })();
 </script>
 </body>
