@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.1";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.2";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -156,6 +156,9 @@ details.fd>summary::before{content:"▸ ";color:var(--muted)}details.fd[open]>su
 .ab button.alt{background:var(--surface);color:var(--muted);font-size:12.5px;padding:7px 2px}
 .ab button.go2{background:var(--hi-soft);color:var(--hi)}
 .ac.ok{background:var(--good-soft)}
+.ac .b[data-xp]{cursor:pointer;-webkit-tap-highlight-color:transparent}.ac .xc{color:var(--link);font-weight:700;white-space:nowrap}
+@keyframes xdgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}.sqgrow{animation:xdgrow .22s ease-out}
+.xd{padding:0 10px 10px;background:var(--sunk)}.xd .trip.inl{margin:0;border:0;background:none;padding-top:8px}.xd .car{border:0;padding:8px 2px 0;background:none}
 /* 2.1 (Oren 16.11.2026): mark-as-done = empty circle with green border; tap = full green with V for 5s (tap again = undo), then folds */
 .ab button.chk{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--surface);color:var(--good);padding:8px 2px;transition:background .2s,color .2s}
 .ab button.chk i{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--good);box-sizing:border-box;display:grid;place-items:center;font-style:normal;font-size:11px;line-height:1;color:transparent;transition:background .2s,color .2s}
@@ -317,14 +320,14 @@ function irow(i,t){const sub=[fdate(i.d),i.pending?"ממתין":"",i.rcpt==="mis
   <span class="dec"><button data-dec="work" data-t="${esc(t.id)}" data-tx="${esc(i.tx)}" class="${f==="work"?"on":""}">עבודה</button><button data-dec="private" data-t="${esc(t.id)}" data-tx="${esc(i.tx)}" class="${f==="private"?"on":""}">פרטי</button></span></div>`;}
 const fold=(title,L,t,open)=>L.length?`<details class="fd"${open?" open":""}><summary>${esc(title)} (${L.length})</summary>${L.map(i=>irow(i,t)).join("")}</details>`:"";
 function stateChips(t,cur){return `<div class="dec c3 st3">${["scanned","submitted","received"].map(k=>`<button data-ts="${k}" data-t="${esc(t.id)}" class="${lv(cur)>=lv(k)?"on":""}${cur===k?" cur":""}">${lv(cur)>=lv(k)?"✓ ":""}${TS[k][0]}</button>`).join("")}</div>`;}
-function tripCard(t){const st=tState(t),L=itemsOf(t),w=tripWork(t),on=ui.trip===t.id;
+function tripCard(t,inl){const st=tState(t),L=itemsOf(t),w=tripWork(t),on=inl||ui.trip===t.id;
   const ask=L.filter(i=>!i.dec&&i.auto==="ask"),special=L.filter(i=>!i.dec&&i.auto==="special"),mine=L.filter(i=>i.dec),aw=L.filter(i=>!i.dec&&i.auto==="work"),ap=L.filter(i=>!i.dec&&i.auto==="private");
   const extra=arr(t.steps).filter(s=>!s.tx&&!s.superseded&&!["submit","paid","classify"].includes(s.id));
   const v=tripTot(t),sub=[v?(st==="received"?"הוחזר ":"💭 ")+ils0(v):"",w.ask?w.ask+" לסיווג":""].filter(Boolean).join(" · ");
-  let o=`<div class="trip${special.length?" red":""}" id="tr-${esc(t.id)}"><button class="th" data-trip="${esc(t.id)}"><span class="b"><span class="t">${nameH(t)}</span><span class="s">${esc(sub)}</span></span></button>${calcLine(t)}<div class="tsel">${stateChips(t,st)}</div>`;
+  let o=inl?`<div class="trip inl">${calcLine(t)}`:`<div class="trip${special.length?" red":""}" id="tr-${esc(t.id)}"><button class="th" data-trip="${esc(t.id)}"><span class="b"><span class="t">${nameH(t)}</span><span class="s">${esc(sub)}</span></span></button>${calcLine(t)}<div class="tsel">${stateChips(t,st)}</div>`;
   if(on){o+=`<div class="tb">${t.stand&&!L.length?`<p class="stand">${esc(t.stand)}</p>`:""}`;
     if(st==="submitted")o+=depBox(t);
-    extra.forEach(s=>{o+=`<div class="irow"><span class="b"><span class="t" style="white-space:normal">${esc(s.text)}</span></span><span class="dec" style="width:76px;grid-template-columns:1fr"><button data-step="${esc(s.id)}" data-t="${esc(t.id)}" class="${s.done?"on":""}">${s.done?"✓ טופל":"טופל"}</button></span></div>`;});
+    if(!inl)extra.forEach(s=>{o+=`<div class="irow"><span class="b"><span class="t" style="white-space:normal">${esc(s.text)}</span></span><span class="dec" style="width:76px;grid-template-columns:1fr"><button data-step="${esc(s.id)}" data-t="${esc(t.id)}" class="${s.done?"on":""}">${s.done?"✓ טופל":"טופל"}</button></span></div>`;});
     if(special.length)o+=`<div class="lab" style="color:var(--bad)">🚨 חריג</div>`+special.map(i=>irow(i,t)).join("");
     if(ask.length)o+=`<div class="lab">❓ לסיווג</div>`+ask.map(i=>irow(i,t)).join("");
     o+=fold("סיווגת · לעריכה",mine,t)+fold("להגשה · לבדיקה ושינוי",aw,t)+fold("פרטי · לבדיקה ושינוי",ap,t);
@@ -334,11 +337,12 @@ function tripCard(t){const st=tState(t),L=itemsOf(t),w=tripWork(t),on=ui.trip===
 function depBox(t){const D=arr(meta.deposits);if(!D.length)return "";const used=new Set(topics.filter(x=>x.deposit&&x.deposit.d).map(x=>x.deposit.d+"|"+x.deposit.ils));
   const sd=String((stp(t,"submit")||{}).done_at||"").slice(0,10);const C=D.filter(d=>!used.has(d.d+"|"+d.ils)&&(!sd||d.d>=sd)).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,3);
   if(!C.length)return "";return `<div class="lab">💰 הפקדה מאלביט שמתאימה?</div><div class="dep">${C.map(d=>`<button data-dep="${esc(d.d)}" data-ils="${esc(d.ils)}" data-t="${esc(t.id)}">${esc(fdate(d.d))} · ₪${(+d.ils).toLocaleString("en-US")}</button>`).join("")}</div>`;}
-function carRow(c){const st=c.state,bad=st==="bad"||st==="submitted"||st==="received";
+function carRow(c,inl){const st=c.state,bad=st==="bad"||st==="submitted"||st==="received";
   let o=`<div class="car"><div class="t">${c.hotel?"🏨":"🚗"} ${esc(c.label)} <span style="direction:ltr;display:inline-block">${esc(c.amt)}</span> ${st==="check"?'<span class="pill p-warn">בבירור</span>':""}</div><div class="s">${esc(c.info)}</div>`;
   if(c.todo&&carOpen(c))o+=`<div class="todo">👉 ${esc(c.todo)}</div>`;
   if(c.hold&&!c.hz)o+=`<div class="hold">תפיסת מסגרת, לא חיוב. הכסף לא יצא.</div>`;
   if(c.hz)o+=`<div class="hold">תפיסת מסגרת, לא חיוב. הכסף לא יצא.<details><summary style="cursor:pointer">איך משחררים</summary><ol><li>באפליקציית כאל, בעסקאות בהמתנה: לוודא שזה עדיין ממתין.</li><li>מספר ההזמנה של Hertz במייל מאופקים מ-18.10.</li><li>לבקש מ-Hertz איטליה לשחרר את ה-pre-authorization.</li><li>אין תשובה תוך כמה ימים: להתקשר לכאל ולבקש לבטל.</li><li>הפך לחיוב סופי: לסמן "לא תקין" ולהגיש לאלביט.</li></ol></details></div>`;
+  if(inl)return o+"</div>";
   o+=`<div class="dec c3">${["ok","check","bad"].map(k=>`<button data-cv="${k}" data-tx="${esc(c.tx)}" class="${(k==="bad"?bad:st===k)?"on":""}">${VS[k]}</button>`).join("")}</div>`;
   if(bad)o+=`<div class="dec c3">${[["bad","לא הוגש"],["submitted","הוגש"],["received","התקבל"]].map(([k,l])=>`<button data-cv="${k}" data-tx="${esc(c.tx)}" class="${st===k?"on":""}">${l}</button>`).join("")}</div>`;
   return o+"</div>";}
@@ -347,21 +351,22 @@ function carRow(c){const st=c.state,bad=st==="bad"||st==="submitted"||st==="rece
 function acts(){const R=tripRows(),C=cars(),A=[],K=[],sc=scanRow(),until=x=>((String(x||"").match(/עד\s+(\d{1,2}\.\d{1,2}(?:\.\d{2,4})?)/)||[])[1]||"");
   const stepRow=(row,s,nm)=>({k:"st:"+row.id+":"+s.id,ic:"🔎",t:s.text,s:nm||"",b:"✓ טופל",wait:!!s.wait});
   R.forEach(t=>{const st=tState(t),nm=tLabel(t),v=tripTot(t);
-    if(st==="open")A.push({k:"ts:"+t.id+":scanned",ic:"🧾",t:"לשלוח קבלות לצ׳אט",s:nm,v:v?ils0(v):"",b:"✓ נשלח"});
-    if(st==="scanned")A.push({k:"ts:"+t.id+":submitted",ic:"📤",t:"להגיש באלביט",s:nm+" · הוצאות + אש״ל",v:v?ils0(v):"",b:"✓ הגשתי"});
+    if(st==="open")A.push({d:"t:"+t.id,k:"ts:"+t.id+":scanned",ic:"🧾",t:"לשלוח קבלות לצ׳אט",s:nm,v:v?ils0(v):"",b:"✓ נשלח"});
+    if(st==="scanned")A.push({d:"t:"+t.id,k:"ts:"+t.id+":submitted",ic:"📤",t:"להגיש באלביט",s:nm+" · הוצאות + אש״ל",v:v?ils0(v):"",b:"✓ הגשתי"});
     const ask=0;if(ask)A.push({k:"open:"+t.id,ic:"❓",t:`לסווג ${ask} חיובים: עבודה או פרטי`,s:nm,b:"פתח ›",go:1});
     if(st==="open"||st==="scanned")arr(t.steps).filter(s=>!s.tx&&!s.done&&!s.superseded&&!["scan","submit","paid","classify"].includes(s.id)).forEach(s=>{const r=stepRow(t,s,nm);(r.wait?K:A).push(r);});});
   C.forEach(c=>{const nm=c.label+" "+c.amt,ic=c.hotel?"🏨":"🚗";
-    if(c.state==="bad")A.push({k:"cv:"+c.tx+":submitted",ic:"📤",t:"להגיש לאלביט: "+nm,s:c.info,b:"✓ הגשתי"});
-    else if(!c.state)A.push({k:"cv:"+c.tx+":ok",k2:"cv:"+c.tx+":bad",ic,t:"להכריע: "+nm,s:c.info,b:"✓ תקין",b2:"להגיש"});
-    else if(c.state==="check"&&c.hold)K.push({k:"cv:"+c.tx+":ok",k2:"cv:"+c.tx+":bad",ic:"⏳",t:"תפיסת מסגרת: "+nm,s:"לבדוק בכאל"+(until(c.todo)?" עד "+until(c.todo):"")+" שירד ולא הפך לחיוב",b:"✓ ירד",b2:"הפך לחיוב"});
-    else if(c.state==="check")A.push({k:"cv:"+c.tx+":ok",k2:"cv:"+c.tx+":bad",ic:"🔎",t:"בבירור: "+nm,s:c.todo||c.info,b:"✓ נסגר",b2:"להגיש"});
+    if(c.state==="bad")A.push({d:"c:"+c.tx,k:"cv:"+c.tx+":submitted",ic:"📤",t:"להגיש לאלביט: "+nm,s:c.info,b:"✓ הגשתי"});
+    else if(!c.state)A.push({d:"c:"+c.tx,k:"cv:"+c.tx+":ok",k2:"cv:"+c.tx+":bad",ic,t:"להכריע: "+nm,s:c.info,b:"✓ תקין",b2:"להגיש"});
+    else if(c.state==="check"&&c.hold)K.push({d:"c:"+c.tx,k:"cv:"+c.tx+":ok",k2:"cv:"+c.tx+":bad",ic:"⏳",t:"תפיסת מסגרת: "+nm,s:"לבדוק בכאל"+(until(c.todo)?" עד "+until(c.todo):"")+" שירד ולא הפך לחיוב",b:"✓ ירד",b2:"הפך לחיוב"});
+    else if(c.state==="check")A.push({d:"c:"+c.tx,k:"cv:"+c.tx+":ok",k2:"cv:"+c.tx+":bad",ic:"🔎",t:"בבירור: "+nm,s:c.todo||c.info,b:"✓ נסגר",b2:"להגיש"});
 });
   if(sc)arr(sc.steps).filter(s=>!s.tx&&!s.done&&!s.superseded).forEach(s=>{const r=stepRow(sc,s,"חיוב ישן · לבדוק במחשב העבודה");(r.wait?K:A).push(r);});
   return {A,K};}
 const pend={};
-function acRow(x){return `<div class="ac${pend[x.k]?" ok":""}" data-row="${esc(x.k)}"><span class="ic">${x.ic}</span><span class="b"><span class="t">${esc(x.t)}</span>${x.s?`<span class="s">${esc(x.s)}</span>`:""}</span>${x.v?`<span class="v">${esc(x.v)}</span>`:""}
-  <span class="ab">${x.go?`<button data-act="${esc(x.k)}" class="go2">${esc(x.b)}</button>`:`<button data-act="${esc(x.k)}" class="chk${pend[x.k]?" on":""}" aria-pressed="${pend[x.k]?"true":"false"}"><i>✓</i>${esc(String(x.b).replace(/^✓\s*/,""))}</button>`}${x.k2?`<button data-act="${esc(x.k2)}" class="alt">${esc(x.b2)}</button>`:""}</span></div>`;}
+function xDetail(d){const [ty,id]=[d.slice(0,1),d.slice(2)];if(ty==="t"){const t=topics.find(x=>x.id===id);return t?tripCard(t,1):"";}const c=cars().find(x=>x.tx===id);return c?carRow(c,1):"";}
+function acRow(x){const xo=x.d&&ui.xp===x.d;return `<div class="ac${pend[x.k]?" ok":""}" data-row="${esc(x.k)}"><span class="ic">${x.ic}</span><span class="b"${x.d?` data-xp="${esc(x.d)}"`:""}><span class="t">${esc(x.t)}</span>${x.s||x.d?`<span class="s">${esc(x.s||"")}${x.d?`<span class="xc">${xo?" ▴ פחות":" ▾ פרטים"}</span>`:""}</span>`:""}</span>${x.v?`<span class="v">${esc(x.v)}</span>`:""}
+  <span class="ab">${x.go?`<button data-act="${esc(x.k)}" class="go2">${esc(x.b)}</button>`:`<button data-act="${esc(x.k)}" class="chk${pend[x.k]?" on":""}" aria-pressed="${pend[x.k]?"true":"false"}"><i>✓</i>${esc(String(x.b).replace(/^✓\s*/,""))}</button>`}${x.k2?`<button data-act="${esc(x.k2)}" class="alt">${esc(x.b2)}</button>`:""}</span></div>${xo?`<div class="xd sqgrow">${xDetail(x.d)}</div>`:""}`;}
 function zone(id,title,sub,body,cls){return body?`<details class="zone ${cls||""}" data-zone="${id}"${ui["z_"+id]?" open":""}><summary><span class="n">${title}</span><small>${sub||""}</small></summary><div class="zb">${body}</div></details>`:"";}
 const carAct=c=>!c.state||c.state==="check"||c.state==="bad";
 function elbitView(){const R=tripRows();if(!R.length)return "";
@@ -370,8 +375,7 @@ function elbitView(){const R=tripRows();if(!R.length)return "";
   const wait=cur.reduce((a,t)=>a+tripTot(t),0);
   let o=`<div class="box todo-box"><div class="bh"><span>📌 לעשות עכשיו</span><small>${A.length||""}</small></div>${A.length?A.map(acRow).join(""):'<div class="allok">✓ אין מה לעשות עכשיו</div>'}</div>`;
   if(K.length)o+=`<div class="box know"><div class="bh"><span>💡 חשוב לדעת</span></div>${K.map(acRow).join("")}</div>`;
-  o+=`<div id="sec-trips">`+zone("trips","🧳 נסיעות שעוד לא הוגשו",`${cur.length} · ${ils0(wait)}`,cur.map(tripCard).join(""))+`</div>`;
-  o+=`<div id="sec-cars">`+zone("cars","🚗 חיובים חריגים פתוחים",`${co.length}`,co.length?`<div class="list">${co.map(carRow).join("")}</div>`:"")+`</div>`;
+  // 2.2 (Oren 16.11.2026): every item appears once. Open trips/charges live only in the boxes above (▾ פרטים opens their details in place).
   const arcBody=(arc.length?`<div class="lab">נסיעות</div>`+arc.map(tripCard).join(""):"")+(cd.length?`<div class="lab">חיובים חריגים</div><div class="list">${cd.map(carRow).join("")}</div>`:"");
   o+=zone("done","📦 ארכיון: הוגש וסגור",`${arc.length+cd.length}`,arcBody,"done");
   return o;}
@@ -379,7 +383,7 @@ function doAct(k){const [type,a,b2]=k.split(":");
   if(type==="ts")return setTripState(a,b2);
   if(type==="cv")return setVerdict(a,b2);
   if(type==="st"){const t=topics.find(x=>x.id===a);if(!t)return;const was=arr(t.steps);const S=was.map(s=>s.id===b2?{...s,done:true,done_at:nowIso()}:s);patchTopic(t,{steps:S},"שלב: "+b2);toast("✓ סומן טופל",()=>patchTopic(t,{steps:was},"בוטל"));return;}
-  if(type==="open"){ui.z_trips=true;ui.trip=a;save();holdUntil=0;render();const el=document.getElementById("tr-"+a);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});}}
+  if(type==="open"){ui.xp="t:"+a;save();holdUntil=0;render();}}
 function patchTopic(t,patch,logText){const now=nowIso(),p={...patch,updated_at:now};
   if(logText)p.log=[...arr(t.log),{at:now,text:"דשבורד ההוצאות: "+logText}].slice(-40);
   Object.assign(t,p);render();return db.collection("topics").doc(t.id).update(p).catch(()=>toast("השמירה נכשלה"));}
@@ -434,6 +438,7 @@ async function setSt(ids,st){if(!db)return;const now=new Date().toISOString(),pr
 document.addEventListener("click",e=>{
   const q=(a)=>e.target.closest("["+a+"]");let b;
   if((b=q("data-act"))){const k=b.dataset.act;if(k.startsWith("open:"))return doAct(k);if(!b.classList.contains("chk")){const c=b.closest(".ac")&&b.closest(".ac").querySelector(".chk");if(c)cancelPend(c.dataset.act);return doAct(k);}togglePend(k,b);return;}
+  if((b=q("data-xp"))){const d=b.dataset.xp,top=b.getBoundingClientRect().top;ui.xp=ui.xp===d?null:d;save();render();const nb=document.querySelector(`[data-xp="${CSS.escape(d)}"]`);if(nb){const dy=nb.getBoundingClientRect().top-top;if(dy)window.scrollBy(0,dy);}return;}
   if((b=q("data-trip"))){const id=b.dataset.trip,top=b.getBoundingClientRect().top;ui.trip=ui.trip===id?null:id;save();render();const nb=document.querySelector(`[data-trip="${CSS.escape(id)}"]`);if(nb){const d=nb.getBoundingClientRect().top-top;if(d)window.scrollBy(0,d);}return;}
   if((b=q("data-ts"))){const t=topics.find(x=>x.id===b.dataset.t);if(t){const c=tState(t),k=b.dataset.ts,top=b.getBoundingClientRect().top,sel=`[data-ts="${k}"][data-t="${CSS.escape(t.id)}"]`;pulseSel=sel;setTripState(t.id,c===k?LV[lv(k)-1]:k);
     const nb=document.querySelector(sel);if(nb){const d=nb.getBoundingClientRect().top-top;if(d)window.scrollBy(0,d);}}return;}
