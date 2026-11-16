@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.2";window.SQ_BUILD_AT="16.11.2026 19:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.3";window.SQ_BUILD_AT="16.11.2026 19:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1675,6 +1675,14 @@ main{padding-bottom:90px}
 .dzbtn.has .n{display:inline-block}
 .dzbtn:active{background:rgba(255,255,255,.12)}
 @keyframes dzpulse{0%{box-shadow:0 0 0 0 rgba(111,168,255,.6)}70%{box-shadow:0 0 0 8px rgba(111,168,255,0)}100%{box-shadow:0 0 0 0 rgba(111,168,255,0)}}
+.dz-top{position:relative;display:flex;align-items:center;gap:12px;width:100%;margin:0 0 12px;padding:14px 14px 14px 12px;border:0;border-radius:16px;color:#fff;font:inherit;text-align:start;cursor:pointer;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 3px 12px rgba(0,0,0,.18);-webkit-tap-highlight-color:transparent;animation:dztin .25s ease-out}
+.dz-top .ti{flex:none;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:24px}
+.dz-top .b{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.dz-top .b b{font-size:17px;line-height:1.25}.dz-top .b .s{font-size:13.5px;opacity:.9}
+.dz-top .go{flex:none;font-size:26px;opacity:.8;line-height:1}
+.dz-top .dot{position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:#E5483B;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)}.dz-top .dot.soft{background:#F0A23B}
+.dz-top .nw{position:absolute;top:-4px;right:16px;width:12px;height:12px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;animation:dzblink 1.4s ease-in-out infinite}
+.dz-top:active{filter:brightness(.95)}
+@keyframes dztin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .dz-tile .nw{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dzblink 1.4s ease-in-out infinite}
 @keyframes dzblink{50%{opacity:.4;transform:scale(.8)}}
 .dz-tile.flash{animation:dzflash .55s ease-in-out 4}
@@ -2057,6 +2065,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   <section class="tvzone" id="tvSec" aria-label="אזור הטיולים"></section>
   <section id="tgate" hidden aria-label="שעות סגירה היום"></section>
   <section id="aiTiles" class="ai-only" aria-label="AI Projects"></section>
+  <section id="dzTop" class="tasks-only" hidden aria-label="דשבורד פתוח"></section>
   <section id="mainSec" class="tasks-only"><div id="list"><div class="empty">טוען…</div></div></section>
   <section id="askSec" class="tasks-only" hidden></section>
   <section aria-labelledby="hProj" class="tasks-only ai-only">
@@ -2713,12 +2722,24 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     if((!sec||sec.hidden)&&quest!=="travel"){setQuest("side");setTimeout(go,120);}else go();}
   const DASH_MAX=3, DASH_IDLE=90;
   function dashIdle(d){return !d.archived&&!dashTasks(d).some(isOpen)&&dashActivity(d)&&(Date.now()-dashActivity(d))/86400000>DASH_IDLE;}
-  function renderDash(){const sec=$("dashSec");if(!sec)return;
+  function dzTopOpen(d){return d.absorb&&!d.archived&&!d._deleted&&dashTasks(d).some(t=>isOpen(t)&&t.status!=="paused");}
+  function renderDzTop(){const sec=$("dzTop");if(!sec)return;
+    const L=quest==="fun"||quest==="travel"?[]:dashes.filter(d=>(d.quest||"side")===quest&&dzTopOpen(d)).sort((a,b)=>(a.order||99)-(b.order||99));
+    if(!L.length){sec.hidden=true;sec.replaceChildren();return;}
+    sec.hidden=false;sec.replaceChildren(...L.map(d=>{const o=dashTasks(d).filter(t=>isOpen(t)&&t.status!=="paused"),me=o.filter(t=>t.status==="waiting_me").length,wt=o.length-me;
+      const nw=dashUnseen(d).length;
+      const line=[me?heN(me,"נושא לעשות","נושאים לעשות"):"",wt?heN(wt,"נושא במעקב","נושאים במעקב"):""].filter(Boolean).join(" · ");
+      return h("button",{class:"dz-top",type:"button",style:dashVars(d),"data-dz":d.id,onclick:()=>openDash(d.id),"aria-label":(d.title||"")+": "+line},
+        h("span",{class:"dot"+(me?"":" soft"),"aria-hidden":"true"}),nw?h("span",{class:"nw","aria-hidden":"true"}):null,
+        h("span",{class:"ti","aria-hidden":"true"},d.icon||"📊"),
+        h("span",{class:"b"},h("b",null,d.title||d.short||""),h("span",{class:"s"},line||"פתוח")),
+        h("span",{class:"go","aria-hidden":"true"},"›"));}));}
+  function renderDash(){renderDzTop();const sec=$("dashSec");if(!sec)return;
     if(quest==="travel"){sec.hidden=true;sec.replaceChildren();renderTravel();return;} // travel dashboards live inside their zone
     const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
     updDzBtn();
-    if(!mine.some(d=>!d.archived&&!dashIdle(d))){sec.hidden=true;sec.replaceChildren();return;}
-    const act=mine.filter(d=>!d.archived&&!dashIdle(d)).sort((a,b)=>(dashTasks(b).some(isOpen)?1:0)-(dashTasks(a).some(isOpen)?1:0)||(a.order||99)-(b.order||99));
+    if(!mine.some(d=>!d.archived&&!dashIdle(d)&&!dzTopOpen(d))){sec.hidden=true;sec.replaceChildren();return;}
+    const act=mine.filter(d=>!d.archived&&!dashIdle(d)&&!dzTopOpen(d)).sort((a,b)=>(dashTasks(b).some(isOpen)?1:0)-(dashTasks(a).some(isOpen)?1:0)||(a.order||99)-(b.order||99));
     sec.hidden=false;updDzBtn();
     // 8.3 (Oren 6.11): dashboards sit open at the very bottom of the app; their tasks also show as regular tasks above
     sec.replaceChildren(...[h("div",{class:"dz-head"},h("b",null,"📊 דשבורדים"),h("span",{class:"n"},act.length)),
@@ -3404,12 +3425,16 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   // 8.4 (Oren 6.11): only tasks Oren himself does. Claude's background work (Notion syncs, scheduled checks, tracking) is never a task:
   // background:true or fit.owner "claude" stays out of every quest; Claude opens a new task only when Oren must act, decide or know.
   function isBg(t){return t.background===true||(t.fit&&t.fit.owner==="claude");}
+  // 17.3 (Oren 16.11.2026): a dashboard with `absorb: true` (today: expenses) owns its tasks. They don't show as rows in the
+  // quest list, counters or briefs; the dashboard itself shows as one full-width card on top of its quest while something is open
+  // (red dot), and drops back to the dashboards grid at the bottom when everything is closed.
+  function absorbed(t){if(!t||!t.dash)return false;const d=dashes.find(x=>x.id===t.dash);return !!(d&&d.absorb&&!d.archived&&!d._deleted);}
   // 9.2: recurring task. recur {dow: 0-6 (5 = Friday)}: a done task reopens on its next day (closed before that day's 00:00 = open again)
   function recurOpen(t){if(window.SQGate&&window.SQGate.recurOpen)return window.SQGate.recurOpen(t);const r=t.recur;if(!r||r.dow==null||t.status!=="done")return t;const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()-r.dow+7)%7));
     return new Date(t.done_at||0)<d?{...t,status:"active",done_at:"",next_date:d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}:t;}
-  function splitTopics(){const tq=quest==="fun"?"side":quest;topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t)));funTopics=allTopics.filter(isFun);}
+  function splitTopics(){const tq=quest==="fun"?"side":quest;topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t))&&!(absorbed(t)&&isOpen(t)));funTopics=allTopics.filter(isFun);}
   function renderQnav(){
-    const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)&&!isBg(t)).length;
+    const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)&&!isBg(t)&&!absorbed(t)).length;
     const vis=Object.keys(QUESTS).filter(q=>!qHidden(q));$("qnav").dataset.n=vis.length;
     $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q];return h("button",{class:"qbtn q-"+q,type:"button","data-q":q,"aria-current":q===quest?"true":"false",onclick:()=>setQuest(q)},h("span",{class:"qe","aria-hidden":"true"},Q.e),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }
@@ -4338,7 +4363,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   const updBase=()=>Date.parse(updSeen._base||"")||0;
   // 16.4 (Oren 13.11.2026): "what's new" = only real news, never tasks that were completed, and each quest shows only its own.
   const DONE_ST=["done","promoted","archived"];
-  const newPool=q=>{const qq=q||quest;return allTopics.filter(t=>!t._deleted&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!DONE_ST.includes(t.status)&&!t.merged_into&&(qq==="fun"?isFun(t):!isFun(t)&&questOf(t)===qq));};
+  const newPool=q=>{const qq=q||quest;return allTopics.filter(t=>!t._deleted&&!t.background&&!absorbed(t)&&!(t.fit&&t.fit.owner==="claude")&&!DONE_ST.includes(t.status)&&!t.merged_into&&(qq==="fun"?isFun(t):!isFun(t)&&questOf(t)===qq));};
   function isNewUpd(t){const r=recentOf(t);if(!r||Date.now()-r.ms>72*36e5||r.ms<=updBase())return null;const s=Date.parse(updSeen[t.id]||"")||0;return s<r.ms?r:null;}
   function newCount(){try{return newPool().filter(t=>isNewUpd(t)).length;}catch(e){return 0;}}
   function saveSeen(){const ks=Object.keys(updSeen).filter(k=>k!=="_base");if(ks.length>300)ks.sort((a,b)=>String(updSeen[a]).localeCompare(String(updSeen[b]))).slice(0,ks.length-300).forEach(k=>delete updSeen[k]);
@@ -4447,7 +4472,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   // open, not waiting for others, not snoozed, not a project open-end (AI Projects), not planned for a later day,
   // and a long task only when its date or deadline is within 3 days. Critical always passes.
   const planDay=t=>(t.day_plan&&t.day_plan.date)||t.next_date||"";
-  function bOk(t,iso){if(!isOpen(t)||t.status==="paused"||t.status==="waiting_other"||snoozed(t)||isFun(t)||isBg(t))return false;
+  function bOk(t,iso){if(!isOpen(t)||t.status==="paused"||t.status==="waiting_other"||snoozed(t)||isFun(t)||isBg(t)||absorbed(t))return false;
     if(t.critical===true)return true;
     if(t.quest==="ai"||(t.project&&!t.dash))return false;
     const p=planDay(t);if(p&&iso&&p>iso)return false;
@@ -4912,7 +4937,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderTiles();renderFun();renderDash();},()=>{});
-    db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));renderList();renderDash();},()=>{});
+    db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));splitTopics();renderAll();},()=>{});
     db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
     db.collection("payments").onSnapshot(s=>{payDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("family").onSnapshot(s=>{famDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
