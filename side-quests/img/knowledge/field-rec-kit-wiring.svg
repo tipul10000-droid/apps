@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="960" height="600" fill="#ffffff"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1F2937"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C2410C"/></marker>
+  </defs>
+  <text x="480" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#0F3B66">Field recording kit: wiring</text>
+  <text x="480" y="62" text-anchor="middle" font-size="15" fill="#4B5563">1 mic → XLR → recorder (48V phantom) · USB-C power from power bank · AA lithium backup</text>
+
+  <!-- Mic -->
+  <rect x="30" y="110" width="230" height="150" rx="14" fill="#E3EEF9" stroke="#2E6FB0" stroke-width="2"/>
+  <text x="145" y="138" text-anchor="middle" font-size="17" font-weight="700" fill="#0F3B66">MIC 1: Sennheiser</text>
+  <text x="145" y="158" text-anchor="middle" font-size="17" font-weight="700" fill="#0F3B66">MKH 8020 (omni)</text>
+  <rect x="70" y="175" width="120" height="22" rx="11" fill="#9CA3AF"/>
+  <rect x="190" y="179" width="30" height="14" rx="3" fill="#4B5563"/>
+  <text x="145" y="222" text-anchor="middle" font-size="13" fill="#374151">+48V phantom · max 138 dB SPL</text>
+  <text x="145" y="242" text-anchor="middle" font-size="13" fill="#374151">in shock mount + windscreen/fur</text>
+
+  <!-- optional mic 2 -->
+  <rect x="30" y="300" width="230" height="90" rx="14" fill="#F9FAFB" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="145" y="330" text-anchor="middle" font-size="16" font-weight="700" fill="#6B7280">MIC 2 (recommended)</text>
+  <text x="145" y="352" text-anchor="middle" font-size="13" fill="#6B7280">2nd MKH 8020 or lav mic</text>
+  <text x="145" y="372" text-anchor="middle" font-size="13" fill="#6B7280">(cockpit / cabin / outside)</text>
+
+  <!-- XLR lines -->
+  <line x1="260" y1="186" x2="388" y2="186" stroke="#1F2937" stroke-width="4" marker-end="url(#a)"/>
+  <text x="324" y="156" text-anchor="middle" font-size="13" font-weight="700" fill="#1F2937">XLR 4.5 m</text>
+  <text x="324" y="174" text-anchor="middle" font-size="11.5" fill="#4B5563">F end on mic</text>
+  <path d="M260,345 L330,345 L330,236 L388,236" fill="none" stroke="#9CA3AF" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#a)"/>
+
+  <!-- F3 -->
+  <rect x="390" y="130" width="250" height="250" rx="22" fill="#111827"/>
+  <rect x="440" y="190" width="150" height="95" rx="8" fill="#374151" stroke="#6B7280"/>
+  <text x="515" y="232" text-anchor="middle" font-size="22" font-weight="800" fill="#F9FAFB">ZOOM F3</text>
+  <text x="515" y="258" text-anchor="middle" font-size="13" fill="#D1D5DB">32-bit float · 2 tracks</text>
+  <text x="407" y="182" font-size="13" font-weight="700" fill="#FDE68A">IN 1</text>
+  <text x="407" y="242" font-size="13" font-weight="700" fill="#D1D5DB">IN 2</text>
+  <rect x="440" y="300" width="150" height="26" rx="6" fill="#B45309"/>
+  <text x="515" y="318" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">PHANTOM: +48V ON</text>
+  <text x="515" y="352" text-anchor="middle" font-size="12" fill="#D1D5DB">HOLD switch ON after REC</text>
+  <text x="515" y="370" text-anchor="middle" font-size="12" fill="#9CA3AF">rear: 1/4" tripod thread</text>
+  <text x="515" y="160" text-anchor="middle" font-size="12" fill="#D1D5DB">inside: 2× AA lithium (backup)</text>
+
+  <!-- SD -->
+  <rect x="700" y="120" width="230" height="80" rx="14" fill="#FEF3C7" stroke="#B45309" stroke-width="2"/>
+  <text x="815" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="#78350F">microSD 64 GB</text>
+  <text x="815" y="174" text-anchor="middle" font-size="13" fill="#78350F">≈46 h @48k stereo · ≈92 h mono</text>
+  <line x1="640" y1="170" x2="698" y2="160" stroke="#B45309" stroke-width="3" marker-end="url(#g)"/>
+
+  <!-- Power bank -->
+  <rect x="700" y="230" width="230" height="100" rx="14" fill="#ECFDF5" stroke="#15803D" stroke-width="2"/>
+  <text x="815" y="262" text-anchor="middle" font-size="16" font-weight="700" fill="#14532D">Power bank 10,000 mAh</text>
+  <text x="815" y="284" text-anchor="middle" font-size="13" fill="#14532D">USB-C → F3 USB-C (5 V)</text>
+  <text x="815" y="304" text-anchor="middle" font-size="13" fill="#14532D">many hours (test before flight)</text>
+  <line x1="698" y1="280" x2="642" y2="280" stroke="#15803D" stroke-width="4" marker-end="url(#a)"/>
+
+  <!-- Headphones -->
+  <rect x="390" y="440" width="250" height="90" rx="14" fill="#F3F4F6" stroke="#374151" stroke-width="2"/>
+  <text x="515" y="472" text-anchor="middle" font-size="16" font-weight="700" fill="#111827">Headphones ATH-M20x</text>
+  <text x="515" y="494" text-anchor="middle" font-size="13" fill="#374151">3.5 mm PHONE out · monitoring only</text>
+  <text x="515" y="514" text-anchor="middle" font-size="13" fill="#374151">(on ground, before the flight)</text>
+  <line x1="515" y1="382" x2="515" y2="436" stroke="#1F2937" stroke-width="3" marker-end="url(#a)"/>
+
+  <!-- Phone app -->
+  <rect x="700" y="440" width="230" height="90" rx="14" fill="#F9FAFB" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="815" y="472" text-anchor="middle" font-size="15" font-weight="700" fill="#6B7280">Phone app (optional)</text>
+  <text x="815" y="494" text-anchor="middle" font-size="13" fill="#6B7280">Zoom BTA-1 adapter →</text>
+  <text x="815" y="514" text-anchor="middle" font-size="13" fill="#6B7280">levels, start/stop by Bluetooth</text>
+  <line x1="698" y1="470" x2="644" y2="360" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="6 5"/>
+
+  <!-- Mount -->
+  <rect x="30" y="440" width="320" height="90" rx="14" fill="#FFF7ED" stroke="#C2410C" stroke-width="2"/>
+  <text x="190" y="472" text-anchor="middle" font-size="16" font-weight="700" fill="#7C2D12">In flight: everything strapped</text>
+  <text x="190" y="494" text-anchor="middle" font-size="13" fill="#7C2D12">recorder + power bank in a small hard case</text>
+  <text x="190" y="514" text-anchor="middle" font-size="13" fill="#7C2D12">mic on clamp/arm · cables taped · no loose items</text>
+
+  <text x="480" y="580" text-anchor="middle" font-size="12" fill="#6B7280">Solid = in the kit · dashed = recommended add-on</text>
+</svg>
