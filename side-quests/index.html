@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.4";window.SQ_BUILD_AT="16.11.2026 19:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.5";window.SQ_BUILD_AT="16.11.2026 21:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -718,23 +718,23 @@ html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 .tb.tloc.on svg circle{fill:currentColor}
 .tb.tloc.busy svg{animation:locp 1s ease-in-out infinite}
 @keyframes locp{50%{opacity:.35}}
-:is(#locM,#gmM) .sqpanel{height:calc(70vh / var(--tz,1));max-height:none;display:flex;flex-direction:column;padding:0}
-@supports (height:1dvh){:is(#locM,#gmM) .sqpanel{height:calc(70dvh / var(--tz,1))}}
-:is(#locM,#gmM) .lhd{display:flex;align-items:center;gap:8px;padding:14px 16px 8px;flex:none}
-:is(#locM,#gmM) .lbody{flex:1;overflow:auto;padding:0 16px 8px}
-:is(#locM,#gmM) .lnow{font-size:16px;font-weight:700;margin:2px 0 10px}
-:is(#locM,#gmM) .lnow small{display:block;font-weight:500;color:var(--muted);font-size:13px}
-:is(#locM,#gmM) .lfr{border:1px solid var(--line,rgba(0,0,0,.14));border-radius:14px;overflow:hidden;margin:6px 0 12px;animation:sqgrow .22s ease-out}
-:is(#locM,#gmM) .lfr>*{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:11px 12px;border:0;border-top:1px solid var(--line,rgba(0,0,0,.12));background:none;color:inherit;font:inherit}
-:is(#locM,#gmM) .lfr>*:first-child{border-top:0}
-:is(#locM,#gmM) .lfr .lt{flex:1;min-width:0}
-:is(#locM,#gmM) .lfr .lt b{display:block;font-size:15px}
-:is(#locM,#gmM) .lfr .lt small{display:block;color:var(--muted);font-size:13px}
-:is(#locM,#gmM) .lfr .lk{flex:none;font-size:12.5px;color:var(--muted);font-weight:700}
-:is(#locM,#gmM) .lh{font-weight:800;font-size:14px;margin:12px 0 0}
-:is(#locM,#gmM) .lft{flex:none;display:flex;border-top:1px solid var(--line,rgba(0,0,0,.14));padding-bottom:env(safe-area-inset-bottom,0px)}
-:is(#locM,#gmM) .lft button{flex:1;min-height:52px;font-weight:700;font-size:15px;background:none;border:0;color:inherit}
-:is(#locM,#gmM) .lft button+button{border-inline-start:1px solid var(--line,rgba(0,0,0,.14))}
+:is(#locM,#gmM,#tpM) .sqpanel{height:calc(70vh / var(--tz,1));max-height:none;display:flex;flex-direction:column;padding:0}
+@supports (height:1dvh){:is(#locM,#gmM,#tpM) .sqpanel{height:calc(70dvh / var(--tz,1))}}
+:is(#locM,#gmM,#tpM) .lhd{display:flex;align-items:center;gap:8px;padding:14px 16px 8px;flex:none}
+:is(#locM,#gmM,#tpM) .lbody{flex:1;overflow:auto;padding:0 16px 8px}
+:is(#locM,#gmM,#tpM) .lnow{font-size:16px;font-weight:700;margin:2px 0 10px}
+:is(#locM,#gmM,#tpM) .lnow small{display:block;font-weight:500;color:var(--muted);font-size:13px}
+:is(#locM,#gmM,#tpM) .lfr{border:1px solid var(--line,rgba(0,0,0,.14));border-radius:14px;overflow:hidden;margin:6px 0 12px;animation:sqgrow .22s ease-out}
+:is(#locM,#gmM,#tpM) .lfr>*{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:11px 12px;border:0;border-top:1px solid var(--line,rgba(0,0,0,.12));background:none;color:inherit;font:inherit}
+:is(#locM,#gmM,#tpM) .lfr>*:first-child{border-top:0}
+:is(#locM,#gmM,#tpM) .lfr .lt{flex:1;min-width:0}
+:is(#locM,#gmM,#tpM) .lfr .lt b{display:block;font-size:15px}
+:is(#locM,#gmM,#tpM) .lfr .lt small{display:block;color:var(--muted);font-size:13px}
+:is(#locM,#gmM,#tpM) .lfr .lk{flex:none;font-size:12.5px;color:var(--muted);font-weight:700}
+:is(#locM,#gmM,#tpM) .lh{font-weight:800;font-size:14px;margin:12px 0 0}
+:is(#locM,#gmM,#tpM) .lft{flex:none;display:flex;border-top:1px solid var(--line,rgba(0,0,0,.14));padding-bottom:env(safe-area-inset-bottom,0px)}
+:is(#locM,#gmM,#tpM) .lft button{flex:1;min-height:52px;font-weight:700;font-size:15px;background:none;border:0;color:inherit}
+:is(#locM,#gmM,#tpM) .lft button+button{border-inline-start:1px solid var(--line,rgba(0,0,0,.14))}
 @keyframes sqgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 /* 14.4 (Oren 10.11.2026): Gmail on demand + "what changed lately" */
 .topbtns .tb.tgm svg.gmic{width:22px!important;height:22px!important}
@@ -1983,6 +1983,47 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   .ptile:hover,.dz-tile:hover{filter:brightness(1.04)}
   .pgback:hover{opacity:.85}
 }
+/* 17.5 (Oren 16.11.2026): five categories with a small colored icon, the window and its folded "next", 🔔 updates */
+.cat-ic{flex:none;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--cc);color:#fff;font-style:normal;font-size:12.5px;font-weight:800;line-height:1;font-family:system-ui,-apple-system,sans-serif}
+.fold .ft{display:flex;align-items:center;gap:8px}
+.wc-head .cat-ic{align-self:center}
+.wcard.nxf{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;gap:0}
+.wcard.nxf>summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:52px;margin:0;padding:0 14px;cursor:pointer}
+.wcard.nxf>summary::-webkit-details-marker{display:none}
+.wcard.nxf>summary b{font-size:17px}
+.wcard.nxf>summary small{margin-inline-start:auto}
+.wcard.nxf .fc{color:var(--muted);opacity:.45;font-size:22px;line-height:1;transition:transform .2s}
+.wcard.nxf[open]>summary .fc{transform:rotate(-90deg)}
+.wcard.nxf[open]>summary{border-bottom:1px solid var(--line)}
+.wcard.nxf .nxb{padding:8px;animation:nxin .22s ease-out}
+.wcard.nxf .nxb .wc-empty{border:0;padding:10px}
+@keyframes nxin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.r-roll{flex:none;font-style:normal;color:#8B5CF6;font-weight:800;font-size:15px}
+.ctxrow .wseg{grid-template-columns:1.1fr 1fr 1fr!important}
+.ctxrow .toolrow .refr{width:auto!important;min-width:0;flex:1 1 auto;overflow:hidden}
+.ctxrow .toolrow .refr .rv:not(:empty)::before{content:""}
+.ctxrow .toolrow .dzbtn{width:108px;padding:0 6px;gap:4px}
+.ctxrow .toolrow .updbtn{margin-inline-start:auto}
+.ctxrow .toolrow .updbtn+.dzbtn{margin-inline-start:6px}
+.updbtn[aria-pressed="true"]{background:#fff!important;color:#111!important;border-color:#fff!important}
+.uplist{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.fold .uplist{border:0;border-radius:0}
+.uprow{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;padding:8px 14px;border:0;background:transparent;color:var(--ink);font:inherit;text-align:start;cursor:pointer}
+.uprow+.uprow,.up-day+.uprow{border-top:1px solid var(--line)}
+.uprow .up-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.uprow .up-t b{font-size:15.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.uprow .up-t small{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uprow.past .up-t b{font-weight:500}
+.uprow:active{background:var(--line)}
+.up-day{padding:10px 14px 4px;font-size:13px;font-weight:700;color:var(--muted);border-top:1px solid var(--line)}
+.up-day:first-child{border-top:0}
+.d-line{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.d-story{align-self:flex-start;border:0;background:transparent;color:var(--accent);font:inherit;font-size:14.5px;font-weight:700;padding:2px 0;cursor:pointer}
+.tpage .lbody{display:flex;flex-direction:column;gap:12px;padding:4px 16px 12px;overflow:auto}
+.tpage .tp-sec b{display:block;font-size:13px;color:var(--muted);margin-bottom:3px}
+.tpage .tp-sec p{margin:0;font-size:15.5px;line-height:1.55;white-space:pre-wrap}
+.tpage .f-log div{font-size:14px;line-height:1.5;padding:4px 0;border-top:1px solid var(--line)}
+.tpage .f-log b{margin-inline-end:6px}
 </style>
 </head>
 <body>
@@ -2062,7 +2103,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
+    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
@@ -3103,8 +3144,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     if(side){
       // 17.4 (Oren 16.11): after a manual pick the menu folds back to the normal bar; the "בחירה" segment then shows the chosen window
       const pk=eff==="pick"&&!pickOpen&&w.manual&&W?[h("span",{class:"pk-e","aria-hidden":"true"},W.e),h("span",{class:"pk-l"},W.l)]:"בחירה";
-      const nc=newCount();
-      kids.push(h("div",{class:"wseg w4",role:"group","aria-label":"חלון זמן"},seg("auto",[h("span",{class:"ai-ic","aria-hidden":"true",html:AI_SPARK}),"אוטומטי"]),seg("pick",pk,{class:"pk","aria-expanded":eff==="pick"&&pickOpen?"true":"false"}),seg("off","בלי חלונות זמן"),seg("new",["חדש",h("b",{class:"wn"+(nc?"":" z"),"aria-label":"לא נקראו"},String(nc||0))],{class:"nw"+(nc&&eff!=="new"?" has":""),"aria-label":nc?"יש "+nc+" עדכונים חדשים":"חדש"})));
+      kids.push(h("div",{class:"wseg",role:"group","aria-label":"חלון"},seg("auto",[h("span",{class:"ai-ic","aria-hidden":"true",html:AI_SPARK}),"אוטומטי"]),seg("pick",pk,{class:"pk","aria-expanded":eff==="pick"&&pickOpen?"true":"false"}),seg("off","בלי חלון"))); // 17.5: "חדש" moved to the 🔔 עדכונים button
       if(eff==="pick"&&pickOpen){
         const trio=winTrio(),ids=trio.map(x=>x[1]);
         const chip=(id,t)=>h("button",{type:"button",class:"wchip","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;setWin(id);wMode="pick";}},
@@ -3160,6 +3200,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
       h("div",{class:"r-body",role:"button",tabindex:"0","aria-expanded":isO?"true":"false",onclick:()=>toggle(t.id),onkeydown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(t.id);}}},
         isUrgent(t)?h("span",{class:"r-urg","aria-label":"דחוף"},"!"):null,
         isNewUpd(t)?h("i",{class:"r-new","aria-label":"התעדכן"}):null,
+        t.rolling&&open&&!snoozed(t)?h("i",{class:"r-roll","aria-label":"מתגלגלת"},"↻"):null,
         rx&&rx.upd?h("span",{class:"r-tw"},h("span",{class:"r-title"},open&&!asleep(t)?dlTag(t):null,t.title||"(ללא כותרת)"),h("small",{class:"r-upd"},updLine(rx.upd))):h("span",{class:"r-title"},open&&!asleep(t)?dlTag(t):null,t.title||"(ללא כותרת)"),
         chip,h("span",{class:"r-chev","aria-hidden":"true"},"‹")));
     if(!isO&&laterFor==="r:"+t.id){const m=laterMenu(t,"r:"+t.id);m.classList.add("r-later");el.append(m);}
@@ -3233,6 +3274,13 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
         const b=e.currentTarget,box=b.nextElementSibling;if(stepsDoneOpen.has(t.id)){stepsDoneOpen.delete(t.id);b.setAttribute("aria-expanded","false");box.hidden=true;}
         else{stepsDoneOpen.add(t.id);b.setAttribute("aria-expanded","true");box.hidden=false;}}},"✓ בוצעו",h("span",{class:"s-n"},G.done.length),h("span",{class:"s-c","aria-hidden":"true"},"‹")):null,
       G.done.length?h("div",{class:"s-done",hidden:dOpen?null:""},G.done.map(s=>stepRow(t,s))):null);}
+  // 17.5 (Oren 16.11.2026): a task is a line, at most 2-3 short lines inside. Anything longer lives on its own small page.
+  function longTask(t){const L=[t.summary,t.stand,t.next_step,t.waiting_for].map(x=>String(x||"")).reduce((a,x)=>a+x.length,0);return L>180||(Array.isArray(t.log)&&t.log.length>4);}
+  function taskPage(t){const sec=(l,v)=>v?h("div",{class:"tp-sec"},h("b",null,l),h("p",null,String(v))):null;const log=Array.isArray(t.log)?[...t.log].reverse():[];
+    modal("tpM",h("div",{class:"lhd"},h("h2",null,t.title||"משימה",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),
+      h("div",{class:"lbody"},sec("איפה זה עומד",t.stand),sec("הצעד הבא",t.next_step),t.status==="waiting_other"?sec("מחכה ל",t.waiting_for):null,sec("תקציר",t.summary),
+        log.length?h("div",{class:"tp-sec"},h("b",null,"היסטוריה"),h("div",{class:"f-log"},log.map(e=>h("div",null,h("b",null,fmtDate((e.at||"").slice(0,10))),e.text||"")))):null),
+      h("div",{class:"lft"},h("button",{type:"button",onclick:closeModal},"✓ סגור")));}
   function drawer(t){
     const st=stepsOf(t),qs=questionsOf(t),offs=offersOf(t),open=isOpen(t);
     const dd=t.dash&&dashById(t.dash),pr=t.project&&projById(t.project);
@@ -3249,6 +3297,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     const near=open?sameArea(t):[],ga=geoOf(t).area;
     return h("div",{class:"drawer"},
       line?h("p",{class:"d-line"},line):null,
+      longTask(t)?h("button",{class:"d-story",type:"button",onclick:()=>taskPage(t)},"📄 כל הפרטים ›"):null,
       near.length?h("p",{class:"d-near"},"📍 כבר ב"+ga.replace(/^ב/,"")+"? גם: "+near.map(x=>x.title).join(" · ")):null,
       st.length?stepList(t,st):null,
       ...qs.filter(q=>!q.answer).map(q=>questionCard(t,q,false)),
@@ -3266,7 +3315,8 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
         fitL?h("div",{class:"f-row"},h("span",{class:"f-l"},"מתאים"),h("span",null,fitL)):null,
         t.summary?h("div",{class:"f-row"},h("span",{class:"f-l"},"תקציר"),h("span",null,t.summary)):null,
         canWrite?segRow("סוג",Object.keys(SIZES).map(z=>h("button",{type:"button","aria-pressed":sizeOf(t)===z?"true":"false",onclick:()=>patch(t,{size:z},"עבר ל"+SIZES[z].g.slice(2))},SIZES[z].e+" "+SIZES[z].l))):null,
-        canWrite?segRow("מצב",["active","waiting_other","paused"].map(s=>h("button",{type:"button","aria-pressed":(t.status==="waiting_me"?"active":t.status)===s?"true":"false",onclick:()=>patch(t,{status:s})},s==="active"?"פתוחה":s==="waiting_other"?"מחכה":"הקפאה"))):null,
+        canWrite?segRow("קטגוריה",["task","roll","wait","dorm"].map(k=>{const cur=t.status==="waiting_other"?"wait":t.status==="paused"?"dorm":t.rolling?"roll":"task";
+          return h("button",{type:"button","aria-pressed":cur===k?"true":"false",onclick:()=>patch(t,k==="task"?{status:"active",rolling:false}:k==="roll"?{status:"active",rolling:true}:k==="wait"?{status:"waiting_other"}:{status:"paused"},CATS[k].g+" "+CATS[k].l)},CATS[k].l.replace("ממתין לאחרים","ממתין"));})):null,
         canWrite?h("div",{class:"f-row"},h("span",{class:"f-l"},"תאריך"),h("input",{id:"dt-"+t.id,type:"date",value:t.next_date||"","aria-label":"תאריך",onchange:e=>patch(t,{next_date:e.target.value||""},"התאריך עודכן")})):null,
         canWrite?levelRow(t):null,
         canWrite?h("div",{class:"f-row"},h("span",{class:"f-l"},"קישור"),linkInp,h("button",{class:"f-btn",type:"button",onclick:addLink},"הוסף")):null,
@@ -3357,76 +3407,67 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
       const g=!cur.manual&&WIN_GROUP[cur.id];
       for(let j=start;j<L.length;j++){const id=L[j][1];if(id===cur.id||!WINS[id].acc.length||(g&&WIN_GROUP[id]===g))continue;return {id,k,m:L[j][0],at:(k?"מחר ":"")+"מ-"+hhmm(L[j][0])};}}
     return null;}
-  function winCard(W,tag,L,empty,next){const S=winSections(L);
-    return h("div",{class:"wcard"+(next?" next":"")},
-      h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},W.e),h("b",null,W.l),tag?h("small",null,tag):null),
-      L.length?(S.length>1?S.map(x=>h("div",{class:"wc-part"},h("div",{class:"wc-sec"},x.t),h("div",{class:"glist"},x.items.map(row)))):h("div",{class:"glist"},L.map(row))):h("div",{class:"wc-empty"},empty));}
-  // 10.2: one card for a run of windows (the weekend). Header adapts to the day and the run's end; inside, a part for each
-  // window in it that has tasks, the current one first (no title if it is the only part). Returns {el, L} (L = its tasks).
-  function runCard(run,cur,pool,urg,next,startLbl){const G=GROUP_WIN[run.g],seen=new Set(),parts=[],L=[];
-    for(const sg of run.segs){if(seen.has(sg.id))continue;seen.add(sg.id);const W=WINS[sg.id];
-      const sort=(a,b)=>(isOwn(b)-isOwn(a))||(returned(b)-returned(a))||byDate(a,b)||(minsOf(a)-minsOf(b));
-      const at={d:(ilNow().d+sg.k)%7,s:sg.s,e:sg.e};
-      const it=[...urg.filter(t=>!L.includes(t)&&fitsWin(t,sg.id,at)),...pool.filter(t=>!L.includes(t)&&fitsWin(t,sg.id,at)).sort(sort)];
-      L.push(...it);const now=!next&&sg.k===0&&sg.s<=ilNow().m;
-      parts.push({now,it,t:W.e+" "+(now?"עכשיו":W.l+" · "+atLbl(sg.k,sg.s)+"-"+hhmm(sg.e))+" · "+(W.ss||W.sub)});}
-    const P=parts.filter(x=>x.it.length);const d6=(ilNow().d+(run.segs[0]?run.segs[0].k:0))%7===6;
-    const tag=(next?"הבא · "+startLbl+" ":"")+(run.end?"עד "+atLbl(run.end.k,run.end.m,true):"");
-    const el=h("div",{class:"wcard"+(next?" next":"")},
-      h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},G.e),h("b",null,d6&&G.l6?G.l6:G.l),tag?h("small",null,tag):null),
-      !P.length?h("div",{class:"wc-empty"},next?"אין משימות לחלון הזמן הבא":"אין משימות רלוונטיות עכשיו"):
-      P.length===1&&P[0].now?h("div",{class:"glist"},P[0].it.map(row)):
-      P.map(x=>h("div",{class:"wc-part"},h("div",{class:"wc-sec"},x.t),h("div",{class:"glist"},x.it.map(row)))));
-    return {el,L};}
-  function renderList(){deskShown=null;if(deskOn){const L=document.querySelector("#dtop .dlogo"),Q=QUESTS[quest]||QUESTS.side;if(L)L.replaceChildren((Q.a||"").toUpperCase()+" ",h("i",{},(Q.b||"").toUpperCase()));}renderMain();renderStrip();renderDash();if(nav.lvl>=2)renderNav();if(nav.dash&&!dashPg.frame)renderDashPg();deskEmpty();}
+  // ===== 17.5 (Oren 16.11.2026): five categories and one window =====
+  // Every task is in exactly one category, each with a small colored icon:
+  //   task (≡ משימות, the main one, filtered by the window), roll (↻ מתגלגלות: rolling/ongoing, `rolling: true`, shown in the
+  //   window when it fits), wait (… ממתין לאחרים: status waiting_other; a reply from outside (upd since this visit) brings it
+  //   back to משימות by itself), dorm (z רדומות: paused, sleeping until a date, or snoozed; wakes up as a task), done (✓ בוצעו).
+  // The main screen shows only the tasks of the current window (time + place + means), urgent first, then new (blue dot),
+  // then the rest; the next window sits folded under it (opens by itself when it is close, e.g. from 20:00 tomorrow morning).
+  // Everything else is folded by category. No sub-groups inside the window.
+  const CATS={task:{g:"≡",l:"משימות",c:"#2F7BEA"},roll:{g:"↻",l:"מתגלגלות",c:"#8B5CF6"},wait:{g:"…",l:"ממתין לאחרים",c:"#E39B17"},dorm:{g:"z",l:"רדומות",c:"#7C8798"},done:{g:"✓",l:"בוצעו",c:"#22A35A"}};
+  function catIc(k){const C=CATS[k];return h("i",{class:"cat-ic",style:"--cc:"+C.c,"aria-hidden":"true"},C.g);}
+  function catT(k,l){return [catIc(k),h("span",null,l||CATS[k].l)];}
+  function waitBack(t){if(t.status!=="waiting_other")return false;const r=freshOf(t);return !!r&&r.src!=="own"&&r.ms>visitBase;}
+  function catOf(t){if(t.status==="done"||t.status==="promoted")return "done";if(!isOpen(t))return "arch";
+    if(t.status==="waiting_other")return waitBack(t)?"task":"wait";
+    if(t.status==="paused"||snoozed(t))return "dorm";
+    return t.rolling?"roll":"task";}
+  // order inside a window: urgent, new since the last visit, then the rest (home → calls → out by area, no headers), rolling last
+  function orderL(L){const u=L.filter(isUrgent).sort((a,b)=>(sizeOf(a)==="quick"?0:1)-(sizeOf(b)==="quick"?0:1));
+    const n=L.filter(t=>!u.includes(t)&&isFresh(t)).sort((a,b)=>freshOf(b).ms-freshOf(a).ms);
+    const r=L.filter(t=>!u.includes(t)&&!n.includes(t)),ord=(a,b)=>(isOwn(b)-isOwn(a))||(returned(b)-returned(a))||byDate(a,b)||(minsOf(a)-minsOf(b));
+    const rt=r.filter(t=>!t.rolling).sort(ord),rr=r.filter(t=>t.rolling).sort(ord);
+    return [...u,...n,...winSections(rt).flatMap(s=>s.items),...rr];}
+  function runItems(run,pool){const L=[],seen=new Set();for(const sg of run.segs){if(seen.has(sg.id))continue;seen.add(sg.id);
+    const at={d:(ilNow().d+sg.k)%7,s:sg.s,e:sg.e};L.push(...pool.filter(t=>!L.includes(t)&&fitsWin(t,sg.id,at)));}return L;}
+  function winBox(e,l,tag,L,empty,o){o=o||{};const list=L.length?h("div",{class:"glist"},orderL(L).map(row)):h("div",{class:"wc-empty"},empty);
+    if(!o.next)return h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},e),h("b",null,l),tag?h("small",null,tag):null),list);
+    const k=quest+":nx:"+o.key,op=folded[k]!=null?folded[k]===true:!!o.auto||L.some(t=>t.id===openId);
+    const d=h("details",{class:"wcard next nxf",open:op?"":null},h("summary",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},e),h("b",null,l),h("small",null,tag,L.length?" · "+L.length:""),h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"nxb"},list));
+    d.addEventListener("toggle",()=>{folded[k]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
+  function renderList(){deskShown=null;if(deskOn){const L=document.querySelector("#dtop .dlogo"),Q=QUESTS[quest]||QUESTS.side;if(L)L.replaceChildren((Q.a||"").toUpperCase()+" ",h("i",{},(Q.b||"").toUpperCase()));}renderMain();renderStrip();renderDash();if(nav.lvl>=2)renderNav();if(nav.dash&&!dashPg.frame)renderDashPg();deskEmpty();updUpdBtn();}
   function renderMain(){
-    const allK=topics.filter(isOpen).filter(t=>!inStrip(t)).sort(byDate);
-    const side=WQ.includes(quest),w=curWin(),winOn=side&&(wMode!=="off"&&wMode!=="new"||w.manual);
-    if(side&&wMode==="new"&&!w.manual){renderNew();return;}
-    const urgAll=allK.filter(t=>isUrgent(t)&&!snoozed(t)).sort((a,b)=>(sizeOf(a)==="quick"?0:1)-(sizeOf(b)==="quick"?0:1));
-    const rest=allK.filter(t=>!urgAll.includes(t)),later=rest.filter(t=>snoozed(t)&&!asleep(t)),open=rest.filter(t=>!snoozed(t));
-    const dorm=rest.filter(asleep).sort((a,b)=>String(a.sleep_until).localeCompare(String(b.sleep_until)));
-    const waiting=open.filter(t=>t.status==="waiting_other"),paused=open.filter(t=>t.status==="paused");
-    const live=open.filter(t=>t.status!=="waiting_other"&&t.status!=="paused");
-    const ord=(a,b)=>(returned(b)-returned(a))||byDate(a,b);
-    const away=mode==="work"||mode==="abroad";
-    const bySize=(L,pre)=>{const q=L.filter(t=>sizeOf(t)==="quick"||isOwn(t)&&sizeOf(t)!=="long").sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)),tr=L.filter(t=>!q.includes(t)&&sizeOf(t)==="trip").sort(ord),lo=L.filter(t=>!q.includes(t)&&!tr.includes(t)).sort(ord);return [q,tr,lo];};
-    const top=[],more=[];
+    if(updOn){renderUpd();return;}
+    const side=WQ.includes(quest),w=curWin(),winOn=side&&(wMode!=="off"||w.manual);
+    const C={task:[],roll:[],wait:[],dorm:[],done:[]};for(const t of topics){if(inStrip(t))continue;const k=catOf(t);if(C[k])C[k].push(t);}
+    const act=[...C.task,...C.roll],top=[],more=[];let L=[],NL=[];
     if(winOn){
       const W=WINS[w.id];const pc=quest==="side"&&planCard(planAsk());if(pc)top.push(pc);
       const unprof=t=>isOwn(t)&&!howOf(t).length; // typed by Oren and not profiled yet: show it now, Claude profiles it within the hour
-      const uIn=urgAll.filter(t=>fitsWin(t,w.id)||unprof(t));
-      const fit=W.acc.length?live.filter(t=>fitsWin(t,w.id)||unprof(t)).sort((a,b)=>(isOwn(b)-isOwn(a))||ord(a,b)||(minsOf(a)-minsOf(b))):[];
-      let L=[...uIn,...fit];
       const run=!w.manual&&winRun(w.id,0,ilNow().m);
-      if(run){const c=runCard(run,w,live.filter(t=>!uIn.includes(t)),urgAll,false);L=c.L;top.push(c.el);}
-      else top.push(winCard(W,w.end?"עד "+w.end:"",L,W.acc.length?"אין משימות רלוונטיות עכשיו":"זמן חסום. רק דחוף"));
-      // 8.3 (Oren 6.11): and what comes next (e.g. Friday 07:30 home morning → Friday errands from 08:00)
-      const nx=nextWin(w),NW=nx&&WINS[nx.id];
-      const nAt=nx&&{d:(ilNow().d+nx.k)%7,s:nx.m,e:((winSpans(nx.id,(ilNow().d+nx.k)%7).find(x=>x[0]===nx.m)||[])[1])};
-      const nU=nx?urgAll.filter(t=>!L.includes(t)&&fitsWin(t,nx.id,nAt)):[],nF=nx?live.filter(t=>!L.includes(t)&&fitsWin(t,nx.id,nAt)).sort((a,b)=>ord(a,b)||(minsOf(a)-minsOf(b))):[];
-      let NL=[...nU,...nF];
-      const nrun=nx&&winRun(nx.id,nx.k,nx.m);
-      if(nrun){const c=runCard(nrun,null,live.filter(t=>!L.includes(t)),urgAll.filter(t=>!L.includes(t)),true,nx.at);NL=c.L;top.push(c.el);}
-      else if(nx){ordIso=addDays(ilDate(),nx.k);try{top.push(winCard(NW,"הבא · "+nx.at,NL,"אין משימות לחלון הזמן הבא",true));}finally{ordIso=null;}}
-      const uOut=urgAll.filter(t=>!L.includes(t)&&!NL.includes(t));
-      if(uOut.length)top.push(foldRows("uout","❗ דחוף לחלון זמן אחר",uOut,{hot:true}));
-      const others=live.filter(t=>!L.includes(t)&&!NL.includes(t));
-      if(others.length){const [q,tr,lo]=bySize(others);
-        more.push(foldBox("rest","כל שאר המשימות",others.length,[group(SIZES.quick.g,q),group(SIZES.trip.g,tr),group(SIZES.long.g,lo)].filter(Boolean),{force:others.some(t=>t.id===openId)}));}
+      if(run){const G=GROUP_WIN[run.g],d6=(ilNow().d+(run.segs[0]?run.segs[0].k:0))%7===6;L=runItems(run,act);
+        top.push(winBox(G.e,d6&&G.l6?G.l6:G.l,run.end?"עד "+atLbl(run.end.k,run.end.m,true):"",L,"אין משימות רלוונטיות עכשיו"));}
+      else{L=W.acc.length?act.filter(t=>fitsWin(t,w.id)||unprof(t)):[];top.push(winBox(W.e,W.l,w.end?"עד "+w.end:"",L,W.acc.length?"אין משימות רלוונטיות עכשיו":"זמן חסום"));}
+      // the next window: folded, opens by itself when it is close (from 20:00 it is tomorrow morning, or it starts within 45 minutes)
+      const nx=nextWin(w);
+      if(nx){const NW=WINS[nx.id],nm=ilNow().m,nAt={d:(ilNow().d+nx.k)%7,s:nx.m,e:((winSpans(nx.id,(ilNow().d+nx.k)%7).find(x=>x[0]===nx.m)||[])[1])};
+        const pool=act.filter(t=>!L.includes(t)),nrun=winRun(nx.id,nx.k,nx.m);
+        NL=nrun?runItems(nrun,pool):pool.filter(t=>fitsWin(t,nx.id,nAt));
+        const auto=nm>=1200||(nx.k===0&&nx.m-nm<=45)||!L.length;
+        ordIso=addDays(ilDate(),nx.k);try{const G=nrun&&GROUP_WIN[nrun.g];top.push(winBox(G?G.e:NW.e,G?G.l:NW.l,"הבא · "+nx.at,NL,"אין משימות לחלון הבא",{next:true,auto,key:nx.id+"@"+addDays(ilDate(),nx.k)+"@"+nx.m}));}finally{ordIso=null;}}
+      const out=C.task.filter(t=>!L.includes(t)&&!NL.includes(t)),ro=C.roll.filter(t=>!L.includes(t)&&!NL.includes(t));
+      more.push(foldRows("out",catT("task","משימות מחוץ לחלון"),orderL(out)),foldRows("roll",catT("roll"),orderL(ro)));
     }else{
-      if(urgAll.length)top.push(group("❗ דחוף",urgAll,true,"urg"));
-      const [q,tr,lo]=bySize(live);
-      if(q.length)top.push(group(SIZES.quick.g,q,false,"quick"));
-      if(away){if(tr.length)more.push(foldRows("trip",SIZES.trip.g,tr));if(lo.length)more.push(foldRows("long",SIZES.long.g,lo));}
-      else{if(tr.length)top.push(group(SIZES.trip.g,tr,false,"trip"));if(lo.length)top.push(group(SIZES.long.g,lo,false,"long"));}
-      if(!top.length)top.push(h("div",{class:"empty"},topics.length?"אין משימות פתוחות.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה ב-+ למטה.`));
+      if(act.length)top.push(h("div",{class:"wcard"},h("div",{class:"wc-head"},catIc("task"),h("b",null,"כל המשימות"),h("small",null,String(act.length))),h("div",{class:"glist"},orderL(act).map(row))));
+      else top.push(h("div",{class:"empty"},topics.length?"אין משימות פתוחות.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה ב-+ למטה.`));
     }
-    more.push(foldRows("wait","מחכה לאחרים",waiting),foldRows("later","אחר כך",later),foldRows("paused","בהקפאה",paused),foldRows("dorm","💤 משימות עתידיות",dorm,{zz:true}));
-    const doneL=topics.filter(t=>t.status==="done"||t.status==="promoted").sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")); // 16.2: no cap (it was 30, Oren saw "בוצעו" stuck on 30)
+    const wk=t=>String(t.sleep_until||(t.snooze_until==="someday"?"9999":t.snooze_until)||"9998");
+    more.push(foldRows("wait",catT("wait"),C.wait.sort((a,b)=>byDate(a,b))),foldRows("dorm",catT("dorm"),C.dorm.sort((a,b)=>wk(a).localeCompare(wk(b)))));
+    const doneL=C.done.sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")); // 16.2: no cap
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
-    $("doneSec").replaceChildren(...[foldRows("done","בוצעו",doneL)].filter(Boolean));
+    $("doneSec").replaceChildren(...[foldRows("done",catT("done"),doneL)].filter(Boolean));
     renderInbox();
   }
   function markDone(t){if(openId===t.id)openId=null;patch(t,{status:"done",done_at:new Date().toISOString(),done_win:curWin().id},"בוצע ✓ (עבר ל״בוצעו״)");} // 7.3: done_win teaches which window really closes what
@@ -3468,7 +3509,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     if(Q.ph)$("qtitle").placeholder=Q.ph;
     splitTopics();renderQnav();
   }
-  function setQuest(q){if(q===quest)return;quest=q;openId=null;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();window.scrollTo(0,0);}
+  function setQuest(q){if(q===quest)return;quest=q;openId=null;updOn=false;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();window.scrollTo(0,0);}
   function setFun(on){setQuest(on?"fun":"side");}
   const FC=["var(--fz2)","var(--fz3)","var(--fz1)","var(--fz4)"];
   function funCard(t,i){
@@ -4233,7 +4274,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   function sweepLine(){const r=syncState.req&&Date.parse(syncState.req.at),w=syncState.state&&Date.parse(syncState.state.last_sweep_at);
     if(r&&(!w||r>w))return"סריקה מלאה (Gmail, Drive, GitHub, שיחות) תרוץ בריצה הקרובה";
     return w?`סריקה מלאה אחרונה: ${ago(w)}`:"";}
-  $("dzbtn").onclick=()=>goDashes();
+  $("dzbtn").onclick=()=>goDashes();$("updbtn").onclick=()=>toggleUpd();
   $("refr").onclick=async()=>{const b=$("refr");if(b.classList.contains("spin"))return;b.classList.add("spin");$("refrTxt").textContent="מעדכן…";checkUpdate(true);
     const before=snapT(),t0=Date.now();sheet(true,"מעדכן את הסטטוס האחרון…",null,"מושך נתונים טריים ומבקש סריקה מלאה");
     let ok=true;
@@ -4385,14 +4426,60 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   // 16.4 (Oren 13.11.2026): "what's new" = only real news, never tasks that were completed, and each quest shows only its own.
   const DONE_ST=["done","promoted","archived"];
   const newPool=q=>{const qq=q||quest;return allTopics.filter(t=>!t._deleted&&!t.background&&!absorbed(t)&&!(t.fit&&t.fit.owner==="claude")&&!DONE_ST.includes(t.status)&&!t.merged_into&&(qq==="fun"?isFun(t):!isFun(t)&&questOf(t)===qq));};
-  function isNewUpd(t){const r=recentOf(t);if(!r||Date.now()-r.ms>72*36e5||r.ms<=updBase())return null;const s=Date.parse(updSeen[t.id]||"")||0;return s<r.ms?r:null;}
-  function newCount(){try{return newPool().filter(t=>isNewUpd(t)).length;}catch(e){return 0;}}
+  function isNewUpd(t){return isFresh(t)?freshOf(t):null;} // 17.5: new since the previous visit; the dot stays this visit
+  function newCount(){try{return updItems().length;}catch(e){return 0;}}
   function saveSeen(){const ks=Object.keys(updSeen).filter(k=>k!=="_base");if(ks.length>300)ks.sort((a,b)=>String(updSeen[a]).localeCompare(String(updSeen[b]))).slice(0,ks.length-300).forEach(k=>delete updSeen[k]);
     try{localStorage.setItem("sq_upd_seen",JSON.stringify(updSeen));}catch(e){}}
   function seeUpd(id){const t=allTopics.find(x=>x.id===id),r=t&&recentOf(t);if(!r)return;if((Date.parse(updSeen[id]||"")||0)>=r.ms)return;updSeen[id]=new Date(r.ms).toISOString();saveSeen();setTimeout(()=>{renderCtx();updGmBtn();},0);}
   function seeAll(){updSeen={_base:new Date().toISOString()};saveSeen();renderCtx();renderList();updGmBtn();toast("✓ הכול סומן כנקרא");}
-  const SRC_E={gmail:"✉️",new:"🆕",sync:"🔗",log:"↻",run:"↻"};
+  const SRC_E={gmail:"✉️",new:"🆕",own:"🆕",sync:"🔗",log:"↻",run:"↻",done:"✓"};
   function updLine(r){const w=r.what.replace(/^(סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור)\s*[:：]\s*/,"");return (SRC_E[r.src]||"↻")+" "+(w||"עודכן")+" · "+ago(r.ms);}
+  // ===== 17.5 (Oren 16.11.2026): "🔔 עדכונים" next to the dashboards button =====
+  // A visit = from opening the app until leaving it (hidden for 2+ minutes). Everything that changed since the previous visit
+  // is "new": a new task (also his own), a change from outside (mail, scan, sync, run) in any category (also dormant or waiting).
+  // New rows get a blue dot and come right after the urgent ones; the dot stays for this whole visit and is gone next time.
+  // The button lists only these changes; with none it says so and offers the long log of past updates (folded).
+  let visitBase=0,updOn=false,hidAt=0;
+  try{visitBase=Date.parse(localStorage.getItem("sq_visit")||"")||0;}catch(e){}
+  if(!visitBase)visitBase=Date.now()-24*36e5;
+  function endVisit(){try{localStorage.setItem("sq_visit",new Date().toISOString());}catch(e){}}
+  document.addEventListener("visibilitychange",()=>{
+    if(document.hidden){hidAt=Date.now();endVisit();return;}
+    if(hidAt&&Date.now()-hidAt>120e3){visitBase=hidAt;updOn=false;try{renderList();renderCtx();}catch(e){}}
+    else{try{localStorage.setItem("sq_visit",new Date(visitBase).toISOString());}catch(e){}} // a short peek away is the same visit
+    hidAt=0;});
+  window.addEventListener("pagehide",endVisit);
+  // the latest change of a task, his own new tasks included (src "own")
+  function freshOf(t){const r=recentOf(t);let o=r;
+    if(t&&t.created_at&&OWN_SRC.test(t.source||"")){const ms=Date.parse(t.created_at);if(ms&&ms<=Date.now()+6e4&&(!o||ms>o.ms))o={ms,what:"משימה חדשה",src:"own"};}
+    return o;}
+  function isFresh(t){if(!t||DONE_ST.includes(t.status))return false;const r=freshOf(t);return !!r&&r.ms>visitBase&&Date.now()-r.ms<7*864e5;}
+  function updItems(){return newPool().filter(t=>!(t.fit&&t.fit.owner==="claude")).map(t=>({t,r:freshOf(t)})).filter(x=>x.r&&x.r.ms>visitBase&&Date.now()-x.r.ms<7*864e5).sort((a,b)=>b.r.ms-a.r.ms);}
+  function updUpdBtn(){const b=document.getElementById("updbtn");if(!b)return;let n=0;try{n=updItems().length;}catch(e){}
+    b.classList.toggle("has",n>0&&!updOn);b.setAttribute("aria-pressed",updOn?"true":"false");$("updN").textContent=n||"";
+    b.setAttribute("aria-label",n?`עדכונים: ${n} חדשים`:"עדכונים");}
+  function toggleUpd(){updOn=!updOn;openId=null;renderList();if(updOn)window.scrollTo({top:Math.max(0,$("mainSec").getBoundingClientRect().top+window.scrollY-120),behavior:"smooth"});}
+  // past updates: every outside event of every task in this quest (incl. closed ones), 30 days, newest first
+  function pastLog(){const out=[],lim=Date.now()-30*864e5,qq=quest;
+    for(const t of allTopics){if(t._deleted||t.background||(qq==="fun"?!isFun(t):isFun(t)||questOf(t)!==qq))continue;
+      const add=(at,what,src)=>{const ms=Date.parse(at||"");if(ms&&ms>=lim&&ms<=Date.now()+6e4)out.push({t,r:{ms,what:String(what||"").replace(/\s+/g," ").trim(),src}});};
+      if(t.upd&&t.upd.at)add(t.upd.at,t.upd.what,t.upd.src||"run");
+      if(t.created_at)add(t.created_at,"משימה חדשה",OWN_SRC.test(t.source||"")?"own":/gmail|מייל/i.test(t.source||"")?"gmail":"new");
+      if((t.status==="done"||t.status==="promoted")&&t.done_at)add(t.done_at,"✓ בוצע","done");
+      (Array.isArray(t.log)?t.log:[]).forEach(l=>{if(l&&l.at&&l.by!=="oren"&&EXT_LOG.test(l.text||""))add(l.at,l.text,/^(Gmail|ג׳ימייל|מייל)/.test(l.text)?"gmail":"log");});}
+    const seen=new Set();return out.sort((a,b)=>b.r.ms-a.r.ms).filter(x=>{const k=x.t.id+"|"+x.r.what;if(seen.has(k))return false;seen.add(k);return true;}).slice(0,200);}
+  function updRow(x,past){const t=x.t,k=catOf(t),C=CATS[k]||CATS.done;
+    return h("button",{type:"button",class:"uprow"+(past?" past":""),onclick:()=>{updOn=false;openTask(t.id);}},
+      h("i",{class:"cat-ic",style:"--cc:"+C.c,"aria-hidden":"true"},C.g),
+      h("span",{class:"up-t"},h("b",null,t.title||"(ללא כותרת)"),h("small",null,updLine(x.r))),h("span",{class:"r-chev","aria-hidden":"true"},"‹"));}
+  function renderUpd(){
+    const L=updItems(),dayOf=ms=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date(ms)),today=ilDate();
+    const top=[h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🔔"),h("b",null,"עדכונים"),h("small",null,L.length?"מאז הכניסה הקודמת · "+L.length:"")),
+      L.length?h("div",{class:"uplist"},L.map(x=>updRow(x))):h("div",{class:"wc-empty"},"אין עדכונים חדשים מאז הכניסה הקודמת"))];
+    const P=pastLog().filter(x=>!L.some(y=>y.t.id===x.t.id&&y.r.ms===x.r.ms));
+    if(P.length){const body=[];let d="";for(const x of P){const dd=dayOf(x.r.ms);if(dd!==d){d=dd;body.push(h("div",{class:"up-day"},dd===today?"היום":dd===addDays(today,-1)?"אתמול":dd.split("-").reverse().join("/").replace(/^(\d\d\/\d\d\/)20/,"$1")));}body.push(updRow(x,true));}
+      top.push(foldBox("past","📜 עדכוני עבר",P.length,[h("div",{class:"uplist"},body)]));}
+    $("list").replaceChildren(...top);$("more").replaceChildren();$("doneSec").replaceChildren();renderInbox();}
   function recentList(days){const lim=Date.now()-days*864e5;return newPool().map(t=>({t,r:recentOf(t)})).filter(x=>x.r&&x.r.ms>=lim).sort((a,b)=>b.r.ms-a.r.ms);}
   function renderNew(){
     const L=recentList(7).slice(0,60),today=ilDate(),yest=addDays(today,-1);
@@ -4414,7 +4501,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   function showGmail(){
     const body=h("div",{class:"lbody",id:"gmBody"});
     modal("gmM",h("div",{class:"lhd"},h("h2",null,"✉️ סריקת Gmail",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),body,
-      h("div",{class:"lft"},h("button",{type:"button",onclick:()=>{closeModal();if(!WQ.includes(quest))setQuest("side");setWMode("new");window.scrollTo({top:0});}},"🆕 כל מה שהתעדכן"),h("button",{type:"button",onclick:closeModal},"✓ סגור")));
+      h("div",{class:"lft"},h("button",{type:"button",onclick:()=>{closeModal();if(!WQ.includes(quest))setQuest("side");if(!updOn)toggleUpd();}},"🔔 עדכונים"),h("button",{type:"button",onclick:closeModal},"✓ סגור")));
     fillGm();}
   function fillGm(){const el=document.getElementById("gmBody");if(!el)return;
     const p=gmPending(),R=gmReqs(),last=R.find(x=>x.status==="done");
