@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2E3A87">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.7";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.8";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ידע ותחומי עניין</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -158,6 +158,24 @@ details.fx .det{margin:6px 0 2px;padding:9px 12px;border-radius:10px;background:
 .rows details.fx>summary{display:flex;gap:8px;align-items:baseline}
 .rows .cost{margin-top:4px;font-size:13.5px;font-weight:800;color:var(--good)}
 .rows .buy{display:inline-block;margin-top:6px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:800;color:var(--link)}
+.rows .price{margin-top:4px;font-size:13.5px;font-weight:800;color:var(--ink)}
+.cb{display:flex;margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;width:100%;max-width:340px}
+.cb button{flex:1 1 0;min-height:40px;border:0;background:var(--surface);font:inherit;font-size:14px;font-weight:800;color:var(--ink);cursor:pointer;white-space:nowrap}
+.cb button+button{border-inline-start:1px solid var(--line)}
+.cb button.on{background:var(--good);color:#fff}
+.rows .r.incart{background:var(--good-soft);box-shadow:0 0 0 6px var(--good-soft);border-radius:4px}
+details.arch{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+details.arch>summary{cursor:pointer;font-size:14px;font-weight:800;color:var(--muted);padding:6px 0;list-style:none}
+details.arch>summary::-webkit-details-marker{display:none}
+details.arch .ar{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+details.arch .ar span{flex:1;min-width:0}
+details.arch .ar button{width:96px;min-height:34px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font:inherit;font-size:13px;font-weight:800;color:var(--link);cursor:pointer}
+.cartbox{border:2px solid var(--good);border-radius:16px;padding:12px 14px;margin-bottom:14px;background:var(--surface)}
+.cartbox h2{font-family:var(--f-display);font-size:17px;margin:0 0 4px}
+.cartbox .sub{font-size:13.5px;color:var(--muted);margin-bottom:6px}
+.cartbox .ci{display:flex;gap:8px;align-items:baseline;padding:7px 0;border-top:1px solid var(--line);font-size:14.5px}
+.cartbox .ci span{flex:1;min-width:0}.cartbox .ci a{font-weight:800;color:var(--link);white-space:nowrap}
+.cartbox .tot{display:flex;justify-content:space-between;border-top:2px solid var(--line);padding-top:8px;margin-top:2px;font-weight:800;font-size:15px}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=7">
 <script src="dash-sub.js?v=5" defer></script>
@@ -259,11 +277,20 @@ function renderTicket(id){const x={id,...(items[id]||{})};if(!x.title){$("app").
   $("bar").innerHTML=`<div class="seg">${TB.map(([k,l])=>`<button data-tab="${k}" class="${tab===k?"on":""}">${l}</button>`).join("")}</div>`;
   const acts=`<div class="acts"><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button data-share>📤 לשתף</button></div>`;
   $("app").innerHTML=acts+(tab==="text"?tabText(x):tab==="guide"?tabGuide(x):tabIns(x));}
-function tabGuide(x){/* 1.5: guide[{h, icon, intro, img{url,caption}, rows[{k,v,note,cost (1.7: actual paid, e.g. "$1,100"),more (1.6: detail opens on tap),tag: must|have|nice}], steps[], list[], text}] */
-  const TG={must:"חסר, לקנות",have:"יש",nice:"מומלץ"};
-  return (x.guide||[]).map(g=>{let b="";
+function eurF(n){return "€"+(Math.round(n*100)/100).toLocaleString("en-US",{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2});}
+function rowCost(r){return (+r.eur||0)*(+r.qty||1);}
+function tabGuide(x){/* 1.5: guide[{h, icon, intro, img{url,caption}, rows[{k,v,note,cost (1.7: actual paid),more (1.6),tag: must|have|nice, 1.8: id, eur, qty, shop (Italian store), url}], steps[], list[], text}]; 1.8: x.cart {rowId: "cart"|"no"} = Oren's cart / archive */
+  const TG={must:"חסר, לקנות",have:"יש",nice:"מומלץ"},C=x.cart||{};
+  const all=[];(x.guide||[]).forEach(g=>(g.rows||[]).forEach(r=>{if(r.id&&r.tag!=="have")all.push(r);}));
+  let top="";if(all.length){const inC=all.filter(r=>C[r.id]==="cart"),open=all.filter(r=>!C[r.id]).length,tot=inC.reduce((a,r)=>a+rowCost(r),0);
+    top=`<section class="cartbox"><h2>🛒 העגלה שלי</h2><div class="sub">${inC.length?`${inC.length} פריטים בעגלה`:"העגלה ריקה"}${open?` · עוד ${open} לבחור: לעגלה או "לא צריך"`:" · כל הפריטים סווגו ✓"}</div>${inC.map(r=>`<div class="ci"><span>${bx(r.k)}${(+r.qty||1)>1?` ×${+r.qty}`:""}</span>${r.eur?`<bdi dir="ltr">${eurF(rowCost(r))}</bdi>`:""}${safe(r.url)?`<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.shop||"להזמנה")} ›</a>`:""}</div>`).join("")}${inC.length?`<div class="tot"><span>סה״כ משוער</span><bdi dir="ltr">${eurF(tot)}</bdi></div>`:""}</section>`;}
+  const rowH=r=>{const K=`<div class="k">${bx(r.k)}${r.tag&&TG[r.tag]?`<span class="tg ${esc(r.tag)}">${TG[r.tag]}</span>`:""}</div>`,V=r.v?`<div class="v">${bx(r.v)}</div>`:"",buyable=r.id&&r.tag!=="have",st=C[r.id];
+    return `<div class="r${st==="cart"?" incart":""}">${r.more?`<details class="fx"><summary><div style="flex:1;min-width:0">${K}${V}</div><span class="mo">פירוט</span></summary><div class="det">${bx(r.more)}</div></details>`:K+V}${r.cost?`<div class="cost">💵 עלות בפועל: <bdi dir="ltr">${esc(r.cost)}</bdi></div>`:""}${r.eur?`<div class="price">💶 מחיר באיטליה: <bdi dir="ltr">${eurF(+r.eur)}${(+r.qty||1)>1?` × ${+r.qty} = ${eurF(rowCost(r))}`:""}</bdi>${r.shop?` ב-<bdi dir="ltr">${esc(r.shop)}</bdi>`:""}</div>`:""}${r.note?`<div class="nt">${bx(r.note)}</div>`:""}${r.tag!=="have"&&safe(r.url)?`<a class="buy" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url_label||"לינק")}</a>`:""}${buyable?`<div class="cb"><button data-cart="${esc(r.id)}" class="${st==="cart"?"on":""}">${st==="cart"?"✓ בעגלה":"🛒 לעגלה"}</button><button data-nocart="${esc(r.id)}">✕ לא צריך</button></div>`:""}</div>`;};
+  return top+(x.guide||[]).map(g=>{let b="";
     if(g.img&&safe(g.img.url))b+=`<figure class="kimg" style="margin-bottom:10px"><a href="${esc(g.img.url)}" target="_blank" rel="noopener"><img src="${esc(g.img.url)}" alt="${esc(g.img.caption||"")}" loading="lazy"></a>${g.img.caption?`<figcaption>${esc(g.img.caption)}</figcaption>`:""}</figure>`;
-    if((g.rows||[]).length)b+=`<div class="rows">${g.rows.map(r=>{const K=`<div class="k">${bx(r.k)}${r.tag&&TG[r.tag]?`<span class="tg ${esc(r.tag)}">${TG[r.tag]}</span>`:""}</div>`,V=r.v?`<div class="v">${bx(r.v)}</div>`:"";return `<div class="r">${r.more?`<details class="fx"><summary><div style="flex:1;min-width:0">${K}${V}</div><span class="mo">פירוט</span></summary><div class="det">${bx(r.more)}</div></details>`:K+V}${r.cost?`<div class="cost">💵 עלות בפועל: <bdi dir="ltr">${esc(r.cost)}</bdi></div>`:""}${r.note?`<div class="nt">${bx(r.note)}</div>`:""}${safe(r.url)?`<a class="buy" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url_label||"לינק")}</a>`:""}</div>`;}).join("")}</div>`;
+    const rows=g.rows||[],live=rows.filter(r=>C[r.id]!=="no"),arch=rows.filter(r=>r.id&&C[r.id]==="no");
+    if(live.length)b+=`<div class="rows">${live.map(rowH).join("")}</div>`;
+    if(arch.length)b+=`<details class="arch"><summary>🗄️ לא צריך (${arch.length}) ▾</summary>${arch.map(r=>`<div class="ar"><span>${bx(r.k)}</span><button data-uncart="${esc(r.id)}">↩ להחזיר</button></div>`).join("")}</details>`;
     if((g.steps||[]).length)b+=`<ol class="steps">${g.steps.map(t=>`<li><span>${bx(t)}</span></li>`).join("")}</ol>`;
     if((g.list||[]).length)b+=`<ul class="blist">${g.list.map(t=>`<li>${bx(t)}</li>`).join("")}</ul>`;
     if(g.text)b+=`<div class="gtext">${esc(g.text)}</div>`;
@@ -285,6 +312,11 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
   if(b=g("[data-topic]")){ui.topic=b.dataset.topic;saveUi();render();return;}
   if(b=g("[data-got]")){ui.tab="ins";goHash("t="+encodeURIComponent(b.dataset.got));return;}
   if(g("[data-home]")){EMB?goHash(""):history.length>1&&route()?history.back():(location.hash="");return;}
+  if(b=g("[data-cart],[data-nocart],[data-uncart]")){const r=route(),tid=r&&r.id;if(!tid)return;const rid=b.dataset.cart||b.dataset.nocart||b.dataset.uncart,c=Object.assign({},(items[tid]||{}).cart||{});
+    if(b.dataset.cart!=null){if(c[rid]==="cart")delete c[rid];else c[rid]="cart";}else if(b.dataset.nocart!=null)c[rid]="no";else delete c[rid];
+    const sel=b.dataset.nocart!=null?null:`[data-${b.dataset.cart!=null?"cart":"uncart"}="${rid}"]`;
+    const run=()=>upd(tid,{cart:c},c[rid]==="cart"?"🛒 נוסף לעגלה":c[rid]==="no"?"🗄️ עבר ל\"לא צריך\"":"הוחזר לרשימה");
+    sel&&b.dataset.cart!=null?keepPut(sel,run):run();return;}
   if(b=g("[data-tab]")){const k=b.dataset.tab;keepPut(`[data-tab="${k}"]`,()=>{ui.tab=k;saveUi();render();});return;}
   if(b=g("[data-lang]")){const k=b.dataset.lang;keepPut(`[data-lang="${k}"]`,()=>{ui.lang=k;saveUi();render();});return;}
   const now=new Date().toISOString();
