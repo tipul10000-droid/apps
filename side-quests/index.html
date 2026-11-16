@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.6";window.SQ_BUILD_AT="16.11.2026 22:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.7";window.SQ_BUILD_AT="16.11.2026 23:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1909,7 +1909,7 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
    Dark L-frame: top bar (logo, search, icons, + new) and a quest/dashboard rail on the right.
    Middle = the task list. Left = the open task, always in its own pane (rows never expand inline here).
    Dashboards and project pages open over the middle + left. The phone layout is untouched. */
-html.desk{--dtop:56px;--drail:260px;--dpane:min(460px,34vw)}
+html.desk{--dtop:56px;--drail:240px;--dpane:clamp(380px,30vw,580px)}
 html.desk .qband,html.desk .tadd.fab,html.desk .tfind.fab{display:none!important}
 #dtop,#deskDet,#dhead{display:none}
 html.desk #dtop{display:flex;position:fixed;inset:0 0 auto 0;height:var(--dtop);z-index:40;align-items:center;gap:16px;padding:0 18px;background:var(--hero);color:var(--hero-ink);border-bottom:1px solid rgba(255,255,255,.08)}
@@ -1945,12 +1945,20 @@ html.desk .hero .dz-tile:hover{background:rgba(255,255,255,.07)!important}
 html.desk .hero .dz-tile .nw{position:static!important;margin-inline-start:auto}
 /* middle */
 html.desk main,html.desk footer.ver{margin-right:var(--drail);margin-left:var(--dpane)}
-html.desk main{padding-top:calc(var(--dtop) + 20px)!important;padding-inline:28px!important;zoom:1!important}
-html.desk main>.inner{max-width:820px}
+html.desk main{padding-top:calc(var(--dtop) + 14px)!important;padding-inline:20px!important;zoom:1!important}
+html.desk main>.inner{max-width:1100px}
 html.desk #dhead{display:flex;flex-direction:column;gap:10px;background:var(--hero);color:var(--hero-ink);border-radius:14px;padding:10px 12px}
 html.desk #dhead .ctxrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 html.desk #dhead .ctxrow{flex-wrap:nowrap}
 html.desk #dhead .avail{flex:0 0 440px;width:440px;min-width:0} /* 17.4: fixed, so opening the pick menu never resizes the bar */
+/* 17.7 (Oren 16.11.2026): the bar is one row. .ctxrow is a column on the phone (!important), so flex-basis 440px became a 440px HEIGHT on the computer = a huge empty black box. */
+html.desk #dhead{padding:8px 10px;gap:8px}
+html.desk #dhead .ctxrow{flex-direction:row!important;align-items:flex-start!important;gap:12px!important}
+html.desk #dhead .avail{flex:0 0 440px!important;height:auto!important}
+html.desk #dhead .toolrow{display:flex!important;align-items:center;gap:8px;min-height:44px;align-self:flex-start}
+html.desk #dhead .ctxrow .refr{align-self:center}
+html.desk:not(.bigtx) .row .r-body{min-height:44px}
+html.desk .row .ck{width:22px;height:22px}
 html.desk #dhead .toolrow{margin-inline-start:auto}
 html.desk #dzbtn{display:none!important}
 html.desk .qnav .qbtn{margin:0!important;height:38px!important;min-height:38px!important}
