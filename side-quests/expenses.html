@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.6";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.7";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -123,6 +123,7 @@ details.fd>summary::before{content:"▸ ";color:var(--muted)}details.fd[open]>su
 .car{padding:10px 14px}.car+.car{border-top:1px solid var(--line)}
 .car .t{font-weight:800;font-size:15px}.car .s{font-size:12.5px;color:var(--muted)}
 .hold{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;margin-top:6px}
+.todo{background:var(--hi-soft);color:var(--hi);border-radius:10px;padding:8px 10px;font-size:14px;font-weight:800;margin:6px 0 2px}
 .hold ol{margin:6px 0 0;padding-inline-start:18px;font-weight:600;color:var(--ink)}
 .go{display:block;width:100%;border:0;border-radius:12px;background:var(--hi);color:#fff;font-family:var(--f-display);font-weight:800;font-size:15.5px;padding:11px;cursor:pointer;margin-top:10px}
 .prow{display:flex;align-items:center;gap:10px;padding:8px 14px}.prow+.prow{border-top:1px solid var(--line)}
@@ -253,7 +254,7 @@ function cars(){const out=[],seen=new Set(),V=(scanRow()||{}).verdicts||{};
   const add=(s,row)=>{if(!s.tx||seen.has(s.tx))return;seen.add(s.tx);const txt=String(s.text||"");
     const m=txt.match(/[₪€]\s?[\d,.]+|[\d,.]+\s?[₪€]/),v=V[s.tx]&&V[s.tx].state;
     out.push({tx:s.tx,row:row.id,step:s.id,label:txt.split(/[(:]/)[0].replace(/[₪€]\s?[\d,.]+|[\d,.]+\s?[₪€]/,"").trim(),amt:m?m[0]:"",info:(txt.match(/\(([^)]*)\)/)||[])[1]||"",
-      hold:/hertz/i.test(txt),late:/אחרי|מאוחר/.test(txt),state:v||(s.done?"ok":null)});};
+      hold:/hertz|תפיסת מסגרת/i.test(txt),hz:/hertz/i.test(txt),hotel:/hotel|best western|מלון/i.test(txt),todo:s.todo||"",late:/אחרי|מאוחר/.test(txt),state:v||(s.done?"ok":null)});};
   const sc=scanRow();if(sc)arr(sc.steps).forEach(s=>add(s,sc));
   tripRows().forEach(t=>arr(t.steps).forEach(s=>add(s,t)));
   return out;}
@@ -282,18 +283,20 @@ function depBox(t){const D=arr(meta.deposits);if(!D.length)return "";const used=
   const sd=String((stp(t,"submit")||{}).done_at||"").slice(0,10);const C=D.filter(d=>!used.has(d.d+"|"+d.ils)&&(!sd||d.d>=sd)).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,3);
   if(!C.length)return "";return `<div class="lab">💰 הפקדה מאלביט שמתאימה?</div><div class="dep">${C.map(d=>`<button data-dep="${esc(d.d)}" data-ils="${esc(d.ils)}" data-t="${esc(t.id)}">${esc(fdate(d.d))} · ₪${(+d.ils).toLocaleString("en-US")}</button>`).join("")}</div>`;}
 function carRow(c){const st=c.state,bad=st==="bad"||st==="submitted"||st==="received";
-  let o=`<div class="car"><div class="t">🚗 ${esc(c.label)} <span style="direction:ltr;display:inline-block">${esc(c.amt)}</span> ${st==="check"?'<span class="pill p-warn">בבירור</span>':""}</div><div class="s">${esc(c.info)}</div>`;
-  if(c.hold)o+=`<div class="hold">תפיסת מסגרת, לא חיוב. הכסף לא יצא.<details><summary style="cursor:pointer">איך משחררים</summary><ol><li>באפליקציית כאל, בעסקאות בהמתנה: לוודא שזה עדיין ממתין.</li><li>מספר ההזמנה של Hertz במייל מאופקים מ-18.10.</li><li>לבקש מ-Hertz איטליה לשחרר את ה-pre-authorization.</li><li>אין תשובה תוך כמה ימים: להתקשר לכאל ולבקש לבטל.</li><li>הפך לחיוב סופי: לסמן "לא תקין" ולהגיש לאלביט.</li></ol></details></div>`;
+  let o=`<div class="car"><div class="t">${c.hotel?"🏨":"🚗"} ${esc(c.label)} <span style="direction:ltr;display:inline-block">${esc(c.amt)}</span> ${st==="check"?'<span class="pill p-warn">בבירור</span>':""}</div><div class="s">${esc(c.info)}</div>`;
+  if(c.todo&&carOpen(c))o+=`<div class="todo">👉 ${esc(c.todo)}</div>`;
+  if(c.hold&&!c.hz)o+=`<div class="hold">תפיסת מסגרת, לא חיוב. הכסף לא יצא.</div>`;
+  if(c.hz)o+=`<div class="hold">תפיסת מסגרת, לא חיוב. הכסף לא יצא.<details><summary style="cursor:pointer">איך משחררים</summary><ol><li>באפליקציית כאל, בעסקאות בהמתנה: לוודא שזה עדיין ממתין.</li><li>מספר ההזמנה של Hertz במייל מאופקים מ-18.10.</li><li>לבקש מ-Hertz איטליה לשחרר את ה-pre-authorization.</li><li>אין תשובה תוך כמה ימים: להתקשר לכאל ולבקש לבטל.</li><li>הפך לחיוב סופי: לסמן "לא תקין" ולהגיש לאלביט.</li></ol></details></div>`;
   o+=`<div class="dec c3">${["ok","check","bad"].map(k=>`<button data-cv="${k}" data-tx="${esc(c.tx)}" class="${(k==="bad"?bad:st===k)?"on":""}">${VS[k]}</button>`).join("")}</div>`;
   if(bad)o+=`<div class="dec c3">${[["bad","לא הוגש"],["submitted","הוגש"],["received","התקבל"]].map(([k,l])=>`<button data-cv="${k}" data-tx="${esc(c.tx)}" class="${st===k?"on":""}">${l}</button>`).join("")}</div>`;
   return o+"</div>";}
 function elbitView(){const R=tripRows();if(!R.length)return "";
   const cur=R.filter(t=>tState(t)!=="received"),done=R.filter(t=>tState(t)==="received");
   const C=cars(),co=C.filter(carOpen),cd=C.filter(c=>!carOpen(c));
-  const askN=R.reduce((n,t)=>n+tripWork(t).ask,0),noV=C.filter(c=>!c.state).length,notScan=cur.filter(t=>tState(t)==="open").length,notSub=cur.filter(t=>tState(t)==="scanned").length;
+  const askN=R.reduce((n,t)=>n+tripWork(t).ask,0),noV=C.filter(c=>!c.state).length,badN=C.filter(c=>c.state==="bad").length,chkN=C.filter(c=>c.state==="check"&&!c.hold).length,holdN=C.filter(c=>c.state==="check"&&c.hold).length,notScan=cur.filter(t=>tState(t)==="open").length,notSub=cur.filter(t=>tState(t)==="scanned").length;
   if(ui.trip===undefined&&cur[0])ui.trip=cur[0].id;
   let o="";
-  const need=[[notScan,"🧾 נסיעות שלא נסרקו","sec-trips"],[notSub,"📤 נסרקו ולא הוגשו","sec-trips"],[askN,"❓ חיובים לסיווג","sec-trips"],[noV,"🚨 חיובי רכב בלי הכרעה","sec-cars"]].filter(x=>x[0]);
+  const need=[[badN,"📤 חיובים להגיש לאלביט","sec-cars"],[chkN,"🔎 חיובים בבירור","sec-cars"],[holdN,"⏳ תפיסות מסגרת למעקב","sec-cars"],[notScan,"🧾 נסיעות שלא נסרקו","sec-trips"],[notSub,"📤 נסרקו ולא הוגשו","sec-trips"],[askN,"❓ חיובים לסיווג","sec-trips"],[noV,"🚨 חיובי רכב בלי הכרעה","sec-cars"]].filter(x=>x[0]);
   if(need.length)o+=`<section class="need"><div class="sh"><h2>מחכה לך</h2></div><div class="list">${need.map(([n,l,a])=>`<div class="it"><button class="row" data-go="${a}"><span class="b"><span class="t">${l}</span></span><span class="v">${n}</span></button></div>`).join("")}</div></section>`;
   o+=`<section id="sec-trips"><div class="sh"><h2>נסיעות</h2><small>${cur.length} פתוחות</small></div>${cur.length?cur.map(tripCard).join(""):'<div class="empty">✓ כל ההחזרים התקבלו</div>'}</section>`;
   if(C.length)o+=`<section id="sec-cars"><div class="sh"><h2>🚨 חיובי רכב</h2><small>${co.length} פתוחים</small></div><div class="list red">${co.map(carRow).join("")||'<div class="empty">✓ הכל טופל</div>'}
