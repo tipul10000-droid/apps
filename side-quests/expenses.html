@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.1";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -155,7 +155,15 @@ details.fd>summary::before{content:"▸ ";color:var(--muted)}details.fd[open]>su
 .ab button{border:0;background:var(--good-soft);color:var(--good);font-weight:800;font-size:13px;padding:9px 2px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
 .ab button.alt{background:var(--surface);color:var(--muted);font-size:12.5px;padding:7px 2px}
 .ab button.go2{background:var(--hi-soft);color:var(--hi)}
-.ac.ok{background:var(--good-soft)}.ac.ok .ab button{background:var(--good);color:#fff}
+.ac.ok{background:var(--good-soft)}
+/* 2.1 (Oren 16.11.2026): mark-as-done = empty circle with green border; tap = full green with V for 5s (tap again = undo), then folds */
+.ab button.chk{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--surface);color:var(--good);padding:8px 2px;transition:background .2s,color .2s}
+.ab button.chk i{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--good);box-sizing:border-box;display:grid;place-items:center;font-style:normal;font-size:11px;line-height:1;color:transparent;transition:background .2s,color .2s}
+.ab button.chk.on{background:var(--good);color:#fff}
+.ab button.chk.on i{background:#fff;border-color:#fff;color:var(--good);animation:chkpop .25s ease-out}
+@keyframes chkpop{0%{transform:scale(.6)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.ac.fold{animation:acfold .3s ease-in forwards;overflow:hidden}
+@keyframes acfold{to{opacity:0;max-height:0;padding-top:0;padding-bottom:0}}
 .know .ac .t{font-weight:700;font-size:14.5px}
 .allok{padding:14px;text-align:center;color:var(--good);font-weight:800;background:var(--good-soft)}
 details.zone{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
@@ -351,8 +359,9 @@ function acts(){const R=tripRows(),C=cars(),A=[],K=[],sc=scanRow(),until=x=>((St
 });
   if(sc)arr(sc.steps).filter(s=>!s.tx&&!s.done&&!s.superseded).forEach(s=>{const r=stepRow(sc,s,"חיוב ישן · לבדוק במחשב העבודה");(r.wait?K:A).push(r);});
   return {A,K};}
-function acRow(x){return `<div class="ac" data-row="${esc(x.k)}"><span class="ic">${x.ic}</span><span class="b"><span class="t">${esc(x.t)}</span>${x.s?`<span class="s">${esc(x.s)}</span>`:""}</span>${x.v?`<span class="v">${esc(x.v)}</span>`:""}
-  <span class="ab"><button data-act="${esc(x.k)}" class="${x.go?"go2":""}">${esc(x.b)}</button>${x.k2?`<button data-act="${esc(x.k2)}" class="alt">${esc(x.b2)}</button>`:""}</span></div>`;}
+const pend={};
+function acRow(x){return `<div class="ac${pend[x.k]?" ok":""}" data-row="${esc(x.k)}"><span class="ic">${x.ic}</span><span class="b"><span class="t">${esc(x.t)}</span>${x.s?`<span class="s">${esc(x.s)}</span>`:""}</span>${x.v?`<span class="v">${esc(x.v)}</span>`:""}
+  <span class="ab">${x.go?`<button data-act="${esc(x.k)}" class="go2">${esc(x.b)}</button>`:`<button data-act="${esc(x.k)}" class="chk${pend[x.k]?" on":""}" aria-pressed="${pend[x.k]?"true":"false"}"><i>✓</i>${esc(String(x.b).replace(/^✓\s*/,""))}</button>`}${x.k2?`<button data-act="${esc(x.k2)}" class="alt">${esc(x.b2)}</button>`:""}</span></div>`;}
 function zone(id,title,sub,body,cls){return body?`<details class="zone ${cls||""}" data-zone="${id}"${ui["z_"+id]?" open":""}><summary><span class="n">${title}</span><small>${sub||""}</small></summary><div class="zb">${body}</div></details>`:"";}
 const carAct=c=>!c.state||c.state==="check"||c.state==="bad";
 function elbitView(){const R=tripRows();if(!R.length)return "";
@@ -398,6 +407,11 @@ function confirmPast(){const R=tripRows().filter(t=>isPast(t)&&!t.confirmed_at),
   toast(`אושרו ${R.length} נסיעות`);}
 function setDeposit(id,d,ils){const t=topics.find(x=>x.id===id);if(!t)return;patchTopic(t,{...tripPatch(t,"received"),deposit:{d,ils:+ils,at:nowIso()}},"הותאמה הפקדה "+fdate(d));toast("ההחזר סומן כהתקבל");}
 let holdUntil=0,rtm=null,pulseSel=null;
+function setPendUI(k,on){document.querySelectorAll(`[data-act="${CSS.escape(k)}"].chk`).forEach(b=>{b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);const r=b.closest(".ac");if(r)r.classList.toggle("ok",on);});}
+function cancelPend(k){if(!pend[k])return;clearTimeout(pend[k]);delete pend[k];setPendUI(k,false);}
+function togglePend(k){if(pend[k]){cancelPend(k);$("toast").classList.remove("on");return;}
+  pend[k]=setTimeout(()=>{delete pend[k];const r=document.querySelector(`.ac [data-act="${CSS.escape(k)}"].chk`);const row=r&&r.closest(".ac");if(row)row.classList.add("fold");setTimeout(()=>doAct(k),row?300:0);},5000);
+  setPendUI(k,true);toast("✓ בוצע",()=>cancelPend(k));}
 function render(){if(!loaded)return;const w=holdUntil-Date.now();if(w>0){clearTimeout(rtm);rtm=setTimeout(render,w+20);return;}$("hero").innerHTML=hero();$("bar").innerHTML=bar();$("app").innerHTML=tab();
   if(pulseSel){const el=document.querySelector(pulseSel);pulseSel=null;if(el){el.classList.remove("just");void el.offsetWidth;el.classList.add("just");}}
   $("foot").innerHTML=`${meta.scan_at?"סריקת אשראי אחרונה: "+esc(fdate(meta.scan_at))+"<br>":""}הוצאות ${esc(window.EX_BUILD)}`;}
@@ -419,7 +433,7 @@ async function setSt(ids,st){if(!db)return;const now=new Date().toISOString(),pr
   }catch(e){toast("השמירה נכשלה");}}
 document.addEventListener("click",e=>{
   const q=(a)=>e.target.closest("["+a+"]");let b;
-  if((b=q("data-act"))){const k=b.dataset.act;if(k.startsWith("open:"))return doAct(k);const r=b.closest(".ac");if(r)r.classList.add("ok");b.textContent="✓ נשמר";holdUntil=Date.now()+1100;doAct(k);return;}
+  if((b=q("data-act"))){const k=b.dataset.act;if(k.startsWith("open:"))return doAct(k);if(!b.classList.contains("chk")){const c=b.closest(".ac")&&b.closest(".ac").querySelector(".chk");if(c)cancelPend(c.dataset.act);return doAct(k);}togglePend(k,b);return;}
   if((b=q("data-trip"))){const id=b.dataset.trip,top=b.getBoundingClientRect().top;ui.trip=ui.trip===id?null:id;save();render();const nb=document.querySelector(`[data-trip="${CSS.escape(id)}"]`);if(nb){const d=nb.getBoundingClientRect().top-top;if(d)window.scrollBy(0,d);}return;}
   if((b=q("data-ts"))){const t=topics.find(x=>x.id===b.dataset.t);if(t){const c=tState(t),k=b.dataset.ts,top=b.getBoundingClientRect().top,sel=`[data-ts="${k}"][data-t="${CSS.escape(t.id)}"]`;pulseSel=sel;setTripState(t.id,c===k?LV[lv(k)-1]:k);
     const nb=document.querySelector(sel);if(nb){const d=nb.getBoundingClientRect().top-top;if(d)window.scrollBy(0,d);}}return;}
