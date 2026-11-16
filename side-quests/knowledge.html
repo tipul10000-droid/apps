@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2E3A87">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.6";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.7";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ידע ותחומי עניין</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -156,6 +156,7 @@ details.fx .det{margin:6px 0 2px;padding:9px 12px;border-radius:10px;background:
 @keyframes fxin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .ins details.fx>summary h3{width:100%}
 .rows details.fx>summary{display:flex;gap:8px;align-items:baseline}
+.rows .cost{margin-top:4px;font-size:13.5px;font-weight:800;color:var(--good)}
 .rows .buy{display:inline-block;margin-top:6px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:800;color:var(--link)}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=7">
@@ -258,11 +259,11 @@ function renderTicket(id){const x={id,...(items[id]||{})};if(!x.title){$("app").
   $("bar").innerHTML=`<div class="seg">${TB.map(([k,l])=>`<button data-tab="${k}" class="${tab===k?"on":""}">${l}</button>`).join("")}</div>`;
   const acts=`<div class="acts"><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button data-share>📤 לשתף</button></div>`;
   $("app").innerHTML=acts+(tab==="text"?tabText(x):tab==="guide"?tabGuide(x):tabIns(x));}
-function tabGuide(x){/* 1.5: guide[{h, icon, intro, img{url,caption}, rows[{k,v,note,more (1.6: detail opens on tap),tag: must|have|nice}], steps[], list[], text}] */
+function tabGuide(x){/* 1.5: guide[{h, icon, intro, img{url,caption}, rows[{k,v,note,cost (1.7: actual paid, e.g. "$1,100"),more (1.6: detail opens on tap),tag: must|have|nice}], steps[], list[], text}] */
   const TG={must:"חסר, לקנות",have:"יש",nice:"מומלץ"};
   return (x.guide||[]).map(g=>{let b="";
     if(g.img&&safe(g.img.url))b+=`<figure class="kimg" style="margin-bottom:10px"><a href="${esc(g.img.url)}" target="_blank" rel="noopener"><img src="${esc(g.img.url)}" alt="${esc(g.img.caption||"")}" loading="lazy"></a>${g.img.caption?`<figcaption>${esc(g.img.caption)}</figcaption>`:""}</figure>`;
-    if((g.rows||[]).length)b+=`<div class="rows">${g.rows.map(r=>{const K=`<div class="k">${bx(r.k)}${r.tag&&TG[r.tag]?`<span class="tg ${esc(r.tag)}">${TG[r.tag]}</span>`:""}</div>`,V=r.v?`<div class="v">${bx(r.v)}</div>`:"";return `<div class="r">${r.more?`<details class="fx"><summary><div style="flex:1;min-width:0">${K}${V}</div><span class="mo">פירוט</span></summary><div class="det">${bx(r.more)}</div></details>`:K+V}${r.note?`<div class="nt">${bx(r.note)}</div>`:""}${safe(r.url)?`<a class="buy" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url_label||"לינק")}</a>`:""}</div>`;}).join("")}</div>`;
+    if((g.rows||[]).length)b+=`<div class="rows">${g.rows.map(r=>{const K=`<div class="k">${bx(r.k)}${r.tag&&TG[r.tag]?`<span class="tg ${esc(r.tag)}">${TG[r.tag]}</span>`:""}</div>`,V=r.v?`<div class="v">${bx(r.v)}</div>`:"";return `<div class="r">${r.more?`<details class="fx"><summary><div style="flex:1;min-width:0">${K}${V}</div><span class="mo">פירוט</span></summary><div class="det">${bx(r.more)}</div></details>`:K+V}${r.cost?`<div class="cost">💵 עלות בפועל: <bdi dir="ltr">${esc(r.cost)}</bdi></div>`:""}${r.note?`<div class="nt">${bx(r.note)}</div>`:""}${safe(r.url)?`<a class="buy" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url_label||"לינק")}</a>`:""}</div>`;}).join("")}</div>`;
     if((g.steps||[]).length)b+=`<ol class="steps">${g.steps.map(t=>`<li><span>${bx(t)}</span></li>`).join("")}</ol>`;
     if((g.list||[]).length)b+=`<ul class="blist">${g.list.map(t=>`<li>${bx(t)}</li>`).join("")}</ul>`;
     if(g.text)b+=`<div class="gtext">${esc(g.text)}</div>`;
