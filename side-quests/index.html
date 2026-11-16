@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.3";window.SQ_BUILD_AT="16.11.2026 19:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.4";window.SQ_BUILD_AT="16.11.2026 19:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1571,6 +1571,18 @@ details.more[open]>summary{margin-bottom:10px}
 .wov button+button{border-inline-start:2px solid rgba(255,255,255,.6)}
 .wov button .e{font-size:22px;line-height:1}.wov button .l{overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .wov button[aria-pressed="true"]{background:#fff;color:#111}
+/* 17.4: driving (calls only), one wide button above the four places; fold bar under the menu */
+.wdrive{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border:2px solid rgba(255,255,255,.6);border-radius:14px;background:rgba(255,255,255,.06);color:var(--hero-ink);font-size:16px;font-weight:800;white-space:nowrap}
+.wdrive .e{font-size:22px;line-height:1}.wdrive small{font-size:13px;font-weight:600;opacity:.8}
+.wdrive[aria-pressed="true"]{background:#fff;color:#111}
+.wfold{width:100%;min-height:40px;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;background:transparent;color:var(--hero-ink);font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctxrow .wseg button.pk{overflow:hidden;min-width:0}.ctxrow .wseg button.pk .pk-l{overflow:hidden;text-overflow:ellipsis;min-width:0}
+/* 17.4 (Oren 16.11): something new = a calm, slow pulse on "חדש" (no auto-open) */
+.ctxrow .wseg button.nw.has{animation:nwPulse 2.8s ease-in-out infinite}
+.ctxrow .wseg button.nw.has .wn{animation:nwDot 2.8s ease-in-out infinite}
+@keyframes nwPulse{0%,100%{background:rgba(47,128,237,0)}50%{background:rgba(47,128,237,.42)}}
+@keyframes nwDot{0%,100%{box-shadow:0 0 0 0 rgba(47,128,237,.0)}50%{box-shadow:0 0 0 5px rgba(47,128,237,.35)}}
+@media (prefers-reduced-motion:reduce){.ctxrow .wseg button.nw.has{animation:none;background:rgba(47,128,237,.35)}.ctxrow .wseg button.nw.has .wn{animation:none}}
 .ai .opts{gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;align-self:stretch}
 .ai .opts>.opt,.ai .opts>a.opt{flex:1 1 auto;border:0!important;border-radius:0!important;background:var(--surface);text-align:center;min-height:38px}
 .ai .opts>.opt.yes{background:var(--k-admin);color:#fff}
@@ -1932,7 +1944,7 @@ html.desk main>.inner{max-width:820px}
 html.desk #dhead{display:flex;flex-direction:column;gap:10px;background:var(--hero);color:var(--hero-ink);border-radius:14px;padding:10px 12px}
 html.desk #dhead .ctxrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 html.desk #dhead .ctxrow{flex-wrap:nowrap}
-html.desk #dhead .avail{flex:0 1 auto;min-width:0}
+html.desk #dhead .avail{flex:0 0 440px;width:440px;min-width:0} /* 17.4: fixed, so opening the pick menu never resizes the bar */
 html.desk #dhead .toolrow{margin-inline-start:auto}
 html.desk #dzbtn{display:none!important}
 html.desk .qnav .qbtn{margin:0!important;height:38px!important;min-height:38px!important}
@@ -2104,7 +2116,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   const CTX={call:{e:"📞",l:"זמין לשיחות",full:"זמין לשיחות טלפון / ברכב",sub:"ברכב, אפשר לדבר"},pc:{e:"💻",l:"מול המחשב",full:"מול המחשב",sub:"עבודה במחשב"},house:{e:"🔧",l:"בבית",full:"בבית, משימות בית",sub:"להתקין, לתקן, לסדר"},out:{e:"🛒",l:"סידורים בחוץ",full:"סידורי חוץ",sub:"קניות וסידורים"},office:{e:"🏢",l:"בעבודה",full:"בעבודה: רק קצר ומרחוק",sub:"קצר, מהנייד או בשיחה"},lior:{e:"👫",l:"עם ליאור",full:"עם ליאור",sub:"בירורים שעושים יחד"}};
   const TAGS={...CTX,mobile:{e:"📱",l:"בנייד",full:"אפשר מהנייד, מכל מקום"}};
   const CTX_OLD={home:"pc",phone:"mobile"};
-  let ctxNow="all",ctxMenu=false,winMore=false,wMode="auto";try{wMode=localStorage.getItem("sq_wmode")||"auto";}catch(e){} // 6.2: no separate availability filter any more; the mode + time of day decide (one choice, Oren 3.11)
+  let ctxNow="all",ctxMenu=false,winMore=false,wMode="auto",pickOpen=false; // 17.4 (Oren 16.11): every open starts on automatic (a manual window that is still running stays, collapsed); never on "חדש" // 6.2: no separate availability filter any more; the mode + time of day decide (one choice, Oren 3.11)
   function ctxOf(t){const out=[];for(let c of (Array.isArray(t.context)?t.context:[])){c=CTX_OLD[c]||c;if(TAGS[c]&&!out.includes(c))out.push(c);}return out;}
   // 6.2 modes (Oren 3.11, second round): ONE choice, three modes. The app stays the same app; a mode only hides quests and re-orders tasks.
   // home = all 6 quests. work (auto Sun-Thu 08:30-18:30) = Side, Army, Work only. abroad (settings/notify abroad) = everything but Work and Army.
@@ -2220,7 +2232,9 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     walk:{e:"🚶",l:"סמוך לבית",s:"סמוך לבית",sub:"ברגל: סידורים קרובים ושיחות",acc:["place","call","phone"],need:["place","call"],ov:true},
     out:{e:"🚗",l:"בכפר סבא",s:"בכפר סבא",sub:"ברכב: סידורים בעיר ושיחות",acc:["place","call","phone"],need:["place","call"],ov:true},
     house:{e:"🏠",l:"בבית",s:"בבית",sub:"בלי משימות מחשב",acc:["phone","home","lior","family","call"],need:["phone","home","lior","family","call"],ov:true},
-    pc:{e:"💻",l:"על המחשב",s:"על המחשב",sub:"משימות מחשב",acc:["pc","phone","home"],need:["pc"],ov:true}
+    pc:{e:"💻",l:"על המחשב",s:"על המחשב",sub:"משימות מחשב",acc:["pc","phone","home"],need:["pc"],ov:true},
+    // 17.4 (Oren 16.11): driving = only calls. Every task that is a phone call shows at once (still only what is open now). Holds 2 hours.
+    driving:{e:"🚘",l:"נוהג",s:"בנהיגה",sub:"רק שיחות טלפון",acc:["call"],need:["call"],ov:true,hold:120}
   };
   // who a task needs, and in which windows that person is available (Lior: phone from 16:00, in person 21:30-23:00)
   const WITH_OK={lior:["home_am","drive_pm","near_home","light","weekend","sat_am","counsel"],parents:["light","deep","weekend","sat_am"],yaniv:["fri","weekend","sat_am"]};
@@ -2278,7 +2292,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     if(i+1>=L.length){const T=dayWins((n.d+1)%7,planFor(addDays(today,1)));if(T[0]&&T[0][1]===L[i][1]&&T[1])end=hhmm(T[1][0]);}
     return {id:L[i][1],end};}
   function setWin(id){if(!id){winOv=null;try{localStorage.removeItem("sq_win");}catch(e){}}
-    else if(WINS[id]&&WINS[id].ov){const n=ilNow(),endM=(n.m+240)%1440;winOv={id,until:Date.now()+240*60000,end:hhmm(endM)};try{localStorage.setItem("sq_win",JSON.stringify(winOv));}catch(e){}}
+    else if(WINS[id]&&WINS[id].ov){const n=ilNow(),H=WINS[id].hold||240,endM=(n.m+H)%1440;winOv={id,until:Date.now()+H*60000,end:hhmm(endM)};try{localStorage.setItem("sq_win",JSON.stringify(winOv));}catch(e){}}
     else{const n=ilNow(),L=dayWins(n.d,planFor(ilDate()));const k=L.findIndex(x=>x[1]===id&&x[0]>=n.m-240);
       // holds until that window would end today, else two hours
       const endM=k<0?n.m+120:k+1<L.length?L[k+1][0]:1440,ms=Math.max(30,endM-n.m)*60000;
@@ -2353,7 +2367,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   // home = in the house (can sit at the computer) | out = out in Kfar Saba | road = driving | work = Netanya office | tlv | abroad.
   // GPS (when on and away from home) wins for distances; a manual "מחוץ לבית" says he is out.
   const WIN_AT={home_am:"home",errands:"out",drive_am:"road",work:"work",drive_pm:"road",near_home:"out",family:"home",counsel:"tlv",football:"out",
-    light:"home",deep:"home",solo:"home",sleep:"home",fri:"out",sat_am:"home",weekend:"home",abroad:"abroad",walk:"out",out:"out",house:"home",pc:"home"};
+    light:"home",deep:"home",solo:"home",sleep:"home",fri:"out",sat_am:"home",weekend:"home",abroad:"abroad",walk:"out",out:"out",house:"home",pc:"home",driving:"road"};
   const AT_CITY={work:"נתניה",tlv:"תל אביב"};
   // how far a window may send him from where he is (km); null = no limit (errands on the way to Netanya, work)
   const FAR={home_am:3,near_home:6,light:6,deep:6,solo:6,family:6,weekend:12,sat_am:12,walk:0.8,out:9,house:0.5,pc:0.5,fri:20};
@@ -2373,6 +2387,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     let A=W.acc;
     if(t.quest==="army"){if(!armyOk(t,id,at))return false;
       if(id==="weekend"||id==="sat_am")A=armyCls(t)==="ops"?["call","phone","pc","place","home"]:["call","phone","pc"];} // ops all weekend; people only at Motzash (armyOk)
+    if(id==="driving")return howOf(t).includes("call"); // 17.4: driving = every call task
     if(W.ov)return (LOC_INC[id]||[]).includes(locOf(t)); // 13.8: the four place modes go by fit.loc (walk ⊂ car, house ⊂ pc)
     const wd=Array.isArray(f.with)?f.with:[];if(wd.some(p=>WITH_OK[p]&&!WITH_OK[p].includes(id)))return false; // the person it needs isn't available then
     if(W.nopeople&&(f.people===true||(Array.isArray(f.people)&&f.people.some(p=>p!=="lior"))||wd.some(p=>p!=="lior")||howOf(t).includes("call")))return false; // no messages or calls to others before 08:00; Lior is right there (Oren 5.11)
@@ -2399,7 +2414,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   // (sq_put), and every open copy (Safari or the home-screen app) applies it once, if it is from the last 4 hours.
   function applyW(w){const m=ilNow().m;if(w==="drive")w=m<780?"drive_am":"drive_pm";if(w==="home")w=m<1170?"near_home":"light";
     if(w==="auto"||w==="in"){winOv=null;localStorage.removeItem("sq_win");return true;}
-    if(WINS[w]){const ms=(WINS[w].ov?240:w.startsWith("drive")?45:120)*60000;winOv={id:w,until:Date.now()+ms,end:WINS[w].ov?hhmm((m+ms/60000)%1440):""};localStorage.setItem("sq_win",JSON.stringify(winOv));return true;}
+    if(WINS[w]){const ms=(WINS[w].ov?(WINS[w].hold||240):w.startsWith("drive")?45:120)*60000;winOv={id:w,until:Date.now()+ms,end:WINS[w].ov?hhmm((m+ms/60000)%1440):""};localStorage.setItem("sq_win",JSON.stringify(winOv));return true;}
     return false;}
   function remoteW(d){try{if(!d||!d.w||!d.at)return false;const t=Date.parse(d.at);if(!(t>Date.now()-4*3600000))return false;
     if(String(d.at)===(localStorage.getItem("sq_where_at")||""))return false;localStorage.setItem("sq_where_at",String(d.at));
@@ -3071,7 +3086,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   const AI_SPARK='<svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path fill="currentColor" d="M19 14.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z" opacity=".8"/></svg>';
   function winTrio(){const n=ilNow(),L=dayWins(n.d,planFor(ilDate())).filter(x=>x[1]!=="sleep");let i=0;for(let k=0;k<L.length;k++)if(L[k][0]<=n.m)i=k;
     const r=[];if(i>0)r.push(L[i-1]);r.push(L[i]);if(i+1<L.length)r.push(L[i+1]);return r;}
-  function setWMode(m){wMode=m;winMore=false;try{localStorage.setItem("sq_wmode",m);}catch(e){}
+  function setWMode(m){wMode=m;winMore=false;if(m==="pick")pickOpen=true;
     if(m!=="pick"&&winOv){setWin(null);return;}renderCtx();renderList();}
   // 9.6: manual = this mode until he taps "אוטומטי". Manual abroad also turns on the abroad notifications (quiet, no brief), as before.
   function pickMode(m){let ab=false;try{ab=abroadOn();}catch(e){}
@@ -3083,22 +3098,28 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     modeOv=null;try{localStorage.removeItem("sq_mode");}catch(e){}refreshMode(true);toast("✦ אוטומטי: "+MODES[mode].e+" "+MODES[mode].l);renderSettings();}
   function renderCtx(){
     const side=WQ.includes(quest),w=curWin(),W=WINS[w.id],eff=w.manual?"pick":wMode;
-    const seg=(k,l)=>h("button",{type:"button","aria-pressed":eff===k?"true":"false",onclick:()=>setWMode(k)},...[].concat(l));
+    const seg=(k,l,x)=>h("button",{type:"button","aria-pressed":eff===k?"true":"false",...(x||{}),onclick:()=>{if(k==="pick"&&eff==="pick"){pickOpen=!pickOpen;winMore=false;renderCtx();return;}setWMode(k);}},...[].concat(l));
     const kids=[];
     if(side){
-      kids.push(h("div",{class:"wseg w4",role:"group","aria-label":"חלון זמן"},seg("auto",[h("span",{class:"ai-ic","aria-hidden":"true",html:AI_SPARK}),"אוטומטי"]),seg("pick","בחירה"),seg("off","בלי חלונות זמן"),seg("new",["חדש",h("b",{class:"wn"+(newCount()?"":" z"),"aria-label":"לא נקראו"},String(newCount()||0))])));
-      if(eff==="pick"){
+      // 17.4 (Oren 16.11): after a manual pick the menu folds back to the normal bar; the "בחירה" segment then shows the chosen window
+      const pk=eff==="pick"&&!pickOpen&&w.manual&&W?[h("span",{class:"pk-e","aria-hidden":"true"},W.e),h("span",{class:"pk-l"},W.l)]:"בחירה";
+      const nc=newCount();
+      kids.push(h("div",{class:"wseg w4",role:"group","aria-label":"חלון זמן"},seg("auto",[h("span",{class:"ai-ic","aria-hidden":"true",html:AI_SPARK}),"אוטומטי"]),seg("pick",pk,{class:"pk","aria-expanded":eff==="pick"&&pickOpen?"true":"false"}),seg("off","בלי חלונות זמן"),seg("new",["חדש",h("b",{class:"wn"+(nc?"":" z"),"aria-label":"לא נקראו"},String(nc||0))],{class:"nw"+(nc&&eff!=="new"?" has":""),"aria-label":nc?"יש "+nc+" עדכונים חדשים":"חדש"})));
+      if(eff==="pick"&&pickOpen){
         const trio=winTrio(),ids=trio.map(x=>x[1]);
-        const chip=(id,t)=>h("button",{type:"button",class:"wchip","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;setWin(id);wMode="pick";try{localStorage.setItem("sq_wmode","pick");}catch(e){}}},
+        const chip=(id,t)=>h("button",{type:"button",class:"wchip","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;setWin(id);wMode="pick";}},
           h("span",{class:"e","aria-hidden":"true"},WINS[id].e),h("span",{class:"l"},WINS[id].l),t!=null?h("small",null,hhmm(t)):null);
         const other=!ids.includes(w.id)&&!W.ov?w.id:null;
-        const ovb=id=>h("button",{type:"button","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;if(w.id===id){setWin(null);toast("חזרה לחלונות הזמן של היום");return;}setWin(id);wMode="pick";try{localStorage.setItem("sq_wmode","pick");}catch(e){}toast(WINS[id].e+" "+WINS[id].l+": "+WINS[id].sub);}},
+        const ovb=id=>h("button",{type:"button","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;if(w.id===id){setWin(null);toast("חזרה לחלונות הזמן של היום");return;}setWin(id);wMode="pick";toast(WINS[id].e+" "+WINS[id].l+": "+WINS[id].sub);}},
           h("span",{class:"e","aria-hidden":"true"},WINS[id].e),h("span",{class:"l"},WINS[id].l));
+        kids.push(h("button",{type:"button",class:"wdrive","aria-pressed":w.id==="driving"?"true":"false",onclick:()=>{winMore=false;if(w.id==="driving"){setWin(null);toast("חזרה לחלונות הזמן של היום");return;}setWin("driving");wMode="pick";toast("🚘 נוהג: רק שיחות, לשעתיים");}},
+          h("span",{class:"e","aria-hidden":"true"},"🚘"),h("span",{class:"l"},"נוהג"),h("small",null,"רק שיחות טלפון")));
         kids.push(h("div",{class:"wov",role:"group","aria-label":"עוקף את סדר היום"},ovb("walk"),ovb("out"),ovb("house"),ovb("pc")));
         kids.push(h("div",{class:"wchips"},...trio.map(x=>chip(x[1],x[0])),
           h("button",{type:"button",class:"wchip more","aria-expanded":winMore?"true":"false","aria-pressed":other?"true":"false",onclick:()=>{winMore=!winMore;renderCtx();}},
             h("span",{class:"e","aria-hidden":"true"},other?WINS[other].e:"⋯"),h("span",{class:"l"},other?WINS[other].l:"עוד חלונות"),h("small",null,winMore?"▲":"▼"))));
         if(winMore)kids.push(h("div",{class:"wgrid"},...WIN_PICK.map(id=>chip(id,null))));
+        kids.push(h("button",{type:"button",class:"wfold",onclick:()=>{pickOpen=false;winMore=false;renderCtx();}},w.manual?"▲ סגירת התפריט · נשאר "+W.e+" "+W.l:"▲ סגירת התפריט"));
       }
     }
     $("avail").replaceChildren(...kids);
