@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="1.9";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.0";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -196,7 +196,8 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const safe=u=>/^https:\/\//.test(u||"")?u:"";
 const arr=a=>Array.isArray(a)?a:[];
 // 4 categories (Oren 13.11.2026)
-const CATS=[["abroad","✈️","חו״ל"],["project","📁","פרויקטלי"],["meals","🍽️","אש״ל"],["car","🚗","רכב ותחבורה"]];
+// Oren 16.11.2026: abroad = Italy trips (everything incl. project/food/fuel there); the other 3 are in Israel only
+const CATS=[["abroad","✈️🇮🇹","חו״ל"],["project","📁🇮🇱","פרויקטלי"],["meals","🍽️🇮🇱","אש״ל"],["car","🚗🇮🇱","רכב"]];
 // receipt flow: in chat → sent to the work mailbox → submitted on Elbit's network → money back. personal = not Elbit's.
 const ST={open:["לא נשלח","p-bad"],sent:["במייל","p-warn"],submitted:["הוגש","p-hi"],received:["התקבל","p-good"],personal:["פרטי","p-mute"]};
 const ORDER=["open","sent","submitted","received","personal"];
@@ -243,7 +244,7 @@ function group(title,sub,list,trip){if(!list.length)return "";const due=list.fil
     ${due.length>1?`<div class="bulk"><span>הכול:</span><div class="chips c3">${["sent","submitted","received"].map(k=>`<button data-bulk="${k}" data-ids="${esc(due.map(x=>x.id).join(","))}">${ST[k][0]}</button>`).join("")}</div></div>`:""}</div>`;}
 function addRc(){const u=safe(meta.chat_url);return u?`<a class="addrc" href="${esc(u)}" target="_blank" rel="noopener"><b>＋</b><span>קבלה חדשה</span><span>🧾</span></a>`:"";}
 function tab(){return addRc()+tabBody();}
-function tabBody(){const cat=ui.tab,EL=cat==="abroad"?elbitView():"",elbitTrips=new Set(trips().filter(t=>/^elbit-trip-/.test(t.topic_id||"")&&tripRows().some(r=>r.id===t.topic_id)).map(t=>t.id)),E0=exps().filter(x=>(x.cat||"abroad")===cat&&!(EL&&elbitTrips.has(x.trip))).sort((a,b)=>String(b.d||"").localeCompare(String(a.d||"")));
+function tabBody(){const cat=ui.tab,EL=cat==="abroad"?elbitView():"",elbitTrips=new Set(trips().filter(t=>/^elbit-trip-/.test(t.topic_id||"")&&tripRows().some(r=>r.id===t.topic_id)).map(t=>t.id)),E0=exps().filter(x=>(x.cat||"abroad")===cat&&!(EL&&(elbitTrips.has(x.trip)||/^elbit-trip-/.test(x.trip||"")))).sort((a,b)=>String(b.d||"").localeCompare(String(a.d||"")));
   if(!E0.length)return EL||`<div class="empty">אין עדיין הוצאות כאן.<br>שולחים קבלות לצ׳אט והן נכנסות לכאן.</div>`;
   let E=E0;
   const arcE=E.filter(x=>!toSubmit(x)&&!missing(x));E=E.filter(x=>toSubmit(x)||missing(x));const miss=E.filter(missing);let o="";
@@ -340,7 +341,7 @@ function acts(){const R=tripRows(),C=cars(),A=[],K=[],sc=scanRow(),until=x=>((St
   R.forEach(t=>{const st=tState(t),nm=tLabel(t),v=tripTot(t);
     if(st==="open")A.push({k:"ts:"+t.id+":scanned",ic:"🧾",t:"לשלוח קבלות לצ׳אט",s:nm,v:v?ils0(v):"",b:"✓ נשלח"});
     if(st==="scanned")A.push({k:"ts:"+t.id+":submitted",ic:"📤",t:"להגיש באלביט",s:nm+" · הוצאות + אש״ל",v:v?ils0(v):"",b:"✓ הגשתי"});
-    const ask=st==="received"?0:tripWork(t).ask;if(ask)A.push({k:"open:"+t.id,ic:"❓",t:`לסווג ${ask} חיובים: עבודה או פרטי`,s:nm,b:"פתח ›",go:1});
+    const ask=0;if(ask)A.push({k:"open:"+t.id,ic:"❓",t:`לסווג ${ask} חיובים: עבודה או פרטי`,s:nm,b:"פתח ›",go:1});
     if(st==="open"||st==="scanned")arr(t.steps).filter(s=>!s.tx&&!s.done&&!s.superseded&&!["scan","submit","paid","classify"].includes(s.id)).forEach(s=>{const r=stepRow(t,s,nm);(r.wait?K:A).push(r);});});
   C.forEach(c=>{const nm=c.label+" "+c.amt,ic=c.hotel?"🏨":"🚗";
     if(c.state==="bad")A.push({k:"cv:"+c.tx+":submitted",ic:"📤",t:"להגיש לאלביט: "+nm,s:c.info,b:"✓ הגשתי"});
