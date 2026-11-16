@@ -319,8 +319,8 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 .nodup>summary{cursor:pointer;padding:11px 0;font-weight:700;color:var(--muted)}
 .nodup p{margin:0 0 9px;font-size:14px}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=6">
-<script src="dash-sub.js?v=3" defer></script>
+<link rel="stylesheet" href="dash-back.css?v=7">
+<script src="dash-sub.js?v=4" defer></script>
 <script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
@@ -574,12 +574,14 @@ function render(){
   const groups={};V.forEach(p=>{(groups[p.cat]=groups[p.cat]||[]).push(p);});
   h+=`<section id="s-pol"><div class="sh"><h2>הפוליסות</h2><span class="hint">לחיצה פותחת את כל הפרטים</span></div>`;
   if(!V.length)h+=`<div class="card empty">אין פוליסות בסינון הזה</div>`;
-  Object.keys(CATS).filter(c=>groups[c]&&c!=="pension"&&c!=="private").forEach(c=>{
-    const g=groups[c].sort((a,b)=>(a.status==="ended")-(b.status==="ended")||monthly(b)-monthly(a)), sum=g.reduce((s,p)=>s+monthly(p),0);
+  const ENDED=V.filter(p=>p.status==="ended"&&p.cat!=="pension"&&p.cat!=="private");
+  Object.keys(CATS).filter(c=>groups[c]&&c!=="pension"&&c!=="private"&&groups[c].some(p=>p.status!=="ended")).forEach(c=>{
+    const g=groups[c].filter(p=>p.status!=="ended").sort((a,b)=>(a.status==="ended")-(b.status==="ended")||monthly(b)-monthly(a)), sum=g.reduce((s,p)=>s+monthly(p),0);
     h+=`<div class="grp"><div class="gh"><span class="sw" style="background:var(${CATS[c].c})"></span>${CATS[c].i} ${CATS[c].l}<span class="s">${sum?ils(sum)+"/mo":""}</span></div>`+
       g.map(p=>{const st=STATUS[p.status]||STATUS.unknown, worst=(p.flags||[]).map(f=>f.lvl).sort((a,b)=>rank[a]-rank[b])[0];
         return `<button class="pol" data-p="${esc(p.id)}" style="--cc:var(${CATS[c].c})"><span class="ic">${esc(p.icon||CATS[c].i)}</span><span><span class="t">${esc(p.title)}</span><span class="m"><span>${esc(p.insurer||"")}</span><span class="who">${(p.who||[]).map(w=>`<i>${WHO_TAG[w]||w}</i>`).join("")}</span>${p.status!=="active"?`<span class="tag ${st[1]}">${st[0]}</span>`:""}${worst?`<span class="tag ${worst}">${LVL[worst]} ${(p.flags||[]).length}</span>`:""}</span></span><span class="p"><b>${p.status==="per_trip"?ils(p.annual):p.balance!=null&&p.cat==="pension"?ils(p.balance):monthly(p)?ils(monthly(p)):(p.monthly!=null&&+p.monthly===0?"₪0":"?")}</b><small>${p.status==="per_trip"?"בשנה האחרונה":p.balance!=null&&p.cat==="pension"?"צבירה":esc(p.freq_label||"לחודש")}</small></span></button>`;}).join("")+`</div>`;
   });
+  if(ENDED.length)h+=`<details class="sqarch" data-k="ended"><summary>📦 ארכיון: פוליסות שהסתיימו · ${ENDED.length}</summary><div class="ab grp">${ENDED.map(p=>`<button class="pol" data-p="${esc(p.id)}" style="--cc:var(${(CATS[p.cat]||CATS.other).c})"><span class="ic">${esc(p.icon||(CATS[p.cat]||CATS.other).i)}</span><span><span class="t">${esc(p.title)}</span><span class="m"><span>${esc(p.insurer||"")}</span><span class="tag low">הסתיים</span></span></span><span class="p"></span></button>`).join("")}</div></details>`;
   h+=`</section>`;
   $("app").innerHTML=h;
   {const app=$("app"),G=(t)=>{const d=document.createElement("div");d.className="ggrp";d.textContent=t;return d;};

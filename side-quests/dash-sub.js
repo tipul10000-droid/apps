@@ -48,3 +48,12 @@
     if(data)return;data={items:e.data.items.slice(0,10).map(function(i){return{title:String(i.title||"").slice(0,140),what:String(i.what||"").slice(0,240),ago:String(i.ago||"").slice(0,30)};}),more:+e.data.more||0};
     place();new MutationObserver(function(){if(data&&box&&!box.isConnected||data&&box&&box.previousElementSibling&&!box.previousElementSibling.classList.contains("hero"))place();}).observe(document.body,{childList:true});});
 })();
+/* 📦 archive folds (details.sqarch[data-k]): remember open/closed per page, restore after every re-render */
+(function(){var P="sq_arch:"+location.pathname.split("/").pop()+":";
+  function g(k){try{return localStorage.getItem(P+k)==="1";}catch(e){return false;}}
+  function s(k,v){try{v?localStorage.setItem(P+k,"1"):localStorage.removeItem(P+k);}catch(e){}}
+  document.addEventListener("toggle",function(e){var d=e.target;if(d&&d.matches&&d.matches("details.sqarch[data-k]"))s(d.dataset.k,d.open);},true);
+  function fix(root){(root.querySelectorAll?root:document).querySelectorAll("details.sqarch[data-k]").forEach(function(d){if(d.dataset.r)return;d.dataset.r="1";if(g(d.dataset.k))d.open=true;});}
+  function go(){fix(document);new MutationObserver(function(){fix(document);}).observe(document.body,{childList:true,subtree:true});}
+  if(document.body)go();else document.addEventListener("DOMContentLoaded",go);
+})();

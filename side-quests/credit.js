@@ -46,8 +46,10 @@ function tabCards(){const C=cards();let o="";
   if(T.length)o+=`<section><div class="sh"><h2>▶️ פעולות פתוחות</h2><small>${T.length}</small></div><div class="card">${T.map(({c,t})=>`<div class="todo"><span class="w">${esc(WHO[t.who]||"")}</span><span>${c?`<b>${esc(c.short||c.name)} ${esc(digits(c))}:</b> `:""}${esc(t.text)}</span></div>`).join("")}</div></section>`;
   const Q=openQs();
   if(Q.length)o+=`<section><div class="sh"><h2>❓ שאלות אליך</h2><small>${Q.length}</small></div><div style="display:grid;gap:10px">${Q.map(qBlock).join("")}</div></section>`;
-  o+=`<section><div class="sh"><h2>💳 הכרטיסים</h2><small>${live().length} פעילים</small></div><div class="list">${C.map(c=>{const f=feeOf(c);
-    return `<button class="row${c.status==="closed"?" off":""}" data-goc="${esc(c.id)}">${chip(c)}<span class="b"><span class="t">${esc(c.name)} ${esc(c.last4||"")}${c.status==="closed"?'<span class="pill p-bad">נסגר</span>':c.status==="check"?'<span class="pill p-warn">לברר</span>':""}</span><span class="s">${tags(c)}${esc(c.role||"")}</span></span><span class="v">${f==null?"?":f?ils(f):"₪0"}<small>חו״ל ${esc(fxTxt(c))}</small></span></button>`;}).join("")}</div></section>`;
+  const cRow=c=>{const f=feeOf(c);
+    return `<button class="row${c.status==="closed"?" off":""}" data-goc="${esc(c.id)}">${chip(c)}<span class="b"><span class="t">${esc(c.name)} ${esc(c.last4||"")}${c.status==="closed"?'<span class="pill p-bad">נסגר</span>':c.status==="check"?'<span class="pill p-warn">לברר</span>':""}</span><span class="s">${tags(c)}${esc(c.role||"")}</span></span><span class="v">${f==null?"?":f?ils(f):"₪0"}<small>חו״ל ${esc(fxTxt(c))}</small></span></button>`;};
+  const X=C.filter(c=>c.status==="closed");
+  o+=`<section><div class="sh"><h2>💳 הכרטיסים</h2><small>${live().length} פעילים</small></div><div class="list">${live().map(cRow).join("")}</div>${X.length?`<details class="sqarch" data-k="closed"><summary>📦 ארכיון: כרטיסים שנסגרו · ${X.length}</summary><div class="ab"><div class="list">${X.map(cRow).join("")}</div></div></details>`:""}</section>`;
   const L=live();
   o+=`<section><div class="sh"><h2>⚖️ השוואה</h2></div><table class="cmp"><tr><th>כרטיס</th><th>דמי כרטיס</th><th>עמלת מט״ח</th><th>ביטוח נסיעות</th></tr>${L.map(c=>{const f=feeOf(c),tr=(c.ins||{}).travel||{},s=ST[tr.s||"unknown"];
     return `<tr><td><b>${esc(c.short||c.name)}</b> ${esc(c.last4||"")}</td><td>${f==null?'<span class="unk">?</span>':f?ils(f):"₪0"}</td><td>${esc(fxTxt(c))}</td><td class="${s[1]}">${s[0]}</td></tr>`;}).join("")}</table>
@@ -59,8 +61,10 @@ function tabIns(){const L=live();let o="";
     return `<li><b>${esc(c.short||c.name)} ${esc(c.last4||"")}</b> <span class="${s[1]}">${s[0]}</span>${x.note?`<div class="note">${esc(x.note)}</div>`:""}</li>`;}).join("")}</ul></div></section>`;});
   return o;}
 function tabDocs(){let o="";const G=Array.isArray(meta.gather)?meta.gather:[];
-  G.forEach(g=>{o+=`<section><div class="sh"><h2>${esc(g.icon||"📂")} ${esc(g.h)}</h2><small>${(g.items||[]).filter(i=>i.s==="done").length}/${(g.items||[]).length}</small></div><div class="list">${(g.items||[]).map(i=>{const u=safe(i.url);const inner=`<span class="b"><span class="t">${i.s==="done"?"✓ ":""}${esc(i.t)}</span>${i.sub?`<span class="s">${esc(i.sub)}</span>`:""}</span><span class="v">${u?"↗":""}</span>`;
-    return u?`<a class="row${i.s==="done"?" off":""}" href="${esc(u)}" target="_blank" rel="noopener" style="color:inherit;font-weight:inherit">${inner}</a>`:`<div class="row${i.s==="done"?" off":""}" style="cursor:default">${inner}</div>`;}).join("")}</div></section>`;});
+  G.forEach((g,gi)=>{const I=g.items||[],D=I.filter(i=>i.s==="done");const gRow=i=>{const u=safe(i.url);const inner=`<span class="b"><span class="t">${i.s==="done"?"✓ ":""}${esc(i.t)}</span>${i.sub?`<span class="s">${esc(i.sub)}</span>`:""}</span><span class="v">${u?"↗":""}</span>`;
+    return u?`<a class="row${i.s==="done"?" off":""}" href="${esc(u)}" target="_blank" rel="noopener" style="color:inherit;font-weight:inherit">${inner}</a>`:`<div class="row${i.s==="done"?" off":""}" style="cursor:default">${inner}</div>`;};
+    const O=I.filter(i=>i.s!=="done");
+    o+=`<section><div class="sh"><h2>${esc(g.icon||"📂")} ${esc(g.h)}</h2><small>${D.length}/${I.length}</small></div>${O.length?`<div class="list">${O.map(gRow).join("")}</div>`:`<div class="card empty">✓ הכול נאסף</div>`}${D.length?`<details class="sqarch" data-k="g${esc(g.id||gi)}"><summary>📦 ארכיון: נאספו · ${D.length}</summary><div class="ab"><div class="list">${D.map(gRow).join("")}</div></div></details>`:""}</section>`;});
   const R=meta.request;
   if(R&&R.body)o+=`<section><div class="sh"><h2>✉️ ${esc(R.title||"בקשת תנאי כרטיס")}</h2></div><div class="card"><pre class="req">${esc(R.body)}</pre>${R.where?`<p class="note">${esc(R.where)}</p>`:""}<div class="btns"><button data-copy>📋 העתקה</button></div></div></section>`;
   return o||`<div class="card empty">עוד אין</div>`;}
