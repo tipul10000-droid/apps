@@ -137,8 +137,8 @@ svg.chart{width:100%;height:auto;display:block;margin-top:6px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.box b{font-size:15.5px}.box span{font-size:12px}.grid3{gap:6px}.box{padding:7px 8px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=6">
-<script src="dash-sub.js?v=3" defer></script>
+<link rel="stylesheet" href="dash-back.css?v=7">
+<script src="dash-sub.js?v=4" defer></script>
 <script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
@@ -187,6 +187,9 @@ function dm(s){const d=parseD(s);return d?`${d.getDate()}.${d.getMonth()+1}.${St
 function my(s){const d=parseD(s);return d?`${d.getMonth()+1}.${d.getFullYear()}`:"";}
 function until(s){const n=daysTo(s);if(n==null)return "";if(n<0)return "עבר";if(n<45)return "בעוד "+n+" ימים";const m=Math.round(n/30.4);return m<24?"בעוד "+m+" חודשים":"בעוד "+(Math.round(m/12*10)/10)+" שנים";}
 function stepNow(steps){const t=ds(today());let cur=null;(steps||[]).forEach(s=>{if(s.from<=t)cur=s;});return cur||(steps||[])[0]||null;}
+// past rent steps fold into a small archive under the table (Oren 16.11.2026: only what matters now up front)
+function stepTable(steps,cur,k,row){const past=cur?steps.filter(s=>!s.opt&&s.from<cur.from):[],now=steps.filter(s=>!past.includes(s));
+  return `<table class="steps">${now.map(row).join("")}</table>${past.length?`<details class="sqarch" data-k="st${k}" style="margin:6px 0 0"><summary>📦 תקופות קודמות · ${past.length}</summary><div class="ab"><table class="steps">${past.map(row).join("")}</table></div></details>`:""}`;}
 function rentNow(){const t=M.tenant||{};const s=stepNow((t.steps||[]).filter(x=>!x.opt));return s?+s.rent:+t.rent||0;}
 function homeRent(){const s=stepNow(H.steps);return s?+s.rent:0;}
 function mort(){return M.mortgage||{};}
@@ -283,7 +286,7 @@ function renderMotz(){
   h+=`<section><div class="sh"><h2>🔑 השוכר</h2><small>מ-${esc(my(t.since))}</small></div><div class="card">
     <div class="grid3"><div class="box"><span>שכירות היום</span><b class="num">${ils(r)}</b></div><div class="box"><span>החוזה עד</span><b>${esc(dm(t.end))}</b></div><div class="box warn"><span>להודיע אם ממשיכים</span><b>${esc(dm(t.notice_by))}</b></div></div>
     <div class="muted small" style="margin-top:6px">${esc(t.name||"")} · פיקדון ${ils(+t.deposit||0)} במזומן · ${esc(until(t.notice_by))} למועד ההודעה</div>
-    <table class="steps">${steps.map(s=>`<tr class="${cur&&s.from===cur.from?"now":""}${s.opt?" opt":""}"><td>${esc(my(s.from))}${s.opt?" (אופציה של השוכר)":""}</td><td class="num">${ils(+s.rent)}</td></tr>`).join("")}</table>
+    ${stepTable(steps,cur,"t",s=>`<tr class="${cur&&s.from===cur.from?"now":""}${s.opt?" opt":""}"><td>${esc(my(s.from))}${s.opt?" (אופציה של השוכר)":""}</td><td class="num">${ils(+s.rent)}</td></tr>`)}
     <div class="note">${esc(t.note||"")}</div></div></section>`;
   // money
   h+=`<section><div class="sh"><h2>🏦 משכנתא וכסף</h2><small>${esc(m.bank||"")}${m.balance_at?" · יתרה ל-"+esc(dm(m.balance_at)):""}</small></div><div class="card">
@@ -350,12 +353,12 @@ function renderHome(){
   let h=`<section><div class="sh"><h2>🏠 ${esc(H.name||"")}</h2><small>${esc(H.kind||"")}</small></div><div class="card">
     <div style="font-weight:800;font-size:17px">${esc(H.addr||"")}</div>
     <div class="grid3" style="margin-top:8px"><div class="box"><span>שכירות היום</span><b class="num">${ils(rent)}</b></div><div class="box"><span>החוזה עד</span><b>${esc(dm(H.end))}</b></div><div class="box"><span>נשאר</span><b>${esc(until(H.end).replace("בעוד ",""))}</b></div></div>
-    <table class="steps">${(H.steps||[]).map(s=>`<tr class="${cur&&s.from===cur.from?"now":""}"><td>${esc(my(s.from))} · ${esc(s.l||"")}</td><td class="num">${ils(+s.rent)}</td></tr>`).join("")}</table>
+    ${stepTable(H.steps||[],cur,"h",s=>`<tr class="${cur&&s.from===cur.from?"now":""}"><td>${esc(my(s.from))} · ${esc(s.l||"")}</td><td class="num">${ils(+s.rent)}</td></tr>`)}
     <div class="note">${esc(H.checks_note||"")}. ועד בית ${ils(+H.vaad||0)} (מ-2023). ביטוח ${esc(ins.co||"")} ${esc(ins.kind||"")}, ${ils(+ins.annual||0)} בשנה.</div></div></section>`;
   h+=`<section><div class="sh"><h2>💸 כמה עולה לנו לגור</h2><small>בחודש</small></div><div class="card">
     <div class="grid3"><div class="box"><span>שכירות כאן</span><b class="num">${ils(rent)}</b></div><div class="box hi"><span>פחות הנטו ממוצקין</span><b class="num">${ils(net)}</b></div><div class="box"><span>בפועל</span><b class="num">${ils(rent-net)}</b></div></div>
     <div class="note">בשנה: ${ils(rent*12)} שכירות. החוזה נגמר ב-${esc(dm(H.end))}, שנה לפני סוף האופציה של השוכר במוצקין (${esc(dm((M.tenant||{}).option_end))}).</div></div></section>`;
-  h+=`<section><div class="sh"><h2>🧭 איפה גרנו</h2></div><div class="card"><ul class="tl">${[...(H.hist||[]),{y:"2016",l:"קנינו את הדירה במוצקין (בהגרלה; מושכרת מאז 2020)",own:1}].sort((a,b)=>a.y<b.y?-1:a.y>b.y?1:(a.own?1:-1)).map((x,i,a)=>`<li class="${i===a.length-1?"now":"done"}"><span class="d">${esc(x.y)}${x.own?" · 🏢":""}</span>${esc(x.l)}</li>`).join("")}</ul></div></section>`;
+  h+=`<details class="sqarch" data-k="where"><summary>📦 ארכיון: איפה גרנו</summary><div class="ab"><div class="card"><ul class="tl">${[...(H.hist||[]),{y:"2016",l:"קנינו את הדירה במוצקין (בהגרלה; מושכרת מאז 2020)",own:1}].sort((a,b)=>a.y<b.y?-1:a.y>b.y?1:(a.own?1:-1)).map((x,i,a)=>`<li class="${i===a.length-1?"now":"done"}"><span class="d">${esc(x.y)}${x.own?" · 🏢":""}</span>${esc(x.l)}</li>`).join("")}</ul></div></div></details>`;
   return tasksBlock()+h;
 }
 

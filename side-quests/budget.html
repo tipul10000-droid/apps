@@ -157,8 +157,8 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.seg button{font-size:13.5px}.wt{font-size:13px}.wt>*{padding:7px 5px}.brow{grid-template-columns:96px 1fr 62px}}
 @media (prefers-reduced-motion:reduce){.xb,.sheet,.xh .ch{transition:none}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=6">
-<script src="dash-sub.js?v=3" defer></script>
+<link rel="stylesheet" href="dash-back.css?v=7">
+<script src="dash-sub.js?v=4" defer></script>
 <script src="fold.js?v=1" defer></script>
 <script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
@@ -315,7 +315,7 @@ function tabFixed(){const {L,save:sv}=payTotals(),meta=P.meta;
   const miss=arr(meta.missing);
   if(miss.length&&fCat==="all")o+=`<details class="fold2"><summary>חסר בתמונה (${miss.length})</summary><div class="list">${miss.map(x=>`<div class="row"><span class="b"><span class="s" style="color:var(--ink)">○ ${esc(x)}</span></span></div>`).join("")}</div></details>`;
   const E=P.items.filter(p=>p.status==="ended"&&(fCat==="all"||p.cat===fCat));
-  if(E.length)o+=`<details class="fold2"><summary>בוטלו או הוזלו (${E.length})</summary><div class="list">${E.map(p=>`<button class="row" data-p="${esc(p.id)}"><span class="b"><span class="t" style="text-decoration:line-through">${esc(p.name)}</span><span class="s">${esc(shortOf(p.note||""))}</span></span></button>`).join("")}</div></details>`;
+  if(E.length)o+=`<details class="sqarch" data-k="ended"><summary>📦 ארכיון: בוטלו או הוזלו · ${E.length}</summary><div class="list">${E.map(p=>`<button class="row" data-p="${esc(p.id)}"><span class="b"><span class="t" style="text-decoration:line-through">${esc(p.name)}</span><span class="s">${esc(shortOf(p.note||""))}</span></span></button>`).join("")}</div></details>`;
   return o;}
 
 // ---- tab: yearly ----
@@ -328,8 +328,11 @@ function tabYear(){const s=S(),Y=s.yearly||{},YL=arr(s.yearly_lines);
 
 // ---- tab: steps + rules ----
 function tabSteps(){const St=arr(T&&T.steps),grp=[["חודשי",x=>/^חודשי:/.test(x.text)],["שנתי",x=>/^שנתי:/.test(x.text)],["קבוע",x=>!/^(חודשי|שנתי):/.test(x.text)]];let o="";
-  grp.forEach(([h,f])=>{const L=St.filter(f);if(!L.length)return;o+=`<div class="mh"><span>${h}</span></div>`+L.map(x=>`<div class="step${x.done?" done":""}">${xr("s"+x.id,(x.done?"✓ ":"")+shortOf(x.text),esc(String(x.text).replace(/^(חודשי|שנתי):\s*/,"")),{dot:x.done?"good":"hi"})}</div>`).join("");});
-  return `<section><div class="sh"><h2>הצעדים שלך</h2><small>${St.filter(x=>!x.done).length} פתוחים</small></div><div class="list">${o||'<div class="empty">אין צעדים</div>'}</div>
+  const stepRow=x=>`<div class="step${x.done?" done":""}">${xr("s"+x.id,(x.done?"✓ ":"")+shortOf(x.text),esc(String(x.text).replace(/^(חודשי|שנתי):\s*/,"")),{dot:x.done?"good":"hi"})}</div>`;
+  grp.forEach(([h,f])=>{const L=St.filter(f).filter(x=>!x.done);if(!L.length)return;o+=`<div class="mh"><span>${h}</span></div>`+L.map(stepRow).join("");});
+  const D=St.filter(x=>x.done);
+  return `<section><div class="sh"><h2>הצעדים שלך</h2><small>${St.filter(x=>!x.done).length} פתוחים</small></div><div class="list">${o||'<div class="empty">✓ אין צעדים פתוחים</div>'}</div>
+    ${D.length?`<details class="sqarch" data-k="steps"><summary>📦 ארכיון: בוצעו · ${D.length}</summary><div class="ab"><div class="list">${D.map(stepRow).join("")}</div></div></details>`:""}
     <p class="hint">מסמנים צעד שבוצע במשימה "תקציב הבית".</p></section>
   <section><div class="sh"><h2>מה סיכמנו</h2><small>איך סופרים</small></div><div class="list">${RULES.map((r,i)=>xr("r"+i,r[1],esc(r[2]),{em:r[0]})).join("")}</div></section>`;}
 

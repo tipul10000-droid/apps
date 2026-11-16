@@ -85,3 +85,13 @@ details.more>div{margin-top:4px;line-height:1.45;animation:moreIn .22s ease-out}
 .embed .hero .chatbtn{top:11px}
 .embed .hero .in:has(.chatbtn:not([hidden])) h1{padding-inline-end:136px}
 .embed .hero .in:has(.chatbtn:not([hidden])) h1::after{left:84px}
+/* 📦 archive (Oren 16.11.2026, every dashboard): done / closed / not relevant now stays in the data but folds here.
+   <details class="sqarch" data-k="key"><summary>📦 ארכיון · N</summary><div class="ab">…</div></details>
+   dash-sub.js keeps it open across re-renders when he opened it. */
+details.sqarch{margin:14px 0 6px}
+details.sqarch>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--muted,#7a7a7a);font-weight:800;font-size:14px;padding:10px 2px;user-select:none;-webkit-tap-highlight-color:transparent}
+details.sqarch>summary::-webkit-details-marker{display:none}
+details.sqarch>summary::after{content:"▾";margin-inline-start:auto;transition:transform .2s}
+details.sqarch[open]>summary::after{transform:rotate(180deg)}
+details.sqarch>.ab{animation:sqarchgrow .22s ease-out;opacity:.85}
+@keyframes sqarchgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:.85;transform:none}}

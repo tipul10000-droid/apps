@@ -131,8 +131,8 @@ section{margin-bottom:22px}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.stats b{font-size:15px}}
 </style>
-<link rel="stylesheet" href="dash-back.css?v=6">
-<script src="dash-sub.js?v=3" defer></script>
+<link rel="stylesheet" href="dash-back.css?v=7">
+<script src="dash-sub.js?v=4" defer></script>
 <script src="fold.js?v=1" defer></script>
 <script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
@@ -202,7 +202,9 @@ function renderHome(){$("hero").innerHTML=heroHome();
   let h=`<div class="rule">🔒 מכאן לא מתקינים כלום. כל כלי נבדק (מה הוא מבטיח מול מה שיש בריפו, בטיחות, כוכבים), ומותקן רק אם תבקש בצ׳אט.</div>`;
   if(ui.f==="all")h+=`<section><div class="sh"><h2>🎬 הסרטונים</h2><small>${V.length}</small></div>${V.length?`<div class="vids">${V.map(vidRow).join("")}</div>`:`<div class="card empty">${loaded?"עוד אין":"טוען…"}</div>`}
     <button class="addrow" data-add>＋ סרטון או סקיל חדש<small>מדביקים לינק, והבדיקה נעשית בצ׳אט</small></button></section>`;
-  h+=`<section><div class="sh"><h2>🧩 הכלים</h2><small>${S.length}</small></div>${S.length?`<div class="tlist">${S.map(skillRow).join("")}</div>`:`<div class="card empty">${loaded?"אין כאלה":"טוען…"}</div>`}</section>`;
+  // not recommended and not installed = not relevant now → folded archive (Oren 16.11.2026)
+  const NO=x=>inst(x)==="no"&&rec(x)==="no",SA=S.filter(x=>!NO(x)),SN=S.filter(NO);
+  h+=`<section><div class="sh"><h2>🧩 הכלים</h2><small>${SA.length}</small></div>${SA.length?`<div class="tlist">${SA.map(skillRow).join("")}</div>`:`<div class="card empty">${loaded?"אין כאלה":"טוען…"}</div>`}${SN.length?`<details class="sqarch" data-k="no"><summary>📦 ארכיון: לא כדאי להתקין · ${SN.length}</summary><div class="ab"><div class="tlist">${SN.map(skillRow).join("")}</div></div></details>`:""}</section>`;
   $("app").innerHTML=h;}
 
 // ---------- skill ----------
