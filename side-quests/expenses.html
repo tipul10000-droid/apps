@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.2";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.3";</script>
 <script src="sq-db.js?v=9"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -323,14 +323,15 @@ function stateChips(t,cur){return `<div class="dec c3 st3">${["scanned","submitt
 function tripCard(t,inl){const st=tState(t),L=itemsOf(t),w=tripWork(t),on=inl||ui.trip===t.id;
   const ask=L.filter(i=>!i.dec&&i.auto==="ask"),special=L.filter(i=>!i.dec&&i.auto==="special"),mine=L.filter(i=>i.dec),aw=L.filter(i=>!i.dec&&i.auto==="work"),ap=L.filter(i=>!i.dec&&i.auto==="private");
   const extra=arr(t.steps).filter(s=>!s.tx&&!s.superseded&&!["submit","paid","classify"].includes(s.id));
-  const v=tripTot(t),sub=[v?(st==="received"?"הוחזר ":"💭 ")+ils0(v):"",w.ask?w.ask+" לסיווג":""].filter(Boolean).join(" · ");
-  let o=inl?`<div class="trip inl">${calcLine(t)}`:`<div class="trip${special.length?" red":""}" id="tr-${esc(t.id)}"><button class="th" data-trip="${esc(t.id)}"><span class="b"><span class="t">${nameH(t)}</span><span class="s">${esc(sub)}</span></span></button>${calcLine(t)}<div class="tsel">${stateChips(t,st)}</div>`;
+  const cls=st==="open",v=tripTot(t),sub=[v?(st==="received"?"הוחזר ":"💭 ")+ils0(v):"",cls&&w.ask?w.ask+" לסיווג":""].filter(Boolean).join(" · ");
+  let o=inl?`<div class="trip inl">${calcLine(t)}`:`<div class="trip${cls&&special.length?" red":""}" id="tr-${esc(t.id)}"><button class="th" data-trip="${esc(t.id)}"><span class="b"><span class="t">${nameH(t)}</span><span class="s">${esc(sub)}</span></span></button>${calcLine(t)}<div class="tsel">${stateChips(t,st)}</div>`;
   if(on){o+=`<div class="tb">${t.stand&&!L.length?`<p class="stand">${esc(t.stand)}</p>`:""}`;
     if(st==="submitted")o+=depBox(t);
     if(!inl)extra.forEach(s=>{o+=`<div class="irow"><span class="b"><span class="t" style="white-space:normal">${esc(s.text)}</span></span><span class="dec" style="width:76px;grid-template-columns:1fr"><button data-step="${esc(s.id)}" data-t="${esc(t.id)}" class="${s.done?"on":""}">${s.done?"✓ טופל":"טופל"}</button></span></div>`;});
-    if(special.length)o+=`<div class="lab" style="color:var(--bad)">🚨 חריג</div>`+special.map(i=>irow(i,t)).join("");
+    // 2.3 (Oren 16.11.2026): classification only before the receipts were scanned; after that nothing to classify, no past classifications shown
+    if(cls){if(special.length)o+=`<div class="lab" style="color:var(--bad)">🚨 חריג</div>`+special.map(i=>irow(i,t)).join("");
     if(ask.length)o+=`<div class="lab">❓ לסיווג</div>`+ask.map(i=>irow(i,t)).join("");
-    o+=fold("סיווגת · לעריכה",mine,t)+fold("להגשה · לבדיקה ושינוי",aw,t)+fold("פרטי · לבדיקה ושינוי",ap,t);
+    o+=fold("סיווגת · לעריכה",mine,t)+fold("להגשה · לבדיקה ושינוי",aw,t)+fold("פרטי · לבדיקה ושינוי",ap,t);}
     if(t.topic_id||1)o+=`<div style="margin-top:8px;font-size:13px"><a href="./#t=${encodeURIComponent(t.id)}" target="_top">משימה ›</a></div>`;
     o+="</div>";}
   return o+"</div>";}
