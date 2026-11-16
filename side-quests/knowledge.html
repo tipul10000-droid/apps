@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2E3A87">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.4";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.5";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ידע ותחומי עניין</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -128,10 +128,31 @@ section{margin-bottom:22px}
 .toast.on{display:block}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}}
+/* 1.5: work mode (knowledge.html?w=1 = "ידע עבודה", Work Quest, collection work_knowledge) */
+:root.work{--hero:#0F3B66;--hero2:#2E6FB0;--mark:#2E6FB0;--hi:#2E6FB0;--hi-soft:#E3EEF9;--link:#1F5C99}
+@media (prefers-color-scheme: dark){:root.work:not([data-theme="light"]){--hero:#0C2A49;--hero2:#1E4F80;--hi:#8CC0F2;--hi-soft:#16304A;--link:#9CCBF5}}
+:root.work[data-theme="dark"]{--hero:#0C2A49;--hero2:#1E4F80;--hi:#8CC0F2;--hi-soft:#16304A;--link:#9CCBF5}
+/* guide tab: structured sections (rows/steps/list/text/img) */
+.gsec{margin-bottom:18px}
+.gsec .intro{font-size:15.5px;line-height:1.55;margin:0 2px 8px}
+.rows{display:flex;flex-direction:column}
+.rows .r{padding:9px 2px}.rows .r+.r{border-top:1px solid var(--line)}
+.rows .k{font-family:var(--f-display);font-weight:800;font-size:15px}
+.rows .v{font-size:15px;line-height:1.5;margin-top:2px}
+.rows .nt{font-size:13.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+.rows .tg{display:inline-block;border-radius:999px;padding:0 8px;font-size:12px;font-weight:800;margin-inline-start:6px;vertical-align:1px}
+.tg.must{background:var(--warn-soft);color:var(--warn)}.tg.have{background:var(--good-soft);color:var(--good)}.tg.nice{background:var(--hi-soft);color:var(--hi)}
+.steps{list-style:none;margin:0;padding:0;counter-reset:st}
+.steps li{display:flex;gap:10px;padding:9px 2px;font-size:15.5px;line-height:1.5;counter-increment:st}
+.steps li+li{border-top:1px solid var(--line)}
+.steps li::before{content:counter(st);flex:none;width:24px;height:24px;border-radius:50%;background:var(--hi);color:#fff;font-size:13px;font-weight:800;display:grid;place-items:center;margin-top:1px}
+.blist{margin:0;padding-inline-start:20px}.blist li{margin:6px 0;font-size:15.5px;line-height:1.5}
+.gtext{font-size:15.5px;line-height:1.6;white-space:pre-line}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=6">
 <script src="dash-sub.js?v=3" defer></script>
 <script src="fold.js?v=1" defer></script>
+<script>if(/[?&]w=1(&|$)/.test(location.search)){document.documentElement.classList.add("work");document.title="ידע עבודה";}</script>
 <script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -147,12 +168,14 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safe=u=>/^https:\/\//.test(u||"")?u:"";
-const CHAT_FALLBACK="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCP8PxHfsHUsPUT2rYVhCcMkF";
+const W=/[?&]w=1(&|$)/.test(location.search); // 1.5: work mode = "ידע עבודה" (Work Quest), own collection
+const COLL=W?"work_knowledge":"knowledge",NAME=W?"ידע עבודה":"ידע ותחומי עניין",EMO=W?"🧠💼":"🧠";
+const CHAT_FALLBACK=W?"https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCPFut6bNPYni2kcFxSvNxMKd":"https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCP8PxHfsHUsPUT2rYVhCcMkF";
 // default topics; _meta.topics [{id,label,icon}] can add more
-const TOPICS0=[["health","בריאות","🩺"],["mind","פסיכולוגיה ונפש","🧠"],["relations","זוגיות ומשפחה","💞"],["parenting","הורות","🧸"],["tech","טכנולוגיה","💻"],["ai","AI","✨"],["money","כסף","💰"],["work","עבודה וניהול","📈"],["science","מדע","🔬"],["history","היסטוריה","🏛️"],["life","חיים","🌱"],["other","אחר","📌"]];
+const TOPICS0=W?[["sim","סימולציה ומאמנים","🛩️"],["audio","אודיו והקלטות שטח","🎙️"],["aircraft","פלטפורמות ותעופה","🚁"],["eng","הנדסה ומערכות","⚙️"],["pm","ניהול פרויקטים","📋"],["customer","לקוחות ושותפים","🤝"],["tools","כלים ותוכנה","🧰"],["other","אחר","📌"]]:[["health","בריאות","🩺"],["mind","פסיכולוגיה ונפש","🧠"],["relations","זוגיות ומשפחה","💞"],["parenting","הורות","🧸"],["tech","טכנולוגיה","💻"],["ai","AI","✨"],["money","כסף","💰"],["work","עבודה וניהול","📈"],["science","מדע","🔬"],["history","היסטוריה","🏛️"],["life","חיים","🌱"],["other","אחר","📌"]];
 const PLAT={x:"X (טוויטר)",web:"אתר",youtube:"יוטיוב",instagram:"אינסטגרם",tiktok:"טיקטוק",facebook:"פייסבוק",article:"כתבה",book:"ספר",podcast:"פודקאסט",linkedin:"לינקדאין"};
 let items={},meta={},db=null,loaded=false;
-const UI_KEY="sq_kn_ui";let ui={topic:"all",lang:"both",tab:"ins",q:""};
+const UI_KEY=W?"sq_wkn_ui":"sq_kn_ui";let ui={topic:"all",lang:"both",tab:"ins",q:""};
 try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
 ui.q="";
 function saveUi(){try{const {q,...r}=ui;localStorage.setItem(UI_KEY,JSON.stringify(r));}catch(e){}}
@@ -172,11 +195,11 @@ function match(x,q){if(!q)return true;q=q.toLowerCase();return [x.title,x.summar
 // ---------- hero ----------
 function heroHome(){const T=all("ticket"),tp=new Set(T.map(x=>x.topic||"other"));
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
-  <h1>🧠 ידע ותחומי עניין</h1>
+  <h1>${EMO} ${NAME}</h1>
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis"><div class="kpi"><b>${T.length}</b><span>פיסות ידע</span></div><div class="kpi"><b>${tp.size}</b><span>תחומים</span></div><div class="kpi"><b>${T.filter(x=>x.fav).length}</b><span>מועדפים</span></div></div>`;}
 function heroTicket(x){const tp=topicOf(x.topic),ch=chatOf(x);
-  const back=`<button class="sqhome sqsub" type="button" data-home data-title="${esc((x.icon||"💡")+" "+(x.short||x.title))}" data-chat="${esc(ch)}"><span class="ar">→</span><span class="em">🧠</span><span>כל הידע</span></button>`;
+  const back=`<button class="sqhome sqsub" type="button" data-home data-title="${esc((x.icon||"💡")+" "+(x.short||x.title))}" data-chat="${esc(ch)}"><span class="ar">→</span><span class="em">${EMO}</span><span>${W?"כל ידע העבודה":"כל הידע"}</span></button>`;
   return `<div class="top">${back}<span class="back">${tp[2]} ${esc(tp[1])}</span></div>
   <h1>${esc(x.icon||"💡")} ${esc(x.title)}</h1>
   <a class="kchat" href="${esc(ch||safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span class="ic">💬</span><span>${ch?"השיחה על הפיסה הזו":"פתיחת שיחה על הפיסה"}<small>${ch?"לשאול, להעמיק ולהוסיף מקורות":"עוד אין שיחה משלה, נפתח בצ׳אט הכללי"}</small></span></a>
@@ -218,9 +241,20 @@ function tabText(x){const P=x.parts||[];if(!P.length)return `<div class="empty">
   ${x.text_note?`<div class="note">${esc(x.text_note)}</div>`:""}`;}
 function renderTicket(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"לא נמצא":"טוען…"}</div>`;$("bar").innerHTML="";return;}
   $("hero").innerHTML=heroTicket(x);
-  $("bar").innerHTML=`<div class="seg"><button data-tab="ins" class="${ui.tab!=="text"?"on":""}">💡 תובנות</button><button data-tab="text" class="${ui.tab==="text"?"on":""}">📜 הטקסט המלא</button></div>`;
+  const TB=[["ins","💡 תובנות"]];if((x.guide||[]).length)TB.push(["guide","📋 המדריך"]);if((x.parts||[]).length||!(x.guide||[]).length)TB.push(["text","📜 הטקסט המלא"]);
+  const tab=TB.some(t=>t[0]===ui.tab)?ui.tab:"ins";
+  $("bar").innerHTML=`<div class="seg">${TB.map(([k,l])=>`<button data-tab="${k}" class="${tab===k?"on":""}">${l}</button>`).join("")}</div>`;
   const acts=`<div class="acts"><button data-fav class="${x.fav?"on":""}">${x.fav?"⭐ מועדף":"☆ מועדף"}</button><button data-share>📤 לשתף</button></div>`;
-  $("app").innerHTML=acts+(ui.tab==="text"?tabText(x):tabIns(x));}
+  $("app").innerHTML=acts+(tab==="text"?tabText(x):tab==="guide"?tabGuide(x):tabIns(x));}
+function tabGuide(x){/* 1.5: guide[{h, icon, intro, img{url,caption}, rows[{k,v,note,tag: must|have|nice}], steps[], list[], text}] */
+  const TG={must:"חסר, לקנות",have:"יש",nice:"מומלץ"};
+  return (x.guide||[]).map(g=>{let b="";
+    if(g.img&&safe(g.img.url))b+=`<figure class="kimg" style="margin-bottom:10px"><a href="${esc(g.img.url)}" target="_blank" rel="noopener"><img src="${esc(g.img.url)}" alt="${esc(g.img.caption||"")}" loading="lazy"></a>${g.img.caption?`<figcaption>${esc(g.img.caption)}</figcaption>`:""}</figure>`;
+    if((g.rows||[]).length)b+=`<div class="rows">${g.rows.map(r=>`<div class="r"><div class="k">${esc(r.k)}${r.tag&&TG[r.tag]?`<span class="tg ${esc(r.tag)}">${TG[r.tag]}</span>`:""}</div>${r.v?`<div class="v">${esc(r.v)}</div>`:""}${r.note?`<div class="nt">${esc(r.note)}</div>`:""}${safe(r.url)?`<div class="nt"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url_label||"לינק")}</a></div>`:""}</div>`).join("")}</div>`;
+    if((g.steps||[]).length)b+=`<ol class="steps">${g.steps.map(t=>`<li><span>${esc(t)}</span></li>`).join("")}</ol>`;
+    if((g.list||[]).length)b+=`<ul class="blist">${g.list.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`;
+    if(g.text)b+=`<div class="gtext">${esc(g.text)}</div>`;
+    return `<section class="gsec"><div class="sh"><h2>${esc((g.icon?g.icon+" ":"")+g.h)}</h2></div>${g.intro?`<p class="intro">${esc(g.intro)}</p>`:""}<div class="card">${b}</div></section>`;}).join("");}
 function chatOf(x){/* 1.3: every piece has its own chat (Oren 15.11.2026) */const u=safe(x.chat_url);if(u)return u;const l=(x.links||[]).find(l=>l&&/^שיחה/.test(l.label||"")&&safe(l.url));return l?safe(l.url):"";}
 function shareText(x){const U=srcs(x).map(s=>safe(s.url)).filter(Boolean);
   return [`${x.icon||"💡"} ${x.title}`,x.tldr||x.summary||"",...(x.insights||[]).slice(0,5).map((i,n)=>`${n+1}. ${i.h}`),U.length?"\nמקורות: "+U.join(" "):""].filter(Boolean).join("\n");}
@@ -231,7 +265,7 @@ let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on
 async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
 async function upd(id,patch,msg){const prev=JSON.parse(JSON.stringify(items[id]||{}));items[id]=Object.assign({},items[id],patch);const y=scrollY;render();scrollTo(0,y);
   if(!db){toast("אין חיבור, לא נשמר");return;}
-  try{await db.collection("knowledge").doc(id).update(patch);toast(msg||"נשמר");}catch(e){items[id]=prev;render();toast("לא נשמר, נסה שוב");}}
+  try{await db.collection(COLL).doc(id).update(patch);toast(msg||"נשמר");}catch(e){items[id]=prev;render();toast("לא נשמר, נסה שוב");}}
 window.addEventListener("hashchange",()=>{render();scrollTo(0,0);});
 function keepPut(sel,fn){/* a tapped button stays put (rule 6.11) */const b=document.querySelector(sel),top=b?b.getBoundingClientRect().top:0;fn();const nb=document.querySelector(sel);if(b&&nb)scrollBy(0,nb.getBoundingClientRect().top-top);}
 document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
@@ -247,13 +281,14 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
     toast(await copy(t)?"הסיכום הועתק, אפשר להדביק בוואטסאפ":"לא הצלחתי להעתיק");return;}
   if(g("[data-add]")){const u=(prompt("הדבק לינק או טקסט (פוסט, כתבה, סרטון)")||"").trim();if(!u)return;if(!db){toast("אין חיבור");return;}
     const m=u.match(/https:\/\/\S+/);const url=m?m[0]:"";const id="k"+Date.now().toString(36);
-    try{await db.collection("knowledge").doc(id).set({kind:"ticket",title:url?"פיסת ידע חדשה":u.slice(0,100),icon:"💡",topic:ui.topic==="all"?"other":ui.topic,status:"new",source:{url},parts:[],insights:[],created_at:now,updated_at:now,log:[{at:now,text:"נפתח מהדשבורד"}]});
-      const ok=await copy(`פיסת ידע חדשה בדשבורד הידע (id ${id}): ${u}\nתקרא את כל המקור, תביא את הטקסט המלא באנגלית ובעברית בצורה סדורה, תסכם, תוציא תובנות ומה אפשר לעשות עם זה, ותמלא את הטיקט.`);
+    try{await db.collection(COLL).doc(id).set({kind:"ticket",title:url?"פיסת ידע חדשה":u.slice(0,100),icon:"💡",topic:ui.topic==="all"?"other":ui.topic,status:"new",source:{url},parts:[],insights:[],created_at:now,updated_at:now,log:[{at:now,text:"נפתח מהדשבורד"}]});
+      const ok=await copy(`פיסת ידע חדשה בדשבורד ${NAME} (id ${id}): ${u}\nתקרא את כל המקור, תביא את הטקסט המלא באנגלית ובעברית בצורה סדורה, תסכם, תוציא תובנות ומה אפשר לעשות עם זה, ותמלא את הטיקט.`);
       toast(ok?"נוסף. הבקשה הועתקה, הדבק בשיחה":"נוסף");setTimeout(()=>window.open(safe(meta.chat_url)||CHAT_FALLBACK,"_blank","noopener"),700);goHash("t="+encodeURIComponent(id));}catch(err){toast("לא נשמר");}return;}
 });
+if(W){document.querySelector('meta[name="theme-color"]').content="#0F3B66";}
 render();
 window.claude.use("db").then(d=>{db=d;if(!db)return;
-  db.collection("knowledge").onSnapshot(s=>{loaded=true;const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else n[x.id]=v;});items=n;render();},()=>{});
+  db.collection(COLL).onSnapshot(s=>{loaded=true;const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else n[x.id]=v;});items=n;render();},()=>{});
 });
 })();
 </script>
