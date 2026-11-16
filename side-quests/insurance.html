@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="2.4";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="2.5";</script>
 <script src="sq-db.js?v=9"></script>
 <script src="dash-lock.js?v=1"></script>
 <title>ביטוחים ופיננסים</title>
@@ -183,6 +183,14 @@ table.cov{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
 .stp .ok{font-weight:800;color:#1d7a45}
 .flcl summary{cursor:pointer;font-weight:800;font-size:13.5px;color:var(--muted);padding:6px 2px}
 .flcl .al{opacity:.7}
+.pvr{width:100%;background:none;border:0;font:inherit;color:inherit;text-align:start;cursor:pointer;align-items:center}.pvgo{font-size:22px;color:var(--muted);flex:none}
+body.asub .bar,body.asub .kpis,body.asub #stages,body.asub #snote,body.asub .docsbtn{display:none!important}
+.asum{margin:0 2px 12px;color:var(--muted);font-size:14.5px;line-height:1.5}
+.akp{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:2px;padding:6px}.akp>div{padding:10px}.akp span{display:block;font-size:12.5px;color:var(--muted)}.akp b{display:block;font-size:22px;line-height:1.2}.akp small{display:block;font-size:12px;color:var(--muted)}
+.ppc{padding:14px}.pps{display:flex;gap:10px;align-items:flex-end;height:190px}.pp{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0;text-align:center}.pb{width:70%;max-width:70px;background:color-mix(in srgb,var(--c-pension) 45%,transparent);border-radius:8px 8px 3px 3px}.pp.me .pb{background:var(--c-pension)}.pv{font-weight:800;font-size:14px;margin-bottom:3px}.pl{font-size:12.5px;font-weight:700;margin-top:5px}.pd{font-size:11.5px;color:var(--muted)}.pnote{margin:12px 0 0;font-size:13px;color:var(--muted);line-height:1.5}
+.fin{width:100%;border-collapse:collapse;font-size:14px}.fin th,.fin td{padding:8px 10px;text-align:start;border-bottom:1px solid var(--line)}.fin th{font-size:12.5px;color:var(--muted)}.fin td.neg{color:#C0392B}.fin td:last-child{color:var(--muted);font-size:12.5px}
+.ains,.aups{padding:4px 12px}.ai,.au{display:flex;gap:10px;padding:10px 0}.ai+.ai,.au+.au{border-top:1px solid var(--line)}.aic{font-size:20px;flex:none}.ai b,.au b{display:block;font-size:14.5px}.ai span,.au span{display:block;font-size:13.5px;color:var(--muted);line-height:1.45}.aud{flex:none;width:58px;font-size:12.5px;color:var(--muted);font-weight:700;padding-top:2px}.au a{font-size:13px}.au .num{color:inherit;font-weight:700}
+.akv{margin-top:16px;padding:12px}
 .ggrp{font-size:13px;font-weight:900;letter-spacing:.02em;color:var(--muted);margin:14px 2px -4px;border-bottom:1px solid var(--line);padding-bottom:4px}
 
 /* retirement */
@@ -348,7 +356,7 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const safe=u=>/^https:\/\//.test(u||"")?u:"";
 const ils=n=>n==null||isNaN(n)?"?":"₪"+Math.round(n).toLocaleString("en-US");
 
-const CATS={health:{l:"בריאות",i:"🩺",c:"--c-health"},life:{l:"חיים ומשכנתא",i:"🕊️",c:"--c-life"},nursing:{l:"סיעודי",i:"🤝",c:"--c-nursing"},car:{l:"רכב",i:"🚗",c:"--c-car"},home:{l:"דירה",i:"🏠",c:"--c-home"},travel:{l:"נסיעות",i:"✈️",c:"--c-travel"},hmo:{l:"קופת חולים",i:"🏥",c:"--c-nursing"},pension:{l:"פנסיה וחיסכון",i:"📈",c:"--c-pension"},accident:{l:"תאונות",i:"🩹",c:"--c-other"},other:{l:"אחר",i:"📄",c:"--c-other"}};
+const CATS={health:{l:"בריאות",i:"🩺",c:"--c-health"},life:{l:"חיים ומשכנתא",i:"🕊️",c:"--c-life"},nursing:{l:"סיעודי",i:"🤝",c:"--c-nursing"},car:{l:"רכב",i:"🚗",c:"--c-car"},home:{l:"דירה",i:"🏠",c:"--c-home"},travel:{l:"נסיעות",i:"✈️",c:"--c-travel"},hmo:{l:"קופת חולים",i:"🏥",c:"--c-nursing"},pension:{l:"פנסיה וחיסכון",i:"📈",c:"--c-pension"},private:{l:"השקעות פרטיות",i:"🌱",c:"--c-pension"},accident:{l:"תאונות",i:"🩹",c:"--c-other"},other:{l:"אחר",i:"📄",c:"--c-other"}};
 const WHO={all:"כולם",oren:"אורן",lior:"ליאור",kids:"ילדים",family:"משפחתי",cars:"רכבים",home:"דירה"};
 const WHO_TAG={oren:"אורן",lior:"ליאור",kids:"ילדים",family:"משפחה"};
 const STATUS={active:["פעיל","okk"],check:["לבדוק","mid"],ended:["הסתיים","low"],per_trip:["לפי נסיעה","low"],unknown:["לא ידוע","low"],cancel:["בביטול","mid"]};
@@ -426,6 +434,10 @@ function drawFund(VV){if(VV)FS.V=VV;
   box.querySelectorAll("[data-hr]").forEach(i=>{i.oninput=()=>{const b=i.parentNode.querySelector("b");if(b)b.textContent=i.dataset.hr==="amt"?ils(+i.value):i.value;};i.onchange=()=>{FS[i.dataset.hr]=+i.value;drawFund();};});
 }
 function render(){
+  const am=location.hash.match(/^#a=([\w-]+)/), ap=am&&data.pol.find(p=>p.id===am[1]&&p.inv);
+  document.body.classList.toggle("asub",!!ap);
+  if(ap){renderAsset(ap);return;}
+  {const b=document.querySelector(".hero .sqsub");if(b)b.remove();}
   chips();
   const V=visible(), act=V.filter(p=>p.status!=="ended");
   const m=act.reduce((s,p)=>s+monthly(p),0);
@@ -433,7 +445,7 @@ function render(){
   const flags=[];
   (data.meta.flags||[]).forEach(f=>{if(fWho==="all"||!f.who||f.who.includes(fWho)){const p=f.pid&&data.pol.find(x=>x.id===f.pid);flags.push(p?{...f,p}:f);}});
   const rank={high:0,mid:1,low:2};flags.sort((a,b)=>(rank[a.lvl]??3)-(rank[b.lvl]??3));
-  $("k-month").textContent=ils(m);$("k-year").textContent=ils(m*12);$("k-count").textContent=act.filter(p=>p.status!=="per_trip").length;$("k-alerts").textContent=flags.filter(f=>!f.closed&&f.lvl!=="low").length;
+  $("k-month").textContent=ils(m);$("k-year").textContent=ils(m*12);$("k-count").textContent=act.filter(p=>p.status!=="per_trip"&&p.cat!=="private").length;$("k-alerts").textContent=flags.filter(f=>!f.closed&&f.lvl!=="low").length;
   const meta=data.meta;
   if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
   // הלינק לשיחה נשמר בנתונים (_meta.chat_url), לא בקוד.
@@ -544,6 +556,14 @@ function render(){
       `<div class="lnr"><div class="lnb"><b>רווח מהקנייה</b><span>עלות ${ils(PF.cost)} · מס 25% ברווח</span></div><div class="lnv"><b class="inv-d ${g>=0?"up":"dn"}">${sg(g)}</b><span>${pc(g/PF.cost)}</span></div></div></div></section>`;
     if(!window.INV_REQ){window.INV_REQ=1;fetch("https://emgtyfksnofzzlutngbf.supabase.co/functions/v1/sq-quote?s="+PF.holdings.map(x=>x.sym).join(",")).then(r=>r.json()).then(j=>{if(j&&j.fx&&j.fx.p){window.INV_LIVE=j;render();}}).catch(()=>{});}
   }
+  // 2.5 (Oren 16.11): private holdings (crowdfunding equity), each with its own sub page (#a=<id>)
+  const PV=V.filter(p=>p.cat==="private"&&p.inv&&p.status!=="ended");
+  if(PV.length){
+    const tv=PV.reduce((a,p)=>a+pvVal(p).ils,0), tc=PV.reduce((a,p)=>a+(+p.inv.ils||0),0);
+    h+=`<section id="s-priv"><div class="sh"><h2>השקעות פרטיות</h2><span class="hint">שווי לפי הסבב האחרון ${ils(tv)}</span></div><div class="card">`+
+      PV.map(p=>{const v=pvVal(p),I=p.inv;return `<button class="lnr pvr" data-a="${esc(p.id)}"><div class="lnb"><b>${esc(p.icon||"🌱")} ${esc(p.short||p.title)}</b><span>${I.shares} מניות × ${gbp(v.px,2)} · ${esc(I.platform||"")}</span></div><div class="lnv"><b>${ils(v.ils)}</b><span class="inv-d ${v.chg>=0?"up":"dn"}"><bdi dir="ltr">${(v.chg>=0?"+":"")+(v.chg*100).toFixed(1)}%</bdi> מהעלות</span></div><span class="pvgo">‹</span></button>`;}).join("")+
+      `</div></section>`;
+  }
   // 2.2 (Oren 9.11): loans, from the cash-flow debits (_meta.loans)
   const LN=meta.loans;
   if(LN&&(LN.items||[]).length&&(fWho==="all"||fWho==="oren"||fWho==="family")){
@@ -554,7 +574,7 @@ function render(){
   const groups={};V.forEach(p=>{(groups[p.cat]=groups[p.cat]||[]).push(p);});
   h+=`<section id="s-pol"><div class="sh"><h2>הפוליסות</h2><span class="hint">לחיצה פותחת את כל הפרטים</span></div>`;
   if(!V.length)h+=`<div class="card empty">אין פוליסות בסינון הזה</div>`;
-  Object.keys(CATS).filter(c=>groups[c]&&c!=="pension").forEach(c=>{
+  Object.keys(CATS).filter(c=>groups[c]&&c!=="pension"&&c!=="private").forEach(c=>{
     const g=groups[c].sort((a,b)=>(a.status==="ended")-(b.status==="ended")||monthly(b)-monthly(a)), sum=g.reduce((s,p)=>s+monthly(p),0);
     h+=`<div class="grp"><div class="gh"><span class="sw" style="background:var(${CATS[c].c})"></span>${CATS[c].i} ${CATS[c].l}<span class="s">${sum?ils(sum)+"/mo":""}</span></div>`+
       g.map(p=>{const st=STATUS[p.status]||STATUS.unknown, worst=(p.flags||[]).map(f=>f.lvl).sort((a,b)=>rank[a]-rank[b])[0];
@@ -563,13 +583,14 @@ function render(){
   h+=`</section>`;
   $("app").innerHTML=h;
   {const app=$("app"),G=(t)=>{const d=document.createElement("div");d.className="ggrp";d.textContent=t;return d;};
-   const ORD=[["s-stage"],["s-liq"],["s-flags"],["🛡️ ביטוחים","s-cov"],["s-dup"],["s-cost"],["s-pol"],["💼 פנסיה, חיסכון והשקעות","s-sav"],["s-ret"],["s-kids"],["s-inv"],["s-loans"]];
+   const ORD=[["s-stage"],["s-liq"],["s-flags"],["🛡️ ביטוחים","s-cov"],["s-dup"],["s-cost"],["s-pol"],["💼 פנסיה, חיסכון והשקעות","s-sav"],["s-ret"],["s-kids"],["s-inv"],["s-priv"],["s-loans"]];
    ORD.forEach(o=>{const id=o[o.length-1],e=$(id);if(!e)return;if(o.length>1)app.appendChild(G(o[0]));app.appendChild(e);});}
   bindRet();bindKids();drawFund(V);
   if($("more"))$("more").onclick=()=>{showAll=!showAll;render();};
-  const J=[["s-liq","נזיל"],["s-flags","ממצאים"],["s-cov","מפת כיסוי"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-pol","פוליסות"],["s-sav","פנסיה"],["s-ret","פרישה"],["s-kids","ילדים"],["s-inv","השקעות"],["s-loans","הלוואות"]].filter(([i])=>$(i));
+  const J=[["s-liq","נזיל"],["s-flags","ממצאים"],["s-cov","מפת כיסוי"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-pol","פוליסות"],["s-sav","פנסיה"],["s-ret","פרישה"],["s-kids","ילדים"],["s-inv","השקעות"],["s-priv","פרטיות"],["s-loans","הלוואות"]].filter(([i])=>$(i));
   $("jump").innerHTML=J.map(([i,l])=>`<a href="#${i}">${l}</a>`).join("");
   $("app").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openPol(b.dataset.p));
+  $("app").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{location.hash="a="+b.dataset.a;});
   $("app").querySelectorAll("[data-cov]").forEach(b=>b.onclick=()=>{const r=cov[+b.dataset.cov];$("covnote").innerHTML=`<b>${esc(r.risk)}:</b> ${esc(r.note||"")}`;$("covnote").scrollIntoView({block:"nearest",behavior:"smooth"});});
   $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}ביטוח ${esc(window.INS_BUILD)}`;
 }
@@ -682,6 +703,40 @@ function bindKids(){
   $("kpar").onclick=()=>{KR.par=!(KR.par??true);saveKR();upd();};
 }
 
+// ---- 2.5: private holding sub page ----
+const gbp=(n,d)=>n==null||isNaN(n)?"?":"£"+(+n).toLocaleString("en-US",{minimumFractionDigits:d??0,maximumFractionDigits:d??0});
+function pvVal(p){const I=p.inv,px=+((I.last||{}).price||I.entry),g=px*I.shares,fx=+(I.fx_now||I.fx||4),il=g*fx;return {px,gbp:g,ils:il,chg:g/(+I.total||+I.invested)-1,fx};}
+function renderAsset(p){
+  const I=p.inv,v=pvVal(p),pts=I.points||[],fd=d=>{const x=String(d||"").split("-");return x.length===3?`${+x[2]}.${+x[1]}.${x[0].slice(2)}`:x.length===2?`${+x[1]}.${x[0]}`:esc(d||"");};
+  const top=document.querySelector(".hero .top");
+  if(top&&!top.querySelector(".sqsub")){const b=document.createElement("button");b.type="button";b.className="sqhome sqsub";b.dataset.title=p.short||p.title;if(safe(p.chat_url))b.dataset.chat=p.chat_url;
+    b.innerHTML='<span class="ar">→</span><span class="em">🛡️</span><span>ביטוחים ופיננסים</span>';b.onclick=()=>{history.replaceState(null,"",location.pathname+location.search);render();scrollTo(0,0);};top.prepend(b);}
+  const mx=Math.max(...pts.map(x=>+x.p),v.px)*1.08;
+  const bars=pts.map(x=>`<div class="pp${x.me?" me":""}"><span class="pv">${gbp(x.p,2)}</span><span class="pb" style="height:${(x.p/mx*100).toFixed(1)}%"></span><span class="pl">${esc(x.l)}</span><span class="pd">${fd(x.d)}${x.v?` · שווי ${gbp(x.v)}M`:""}</span></div>`).join("");
+  const ups=(p.updates||[]).slice().sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+  const L=(p.links||[]).filter(l=>safe(l.url));
+  $("app").innerHTML=`<section id="s-asset"><div class="sh"><h2>${esc(p.icon||"🌱")} ${esc(p.title)}</h2><span class="hint">${esc(p.as_of?("נכון ל-"+fd(p.as_of)):"")}</span></div>
+  ${p.summary?`<p class="asum">${esc(p.summary)}</p>`:""}
+  <div class="card akp">
+    <div><span>שווי עכשיו</span><b>${ils(v.ils)}</b><small>${gbp(v.gbp,2)} · לפי ${esc((I.last||{}).src||"מחיר הכניסה")}</small></div>
+    <div><span>שילמת</span><b>${ils(I.ils)}</b><small>${gbp(I.total,2)} כולל עמלה ${gbp(I.fee,2)}</small></div>
+    <div><span>שינוי</span><b class="inv-d ${v.chg>=0?"up":"dn"}"><bdi dir="ltr">${(v.chg>=0?"+":"")+(v.chg*100).toFixed(1)}%</bdi></b><small>${v.chg<0?"בגלל העמלה בלבד":"מעל העלות"}</small></div>
+    <div><span>מניות</span><b>${I.shares}</b><small>במחיר ${gbp(I.entry,2)} · ${esc(I.share_class||"")}</small></div>
+    <div><span>דיבידנדים</span><b>${(I.dividends||[]).length?gbp((I.dividends||[]).reduce((a,d)=>a+(+d.amt||0),0),2):"אין"}</b><small>${esc(I.div_note||"")}</small></div>
+    <div><span>שווי החברה</span><b>${I.val_m?gbp(I.val_m,1)+"M":"?"}</b><small>${esc(I.val_note||"")}</small></div>
+  </div>
+  <div class="sh" style="margin-top:16px"><h2>נקודות מחיר למניה</h2><span class="hint">סבבי גיוס, אין מסחר יומי</span></div>
+  <div class="card ppc"><div class="pps">${bars}</div>${I.price_note?`<p class="pnote">${esc(I.price_note)}</p>`:""}</div>
+  ${(I.fin||[]).length?`<div class="sh" style="margin-top:16px"><h2>מספרי החברה</h2><span class="hint">מתוך עמודי הגיוס</span></div><div class="card"><table class="fin"><thead><tr><th>שנה</th><th>הכנסות</th><th>EBITDA</th><th></th></tr></thead><tbody>${I.fin.map(r=>`<tr><td>${esc(r.y)}</td><td>${r.rev!=null?gbp(r.rev,1)+"M":"?"}</td><td class="${r.ebitda<0?"neg":""}">${r.ebitda!=null?(r.ebitda<0?"−":"")+gbp(Math.abs(r.ebitda),2)+"M":"?"}</td><td>${esc(r.n||"")}</td></tr>`).join("")}</tbody></table></div>`:""}
+  ${(p.insights||[]).length?`<div class="sh" style="margin-top:16px"><h2>תובנות ומה אפשר לעשות</h2></div><div class="card ains">${p.insights.map(x=>`<div class="ai"><span class="aic">${esc(x.i||"💡")}</span><div><b>${esc(x.t)}</b>${x.d?`<span>${esc(x.d)}</span>`:""}</div></div>`).join("")}</div>`:""}
+  ${ups.length?`<div class="sh" style="margin-top:16px"><h2>עדכונים</h2><span class="hint">${ups.length} אירועים</span></div><div class="card aups">${ups.map(u=>`<div class="au"><span class="aud">${fd(u.at)}</span><div><b>${esc(u.t)}</b>${u.d?`<span>${esc(u.d)}</span>`:""}${safe(u.url)?` <a href="${esc(safe(u.url))}" target="_blank" rel="noopener">${esc(u.src||"מקור")} ↗</a>`:u.src?`<small> · ${esc(u.src)}</small>`:""}</div></div>`).join("")}</div>`:""}
+  ${(I.rewards||[]).length?`<div class="sh" style="margin-top:16px"><h2>הטבות משקיע</h2></div><div class="card aups">${I.rewards.map(r=>`<div class="au"><span class="aud">${esc(r.until?("עד "+fd(r.until)):"")}</span><div><b>${esc(r.t)}</b>${r.code?`<span class="num" dir="ltr">${esc(r.code)}</span>`:""}</div></div>`).join("")}</div>`:""}
+  <div class="card akv"><dl class="kv">${[["תאריך השקעה",fd(I.date)],["פלטפורמה",I.platform],["חיוב",I.card_note],["סוג מניות",I.share_class],["הקלת מס",I.eis],["שער המרה בקנייה",I.fx?("₪"+(+I.fx).toFixed(3)+" לפאונד"):""]].filter(r=>r[1]).map(r=>`<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("")}</dl>
+  ${L.length?`<div class="lnks">${L.map(l=>`<a class="lnk" href="${esc(safe(l.url))}" target="_blank" rel="noopener">${({mail:"✉️",login:"🔑",chat:"💬",page:"🌐"})[l.kind]||"🔗"} ${esc(l.label)}</a>`).join("")}</div>`:""}</div>
+  </section>`;
+  $("jump").innerHTML="";
+}
+addEventListener("hashchange",()=>{if(data)render();scrollTo(0,0);});
 function openPol(id){
   const p=data.pol.find(x=>x.id===id);if(!p)return;
   const c=CATS[p.cat]||CATS.other, st=STATUS[p.status]||STATUS.unknown, m=monthly(p);
