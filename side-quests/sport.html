@@ -6,14 +6,14 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0E6152">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SPORT_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SPORT_BUILD="2.0";</script>
 <script src="sq-db.js?v=9"></script>
-<title>ספורט, כושר ותזונה</title>
+<title>בריאות, כושר ותזונה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
 <style>
-/* דשבורד ספורט, כושר ותזונה: אימונים קבועים (עם תזכורות ב-Side Quests), הנתונים שלי, יעדי תזונה ונתונים מאפל הלת׳.
-   נתונים: sq_docs (app=sidequests, collection=sport): מסמך לכל אימון/פעילות + _meta (פרופיל, משקלים, יעד, נתוני אפל). */
+/* 2.0 (16.11.2026): דשבורד בריאות, כושר ותזונה (היה: ספורט). 4 לשוניות: סקירה, בריאות, כושר, תזונה.
+   נתונים: sq_docs (app=sidequests, collection=sport): מסמך לכל אימון/פעילות + _meta (פרופיל, משקלים, יעד, health, well = הניתוח, well_ans = תשובות). */
 :root{
   --bg:#F3F7F5; --surface:#FFFFFF; --sunk:#E6EEEA; --ink:#14221D; --muted:#5A6B64; --line:#D5E1DB;
   --hero:#0E6152; --hero2:#2E9E6E; --art:url(img/art-sport.svg); --mark:#F2A93B; --hero-ink:#F1FBF6; --hero-muted:#BFE6D5; --accent:#FFD166; --accent-ink:#3A2700;
@@ -133,6 +133,89 @@ section{margin-bottom:22px}
 .toast.on{display:block}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.nums b{font-size:19px}}
+/* 2.0 well-being: rating scale, overview, insight rows, sparklines, day timeline, questions, places */
+:root{--r5:#1F8A5B;--r5s:#DCF2E6;--r4:#2C8C8C;--r4s:#DBF0EF;--r3:#B08A12;--r3s:#F7EDCC;--r2:#C2661B;--r2s:#FBE5D2;--r1:#B83A2E;--r1s:#F8DCD8;--nb:#2F7BEA;--nbs:#E8F0FD}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--r5:#5CC88E;--r5s:#16301F;--r4:#5FC4C4;--r4s:#123131;--r3:#E2C25A;--r3s:#332A10;--r2:#F0A060;--r2s:#3A2614;--r1:#F07A6E;--r1s:#3A1A17;--nb:#7FB0F5;--nbs:#16233A}}
+:root[data-theme="dark"]{--r5:#5CC88E;--r5s:#16301F;--r4:#5FC4C4;--r4s:#123131;--r3:#E2C25A;--r3s:#332A10;--r2:#F0A060;--r2s:#3A2614;--r1:#F07A6E;--r1s:#3A1A17;--nb:#7FB0F5;--nbs:#16233A}
+.rt{display:inline-block;font-size:12.5px;font-weight:800;border-radius:999px;padding:1px 10px;white-space:nowrap;vertical-align:1px}
+.rt5{background:var(--r5s);color:var(--r5)}.rt4{background:var(--r4s);color:var(--r4)}.rt3{background:var(--r3s);color:var(--r3)}.rt2{background:var(--r2s);color:var(--r2)}.rt1{background:var(--r1s);color:var(--r1)}
+.rtw{background:var(--r2s);color:var(--r2);margin-inline-start:4px}
+.scale{display:flex;gap:3px;margin:8px 0 2px}.scale i{flex:1;height:7px;border-radius:4px;background:var(--sunk)}
+.scale i.on5{background:var(--r5)}.scale i.on4{background:var(--r4)}.scale i.on3{background:var(--r3)}.scale i.on2{background:var(--r2)}.scale i.on1{background:var(--r1)}
+.scl{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:700}
+.big{display:flex;gap:14px;align-items:center}
+.big .ring{flex:none;width:76px;height:76px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:15px;text-align:center;line-height:1.1;border:6px solid currentColor}
+.big .ring.c5{color:var(--r5)}.big .ring.c4{color:var(--r4)}.big .ring.c3{color:var(--r3)}.big .ring.c2{color:var(--r2)}.big .ring.c1{color:var(--r1)}
+.big .ring span{color:var(--ink)}.big .ring span.l{font-size:12.5px}
+.big b{font-family:var(--f-display);font-size:17px;line-height:1.3;display:block}
+.areas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.area{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center;cursor:pointer;min-width:0;font:inherit;color:inherit}
+.area .e{font-size:24px;display:block}.area b{display:block;font-family:var(--f-display);font-size:14.5px;margin:2px 0 4px;white-space:nowrap}
+.area small{display:block;font-size:12px;color:var(--muted);margin-top:5px;line-height:1.3}
+/* one-line insight rows: the line stays put, the detail opens below */
+.rows{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.xr{border-top:1px solid var(--line)}.xr:first-child{border-top:0}
+.xr>summary{list-style:none;display:flex;align-items:flex-start;gap:10px;padding:11px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.xr>summary::-webkit-details-marker{display:none}
+.xr>summary .ic{flex:none;font-size:20px;line-height:1.3;width:26px;text-align:center}
+.xr>summary .tx{flex:1;min-width:0;font-weight:700;font-size:15px;line-height:1.4}
+.xr>summary .tx small{display:block;font-weight:600;color:var(--muted);font-size:12.5px;margin-top:1px}
+.xr>summary::after{content:"▾";flex:none;color:var(--muted);font-size:12px;margin-top:4px;transition:transform .2s}
+.xr[open]>summary::after{transform:rotate(180deg)}
+.xr .bd{padding:0 14px 12px 14px;padding-inline-start:50px;font-size:14.5px;line-height:1.55;color:var(--ink);animation:moreIn .22s ease-out}
+.xr .bd .lnk{display:inline-block;margin-top:6px;font-size:13.5px}
+.nw{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--nb);margin-inline-end:6px;vertical-align:1px;box-shadow:0 0 0 3px var(--nbs)}
+.newbox{background:var(--nbs);border:1.5px solid var(--nb);border-radius:16px;padding:12px 14px}
+.newbox .h{display:flex;align-items:center;gap:8px;margin-bottom:4px}.newbox .h b{font-family:var(--f-display);font-size:16px}
+.newbox .h small{color:var(--muted);font-size:12.5px}
+.newbox .t{font-weight:800;font-size:16px;line-height:1.35;margin-top:2px}.newbox .d{font-size:14.5px;line-height:1.5;margin-top:4px}
+.newbox .nav{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:10px;background:var(--surface)}
+.newbox .nav button{flex:1;border:0;background:none;padding:7px;font-weight:800;font-size:14px;cursor:pointer}
+.newbox .nav button+button{border-inline-start:1px solid var(--line)}
+.newbox .nav span{flex:1.2;text-align:center;align-self:center;font-size:13px;color:var(--muted);font-weight:700;border-inline-start:1px solid var(--line);padding:7px 0}
+/* metric card */
+.mets{display:grid;gap:10px}
+.met{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.met .hd{display:flex;align-items:flex-start;gap:10px}
+.met .ic{flex:none;width:40px;height:40px;border-radius:12px;background:var(--sunk);display:grid;place-items:center;font-size:21px}
+.met .nm{font-weight:800;font-size:15px}.met .vv{font-family:var(--f-display);font-size:24px;font-weight:800;line-height:1.15;direction:ltr;unicode-bidi:isolate}
+.met .vv small{font-family:var(--f-body);font-size:13px;font-weight:700;color:var(--muted);margin-inline-start:4px}
+.met .one{font-size:14.5px;line-height:1.45;margin-top:6px;font-weight:600}
+.met .nr{font-size:12.5px;color:var(--muted);margin-top:3px}
+.spark{display:block;width:100%;height:46px;margin-top:8px}
+.sparkl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-weight:700;direction:ltr}
+/* day timeline */
+.tl{display:flex;height:30px;border-radius:10px;overflow:hidden;border:1px solid var(--line);direction:ltr}
+.tl i{display:block;height:100%;min-width:2px}
+.tll{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:700;direction:ltr;margin-top:3px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;font-weight:700;margin-top:8px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:-1px}
+.k-home{background:#F2C14E}.k-work{background:#7F8FA6}.k-road{background:#B8C2CF}.k-fam{background:#F08A3C}.k-lior{background:#E26D9A}.k-me{background:#9B7BE0}.k-sleep{background:#3B5BA9}
+/* meals */
+.meal{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line)}.meal:first-child{border-top:0}
+.meal .tm{flex:none;width:92px;font-weight:800;font-size:13px;direction:ltr;text-align:right;color:var(--muted);padding-top:2px}
+.meal b{display:block;font-size:15px}.meal span{font-size:13.5px;color:var(--muted);line-height:1.45}
+.meal.k-fast b{color:var(--muted)}
+/* questions */
+.qs{display:grid;gap:10px}
+.qq{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.qq .q{font-weight:800;font-size:15px;line-height:1.4}
+.ops{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:9px}
+.ops button{flex:1 1 33%;min-width:0;border:0;border-top:1px solid var(--line);border-inline-start:1px solid var(--line);background:none;padding:9px 6px;font-weight:700;font-size:14px;cursor:pointer;margin:-1px 0 0 -1px}
+.ops button.on{background:var(--good-soft);color:var(--good)}
+.qq .ans{margin-top:8px;font-size:14px;color:var(--good);font-weight:700}
+.qq .fr{display:block;width:100%;margin-top:9px;border:1px dashed var(--line);border-radius:12px;background:none;padding:10px;font-weight:700;font-size:14px;cursor:pointer;color:var(--link)}
+/* places */
+.pl{display:grid;gap:10px}
+.spot{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line)}.spot:first-of-type{border-top:0}
+.spot .ic{flex:none;font-size:20px;width:26px;text-align:center}
+.spot b{font-size:15px}.spot .km{font-size:12.5px;color:var(--muted);font-weight:700;margin-inline-start:6px}
+.spot p{margin:2px 0 0;font-size:13.5px;line-height:1.45;color:var(--muted)}
+.spot .lk{display:flex;gap:14px;font-size:13.5px;margin-top:3px}
+.link3{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.link3 a{flex:1;text-align:center;padding:10px 4px;font-size:14px}
+.link3 a+a{border-inline-start:1px solid var(--line)}
+@media (max-width:380px){.areas{gap:6px}.area b{font-size:13.5px}.seg button{font-size:13.5px}.meal .tm{width:78px}}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=7">
 <script src="dash-sub.js?v=4" defer></script>
@@ -155,22 +238,33 @@ const safe=u=>/^https:\/\//.test(u||"")?u:"";
 const CHAT_FALLBACK="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCPYEJ2jyeGvj2cEaqCvFRgUc";
 const DAYS=["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"],DAYL=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
 const ST={fixed:["קבוע","b-fixed"],aspire:["בשאיפה","b-aspire"],todo:["לברר","b-todo"]};
+const RT={5:"מצוין",4:"טוב מאוד",3:"טוב",2:"סביר",1:"לא טוב"};
+const AREA={health:["❤️","בריאות"],fit:["🏃","כושר וספורט"],food:["🥗","תזונה"]};
+const MON="JFMAMJJASOND",MONH=["ינו","פבר","מרץ","אפר","מאי","יונ","יול","אוג","ספט","אוק","נוב","דצמ"];
 let items={},meta={},db=null,loaded=false;
-const UI_KEY="sq_sport_ui";let ui={sec:"train"};
+const UI_KEY="sq_sport_ui",SEEN_KEY="sq_well_seen";let ui={sec:"home"};
 try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
+if(!["home","health","fit","food"].includes(ui.sec))ui.sec="home";
 function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
+/* "new" = newer than the previous visit; the marks stay for this whole visit */
+let prevSeen="";try{prevSeen=localStorage.getItem(SEEN_KEY)||"";}catch(e){}
+let feedI=0;
+const W=()=>meta.well||{};
+const rt=(r,flag)=>r?`<span class="rt rt${r}">${RT[r]}</span>${flag?`<span class="rt rtw">⚠ ${esc(flag)}</span>`:""}`:"";
 
 function acts(){return Object.entries(items).map(([id,v])=>({id,...v})).filter(x=>!x._deleted&&x.title&&(x.kind||"activity")==="activity")
   .sort((a,b)=>(a.order||99)-(b.order||99));}
 const hm=s=>{const m=String(s||"").match(/^(\d{1,2}):(\d{2})$/);return m?(+m[1])*60+(+m[2]):null;};
 function ilNow(){const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Jerusalem",weekday:"short",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date());
   const g=k=>(p.find(x=>x.type===k)||{}).value;const d={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[g("weekday")];return {d,m:(+g("hour")%24)*60+(+g("minute"))};}
-// the next fixed or aspired session from now
 function nextAct(){const n=ilNow();let best=null;
   for(const a of acts()){if(a.status==="todo")continue;const t=hm(a.time);for(const d of a.days||[]){
     let k=(d-n.d+7)%7;if(k===0&&t!=null&&t<=n.m)k=7;const score=k*1440+(t||0);if(!best||score<best.score)best={a,d,k,score};}}
   return best;}
 function whenTxt(b){return (b.k===0?"היום":b.k===1?"מחר":"ב"+DAYL[b.d])+(b.a.time?" "+b.a.time:"");}
+function ago(iso){const t=Date.parse(iso);if(!t)return "";const h=(Date.now()-t)/36e5;
+  if(h<1)return "עכשיו";if(h<24)return "לפני "+Math.round(h)+" ש׳";const d=Math.round(h/24);return d===1?"אתמול":"לפני "+d+" ימים";}
+const isNew=it=>it&&it.at&&(!prevSeen||it.at>prevSeen);
 
 // ---------- numbers ----------
 function prof(){const p=meta.profile||{};return {w:+p.weight||95,h:+p.height||189,age:+p.age||42,male:p.sex!=="f"};}
@@ -181,7 +275,7 @@ function calc(){const p=prof(),hl=meta.health||{},g=meta.goal||{};
   const tdee=apple||Math.round(bmr*1.45/10)*10;
   const mode=g.mode||"cut",def=+g.deficit||500;
   const kcal=mode==="cut"?Math.round((tdee-def)/10)*10:tdee;
-  const prot=Math.round(p.w*1.8/5)*5,fat=Math.round(p.w*0.8/5)*5;
+  const prot=+g.protein||Math.round(p.w*1.7/5)*5,fat=Math.round(p.w*0.8/5)*5;
   const carb=Math.max(0,Math.round((kcal-prot*4-fat*9)/4/5)*5);
   const hrmax=Math.round(208-0.7*p.age);
   return {p,bmi,bmr,tdee,apple:!!apple,kcal,mode,def,prot,fat,carb,hrmax,
@@ -189,15 +283,93 @@ function calc(){const p=prof(),hl=meta.health||{},g=meta.goal||{};
     water:Math.round(p.w*35/100)/10,fiber:Math.round(kcal*14/1000)};}
 function bmiCat(b){return b<18.5?"תת משקל":b<25?"משקל תקין":b<30?"עודף משקל":"השמנה";}
 
-// ---------- hero ----------
-function hero(){const c=calc(),nx=nextAct(),A=acts().filter(a=>a.status!=="todo");
-  const perWeek=A.reduce((s,a)=>s+(a.days||[]).length,0);
-  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
-  <h1>🏃 ספורט ותזונה</h1>
-  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
-  <div class="kpis"><div class="kpi"><b>${nx?esc(nx.a.icon||"🏃")+" "+esc(whenTxt(nx)):"—"}</b><span>האימון הבא</span></div><div class="kpi"><b>${perWeek}</b><span>אימונים בשבוע</span></div><div class="kpi"><b>${c.bmi.toFixed(1)}</b><span>BMI · ${esc(c.p.w)} ק״ג</span></div></div>`;}
+// ---------- small views ----------
+function scale(r){return `<div class="scale" aria-hidden="true">${[1,2,3,4,5].map(i=>`<i class="${i<=r?"on"+r:""}"></i>`).join("")}</div><div class="scl"><span>לא טוב</span><span>סביר</span><span>טוב</span><span>טוב מאוד</span><span>מצוין</span></div>`;}
+function spark(m){const s=(m.series||[]).map(Number);if(s.length<3)return "";
+  const band=m.norm_band,all=s.concat(band||[]),lo=Math.min(...all),hi=Math.max(...all),mx=hi+(hi-lo)*.15,mn=Math.max(0,lo-(hi-lo)*.6);
+  const H=46,Wd=120,bw=Wd/s.length,y=v=>H-(v-mn)/(mx-mn)*H;
+  const r=m.r||3,col=`var(--r${r})`;
+  let g=band?`<rect x="0" y="${y(band[1]).toFixed(1)}" width="${Wd}" height="${(y(band[0])-y(band[1])).toFixed(1)}" fill="var(--good-soft)"/>`:"";
+  g+=s.map((v,i)=>`<rect x="${(i*bw+bw*.18).toFixed(1)}" y="${y(v).toFixed(1)}" width="${(bw*.64).toFixed(1)}" height="${(H-y(v)).toFixed(1)}" rx="1.5" fill="${col}" opacity="${i===s.length-1?1:.45}"/>`).join("");
+  const st=MON.indexOf(m.s0||"D"),lab=i=>MONH[(st+i)%12];
+  return `<svg class="spark" viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none" aria-hidden="true">${g}</svg><div class="sparkl"><span>${lab(0)}</span><span>${band?"▭ טווח רצוי":""}</span><span>${lab(s.length-1)}</span></div>`;}
+function xr(icon,h,sub,body,open,nw){return `<details class="xr"${open?" open":""}><summary><span class="ic">${icon||"•"}</span><span class="tx">${nw?'<span class="nw"></span>':""}${esc(h)}${sub?`<small>${sub}</small>`:""}</span></summary><div class="bd">${body}</div></details>`;}
+function metCard(m){return `<div class="met" id="m-${esc(m.id)}"><div class="hd"><div class="ic">${esc(m.icon||"•")}</div><div style="flex:1;min-width:0">
+  <div class="nm">${esc(m.name)} ${rt(m.r,m.flag)}</div><div class="vv">${esc(m.v)}<small>${esc(m.u||"")}</small></div></div></div>
+  <div class="one">${esc(m.h)}</div>${m.norm?`<div class="nr">📏 ${esc(m.norm)}</div>`:""}${spark(m)}
+  ${m.d?`<details class="more"><summary>למה ומה עושים</summary><div>${esc(m.d)}${m.link&&AREA[m.link]?`<br><a href="#" data-go="${esc(m.link)}">${AREA[m.link][0]} ${esc(m.link_t||AREA[m.link][1])} ←</a>`:""}</div></details>`:""}</div>`;}
+function recsFor(area){const n=ilNow(),R=(W().recs||[]);
+  return R.filter(r=>(!area||r.area===area)&&(!r.dow||r.dow.includes(n.d))).sort((a,b)=>(a.dow?0:1)-(b.dow?0:1)||(a.pri||9)-(b.pri||9));}
+function recRows(list){return `<div class="rows">${list.map(r=>xr(r.icon,r.h,r.dow?"היום":"",esc(r.d||""))).join("")}</div>`;}
+function questions(){const Q=W().questions||[],A=meta.well_ans||{};if(!Q.length)return "";
+  const open=Q.filter(q=>A[q.id]==null||A[q.id]===""||(Array.isArray(A[q.id])&&!A[q.id].length)),done=Q.length-open.length;
+  const card=q=>{const a=A[q.id],arr=Array.isArray(a)?a:(a!=null?[a]:[]);
+    return `<div class="qq"><div class="q">${esc(q.q)}</div>
+    ${q.opts?`<div class="ops">${q.opts.map(o=>`<button data-qa="${esc(q.id)}" data-v="${esc(o)}" class="${arr.includes(o)?"on":""}">${arr.includes(o)?"✓ ":""}${esc(o)}</button>`).join("")}</div>`:""}
+    ${q.free||q.opts?`<button class="fr" data-qf="${esc(q.id)}">${q.free?"✍️ לכתוב תשובה":"✍️ משהו אחר"}</button>`:""}
+    ${arr.length&&(q.free||arr.some(x=>!(q.opts||[]).includes(x)))?`<div class="ans">✓ ${esc(arr.filter(x=>!(q.opts||[]).includes(x)).join(", "))}</div>`:""}</div>`;};
+  return `<section id="qs"><div class="sh"><h2>❓ שאלות כדי לדייק</h2><small>${done?`ענית על ${done} מתוך ${Q.length}`:Q.length+" שאלות"}</small></div>
+    <div class="qs">${open.slice(0,3).map(card).join("")}</div>${open.length>3?`<details class="more"><summary>עוד ${open.length-3} שאלות</summary><div class="qs" style="margin-top:8px">${open.slice(3).map(card).join("")}</div></details>`:""}
+    ${done?`<details class="more"><summary>ענית על ${done} (אפשר לשנות)</summary><div class="qs" style="margin-top:8px">${Q.filter(q=>!open.includes(q)).map(card).join("")}</div></details>`:""}
+    <div class="note">התשובות נשמרות כאן, ואני מעדכן לפיהן את הניתוח וההמלצות.</div></section>`;}
+function placesSec(){const P=W().places;if(!P||!(P.sets||[]).length)return "";
+  const ic={run:"🏃",walk:"🚶",rec:"♨️"};
+  return `<section><div class="sh"><h2>📍 לרוץ וללכת בסביבה</h2><small>${esc(P.updated||"")}</small></div>
+    ${P.note?`<div class="note" style="margin:-4px 2px 8px">${esc(P.note)}</div>`:""}<div class="pl">${P.sets.map(s=>`<div class="card"><b style="font-family:var(--f-display);font-size:16px">${esc(s.icon||"📍")} ${esc(s.title)}</b>${s.when?` <span class="muted" style="font-size:13px">· ${esc(s.when)}</span>`:""}
+    ${(s.spots||[]).map(p=>{const q=p.q||p.n;return `<div class="spot"><span class="ic">${ic[p.t]||"📍"}</span><div style="min-width:0"><b>${esc(p.n)}</b>${p.km?`<span class="km">${esc(p.km)}</span>`:""}<p>${esc(p.d||"")}</p>
+      <div class="lk"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}" target="_blank" rel="noopener">📍 מפה</a><a href="https://www.google.com/search?udm=2&q=${encodeURIComponent(q)}" target="_blank" rel="noopener">📷 תמונות</a></div></div></div>`;}).join("")}</div>`).join("")}</div></section>`;}
 
-// ---------- training ----------
+// ---------- hero ----------
+function hero(){const w=W(),o=w.overall||{},nx=nextAct();
+  const nNew=(w.feed||[]).filter(isNew).length;
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${w.as_of?"עודכן "+esc(w.as_of):""}</span></div>
+  <h1>🫀 בריאות, כושר ותזונה</h1>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
+  <div class="kpis"><div class="kpi"><b>${o.r?esc(RT[o.r]):"—"}</b><span>מצב כללי</span></div><div class="kpi"><b>${nNew?"🆕 "+nNew:"✓"}</b><span>${nNew?"תובנות חדשות":"אין חדש"}</span></div><div class="kpi"><b>${nx?esc(nx.a.icon||"🏃")+" "+esc(whenTxt(nx)):"—"}</b><span>האימון הבא</span></div></div>`;}
+
+// ---------- overview ----------
+function renderHome(){const w=W();if(!w.overall)return loaded?`<div class="empty">עוד אין ניתוח. שלח צילומים מאפל הלת׳ בצ׳אט.</div>`:`<div class="empty">טוען…</div>`;
+  const o=w.overall,A=w.areas||{},F=(w.feed||[]).slice().sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+  let h="";
+  // 1. what's new: one insight at a time
+  if(F.length){feedI=Math.min(feedI,F.length-1);const f=F[feedI],nw=F.filter(isNew).length;
+    h+=`<section><div class="newbox"><div class="h"><b>${nw?"🆕 תובנה חדשה":"💡 תובנה"}</b><small>${esc(AREA[f.area]?AREA[f.area][1]:"")}${f.at?" · "+esc(ago(f.at)):""}</small></div>
+      <div class="t">${isNew(f)?'<span class="nw"></span>':""}${esc(f.icon||"")} ${esc(f.h)}</div><div class="d">${esc(f.d||"")}</div>
+      ${F.length>1?`<div class="nav"><button data-feed="-1" aria-label="הקודמת">→</button><span>${feedI+1} מתוך ${F.length}</span><button data-feed="1" aria-label="הבאה">←</button></div>`:""}</div></section>`;}
+  // 2. overall rating
+  h+=`<section><div class="sh"><h2>איפה אני עומד</h2><small>גבר, ${esc(prof().age)}</small></div><div class="card">
+    <div class="big"><div class="ring c${o.r}"><span class="${o.r===4?"l":""}">${esc(RT[o.r]||"")}</span></div><div><b>${esc(o.h||"")}</b></div></div>${scale(o.r)}
+    <details class="more"><summary>הסבר</summary><div>${esc(o.t||"")}</div></details>
+    <div class="areas">${["health","fit","food"].map(k=>{const a=A[k]||{};return `<button class="area" data-go="${k}"><span class="e">${AREA[k][0]}</span><b>${AREA[k][1]}</b>${rt(a.r)}<small>${esc(a.h||"")}</small></button>`;}).join("")}</div></div></section>`;
+  // 3. today for you
+  const R=recsFor();if(R.length)h+=`<section><div class="sh"><h2>🎯 מה הכי שווה עכשיו</h2><small>${DAYL[ilNow().d]}</small></div>${recRows(R.slice(0,5))}</section>`;
+  // 4. my day
+  const D=w.day;if(D&&(D.blocks||[]).length){
+    const mins=b=>{let f=hm(b.f),t=hm(b.t);if(t<=f)t+=1440;return t-f;},tot=D.blocks.reduce((s,b)=>s+mins(b),0);
+    const LB={home:"בית",work:"עבודה",road:"נסיעה",fam:"משפחה",lior:"ליאור",me:"שלי",sleep:"שינה"};
+    h+=`<section><div class="sh"><h2>🕰️ היום שלי</h2><small>א׳-ה׳</small></div><div class="card">
+      <div style="font-weight:700;font-size:15px;line-height:1.45;margin-bottom:10px">${esc(D.h||"")}</div>
+      <div class="tl" aria-hidden="true">${D.blocks.map(b=>`<i class="k-${esc(b.k)}" style="width:${(mins(b)/tot*100).toFixed(2)}%" title="${esc(b.f+"-"+b.t+" "+b.l)}"></i>`).join("")}</div>
+      <div class="tll"><span>${esc(D.blocks[0].f)}</span><span>${esc(D.blocks[D.blocks.length-1].t)}</span></div>
+      <div class="legend">${D.blocks.map(b=>`<span><i class="k-${esc(b.k)}"></i>${esc(b.f)} ${esc(b.l)}</span>`).join("")}</div></div>
+      ${(D.load||[]).length?`<div class="rows" style="margin-top:10px">${D.load.map(x=>xr("🔎",x.h,"",esc(x.d||""))).join("")}</div>`:""}</section>`;}
+  h+=questions();
+  h+=placesSec();
+  // past insights
+  if(F.length>1)h+=`<section><div class="sh"><h2>📜 כל התובנות</h2><small>${F.length}</small></div><div class="rows">${F.map(f=>xr(f.icon,f.h,esc((AREA[f.area]||["",""])[1]+(f.at?" · "+ago(f.at):"")),esc(f.d||""),false,isNew(f))).join("")}</div></section>`;
+  return h;}
+
+// ---------- areas ----------
+function areaHead(k){const a=(W().areas||{})[k]||{};if(!a.r)return "";
+  return `<section><div class="card"><div class="big"><div class="ring c${a.r}"><span class="${a.r===4?"l":""}">${esc(RT[a.r])}</span></div><div><b>${AREA[k][0]} ${esc(a.h||"")}</b></div></div>${scale(a.r)}
+    ${a.t?`<details class="more"><summary>הסבר</summary><div>${esc(a.t)}</div></details>`:""}</div></section>`;}
+function metSec(k,title){const M=(W().metrics||[]).filter(m=>m.area===k);if(!M.length)return "";
+  return `<section><div class="sh"><h2>${title}</h2><small>${esc(W().as_of||"")}</small></div><div class="mets">${M.sort((a,b)=>(a.r||3)-(b.r||3)).map(metCard).join("")}</div></section>`;}
+function recSec(k){const R=recsFor(k);return R.length?`<section><div class="sh"><h2>🎯 מה לעשות</h2><small>${R.length}</small></div>${recRows(R)}</section>`:"";}
+function renderHealth(){return areaHead("health")+recSec("health")+metSec("health","📊 המדדים")+
+  `<section><div class="link3"><a href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP?thread=cmsg_01W6chmD4NUMHZzo1ehTjzCPTDqjxT4VWSzDZzyo5cL4cN" target="_blank" rel="noopener">😴 שיחת השינה</a><a href="insurance.html">🛡️ ביטוחים</a></div></section>`;}
+
+// ---------- training (kept from the sport dashboard) ----------
 function weekStrip(){const n=ilNow(),A=acts().filter(a=>a.status!=="todo");
   return `<div class="week">${DAYS.map((l,d)=>`<div class="${d===n.d?"today":""}">${l}${A.filter(a=>(a.days||[]).includes(d)).map(a=>`<span class="ev ${a.status==="aspire"?"asp":""}" title="${esc(a.title)}">${esc(a.icon||"🏃")}<small>${esc(a.time||"")}</small></span>`).join("")}</div>`).join("")}</div>`;}
 function actCard(a){const s=ST[a.status]||ST.fixed,days=(a.days||[]).map(d=>DAYL[d]).join(" / ");
@@ -211,78 +383,92 @@ function actCard(a){const s=ST[a.status]||ST.fixed,days=(a.days||[]).map(d=>DAYL
     ${(a.reminders||[]).length?`<ul class="rem">${a.reminders.map(r=>`<li><span>⏰</span><span><b>${esc(r.when||"")}</b>${r.when?" · ":""}${esc(r.text||"")}</span></li>`).join("")}</ul>`:""}
     ${map||(a.links||[]).length?`<div class="lk">${waze?`<a href="${esc(waze)}" target="_blank" rel="noopener">🚗 Waze</a>`:""}${map?`<a href="${esc(map)}" target="_blank" rel="noopener">📍 מפה</a>`:""}${(a.links||[]).filter(l=>safe(l.url)).map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div>`:""}
   </div>`;}
-function renderTrain(){const A=acts();if(!loaded&&!A.length)return `<div class="empty">טוען…</div>`;
-  const nx=nextAct();let h=`<section><div class="sh"><h2>השבוע שלי</h2><small>חצי שקוף = בשאיפה</small></div>${weekStrip()}</section>`;
+function renderFit(){const A=acts(),c=calc();let h=areaHead("fit");
+  const nx=nextAct();
+  h+=`<section><div class="sh"><h2>🗓️ השבוע שלי</h2><small>חצי שקוף = בשאיפה</small></div>${weekStrip()}</section>`;
   if(nx)h+=`<section><div class="next"><div class="ic">${esc(nx.a.icon||"🏃")}</div><div><b>הבא: ${esc(nx.a.title)}</b><span>${esc(whenTxt(nx))}${nx.a.leave?" · לצאת "+esc(nx.a.leave):""}</span></div></div></section>`;
+  h+=recSec("fit");
+  h+=metSec("fit","📊 המדדים");
+  const Z=[["אזור 1 · התאוששות",.5,.6,"--z1"],["אזור 2 · שריפת שומן, סיבולת",.6,.7,"--z2"],["אזור 3 · אירובי",.7,.8,"--z3"],["אזור 4 · סף",.8,.9,"--z4"],["אזור 5 · מקסימום",.9,1,"--z5"]];
+  h+=`<section><div class="sh"><h2>❤️ אזורי דופק</h2><small>מקסימום ${c.hrmax}</small></div><div class="card">
+    <table class="zones">${Z.map(z=>`<tr><td><span class="dot" style="background:var(${z[3]})"></span>${z[0]}</td><td>${Math.round(c.hrmax*z[1])}-${Math.round(c.hrmax*z[2])}</td></tr>`).join("")}</table>
+    <details class="more"><summary>פירוט</summary><div>נוסחת Tanaka: 208 פחות 0.7 × גיל. בשעון נמדד אצלך דופק עד 188, כך שהמקסימום האמיתי כנראה גבוה מהנוסחה, וכל האזורים זזים כמה פעימות למעלה. Zone 2 = אפשר לדבר במשפטים מלאים.</div></details></div></section>`;
   const on=A.filter(a=>a.status!=="todo"),todo=A.filter(a=>a.status==="todo");
-  h+=`<section><div class="sh"><h2>האימונים הקבועים</h2><small>${on.length}</small></div><div class="acts">${on.map(actCard).join("")}</div></section>`;
-  h+=`<section><div class="sh"><h2>רוצה להוסיף</h2><small>${todo.length}</small></div><div class="acts">${todo.map(actCard).join("")}<button class="addcard" data-add>＋ אימון חדש</button></div></section>`;
+  if(!loaded&&!A.length)h+=`<div class="empty">טוען…</div>`;
+  else{h+=`<section><div class="sh"><h2>האימונים הקבועים</h2><small>${on.length}</small></div><div class="acts">${on.map(actCard).join("")}</div></section>`;
+    h+=`<section><div class="sh"><h2>רוצה להוסיף</h2><small>${todo.length}</small></div><div class="acts">${todo.map(actCard).join("")}<button class="addcard" data-add>＋ אימון חדש</button></div></section>`;}
+  h+=placesSec();
   return h;}
 
-// ---------- stats & nutrition ----------
-function renderStats(){const c=calc(),p=c.p,hl=meta.health||{};let h="";
-  // me
+// ---------- nutrition ----------
+function renderFood(){const c=calc(),p=c.p,M=W().meals;let h=areaHead("food");
+  h+=recSec("food");
+  if(M&&(M.plan||[]).length)h+=`<section><div class="sh"><h2>🍽️ היום שלי באוכל</h2><small>חלון 12:30-21:00</small></div><div class="card">
+    <div style="font-weight:700;font-size:15px;line-height:1.45">${esc(M.h||"")}</div>${M.d?`<details class="more"><summary>מה המחקר אומר</summary><div>${esc(M.d)}</div></details>`:""}
+    <div style="margin-top:8px">${M.plan.map(x=>`<div class="meal k-${esc(x.k||"")}"><div class="tm">${esc(x.t)}</div><div><b>${esc(x.l)}</b><span>${esc(x.d||"")}</span></div></div>`).join("")}</div></div></section>`;
+  h+=metSec("food","📊 הרכב גוף ואנרגיה");
   const pos=Math.max(2,Math.min(98,(c.bmi-15)/(40-15)*100));
-  h+=`<section><div class="sh"><h2>הנתונים שלי</h2><small>${esc((meta.profile||{}).as_of||"")}</small></div>
+  h+=`<section><div class="sh"><h2>⚖️ משקל</h2><small>${esc((meta.profile||{}).as_of||"")}</small></div>
     <div class="nums"><div><b>${esc(p.w)}</b><span>ק״ג</span></div><div><b>${(p.h/100).toFixed(2)}</b><span>מטר</span></div><div><b>${esc(p.age)}</b><span>גיל</span></div></div>
     <div class="card" style="margin-top:10px"><b style="font-family:var(--f-display);font-size:17px">BMI ${c.bmi.toFixed(1)}</b> · <span class="muted">${bmiCat(c.bmi)}</span>
       <div class="gauge" aria-hidden="true"><i style="right:auto;left:${pos}%"></i><em style="left:${pos}%">${c.bmi.toFixed(1)}</em></div>
       <div class="gl"><span>15</span><span>18.5</span><span>25</span><span>30</span><span>40</span></div>
-      <div class="note">משקל תקין: ${c.lo}-${c.hi} ק״ג</div>
+      <div class="note">משקל תקין לגובה: ${c.lo}-${c.hi} ק״ג · היקף מותניים רצוי: עד ${Math.round(p.h/2)} ס״מ</div>
       <div class="bar2"><button data-weight>⚖️ עדכון משקל</button></div>
       ${(meta.weights||[]).length>1?`<ul class="wlog">${meta.weights.slice(-6).reverse().map(x=>`<li><span>${esc(x.d)}</span><b>${esc(x.kg)} ק״ג</b></li>`).join("")}</ul>`:""}
     </div></section>`;
-  // heart
-  const Z=[["אזור 1 · התאוששות",.5,.6,"--z1"],["אזור 2 · שריפת שומן, סיבולת",.6,.7,"--z2"],["אזור 3 · אירובי",.7,.8,"--z3"],["אזור 4 · סף",.8,.9,"--z4"],["אזור 5 · מקסימום",.9,1,"--z5"]];
-  h+=`<section><div class="sh"><h2>❤️ דופק</h2><small>מקסימום ${c.hrmax}</small></div><div class="card">
-    <table class="zones">${Z.map(z=>`<tr><td><span class="dot" style="background:var(${z[3]})"></span>${z[0]}</td><td>${Math.round(c.hrmax*z[1])}-${Math.round(c.hrmax*z[2])}</td></tr>`).join("")}</table>
-    ${hl.rhr?`<div class="note">דופק במנוחה ${esc(hl.rhr)}</div>`:""}<details class="more"><summary>פירוט</summary><div>נוסחת Tanaka: 208 פחות 0.7 × גיל (220 פחות גיל = ${220-p.age}). השעון מדייק מאימונים קשים.</div></details></div></section>`;
-  // energy & targets
-  h+=`<section><div class="sh"><h2>🔥 אנרגיה ותזונה</h2><small>ליום</small></div>
+  h+=`<section><div class="sh"><h2>🔥 יעדים ליום</h2><small>${c.apple?"לפי אפל":"הערכה"}</small></div>
     <div class="seg" style="margin-bottom:10px"><button data-goal="cut" class="${c.mode==="cut"?"on":""}">ירידה במשקל (−${c.def})</button><button data-goal="keep" class="${c.mode==="keep"?"on":""}">שמירה</button></div>
-    <div class="nums"><div><b>${c.bmr}</b><span>BMR (מנוחה)</span></div><div><b>${c.tdee}</b><span>שריפה יומית${c.apple?" (אפל)":""}</span></div><div><b>${c.kcal}</b><span>יעד קלוריות</span></div></div>
-    ${c.apple?"":`<div class="note"><span class="est">הערכה</span> BMR × 1.45</div>`}
+    <div class="nums"><div><b>${c.bmr}</b><span>BMR (נוסחה)</span></div><div><b>${c.tdee}</b><span>שריפה יומית${c.apple?" (אפל)":""}</span></div><div><b>${c.kcal}</b><span>יעד קלוריות</span></div></div>
     <div class="targets" style="margin-top:10px">
-      <div class="tg"><span>🥩 חלבון</span><b>${c.prot} ג׳</b><small>1.8 ג׳/ק״ג</small></div>
+      <div class="tg"><span>🥩 חלבון</span><b>${c.prot} ג׳</b><small>~1.7 ג׳/ק״ג, 40-50 בכל ארוחה</small></div>
       <div class="tg"><span>🥑 שומן</span><b>${c.fat} ג׳</b><small>0.8 ג׳/ק״ג</small></div>
-      <div class="tg"><span>🍚 פחמימות</span><b>${c.carb} ג׳</b><small>השאר</small></div>
-      <div class="tg"><span>🥦 סיבים</span><b>${Math.max(30,c.fiber)} ג׳</b></div>
+      <div class="tg"><span>🍚 פחמימות</span><b>${c.carb} ג׳</b><small>השאר, יותר ביום כדורגל</small></div>
+      <div class="tg"><span>🥦 סיבים</span><b>${Math.max(30,c.fiber)} ג׳</b><small>ירקות בכל ארוחה</small></div>
       <div class="tg"><span>💧 מים</span><b>${c.water} ל׳</b><small>+0.5-1 ל׳ לשעת אימון</small></div>
       <div class="tg"><span>⚖️ קצב</span><b>${c.mode==="cut"?"~0.5 ק״ג":"שמירה"}</b><small>${c.mode==="cut"?"בשבוע":""}</small></div>
     </div>
     <div class="macro" aria-hidden="true"><i style="width:${c.prot*4/c.kcal*100}%;background:var(--z4)"></i><i style="width:${c.fat*9/c.kcal*100}%;background:var(--z3)"></i><i style="flex:1;background:var(--z2)"></i></div>
     <div class="ml"><span><i style="background:var(--z4)"></i>חלבון ${Math.round(c.prot*4/c.kcal*100)}%</span><span><i style="background:var(--z3)"></i>שומן ${Math.round(c.fat*9/c.kcal*100)}%</span><span><i style="background:var(--z2)"></i>פחמימות ${Math.round(c.carb*4/c.kcal*100)}%</span></div></section>`;
-  // apple health
-  const AH=[["tdee","שריפה יומית כוללת","קל׳"],["active_kcal","אנרגיה פעילה (ממוצע)","קל׳"],["rest_kcal","אנרגיה במנוחה","קל׳"],["steps","צעדים ביום","" ],["exercise_min","דקות אימון ביום","דק׳"],["rhr","דופק במנוחה","bpm"],["hrv","HRV","ms"],["vo2max","VO2 max",""],["sleep_h","שינה בלילה","ש׳"],["walk_km","הליכה וריצה ביום","ק״מ"]];
-  h+=`<section><div class="sh"><h2>🍎 מאפל הלת׳</h2><small>${hl.as_of?"נכון ל-"+esc(hl.as_of):"עוד אין נתונים"}</small></div>
-    <div class="ah">${AH.map(([k,l,u])=>`<div><span>${l}</span>${hl[k]!=null&&hl[k]!==""?`<b>${esc(hl[k])}</b> <small class="muted">${u}</small>`:`<b class="na">—</b>`}</div>`).join("")}</div>
-    ${hl.as_of&&hl.note?`<div class="note">${esc(hl.note)}</div>`:""}</section>`;
+  h+=`<section><div class="link3"><a href="food.html">🍳 המתכונים שלי</a><a href="#" data-go="fit">🏃 כושר</a><a href="#" data-go="health">❤️ בריאות</a></div></section>`;
   return h;}
 
 function render(){$("hero").innerHTML=hero();
-  const secs=[["train","🗓️ אימונים"],["stats","📊 נתונים ותזונה"]];
+  const secs=[["home","🧭 סקירה"],["health","❤️ בריאות"],["fit","🏃 כושר"],["food","🥗 תזונה"]];
   $("bar").innerHTML=`<div class="seg">${secs.map(([k,l])=>`<button data-sec="${k}" class="${ui.sec===k?"on":""}">${l}</button>`).join("")}</div>`;
-  $("app").innerHTML=ui.sec==="stats"?renderStats():renderTrain();
-  $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}ספורט ${esc(window.SPORT_BUILD)}`;}
+  $("app").innerHTML=ui.sec==="health"?renderHealth():ui.sec==="fit"?renderFit():ui.sec==="food"?renderFood():renderHome();
+  const w=W();$("foot").innerHTML=`${w.src||meta.sources?`<details class="more"><summary>מקורות והסתייגות</summary><div>${esc(w.src||"")} ${esc(meta.sources||"")}</div></details>`:""}בריאות, כושר ותזונה ${esc(window.SPORT_BUILD)}`;}
 let tt;function toast(t){$("toast").textContent=t;$("toast").className="toast on";clearTimeout(tt);tt=setTimeout(()=>$("toast").className="toast",3500);}
 async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
-async function updMeta(patch,msg){const prev=JSON.parse(JSON.stringify(meta));meta=Object.assign({},meta,patch);const y=scrollY;render();scrollTo(0,y);
+function keep(fn){const y=scrollY;fn();scrollTo(0,y);}
+async function updMeta(patch,msg){const prev=JSON.parse(JSON.stringify(meta));meta=Object.assign({},meta,patch);keep(render);
   if(!db){toast("אין חיבור, לא נשמר");return;}
-  try{await db.collection("sport").doc("_meta").update(patch);toast(msg||"נשמר");}catch(e){meta=prev;render();toast("לא נשמר, נסה שוב");}}
+  try{await db.collection("sport").doc("_meta").update(patch);toast(msg||"נשמר");}catch(e){meta=prev;keep(render);toast("לא נשמר, נסה שוב");}}
+function setAnswer(id,v){const A=Object.assign({},meta.well_ans||{});A[id]=v;A._at=new Date().toISOString();updMeta({well_ans:A},"✓ נשמר");}
 document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
-  if(b=g("[data-sec]")){ui.sec=b.dataset.sec;saveUi();render();return;}
+  if(b=g("[data-sec]")){ui.sec=b.dataset.sec;saveUi();render();scrollTo(0,0);return;}
+  if(b=g("[data-go]")){e.preventDefault();ui.sec=b.dataset.go;saveUi();render();scrollTo(0,0);return;}
+  if(b=g("[data-feed]")){const n=(W().feed||[]).length;feedI=(feedI+(+b.dataset.feed)+n)%n;keep(render);return;}
+  if(b=g("[data-qa]")){const q=(W().questions||[]).find(x=>x.id===b.dataset.qa);if(!q)return;const v=b.dataset.v,cur=(meta.well_ans||{})[q.id];
+    if(q.multi){let arr=Array.isArray(cur)?cur.slice():(cur?[cur]:[]);arr=arr.includes(v)?arr.filter(x=>x!==v):arr.concat([v]);setAnswer(q.id,arr);}
+    else setAnswer(q.id,cur===v?"":v);return;}
+  if(b=g("[data-qf]")){const q=(W().questions||[]).find(x=>x.id===b.dataset.qf);if(!q)return;const cur=(meta.well_ans||{})[q.id];
+    const t=(prompt(q.q+(q.ph?"\n"+q.ph:""),typeof cur==="string"?cur:"")||"").trim();if(!t)return;
+    if(q.multi||q.opts){const arr=(Array.isArray(cur)?cur:(cur?[cur]:[])).filter(x=>(q.opts||[]).includes(x));setAnswer(q.id,q.multi?arr.concat([t]):t);}else setAnswer(q.id,t);return;}
   if(b=g("[data-goal]")){updMeta({goal:Object.assign({},meta.goal||{},{mode:b.dataset.goal})},"היעד עודכן");return;}
   if(g("[data-weight]")){const v=parseFloat(String(prompt("המשקל היום (ק״ג)",String(prof().w))||"").replace(",","."));if(!(v>40&&v<250))return;
     const d=new Intl.DateTimeFormat("he-IL",{timeZone:"Asia/Jerusalem",day:"numeric",month:"numeric",year:"numeric"}).format(new Date());
     const w=(meta.weights||[]).filter(x=>x.d!==d).concat([{d,kg:v}]);
     updMeta({profile:Object.assign({},meta.profile||{},{weight:v,as_of:d}),weights:w},"המשקל עודכן");return;}
   if(g("[data-add]")){const t=(prompt("איזה אימון או רעיון? (מה, מתי, איפה)")||"").trim();if(!t)return;
-    const ok=await copy(`דשבורד ספורט: אימון/רעיון חדש: ${t}\nתוסיף אותו לדשבורד (אוסף sport) עם תזכורות ב-Side Quests אם צריך.`);
+    const ok=await copy(`דשבורד בריאות, כושר ותזונה: אימון/רעיון חדש: ${t}\nתוסיף אותו לדשבורד (אוסף sport) עם תזכורות ב-Side Quests אם צריך.`);
     toast(ok?"הבקשה הועתקה, הדבק בשיחה":"פותח את השיחה");setTimeout(()=>window.open(safe(meta.chat_url)||CHAT_FALLBACK,"_blank","noopener"),600);return;}
 });
 render();
+let seenSet=false;
 window.claude.use("db").then(d=>{db=d;if(!db)return;
-  db.collection("sport").onSnapshot(s=>{loaded=true;const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else n[x.id]=v;});items=n;render();},()=>{});
+  db.collection("sport").onSnapshot(s=>{loaded=true;const n={};s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else n[x.id]=v;});items=n;keep(render);
+    if(!seenSet&&meta.well){seenSet=true;try{localStorage.setItem(SEEN_KEY,new Date().toISOString());}catch(e){}}},()=>{});
 });
 })();
 </script>
