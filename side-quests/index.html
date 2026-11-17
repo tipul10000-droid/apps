@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.7";window.SQ_BUILD_AT="17.11.2026 18:14";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.8";window.SQ_BUILD_AT="17.11.2026 19:05";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1720,6 +1720,13 @@ main{padding-bottom:90px}
 .qbtn .qnw{position:absolute;top:3px;inset-inline-start:3px;width:11px;height:11px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);animation:dzblink 1.4s ease-in-out infinite;z-index:2}
 .dz-tile .nw{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dzblink 1.4s ease-in-out infinite}
 @keyframes dzblink{50%{opacity:.4;transform:scale(.8)}}
+/* 19.8: blue blinking "new" dots everywhere (settings, chat, settings sections, updates groups) */
+.tdot.nw{background:#2F7BEA;width:10px;height:10px;animation:dzblink 1.4s ease-in-out infinite}
+.snw{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2F7BEA;margin-inline-start:7px;vertical-align:middle;animation:dzblink 1.4s ease-in-out infinite}
+.up-g{padding:10px 14px 4px;font-size:13px;font-weight:800;color:#2F7BEA}
+.uplist .up-g+.uprow{border-top:0}
+.uprow+.up-g{border-top:1px solid var(--line)}
+.uprow .nwic{flex:0 0 26px;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:15px;background:rgba(47,123,234,.12)}
 .dz-tile.flash{animation:dzflash .55s ease-in-out 4}
 @keyframes dzflash{50%{box-shadow:0 0 0 4px #6FA8FF,0 2px 8px rgba(0,0,0,.12)}}
 .dnews{background:color-mix(in srgb,#2F7BEA 11%,var(--card,var(--bg)));color:var(--ink);border:1.5px solid color-mix(in srgb,#2F7BEA 42%,var(--bg));border-radius:16px;padding:12px 14px 10px;margin:0 0 14px;box-shadow:0 2px 10px rgba(47,123,234,.12);animation:sqdn .25s ease-out}
@@ -1735,7 +1742,7 @@ main{padding-bottom:90px}
 .dnews li span{grid-column:1}
 .dnews li small{grid-column:2;grid-row:1;color:var(--muted);font-size:12px;white-space:nowrap}
 .dnews .more{font-size:13px;color:var(--muted);padding-top:4px}
-@media (prefers-reduced-motion:reduce){.qbtn .qnw,.dzbtn.has,.dz-tile .nw,.dz-tile.flash,.dnews{animation:none}}
+@media (prefers-reduced-motion:reduce){.tdot.nw,.snw,.qbtn .qnw,.dzbtn.has,.dz-tile .nw,.dz-tile.flash,.dnews{animation:none}}
 .ctxrow .wseg{border:1.5px solid rgba(255,255,255,.4)!important;border-radius:13px}
 .ctxrow .wseg button{min-height:40px!important}
 .ctxrow .wseg button+button{border-inline-start-width:1.5px!important;border-inline-start-color:rgba(255,255,255,.25)!important}
@@ -2067,7 +2074,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 .ctxrow .toolrow .updbtn+.dzbtn{margin-inline-start:0!important}
 html.desk #dhead .toolrow{flex-wrap:nowrap!important}
 html.desk #dhead .toolrow .sbar{flex:0 0 auto}
-html.desk #dhead .toolrow .updbtn{flex:0 0 auto!important;padding:0 12px}
+html.desk #dhead .toolrow .updbtn{flex:0 0 118px!important;width:118px!important;padding:0 8px;justify-content:center}
 .cnlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
 .cnrow{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;text-align:start}
 .cnrow:first-child{border-top:0}
@@ -2326,7 +2333,7 @@ html.desk .co-mark{font-size:8cqi}
   <div class="qb-in gut"><span class="ai-tag qa-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
 <button id="upBtn" type="button" aria-label="למעלה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button><button class="tfind fab" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tadd fab" id="addBtn" type="button" aria-label="הוראה חדשה" aria-expanded="false">+</button><div class="imenu" id="imenu" hidden role="group" aria-label="משימה או הוראה"><div class="im-r k-quick"><span class="im-l"><span class="e" aria-hidden="true">⚡</span>משימה מהירה</span><button type="button" id="qText" aria-label="משימה מהירה בכתיבה">⌨️</button><button type="button" id="qVoice" aria-label="משימה מהירה בהקלטה">🎤</button></div><div class="im-r k-ins"><span class="im-l"><span class="e" aria-hidden="true">🧠</span>הוראה חכמה</span><button type="button" id="iText" aria-label="הוראה בכתיבה">⌨️</button><button type="button" id="iVoice" aria-label="הוראה בהקלטה">🎤</button></div></div><div class="ibar" id="ibar" hidden></div><div class="ires" id="ires" hidden role="status"></div>
-<div class="topbtns"><a class="tb tchat" id="tchat" aria-label="All Arounder: העוזר האישי" href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tgm" id="gmBtn" type="button" aria-label="סריקת Gmail לפי דרישה"><svg class="gmic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M1.5 5.6v9.4c0 .6.4 1 1 1h2.4V8.9z"/><path fill="#34A853" d="M17.5 5.6v4.3a5.6 5.6 0 0 0-3.4 1V8.9z"/><path fill="#EA4335" d="M1.5 5.6 9.5 11.6l8-6V4.9c0-1.2-1.4-1.9-2.4-1.2L9.5 7.9 3.9 3.7c-1-.7-2.4 0-2.4 1.2z"/><circle cx="16.6" cy="15.6" r="3.7" fill="none" stroke="#fff" stroke-width="2"/><path d="M19.3 18.3 22.4 21.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg><i class="tdot" id="gmDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<div class="topbtns"><a class="tb tchat" id="tchat" aria-label="All Arounder: העוזר האישי" href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span><i class="tdot nw" id="chatDot" hidden></i></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tgm" id="gmBtn" type="button" aria-label="סריקת Gmail לפי דרישה"><svg class="gmic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M1.5 5.6v9.4c0 .6.4 1 1 1h2.4V8.9z"/><path fill="#34A853" d="M17.5 5.6v4.3a5.6 5.6 0 0 0-3.4 1V8.9z"/><path fill="#EA4335" d="M1.5 5.6 9.5 11.6l8-6V4.9c0-1.2-1.4-1.9-2.4-1.2L9.5 7.9 3.9 3.7c-1-.7-2.4 0-2.4 1.2z"/><circle cx="16.6" cy="15.6" r="3.7" fill="none" stroke="#fff" stroke-width="2"/><path d="M19.3 18.3 22.4 21.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg><i class="tdot" id="gmDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
@@ -3067,13 +3074,42 @@ html.desk .co-mark{font-size:8cqi}
       if((Date.parse(itSeen[d.id+":"+n.item]||"")||0)>=ms)continue;
       out.push({id:String(n.item),at:new Date(ms).toISOString(),ms,path:Array.isArray(n.path)?n.path.map(String):[]});}
     return out;}
-  function dashFresh(d){return dashUnseen(d).length>0||dashItems(d).length>0;}
-  function freshMs(d){const a=dashUnseen(d),b=dashItems(d);return Math.max(a.length?a[0].ms:0,...b.map(x=>x.ms),0);}
+  // 19.8: a dashboard that is new on this device, or moved to another quest, is new until it is opened (sq_dash_known {id:{q, nw}})
+  let dzKnown=null;try{dzKnown=JSON.parse(localStorage.getItem("sq_dash_known")||"null");}catch(e){dzKnown=null;}
+  function dzTrack(){if(!dashes.length)return;const first=!dzKnown||typeof dzKnown!=="object";if(first)dzKnown={};let ch=first;const now=new Date().toISOString();
+    for(const d of dashes){if(d._deleted||d.archived)continue;const q=d.quest||"side",k=dzKnown[d.id];
+      if(!k){dzKnown[d.id]={q,nw:first?null:now};ch=true;}else if(k.q!==q){dzKnown[d.id]={q,nw:now,from:k.q};ch=true;}}
+    if(ch)try{localStorage.setItem("sq_dash_known",JSON.stringify(dzKnown));}catch(e){}}
+  function dashNewAt(d){const k=dzKnown&&dzKnown[d.id];const ms=k&&k.nw?Date.parse(k.nw):0;if(!ms)return 0;return (Date.parse(dzSeen[d.id]||"")||0)<ms?ms:0;}
+  function dashFresh(d){return dashUnseen(d).length>0||dashItems(d).length>0||dashNewAt(d)>0;}
+  function freshMs(d){const a=dashUnseen(d),b=dashItems(d);return Math.max(a.length?a[0].ms:0,...b.map(x=>x.ms),dashNewAt(d),0);}
+  function dashWhy(d){const n=dashNewAt(d),k=dzKnown&&dzKnown[d.id];if(n)return k&&k.from?"הדשבורד עבר לכאן":"דשבורד חדש";
+    const u=dashUnseen(d);if(u.length)return u[0].text;const it=dashItems(d);return it.length?"תוכן חדש בפנים":"";}
   function questFresh(q){return q==="fun"?[]:dashes.filter(d=>!d._deleted&&!d.archived&&(d.quest||"side")===q&&dashFresh(d)).sort((a,b)=>freshMs(b)-freshMs(a));}
   function syncItemNew(){const m={};for(const d of dashes){const L=dashItems(d);if(L.length)m[d.id]=L.map(x=>({id:x.id,at:x.at,path:x.path}));}
     try{const v=JSON.stringify(m);if(localStorage.getItem("sq_item_new")!==v)localStorage.setItem("sq_item_new",v);}catch(e){}}
   addEventListener("storage",e=>{if(e.key!=="sq_item_seen")return;try{itSeen=JSON.parse(e.newValue||"{}")||{};}catch(x){itSeen={};}
     if(db){renderQnav();renderDash();}});
+  // ===== 19.8 (Oren 17.11.2026): "new" everywhere in the app, a standing rule =====
+  // Anything that was not there on his previous visit gets a blue blinking dot where it lives, until he opens it: a task
+  // (new or changed from outside, fresh dot + quest dot), a dashboard (news, item path, new or moved to another quest),
+  // and app-level news in settings/new_items {items:[{id, at, text, sub, where, url}]}: where = "settings:<section key>"
+  // (dot on ⚙️ and on that section; opening the section clears it), "chat" (a Claude chat waiting for his answer:
+  // "💬 המשך שיחה", dot on the 💬 button; tapping the row opens the chat), "quest:<q>" or "app" (a new feature).
+  // Seen per device: sq_new_seen {id: at}. "🔔 עדכונים" lists all of it for the quest on screen, in place, newest first.
+  let newItems=[],nwSeen={};try{nwSeen=JSON.parse(localStorage.getItem("sq_new_seen")||"{}")||{};}catch(e){nwSeen={};}
+  function nwList(pfx){const now=Date.now();return newItems.filter(x=>x&&x.id&&!x.done&&(!pfx||String(x.where||"app").startsWith(pfx))).map(x=>({...x,ms:Date.parse(x.at||"")||0}))
+    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&(Date.parse(nwSeen[x.id]||"")||0)<x.ms).sort((a,b)=>b.ms-a.ms);}
+  function nwSee(ids){let ch=false;for(const id of [].concat(ids||[])){if(!id)continue;nwSeen[id]=new Date().toISOString();ch=true;}
+    if(!ch)return;const ks=Object.keys(nwSeen);if(ks.length>400)ks.sort((a,b)=>String(nwSeen[a]).localeCompare(String(nwSeen[b]))).slice(0,ks.length-400).forEach(k=>delete nwSeen[k]);
+    try{localStorage.setItem("sq_new_seen",JSON.stringify(nwSeen));}catch(e){}setTimeout(nwRender,0);}
+  const nwSet=k=>nwList("settings:"+k);
+  const nwQuest=q=>nwList("").filter(x=>{const w=String(x.where||"app");return w==="quest:"+q||(q==="side"&&w==="app");});
+  function nwRender(){try{renderSetDot();renderQnav();updUpdBtn();const c=$("chatDot");if(c)c.hidden=!nwList("chat").length;if(updOn)renderList();}catch(e){}}
+  addEventListener("storage",e=>{if(e.key==="sq_new_seen"){try{nwSeen=JSON.parse(e.newValue||"{}")||{};}catch(x){nwSeen={};}if(db)nwRender();}});
+  // a quest (not on screen) also blinks for its own task changes since this visit, until he enters it once this visit
+  const qEnter={};
+  function questTasksNew(q){try{const s=Math.max(visitBase,qEnter[q]||0);return newPool(q).filter(t=>{const r=freshOf(t);return r&&r.ms>s&&Date.now()-r.ms<7*864e5;});}catch(e){return [];}}
   function updDzBtn(){const b=$("dzbtn");if(!b)return;const n=dashes.filter(d=>dashFresh(d)).length;
     b.classList.toggle("has",n>0);$("dzN").textContent=n||"";b.setAttribute("aria-label",n?`לדשבורדים: ${n} עם עדכון חדש`:"לדשבורדים");}
   function goDashes(){const sec=$("dashSec");
@@ -3109,7 +3145,7 @@ html.desk .co-mark{font-size:8cqi}
     if(!fin.length||!rest.length)return act.length?[[null,act]]:[];
     return [["💰 כלכלי ופיננסי",fin],["🧩 כל השאר",rest]];
   }
-  function renderDash(){syncItemNew();renderDzTop();const sec=$("dashSec");if(!sec)return;
+  function renderDash(){dzTrack();syncItemNew();renderDzTop();const sec=$("dashSec");if(!sec)return;
     if(quest==="travel"){sec.hidden=true;sec.replaceChildren();renderTravel();return;} // travel dashboards live inside their zone
     const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
     updDzBtn();
@@ -3837,10 +3873,12 @@ html.desk .co-mark{font-size:8cqi}
     const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)&&!isBg(t)&&!absorbed(t)).length;
     const vis=Object.keys(QUESTS).filter(q=>!qHidden(q));$("qnav").dataset.n=vis.length;
     // 19.5: a quest (not the one on screen) with something new in one of its dashboards = blinking blue dot; tap = into it
-    $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q],F=q!==quest?questFresh(q):[];
-      return h("button",{class:"qbtn q-"+q+(F.length?" hasnw":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":F.length?Q.a+" "+Q.b+": יש תוכן חדש":null,
-        onclick:()=>{const G=q!==quest?questFresh(q):[];setQuest(q);if(G.length)setTimeout(()=>G.length===1?openDash(G[0].id):goDashes(),180);}},
-        F.length?h("span",{class:"qnw",title:"יש תוכן חדש","aria-hidden":"true"}):null,
+    // 19.8: also its own task changes and new features (settings/new_items quest:<q>); tap = into the quest with "🔔 עדכונים" on
+    $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q],F=q!==quest?questFresh(q):[],T=q!==quest?questTasksNew(q).length+nwQuest(q).length:0,any=F.length+T>0;
+      return h("button",{class:"qbtn q-"+q+(any?" hasnw":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":any?Q.a+" "+Q.b+": יש תוכן חדש":null,
+        onclick:()=>{const G=q!==quest?questFresh(q):[],TT=q!==quest?questTasksNew(q).length+nwQuest(q).length:0;setQuest(q);
+          if(TT&&WQ.includes(q)){if(!updOn)toggleUpd();}else if(G.length)setTimeout(()=>G.length===1?openDash(G[0].id):goDashes(),180);}},
+        any?h("span",{class:"qnw",title:"יש תוכן חדש","aria-hidden":"true"}):null,
         h("span",{class:"qe","aria-hidden":"true"},Q.e),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }
   function applyQuest(){
@@ -3852,7 +3890,7 @@ html.desk .co-mark{font-size:8cqi}
     if(Q.ph)$("qtitle").placeholder=Q.ph;
     splitTopics();renderQnav();
   }
-  function setQuest(q){if(q===quest)return;quest=q;openId=null;updOn=false;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();window.scrollTo(0,0);}
+  function setQuest(q){if(q===quest)return;qEnter[quest]=Date.now();qEnter[q]=Date.now();quest=q;openId=null;updOn=false;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();window.scrollTo(0,0);}
   function setFun(on){setQuest(on?"fun":"side");}
   const FC=["var(--fz2)","var(--fz3)","var(--fz1)","var(--fz4)"];
   function funCard(t,i){
@@ -4619,6 +4657,8 @@ html.desk .co-mark{font-size:8cqi}
     if(r&&(!w||r>w))return"סריקה מלאה (Gmail, Drive, GitHub, שיחות) תרוץ בריצה הקרובה";
     return w?`סריקה מלאה אחרונה: ${ago(w)}`:"";}
   $("dzbtn").onclick=()=>goDashes();$("updbtn").onclick=()=>toggleUpd();
+  // 19.8: 💬 with a blue dot = a chat waits for him: the first tap shows "💬 המשך שיחה" in the updates (the next one opens the project)
+  $("tchat").addEventListener("click",e=>{if(nwList("chat").length&&!updOn){e.preventDefault();if(!WQ.includes(quest))setQuest("side");toggleUpd();}});
   $("refr").onclick=async()=>{const b=$("refr");if(b.classList.contains("spin"))return;b.classList.add("spin");$("refrTxt").textContent="מעדכן…";checkUpdate(true);
     const before=snapT(),t0=Date.now();sheet(true,"מעדכן את הסטטוס האחרון…",null,"מושך נתונים טריים ומבקש סריקה מלאה");
     let ok=true;
@@ -4683,7 +4723,7 @@ html.desk .co-mark{font-size:8cqi}
     finally{setTimeout(()=>{btn.disabled=false;btn.textContent=t;},1500);}
   }
   function setNotify(fields){notify={...notify,...fields};if("abroad" in fields||"abroad_until" in fields)setTimeout(()=>refreshMode(),0);if(db&&canWrite)db.collection("settings").doc("notify").update({...fields,updated_at:new Date().toISOString()}).catch(()=>toast("השמירה נכשלה"));renderSettings();}
-  function renderSetDot(){const d=$("setDot");if(d)d.hidden=pushOn||!pushSupported()||!standalone()||Notification.permission==="denied";}
+  function renderSetDot(){const d=$("setDot");if(!d)return;const nw=nwList("settings:").length>0;d.classList.toggle("nw",nw);d.hidden=!nw&&(pushOn||!pushSupported()||!standalone()||Notification.permission==="denied");}
   // 11.3: one lock, many holders ("m" = a sheet, "pg" = a project/dashboard page on top), so closing a sheet over a page keeps the page lock
   let lockY=null;const lockBy=new Set();
   // 16.6: on a wide screen a page on top sits beside the tasks, so the list under it keeps scrolling
@@ -4755,7 +4795,7 @@ html.desk .co-mark{font-size:8cqi}
   // Windows stay the default view; the "חדש" segment lists what changed (7 days, newest first), and a blue dot
   // marks unseen changes on every row until he opens the task (seen map in localStorage sq_upd_seen).
   let gmScan=null;
-  const OWN_SRC=/^נוסף (ידנית|בהקלטה)/,EXT_LOG=/^(סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון)/;
+  const OWN_SRC=/^נוסף (ידנית|בהקלטה)/,EXT_LOG=/^(סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|All Arounder|Claude)/;
   function recentOf(t){if(!t||t._deleted)return null;let best=null;const now=Date.now();
     const add=(at,what,src)=>{const ms=Date.parse(at||"");if(!ms||ms>now+6e4)return;if(!best||ms>best.ms)best={ms,what:String(what||"").replace(/\s+/g," ").trim(),src:String(src||"")};};
     const L=Array.isArray(t.log)?t.log:[];
@@ -4777,7 +4817,7 @@ html.desk .co-mark{font-size:8cqi}
   function seeUpd(id){const t=allTopics.find(x=>x.id===id),r=t&&recentOf(t);if(!r)return;if((Date.parse(updSeen[id]||"")||0)>=r.ms)return;updSeen[id]=new Date(r.ms).toISOString();saveSeen();setTimeout(()=>{renderCtx();updGmBtn();},0);}
   function seeAll(){updSeen={_base:new Date().toISOString()};saveSeen();renderCtx();renderList();updGmBtn();toast("✓ הכול סומן כנקרא");}
   const SRC_E={gmail:"✉️",new:"🆕",own:"🆕",sync:"🔗",log:"↻",run:"↻",done:"✓"};
-  function updLine(r){const w=r.what.replace(/^(סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור)\s*[:：]\s*/,"");return (SRC_E[r.src]||"↻")+" "+(w||"עודכן")+" · "+ago(r.ms);}
+  function updLine(r){const w=r.what.replace(/^(סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור|All Arounder|Claude)\s*[:：]\s*/,"");return (SRC_E[r.src]||"↻")+" "+(w||"עודכן")+" · "+ago(r.ms);}
   // ===== 17.5 (Oren 16.11.2026): "🔔 עדכונים" next to the dashboards button =====
   // A visit = from opening the app until leaving it (hidden for 2+ minutes). Everything that changed since the previous visit
   // is "new": a new task (also his own), a change from outside (mail, scan, sync, run) in any category (also dormant or waiting).
@@ -4799,7 +4839,7 @@ html.desk .co-mark{font-size:8cqi}
     return o;}
   function isFresh(t){if(!t||DONE_ST.includes(t.status))return false;const r=freshOf(t);return !!r&&r.ms>visitBase&&Date.now()-r.ms<7*864e5;}
   function updItems(){return newPool().filter(t=>!(t.fit&&t.fit.owner==="claude")).map(t=>({t,r:freshOf(t)})).filter(x=>x.r&&x.r.ms>visitBase&&Date.now()-x.r.ms<7*864e5).sort((a,b)=>b.r.ms-a.r.ms);}
-  function updUpdBtn(){const b=document.getElementById("updbtn");if(!b)return;let n=0;try{n=updItems().length;}catch(e){}
+  function updUpdBtn(){const b=document.getElementById("updbtn");if(!b)return;let n=0;try{n=updItems().length+nwList("chat").length+nwQuest(quest).length+(quest==="side"?nwList("settings:").length:0)+questFresh(quest).length;}catch(e){}
     b.classList.toggle("has",n>0&&!updOn);b.setAttribute("aria-pressed",updOn?"true":"false");$("updN").textContent=n||"";
     b.setAttribute("aria-label",n?`עדכונים: ${n} חדשים`:"עדכונים");}
   function toggleUpd(){updOn=!updOn;openId=null;renderList();if(updOn)window.scrollTo({top:Math.max(0,$("mainSec").getBoundingClientRect().top+window.scrollY-120),behavior:"smooth"});}
@@ -4816,10 +4856,24 @@ html.desk .co-mark{font-size:8cqi}
     return h("button",{type:"button",class:"uprow"+(past?" past":""),onclick:()=>{updOn=false;openTask(t.id);}},
       h("i",{class:"cat-ic",style:"--cc:"+C.c,"aria-hidden":"true"},C.g),
       h("span",{class:"up-t"},h("b",null,t.title||"(ללא כותרת)"),h("small",null,updLine(x.r))),h("span",{class:"r-chev","aria-hidden":"true"},"‹"));}
+  // 19.8: one row per new thing that is not a task: a chat waiting for him, an app feature/setting, a dashboard
+  function nwRow(ic,title,sub,go){return h("button",{type:"button",class:"uprow",onclick:go},h("span",{class:"nwic","aria-hidden":"true"},ic),
+      h("span",{class:"up-t"},h("b",null,title),sub?h("small",null,sub):null),h("span",{class:"r-chev","aria-hidden":"true"},"‹"));}
+  function openNw(x){nwSee(x.id);const w=String(x.where||"");
+    if(w.startsWith("settings:")){setOpen.add(w.slice(9));showSettings();return;}
+    if(w.startsWith("dash:")){openDash(w.slice(5));return;}
+    const u=safeUrl(x.url||"");if(u)window.open(u,"_blank","noopener");}
   function renderUpd(){
     const L=updItems(),dayOf=ms=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date(ms)),today=ilDate();
-    const top=[h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🔔"),h("b",null,"עדכונים"),h("small",null,L.length?"מאז הכניסה הקודמת · "+L.length:"")),
-      L.length?h("div",{class:"uplist"},L.map(x=>updRow(x))):h("div",{class:"wc-empty"},"אין עדכונים חדשים מאז הכניסה הקודמת"))];
+    const C=nwList("chat"),A=[...nwQuest(quest),...(quest==="side"?nwList("settings:"):[]),...nwList("dash:").filter(x=>{const d=dashById(String(x.where).slice(5));return d&&(d.quest||"side")===quest;})],D=questFresh(quest).filter(d=>!A.some(x=>x.where==="dash:"+d.id));
+    const G=[];
+    if(C.length)G.push(h("div",{class:"up-g"},"💬 המשך שיחה"),...C.map(x=>nwRow("💬",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
+    if(A.length)G.push(h("div",{class:"up-g"},"✨ חדש באפליקציה"),...A.map(x=>nwRow(String(x.where).startsWith("settings:")?"⚙️":String(x.where).startsWith("dash:")?"📊":"✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
+    if(D.length)G.push(h("div",{class:"up-g"},"📊 דשבורדים"),...D.map(d=>nwRow(d.icon||"📊",d.title||d.short||d.id,dashWhy(d)+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id))));
+    if(L.length)G.push(...(G.length?[h("div",{class:"up-g"},"≡ משימות")]:[]),...L.map(x=>updRow(x)));
+    const n=C.length+A.length+D.length+L.length;
+    const top=[h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🔔"),h("b",null,"עדכונים"),h("small",null,n?"מאז הכניסה הקודמת · "+n:"")),
+      n?h("div",{class:"uplist"},G):h("div",{class:"wc-empty"},"אין עדכונים חדשים מאז הכניסה הקודמת"))];
     const P=pastLog().filter(x=>!L.some(y=>y.t.id===x.t.id&&y.r.ms===x.r.ms));
     if(P.length){const body=[];let d="";for(const x of P){const dd=dayOf(x.r.ms);if(dd!==d){d=dd;body.push(h("div",{class:"up-day"},dd===today?"היום":dd===addDays(today,-1)?"אתמול":dd.split("-").reverse().join("/").replace(/^(\d\d\/\d\d\/)20/,"$1")));}body.push(updRow(x,true));}
       top.push(foldBox("past","📜 עדכוני עבר",P.length,[h("div",{class:"uplist"},body)]));}
@@ -5228,10 +5282,10 @@ html.desk .co-mark{font-size:8cqi}
     const times=["06:30","07:00","07:30","08:00","08:30","09:00"];
     const grow=k=>setGrow===k?"sqgrow":null;
     // sections, all closed; the summary line shows the current value. Opening one slides its content in below it.
-    const sec=(k,title,val,...body)=>h("details",{class:"sqsec",open:setOpen.has(k)||null,ontoggle:e=>{const d=e.currentTarget;
-        if(d.open){if(!setOpen.has(k)){setOpen.add(k);const c=d.querySelector(".sqcard");if(c){c.classList.remove("sqgrow");void c.offsetWidth;c.classList.add("sqgrow");}}}else setOpen.delete(k);
+    const sec=(k,title,val,...body)=>(setOpen.has(k)&&nwSet(k).length&&setTimeout(()=>nwSee(nwSet(k).map(x=>x.id)),0),h("details",{class:"sqsec",open:setOpen.has(k)||null,ontoggle:e=>{const d=e.currentTarget;
+        if(d.open){const nwk=nwSet(k);if(nwk.length){nwSee(nwk.map(x=>x.id));const dt=d.querySelector(".snw");if(dt)dt.remove();}if(!setOpen.has(k)){setOpen.add(k);const c=d.querySelector(".sqcard");if(c){c.classList.remove("sqgrow");void c.offsetWidth;c.classList.add("sqgrow");}}}else setOpen.delete(k);
         holdPin(d.closest(".sqpanel"));}},
-      h("summary",{"data-pin":"sec:"+k},h("span",{class:"t"},title),h("span",{class:"v"},val)),h("div",{class:"sqcard"},...body));
+      h("summary",{"data-pin":"sec:"+k},h("span",{class:"t"},title,nwSet(k).length&&!setOpen.has(k)?h("i",{class:"snw",title:"חדש","aria-label":"חדש"}):null),h("span",{class:"v"},val)),h("div",{class:"sqcard"},...body)));
     const grp=t=>h("div",{class:"sqgrp"},t);
     // display by place: automatic (hours + optional location) or manual (home / work / abroad until he goes back to automatic)
     const man=isManual(),ab=abroadOn(),lp=locPlace();
@@ -5575,7 +5629,7 @@ html.desk .co-mark{font-size:8cqi}
     db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();ctxRun(all);},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
-      const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;renderConn();
+      const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;renderConn();const ni=s.docs.find(x=>x.id==="new_items"),nd=ni?ni.data():null;newItems=nd&&Array.isArray(nd.items)?nd.items:[];nwRender();
       const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     // 18.7: the work calendar shapes the automatic windows (never shown here; the details page is in settings)
