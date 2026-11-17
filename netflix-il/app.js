@@ -285,7 +285,7 @@
   }
 
   // ---------- sheets ----------
-  function sheet(title, body, cls) { $("ovT").textContent = title; $("ovB").replaceChildren(...body.filter(Boolean)); document.querySelector("#ov .sheet").className = "sheet" + (cls ? " " + cls : ""); $("ov").hidden = false; }
+  function sheet(title, body, cls) { $("ovT").textContent = title; $("ovB").replaceChildren(...body.filter(Boolean)); const sh = document.querySelector("#ov .sheet"); sh.className = "sheet" + (cls ? " " + cls : ""); sh.style.marginTop = ""; $("ov").style.alignItems = ""; $("ov").hidden = false; }
   function closeSheet() { $("ov").hidden = true; }
   function settings() {
     const opts = [["all", "all", "בלי העדפה", "כל מה שיש בנטפליקס ישראל"]];
@@ -419,6 +419,9 @@
         h("p", { class: "note anote" }, "נתונים: JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata,\u200f Netflix.\u200f לא קשור לנטפליקס.")),
       h("div", { class: "asig", dir: "ltr" }, h("div", null, "Idea & Design by Oren Itzhaki"), h("div", null, "Coding by Claude Code")),
     ], "about-sh");
+    // opens centred, then pinned there so opening the sources grows it downwards and nothing above moves
+    const sh = document.querySelector("#ov .sheet"), ov = $("ov"), pt = parseFloat(getComputedStyle(ov).paddingTop) || 0;
+    const top = sh.offsetTop; ov.style.alignItems = "flex-start"; sh.style.marginTop = Math.max(0, top - pt) + "px";
   }
 
   // ---------- events ----------
