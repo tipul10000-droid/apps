@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.5";window.SQ_BUILD_AT="17.11.2026 21:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.6";window.SQ_BUILD_AT="17.11.2026 21:21";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -4606,11 +4606,11 @@ html.desk .co-mark{font-size:8cqi}
     if(q)return{lv:"late",t:`${q===1?"שינוי אחד ממתין":q+" שינויים ממתינים"} לשליחה`,short:last?ago(last):"",q,last};
     if(N.ok)return{lv:"ok",t:`מחובר · עודכן ${ago(last)}`,short:last?ago(last):"",q,last};
     return{lv:"off",t:"בודק חיבור…",short:last?ago(last):"",q,last};}
-  // 20.5 (Oren 17.11.2026): the bar reads "SC מחובר ● 3 דק׳" / "SC offline ● ✈️ 2 שע׳": the light sits inside the text line,
+  // 20.5 (Oren 17.11.2026): the bar reads "SC מחובר ● 3 דק׳" / "SC אופליין ● ✈️ 2 שע׳": the light sits inside the text line,
   // vertically centered with it (it continues the sentence; corner lights are only for the logos on the other side).
   const scAgo=ms=>{if(!ms)return"";const m=Math.floor((Date.now()-ms)/60000);if(m<1)return"עכשיו";if(m<60)return m+" דק׳";const hr=Math.floor(m/60);if(hr<48)return hr+" שע׳";return Math.floor(hr/24)+" ימים";};
   function renderRefr(){const c=sqConn(),d=document.getElementById("clSq");if(d)d.className="cl"+(c.lv==="off"?"":" "+c.lv);
-    const N=window.SQ_NET||{},st=c.lv==="ok"?"מחובר":c.lv==="bad"?"offline":c.lv==="late"?(N.ok===false?"לא עונה":"ממתין"):"בודק…";
+    const N=window.SQ_NET||{},st=c.lv==="ok"?"מחובר":c.lv==="bad"?"אופליין":c.lv==="late"?(N.ok===false?"לא עונה":"ממתין"):"בודק…";
     if($("scSt"))$("scSt").textContent=st;
     if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=(c.lv==="bad"?"✈️\u2009":"")+scAgo(c.last)+(c.q?` (${c.q})`:"");$("refr").classList.toggle("offl",c.lv==="bad"||(window.SQ_NET&&SQ_NET.ok===false));
     $("refr").setAttribute("aria-label","עדכון מלא. "+c.t);}
