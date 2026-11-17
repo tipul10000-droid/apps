@@ -112,7 +112,7 @@
       b.classList.toggle("in", r > 0 && r < F.r);
     }
   }
-  function oscTxt(x) { const n = (x.oc || []).length || 1; return "🏆 " + (n > 1 ? n + " אוסקרים" : "אוסקר"); }
+  function oscTxt(x) { const n = (x.oc || []).length || 1; return "🏆 " + (n > 1 ? n + " Oscars" : "Oscar"); }
   function card(x) {
     const url = x.im ? "https://www.imdb.com/title/" + x.im + "/" : "https://www.themoviedb.org/" + (x.k[0] === "m" ? "movie/" : "tv/") + x.k.slice(1);
     const post = h("div", { class: "post" },
@@ -269,7 +269,7 @@
       seedTaste(taste);
       minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
       const ns = items.filter((x) => x.k[0] === "s").length;
-      $("meta").textContent = "נטפליקס ישראל 🇮🇱 · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים · עודכן " +
+      $("meta").textContent = "נטפליקס ישראל 🇮🇱\u200f · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים · עודכן " +
         new Date(cat.at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }) + (cat.pending ? " · משלים " + fmt(cat.pending) + " כותרים…" : "");
       render();
     } catch (e) {
