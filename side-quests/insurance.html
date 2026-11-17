@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="3.2";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="3.3";</script>
 <script>/* 3.0 (Oren 17.11): ?w=1 = the second dashboard "פנסיה, חסכונות ונכסים" (same data). Asset sub pages (#a=) belong to it. */window.INS_W=/[?&]w=1(&|$)/.test(location.search)||/^#a=/.test(location.hash);if(window.INS_W){document.documentElement.classList.add("wealth");document.title="פנסיה, חסכונות ונכסים";}</script>
 <script src="sq-db.js?v=9"></script>
 <script src="dash-lock.js?v=1"></script>
@@ -268,6 +268,15 @@ html.wealth #stages,html.wealth #snote,html.wealth #collect,html.wealth #cats{di
 /* 3.2 (Oren 17.11): wealth = one jump row, one clear header per zone, details folded */
 html.wealth #who,html.wealth #cats{display:none}
 #smcar{min-height:57px}
+.smearly{display:flex;align-items:center;gap:8px;width:100%;height:44px;margin:8px 0 2px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--sunk);font:inherit;font-size:13px;font-weight:700;color:var(--muted);text-align:right;cursor:pointer;overflow:hidden}
+.smearly i{font-style:normal;flex:none}
+.smearly.on{background:#FFF3DF;border-color:#E8A23A;color:#8A4B0F}.smearly.on i{color:#E07B00;font-size:18px;animation:smst 1.6s ease-in-out infinite}
+@keyframes smst{50%{transform:scale(1.35)}}
+.ebox{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:10px 0}.ebox h4{margin:0 0 6px;font-size:15px}
+.eph{border-radius:10px;padding:8px 10px;margin-top:6px;background:var(--sunk)}.eph>b{display:block;font-size:13.5px}.eph>span{display:block;font-family:var(--f-mono);font-weight:600;font-size:17px;direction:ltr;text-align:right}
+.eph ul{margin:4px 0 0;padding-inline-start:18px;font-size:13px;line-height:1.5}
+.eph.gap{background:#FDECEC}.eph.early{background:#FFF3DF}.eph.ok{background:#E8F5EC}
+.ecmp{margin-top:8px;font-size:13.5px}
 html.wealth .bar{border-bottom:0;padding:10px 0 8px;margin-bottom:8px}
 html.wealth .jump{margin-top:0;gap:6px}
 html.wealth .jump button{flex:none;font:inherit;font-size:13.5px;font-weight:800;color:var(--ink);background:var(--surface);border:1px solid var(--line);padding:7px 12px;border-radius:999px;cursor:pointer}
@@ -722,7 +731,7 @@ function smS(R){
 }
 function smT0(R){const m=String(R.as_of||"").match(/(\d+)\.(\d+)\.(\d{4})/);return m?new Date(+m[3],+m[2]-1,+m[1]):new Date();}
 function smTX(R){const T=R.tax||{};return {
-  ceil:T.ceil??9430, pct:T.pct??67, pct_now:T.pct_now??57.5, pt:T.pt??242, blh:T.bl_health??230, hlo:T.h_lo??7703,
+  ceil:T.ceil??9430, pct:T.pct??67, e_lo:T.e_lo??3.5, e_hi:T.e_hi??12, ne:T.ne??240, pmin:T.pmin??60, pct_now:T.pct_now??57.5, pt:T.pt??242, blh:T.bl_health??230, hlo:T.h_lo??7703,
   br:T.br||[[7010,10],[10060,14],[19000,20],[25100,31],[46690,35],[60130,47],[1e9,50]]};}
 // tax on a monthly pension P. legal = from the legal retirement age (the exemption and the old-age allowance start there)
 function smTax(P,p,legal,TX){
@@ -741,11 +750,12 @@ function smCareer(p,pid,t0){const C=p.career;if(!C||!pid)return null;const P=(C.
 function smPerson(R,p,A,r,g,TX,yrs,car){
   const t0=smT0(R), b=new Date(p.born+"T00:00:00"), rd=new Date(b.getFullYear()+A,b.getMonth(),1);
   const CR=smCareer(p,car,t0);let main=-1;(p.funds||[]).forEach((f,k)=>{if(main<0&&f.kind==="pension"&&+f.dep>0)main=k;});
-  const n=Math.max(0,Math.round((rd-t0)/2629800000)), step=Math.pow(1+(R.coef_step??2.7)/100,p.ret-A);
+  const S=Math.max(A,TX.pmin), n=Math.max(0,Math.round((rd-t0)/2629800000)), n2=(S-A)*12, step=Math.pow(1+(R.coef_step??2.7)/100,p.ret-S);
   const funds=(p.funds||[]).map((f,fi)=>{
     const i=Math.pow(1+(r-(f.fb||0))/100,1/12)-1, gi=Math.pow(1+g/100,1/12)-1;
     let bal=+f.bal||0, dep=(+f.dep||0)*(1-(f.fd||0)/100), gr=1;
     for(let k=0;k<n;k++){bal=bal*(1+i)+dep+(CR&&fi===main?CR.pct*CR.at(k)*gr*(1-(f.fd||0)/100):0);dep*=1+gi;gr*=1+gi;}
+    if(f.kind==="pension")for(let k=0;k<n2;k++)bal*=1+i; // stopped working before 60: no deposits, only returns until the pension starts
     const coef=(f.coef||p.coef||205)*step;
     return {...f,fv:bal,coefA:coef,mo:f.kind==="pension"?bal/coef:0};
   });
@@ -753,8 +763,12 @@ function smPerson(R,p,A,r,g,TX,yrs,car){
   const defer=Math.max(0,Math.min(A,70)-p.ret), bl=(R.bl||0)*(1+0.05*defer);
   const T=smTax(pen,p,true,TX), TB=smTax(pen,p,false,TX), draw=yrs?lump/(yrs*12):0;
   const g1=pen+bl+draw, n1=pen-T.tax+bl-TX.blh+draw;           // from the legal age: pension + old-age allowance
-  const g0=pen+draw, n0=pen-TB.tax-TB.hp+draw;                 // early years, before the legal age
-  return {...p,A,year:rd.getFullYear(),n,funds,pen,lump,bl,draw,T,TB,g1,n1,g0,n0,early:A<p.ret,cap:funds.reduce((s,f)=>s+f.fv,0)};
+  // early pension (S..legal age): fully taxed (no 161ד exemption), BTL + health deducted like a salary, no old-age allowance
+  const eb=Math.min(pen,TX.hlo)*TX.e_lo/100+Math.max(0,pen-TX.hlo)*TX.e_hi/100;
+  const g0=pen+draw, n0=pen-TB.tax-eb+draw;
+  // the gap (A..60): the pension fund does not pay yet; only the study fund / savings, and the non-worker BTL minimum
+  const gG=draw, nG=draw-TX.ne;
+  return {...p,A,S,year:rd.getFullYear(),n,funds,pen,lump,bl,draw,T,TB,eb,g1,n1,g0,n0,gG,nG,gap:A<S,early:A<p.ret,cap:funds.reduce((s,f)=>s+f.fv,0)};
 }
 function smCalc(R,s,mk,ageOf){
   const TX=smTX(R), r=MK[mk||s.mk].r, g=SG[s.sg].g;
@@ -764,7 +778,7 @@ function smCalc(R,s,mk,ageOf){
 }
 const kk=v=>"₪"+(Math.abs(v)>=1e6?(Math.round(v/1e4)/100)+"M":Math.round(v/1000)+"K");
 function smChart(R,s){
-  const ages=[];for(let a=60;a<=70;a++)ages.push(a);
+  const ages=[];for(let a=55;a<=70;a++)ages.push(a);
   const V=c=>s.view==="net"?c.net:c.gross, lines=[];
   if(s.who==="both"){
     (R.people||[]).forEach((p,k)=>{const one={...s,who:p.id};
@@ -775,13 +789,14 @@ function smChart(R,s){
     const p=R.people.find(x=>x.id===s.who);
     ["low","base","high"].forEach(m=>lines.push({c:m===s.mk?"var(--c-pension)":"color-mix(in srgb,var(--c-pension) 40%,transparent)",w:m===s.mk?2.8:1.4,l:MK[m].l.split(" ").slice(1).join(" "),pts:ages.map(a=>V(smCalc(R,s,m,()=>a))),mark:m===s.mk?s.age[p.id]:null}));
   }
-  const mx=Math.max(1,...lines.flatMap(l=>l.pts))*1.08, W=340,H=170,L=40,B=22,T=8,X=a=>L+(a-60)/10*(W-L-8),Y=v=>T+(1-v/mx)*(H-T-B);
+  const mx=Math.max(1,...lines.flatMap(l=>l.pts))*1.08, W=340,H=170,L=40,B=22,T=8,X=a=>L+(a-55)/15*(W-L-8),Y=v=>T+(1-v/mx)*(H-T-B);
   const ticks=[0,.33,.66,1].map(t=>t*mx/1.08);
   let g=ticks.map(v=>`<line x1="${L}" x2="${W-8}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)"/><text x="${L-4}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${kk(v)}</text>`).join("");
-  g+=[60,62,65,67,70].map(a=>`<text x="${X(a).toFixed(1)}" y="${H-6}" text-anchor="middle">${a}</text>`).join("");
+  g+=[55,60,65,67,70].map(a=>`<text x="${X(a).toFixed(1)}" y="${H-6}" text-anchor="middle">${a}</text>`).join("");
+  g+=`<rect x="${L}" y="${T}" width="${(X(60)-L).toFixed(1)}" height="${H-T-B}" fill="#E8A23A" opacity=".08"/><text x="${((L+X(60))/2).toFixed(1)}" y="${T+12}" text-anchor="middle" fill="#B5651D">אין פנסיה עד 60</text>`;
   (R.people||[]).filter(p=>s.who==="both"||p.id===s.who).forEach(p=>{g+=`<line x1="${X(p.ret).toFixed(1)}" x2="${X(p.ret).toFixed(1)}" y1="${T}" y2="${H-B}" stroke="var(--muted)" stroke-dasharray="2 3" opacity=".5"/>`;});
   lines.forEach(l=>{g+=`<polyline fill="none" stroke="${l.c}" stroke-width="${l.w}" ${l.dash?'stroke-dasharray="3 3" opacity=".6"':""} stroke-linejoin="round" points="${l.pts.map((v,k)=>X(ages[k]).toFixed(1)+","+Y(v).toFixed(1)).join(" ")}"/>`;
-    if(l.mark!=null){const v=l.pts[l.mark-60];g+=`<circle cx="${X(l.mark).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="5" fill="${l.c}" stroke="var(--surface)" stroke-width="2"/>`;}});
+    if(l.mark!=null){const v=l.pts[l.mark-55];g+=`<circle cx="${X(l.mark).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="5" fill="${l.c}" stroke="var(--surface)" stroke-width="2"/>`;}});
   const leg=lines.filter(l=>l.l).map(l=>`<span><i style="background:${l.c}"></i>${esc(l.l)}</span>`).join("")+(s.who==="both"?`<span><i class="dsh"></i>שוק גבוה / נמוך</span>`:"")+`<span><i class="dsh v"></i>גיל פרישה חוקי</span>`;
   return `<svg viewBox="0 0 ${W} ${H}" class="smsvg" role="img" aria-label="הכנסה חודשית לפי גיל הפרישה">${g}</svg><div class="smleg">${leg}</div>`;
 }
@@ -796,11 +811,12 @@ function smRes(R,s){
   <div class="smcmp">${C.now?`היום ${ils(C.now)} נטו · ${V?"הפנסיה היא "+Math.round(C.net/C.now*100)+"% מזה":"נטו בפנסיה "+ils(C.net)}`:""}</div>
   <div class="bars smbars">${bars.map(b=>`<div class="brow"><span>${b[0]}</span><span class="track"><span class="fill" style="width:${(b[1]/mx*100).toFixed(1)}%;background:${b[2]}"></span></span><span class="v">${ils(b[1])}</span></div>`).join("")}
     <div class="brow smtax"><span>🧾 מס ובריאות</span><span class="track"><span class="fill" style="width:${(taxAll/mx*100).toFixed(1)}%;background:var(--bad)"></span></span><span class="v">−${ils(taxAll)}</span></div></div>
+  ${(()=>{const E=C.ppl.filter(p=>p.early);return `<button type="button" class="smearly ${E.length?"on":""}" data-early="1">${E.length?`<i>✱</i> פרישה מוקדמת: ${E.map(p=>`${esc(p.name)} ${p.A}`).join(", ")}. הסכום למעלה הוא מגיל החוקי. מה קורה עד אז?`:`<i>✓</i> פורשים בגיל החוקי. מה משתנה אם פורשים מוקדם?`}</button>`;})()}
   <div class="smcap">כל החיסכון ביום הפרישה <b>${ils(C.cap)}</b><span>מזה בהשתלמות וגמל, נזיל ובלי מס: ${ils(C.lump)}</span></div>`;
 }
 // one fixed line under each age slider: what happens in the years before the legal age
 function smAgeNote(R,s,id){const C=smCalc(R,{...s,who:id}),p=C.ppl[0],V=s.view==="net";
-  return p.early?`⏳ ${p.A} עד ${p.ret}: ${ils(V?p.n0:p.g0)} בחודש, עוד בלי ביטוח לאומי ופטור`:p.A>p.ret?`➕ ביטוח לאומי גדל ב-${Math.round((Math.min(p.A,70)-p.ret)*5)}% על הדחייה`:"✓ גיל חוקי: ביטוח לאומי והפטור מתחילים מיד";}
+  return p.gap?`✱ ${p.A}-${p.S}: בלי פנסיה בכלל · ${p.S}-${p.ret}: ${ils(V?p.n0:p.g0)} בלי פטור וב״ל`:p.early?`✱ ${p.A} עד ${p.ret}: ${ils(V?p.n0:p.g0)} בחודש, בלי ביטוח לאומי ופטור`:p.A>p.ret?`➕ ביטוח לאומי גדל ב-${Math.round((Math.min(p.A,70)-p.ret)*5)}% על הדחייה`:"✓ גיל חוקי: ביטוח לאומי והפטור מתחילים מיד";}
 function smTaxHTML(R,s){
   const C=smCalc(R,s), TX=C.TX, ex=TX.ceil*TX.pct/100;
   const row=(k,v,c)=>`<tr${c?` class="${c}"`:""}><td>${k}</td>${v}</tr>`, td=a=>a.map(x=>`<td>${x}</td>`).join("");
@@ -839,7 +855,7 @@ function smHTML(R){
     <div class="nt" id="smsg">${esc(sg.n)}${sg.g?` (${sg.g}% מעל האינפלציה)`:""}. השכר קובע כמה נכנס לפנסיה כל חודש.</div>
     ${smCarHTML(R,s,seg)}
     <div class="hfl">🎂 גיל פרישה</div>
-    ${P.map(p=>`<label class="hrng">${esc(p.name)}: <b data-agel="${esc(p.id)}">${ageLbl(p,s.age[p.id])}</b><input type="range" data-age="${esc(p.id)}" min="60" max="70" step="1" value="${s.age[p.id]}" aria-label="גיל פרישה ${esc(p.name)}"><span class="smag" data-agen="${esc(p.id)}">${smAgeNote(R,s,p.id)}</span></label>`).join("")}
+    ${P.map(p=>`<label class="hrng">${esc(p.name)}: <b data-agel="${esc(p.id)}">${ageLbl(p,s.age[p.id])}</b><input type="range" data-age="${esc(p.id)}" min="55" max="70" step="1" value="${s.age[p.id]}" aria-label="גיל פרישה ${esc(p.name)}"><span class="smag" data-agen="${esc(p.id)}">${smAgeNote(R,s,p.id)}</span></label>`).join("")}
     <div class="hfl">🏦 למשוך את ההשתלמות כתוספת חודשית?</div>${seg([[0,"לא"],[20,"על 20 שנה"],[25,"על 25 שנה"],[30,"על 30 שנה"]],s.yrs,"yrs")}
     <button type="button" class="more smreset" data-sm="reset" data-v="1">↺ חזרה לברירת המחדל (המציאות של היום)</button>
   </div>
@@ -849,7 +865,7 @@ function smHTML(R){
     <div><b>גברים: 67. נשים: היה 62, ומ-2022 עולה בהדרגה ל-65.</b> ${R.people.map(p=>`${esc(p.name)} (${String(p.born).slice(0,4)}): ${p.ret}`).join(" · ")}. כלומר 62 כבר לא גיל הפרישה של ילידות שנות ה-80.</div>
     <div><b>ביטוח לאומי משלם מגיל הפרישה, עם מבחן הכנסה עד 70.</b> מי שעדיין עובד בשכר גבוה יכול לקבל פחות. מגיל 70 בלי מבחן.</div>
     <div><b>דוחים את קצבת ביטוח לאומי אחרי גיל הפרישה: +5% לכל שנה, עד 70.</b></div>
-    <div><b>פנסיה מוקדמת מקרן הפנסיה אפשרית מגיל 60,</b> אם מפסיקים לעבוד. היא קטנה יותר: פחות שנים של הפקדות ותשואה, ומקדם המרה גבוה יותר (בערך ${R.coef_step??2.7}% פחות לכל שנה מוקדם).</div>
+    <div><b>פנסיה מוקדמת מקרן הפנסיה אפשרית רק מגיל 60,</b> אם מפסיקים לעבוד. מי שפורש לפני 60 חי עד אז מחסכונות. הפירוט המלא: בכפתור ✱ למעלה. היא קטנה יותר: פחות שנים של הפקדות ותשואה, ומקדם המרה גבוה יותר (בערך ${R.coef_step??2.7}% פחות לכל שנה מוקדם).</div>
   </div></details>
   <details class="more smd"><summary>הנחות ומה חסר לדיוק</summary><div>
     הכול בכסף של היום: התשואה והשכר הם מעל האינפלציה (${INFL}% בשנה), ומדרגות המס צמודות. יתרות והפקדות מהמסלקה ומהאזורים האישיים (${esc(R.as_of||"")}), דמי ניהול של כל קופה. ההפקדות ממשיכות עד גיל הפרישה וגדלות עם השכר. מקדמי המרה: ${R.people.map(p=>esc(p.name)+" "+esc(p.coef)).join(", ")} בגיל החוקי (מגדלור מובטח ${esc((R.people[0].funds.find(f=>f.coef)||{}).coef||"")}), ובערך ${R.coef_step??2.7}% לכל שנה מוקדם או מאוחר. ביטוח לאומי ${ils(R.bl)} לאדם (כולל תוספת ותק). מס: מדרגות 2026, פטור ${TX_PCT(R)}% מהתקרה, מס בריאות קבוע מקצבת ביטוח לאומי. תקרת ההפקדה בקרן מקיפה לא חושבה (שכר גבוה עובר לקרן המשלימה, אותה תשואה בערך).
@@ -864,10 +880,37 @@ function smCarNote(R,s){const p=R.people.find(x=>x.career);if(!p)return "";const
 function smCarHTML(R,s,seg){const p=R.people.find(x=>x.career);if(!p||(s.who!=="both"&&s.who!==p.id))return "";
   return `<div class="hfl">🏫 הקריירה של ${esc(p.name)}</div>${seg((p.career.paths||[]).map(x=>[x.id,x.id==="principal"?"עוברת לניהול":"ממשיכה כסגנית"]),s.car||"deputy","car")}<div class="nt" id="smcar">${smCarNote(R,s)}</div>`;}
 function TX_PCT(R){return smTX(R).pct;}
+// 3.3 (Oren 17.11): what early retirement really means, by phase: tax, national insurance, what you get and what you don't
+function smEarlyHTML(R,s){
+  const V=s.view==="net",TX=smTX(R),P=(R.people||[]).filter(p=>s.who==="both"||p.id===s.who);
+  const one=p=>{const C=smCalc(R,{...s,who:p.id}),x=C.ppl[0],L=smCalc(R,{...s,who:p.id},null,()=>p.ret).ppl[0];
+    if(!x.early)return `<div class="ebox"><h4>${esc(p.name)}: פורש${p.id==="lior"?"ת":""} בגיל ${x.A}, ${x.A===p.ret?"הגיל החוקי":"אחרי הגיל החוקי"}</h4><div class="eph ok"><b>מהיום הראשון: פנסיה + ביטוח לאומי + פטור ממס</b><span>${ils(V?x.n1:x.g1)} בחודש ${V?"נטו":"ברוטו"}</span></div></div>`;
+    const lost=(V?L.n1-x.n1:L.g1-x.g1), yrsE=p.ret-x.S, yrsG=x.S-x.A;
+    return `<div class="ebox"><h4>${esc(p.name)}: פורש${p.id==="lior"?"ת":""} בגיל ${x.A}, ${p.ret-x.A} שנים לפני הגיל החוקי (${p.ret})</h4>
+      ${x.gap?`<div class="eph gap"><b>שלב 1 · גיל ${x.A} עד ${x.S}: אין פנסיה בכלל</b><span>${(V?x.nG:x.gG)<0?"−"+ils(-x.nG):ils(V?x.nG:x.gG)} בחודש</span>
+        <ul><li>קרן הפנסיה לא משלמת לפני ${x.S}. חיים מהשתלמות, חסכונות או עבודה אחרת.</li><li>ההפקדות לפנסיה נעצרות. הצבירה רק מקבלת תשואה עד ${x.S}.</li><li>ביטוח לאומי: אין קצבה. משלמים בעצמכם דמי ביטוח לאומי ובריאות כמי שלא עובד, כ-₪${TX.ne} בחודש.</li>${x.draw?"":`<li>ההשתלמות לא נמשכת כרגע (בורר "למשוך את ההשתלמות"), ולכן כאן ₪0. יש בה ${ils(x.lump)}.</li>`}</ul></div>`:""}
+      <div class="eph early"><b>שלב ${x.gap?2:1} · גיל ${x.S} עד ${p.ret}: פנסיה מוקדמת, בלי ביטוח לאומי</b><span>${ils(V?x.n0:x.g0)} בחודש</span>
+        <ul><li>פנסיה ברוטו ${ils(x.pen)}. קטנה יותר לכל החיים: מקדם ההמרה גבוה בכ-${R.coef_step??2.7}% לכל שנה מוקדם, ופחות שנים של הפקדות.</li>
+        <li>🧾 <b>מס מלא, בלי פטור:</b> הפטור על הפנסיה (טופס 161ד) מתחיל רק בגיל ${p.ret}. עד אז הפנסיה ממוסה כמו משכורת: ${ils(x.TB.tax)} מס בחודש.</li>
+        <li>🏛️ <b>ביטוח לאומי ובריאות יורדים מהפנסיה</b> כמו ממשכורת (${TX.e_lo}% עד ${ils(TX.hlo)}, ${TX.e_hi}% מעל): ${ils(x.eb)} בחודש.</li>
+        <li>❌ <b>אין קצבת אזרח ותיק</b> עד ${p.ret}. מפסידים ${ils(R.bl||0)} בחודש במשך ${yrsE} שנים.</li></ul></div>
+      <div class="eph ok"><b>שלב ${x.gap?3:2} · מגיל ${p.ret}: הכול נפתח</b><span>${ils(V?x.n1:x.g1)} בחודש</span>
+        <ul><li>✅ קצבת ביטוח לאומי ${ils(x.bl)} נכנסת (פטורה ממס, רק מס בריאות כ-₪${TX.blh}).</li><li>✅ הפטור על הפנסיה מתחיל: המס יורד ל-${ils(x.T.tax)} בחודש.</li></ul></div>
+      <div class="ecmp">לעומת פרישה בגיל ${p.ret}: <b>${ils(lost)} פחות בחודש לכל החיים</b> (${ils(V?L.n1:L.g1)} מול ${ils(V?x.n1:x.g1)})${yrsG?`, ו-${yrsG} שנים בלי פנסיה בכלל`:""}.</div></div>`;};
+  return `<div class="grab"></div><button class="x" id="sx" aria-label="סגירה">✕</button><h3>✱ פרישה מוקדמת: מה באמת משתנה</h3>
+    <p class="sn">שלושה דברים מתחילים רק בגיל הפרישה החוקי: קצבת ביטוח לאומי, הפטור ממס על הפנסיה, והפסקת ניכוי ביטוח לאומי מהפנסיה. ולפני 60 קרן הפנסיה לא משלמת בכלל. הסכומים ${V?"נטו":"ברוטו"}, בכסף של היום.</p>
+    ${P.map(one).join("")}
+    <details class="more"><summary>עוד דברים שכדאי לדעת</summary><div>
+      פיצויים שמושכים בפרישה בהון ממוסים (יש פטור עד תקרה לכל שנת עבודה), ואם משאירים אותם בקרן הם הופכים לקצבה. בין הגיל החוקי ל-70 קצבת ביטוח לאומי תלויה במבחן הכנסה מעבודה; מגיל 70 בלי מבחן. אפשר לעבוד גם אחרי פרישה מוקדמת, אבל ההכנסה מצטרפת למדרגות המס של הפנסיה. השיעורים לפי כל זכות וביטוח לאומי, בקירוב.
+    </div></details>`;
+}
+function smEarlyOpen(R,s){const sh=$("sheet");sh.innerHTML=smEarlyHTML(R,s);sh.style.height="82vh";document.getElementById("sheetwrap").className="open";
+  $("sx").onclick=()=>{document.getElementById("sheetwrap").className="";sh.style.height="";};$("sx").focus();}
 function bindSim(){
   const box=$("retbox");if(!box)return;const R=data.meta.retire;
   const full=()=>{box.innerHTML=smHTML(R);bindSim();};
-  const part=()=>{const s=smS(R);$("smres").innerHTML=smRes(R,s);$("smch").innerHTML=smChart(R,s);$("smtx").innerHTML=smTaxHTML(R,s);
+  const be=()=>{const b=box.querySelector("[data-early]");if(b)b.onclick=()=>smEarlyOpen(R,smS(R));};be();
+  const part=()=>{const s=smS(R);$("smres").innerHTML=smRes(R,s);be();$("smch").innerHTML=smChart(R,s);$("smtx").innerHTML=smTaxHTML(R,s);
     const sc=MK[s.mk],sg=SG[s.sg];$("smmk").textContent=`${sc.d}: תשואה של ${sc.r}% מעל האינפלציה (כ-${sc.r+INFL}% בשנה), פחות דמי ניהול.`;
     if($("smcar"))$("smcar").textContent=smCarNote(R,s);
     $("smsg").textContent=`${sg.n}${sg.g?` (${sg.g}% מעל האינפלציה)`:""}. השכר קובע כמה נכנס לפנסיה כל חודש.`;
