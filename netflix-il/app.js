@@ -372,6 +372,12 @@
   $("q").addEventListener("input", () => { clearTimeout(qT); qT = setTimeout(() => { q = $("q").value.trim(); $("qX").hidden = !q; render(); }, 180); });
   $("q").addEventListener("keydown", (e) => { if (e.key === "Enter") $("q").blur(); });
   $("qX").addEventListener("click", () => { $("q").value = ""; q = ""; $("qX").hidden = true; render(); });
+  $("qBtn").addEventListener("click", () => {
+    const on = !$("srchW").classList.contains("on");
+    $("srchW").classList.toggle("on", on); $("qBtn").classList.toggle("on", on); $("qBtn").setAttribute("aria-expanded", on);
+    if (on) $("q").focus({ preventScroll: true });
+    else { $("q").blur(); if (q || $("q").value) { $("q").value = ""; q = ""; $("qX").hidden = true; render(); } }
+  });
   // ↑ back to the top, shown once you scrolled a bit (Oren 17.11.2026)
   const tt = $("toTop");
   addEventListener("scroll", () => tt.classList.toggle("on", scrollY > 600), { passive: true });
@@ -390,8 +396,9 @@
       seedTaste(taste);
       minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
       const ns = items.filter((x) => x.k[0] === "s").length;
-      $("meta").textContent = "נטפליקס ישראל 🇮🇱\u200f · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים · עודכן " +
-        new Date(cat.at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }) + (cat.pending ? " · משלים " + fmt(cat.pending) + " כותרים…" : "");
+      $("meta").replaceChildren(
+        h("b", null, "נטפליקס ישראל · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים"),
+        h("span", null, "עודכן " + new Date(cat.at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }) + (cat.pending ? " · משלים " + fmt(cat.pending) + " כותרים…" : "")));
       render();
     } catch (e) {
       $("meta").textContent = "לא הצלחתי לטעון את הרשימה. בדקו חיבור ונסו שוב.";
