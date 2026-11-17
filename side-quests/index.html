@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.5";window.SQ_BUILD_AT="17.11.2026 22:44";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.6";window.SQ_BUILD_AT="17.11.2026 22:47";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2358,9 +2358,10 @@ html.desk .co-mark{font-size:8cqi}
 .qa-term{left:14px!important;bottom:56px!important;width:116px!important}
 .qa-term .qa-trow{padding:3px 8px 4px}.qa-term .ai-bar{padding:3px 6px}
 /* Netflix banner = a button */
-.fcard.nf .nfapp.img{position:relative;margin:0 0 12px;border-radius:14px;box-shadow:0 0 0 1.5px rgba(229,9,20,.55),0 6px 18px rgba(0,0,0,.45);transition:filter .12s,box-shadow .12s;-webkit-tap-highlight-color:transparent}
+.fcard.nf .nfapp.img{position:relative;overflow:visible;margin:0 0 26px;border-radius:14px;box-shadow:0 0 0 1.5px rgba(229,9,20,.55),0 6px 18px rgba(0,0,0,.45);transition:filter .12s,box-shadow .12s;-webkit-tap-highlight-color:transparent}
 .fcard.nf .nfapp.img:active{filter:brightness(.82);box-shadow:0 0 0 2.5px #E50914,0 2px 8px rgba(0,0,0,.5)}
-.nfgo{position:absolute;left:61%;bottom:5px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;height:23px;padding:0 9px 0 7px;border-radius:12px;background:rgba(10,10,10,.82);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12.5px;font-weight:700;line-height:1;pointer-events:none;white-space:nowrap}
+.fcard.nf .nfapp.img img{border-radius:14px}
+.nfgo{position:absolute;left:50%;bottom:0;transform:translate(-50%,50%);display:flex;align-items:center;gap:4px;height:23px;padding:0 9px 0 7px;border-radius:12px;background:rgba(10,10,10,.82);border:1.5px solid #E50914;box-shadow:0 3px 10px rgba(0,0,0,.5);color:#fff;font-size:12.5px;font-weight:700;line-height:1;white-space:nowrap}
 .nfgo svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;animation:nftap 2.4s ease-in-out infinite}
 @keyframes nftap{0%,70%,100%{transform:translateY(0)}80%{transform:translateY(2px) scale(.92)}}
 @media (prefers-reduced-motion:reduce){.nfgo svg{animation:none}}
