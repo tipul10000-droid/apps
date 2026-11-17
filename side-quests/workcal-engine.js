@@ -66,5 +66,20 @@
     if(c<b)push(c,base);
     if(!out.length||out[0][0]>a)out.unshift([a,base]);
     return out;}
-  window.SQWorkCal={set,day,split,stamp:()=>stamp,commute:()=>{const c=prof.commute_min||{};return Array.isArray(c.day)?Math.round((c.day[0]+c.day[1])/2):30;}};
+  // 20.1 (Oren 17.11.2026): the evening question "how much errand time tomorrow" shows the FIRST meeting of the morning
+  // (time, with whom, where) so he can decide if it fits into the errands, needs him at a place, or only needs him available.
+  // Returns {first:{s,e,subject,org,att,own,teams,room,phys,unconf,kind}, phys:{...} = the first physical one if later, next:{s,e} =
+  // the next meeting that needs him after the first one}. null = no calendar / no meeting that morning.
+  function who(e){if(e.response==="organizer")return "אתה מזמן";const o=String(e.organizer||"").split("@")[0].replace(/[._]+/g," ").replace(/\bext\b/i,"").trim();
+    return o.replace(/\b\w/g,c=>c.toUpperCase());}
+  function room(e){const m=String(e.location||"").split(/[;,]/).map(x=>x.trim()).filter(x=>x&&!/teams|zoom|webex/i.test(x));return m[0]||"";}
+  function info(e,iso){const s0=new Date(e.start),e0=new Date(e.end);return {s:dk(s0)===iso?hm(s0):0,e:dk(e0)===iso?hm(e0):1440,
+    subject:String(e.subject||"").replace(/^\[external\]\s*/i,"").trim(),org:who(e),att:+e.attendees||0,own:e.response==="organizer",
+    teams:!!e.teams||/teams/i.test(e.location||""),room:room(e),phys:physical(e),unconf:unconf(e),kind:kind(e)};}
+  function morning(iso){if(!evs.length)return null;const D=day(iso);if(!D||D.away)return D&&D.away?{away:true}:null;
+    const L=(byDay[iso]||[]).filter(e=>!e.all_day&&kind(e)&&kind(e)!=="self").map(e=>info(e,iso)).filter(x=>x.s<840).sort((a,b)=>a.s-b.s);
+    if(!L.length)return {none:true,office:D.office};
+    const f=L[0],ph=L.find(x=>x.phys&&x.s>f.s)||null,nx=L.find(x=>x.s>=f.e&&x.kind==="meet")||null;
+    return {first:f,phys:ph,next:nx,office:D.office,count:L.length};}
+  window.SQWorkCal={set,day,split,morning,stamp:()=>stamp,commute:()=>{const c=prof.commute_min||{};return Array.isArray(c.day)?Math.round((c.day[0]+c.day[1])/2):30;}};
 })();

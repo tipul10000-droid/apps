@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.0";window.SQ_BUILD_AT="17.11.2026 19:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.1";window.SQ_BUILD_AT="17.11.2026 20:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -26,7 +26,7 @@ setTimeout(function(){var l=document.getElementById("list"),pin=document.getElem
 if(/[?&]nosw=1/.test(location.search)){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister();}));}).then(function(){return window.caches?caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf("sq-")===0;}).map(function(k){return caches.delete(k);}));}):0;}).then(function(){location.replace(location.pathname+"?u="+Date.now()+location.hash);});return;}
 window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});})();</script>
 <script src="sq-db.js?v=10"></script>
-<script src="workcal-engine.js?v=1"></script>
+<script src="workcal-engine.js?v=2"></script>
 <script src="timegate.js?v=3"></script>
 <script src="sqctx.js?v=2"></script>
 <title>Side Quests</title>
@@ -853,6 +853,15 @@ main,.sqmodal:not(.bpop) .sqpanel,.bpop:not(.car) .sqpanel{zoom:var(--tz,1)}
 .plancard b{display:block;font-size:15.5px;margin-bottom:8px}
 .pc-btns{display:flex;flex-wrap:wrap;gap:6px}
 .pc-btns button{flex:1 1 auto;min-height:40px;padding:0 12px;border-radius:11px;background:rgba(255,255,255,.75);color:#2A1500;font-weight:700;font-size:14px}
+.pc-meet{background:rgba(255,255,255,.55);border-radius:11px;padding:8px 10px;margin:0 0 8px}
+.pc-m1{display:flex;gap:8px;align-items:baseline;min-width:0}.pc-m1 .t{font-family:var(--f-mono);font-weight:800;font-size:15px;direction:ltr}
+.pc-m1 .s{font-weight:700;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pc-m2{font-size:12.5px;opacity:.8;margin-top:2px;line-height:1.35}.pc-solo{margin:0 0 8px}
+.pc-how button{flex:1 1 0;padding:0 6px;font-size:13px;white-space:nowrap}.pc-how button.on{background:#2A1500;color:#FFE7B0}
+.pc-sug{display:flex;align-items:center;gap:8px;min-height:44px;margin:8px 0 2px;font-size:13.5px;font-weight:700}
+.pc-sug .x{flex:1;min-width:0}.pc-sug .x.mu{opacity:.65;font-weight:600}.pc-sug.has .x{animation:sqgrow .22s ease-out}
+.pc-sug .ok{flex:none;min-height:38px;padding:0 14px;border-radius:11px;background:#2A1500;color:#FFE7B0;font-weight:800;font-size:14px}
+.pc-or{font-size:12px;opacity:.7;margin:4px 0 6px;font-weight:700}
 .tag.win{background:var(--sunk);color:var(--muted);font-weight:600}
 .avmenu .note.wtop{grid-column:1/-1;margin:4px 2px 0;font-size:12px;color:var(--hero-muted);font-weight:700}
 .tsbtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -2592,7 +2601,7 @@ html.desk .co-mark{font-size:8cqi}
     return {g,segs,end};}
   // "08:00", "מחר 08:00", "שבת 08:00"; the end of Saturday (23:00) is מוצ״ש
   function atLbl(k,m,isEnd){if(k===0)return hhmm(m);const d=(ilNow().d+k)%7;return (isEnd&&d===6&&m>=1080?"מוצ״ש":k===1?"מחר":HE_DAYS[d])+" "+hhmm(m);}
-  let plan=null; // settings/plan {date, errands_min, office}: tonight's answer for tomorrow morning
+  let plan=null; // settings/plan {date, errands_min (08:00 + this = he leaves home), errands_net (real errand time, 20.1), office, first {s, e, how}}: tonight's answer for tomorrow morning
   // 12.9 (Oren 7.11.2026, "I answered, closed the app, opened it again and it asked again"): the answer lives in settings/plan
   // (Supabase) and a copy on the device (sq_plan), so the question never comes back before the data arrives.
   try{const c=JSON.parse(localStorage.getItem("sq_plan")||"null");if(c&&c.date)plan=c;}catch(e){}
@@ -2603,7 +2612,7 @@ html.desk .co-mark{font-size:8cqi}
   function planFor(iso){const a=awayOn(iso);if(a)return {date:iso,abroad:true,place:a.place||"חו״ל"};return plan&&plan.date===iso?plan:null;}
   // what tomorrow morning looks like, as a short tag: "שעתיים סידורים", "בלי סידורים", "✈️ איטליה"
   function planTag(iso){const p=planFor(iso);if(!p)return "";if(p.abroad)return "✈️ "+p.place;if(p.office===false)return "לא נוסע לעבודה";
-    const E=+p.errands_min||0;return E?({30:"חצי שעה",60:"שעה",120:"שעתיים"}[E]||E+" דק׳")+" סידורים":"בלי סידורים";}
+    const E=p.errands_net!=null?+p.errands_net:+p.errands_min||0;return E?fDur(E)+" סידורים":"בלי סידורים";}
   // the windows of one day: [[start minute, window id], ...]. p = that day's plan (or null = defaults).
   // 00:00-01:00 is still the night before (deep). Fri 13:00 to Sat 23:00 is the weekend.
   function dayWins(d,p){
@@ -2612,14 +2621,14 @@ html.desk .co-mark{font-size:8cqi}
     if(d===5)return [[0,"deep"],[60,"sleep"],[420,"home_am"],[480,"fri"],[780,"weekend"]];
     if(d===6)return [[0,"weekend"],[60,"sleep"],[480,"sat_am"],[720,"weekend"],[1380,"deep"]];
     const r=[[0,"deep"],[60,"sleep"],[420,"home_am"]];
-    // 18.7 (Oren 17.11.2026): the work calendar (Outlook → work_calendar, workcal-engine.js) shapes the work day. It is never shown;
+    // 18.7 (Oren 17.11.2026): the work calendar (Outlook → work_calendar, workcal-engine.js) shapes the work day. Only the errands question (20.1) shows the first meeting;
     // it only decides: office or home, when he must leave (first physical meeting − commute), and which parts of the work hours
     // are a meeting he sits in (meet: only urgent), a meeting he only listens to (listen: quiet phone / computer steps) or free.
     const iso=p&&p.date||addDays(ilDate(),(d-ilNow().d+7)%7),C=window.SQWorkCal?SQWorkCal.day(iso):null;
     const wfh=C&&!(p&&p.office===true)&&(C.office===false||(p&&p.office===false));
     let pm=1110;
     if(C&&wfh){if(E>0)r.push([480,"errands"]);for(const x of SQWorkCal.split(iso,480+E,1110,"wfh"))r.push(x);}
-    else if(C&&office){const cm=SQWorkCal.commute();let ds=480+E;if(C.first!=null)ds=Math.max(420,Math.min(ds,C.first-cm-10));
+    else if(C&&office){const cm=SQWorkCal.commute();let ds=480+E;const fx=p&&p.first;if(C.first!=null&&!(fx&&fx.how!=="place"&&fx.s===C.first))ds=Math.max(420,Math.min(ds,C.first-cm-10));
       if(ds>480)for(const x of SQWorkCal.split(iso,480,ds,"errands"))r.push(x);else if(ds<480)r.splice(r.length-1,1,[420,"home_am"]);
       r.push([ds,"drive_am"]);for(const x of SQWorkCal.split(iso,ds+cm,1110,"work"))r.push(x);
       if(C.last!=null&&C.last>1110)pm=Math.min(C.last,1165);}
@@ -2779,10 +2788,39 @@ html.desk .co-mark{font-size:8cqi}
   function savePlan(iso,fields){plan={date:iso,...fields,at:new Date().toISOString()};try{localStorage.setItem("sq_plan",JSON.stringify(plan));}catch(e){}
     if(db&&canWrite)db.collection("settings").doc("plan").set(plan).catch(()=>toast("השמירה נכשלה"));
     renderCtx();renderList();if($("briefM"))showBrief(briefMd);
-    toast(fields.office===false?"מחר לא נוסע, הבוקר כולו לסידורים":fields.errands_min?"נשמר: "+fields.errands_min+" דק׳ סידורים":"נשמר: בלי סידורים, ישר לעבודה");}
-  function planCard(a){if(!a)return null;const b=(l,f)=>h("button",{type:"button",onclick:press(()=>savePlan(a.iso,f))},l);
-    return h("div",{class:"plancard"},h("b",null,"🌅 כמה זמן סידורים "+a.when+"?"),
-      h("div",{class:"pc-btns"},b("אין",{errands_min:0}),b("חצי שעה",{errands_min:30}),b("שעה",{errands_min:60}),b("שעתיים",{errands_min:120}),b("לא נוסע לעבודה",{errands_min:180,office:false})));}
+    toast(fields.office===false?"מחר לא נוסע, הבוקר כולו לסידורים":(fields.errands_net!=null?fields.errands_net:fields.errands_min)?"נשמר: "+fDur(+(fields.errands_net!=null?fields.errands_net:fields.errands_min))+" סידורים":"נשמר: בלי סידורים, ישר לעבודה");}
+  // 20.1 (Oren 17.11.2026): the question shows tomorrow's first meeting (time, with whom, where) from the work calendar, and asks
+  // what that meeting means for the morning: 🛒 inside the errands (he takes it from the phone / car), 🏢 he must be at a place
+  // (arrive before it), 💻 he only needs to be available (errands until it, the meeting from where he is, then leaves).
+  // From that the app estimates the errand time; one tap saves it, or he picks a duration by hand. settings/plan.first {s, e, how}.
+  let planPick=null; // {iso, how}
+  const fDur=m=>m<=0?"אין זמן":m<60?m+" דק׳":({60:"שעה",120:"שעתיים",180:"3 שעות"}[m]||(m<120?"שעה ו-"+(m-60)+" דק׳":m<180?"שעתיים ו-"+(m-120)+" דק׳":Math.floor(m/60)+" שעות ו-"+(m%60)+" דק׳"));
+  function planEst(M,how){const f=M.first,cm=window.SQWorkCal?SQWorkCal.commute():30,office=M.office!==false,r5=x=>Math.max(0,Math.floor(x/5)*5);
+    if(how==="place"){const lv=f.s-cm-10;return {E:r5(lv-480),net:r5(lv-480),leave:lv};}
+    if(how==="avail"){return {E:r5(f.e-480),net:r5(f.s-5-480),leave:office?f.e:null};}
+    let lim=480+180;if(M.phys)lim=Math.min(lim,M.phys.s-cm-10);if(M.next)lim=Math.min(lim,M.next.s-(office?cm+10:5));
+    return {E:r5(lim-480),net:r5(lim-480),leave:office?lim:null};}
+  function planMeet(M){const f=M.first,where=f.phys?"🏢 "+(f.room||"פיזית"):f.room?"Teams + "+f.room:"Teams";
+    const bd=x=>h("bdi",null,x),sep=a=>a.filter(Boolean).flatMap((x,i)=>i?[" · ",x]:[x]);
+    const bits=sep([f.org&&bd(f.org),!f.own&&f.att>1?f.att+" משתתפים":"",bd(where),f.unconf?"❔ לא אישרת":""]);
+    return h("div",{class:"pc-meet"},h("div",{class:"pc-m1"},h("span",{class:"t"},hhmm(f.s)),h("bdi",{class:"s"},f.subject||"דיון")),
+      h("div",{class:"pc-m2"},...bits),
+      M.phys?h("div",{class:"pc-m2"},...sep(["🏢 פיזית ב-"+hhmm(M.phys.s),bd((M.phys.subject||"דיון").slice(0,30)),M.phys.room&&bd(M.phys.room)])):null);}
+  function planCard(a){if(!a)return null;
+    const M=window.SQWorkCal&&SQWorkCal.morning?SQWorkCal.morning(a.iso):null,pk=planPick&&planPick.iso===a.iso?planPick.how:null;
+    const first=x=>M&&M.first&&pk?{first:{s:M.first.s,e:M.first.e,how:pk},...(pk==="place"?{office:true}:{}),...x}:x;
+    const b=(l,f)=>h("button",{type:"button",onclick:press(()=>{planPick=null;savePlan(a.iso,first(f));})},l);
+    const durs=h("div",{class:"pc-btns"},b("אין",{errands_min:0}),b("חצי שעה",{errands_min:30}),b("שעה",{errands_min:60}),b("שעתיים",{errands_min:120}),b("לא נוסע לעבודה",{errands_min:180,office:false}));
+    if(!M||!M.first)return h("div",{class:"plancard"},h("b",null,"🌅 כמה זמן סידורים "+a.when+"?"),
+      M&&M.none?h("div",{class:"pc-m2 pc-solo"},"📅 אין דיונים בבוקר ביומן"):M&&M.away?h("div",{class:"pc-m2 pc-solo"},"📅 לפי היומן: לא יום עבודה רגיל"):null,durs);
+    const pick=(how,l)=>h("button",{type:"button",class:pk===how?"on":"",onclick:e=>{e.stopPropagation();planPick=pk===how?null:{iso:a.iso,how};renderList();if($("briefM"))showBrief(briefMd);}},l);
+    const est=pk?planEst(M,pk):null;
+    const sug=h("div",{class:"pc-sug"+(est?" has":"")},est?[h("span",{class:"x"},est.net>0?"≈ "+fDur(est.net)+" סידורים · 08:00-"+hhmm(480+est.net)+(est.leave?" · יוצא "+hhmm(est.leave):""):"אין זמן לסידורים"+(est.leave?" · יוצא "+hhmm(est.leave):"")),
+        h("button",{type:"button",class:"ok",onclick:press(()=>{planPick=null;savePlan(a.iso,first({errands_min:est.E,errands_net:est.net}));})},"✓ מתאים")]
+      :h("span",{class:"x mu"},"מה הדיון הזה בשבילך? אחשב לפי זה"));
+    return h("div",{class:"plancard"},h("b",null,"🌅 "+a.when+": כמה זמן סידורים?"),planMeet(M),
+      h("div",{class:"pc-btns pc-how"},pick("in","🛒 בתוך הסידורים"),pick("place","🏢 להיות במקום"),pick("avail","💻 רק זמין")),
+      sug,h("div",{class:"pc-or"},"או בחירה ידנית:"),durs);}
   // the "עכשיו" box (Side Quests only): 3-5 things that fit this window and the time left in it
   function nowList(live){const w=curWin(),W=WINS[w.id];if(!W.acc.length)return [];
     return live.filter(t=>!isUrgent(t)&&fitsWin(t,w.id)).sort((a,b)=>(isOwn(b)-isOwn(a))||(returned(b)-returned(a))||byDate(a,b)||(minsOf(a)-minsOf(b))).slice(0,5);}
