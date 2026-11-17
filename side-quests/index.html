@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.5";window.SQ_BUILD_AT="17.11.2026 10:38";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.6";window.SQ_BUILD_AT="17.11.2026 14:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2792,6 +2792,14 @@ html.desk .co-mark{font-size:8cqi}
       const sugs=[...flags.filter(f=>f.lvl==="high").map(f=>({text:f.text,sub:f.save?"חיסכון: "+f.save:(f.sub||"")})),
         ...pol.filter(x=>x.renew&&daysUntil(x.renew)>=0&&daysUntil(x.renew)<=60).map(x=>({text:"חידוש: "+(x.title||x.id),sub:relDate(x.renew),date:x.renew}))];
       return {kpis,sugs,live:true};
+    }
+    if(d.source==="wealth"&&insDocs.length){ // 19.0: "פנסיה, חסכונות ונכסים" (insurance.html?w=1, same sq_docs collection)
+      const meta=insDocs.find(x=>x.id==="_meta")||{},R=meta.retire||{},ppl=Array.isArray(R.people)?R.people:[];
+      const tot=ppl.reduce((a,p)=>a+(p.funds||[]).reduce((b,f)=>b+(+f.bal||0),0),0);
+      const liq=insDocs.filter(x=>x.id!=="_meta"&&x.status!=="ended").reduce((a,x)=>a+(Array.isArray(x.liquid)?x.liquid:[]).filter(l=>(l.tier||(l.now?"now":""))==="now").reduce((b,l)=>b+(+(l.net??l.amount)||0),0),0);
+      const kk=v=>"₪"+(v>=1e6?(Math.round(v/1e4)/100)+"M":Math.round(v/1000)+"K");
+      const kpis=[tot?{v:kk(tot),l:"פנסיה וחיסכון"}:null,liq?{v:kk(liq),l:"נזיל עכשיו"}:null].filter(Boolean);
+      return {kpis,sugs:[],live:true,line:"סימולטור פנסיה: ברוטו/נטו, שוק, שכר וגיל פרישה"};
     }
     if(d.source==="payments"&&payDocs.length){
       const meta=payDocs.find(x=>x.id==="_meta")||{},fx=+(meta.fx_usd||3.7);

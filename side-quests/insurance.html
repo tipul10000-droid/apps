@@ -6,10 +6,11 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="2.5";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="3.0";</script>
+<script>/* 3.0 (Oren 17.11): ?w=1 = the second dashboard "פנסיה, חסכונות ונכסים" (same data). Asset sub pages (#a=) belong to it. */window.INS_W=/[?&]w=1(&|$)/.test(location.search)||/^#a=/.test(location.hash);if(window.INS_W){document.documentElement.classList.add("wealth");document.title="פנסיה, חסכונות ונכסים";}</script>
 <script src="sq-db.js?v=9"></script>
 <script src="dash-lock.js?v=1"></script>
-<title>ביטוחים ופיננסים</title>
+<title>ביטוחים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
@@ -193,6 +194,39 @@ body.asub .bar,body.asub .kpis,body.asub #stages,body.asub #snote,body.asub .doc
 .akv{margin-top:16px;padding:12px}
 .ggrp{font-size:13px;font-weight:900;letter-spacing:.02em;color:var(--muted);margin:14px 2px -4px;border-bottom:1px solid var(--line);padding-bottom:4px}
 
+
+/* 3.0: wealth mode + pension simulator */
+html.wealth{--hero:#1E4A3B;--hero2:#3E8C68;--hero-muted:#B9DCCB}
+html.wealth #stages,html.wealth #snote,html.wealth #collect,html.wealth #cats{display:none!important}
+.xw{display:flex;align-items:center;gap:12px;width:100%;padding:14px;text-decoration:none;color:inherit;border-inline-start:4px solid var(--c-pension)}
+.xw .ic{font-size:26px}.xw b{display:block;font-size:16px}.xw span{display:block;font-size:13px;color:var(--muted)}.xw .go{margin-inline-start:auto;font-size:22px;color:var(--muted)}
+.ovr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media (max-width:600px){.ovr{grid-template-columns:repeat(2,1fr)}}
+.ov{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;text-decoration:none;color:inherit;display:block}
+.ov span{display:block;font-size:13px;color:var(--muted)}.ov b{display:block;font-family:var(--f-mono);font-weight:500;font-size:19px;direction:ltr;text-align:right}.ov small{display:block;font-size:11.5px;color:var(--muted)}
+.ov.neg b{color:var(--bad)}.ovt{grid-column:1/-1;background:var(--sunk)}.ovt b{font-size:24px}
+.smw{padding:14px;display:grid;gap:12px}
+.smtop{display:grid;grid-template-columns:1.6fr 1fr;gap:8px}
+.smbig b{display:block;font-family:var(--f-mono);font-weight:500;font-size:34px;direction:ltr;text-align:right;line-height:1.1;color:var(--c-pension)}
+.smbig span{display:block;font-size:13.5px;font-weight:700}.smbig small{display:block;font-size:12.5px;color:var(--muted)}
+.smcmp{font-size:13px;color:var(--muted);margin-top:-6px}
+.smbars{padding:0}.smbars .brow{grid-template-columns:118px 1fr 74px;font-size:13.5px}
+.smtax .v{color:var(--bad)}
+.smag{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.smbr{font-size:13px;line-height:1.5;padding:8px 10px;border-radius:10px;background:var(--ok-soft);min-height:58px;box-sizing:border-box}.smbr.on{background:var(--mid-soft)}
+.smcap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 10px;font-size:13.5px;border-top:1px solid var(--line);padding-top:8px}.smcap b{font-family:var(--f-mono);font-weight:500;direction:ltr}.smcap span{width:100%;font-size:12px;color:var(--muted)}
+.smctl{display:grid;gap:7px;background:var(--sunk);border-radius:14px;padding:10px}
+.smctl .hseg button{font-size:12.5px;padding:7px 2px}
+.smw .hrng b{direction:rtl;font-family:inherit}
+.smw .nt{font-size:12px;color:var(--muted);line-height:1.45;min-height:36px}
+.smreset{font-size:13px;padding:7px}
+.smsvg{width:100%;height:auto;display:block;font:11px var(--f-mono);fill:var(--muted)}
+.smleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted)}.smleg i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-inline-end:4px;vertical-align:middle}
+.smleg i.dsh{background:none;border-top:2px dashed var(--muted);height:0}.smleg i.dsh.v{width:0;height:12px;border-top:0;border-inline-start:2px dashed var(--muted)}
+.smd>div{font-size:13.5px;line-height:1.55}
+.smins{display:grid;gap:8px;margin-bottom:8px}.smins>div{padding-inline-start:10px;border-inline-start:3px solid var(--line)}.smins b{font-weight:800}
+.smins details{margin-top:3px;color:var(--muted)}.smins summary{cursor:pointer;font-size:12.5px;font-weight:700}
+.smt{width:100%;border-collapse:collapse;font-size:13px}.smt th,.smt td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:start}.smt td+td,.smt th+th{text-align:left;font-family:var(--f-mono);direction:ltr}.smt tr.b td{font-weight:800}
+.hm{padding:12px;display:grid;gap:8px}.hmg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.hmg div{background:var(--sunk);border-radius:10px;padding:8px}.hmg span{display:block;font-size:12px;color:var(--muted)}.hmg b{display:block;font-family:var(--f-mono);font-weight:500;direction:ltr;text-align:right}
+
 /* retirement */
 .ret{padding:14px}
 .rtop{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -327,7 +361,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 <body>
 <header class="hero"><div class="in">
   <div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back" id="upd"></span></div>
-  <h1>🛡️ ביטוחים ופיננסים</h1>
+  <h1 id="h1t">🛡️ ביטוחים</h1>
   <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span>💬</span><span>צ׳אט</span></a>
   <a class="docsbtn" id="docs" target="_blank" rel="noopener" hidden>📁 מסמכים</a>
   <a class="docsbtn" id="collect" target="_blank" rel="noopener" hidden>📥 שליפת מסמכים</a>
@@ -364,6 +398,7 @@ const COV={ok:"מכוסה",partial:"חלקי",gap:"חסר",unknown:"לא ידו�
 const LVL={high:"🔴",mid:"🟠",low:"⚪"};
 const TYPE_I={dup:"⧉",cost:"₪",gap:"⚠️",renew:"📅",check:"🔍",pay:"💳"};
 
+const W=!!window.INS_W;
 let showAll=false, showDone=false, stSel=null, fWho=localStorage.getItem("ins_who")||"all", fCat="all", data={pol:[],meta:{}};
 
 function monthly(p){if(p.status==="ended")return 0;if(p.monthly!=null)return +p.monthly;if(p.annual!=null)return +p.annual/12;return 0;}
@@ -379,7 +414,7 @@ function fmtD(d){if(!d)return "";const [y,m,dd]=d.split("-");return dd?`${+dd}.$
 
 function chips(){
   const all=data.pol.filter(p=>p.status!=="ended");
-  $("who").innerHTML=Object.keys(WHO).map(k=>{const n=k==="all"?all.length:all.filter(p=>{const s=fWho;fWho=k;const r=matchWho(p);fWho=s;return r;}).length;return `<button class="chip" data-w="${k}" aria-pressed="${fWho===k}">${WHO[k]}<span class="n">${n}</span></button>`;}).join("");
+  $("who").innerHTML=(W?["all","oren","lior","kids"]:Object.keys(WHO)).map(k=>{const n=k==="all"?all.length:all.filter(p=>{const s=fWho;fWho=k;const r=matchWho(p);fWho=s;return r;}).length;return `<button class="chip" data-w="${k}" aria-pressed="${fWho===k}">${WHO[k]}<span class="n">${n}</span></button>`;}).join("");
   const cs=["all",...Object.keys(CATS).filter(c=>all.some(p=>p.cat===c))];
   $("cats").innerHTML=cs.map(c=>`<button class="chip" data-c="${c}" aria-pressed="${fCat===c}">${c==="all"?"כל התחומים":CATS[c].i+" "+CATS[c].l}</button>`).join("");
   $("who").querySelectorAll("button").forEach(b=>b.onclick=()=>{fWho=b.dataset.w;try{localStorage.setItem("ins_who",fWho)}catch(e){}render();});
@@ -443,13 +478,16 @@ function render(){
   const m=act.reduce((s,p)=>s+monthly(p),0);
   // רשימת "דורש תשומת לב" מגיעה מ-_meta.flags (רשימה מנופה). ממצאים לכל פוליסה מוצגים בכרטיס שלה.
   const flags=[];
-  (data.meta.flags||[]).forEach(f=>{if(fWho==="all"||!f.who||f.who.includes(fWho)){const p=f.pid&&data.pol.find(x=>x.id===f.pid);flags.push(p?{...f,p}:f);}});
+  (data.meta.flags||[]).forEach(f=>{if(fWho==="all"||!f.who||f.who.includes(fWho)){const p=f.pid&&data.pol.find(x=>x.id===f.pid);
+    const fw=f.area?f.area==="wealth":!!(p&&(p.cat==="pension"||p.cat==="private")); // 3.0: each finding shows in its own dashboard
+    if(fw===W)flags.push(p?{...f,p}:f);}});
   const rank={high:0,mid:1,low:2};flags.sort((a,b)=>(rank[a.lvl]??3)-(rank[b.lvl]??3));
-  $("k-month").textContent=ils(m);$("k-year").textContent=ils(m*12);$("k-count").textContent=act.filter(p=>p.status!=="per_trip"&&p.cat!=="private").length;$("k-alerts").textContent=flags.filter(f=>!f.closed&&f.lvl!=="low").length;
+  if(!W){$("k-month").textContent=ils(m);$("k-year").textContent=ils(m*12);$("k-count").textContent=act.filter(p=>p.status!=="per_trip"&&p.cat!=="private").length;$("k-alerts").textContent=flags.filter(f=>!f.closed&&f.lvl!=="low").length;}
   const meta=data.meta;
   if(meta.updated)$("upd").textContent="עודכן "+meta.updated;
   // הלינק לשיחה נשמר בנתונים (_meta.chat_url), לא בקוד.
-  const chat=safe(meta.chat_url);if(chat){$("chat").href=chat;$("chat").hidden=false;}
+  $("h1t").textContent=W?"💼 פנסיה, חסכונות ונכסים":"🛡️ ביטוחים";
+  const chat=safe(W&&meta.wealth_chat_url||meta.chat_url);if(chat){$("chat").href=chat;$("chat").hidden=false;}
   const docs=safe(meta.docs_url);if(docs){$("docs").href=docs;$("docs").hidden=false;}
   const col=safe(meta.collect_url);if(col){$("collect").href=col;$("collect").hidden=false;}
 
@@ -461,7 +499,7 @@ function render(){
   $("snote").textContent=meta.stage_note||"";
   let h="";
   // שלב שנבחר: מה עוד פתוח, ומקופל מה נסגר
-  if(stSel){
+  if(stSel&&!W){
     const ts=T.filter(t=>String(t.stage)===stSel), op=ts.filter(t=>!t.done), dn=ts.filter(t=>t.done);
     const row=t=>{const m=(t.text||"").match(/^(אורן|ליאור|פיננסי|ילדים)[:：]\s*(.*)$/);return `<div class="tk ${t.done?"dn":""}"><span class="wh ${m&&m[1]==="אורן"?"me":""}">${m?esc(m[1]):"Claude"}</span><b>${esc(m?m[2]:t.text)}</b>${t.sub?`<small>${esc(t.sub)}</small>`:""}</div>`;};
     h+=`<section id="s-stage" class="stp"><h2>שלב ${stSel}: ${SN[stSel]}</h2>${stSel===cur&&meta.stage_note?`<p class="sn">${esc(meta.stage_note)}</p>`:""}`+
@@ -528,14 +566,14 @@ function render(){
   const sv=V.filter(p=>p.cat==="pension"&&p.status!=="ended");
   if(sv.length){
     const tot=sv.reduce((s,p)=>s+(+p.balance||0),0);
-    h+=`<section id="s-sav"><div class="sh"><h2>פנסיה וחיסכון</h2><span class="hint">${tot?"ביחד "+ils(tot)+" ידוע":"יתרות"}</span></div><div class="sav">`+
+    h+=`<section id="s-sav"><div class="sh"><h2>כל הקופות</h2><span class="hint">${tot?"ביחד "+ils(tot):"יתרות"} · לחיצה פותחת פרטים</span></div><div class="sav">`+
       sv.map(p=>`<button class="sv" data-p="${esc(p.id)}"><span>${esc(p.short||p.title)}</span><b>${p.balance!=null?ils(p.balance):"?"}</b><small>${esc(p.balance_note||p.insurer||"")}</small></button>`).join("")+`</div></section>`;
   }
 
   // פנסיה: חישוב דינמי מ-_meta.retire. הכול בכסף של היום (תשואה ריאלית, מעל האינפלציה).
   const R=meta.retire;
   if(R&&(R.people||[]).length&&(fWho==="all"||fWho==="oren"||fWho==="lior")){
-    h+=`<section id="s-ret"><div class="sh"><h2>כמה יהיה לנו בפנסיה</h2><span class="hint">בכסף של היום</span></div><div class="card ret" id="retbox">${retHTML(R)}</div></section>`;
+    h+=`<section id="s-ret"><div class="sh"><h2>כמה פנסיה תהיה לנו</h2><span class="hint">סימולטור · בכסף של היום</span></div><div class="card smw" id="retbox">${smHTML(R)}</div></section>`;
   }
   // חיסכון לכל ילד: תחזית עד המשיכה
   const KS=meta.retire&&meta.retire.kids_savings;
@@ -583,13 +621,45 @@ function render(){
   });
   if(ENDED.length)h+=`<details class="sqarch" data-k="ended"><summary>📦 ארכיון: פוליסות שהסתיימו · ${ENDED.length}</summary><div class="ab grp">${ENDED.map(p=>`<button class="pol" data-p="${esc(p.id)}" style="--cc:var(${(CATS[p.cat]||CATS.other).c})"><span class="ic">${esc(p.icon||(CATS[p.cat]||CATS.other).i)}</span><span><span class="t">${esc(p.title)}</span><span class="m"><span>${esc(p.insurer||"")}</span><span class="tag low">הסתיים</span></span></span><span class="p"></span></button>`).join("")}</div></details>`;
   h+=`</section>`;
+
+  // 3.0: cross links and the wealth-only zones
+  if(!W)h+=`<section id="s-xw"><a class="card xw" href="insurance.html?w=1"><span class="ic">💼</span><span><b>פנסיה, חסכונות ונכסים</b><span>פנסיה, השתלמות וגמל, השקעות, הדירה במוצקין והלוואות: דשבורד נפרד</span></span><span class="go">‹</span></a></section>`;
+  if(W){
+    const PPL=((meta.retire||{}).people||[]).filter(p=>fWho==="all"||fWho===p.id);
+    const sumK=k=>PPL.reduce((a,p)=>a+(p.funds||[]).filter(f=>f.kind===k).reduce((b,f)=>b+(+f.bal||0),0),0);
+    const KS2=(meta.retire||{}).kids_savings, kids=KS2&&(fWho==="all"||fWho==="kids")?(+KS2.total||0):0;
+    const fam=fWho==="all"||fWho==="oren";
+    const PF2=meta.portfolio, L2=window.INV_LIVE;
+    let inv=0;if(PF2&&fam){inv=(PF2.holdings||[]).reduce((a,x)=>{const q=L2&&L2.fx&&L2.q&&L2.q[x.sym]&&L2.q[x.sym].p;return a+(q?x.qty*q*L2.fx.p*(PF2.fx_cal||1):x.val);},0);}
+    if(fam)V.filter(p=>p.cat==="private"&&p.inv&&p.status!=="ended").forEach(p=>{inv+=pvVal(p).ils;});
+    const M=(data.house||{}).motzkin, mg=M&&M.mortgage||{}, eq=M&&fam?(+(M.val||{}).est||0)-(+mg.balance||0):0;
+    const LNi=((meta.loans||{}).items||[]).filter(x=>!/משכנתא/.test(x.l||"")), debt=fam?LNi.reduce((a,x)=>a+(+x.bal||0),0):0;
+    const tiles=[["🧓 פנסיה",sumK("pension"),"s-ret","צבירה בקרנות"],["🏦 השתלמות וגמל",sumK("lump"),"s-liq","נזיל"],kids?["👧 ילדים",kids,"s-kids","חיסכון לכל ילד"]:null,inv?["📈 השקעות",inv,"s-inv","תיק + פרטיות"]:null,M&&fam?["🏠 הון בדירה",eq,"s-home","שווי פחות משכנתא"]:null,debt?["💳 הלוואות",-debt,"s-loans","בלי המשכנתא"]:null].filter(Boolean);
+    const net=tiles.reduce((a,t)=>a+t[1],0);
+    h+=`<section id="s-ovr"><div class="sh"><h2>כמה יש לנו</h2><span class="hint">שווי נקי, לפי הדוחות האחרונים</span></div><div class="ovr">${tiles.map(t=>`<a class="ov ${t[1]<0?"neg":""}" href="#${t[2]}"><span>${t[0]}</span><b>${t[1]<0?"−":""}${ils(Math.abs(t[1]))}</b><small>${t[3]}</small></a>`).join("")}<div class="ov ovt"><span>ביחד, שווי נקי</span><b>${ils(net)}</b><small>הפנסיה נעולה עד הפרישה. נזיל באמת: ראו "כסף נזיל"</small></div></div></section>`;
+    if(M&&fam){
+      const ts=new Date().toISOString().slice(0,10),tn=M.tenant||{};let rent=+tn.rent||0;(tn.steps||[]).filter(x=>!x.opt&&x.from<=ts).forEach(x=>{rent=+x.rent;});
+      const mk=(M.val||{}).market||{};
+      h+=`<section id="s-home"><div class="sh"><h2>🏠 ${esc(M.name||"הדירה")}</h2><span class="hint">${esc((M.val||{}).as_of?"הערכה "+fmtD(M.val.as_of):"")}</span></div><div class="card hm">
+        <div class="hmg"><div><span>שווי משוער</span><b>${ils(+(M.val||{}).est||0)}</b>${mk.low?`<span>${kk(mk.low)}-${kk(mk.high)}</span>`:""}</div><div><span>יתרת משכנתא</span><b>${ils(+mg.balance||0)}</b></div><div><span>הון עצמי</span><b>${ils(eq)}</b></div>
+        <div><span>שכירות</span><b>${ils(rent)}</b></div><div><span>משכנתא בחודש</span><b>${ils(+mg.monthly||0)}</b></div><div><span>נטו בחודש</span><b>${ils(rent-(+mg.monthly||0))}</b></div></div>
+        <a class="more" style="display:block;text-align:center;text-decoration:none" href="housing.html">🏠 לדשבורד הדיור: שוכר, משכנתא, מכירה ‹</a></div></section>`;
+    }
+  }
   $("app").innerHTML=h;
   {const app=$("app"),G=(t)=>{const d=document.createElement("div");d.className="ggrp";d.textContent=t;return d;};
-   const ORD=[["s-stage"],["s-liq"],["s-flags"],["🛡️ ביטוחים","s-cov"],["s-dup"],["s-cost"],["s-pol"],["💼 פנסיה, חיסכון והשקעות","s-sav"],["s-ret"],["s-kids"],["s-inv"],["s-priv"],["s-loans"]];
+   const ORD=W?[["🧭 התמונה הכוללת","s-ovr"],["s-flags"],["🧓 פנסיה","s-ret"],["🏦 קרנות השתלמות, גמל וכסף נזיל","s-liq"],["s-sav"],["👧 חיסכון לילדים","s-kids"],["📈 השקעות","s-inv"],["s-priv"],["🏠 נכסים והלוואות","s-home"],["s-loans"]]
+     :[["s-stage"],["s-flags"],["🛡️ הביטוחים","s-cov"],["s-dup"],["s-cost"],["s-pol"],["💼 גם בדשבורד נפרד","s-xw"]];
+   const keep=new Set(ORD.map(o=>o[o.length-1]));app.querySelectorAll(":scope > section").forEach(e=>{if(!keep.has(e.id))e.remove();});
    ORD.forEach(o=>{const id=o[o.length-1],e=$(id);if(!e)return;if(o.length>1)app.appendChild(G(o[0]));app.appendChild(e);});}
-  bindRet();bindKids();drawFund(V);
+  if(W){const PPL=((meta.retire||{}).people||[]);const C=meta.retire&&PPL.length?smCalc(meta.retire,{...smS(meta.retire),who:"both",view:"net"}):null;
+    const tot=PPL.reduce((a,p)=>a+(p.funds||[]).reduce((b,f)=>b+(+f.bal||0),0),0), liqNow=V.reduce((a,p)=>a+(p.liquid||[]).filter(l=>(l.tier||(l.now?"now":""))==="now").reduce((b,l)=>b+(+(l.net??l.amount)||0),0),0);
+    const K=[[kk(tot),"פנסיה וחיסכון"],[kk(liqNow),"נזיל עכשיו"],[C?ils(C.net):"?","פנסיה נטו בחודש"],[C?String(Math.round(C.net/Math.max(1,C.now)*100))+"%":"?","מההכנסה של היום"]];
+    document.querySelector(".kpis").innerHTML=K.map(k=>`<div class="kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join("");}
+  bindSim();bindKids();drawFund(V);
   if($("more"))$("more").onclick=()=>{showAll=!showAll;render();};
-  const J=[["s-liq","נזיל"],["s-flags","ממצאים"],["s-cov","מפת כיסוי"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-pol","פוליסות"],["s-sav","פנסיה"],["s-ret","פרישה"],["s-kids","ילדים"],["s-inv","השקעות"],["s-priv","פרטיות"],["s-loans","הלוואות"]].filter(([i])=>$(i));
+  const J=(W?[["s-ovr","הכול"],["s-ret","פנסיה"],["s-liq","השתלמות ונזיל"],["s-sav","קופות"],["s-kids","ילדים"],["s-inv","השקעות"],["s-priv","פרטיות"],["s-home","דירה"],["s-loans","הלוואות"]]
+    :[["s-flags","ממצאים"],["s-cov","מפת כיסוי"],["s-dup","כפילויות"],["s-cost","עלויות"],["s-pol","פוליסות"],["s-xw","💼 פנסיה ונכסים"]]).filter(([i])=>$(i));
   $("jump").innerHTML=J.map(([i,l])=>`<a href="#${i}">${l}</a>`).join("");
   $("app").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openPol(b.dataset.p));
   $("app").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{location.hash="a="+b.dataset.a;});
@@ -597,66 +667,162 @@ function render(){
   $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}ביטוח ${esc(window.INS_BUILD)}`;
 }
 
-// ---- פרישה ----
-let RS={};try{RS=JSON.parse(localStorage.getItem("ins_ret")||"{}")}catch(e){}
-function saveRS(){try{localStorage.setItem("ins_ret",JSON.stringify(RS))}catch(e){}}
-function retCalc(R){
-  const real=RS.real??R.real??3.5, g=R.sal_g??1, asof=new Date(2026,8,30);
-  const m=String(R.as_of||"").match(/(\d+)\.(\d+)\.(\d{4})/);const t0=m?new Date(+m[3],+m[2]-1,+m[1]):asof;
-  const ppl=(R.people||[]).map(p=>{
-    const ret=(RS.ret||{})[p.id]??p.ret, b=new Date(p.born+"T00:00:00");
-    const rd=new Date(b.getFullYear()+ret,b.getMonth(),1), n=Math.max(0,Math.round((rd-t0)/2629800000));
-    const funds=(p.funds||[]).map(f=>{
-      const i=Math.pow(1+(real-(f.fb||0))/100,1/12)-1, gi=Math.pow(1+g/100,1/12)-1;
-      let bal=+f.bal||0, dep=(+f.dep||0)*(1-(f.fd||0)/100);
-      for(let k=0;k<n;k++){bal=bal*(1+i)+dep;dep*=1+gi;}
-      return {...f,fv:bal,mo:f.kind==="pension"?bal/(f.coef||p.coef||205):0};
-    });
-    const gross=funds.reduce((s,f)=>s+f.mo,0), lump=funds.filter(f=>f.kind==="lump").reduce((s,f)=>s+f.fv,0);
-    const TX=R.tax||{}, BR=TX.br||[[7010,10],[10060,14],[16150,20],[22440,31],[46690,35],[1e9,47]];
-    let base=Math.max(0,gross-(TX.exempt??5375)), tax=0, lo=0;
-    for(const [hi,rt] of BR){if(base>lo)tax+=(Math.min(base,hi)-lo)*rt/100;lo=hi;}
-    tax=Math.max(0,tax-(p.points??2.25)*(TX.pt??242));
-    const net=gross-tax-gross*(TX.health??3)/100;
-    return {...p,ret,year:rd.getFullYear(),n,funds,gross,net,lump};
-  });
-  const yrs=RS.yrs??25, bl=(R.bl||0)*ppl.length, lumps=ppl.reduce((s,p)=>s+p.lump,0), draw=yrs?lumps/(yrs*12):0;
-  const pens=ppl.reduce((s,p)=>s+p.net,0), total=pens+bl+draw, now=ppl.reduce((s,p)=>s+(+p.net_now||0),0);
-  const cap=ppl.reduce((s,p)=>s+p.funds.reduce((a,f)=>a+f.fv,0),0);
-  return {real,yrs,ppl,bl,draw,pens,total,now,cap,lumps};
+// ---- 3.0 (Oren 17.11): pension simulator. Everything in today's money (real return = above inflation).
+// Personal numbers come from _meta.retire (sq_docs). Here only the 2026 rules and the scenario levels.
+const INFL=2.5;
+const MK={low:{r:2,l:"📉 נמוך מהיום",d:"צמיחה איטית, משברים ואינפלציה גבוהה"},base:{r:4,l:"➡️ כמו היום",d:"הממוצע ארוך הטווח של קרנות הפנסיה"},high:{r:5.5,l:"📈 גבוה מהיום",d:"שוק מניות חזק, כמו S&P 500 בעשור האחרון"}};
+const SG={flat:{g:0,l:"נשאר כמו היום",n:"רק צמוד למדד"},low:{g:1,l:"עלייה איטית",n:"כ-3.5% בשנה"},std:{g:2,l:"עלייה רגילה",n:"כ-4.5% בשנה"},high:{g:3.5,l:"עלייה מהירה",n:"כ-6% בשנה"}};
+let SM={};try{SM=JSON.parse(localStorage.getItem("ins_sim")||"{}")}catch(e){}
+function saveSM(){try{localStorage.setItem("ins_sim",JSON.stringify(SM))}catch(e){}}
+function smS(R){
+  const s={who:"both",view:"net",mk:"base",sg:"std",yrs:0,...SM};s.age={...(SM.age||{})};
+  (R.people||[]).forEach(p=>{if(s.age[p.id]==null)s.age[p.id]=p.ret;});
+  if(!R.people.some(p=>p.id===s.who))s.who="both";return s;
 }
-function retHTML(R){
-  const C=retCalc(R), mx=Math.max(C.total,C.now,1);
-  const bar=(l,v,c)=>`<div class="brow"><span>${l}</span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;background:${c}"></span></span><span class="v">${ils(v)}</span></div>`;
-  const anyEst=C.ppl.some(p=>p.born_est||p.funds.some(f=>f.est));
-  return `<div class="rtop"><div class="rbig"><b>${ils(C.total)}</b><span>בחודש, נטו, לשניכם</span></div>
-    <div class="rcmp">היום <b>${ils(C.now)}</b><br>${C.now?Math.round(C.total/C.now*100)+"% מההכנסה של היום":""}</div></div>
-  <div class="bars" style="padding:10px 0 0">
-    ${C.ppl.map((p,k)=>bar("פנסיה "+esc(p.name),p.net,k?"#7A52B3":"#2F7BCF")).join("")}
-    ${bar("ביטוח לאומי",C.bl,"#2E8B57")}
-    ${C.yrs?bar("מהחיסכון",C.draw,"#F2A93B"):""}
-    ${bar("היום",C.now,"#B9C4D2")}
+function smT0(R){const m=String(R.as_of||"").match(/(\d+)\.(\d+)\.(\d{4})/);return m?new Date(+m[3],+m[2]-1,+m[1]):new Date();}
+function smTX(R){const T=R.tax||{};return {
+  ceil:T.ceil??9430, pct:T.pct??67, pct_now:T.pct_now??57.5, pt:T.pt??242, blh:T.bl_health??230, hlo:T.h_lo??7703,
+  br:T.br||[[7010,10],[10060,14],[19000,20],[25100,31],[46690,35],[60130,47],[1e9,50]]};}
+// tax on a monthly pension P. legal = from the legal retirement age (the exemption and the old-age allowance start there)
+function smTax(P,p,legal,TX){
+  const ex=legal?Math.min(P,TX.ceil*TX.pct/100):0, base=Math.max(0,P-ex);
+  let br=0,lo=0;for(const [hi,rt] of TX.br){if(base>lo)br+=(Math.min(base,hi)-lo)*rt/100;lo=hi;}
+  const cred=Math.min(br,(p.points??2.25)*TX.pt), tax=br-cred;
+  const hp=legal?0:Math.min(P,TX.hlo)*.031+Math.max(0,P-TX.hlo)*.05; // before the allowance: health tax from the pension
+  return {P,ex,base,br,cred,tax,hp,legal};
+}
+function smPerson(R,p,A,r,g,TX,yrs){
+  const t0=smT0(R), b=new Date(p.born+"T00:00:00"), rd=new Date(b.getFullYear()+A,b.getMonth(),1);
+  const n=Math.max(0,Math.round((rd-t0)/2629800000)), step=Math.pow(1+(R.coef_step??2.7)/100,p.ret-A);
+  const funds=(p.funds||[]).map(f=>{
+    const i=Math.pow(1+(r-(f.fb||0))/100,1/12)-1, gi=Math.pow(1+g/100,1/12)-1;
+    let bal=+f.bal||0, dep=(+f.dep||0)*(1-(f.fd||0)/100);
+    for(let k=0;k<n;k++){bal=bal*(1+i)+dep;dep*=1+gi;}
+    const coef=(f.coef||p.coef||205)*step;
+    return {...f,fv:bal,coefA:coef,mo:f.kind==="pension"?bal/coef:0};
+  });
+  const pen=funds.reduce((s,f)=>s+f.mo,0), lump=funds.filter(f=>f.kind==="lump").reduce((s,f)=>s+f.fv,0);
+  const defer=Math.max(0,Math.min(A,70)-p.ret), bl=(R.bl||0)*(1+0.05*defer);
+  const T=smTax(pen,p,true,TX), TB=smTax(pen,p,false,TX), draw=yrs?lump/(yrs*12):0;
+  const g1=pen+bl+draw, n1=pen-T.tax+bl-TX.blh+draw;           // from the legal age: pension + old-age allowance
+  const g0=pen+draw, n0=pen-TB.tax-TB.hp+draw;                 // early years, before the legal age
+  return {...p,A,year:rd.getFullYear(),n,funds,pen,lump,bl,draw,T,TB,g1,n1,g0,n0,early:A<p.ret,cap:funds.reduce((s,f)=>s+f.fv,0)};
+}
+function smCalc(R,s,mk,ageOf){
+  const TX=smTX(R), r=MK[mk||s.mk].r, g=SG[s.sg].g;
+  const ppl=(R.people||[]).filter(p=>s.who==="both"||p.id===s.who).map(p=>smPerson(R,p,ageOf?ageOf(p):s.age[p.id],r,g,TX,s.yrs));
+  const sum=k=>ppl.reduce((a,p)=>a+p[k],0);
+  return {TX,r,g,ppl,gross:sum("g1"),net:sum("n1"),now:sum("net_now"),cap:sum("cap"),lump:sum("lump"),bl:sum("bl"),pen:sum("pen"),draw:sum("draw")};
+}
+const kk=v=>"₪"+(Math.abs(v)>=1e6?(Math.round(v/1e4)/100)+"M":Math.round(v/1000)+"K");
+function smChart(R,s){
+  const ages=[];for(let a=60;a<=70;a++)ages.push(a);
+  const V=c=>s.view==="net"?c.net:c.gross, lines=[];
+  if(s.who==="both"){
+    (R.people||[]).forEach((p,k)=>{const one={...s,who:p.id};
+      lines.push({c:k?"#7A52B3":"#2F7BCF",w:2.6,l:p.name,pts:ages.map(a=>V(smCalc(R,one,null,()=>a))),mark:s.age[p.id]});
+      lines.push({c:k?"#7A52B3":"#2F7BCF",w:1,dash:1,l:"",pts:ages.map(a=>V(smCalc(R,one,"high",()=>a))),band:1});
+      lines.push({c:k?"#7A52B3":"#2F7BCF",w:1,dash:1,l:"",pts:ages.map(a=>V(smCalc(R,one,"low",()=>a))),band:1});});
+  } else {
+    const p=R.people.find(x=>x.id===s.who);
+    ["low","base","high"].forEach(m=>lines.push({c:m===s.mk?"var(--c-pension)":"color-mix(in srgb,var(--c-pension) 40%,transparent)",w:m===s.mk?2.8:1.4,l:MK[m].l.split(" ").slice(1).join(" "),pts:ages.map(a=>V(smCalc(R,s,m,()=>a))),mark:m===s.mk?s.age[p.id]:null}));
+  }
+  const mx=Math.max(1,...lines.flatMap(l=>l.pts))*1.08, W=340,H=170,L=40,B=22,T=8,X=a=>L+(a-60)/10*(W-L-8),Y=v=>T+(1-v/mx)*(H-T-B);
+  const ticks=[0,.33,.66,1].map(t=>t*mx/1.08);
+  let g=ticks.map(v=>`<line x1="${L}" x2="${W-8}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)"/><text x="${L-4}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${kk(v)}</text>`).join("");
+  g+=[60,62,65,67,70].map(a=>`<text x="${X(a).toFixed(1)}" y="${H-6}" text-anchor="middle">${a}</text>`).join("");
+  (R.people||[]).filter(p=>s.who==="both"||p.id===s.who).forEach(p=>{g+=`<line x1="${X(p.ret).toFixed(1)}" x2="${X(p.ret).toFixed(1)}" y1="${T}" y2="${H-B}" stroke="var(--muted)" stroke-dasharray="2 3" opacity=".5"/>`;});
+  lines.forEach(l=>{g+=`<polyline fill="none" stroke="${l.c}" stroke-width="${l.w}" ${l.dash?'stroke-dasharray="3 3" opacity=".6"':""} stroke-linejoin="round" points="${l.pts.map((v,k)=>X(ages[k]).toFixed(1)+","+Y(v).toFixed(1)).join(" ")}"/>`;
+    if(l.mark!=null){const v=l.pts[l.mark-60];g+=`<circle cx="${X(l.mark).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="5" fill="${l.c}" stroke="var(--surface)" stroke-width="2"/>`;}});
+  const leg=lines.filter(l=>l.l).map(l=>`<span><i style="background:${l.c}"></i>${esc(l.l)}</span>`).join("")+(s.who==="both"?`<span><i class="dsh"></i>שוק גבוה / נמוך</span>`:"")+`<span><i class="dsh v"></i>גיל פרישה חוקי</span>`;
+  return `<svg viewBox="0 0 ${W} ${H}" class="smsvg" role="img" aria-label="הכנסה חודשית לפי גיל הפרישה">${g}</svg><div class="smleg">${leg}</div>`;
+}
+function smRes(R,s){
+  const C=smCalc(R,s), V=s.view==="net", tot=V?C.net:C.gross, two=C.ppl.length>1;
+  const bars=[...C.ppl.map((p,k)=>[`🧓 פנסיה ${esc(p.name)}`,V?p.pen-p.T.tax:p.pen,two&&k?"#7A52B3":"#2F7BCF"]),["🏛️ ביטוח לאומי",V?C.bl-C.TX.blh*C.ppl.length:C.bl,"#2E8B57"]];
+  bars.push([s.yrs?"🏦 מההשתלמות":"🏦 השתלמות: לא",C.draw,"#F2A93B"]); // always there, so nothing below jumps
+  const mx=Math.max(1,...bars.map(b=>b[1]),C.now);
+  const taxAll=C.gross-C.net;
+  return `<div class="smbig"><b>${ils(tot)}</b><span>בחודש, ${V?"נטו":"ברוטו"}, ${two?"לשניכם":"ל"+esc(C.ppl[0].name)} · בכסף של היום</span>
+    <small>${C.ppl.map(p=>`${esc(p.name)} מגיל ${p.A} (${p.year})`).join(" · ")}</small></div>
+  <div class="smcmp">${C.now?`היום ${ils(C.now)} נטו · ${V?"הפנסיה היא "+Math.round(C.net/C.now*100)+"% מזה":"נטו בפנסיה "+ils(C.net)}`:""}</div>
+  <div class="bars smbars">${bars.map(b=>`<div class="brow"><span>${b[0]}</span><span class="track"><span class="fill" style="width:${(b[1]/mx*100).toFixed(1)}%;background:${b[2]}"></span></span><span class="v">${ils(b[1])}</span></div>`).join("")}
+    <div class="brow smtax"><span>🧾 מס ובריאות</span><span class="track"><span class="fill" style="width:${(taxAll/mx*100).toFixed(1)}%;background:var(--bad)"></span></span><span class="v">−${ils(taxAll)}</span></div></div>
+  <div class="smcap">כל החיסכון ביום הפרישה <b>${ils(C.cap)}</b><span>מזה בהשתלמות וגמל, נזיל ובלי מס: ${ils(C.lump)}</span></div>`;
+}
+// one fixed line under each age slider: what happens in the years before the legal age
+function smAgeNote(R,s,id){const C=smCalc(R,{...s,who:id}),p=C.ppl[0],V=s.view==="net";
+  return p.early?`⏳ ${p.A} עד ${p.ret}: ${ils(V?p.n0:p.g0)} בחודש, עוד בלי ביטוח לאומי ופטור`:p.A>p.ret?`➕ ביטוח לאומי גדל ב-${Math.round((Math.min(p.A,70)-p.ret)*5)}% על הדחייה`:"✓ גיל חוקי: ביטוח לאומי והפטור מתחילים מיד";}
+function smTaxHTML(R,s){
+  const C=smCalc(R,s), TX=C.TX, ex=TX.ceil*TX.pct/100;
+  const row=(k,v,c)=>`<tr${c?` class="${c}"`:""}><td>${k}</td>${v}</tr>`, td=a=>a.map(x=>`<td>${x}</td>`).join("");
+  const P=C.ppl;
+  return `<div class="smins">
+    <div><b>מכל ${ils(C.gross)} ברוטו נשארים ${ils(C.net)} נטו: בערך ${Math.round((C.gross-C.net)/Math.max(1,C.gross)*100)}% הולך למס ובריאות.</b></div>
+    <div><b>ביטוח לאומי (קצבת אזרח ותיק) פטור ממס הכנסה.</b> יורד ממנו רק מס בריאות קבוע, כ-₪${TX.blh} בחודש לאדם.</div>
+    <div><b>חלק מהפנסיה פטור ממס: היום ${ils(TX.ceil*TX.pct_now/100)} בחודש, ומ-2028 ${ils(ex)}.</b><details><summary>איך זה עובד</summary>זה "פטור על קצבה מזכה" (קיבוע זכויות): ${TX.pct_now}% מתקרה של ${ils(TX.ceil)} ב-2026, ועולה ל-${TX.pct}% מ-2028, כך שבפרישה שלכם החוק הנוכחי נותן ${ils(ex)}. הפטור רק מגיל הפרישה החוקי, ורק אחרי שמגישים טופס 161ד. אפשר גם לנצל חלק מהפטור על משיכה הונית במקום על הקצבה: את זה מחליטים מול יועץ ביום הפרישה.</details></div>
+    <div><b>על השאר משלמים מס רגיל לפי מדרגות, פחות נקודות זיכוי</b> (${P.map(p=>`${esc(p.name)} ${p.points}`).join(", ")} נקודות, ₪${TX.pt} לנקודה).</div>
+    <div><b>קרנות השתלמות נמשכות בלי מס.</b> לכן הן הגשר הטבעי לפרישה מוקדמת, לפני ביטוח לאומי.</div>
   </div>
-  <div class="rctl">תשואה ${[2.5,3.5,4.5].map(v=>`<button class="chip" data-real="${v}" aria-pressed="${C.real===v}">${v}%</button>`).join("")}
-    · חיסכון על ${[0,20,25,30].map(v=>`<button class="chip" data-yrs="${v}" aria-pressed="${C.yrs===v}">${v?v+" שנה":"לא"}</button>`).join("")}</div>
-  <div class="rppl">${C.ppl.map(p=>`<div class="rp"><h4><span>${esc(p.name)} · ${p.year}${p.born_est?' <span class="est">גיל משוער</span>':""}</span>
-      <span class="step"><button data-ra="${esc(p.id)}" data-d="-1">−</button>גיל ${p.ret}<button data-ra="${esc(p.id)}" data-d="1">+</button></span></h4>
-      ${p.funds.map(f=>`<div class="rf"><span>${esc(f.l)}${f.est?' <span class="est">הערכה</span>':""}</span><span class="v">${ils(f.fv)}</span><span class="m">${f.kind==="pension"?ils(f.mo)+"/ח׳":"הון"}</span></div>`).join("")}
-      <div class="rsum"><span>קצבה ברוטו</span><span>${ils(p.gross)}</span></div>
-      ${p.proj_agent?`<div class="rf"><span style="color:var(--muted)">תחזית מבטח סימון (ברוטו)</span><span></span><span class="m">${ils(p.proj_agent)}</span></div>`:""}
-    </div>`).join("")}</div>
-  <div class="rsum" style="margin-top:10px"><span>כל החיסכון ביום הפרישה</span><span>${ils(C.cap)}</span></div>
-  <details class="more"><summary>הנחות${anyEst?" · יש הערכות":""}</summary><div>
-    תשואה ריאלית ${C.real}% פחות דמי ניהול, שכר עולה ${esc(R.sal_g??1)}% בשנה, הפקדות ממשיכות עד הפרישה. מקדם המרה ${C.ppl.map(p=>esc(p.name)+" "+esc(p.coef)).join(", ")} (מגדלור 203 מובטח). מס: מדרגות 2026, פטור ${ils((R.tax||{}).exempt??5375)} מהקצבה ונקודות זיכוי, ועוד מס בריאות. ביטוח לאומי ${ils(R.bl)} לאדם. השתלמות נמשכת כהון ומחולקת על פני השנים שבחרת. נתונים מ-${esc(R.as_of||"")}.
+  <div class="mx"><table class="smt"><thead><tr><th></th>${P.map(p=>`<th>${esc(p.name)} · ${p.A}</th>`).join("")}</tr></thead><tbody>
+    ${row("קצבה ברוטו",td(P.map(p=>ils(p.pen))))}
+    ${row("פטור (קצבה מזכה)",td(P.map(p=>"−"+ils(p.T.ex))))}
+    ${row("הכנסה חייבת",td(P.map(p=>ils(p.T.base))))}
+    ${row("מס לפי מדרגות",td(P.map(p=>"−"+ils(p.T.br))))}
+    ${row("נקודות זיכוי",td(P.map(p=>"+"+ils(p.T.cred))))}
+    ${row("פנסיה נטו",td(P.map(p=>ils(p.pen-p.T.tax))),"b")}
+    ${row("ביטוח לאומי (פטור)",td(P.map(p=>ils(p.bl))))}
+    ${row("מס בריאות",td(P.map(p=>"−"+ils(TX.blh))))}
+    ${s.yrs?row("משיכה מהשתלמות (פטור)",td(P.map(p=>ils(p.draw)))):""}
+    ${row("סה״כ נטו בחודש",td(P.map(p=>ils(p.n1))),"b")}
+  </tbody></table></div>`;
+}
+function smHTML(R){
+  const s=smS(R), seg=(items,cur,key)=>`<div class="hseg">${items.map(([v,l])=>`<button type="button" data-sm="${key}" data-v="${v}" aria-pressed="${String(v)===String(cur)}">${l}</button>`).join("")}</div>`;
+  const P=(R.people||[]).filter(p=>s.who==="both"||p.id===s.who);
+  const ageLbl=(p,a)=>`${a}${a===p.ret?" · חוקי":a<p.ret?" · "+(p.ret-a)+" שנים מוקדם":" · "+(a-p.ret)+" שנים מאוחר"}`;
+  const sc=MK[s.mk], sg=SG[s.sg];
+  return `<div class="smtop">${seg([...R.people.map(p=>[p.id,p.name]),["both","ביחד"]],s.who,"who")}${seg([["gross","ברוטו"],["net","נטו"]],s.view,"view")}</div>
+  <div id="smres">${smRes(R,s)}</div>
+  <div class="smctl">
+    <div class="hfl">🌍 השוק: איך יתפתחו המניות והכלכלה</div>${seg(Object.keys(MK).map(k=>[k,MK[k].l]),s.mk,"mk")}
+    <div class="nt" id="smmk">${esc(sc.d)}: תשואה של ${sc.r}% מעל האינפלציה (כ-${sc.r+INFL}% בשנה), פחות דמי ניהול.</div>
+    <div class="hfl">💼 השכר שלנו עד הפרישה</div>${seg(Object.keys(SG).map(k=>[k,SG[k].l]),s.sg,"sg")}
+    <div class="nt" id="smsg">${esc(sg.n)}${sg.g?` (${sg.g}% מעל האינפלציה)`:""}. השכר קובע כמה נכנס לפנסיה כל חודש.</div>
+    <div class="hfl">🎂 גיל פרישה</div>
+    ${P.map(p=>`<label class="hrng">${esc(p.name)}: <b data-agel="${esc(p.id)}">${ageLbl(p,s.age[p.id])}</b><input type="range" data-age="${esc(p.id)}" min="60" max="70" step="1" value="${s.age[p.id]}" aria-label="גיל פרישה ${esc(p.name)}"><span class="smag" data-agen="${esc(p.id)}">${smAgeNote(R,s,p.id)}</span></label>`).join("")}
+    <div class="hfl">🏦 למשוך את ההשתלמות כתוספת חודשית?</div>${seg([[0,"לא"],[20,"על 20 שנה"],[25,"על 25 שנה"],[30,"על 30 שנה"]],s.yrs,"yrs")}
+    <button type="button" class="more smreset" data-sm="reset" data-v="1">↺ חזרה לברירת המחדל (המציאות של היום)</button>
+  </div>
+  <div class="hfl">📊 כמה בחודש, לפי גיל הפרישה</div><div id="smch">${smChart(R,s)}</div>
+  <details class="more smd"><summary>🧾 כמה מס נשלם בפנסיה</summary><div id="smtx">${smTaxHTML(R,s)}</div></details>
+  <details class="more smd"><summary>⚖️ גיל הפרישה בישראל (ותיקון קטן)</summary><div class="smins">
+    <div><b>גברים: 67. נשים: היה 62, ומ-2022 עולה בהדרגה ל-65.</b> ${R.people.map(p=>`${esc(p.name)} (${String(p.born).slice(0,4)}): ${p.ret}`).join(" · ")}. כלומר 62 כבר לא גיל הפרישה של ילידות שנות ה-80.</div>
+    <div><b>ביטוח לאומי משלם מגיל הפרישה, עם מבחן הכנסה עד 70.</b> מי שעדיין עובד בשכר גבוה יכול לקבל פחות. מגיל 70 בלי מבחן.</div>
+    <div><b>דוחים את קצבת ביטוח לאומי אחרי גיל הפרישה: +5% לכל שנה, עד 70.</b></div>
+    <div><b>פנסיה מוקדמת מקרן הפנסיה אפשרית מגיל 60,</b> אם מפסיקים לעבוד. היא קטנה יותר: פחות שנים של הפקדות ותשואה, ומקדם המרה גבוה יותר (בערך ${R.coef_step??2.7}% פחות לכל שנה מוקדם).</div>
+  </div></details>
+  <details class="more smd"><summary>הנחות ומה חסר לדיוק</summary><div>
+    הכול בכסף של היום: התשואה והשכר הם מעל האינפלציה (${INFL}% בשנה), ומדרגות המס צמודות. יתרות והפקדות מהמסלקה ומהאזורים האישיים (${esc(R.as_of||"")}), דמי ניהול של כל קופה. ההפקדות ממשיכות עד גיל הפרישה וגדלות עם השכר. מקדמי המרה: ${R.people.map(p=>esc(p.name)+" "+esc(p.coef)).join(", ")} בגיל החוקי (מגדלור מובטח ${esc((R.people[0].funds.find(f=>f.coef)||{}).coef||"")}), ובערך ${R.coef_step??2.7}% לכל שנה מוקדם או מאוחר. ביטוח לאומי ${ils(R.bl)} לאדם (כולל תוספת ותק). מס: מדרגות 2026, פטור ${TX_PCT(R)}% מהתקרה, מס בריאות קבוע מקצבת ביטוח לאומי. תקרת ההפקדה בקרן מקיפה לא חושבה (שכר גבוה עובר לקרן המשלימה, אותה תשואה בערך).
+    ${R.people.filter(p=>p.proj_agent).map(p=>`<br>להשוואה: תחזית הסוכן ל${esc(p.name)} ${ils(p.proj_agent)} ברוטו (בדרך כלל בלי ניכוי אינפלציה, ולכן גבוהה יותר).`).join("")}
     ${(R.todo||[]).length?`<br><b>חסר לדיוק:</b> ${R.todo.map(esc).join(" · ")}`:""}
   </div></details>`;
 }
-function bindRet(){
-  const box=$("retbox");if(!box)return;
-  const re=()=>{box.innerHTML=retHTML(data.meta.retire);bindRet();};
-  box.querySelectorAll("[data-real]").forEach(b=>b.onclick=()=>{RS.real=+b.dataset.real;saveRS();re();});
-  box.querySelectorAll("[data-yrs]").forEach(b=>b.onclick=()=>{RS.yrs=+b.dataset.yrs;saveRS();re();});
-  box.querySelectorAll("[data-ra]").forEach(b=>b.onclick=()=>{const id=b.dataset.ra,p=data.meta.retire.people.find(x=>x.id===id);RS.ret=RS.ret||{};RS.ret[id]=Math.min(75,Math.max(55,(RS.ret[id]??p.ret)+(+b.dataset.d)));saveRS();re();});
+function TX_PCT(R){return smTX(R).pct;}
+function bindSim(){
+  const box=$("retbox");if(!box)return;const R=data.meta.retire;
+  const full=()=>{box.innerHTML=smHTML(R);bindSim();};
+  const part=()=>{const s=smS(R);$("smres").innerHTML=smRes(R,s);$("smch").innerHTML=smChart(R,s);$("smtx").innerHTML=smTaxHTML(R,s);
+    const sc=MK[s.mk],sg=SG[s.sg];$("smmk").textContent=`${sc.d}: תשואה של ${sc.r}% מעל האינפלציה (כ-${sc.r+INFL}% בשנה), פחות דמי ניהול.`;
+    $("smsg").textContent=`${sg.n}${sg.g?` (${sg.g}% מעל האינפלציה)`:""}. השכר קובע כמה נכנס לפנסיה כל חודש.`;
+    box.querySelectorAll("[data-agen]").forEach(e=>{e.textContent=smAgeNote(R,s,e.dataset.agen);});
+    box.querySelectorAll("[data-sm]").forEach(b=>{const k=b.dataset.sm;if(k!=="reset")b.setAttribute("aria-pressed",String(String(s[k])===b.dataset.v));});};
+  box.querySelectorAll("[data-sm]").forEach(b=>b.onclick=()=>{const k=b.dataset.sm,v=b.dataset.v;
+    if(k==="reset"){SM={};saveSM();full();return;}
+    SM[k]=k==="yrs"?+v:v;saveSM();if(k==="who")full();else part();});
+  box.querySelectorAll("[data-age]").forEach(i=>i.oninput=()=>{const id=i.dataset.age,p=R.people.find(x=>x.id===id),a=+i.value;
+    SM.age={...(SM.age||{}),[id]:a};saveSM();
+    const l=box.querySelector(`[data-agel="${id}"]`);if(l)l.textContent=`${a}${a===p.ret?" · חוקי":a<p.ret?" · "+(p.ret-a)+" שנים מוקדם":" · "+(a-p.ret)+" שנים מאוחר"}`;part();});
 }
 
 // ---- חיסכון לכל ילד ----
@@ -712,7 +878,7 @@ function renderAsset(p){
   const I=p.inv,v=pvVal(p),pts=I.points||[],fd=d=>{const x=String(d||"").split("-");return x.length===3?`${+x[2]}.${+x[1]}.${x[0].slice(2)}`:x.length===2?`${+x[1]}.${x[0]}`:esc(d||"");};
   const top=document.querySelector(".hero .top");
   if(top&&!top.querySelector(".sqsub")){const b=document.createElement("button");b.type="button";b.className="sqhome sqsub";b.dataset.title=p.short||p.title;if(safe(p.chat_url))b.dataset.chat=p.chat_url;
-    b.innerHTML='<span class="ar">→</span><span class="em">🛡️</span><span>ביטוחים ופיננסים</span>';b.onclick=()=>{history.replaceState(null,"",location.pathname+location.search);render();scrollTo(0,0);};top.prepend(b);}
+    b.innerHTML='<span class="ar">→</span><span class="em">💼</span><span>פנסיה, חסכונות ונכסים</span>';b.onclick=()=>{history.replaceState(null,"",location.pathname+"?w=1");render();scrollTo(0,0);};top.prepend(b);}
   const mx=Math.max(...pts.map(x=>+x.p),v.px)*1.08;
   const bars=pts.map(x=>`<div class="pp${x.me?" me":""}"><span class="pv">${gbp(x.p,2)}</span><span class="pb" style="height:${(x.p/mx*100).toFixed(1)}%"></span><span class="pl">${esc(x.l)}</span><span class="pd">${fd(x.d)}${x.v?` · שווי ${gbp(x.v)}M`:""}</span></div>`).join("");
   const ups=(p.updates||[]).slice().sort((a,b)=>String(b.at).localeCompare(String(a.at)));
@@ -779,8 +945,9 @@ window.claude.use("db").then(db=>{
   db.collection("insurance").onSnapshot(s=>{
     const pol=[],meta={};
     s.docs.forEach(d=>{const x=d.data();if(d.id==="_meta")Object.assign(meta,x);else if(x&&x.title&&!x.merged_into)pol.push({id:d.id,...x});});
-    data={pol,meta};render();
+    data={...data,pol,meta};render();
   },()=>{});
+  if(W)db.collection("housing").onSnapshot(s=>{const H={};s.docs.forEach(d=>{const x=d.data();if(x&&!x._deleted)H[d.id]=x;});data.house=H;if(data.meta&&data.meta.retire)render();},()=>{});
 });
 })();
 </script>
