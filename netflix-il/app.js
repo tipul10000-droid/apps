@@ -91,7 +91,6 @@
     let meta;
     if (x.k[0] === "s") {
       meta = [x.s ? x.s + (x.s === 1 ? " עונה" : " עונות") + (x.e ? " · " + x.e + " פרקים" : "") : (x.y || "")];
-      if (x.es && x.es.length <= 6 && new Set(x.es).size > 1) meta.push(h("div", { class: "sm", dir: "ltr", title: "פרקים בכל עונה" }, x.es.join(" · ")));
     } else meta = [x.y || ""];
     const wlB = h("button", { type: "button", class: "wl" + (wl[x.k] ? " on" : ""), "aria-label": "לרשימה שלי", onclick: () => toggle("wl", x, wlB) }, "🔖");
     const seenB = h("button", { type: "button", class: seen[x.k] ? "on" : "", "aria-label": "ראיתי", onclick: () => toggle("seen", x, seenB) }, "✓");
