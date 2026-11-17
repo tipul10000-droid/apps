@@ -302,6 +302,9 @@
         G.denied ? h("small", null, fmt(G.denied) + (G.denied === 1 ? " מכשיר ניסה" : " מכשירים ניסו") + " להיכנס אחרי שהתמלא") : null,
         h("small", null, "המכשירים שלך לא נספרים")) : null,
       h("div", { class: "h3" }, "העדפה"), box,
+      h("div", { class: "h3" }, "תצוגה"),
+      (() => { const t = h("button", { type: "button", class: "tgl wide" + (ls.get("nf_noimg", false) ? " on" : ""), role: "switch" }, h("span", { class: "sw" }), h("span", { class: "tl" }, "להציג גם כותרים בלי תמונה", h("small", null, "בדרך כלל לא מוכרים, ולכן מוסתרים")));
+        t.onclick = () => { const v = !ls.get("nf_noimg", false); ls.set("nf_noimg", v); t.classList.toggle("on", v); if (cat) { useItems(); render(); } }; return t; })(),
       h("div", { class: "h3" }, "לשתף"),
       h("button", { type: "button", class: "btn", onclick: share }, ic("link"), "לשתף את האפליקציה"),
       h("div", { class: "h3" }, ic("sync"), "סנכרון"), sync.box(),
@@ -477,22 +480,28 @@
       h("details", null, h("summary", null, "יש לי קוד סנכרון"), sb)));
   }
 
+  // Titles without a poster are obscure: left out of everything, counts too, unless switched on in settings
+  // (Oren 18.11.2026; nf_noimg, this device only).
+  function useItems() {
+    items = ls.get("nf_noimg", false) ? (cat.items || []) : (cat.items || []).filter((x) => x.p);
+    minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
+    const ns = items.filter((x) => x.k[0] === "s").length;
+    $("meta").replaceChildren(
+      h("b", null, "נטפליקס ישראל 🇮🇱\u200f · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים"),
+      h("span", null, "עודכן " + new Date(cat.at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }) + (cat.pending ? " · משלים " + fmt(cat.pending) + " כותרים…" : "")));
+    const mb = $("meta").firstChild; // keep line 1 on one line: shrink the font a little if this screen is too narrow
+    for (let fs = 13; mb.scrollWidth > mb.clientWidth && fs > 10.5; fs -= 0.5) mb.style.fontSize = fs - 0.5 + "px";
+  }
   // ---------- load ----------
   async function load() {
     if (!(await gate())) { blocked(); return; }
     try {
       const r = await fetch(CAT_URL, { cache: "no-cache" });
       if (!r.ok) throw new Error(r.status);
-      cat = await r.json(); items = cat.items || [];
+      cat = await r.json();
       await sync.now(); // pull first, so marks un-done elsewhere aren't seeded back
+      useItems();
       seedTaste(taste);
-      minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
-      const ns = items.filter((x) => x.k[0] === "s").length;
-      $("meta").replaceChildren(
-        h("b", null, "נטפליקס ישראל 🇮🇱\u200f · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים"),
-        h("span", null, "עודכן " + new Date(cat.at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }) + (cat.pending ? " · משלים " + fmt(cat.pending) + " כותרים…" : "")));
-      const mb = $("meta").firstChild; // keep line 1 on one line: shrink the font a little if this screen is too narrow
-      for (let fs = 13; mb.scrollWidth > mb.clientWidth && fs > 10.5; fs -= 0.5) mb.style.fontSize = fs - 0.5 + "px";
       render();
     } catch (e) {
       $("meta").textContent = "לא הצלחתי לטעון את הרשימה. בדקו חיבור ונסו שוב.";
