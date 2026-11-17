@@ -379,7 +379,7 @@
         h("b", null, "מה יש חדש בנטפליקס?"), h("span", null, "מוצאים מה לראות, בלי לגלול לנצח")),
       h("p", { class: "ab" }, "בנטפליקס אי אפשר לסנן לפי ציון, אז הנה מקום שאפשר. כל מה שיש עכשיו בנטפליקס ישראל, עם ציון IMDb, אוסקרים וטופ 10. בוחרים ז׳אנר ורמת ציון, ותוך שנייה יש רשימה של דברים ששווה לראות."),
       h("div", { class: "afs" }, f("⭐", "ציון IMDb לכל סרט וסדרה"), f("🇮🇱", "כולל תוכן ישראלי, ובלי שפות זרות אם רוצים"),
-        f("🔖", "הרשימה שלי ומה שכבר ראיתי"), f("🆓", "חינם, בלי הרשמה, מתעדכן כל לילה")),
+        f("🔖", "סימון לרשימת צפייה והיסטוריית צפייה"), f("🆓", "חינם, בלי הרשמה, מתעדכן כל לילה")),
       h("button", { type: "button", class: "ashare", onclick: share }, h("span", { class: "shi", html: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l6 6-6 6"/><path d="M20 11H11a7 7 0 0 0-7 7v1"/></svg>' }), "לשלוח לחברים"),
       h("details", { class: "acred" }, h("summary", null, "קרדיטים ומקורות"),
         h("div", { class: "cred" }, h("div", null, h("small", null, "רעיון ועיצוב"), "אורן יצחקי"), h("div", null, h("small", null, "קוד"), "Claude Code")),
