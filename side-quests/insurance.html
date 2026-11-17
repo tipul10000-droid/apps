@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="3.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="3.1";</script>
 <script>/* 3.0 (Oren 17.11): ?w=1 = the second dashboard "פנסיה, חסכונות ונכסים" (same data). Asset sub pages (#a=) belong to it. */window.INS_W=/[?&]w=1(&|$)/.test(location.search)||/^#a=/.test(location.hash);if(window.INS_W){document.documentElement.classList.add("wealth");document.title="פנסיה, חסכונות ונכסים";}</script>
 <script src="sq-db.js?v=9"></script>
 <script src="dash-lock.js?v=1"></script>
@@ -691,13 +691,20 @@ function smTax(P,p,legal,TX){
   const hp=legal?0:Math.min(P,TX.hlo)*.031+Math.max(0,P-TX.hlo)*.05; // before the allowance: health tax from the pension
   return {P,ex,base,br,cred,tax,hp,legal};
 }
-function smPerson(R,p,A,r,g,TX,yrs){
+// 18.7 (Oren 17.11): career path (retire.people[].career.paths). Monthly salary delta over today, by month index from t0.
+function smCareer(p,pid,t0){const C=p.career;if(!C||!pid)return null;const P=(C.paths||[]).find(x=>x.id===pid);if(!P)return null;
+  const mi=d=>{const m=String(d||"").match(/(\d{4})-(\d{2})/);return m?(+m[1]-t0.getFullYear())*12+(+m[2]-1-t0.getMonth()):0;};
+  const ev=[];if(P.d)ev.push([mi(P.from),+P.d]);
+  (P.steps||[]).forEach((st,k)=>ev.push([P.from?mi(P.from)+k*24:(k+1)*24,+st.d])); // timing not verified: one rank every 2 years
+  ev.sort((a,b)=>a[0]-b[0]);return {P,pct:+C.pct||0.1972,at:k=>{let d=0;ev.forEach(e=>{if(k>=e[0])d=e[1];});return d;}};}
+function smPerson(R,p,A,r,g,TX,yrs,car){
   const t0=smT0(R), b=new Date(p.born+"T00:00:00"), rd=new Date(b.getFullYear()+A,b.getMonth(),1);
+  const CR=smCareer(p,car,t0);let main=-1;(p.funds||[]).forEach((f,k)=>{if(main<0&&f.kind==="pension"&&+f.dep>0)main=k;});
   const n=Math.max(0,Math.round((rd-t0)/2629800000)), step=Math.pow(1+(R.coef_step??2.7)/100,p.ret-A);
-  const funds=(p.funds||[]).map(f=>{
+  const funds=(p.funds||[]).map((f,fi)=>{
     const i=Math.pow(1+(r-(f.fb||0))/100,1/12)-1, gi=Math.pow(1+g/100,1/12)-1;
-    let bal=+f.bal||0, dep=(+f.dep||0)*(1-(f.fd||0)/100);
-    for(let k=0;k<n;k++){bal=bal*(1+i)+dep;dep*=1+gi;}
+    let bal=+f.bal||0, dep=(+f.dep||0)*(1-(f.fd||0)/100), gr=1;
+    for(let k=0;k<n;k++){bal=bal*(1+i)+dep+(CR&&fi===main?CR.pct*CR.at(k)*gr*(1-(f.fd||0)/100):0);dep*=1+gi;gr*=1+gi;}
     const coef=(f.coef||p.coef||205)*step;
     return {...f,fv:bal,coefA:coef,mo:f.kind==="pension"?bal/coef:0};
   });
@@ -710,7 +717,7 @@ function smPerson(R,p,A,r,g,TX,yrs){
 }
 function smCalc(R,s,mk,ageOf){
   const TX=smTX(R), r=MK[mk||s.mk].r, g=SG[s.sg].g;
-  const ppl=(R.people||[]).filter(p=>s.who==="both"||p.id===s.who).map(p=>smPerson(R,p,ageOf?ageOf(p):s.age[p.id],r,g,TX,s.yrs));
+  const ppl=(R.people||[]).filter(p=>s.who==="both"||p.id===s.who).map(p=>smPerson(R,p,ageOf?ageOf(p):s.age[p.id],r,g,TX,s.yrs,p.career?(s.car||"deputy"):null));
   const sum=k=>ppl.reduce((a,p)=>a+p[k],0);
   return {TX,r,g,ppl,gross:sum("g1"),net:sum("n1"),now:sum("net_now"),cap:sum("cap"),lump:sum("lump"),bl:sum("bl"),pen:sum("pen"),draw:sum("draw")};
 }
@@ -789,6 +796,7 @@ function smHTML(R){
     <div class="nt" id="smmk">${esc(sc.d)}: תשואה של ${sc.r}% מעל האינפלציה (כ-${sc.r+INFL}% בשנה), פחות דמי ניהול.</div>
     <div class="hfl">💼 השכר שלנו עד הפרישה</div>${seg(Object.keys(SG).map(k=>[k,SG[k].l]),s.sg,"sg")}
     <div class="nt" id="smsg">${esc(sg.n)}${sg.g?` (${sg.g}% מעל האינפלציה)`:""}. השכר קובע כמה נכנס לפנסיה כל חודש.</div>
+    ${smCarHTML(R,s,seg)}
     <div class="hfl">🎂 גיל פרישה</div>
     ${P.map(p=>`<label class="hrng">${esc(p.name)}: <b data-agel="${esc(p.id)}">${ageLbl(p,s.age[p.id])}</b><input type="range" data-age="${esc(p.id)}" min="60" max="70" step="1" value="${s.age[p.id]}" aria-label="גיל פרישה ${esc(p.name)}"><span class="smag" data-agen="${esc(p.id)}">${smAgeNote(R,s,p.id)}</span></label>`).join("")}
     <div class="hfl">🏦 למשוך את ההשתלמות כתוספת חודשית?</div>${seg([[0,"לא"],[20,"על 20 שנה"],[25,"על 25 שנה"],[30,"על 30 שנה"]],s.yrs,"yrs")}
@@ -808,12 +816,19 @@ function smHTML(R){
     ${(R.todo||[]).length?`<br><b>חסר לדיוק:</b> ${R.todo.map(esc).join(" · ")}`:""}
   </div></details>`;
 }
+function smCarNote(R,s){const p=R.people.find(x=>x.career);if(!p)return "";const C=p.career,P=(C.paths||[]).find(x=>x.id===(s.car||"deputy"))||{};
+  const o=smCalc(R,{...s,who:p.id,car:"deputy"}),c=smCalc(R,{...s,who:p.id,car:"principal"}),V=s.view==="net",dv=(V?c.net-o.net:c.gross-o.gross);
+  const now=Math.round(C.now.base).toLocaleString("en-US");
+  return (s.car==="principal"?`שכר הבסיס עולה מ-₪${now} ל-₪${Math.round(P.base).toLocaleString("en-US")}, תוספת של ₪${Math.round(P.d).toLocaleString("en-US")}${P.from?` החל מ${["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"][+String(P.from).slice(5,7)-1]} ${String(P.from).slice(0,4)}`:""}. `:`עולה בדרגות עד דרגה ${esc((P.steps||[]).slice(-1)[0]?.rank||"")}, תוספת של עד ₪${Math.round(((P.steps||[]).slice(-1)[0]||{}).d||0).toLocaleString("en-US")} (תזמון משוער). `)+`ניהול מוסיף לפנסיה כ-${ils(dv)} בחודש ${V?"נטו":"ברוטו"}.`;}
+function smCarHTML(R,s,seg){const p=R.people.find(x=>x.career);if(!p||(s.who!=="both"&&s.who!==p.id))return "";
+  return `<div class="hfl">🏫 הקריירה של ${esc(p.name)}</div>${seg((p.career.paths||[]).map(x=>[x.id,x.id==="principal"?"עוברת לניהול":"ממשיכה כסגנית"]),s.car||"deputy","car")}<div class="nt" id="smcar">${smCarNote(R,s)}</div>`;}
 function TX_PCT(R){return smTX(R).pct;}
 function bindSim(){
   const box=$("retbox");if(!box)return;const R=data.meta.retire;
   const full=()=>{box.innerHTML=smHTML(R);bindSim();};
   const part=()=>{const s=smS(R);$("smres").innerHTML=smRes(R,s);$("smch").innerHTML=smChart(R,s);$("smtx").innerHTML=smTaxHTML(R,s);
     const sc=MK[s.mk],sg=SG[s.sg];$("smmk").textContent=`${sc.d}: תשואה של ${sc.r}% מעל האינפלציה (כ-${sc.r+INFL}% בשנה), פחות דמי ניהול.`;
+    if($("smcar"))$("smcar").textContent=smCarNote(R,s);
     $("smsg").textContent=`${sg.n}${sg.g?` (${sg.g}% מעל האינפלציה)`:""}. השכר קובע כמה נכנס לפנסיה כל חודש.`;
     box.querySelectorAll("[data-agen]").forEach(e=>{e.textContent=smAgeNote(R,s,e.dataset.agen);});
     box.querySelectorAll("[data-sm]").forEach(b=>{const k=b.dataset.sm;if(k!=="reset")b.setAttribute("aria-pressed",String(String(s[k])===b.dataset.v));});};
