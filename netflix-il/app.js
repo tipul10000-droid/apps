@@ -384,10 +384,9 @@
       h("div", { class: "afs" }, f("⭐", "ציון IMDb לכל סרט וסדרה"), f("🇮🇱", "כולל תוכן ישראלי, ובלי שפות זרות אם רוצים"),
         f("🔖", "סימון לרשימת צפייה והיסטוריית צפייה"), f("🆓", "חינם, בלי הרשמה, מתעדכן כל לילה")),
       h("button", { type: "button", class: "ashare", onclick: share }, h("span", { class: "shi", html: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l6 6-6 6"/><path d="M20 11H11a7 7 0 0 0-7 7v1"/></svg>' }), "לשלוח לחברים"),
-      h("details", { class: "acred" }, h("summary", null, "קרדיטים ומקורות"),
-        h("div", { class: "cred" }, h("div", null, h("small", null, "רעיון ועיצוב"), "אורן יצחקי"), h("div", null, h("small", null, "קוד"), "Claude Code")),
+      h("details", { class: "acred" }, h("summary", null, "מקורות"),
         h("p", { class: "note anote" }, "נתונים: JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata,\u200f Netflix.\u200f לא קשור לנטפליקס.")),
-      h("div", { class: "asig", dir: "ltr" }, "Coding by Claude Code · Idea & Design by Oren Itzhaki"),
+      h("div", { class: "asig", dir: "ltr" }, h("div", null, "Idea & Design by Oren Itzhaki"), h("div", null, "Coding by Claude Code")),
     ], "about-sh");
   }
 
