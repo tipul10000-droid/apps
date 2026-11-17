@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.6";window.SQ_BUILD_AT="17.11.2026 14:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.7";window.SQ_BUILD_AT="17.11.2026 15:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -22,6 +22,7 @@ window.addEventListener("error",function(e){bar((e.message||"error")+(e.lineno?"
 window.addEventListener("unhandledrejection",function(e){var r=e.reason;bar("promise: "+((r&&(r.message||r))||""));});
 setTimeout(function(){var l=document.getElementById("list"),pin=document.getElementById("sq-pin");if(!pin&&l&&/טוען/.test(l.textContent)&&l.children.length<=1)bar("הנתונים לא הגיעו אחרי 20 שניות");},20000);})();</script>
 <script src="sq-db.js?v=9"></script>
+<script src="workcal-engine.js?v=1"></script>
 <script src="timegate.js?v=3"></script>
 <script src="sqctx.js?v=2"></script>
 <title>Side Quests</title>
@@ -2457,6 +2458,10 @@ html.desk .co-mark{font-size:8cqi}
     fri:{e:"🛒",l:"שישי, סידורים",s:"שישי בבוקר",sub:"סידורים ותיקונים עד 13:00",acc:["place","call","phone","home"]},
     sat_am:{e:"🔧",l:"שבת בבוקר",s:"בשבת בבוקר",sub:"תיקונים בבית",ss:"תיקונים בבית",acc:["home"]},
     weekend:{e:"🏡",l:"סופ״ש",s:"בסופ״ש",sub:"משפחה, הורים, טיולים. רק אפליקציות ופרויקטים",ss:"אפליקציות ופרויקטים",acc:["proj"]},
+    // 18.7: parts of the work day cut by the work calendar (workcal-engine.js)
+    meet:{e:"🗣️",l:"בדיון",s:"בזמן דיון",sub:"דיון שצריך אותך. רק דחוף",acc:[]},
+    listen:{e:"🎧",l:"דיון האזנה",s:"בדיון האזנה",sub:"במקביל: צעדים שקטים בנייד או במחשב, בלי שיחות",acc:["phone","pc","work"],max:15},
+    wfh:{e:"🏠",l:"עבודה מהבית",s:"ביום עבודה מהבית",sub:"בין הדיונים: בבית, נייד, שיחות ומחשב",acc:["phone","call","pc","work","home"],max:30},
     abroad:{e:"✈️",l:"חו״ל",s:"בחו״ל",sub:"כמו יום עבודה בלי משפחה. במלון 22:00-02:00 זמן שלי",acc:["phone","pc","call"]},
     // 11.6 (Oren 6.11): two manual overrides that ignore the daily schedule and filter hard by the means alone.
     // A task shows only if it needs one of `need` and all of its means are in `acc` (no `when`, `with`, minutes or hours checks).
@@ -2507,12 +2512,24 @@ html.desk .co-mark{font-size:8cqi}
     if(d===5)return [[0,"deep"],[60,"sleep"],[420,"home_am"],[480,"fri"],[780,"weekend"]];
     if(d===6)return [[0,"weekend"],[60,"sleep"],[480,"sat_am"],[720,"weekend"],[1380,"deep"]];
     const r=[[0,"deep"],[60,"sleep"],[420,"home_am"]];
+    // 18.7 (Oren 17.11.2026): the work calendar (Outlook → work_calendar, workcal-engine.js) shapes the work day. It is never shown;
+    // it only decides: office or home, when he must leave (first physical meeting − commute), and which parts of the work hours
+    // are a meeting he sits in (meet: only urgent), a meeting he only listens to (listen: quiet phone / computer steps) or free.
+    const iso=p&&p.date||addDays(ilDate(),(d-ilNow().d+7)%7),C=window.SQWorkCal?SQWorkCal.day(iso):null;
+    const wfh=C&&!(p&&p.office===true)&&(C.office===false||(p&&p.office===false));
+    let pm=1110;
+    if(C&&wfh){if(E>0)r.push([480,"errands"]);for(const x of SQWorkCal.split(iso,480+E,1110,"wfh"))r.push(x);}
+    else if(C&&office){const cm=SQWorkCal.commute();let ds=480+E;if(C.first!=null)ds=Math.max(420,Math.min(ds,C.first-cm-10));
+      if(ds>480)for(const x of SQWorkCal.split(iso,480,ds,"errands"))r.push(x);else if(ds<480)r.splice(r.length-1,1,[420,"home_am"]);
+      r.push([ds,"drive_am"]);for(const x of SQWorkCal.split(iso,ds+cm,1110,"work"))r.push(x);
+      if(C.last!=null&&C.last>1110)pm=Math.min(C.last,1165);}
     // a day working from home (arrives at noon) = like Friday for errands
-    if(!office)r.push([480,"errands"],[720,"drive_am"],[750,"work"]);
+    else if(!office)r.push([480,"errands"],[720,"drive_am"],[750,"work"]);
     else{if(E>0)r.push([480,"errands"]);r.push([480+E,"drive_am"],[480+E+30,"work"]);}
-    if(d===0)r.push([1110,"drive_pm"],[1140,"counsel"],[1260,"drive_pm"],[1290,"light"],[1410,"deep"]); // Sunday: couples counselling in Tel Aviv
-    else if(d===2)r.push([1110,"drive_pm"],[1140,"near_home"],[1170,"family"],[1245,"football"],[1380,"deep"]); // Tuesday football 20:45-23:00
-    else r.push([1110,"drive_pm"],[1140,"near_home"],[1170,"family"],[1290,"light"],[1410,"deep"]);
+    if(d===0)r.push([pm,"drive_pm"],[Math.max(1140,pm+5),"counsel"],[1260,"drive_pm"],[1290,"light"],[1410,"deep"]); // Sunday: couples counselling in Tel Aviv
+    else if(d===2)r.push([pm,"drive_pm"],[Math.max(1140,pm+5),"near_home"],[1170,"family"],[1245,"football"],[1380,"deep"]); // Tuesday football 20:45-23:00
+    else r.push([pm,"drive_pm"],[Math.max(1140,pm+5),"near_home"],[1170,"family"],[1290,"light"],[1410,"deep"]);
+    for(let i=r.length-1;i>0;i--)if(r[i][0]<=r[i-1][0])r.splice(i-1,1); // a window squeezed to nothing gives way to the next
     return r;}
   let winOv=null;try{winOv=JSON.parse(localStorage.getItem("sq_win")||"null");}catch(e){}
   const hhmm=m=>String(Math.floor(m/60)%24).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
@@ -2599,10 +2616,10 @@ html.desk .co-mark{font-size:8cqi}
   // home = in the house (can sit at the computer) | out = out in Kfar Saba | road = driving | work = Netanya office | tlv | abroad.
   // GPS (when on and away from home) wins for distances; a manual "מחוץ לבית" says he is out.
   const WIN_AT={home_am:"home",errands:"out",drive_am:"road",work:"work",drive_pm:"road",near_home:"out",family:"home",counsel:"tlv",football:"out",
-    light:"home",deep:"home",solo:"home",sleep:"home",fri:"out",sat_am:"home",weekend:"home",abroad:"abroad",walk:"out",out:"out",house:"home",pc:"home",driving:"road"};
+    light:"home",deep:"home",solo:"home",sleep:"home",fri:"out",sat_am:"home",weekend:"home",abroad:"abroad",walk:"out",out:"out",house:"home",pc:"home",driving:"road",meet:"work",listen:"work",wfh:"home"};
   const AT_CITY={work:"נתניה",tlv:"תל אביב"};
   // how far a window may send him from where he is (km); null = no limit (errands on the way to Netanya, work)
-  const FAR={home_am:3,near_home:6,light:6,deep:6,solo:6,family:6,weekend:12,sat_am:12,walk:0.8,out:9,house:0.5,pc:0.5,fri:20};
+  const FAR={wfh:3,home_am:3,near_home:6,light:6,deep:6,solo:6,family:6,weekend:12,sat_am:12,walk:0.8,out:9,house:0.5,pc:0.5,fri:20};
   function kmNow(t,id){const f=fitOf(t),g=geoOf(t);if(geoOff)return 0;const p=here(),away=p&&locPlace()!=="home";
     if(away){const k=kmHere(f);if(k!=null)return k;if(g.km!=null&&loc.home)return Math.round(distM(p,loc.home)/100)/10+g.km;return null;}
     const ac=AT_CITY[WIN_AT[id]];if(ac){const a=cityOf(ac),c=cityOf(f.area);if(c)return Math.round(distM(a,c)/100)/10;if(g.km!=null)return g.km+Math.round(distM(a,cityOf("כפר סבא"))/100)/10;return null;}
@@ -5121,6 +5138,10 @@ html.desk .co-mark{font-size:8cqi}
         h("div",{class:"tsbtns"},...[["auto","לפי האייפון"],["1","רגיל"],["1.15","גדול"],["1.3","גדול מאוד"],["1.5","🚗 רכב"]].map(([v,l])=>h("button",{type:"button","aria-pressed":tsPref===v?"true":"false",onclick:()=>setTs(v)},l)))),
       sec("geo","🗺️ סידור לפי אזור",geoOff?"כבוי":"פעיל",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"סידור לפי אזור"),sw(!geoOff,v=>setGeo(v),"סידור לפי אזור"))),
+      // 18.7 (Oren 17.11.2026): the work-calendar page (answers, series, insights) lives here, not in the dashboards
+      sec("wcal","🗓️ זמן העבודה שלי","יומן אאוטלוק ← חלונות זמן",
+        h("div",{class:"sqhint"},"היומן של העבודה לא מוצג כאן. הוא רק מחדד את חלונות הזמן האוטומטיים: מתי במשרד, מתי לצאת, ומה אפשר לעשות בזמן דיון."),
+        h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:()=>{closeModal();setTimeout(()=>openDash("work_calendar"),60);}},"⚙️ חידוד התשובות"))),
       grp("📱 אייפון"),
       sec("sc","⚡ קיצורי דרך","כפתור Action",
         h("div",{class:"sqbtns"},h("a",{class:"sqbtn ghost",style:"text-decoration:none",href:"shortcuts/",target:"_blank",rel:"noopener"},"⬇️ התקנה"))),
@@ -5398,6 +5419,9 @@ html.desk .co-mark{font-size:8cqi}
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();
       const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
+    // 18.7: the work calendar shapes the automatic windows (never shown here; the details page is in settings)
+    db.collection("work_calendar").onSnapshot(s=>{const ev=[];let pr={};s.docs.forEach(d=>{const v=d.data();if(d.id==="_profile")pr=v;else if(d.id!=="_meta")ev.push(v);});
+      if(window.SQWorkCal){SQWorkCal.set(ev,pr);renderCtx();renderList();}},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderTiles();renderFun();renderDash();},()=>{});
     db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));splitTopics();renderAll();},()=>{});
