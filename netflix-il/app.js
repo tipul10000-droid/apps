@@ -441,8 +441,8 @@
     for (const id of ["filters", "fSub", "ach"]) $(id).hidden = true;
     document.querySelector(".resbar").hidden = true; document.querySelector(".tabs").hidden = true; $("qBtn").hidden = true;
     const sb = sync.box();
-    $("grid").replaceChildren(h("div", { class: "full" }, h("div", { class: "e" }, "🍿"), h("b", null, "האפליקציה מלאה כרגע"),
-      h("p", null, "הקישור פתוח כרגע למספר קטן של אנשים, וכל המקומות תפוסים. נסו שוב בהמשך."),
+    $("grid").replaceChildren(h("div", { class: "full" }, h("div", { class: "e" }, "🍿"), h("b", { dir: "ltr" }, "The app has reached the maximum number of users."),
+      h("p", { dir: "ltr" }, "Please contact Oren Itzhaki."),
       h("details", null, h("summary", null, "יש לי קוד סנכרון"), sb)));
   }
 
