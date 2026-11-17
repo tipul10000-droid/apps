@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.3";window.SQ_BUILD_AT="17.11.2026 21:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.4";window.SQ_BUILD_AT="17.11.2026 21:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1766,6 +1766,9 @@ main{padding-bottom:90px}
 .dnews li span{grid-column:1}
 .dnews li small{grid-column:2;grid-row:1;color:var(--muted);font-size:12px;white-space:nowrap}
 .dnews .more{font-size:13px;color:var(--muted);padding-top:4px}
+.dnews li.go{cursor:pointer;-webkit-tap-highlight-color:transparent}.dnews li.go:active{background:color-mix(in srgb,#2F7BEA 10%,transparent)}.dnews li.go b::after,.dnews li.go span.solo::after{content:" ‹";color:#2F7BEA;font-weight:800}
+.row.jump{animation:sqjump 1.6s ease-out}@keyframes sqjump{0%,35%{box-shadow:inset 0 0 0 2.5px #2F7BEA;background:color-mix(in srgb,#2F7BEA 12%,transparent)}100%{box-shadow:none}}
+@media (prefers-reduced-motion:reduce){.row.jump{animation:none;box-shadow:inset 0 0 0 2.5px #2F7BEA}}
 @media (prefers-reduced-motion:reduce){.tdot.nw,.snw,.qbtn .qnw,.dzbtn.has,.dz-tile .nw,.dz-tile.flash,.dnews{animation:none}}
 .ctxrow .wseg{border:1.5px solid rgba(255,255,255,.4)!important;border-radius:13px}
 .ctxrow .wseg button{min-height:40px!important}
@@ -3129,7 +3132,7 @@ html.desk .co-mark{font-size:8cqi}
   if(!dzSeen||typeof dzSeen!=="object"){dzSeen={_base:new Date(Date.now()-72*36e5).toISOString()};try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}}
   const EXT_NEW=/gmail|ג׳?ימייל|מייל|mail|סריקה|smart|סמארט|משו״?ב|mashov|אתר|portal/i;
   function dashNews(d){const out=[],now=Date.now(),wk=7*864e5;
-    for(const n of (Array.isArray(d.news)?d.news:[])){const ms=Date.parse(n&&n.at||"");if(ms&&now-ms<wk&&ms<=now+6e4&&n.text)out.push({ms,k:"news",title:"",what:String(n.text),text:String(n.text)});}
+    for(const n of (Array.isArray(d.news)?d.news:[])){const ms=Date.parse(n&&n.at||"");if(ms&&now-ms<wk&&ms<=now+6e4&&n.text)out.push({ms,k:"news",title:"",what:String(n.text),text:String(n.text),tid:newsTid(n)});}
     // 15.2 (Oren 11.11): only real news about the dashboard's own subject: a task that came from outside (upd: mail/scan)
     // or a new task from outside, shown as "<task>: <what changed>". Claude's bookkeeping (sync/log lines) is not news.
     const clean=x=>String(x||"").replace(/\s+/g," ").replace(/^(All Arounder|סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור|חדש מהמייל|עדכון מהמייל)\s*[:：]\s*/i,"").trim();
@@ -3181,11 +3184,26 @@ html.desk .co-mark{font-size:8cqi}
   let newItems=[],nwSeen={};try{nwSeen=JSON.parse(localStorage.getItem("sq_new_seen")||"{}")||{};}catch(e){nwSeen={};}
   function nwList(pfx){const now=Date.now();return newItems.filter(x=>x&&x.id&&!x.done&&(!pfx||String(x.where||"app").startsWith(pfx))).map(x=>({...x,ms:Date.parse(x.at||"")||0}))
     .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&(Date.parse(nwSeen[x.id]||"")||0)<x.ms).sort((a,b)=>b.ms-a.ms);}
+  // ===== 20.3 (Oren 17.11.2026): a "מה חדש" item that is about a task jumps to that task =====
+  // Explicit link: tid (or topic / task) on the item, or where "task:<id>". Without one, a task whose title (8+ chars)
+  // appears in the item's text. Used by settings/new_items, dashboards/<id>.news and the in-dashboard "🆕 מה חדש" box.
+  function titleTid(s){s=String(s||"");if(s.length<8)return "";let b=null;
+    for(const t of allTopics){if(t._deleted||t.background)continue;const tt=String(t.title||"").trim();if(tt.length<8||!s.includes(tt))continue;if(!b||tt.length>b.title.trim().length)b=t;}
+    return b?b.id:"";}
+  function linkTid(x){if(!x)return "";const w=String(x.where||""),id=String(x.tid||x.topic||x.task||(w.startsWith("task:")?w.slice(5):"")||"");
+    return id&&allTopics.some(t=>t.id===id&&!t._deleted)?id:"";}
+  function newsTid(x){return linkTid(x)||titleTid(x&&(x.text||x.what));}
+  // from a dashboard: an open task opens over it (like the 📌 box); otherwise back to the quest, which switches quest/window,
+  // scrolls to the row, opens it and flashes it
+  function jumpTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;seeUpd(id);
+    if(nav.dash&&isOpen(t)&&!isFun(t)){dzTaskOpen(t);return;}
+    closeModal();const go=()=>{updOn=false;openTask(id);setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r){r.classList.remove("jump");void r.offsetWidth;r.classList.add("jump");}},420);};
+    if(nav.dash||nav.lvl>1){navBack(true);setTimeout(go,330);}else go();}
   function nwSee(ids){let ch=false;for(const id of [].concat(ids||[])){if(!id)continue;nwSeen[id]=new Date().toISOString();ch=true;}
     if(!ch)return;const ks=Object.keys(nwSeen);if(ks.length>400)ks.sort((a,b)=>String(nwSeen[a]).localeCompare(String(nwSeen[b]))).slice(0,ks.length-400).forEach(k=>delete nwSeen[k]);
     try{localStorage.setItem("sq_new_seen",JSON.stringify(nwSeen));}catch(e){}setTimeout(nwRender,0);}
   const nwSet=k=>nwList("settings:"+k);
-  const nwQuest=q=>nwList("").filter(x=>{const w=String(x.where||"app");return w==="quest:"+q||(q==="side"&&w==="app");});
+  const nwQuest=q=>nwList("").filter(x=>{const w=String(x.where||"app");if(w.startsWith("task:")){const t=allTopics.find(z=>z.id===w.slice(5));return !!t&&(isFun(t)?"fun":questOf(t))===q;}return w==="quest:"+q||(q==="side"&&w==="app");});
   function nwRender(){try{renderSetDot();renderQnav();updUpdBtn();const c=$("chatDot");if(c)c.hidden=!nwList("chat").length;if(updOn)renderList();}catch(e){}}
   addEventListener("storage",e=>{if(e.key==="sq_new_seen"){try{nwSeen=JSON.parse(e.newValue||"{}")||{};}catch(x){nwSeen={};}if(db)nwRender();}});
   // a quest (not on screen) also blinks for its own task changes since this visit, until he enters it once this visit
@@ -3431,7 +3449,7 @@ html.desk .co-mark{font-size:8cqi}
   function withBox(card,nd){if(nd&&card.firstChild){const b=newsBox(nd);b.classList.add("incard");card.insertBefore(b,card.firstChild.nextSibling);}return card;}
   function newsBox(nd){let box;box=h("section",{class:"dnews",role:"status"},
       h("div",{class:"dh"},h("span",null,"🆕 מה חדש"),h("small",null,heN(nd.items.length+nd.more,"עדכון אחד","עדכונים")+" מאז הפעם הקודמת"),h("button",{type:"button",onclick:()=>box.remove()},"✓ הבנתי")),
-      h("ul",null,nd.items.map(x=>h("li",null,x.title?h("b",null,x.title):null,x.title&&x.what?h("span",null,x.what):x.what?h("span",{class:"solo"},x.what):null,h("small",null,x.ago)))),
+      h("ul",null,nd.items.map(x=>h("li",x.tid&&allTopics.some(t=>t.id===x.tid)?{class:"go",role:"button",tabindex:"0",onclick:()=>jumpTask(x.tid)}:null,x.title?h("b",null,x.title):null,x.title&&x.what?h("span",null,x.what):x.what?h("span",{class:"solo"},x.what):null,h("small",null,x.ago)))),
       nd.more?h("div",{class:"more"},"ועוד "+nd.more):null);return box;}
   function renderDashPg(){const pD=$("pgD"),id=nav.dash,d=dashById(id);
     const back=nav.lvl===3?(projTitle(nav.id)||"AI Projects"):nav.lvl===2?"AI Projects":"Side Quests";
@@ -3448,7 +3466,7 @@ html.desk .co-mark{font-size:8cqi}
     // with every item spelled out (also on locked dashboards: it sits inside the page, under the code screen). Frame pages get
     // it through dash-sub.js (sq-news), the in-app card gets it as the first block. Opening the dashboard marks it seen.
     const nws=d?dashUnseen(d):[];if(newsKeep.id!==id)newsKeep={id,data:null};
-    const newsData=newsKeep.data||(newsKeep.data=nws.length?{type:"sq-news",items:nws.slice(0,7).map(x=>({k:x.k,title:x.title,what:x.what,ago:ago(x.ms)})),more:Math.max(0,nws.length-7)}:null);
+    const newsData=newsKeep.data||(newsKeep.data=nws.length?{type:"sq-news",items:nws.slice(0,7).map(x=>({k:x.k,title:x.title,what:x.what,ago:ago(x.ms),tid:x.tid||""})),more:Math.max(0,nws.length-7)}:null);
     if(nws.length)dashSeen(d.id);
     const withNews=b=>[bar,b,edge];
     let body;
@@ -3498,7 +3516,7 @@ html.desk .co-mark{font-size:8cqi}
     if(!t||!isOpen(t)){closeModal();return;}openId=t.id;const b=m.querySelector(".dzt-body");if(b)b.replaceChildren(h("div",{class:"group"},dzRow(t)));}
   window.addEventListener("message",e=>{const d=e.data;if(!d||(d.type!=="sq-task"&&d.type!=="sq-done"))return;const f=dashFrameEl();if(!f||e.source!==f.contentWindow)return;
     const t=allTopics.find(x=>x.id===String(d.id||""));if(!t)return;
-    if(d.type==="sq-task")dzTaskOpen(t);else if(isOpen(t)&&canWrite)markDone(t);});
+    if(d.type==="sq-task"){if(isOpen(t))dzTaskOpen(t);else jumpTask(t.id);}else if(isOpen(t)&&canWrite)markDone(t);});
   function pgBar(back,title){return h("div",{class:"pgbar"},h("div",{class:"pgbar-in"},
     pgBack(back),
     h("div",{class:"pgtitle"},title),h("span")));}
@@ -4955,16 +4973,18 @@ html.desk .co-mark{font-size:8cqi}
       (Array.isArray(t.log)?t.log:[]).forEach(l=>{if(l&&l.at&&l.by!=="oren"&&EXT_LOG.test(l.text||""))add(l.at,l.text,/^(Gmail|ג׳ימייל|מייל)/.test(l.text)?"gmail":"log");});}
     const seen=new Set();return out.sort((a,b)=>b.r.ms-a.r.ms).filter(x=>{const k=x.t.id+"|"+x.r.what;if(seen.has(k))return false;seen.add(k);return true;}).slice(0,200);}
   function updRow(x,past){const t=x.t,k=catOf(t),C=CATS[k]||CATS.done;
-    return h("button",{type:"button",class:"uprow"+(past?" past":""),onclick:()=>{updOn=false;openTask(t.id);}},
+    return h("button",{type:"button",class:"uprow"+(past?" past":""),onclick:()=>jumpTask(t.id)},
       h("i",{class:"cat-ic",style:"--cc:"+C.c,"aria-hidden":"true"},C.g),
       h("span",{class:"up-t"},h("b",null,t.title||"(ללא כותרת)"),h("small",null,updLine(x.r))),h("span",{class:"r-chev","aria-hidden":"true"},"‹"));}
   // 19.8: one row per new thing that is not a task: a chat waiting for him, an app feature/setting, a dashboard
   function nwRow(ic,title,sub,go){return h("button",{type:"button",class:"uprow",onclick:go},h("span",{class:"nwic","aria-hidden":"true"},ic),
       h("span",{class:"up-t"},h("b",null,title),sub?h("small",null,sub):null),h("span",{class:"r-chev","aria-hidden":"true"},"‹"));}
   function openNw(x){nwSee(x.id);const w=String(x.where||"");
+    {const tid=w==="chat"?"":linkTid(x);if(tid){jumpTask(tid);return;}}
     if(w.startsWith("settings:")){setOpen.add(w.slice(9));showSettings();return;}
     if(w.startsWith("dash:")){openDash(w.slice(5));return;}
-    const u=safeUrl(x.url||"");if(u)window.open(u,"_blank","noopener");}
+    const u=safeUrl(x.url||"");if(u){window.open(u,"_blank","noopener");return;}
+    {const tid=w==="chat"?"":titleTid(x.text);if(tid)jumpTask(tid);}}
   function renderUpd(){
     const L=updItems(),dayOf=ms=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date(ms)),today=ilDate();
     const C=nwList("chat"),A=[...nwQuest(quest),...(quest==="side"?nwList("settings:"):[]),...nwList("dash:").filter(x=>{const d=dashById(String(x.where).slice(5));return d&&(d.quest||"side")===quest;})],D=questFresh(quest).filter(d=>!A.some(x=>x.where==="dash:"+d.id));
@@ -4974,7 +4994,7 @@ html.desk .co-mark{font-size:8cqi}
     if(C.length){const CA=C.filter(x=>x.ask),CU=C.filter(x=>!x.ask);
       G.push(h("div",{class:"up-g"},"💬 המשך שיחה"),...CA.map(x=>nwRow("❓",x.text,"מחכה לתשובה שלך"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x))),
         ...CU.map(x=>nwRow("📩",x.text,"עדכון ממני שעוד לא קראת"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x))));}
-    if(A.length)G.push(h("div",{class:"up-g"},"✨ חדש באפליקציה"),...A.map(x=>nwRow(String(x.where).startsWith("settings:")?"⚙️":String(x.where).startsWith("dash:")?"📊":"✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
+    if(A.length)G.push(h("div",{class:"up-g"},"✨ חדש באפליקציה"),...A.map(x=>nwRow(String(x.where).startsWith("task:")?"📌":String(x.where).startsWith("settings:")?"⚙️":String(x.where).startsWith("dash:")?"📊":"✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
     if(D.length)G.push(h("div",{class:"up-g"},"📊 דשבורדים"),...D.map(d=>nwRow(d.icon||"📊",d.title||d.short||d.id,dashWhy(d)+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id))));
     if(L.length)G.push(...(G.length?[h("div",{class:"up-g"},"≡ משימות")]:[]),...L.map(x=>updRow(x)));
     const n=C.length+A.length+D.length+L.length;
