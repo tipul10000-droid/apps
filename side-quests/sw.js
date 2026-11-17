@@ -4,7 +4,17 @@
 // keeps it in IndexedDB. Kill switch: open the app with ?nosw=1 (clears this cache and unregisters).
 var CACHE = "sq-app-v1";
 var FONTS = "sq-fonts-v1";
-self.addEventListener("install", function () { self.skipWaiting(); });
+// the first visit already saves the app itself, so it opens offline from the second time on
+var PRE = ["index.html", "sq-db.js", "workcal-engine.js", "timegate.js", "sqctx.js", "nozoom.js", "manifest.json", "icon-192.png", "dash-back.css", "dash-sub.js", "dash-lock.js"];
+self.addEventListener("install", function (e) {
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(function (ca) {
+    return Promise.all(PRE.map(function (f) {
+      var u = new URL(f, self.registration.scope).toString();
+      return fetch(u, { cache: "no-cache" }).then(function (r) { if (r.ok) return ca.put(u, r); }).catch(function () {});
+    }));
+  }));
+});
 self.addEventListener("activate", function (e) {
   e.waitUntil(caches.keys().then(function (ks) {
     return Promise.all(ks.filter(function (k) { return k.indexOf("sq-") === 0 && k !== CACHE && k !== FONTS; }).map(function (k) { return caches.delete(k); }));
