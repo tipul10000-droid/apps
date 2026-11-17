@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2E3A87">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.8";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.9";window.SQ_DASH=/[?&]w=1/.test(location.search)?"work_knowledge":"knowledge";</script>
 <script src="sq-db.js?v=9"></script>
 <title>ידע ותחומי עניין</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -178,7 +178,7 @@ details.arch .ar button{width:96px;min-height:34px;border:1px solid var(--line);
 .cartbox .tot{display:flex;justify-content:space-between;border-top:2px solid var(--line);padding-top:8px;margin-top:2px;font-weight:800;font-size:15px}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=7">
-<script src="dash-sub.js?v=5" defer></script>
+<script src="dash-sub.js?v=6" defer></script>
 <script src="fold.js?v=1" defer></script>
 <script>if(/[?&]w=1(&|$)/.test(location.search)){document.documentElement.classList.add("work");document.title="ידע עבודה";}</script>
 <script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
@@ -242,12 +242,12 @@ function heroTicket(x){const tp=topicOf(x.topic),ch=chatOf(x);
 function renderHome(){$("hero").innerHTML=heroHome();
   const T=all("ticket"),used=new Set(T.map(x=>x.topic||"other"));
   const chips=[["all","הכול",""],...topics().filter(t=>used.has(t[0]))];
-  $("bar").innerHTML=`<div class="chipsel" style="padding-top:0">${chips.map(([k,l,i])=>`<button data-topic="${esc(k)}" class="${ui.topic===k?"on":""}">${i?i+" ":""}${esc(l)}${k==="all"?"":" "+T.filter(x=>(x.topic||"other")===k).length}</button>`).join("")}</div>`
+  $("bar").innerHTML=`<div class="chipsel" style="padding-top:0">${chips.map(([k,l,i])=>`<button data-topic="${esc(k)}" data-sq-path="topic:${esc(k)}" class="${ui.topic===k?"on":""}">${i?i+" ":""}${esc(l)}${k==="all"?"":" "+T.filter(x=>(x.topic||"other")===k).length}</button>`).join("")}</div>`
     +(T.length>6?`<input class="search" id="q" type="search" placeholder="🔍 חיפוש בידע" value="${esc(ui.q)}">`:"");
   $("app").innerHTML=renderList();bindSearch();}
 function bindSearch(){const q=$("q");if(!q)return;q.oninput=()=>{ui.q=q.value;$("app").innerHTML=renderList();};}
 function ticketRow(x){const tp=topicOf(x.topic),n=srcs(x).length;
-  return `<button class="tk" data-got="${esc(x.id)}"><span class="i">${esc(x.icon||tp[2])}</span><span class="t">${esc(x.short||x.title)}</span><span class="m">${x.status==="new"?"⏳":""}${x.fav?"⭐":""}${n>1?" "+n+" 🔗":""}</span><span class="ch">‹</span></button>`;}
+  return `<button class="tk" data-got="${esc(x.id)}" data-sq-item="${esc(x.id)}"><span class="i">${esc(x.icon||tp[2])}</span><span class="t">${esc(x.short||x.title)}</span><span class="m">${x.status==="new"?"⏳":""}${x.fav?"⭐":""}${n>1?" "+n+" 🔗":""}</span><span class="ch">‹</span></button>`;}
 function renderList(){const T=all("ticket").filter(x=>(ui.topic==="all"||(x.topic||"other")===ui.topic)&&match(x,ui.q)).sort(byNew);
   let body;
   if(!T.length)body=`<div class="card empty">${loaded?(ui.q?"לא נמצא":"עוד אין"):"טוען…"}</div>`;

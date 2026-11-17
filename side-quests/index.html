@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.4";window.SQ_BUILD_AT="17.11.2026 18:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.5";window.SQ_BUILD_AT="17.11.2026 17:58";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1716,6 +1716,8 @@ main{padding-bottom:90px}
 .dz-top .nw{position:absolute;top:-4px;right:16px;width:12px;height:12px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;animation:dzblink 1.4s ease-in-out infinite}
 .dz-top:active{filter:brightness(.95)}
 @keyframes dztin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.qbtn.hasnw{opacity:.82;filter:none}
+.qbtn .qnw{position:absolute;top:3px;inset-inline-start:3px;width:11px;height:11px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);animation:dzblink 1.4s ease-in-out infinite;z-index:2}
 .dz-tile .nw{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dzblink 1.4s ease-in-out infinite}
 @keyframes dzblink{50%{opacity:.4;transform:scale(.8)}}
 .dz-tile.flash{animation:dzflash .55s ease-in-out 4}
@@ -1733,7 +1735,7 @@ main{padding-bottom:90px}
 .dnews li span{grid-column:1}
 .dnews li small{grid-column:2;grid-row:1;color:var(--muted);font-size:12px;white-space:nowrap}
 .dnews .more{font-size:13px;color:var(--muted);padding-top:4px}
-@media (prefers-reduced-motion:reduce){.dzbtn.has,.dz-tile .nw,.dz-tile.flash,.dnews{animation:none}}
+@media (prefers-reduced-motion:reduce){.qbtn .qnw,.dzbtn.has,.dz-tile .nw,.dz-tile.flash,.dnews{animation:none}}
 .ctxrow .wseg{border:1.5px solid rgba(255,255,255,.4)!important;border-radius:13px}
 .ctxrow .wseg button{min-height:40px!important}
 .ctxrow .wseg button+button{border-inline-start-width:1.5px!important;border-inline-start-color:rgba(255,255,255,.25)!important}
@@ -3004,7 +3006,7 @@ html.desk .co-mark{font-size:8cqi}
   function dzPayload(d){const s=dashShow(d),m=t=>({id:t.id,title:String(t.title||"").slice(0,140),line:String(dzLine(t)).slice(0,160),chip:dzChip(t),urg:isUrgent(t)||isHot(t)});
     return {type:"sq-tasks",dash:d.id,me:s.me.map(m),oth:s.oth.map(m)};}
   function dashTile(d,lite){const lv=liveOf(d),k=lv.kpis[0];
-    const nw=dashUnseen(d).length;
+    const nw=dashFresh(d);
     return h("button",{class:"dz-tile"+(lite?" lite":""),type:"button",style:dashVars(d),"data-dz":d.id,onclick:()=>openDash(d.id)},
       nw?h("span",{class:"nw",title:"יש עדכון חדש","aria-label":"יש עדכון חדש"}):null,
       dzBadge(d),
@@ -3053,17 +3055,36 @@ html.desk .co-mark{font-size:8cqi}
   function dashUnseen(d){if(!d||d.archived||d._deleted)return [];const s=Math.max(Date.parse(dzSeen[d.id]||"")||0,Date.parse(dzSeen._base||"")||0);
     try{return dashNews(d).filter(x=>x.ms>s);}catch(e){return [];}}
   function dashSeen(id){dzSeen[id]=new Date().toISOString();try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}setTimeout(()=>{updDzBtn();renderDash();},0);}
-  function updDzBtn(){const b=$("dzbtn");if(!b)return;const n=dashes.filter(d=>dashUnseen(d).length).length;
+  // ===== 19.5 (Oren 17.11.2026): the "new content" path, a standing rule for every quest and dashboard =====
+  // Something new inside a dashboard = a line in dashboards/<id>.news with `item` (the doc id inside the page) and optional
+  // `path` (keys of the tabs/sections that lead to it). The path lights up step by step: the quest button blinks (renderQnav)
+  // → tap = straight into the dashboard (one) or to its blinking tile (several) → inside the page the section and the item
+  // carry "חדש" (dash-sub.js, data-sq-item / data-sq-path) → opening the item clears it. Until the item itself is opened, the
+  // quest and the tile keep blinking. Seen items: sq_item_seen {"<dash>:<item>": at}, shared with the pages (same origin).
+  let itSeen={};try{itSeen=JSON.parse(localStorage.getItem("sq_item_seen")||"{}")||{};}catch(e){itSeen={};}
+  function dashItems(d){if(!d||d.archived||d._deleted)return [];const now=Date.now(),base=Date.parse(dzSeen._base||"")||0,out=[];
+    for(const n of (Array.isArray(d.news)?d.news:[])){if(!n||!n.item)continue;const ms=Date.parse(n.at||"");if(!ms||now-ms>14*864e5||ms>now+6e4||ms<=base)continue;
+      if((Date.parse(itSeen[d.id+":"+n.item]||"")||0)>=ms)continue;
+      out.push({id:String(n.item),at:new Date(ms).toISOString(),ms,path:Array.isArray(n.path)?n.path.map(String):[]});}
+    return out;}
+  function dashFresh(d){return dashUnseen(d).length>0||dashItems(d).length>0;}
+  function freshMs(d){const a=dashUnseen(d),b=dashItems(d);return Math.max(a.length?a[0].ms:0,...b.map(x=>x.ms),0);}
+  function questFresh(q){return q==="fun"?[]:dashes.filter(d=>!d._deleted&&!d.archived&&(d.quest||"side")===q&&dashFresh(d)).sort((a,b)=>freshMs(b)-freshMs(a));}
+  function syncItemNew(){const m={};for(const d of dashes){const L=dashItems(d);if(L.length)m[d.id]=L.map(x=>({id:x.id,at:x.at,path:x.path}));}
+    try{const v=JSON.stringify(m);if(localStorage.getItem("sq_item_new")!==v)localStorage.setItem("sq_item_new",v);}catch(e){}}
+  addEventListener("storage",e=>{if(e.key!=="sq_item_seen")return;try{itSeen=JSON.parse(e.newValue||"{}")||{};}catch(x){itSeen={};}
+    if(db){renderQnav();renderDash();}});
+  function updDzBtn(){const b=$("dzbtn");if(!b)return;const n=dashes.filter(d=>dashFresh(d)).length;
     b.classList.toggle("has",n>0);$("dzN").textContent=n||"";b.setAttribute("aria-label",n?`לדשבורדים: ${n} עם עדכון חדש`:"לדשבורדים");}
   function goDashes(){const sec=$("dashSec");
     const go=()=>{const el=quest==="travel"?document.querySelector("#tvSec .tv-dash")||sec:sec;if(!el||el.hidden)return;
       el.scrollIntoView({behavior:"smooth",block:"start"});
-      setTimeout(()=>document.querySelectorAll(".dz-tile").forEach(t=>{const d=dashById(t.dataset.dz);if(d&&dashUnseen(d).length){t.classList.remove("flash");void t.offsetWidth;t.classList.add("flash");}}),450);};
+      setTimeout(()=>document.querySelectorAll(".dz-tile").forEach(t=>{const d=dashById(t.dataset.dz);if(d&&dashFresh(d)){t.classList.remove("flash");void t.offsetWidth;t.classList.add("flash");}}),450);};
     // 16.1 (Oren 13.11.2026): the count covers every quest, so when the updated dashboard lives in another quest (skills is in
     // AI Projects) go to that quest, not to Side, where no tile blinks.
-    const qOf=d=>d.quest||"side",un=dashes.filter(d=>!d._deleted&&!d.archived&&dashUnseen(d).length);
+    const qOf=d=>d.quest||"side",un=dashes.filter(d=>!d._deleted&&!d.archived&&dashFresh(d));
     const here=quest!=="fun"&&un.some(d=>qOf(d)===quest);
-    const tq=un.length&&!here?qOf(un.map(d=>[d,dashUnseen(d)[0].ms]).sort((a,b)=>b[1]-a[1])[0][0]):null;
+    const tq=un.length&&!here?qOf(un.map(d=>[d,freshMs(d)]).sort((a,b)=>b[1]-a[1])[0][0]):null;
     if(tq&&tq!==quest){setQuest(tq);setTimeout(go,160);return;}
     if((!sec||sec.hidden)&&quest!=="travel"){setQuest("side");setTimeout(go,120);}else go();}
   const DASH_MAX=3, DASH_IDLE=90;
@@ -3073,7 +3094,7 @@ html.desk .co-mark{font-size:8cqi}
     const L=quest==="fun"||quest==="travel"?[]:dashes.filter(d=>(d.quest||"side")===quest&&dzTopOpen(d)).sort((a,b)=>(a.order||99)-(b.order||99));
     if(!L.length){sec.hidden=true;sec.replaceChildren();return;}
     sec.hidden=false;sec.replaceChildren(...L.map(d=>{const sh=dashShow(d),me=sh.me.length,wt=sh.oth.length;
-      const nw=dashUnseen(d).length;
+      const nw=dashFresh(d);
       const line=[me?heN(me,"נושא לעשות","נושאים לעשות"):"",wt?heN(wt,"נושא במעקב","נושאים במעקב"):""].filter(Boolean).join(" · ");
       return h("button",{class:"dz-top",type:"button",style:dashVars(d),"data-dz":d.id,onclick:()=>openDash(d.id),"aria-label":(d.title||"")+": "+line},
         h("span",{class:"dot"+(me?"":" soft"),"aria-hidden":"true"}),nw?h("span",{class:"nw","aria-hidden":"true"}):null,
@@ -3088,7 +3109,7 @@ html.desk .co-mark{font-size:8cqi}
     if(!fin.length||!rest.length)return act.length?[[null,act]]:[];
     return [["💰 כלכלי ופיננסי",fin],["🧩 כל השאר",rest]];
   }
-  function renderDash(){renderDzTop();const sec=$("dashSec");if(!sec)return;
+  function renderDash(){syncItemNew();renderDzTop();const sec=$("dashSec");if(!sec)return;
     if(quest==="travel"){sec.hidden=true;sec.replaceChildren();renderTravel();return;} // travel dashboards live inside their zone
     const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
     updDzBtn();
@@ -3349,7 +3370,8 @@ html.desk .co-mark{font-size:8cqi}
   // A tap on a task opens it here over the dashboard (all its actions); the circle marks it done (the page holds 5 s for undo).
   // A dashboard that absorbs its tasks (expenses) already lists them itself: no box there.
   function dzSend(f){f=f||dashFrameEl();const d=nav.dash&&dashById(nav.dash);if(!f||!d)return;
-    const p=d.absorb?{type:"sq-tasks",dash:d.id,skip:true}:dzPayload(d);try{f.contentWindow.postMessage(p,location.origin);}catch(e){}}
+    const p=d.absorb?{type:"sq-tasks",dash:d.id,skip:true}:dzPayload(d);try{f.contentWindow.postMessage(p,location.origin);}catch(e){}
+    syncItemNew();try{f.contentWindow.postMessage({type:"sq-items",dash:d.id},location.origin);}catch(e){}}
   function dzRow(t){const dk=deskOn;deskOn=false;try{return row(t);}finally{deskOn=dk;}}
   function dzTaskOpen(t){openId=t.id;const draw=()=>{const cur=allTopics.find(x=>x.id===t.id)||t;
       return [h("div",{class:"lhd"},h("h2",null,"📌 "+((dashById(cur.dash)||{}).short||"משימה"),h("button",{class:"px",type:"button","aria-label":"סגור",onclick:()=>{openId=null;closeModal();}},"×"))),
@@ -3814,7 +3836,12 @@ html.desk .co-mark{font-size:8cqi}
   function renderQnav(){
     const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)&&!isBg(t)&&!absorbed(t)).length;
     const vis=Object.keys(QUESTS).filter(q=>!qHidden(q));$("qnav").dataset.n=vis.length;
-    $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q];return h("button",{class:"qbtn q-"+q,type:"button","data-q":q,"aria-current":q===quest?"true":"false",onclick:()=>setQuest(q)},h("span",{class:"qe","aria-hidden":"true"},Q.e),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
+    // 19.5: a quest (not the one on screen) with something new in one of its dashboards = blinking blue dot; tap = into it
+    $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q],F=q!==quest?questFresh(q):[];
+      return h("button",{class:"qbtn q-"+q+(F.length?" hasnw":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":F.length?Q.a+" "+Q.b+": יש תוכן חדש":null,
+        onclick:()=>{const G=q!==quest?questFresh(q):[];setQuest(q);if(G.length)setTimeout(()=>G.length===1?openDash(G[0].id):goDashes(),180);}},
+        F.length?h("span",{class:"qnw",title:"יש תוכן חדש","aria-hidden":"true"}):null,
+        h("span",{class:"qe","aria-hidden":"true"},Q.e),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }
   function applyQuest(){
     funMode=quest==="fun";
