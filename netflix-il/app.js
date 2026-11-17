@@ -6,13 +6,41 @@
   "use strict";
   const CAT_URL = "https://kvdgesrllikgwtuttrpb.supabase.co/storage/v1/object/public/nf-public/catalog.json";
   const IMG = "https://image.tmdb.org/t/p/w185";
-  const GEN = [["act", "💥 פעולה"], ["com", "😂 קומדיה"], ["dra", "🎭 דרמה"], ["rom", "💕 רומנטי"], ["thr", "🔪 מתח ופשע"], ["scf", "🚀 מד״ב ופנטזיה"],
-    ["hor", "👻 אימה"], ["doc", "🎥 דוקו"], ["ani", "✏️ אנימציה"], ["fam", "🧸 משפחה"], ["rea", "📺 ריאליטי"]];
+  // One-colour line icons instead of emoji (Oren 17.11.2026: no emoji in the app except the Israeli flag).
+  // HTML places them with <span class="ic" data-i="name">, code with ic("name").
+  const ICO = {
+    search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>',
+    gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+    compass: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+    bookmark: '<path d="M6 3.5h12V21l-6-4.2L6 21z"/>',
+    trophy: '<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4m8-4h3a3 3 0 0 1-3 4m-4 4v4m-4 2h8"/>',
+    tv: '<rect x="3" y="6.5" width="18" height="13" rx="2"/><path d="m8.5 2.5 3.5 4 3.5-4"/>',
+    film: '<rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M8 3.5v17m8-17v17M3.5 9H8m-4.5 6H8m8-6h4.5M16 15h4.5"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+    star: '<path d="m12 3.2 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17.2l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+    users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8m2 2.8a6 6 0 0 1 3.5 5.8"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    sync: '<path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 3v5h5M4 13a8 8 0 0 0 14.3 4.9L20 16m0 5v-5h-5"/>',
+    copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    keys: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6.5 10h.01M10 10h.01M14 10h.01M17.5 10h.01M7.5 14h9"/>',
+    alert: '<path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5m0 2.5h.01"/>',
+    all: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+    moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  };
+  const icHTML = (n) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICO[n] || "") + "</svg>";
+  const ic = (n) => ICO[n] ? h("span", { class: "ic", html: icHTML(n) }) : h("span", { class: "ic t" }, n || ""); // non-icon = text (the flag)
+  for (const el of document.querySelectorAll(".ic[data-i]")) el.innerHTML = icHTML(el.dataset.i);
+  const GEN = [["act", "פעולה"], ["com", "קומדיה"], ["dra", "דרמה"], ["rom", "רומנטי"], ["thr", "מתח ופשע"], ["scf", "מד״ב ופנטזיה"],
+    ["hor", "אימה"], ["doc", "דוקו"], ["ani", "אנימציה"], ["fam", "משפחה"], ["rea", "ריאליטי"]];
   const RATES = [0, 6, 7, 7.5, 8, 8.5, 9];
   const MIN_VOTES = 1000, PAGE = 45, NEW_DAYS = 14;
   const TASTES = window.NF_TASTES || {};
   const TOPS = { il: { name: "טופ ישראל", icon: "🇮🇱", sub: "מה שהיה בטופ 10 של נטפליקס ישראל בשנה האחרונה" },
-    w: { name: "טופ עולמי", icon: "🌍", sub: "מה שהיה בטופ 10 העולמי של נטפליקס בשנה האחרונה" } };
+    w: { name: "טופ עולמי", icon: "globe", sub: "מה שהיה בטופ 10 העולמי של נטפליקס בשנה האחרונה" } };
   const $ = (id) => document.getElementById(id);
   const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -135,7 +163,7 @@
       b.classList.toggle("in", r > 0 && r < F.r);
     }
   }
-  function oscTxt(x) { const n = (x.oc || []).length || 1; return "🏆 " + (n > 1 ? n + " Oscars" : "Oscar"); }
+  function oscTxt(x) { const n = (x.oc || []).length || 1; return n > 1 ? n + " Oscars" : "Oscar"; }
   // ▶ on every poster opens the title in Netflix (Oren 17.11.2026). netflix.com/title/<id> is a universal link, so
   // on a phone with the Netflix app it opens the app on that title. Ids come from Wikidata (x.nf); without one, search.
   const nfUrl = (x) => x.nf ? "https://www.netflix.com/title/" + x.nf : "https://www.netflix.com/search?q=" + encodeURIComponent(x.n);
@@ -144,14 +172,14 @@
     const post = h("div", { class: "post" },
       x.p ? h("img", { src: IMG + x.p, alt: "", loading: "lazy", decoding: "async" }) : h("div", { class: "noimg" }, x.n),
       x.r ? h("span", { class: "imdb" + (okR(x) ? "" : " na"), title: okR(x) ? null : fmt(x.v || 0) + " הצבעות בלבד" }, "IMDb " + (okR(x) ? x.r.toFixed(1) : "N/A")) : null,
-      x.os ? h("span", { class: "osc" + (x.os === 2 ? " g" : "") + (x.r ? "" : " top"), title: (x.oc || []).join(", ") }, oscTxt(x)) : null,
+      x.os ? h("span", { class: "osc" + (x.os === 2 ? " g" : "") + (x.r ? "" : " top"), title: (x.oc || []).join(", ") }, ic("trophy"), oscTxt(x)) : null,
       isNew(x) ? h("span", { class: "newb" }, "חדש") : null,
       taste === "il" && x.til ? h("span", { class: "topb" }, "טופ 10 · " + x.til[0] + " שב׳") : taste === "w" && x.tw ? h("span", { class: "topb" }, "טופ 10 · " + x.tw[0] + " שב׳") : null);
     let meta;
     if (x.k[0] === "s") {
       meta = [x.s ? x.s + (x.s === 1 ? " עונה" : " עונות") + (x.e ? " · " + x.e + " פרקים" : "") : (x.y || "")];
     } else meta = [x.y || ""];
-    const wlB = h("button", { type: "button", class: "wl" + (wl[x.k] ? " on" : ""), "aria-label": "לרשימה שלי", onclick: () => toggle("wl", x, wlB) }, "🔖");
+    const wlB = h("button", { type: "button", class: "wl" + (wl[x.k] ? " on" : ""), "aria-label": "לרשימה שלי", onclick: () => toggle("wl", x, wlB) }, ic("bookmark"));
     const seenB = h("button", { type: "button", class: seen[x.k] ? "on" : "", "aria-label": "ראיתי", onclick: () => toggle("seen", x, seenB) }, "✓");
     return h("div", { class: "card", "data-k": x.k },
       h("div", { class: "pw" }, h("a", { href: url, target: "_blank", rel: "noopener" }, post),
@@ -196,7 +224,7 @@
       const what = F.sub === "s" ? " סדרות" : F.sub === "m" ? " סרטים" : "";
       $("resN").replaceChildren(h("b", null, fmt(list.length)), what + (tab === "wl" ? " ברשימה שלי" : " שראיתי"));
       if (tab === "seen") renderAch(all, nS);
-      if (!list.length) g.append(h("div", { class: "empty" }, tab === "wl" ? "הרשימה ריקה. סמנו 🔖 על מה שבא לכם לראות." : "עוד לא סימנתם כלום. ✓ על כרטיס מעביר אותו לכאן."));
+      if (!list.length) g.append(h("div", { class: "empty" }, tab === "wl" ? "הרשימה ריקה. סמנו את הסימנייה על מה שבא לכם לראות." : "עוד לא סימנתם כלום. ✓ על כרטיס מעביר אותו לכאן."));
     } else {
       const base = baseList();
       renderRates(base);
@@ -215,17 +243,17 @@
     const osc = all.reduce((a, x) => a + (x.os ? (x.oc || []).length || 1 : 0), 0);
     const pct = items.length ? Math.round((all.length / items.length) * 1000) / 10 : 0;
     $("ach").replaceChildren(
-      h("div", { class: "h" }, "🏆 ההישגים שלי בנטפליקס", h("small", null, all.length ? "ראית " + fmt(all.length) + " מתוך " + fmt(items.length) + " כותרים בנטפליקס ישראל (" + pct + "%)" : "כל ✓ על כרטיס נכנס לכאן")),
+      h("div", { class: "h" }, ic("trophy"), "ההישגים שלי בנטפליקס", h("small", null, all.length ? "ראית " + fmt(all.length) + " מתוך " + fmt(items.length) + " כותרים בנטפליקס ישראל (" + pct + "%)" : "כל ✓ על כרטיס נכנס לכאן")),
       h("div", { class: "tiles" },
-        h("div", null, h("b", null, fmt(nS)), h("small", null, "📺 סדרות")),
-        h("div", null, h("b", null, fmt(all.length - nS)), h("small", null, "🎬 סרטים")),
-        h("div", null, h("b", null, avg ? avg.toFixed(1) : "–"), h("small", null, "⭐ IMDb ממוצע")),
-        h("div", null, h("b", null, fmt(osc)), h("small", null, "🏆 אוסקרים"))));
+        h("div", null, h("b", null, fmt(nS)), h("small", null, ic("tv"), "סדרות")),
+        h("div", null, h("b", null, fmt(all.length - nS)), h("small", null, ic("film"), "סרטים")),
+        h("div", null, h("b", null, avg ? avg.toFixed(1) : "–"), h("small", null, ic("star"), "IMDb ממוצע")),
+        h("div", null, h("b", null, fmt(osc)), h("small", null, ic("trophy"), "אוסקרים"))));
   }
   function renderTasteNote() { // the chosen preference shows as a small badge on ⚙️, so no extra row opens (Oren 17.11.2026)
     $("tasteNote").hidden = true;
     const p = TASTES[taste] || TOPS[taste], tb = $("tasteB");
-    tb.hidden = !p; tb.textContent = p ? p.icon : ""; $("setBtn").title = p ? "העדפה: " + p.name : "";
+    tb.hidden = !p; tb.replaceChildren(...(p ? [ic(p.icon)] : [])); $("setBtn").title = p ? "העדפה: " + p.name : "";
   }
 
 
@@ -249,7 +277,7 @@
       const c = btn.closest(".card"); c.style.transition = "opacity .6s"; c.style.opacity = ".35";
       setTimeout(() => { if (seen[x.k]) render(); }, 900);
       toast("✓ " + x.n + " עבר ל״ראיתי״", undo);
-    } else if (kind === "wl") toast(was ? "הוסר מהרשימה" : "🔖 נוסף לרשימה שלי", undo);
+    } else if (kind === "wl") toast(was ? "הוסר מהרשימה" : "נוסף לרשימה שלי", undo);
     else if (kind === "seen" && was) {
       if (tab === "seen") { const c = btn.closest(".card"); c.style.transition = "opacity .6s"; c.style.opacity = ".35"; }
       toast("חזר לרשימות", undo); setTimeout(() => { if (!seen[x.k]) render(); }, tab === "seen" ? 900 : 500);
@@ -260,25 +288,25 @@
   function sheet(title, body, cls) { $("ovT").textContent = title; $("ovB").replaceChildren(...body.filter(Boolean)); document.querySelector("#ov .sheet").className = "sheet" + (cls ? " " + cls : ""); $("ov").hidden = false; }
   function closeSheet() { $("ov").hidden = true; }
   function settings() {
-    const opts = [["all", "🍿", "בלי העדפה", "כל מה שיש בנטפליקס ישראל"]];
+    const opts = [["all", "all", "בלי העדפה", "כל מה שיש בנטפליקס ישראל"]];
     for (const [k, p] of Object.entries(TASTES)) opts.push([k, p.icon, p.name, p.pending ? "בקרוב: מחכה לרשימת האהובים" : "לפי מה שאהבת ומה לא"]);
     for (const [k, p] of Object.entries(TOPS)) opts.push([k, p.icon, p.name, p.sub]);
     const box = h("div", { class: "opt" }, opts.map(([k, e, n, s]) => h("button", { type: "button", class: taste === k ? "on" : "",
       onclick: (ev) => { taste = k; ls.set("nf_taste", k); tAt = Date.now(); ls.set("nf_taste_at", tAt); seedTaste(k);
         if (TASTES[k] && !TASTES[k].pending) { F.sort = "me"; F.dir = -1; save(); } sync.soon(); for (const b of box.children) b.classList.remove("on"); ev.currentTarget.classList.add("on"); render(); } },
-      h("span", { class: "e" }, e), h("span", null, n, h("small", null, s)))));
-    sheet("⚙️ הגדרות", [
-      G.owner ? h("div", { class: "h3" }, "👥 משתמשים") : null,
+      h("span", { class: "e" }, ic(e)), h("span", null, n, h("small", null, s)))));
+    sheet("הגדרות", [
+      G.owner ? h("div", { class: "h3" }, ic("users"), "משתמשים") : null,
       G.owner ? h("p", { class: "users" + (G.n >= G.max ? " cap" : "") }, h("b", { dir: "ltr" }, G.n + " / " + G.max),
         G.n >= G.max ? "מלא: מכשירים חדשים לא נכנסים" : "מכשירים פתחו את האפליקציה",
         G.denied ? h("small", null, fmt(G.denied) + (G.denied === 1 ? " מכשיר ניסה" : " מכשירים ניסו") + " להיכנס אחרי שהתמלא") : null,
         h("small", null, "המכשירים שלך לא נספרים")) : null,
       h("div", { class: "h3" }, "העדפה"), box,
       h("div", { class: "h3" }, "לשתף"),
-      h("button", { type: "button", class: "btn", onclick: share }, "🔗 לשתף את האפליקציה"),
-      h("div", { class: "h3" }, "🔗 סנכרון"), sync.box(),
+      h("button", { type: "button", class: "btn", onclick: share }, ic("link"), "לשתף את האפליקציה"),
+      h("div", { class: "h3" }, ic("sync"), "סנכרון"), sync.box(),
       h("div", { class: "h3" }, "מאיפה הנתונים"),
-      h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (ציון נחשב רק מ-" + fmt(MIN_VOTES) + " הצבעות בעולם; פחות מזה מוצג IMDb N/A ויורד לסוף; לתוכן ישראלי אין מינימום). פופולרי = הכי הרבה הצבעות ב-IMDb. אוסקר: מספר הזכיות בכל הקטגוריות לפי Wikidata (🏆 זהב = זכה גם בסרט הטוב ביותר). ״בלי שפות זרות״ = רק כותרים שהשפה המקורית שלהם אנגלית או עברית. טופ 10: הטבלאות הרשמיות של נטפליקס."),
+      h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (ציון נחשב רק מ-" + fmt(MIN_VOTES) + " הצבעות בעולם; פחות מזה מוצג IMDb N/A ויורד לסוף; לתוכן ישראלי אין מינימום). פופולרי = הכי הרבה הצבעות ב-IMDb. אוסקר: מספר הזכיות בכל הקטגוריות לפי Wikidata (תג זהב = זכה גם בסרט הטוב ביותר). ״בלי שפות זרות״ = רק כותרים שהשפה המקורית שלהם אנגלית או עברית. טופ 10: הטבלאות הרשמיות של נטפליקס."),
       cat ? h("p", { class: "note" }, "עודכן: " + new Date(cat.at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })) : null,
       h("button", { type: "button", class: "btn", onclick: closeSheet }, "✓ סגור"),
     ]);
@@ -335,7 +363,7 @@
     function paint(err) {
       if (!host || !host.isConnected) return;
       const st = host.querySelector(".sst");
-      if (st) st.textContent = err ? "⚠️ אין חיבור, ינסה שוב" : last ? "✓ מסונכרן " + new Date(last).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }) : "";
+      if (st) st.textContent = err ? "אין חיבור, ינסה שוב" : last ? "✓ מסונכרן " + new Date(last).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }) : "";
     }
     function box() {
       host = h("div", { class: "sync" }); draw(); return host;
@@ -344,14 +372,14 @@
       const row = h("div", { class: "srow" });
       const below = h("div", { class: "sbody" });
       if (code) {
-        row.append(h("button", { type: "button", onclick: async () => { try { await navigator.clipboard.writeText(fmtCode(code)); toast("הקוד הועתק"); } catch (e) {} } }, "📋 העתק"),
+        row.append(h("button", { type: "button", onclick: async () => { try { await navigator.clipboard.writeText(fmtCode(code)); toast("הקוד הועתק"); } catch (e) {} } }, ic("copy"), "העתק"),
           h("button", { type: "button", onclick: () => { code = ""; ls.set("nf_sync", ""); draw(); toast("הסנכרון כובה במכשיר הזה"); } }, "✕ ניתוק"));
-        below.append(h("div", { class: "scode" }, fmtCode(code)), h("div", { class: "sst" }), h("p", { class: "note" }, "במקום השני: ⚙️ ← ״יש לי קוד״."));
+        below.append(h("div", { class: "scode" }, fmtCode(code)), h("div", { class: "sst" }), h("p", { class: "note" }, "במקום השני: הגדרות ← ״יש לי קוד״."));
       } else {
         row.append(h("button", { type: "button", onclick: async () => {
             const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = crypto.getRandomValues(new Uint8Array(8));
-            code = Array.from(r, (b) => A[b % A.length]).join(""); ls.set("nf_sync", code); draw(); await now(); gate(); } }, "➕ קוד חדש"),
-          h("button", { type: "button", onclick: () => { below.hidden = !below.hidden; if (!below.hidden) below.querySelector("input").focus({ preventScroll: true }); } }, "⌨️ יש לי קוד"));
+            code = Array.from(r, (b) => A[b % A.length]).join(""); ls.set("nf_sync", code); draw(); await now(); gate(); } }, ic("plus"), "קוד חדש"),
+          h("button", { type: "button", onclick: () => { below.hidden = !below.hidden; if (!below.hidden) below.querySelector("input").focus({ preventScroll: true }); } }, ic("keys"), "יש לי קוד"));
         const inp = h("input", { type: "text", maxlength: "9", autocomplete: "off", autocapitalize: "characters", spellcheck: "false", placeholder: "XXXX-XXXX", dir: "ltr" });
         const msg = h("div", { class: "sst" });
         below.hidden = true; below.classList.add("enter");
@@ -360,7 +388,7 @@
           if (c.length !== 8) { msg.textContent = "הקוד הוא 8 תווים"; return; }
           msg.textContent = "מתחבר…";
           try { const R = await rpc("nf_sync_get", { p_code: c }); if (!R) { msg.textContent = "לא מצאתי את הקוד"; return; } }
-          catch (e) { msg.textContent = "⚠️ אין חיבור"; return; }
+          catch (e) { msg.textContent = "אין חיבור"; return; }
           code = c; ls.set("nf_sync", c); await now(); draw(); toast("✓ מסונכרן"); if (!G.ok) location.reload(); else gate(); } }, "חיבור")), msg);
       }
       host.replaceChildren(row, below); paint();
@@ -376,13 +404,13 @@
       else { await navigator.clipboard.writeText(PUB); toast("הקישור הועתק"); } } catch (e) {}
   }
   function about() {
-    const f = (e, t) => h("div", { class: "af" }, h("span", null, e), t);
+    const f = (e, t) => h("div", { class: "af" }, ic(e), t);
     sheet("אודות", [
       h("div", { class: "ahero" }, h("img", { src: "icon-192.png?v=3", alt: "", width: "84", height: "84" }),
         h("b", null, "מה יש חדש בנטפליקס?"), h("span", null, "מוצאים מה לראות, בלי לגלול לנצח")),
       h("p", { class: "ab" }, "בנטפליקס אי אפשר לסנן לפי ציון, אז הנה מקום שאפשר. כל מה שיש עכשיו בנטפליקס ישראל, עם ציון IMDb, אוסקרים וטופ 10. בוחרים ז׳אנר ורמת ציון, ותוך שנייה יש רשימה של דברים ששווה לראות."),
-      h("div", { class: "afs" }, f("⭐", "ציון IMDb לכל סרט וסדרה"), f("🇮🇱", "כולל תוכן ישראלי, ובלי שפות זרות אם רוצים"),
-        f("🔖", "סימון לרשימת צפייה והיסטוריית צפייה"), f("🆓", "חינם, בלי הרשמה, מתעדכן כל לילה")),
+      h("div", { class: "afs" }, f("star", "ציון IMDb לכל סרט וסדרה"), f("🇮🇱", "כולל תוכן ישראלי, ובלי שפות זרות אם רוצים"),
+        f("bookmark", "סימון לרשימת צפייה והיסטוריית צפייה"), f("moon", "חינם, בלי הרשמה, מתעדכן כל לילה")),
       h("button", { type: "button", class: "ashare", onclick: share }, h("span", { class: "shi", html: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l6 6-6 6"/><path d="M20 11H11a7 7 0 0 0-7 7v1"/></svg>' }), "לשלוח לחברים"),
       h("details", { class: "acred" }, h("summary", null, "מקורות"),
         h("p", { class: "note anote" }, "נתונים: JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata,\u200f Netflix.\u200f לא קשור לנטפליקס.")),
@@ -397,7 +425,7 @@
   $("fNf").addEventListener("click", () => { F.nf = !F.nf; save(); render(); });
   // sort: tap the active one again to reverse it (arrow shows the direction)
   $("fSort").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.v === "me" && !personal()) { toast("🎯 בשבילי עובד כשבוחרים העדפה אישית ב-⚙️"); return; }
+    if (b.dataset.v === "me" && !personal()) { toast("״בשבילי״ עובד כשבוחרים העדפה אישית בהגדרות"); return; }
     if (F.sort === b.dataset.v) F.dir = F.dir === 1 ? -1 : 1; else { F.sort = b.dataset.v; F.dir = -1; } save(); render(); });
   $("fGen").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; const v = b.dataset.v;
     if (!v) F.g = []; else F.g = F.g.includes(v) ? F.g.filter((x) => x !== v) : [...F.g, v]; save(); render(); });
@@ -444,7 +472,7 @@
     for (const id of ["filters", "fSub", "ach"]) $(id).hidden = true;
     document.querySelector(".resbar").hidden = true; document.querySelector(".tabs").hidden = true; $("qBtn").hidden = true;
     const sb = sync.box();
-    $("grid").replaceChildren(h("div", { class: "full" }, h("div", { class: "e" }, "🍿"), h("b", { dir: "ltr" }, "The app has reached the maximum number of users."),
+    $("grid").replaceChildren(h("div", { class: "full" }, h("div", { class: "e" }, ic("lock")), h("b", { dir: "ltr" }, "The app has reached the maximum number of users."),
       h("p", { dir: "ltr" }, "Please contact Oren Itzhaki."),
       h("details", null, h("summary", null, "יש לי קוד סנכרון"), sb)));
   }

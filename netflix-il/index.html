@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json?v=3">
 <link rel="icon" href="icon-64.png?v=3" type="image/png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3">
-<link rel="stylesheet" href="style.css?v=18">
+<link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
 <div class="bwrap"><img class="banner" src="img/banner-780.webp" srcset="img/banner-780.webp 780w, img/banner.webp 1200w" sizes="(min-width:700px) 680px, 100vw" width="1200" height="400" alt="מה יש חדש בנטפליקס?"><a id="egg" class="egg" href="https://www.youtube.com/watch?v=lU0xlaWd_-U&amp;t=17s" target="_blank" rel="noopener" aria-label="🎵"></a><button id="infoBtn" class="info" type="button" aria-label="אודות">i</button></div>
@@ -19,23 +19,23 @@
   <h1 class="sr">מה בנטפליקס?</h1>
   <div class="hrow">
     <div id="meta" class="meta">טוען…</div>
-    <button id="qBtn" class="ib" type="button" aria-label="חיפוש" aria-expanded="false">🔍</button>
-    <button id="setBtn" class="ib" type="button" aria-label="הגדרות">⚙️<span id="tasteB" class="tb" hidden></span></button>
+    <button id="qBtn" class="ib" type="button" aria-label="חיפוש" aria-expanded="false"><span class="ic" data-i="search"></span></button>
+    <button id="setBtn" class="ib" type="button" aria-label="הגדרות"><span class="ic" data-i="gear"></span><span id="tasteB" class="tb" hidden></span></button>
   </div>
-  <div id="srchW" class="srchw"><div class="srchi"><div class="srch"><span class="mg">🔍</span><input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="חיפוש סרט או סדרה" aria-label="חיפוש"><button id="qX" type="button" aria-label="ניקוי" hidden>✕</button></div></div></div>
+  <div id="srchW" class="srchw"><div class="srchi"><div class="srch"><span class="mg ic" data-i="search"></span><input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="חיפוש סרט או סדרה" aria-label="חיפוש"><button id="qX" type="button" aria-label="ניקוי" hidden>✕</button></div></div></div>
   <div id="tasteNote" class="tnote" hidden></div>
   <div class="seg tabs" role="tablist">
-    <button type="button" data-tab="find" class="on">🔎 מה לראות</button>
-    <button type="button" data-tab="wl">🔖 הרשימה שלי <span id="wlN" class="cnt">0</span></button>
-    <button type="button" data-tab="seen">🏆 ראיתי <span id="seenN" class="cnt">0</span></button>
+    <button type="button" data-tab="find" class="on"><span class="ic" data-i="compass"></span>מה לראות</button>
+    <button type="button" data-tab="wl"><span class="ic" data-i="bookmark"></span>הרשימה שלי <span id="wlN" class="cnt">0</span></button>
+    <button type="button" data-tab="seen"><span class="ic" data-i="trophy"></span>ראיתי <span id="seenN" class="cnt">0</span></button>
   </div>
 </header>
 
 <main>
   <section id="filters">
     <div class="seg" id="fType">
-      <button type="button" data-v="s">📺 סדרות</button>
-      <button type="button" data-v="m">🎬 סרטים</button>
+      <button type="button" data-v="s"><span class="ic" data-i="tv"></span>סדרות</button>
+      <button type="button" data-v="m"><span class="ic" data-i="film"></span>סרטים</button>
     </div>
     <div class="chips" id="fGen"></div>
     <div class="ilrow">
@@ -52,8 +52,8 @@
   <div id="ach" class="ach" hidden></div>
   <div class="seg sub" id="fSub" hidden>
     <button type="button" data-v="all">הכול <span class="cnt"></span></button>
-    <button type="button" data-v="s">📺 סדרות <span class="cnt"></span></button>
-    <button type="button" data-v="m">🎬 סרטים <span class="cnt"></span></button>
+    <button type="button" data-v="s"><span class="ic" data-i="tv"></span>סדרות <span class="cnt"></span></button>
+    <button type="button" data-v="m"><span class="ic" data-i="film"></span>סרטים <span class="cnt"></span></button>
   </div>
   <div class="resbar">
     <div id="resN" class="resn"></div>
@@ -61,7 +61,7 @@
       <button type="button" data-v="r">ציון <i>↓</i></button>
       <button type="button" data-v="new">חדש <i>↓</i></button>
       <button type="button" data-v="pop">פופולרי <i>↓</i></button>
-      <button type="button" data-v="me" class="mebtn" aria-label="בשבילי">🎯<i>↓</i></button>
+      <button type="button" data-v="me" class="mebtn" aria-label="בשבילי"><span class="ic" data-i="target"></span><i>↓</i></button>
     </div>
   </div>
   <div id="grid" class="grid"></div>
@@ -82,7 +82,7 @@
 </div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="tastes.js?v=3"></script>
-<script src="app.js?v=22"></script>
+<script src="tastes.js?v=4"></script>
+<script src="app.js?v=23"></script>
 </body>
 </html>
