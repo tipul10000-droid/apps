@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
       return res(200, { status: r.status, body: (await r.text()).slice(0, 6000) })
     }
     const st: J = (await load('state.json')) ?? {}
-    st.det ??= {}; st.first ??= {}; st.rat ??= {}; st.osc ??= {}; st.top ??= {}
+    st.det ??= {}; st.first ??= {}; st.rat ??= {}; st.osc ??= {}; st.top ??= {}; st.nfid ??= {}
     const isDue = (at: string | undefined, ms: number, name: string) => force.includes(name) || !at || Date.now() - Date.parse(at) > ms
     // Edge Functions have a small CPU budget, so each call does ONE stage (cron calls every 10 minutes):
     // discover -> details (batches) -> ratings -> oscars -> top10; the catalog is rebuilt after every stage.
@@ -179,6 +179,20 @@ Deno.serve(async (req) => {
       } else log.oscars = 'HTTP_' + r.status
     }
 
+    // 4b. Netflix title ids (Wikidata P1874, by IMDb id), once a week: cards link straight into the Netflix app
+    //     (netflix.com/title/<id> is a universal link on iPhone). Oren 17.11.2026.
+    if (!stage && isDue(st.nfid.at, 7 * DAY, 'nfid')) {
+      stage = 'nfid'
+      const q = 'SELECT ?imdb ?nf WHERE { ?f wdt:P1874 ?nf ; wdt:P345 ?imdb . FILTER(STRSTARTS(?imdb, "tt")) }'
+      const r = await fetch('https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(q), { headers: { 'user-agent': 'whats-on-netflix-il/1.0 (personal)', accept: 'application/sparql-results+json' }, signal: AbortSignal.timeout(60000) })
+      if (r.ok) {
+        const j = await r.json(), ids: J = {}, mine = new Set(Object.values(st.det).map((d: any) => d?.im).filter(Boolean))
+        for (const b of j.results.bindings) { const nf = b.nf.value, im = b.imdb.value; if (mine.has(im) && /^\d{5,10}$/.test(nf)) ids[im] = nf }
+        if (j.results.bindings.length > 1000) st.nfid = { at: new Date().toISOString(), ids }
+        log.nfid = Object.keys(ids).length
+      } else log.nfid = 'HTTP_' + r.status
+    }
+
     // 5. Netflix Top 10 (official TSV): Israel and global, last 52 weeks, once a day
     if (!stage && isDue(st.top.at, 20 * 3600_000, 'top')) {
       stage = 'top'
@@ -227,12 +241,13 @@ Deno.serve(async (req) => {
       if (d.im) o.im = d.im
       if (r) { o.r = r[0]; o.v = r[1] }
       if (d.im && st.osc.ids?.[d.im]) { o.os = st.osc.ids[d.im]; o.oc = st.osc_cats?.[d.im] }
+      if (d.im && st.nfid.ids?.[d.im]) o.nf = st.nfid.ids[d.im]
       if (x.k[0] === 's') { o.s = d.s; o.e = d.e }
       if (tIL) o.til = [tIL.w, tIL.b]
       if (tW) o.tw = [tW.w, tW.b]
       items.push(o)
     }
-    const cat = { at: new Date().toISOString(), src: { disc: st.disc_at, rat: st.rat.at, osc: st.osc.at, top: st.top.at }, pending: log.details.missing, items }
+    const cat = { at: new Date().toISOString(), src: { disc: st.disc_at, rat: st.rat.at, osc: st.osc.at, nfid: st.nfid.at, top: st.top.at }, pending: log.details.missing, items }
     await save('state.json', st, '0')
     await save('catalog.json', cat)
     return res(200, { ok: true, items: items.length, ms: Math.round(performance.now() - t0), ...log })

@@ -137,6 +137,9 @@
     }
   }
   function oscTxt(x) { const n = (x.oc || []).length || 1; return "🏆 " + (n > 1 ? n + " Oscars" : "Oscar"); }
+  // ▶ on every poster opens the title in Netflix (Oren 17.11.2026). netflix.com/title/<id> is a universal link, so
+  // on a phone with the Netflix app it opens the app on that title. Ids come from Wikidata (x.nf); without one, search.
+  const nfUrl = (x) => x.nf ? "https://www.netflix.com/title/" + x.nf : "https://www.netflix.com/search?q=" + encodeURIComponent(x.n);
   function card(x) {
     const url = x.im ? "https://www.imdb.com/title/" + x.im + "/" : "https://www.themoviedb.org/" + (x.k[0] === "m" ? "movie/" : "tv/") + x.k.slice(1);
     const post = h("div", { class: "post" },
@@ -152,7 +155,9 @@
     const wlB = h("button", { type: "button", class: "wl" + (wl[x.k] ? " on" : ""), "aria-label": "לרשימה שלי", onclick: () => toggle("wl", x, wlB) }, "🔖");
     const seenB = h("button", { type: "button", class: seen[x.k] ? "on" : "", "aria-label": "ראיתי", onclick: () => toggle("seen", x, seenB) }, "✓");
     return h("div", { class: "card", "data-k": x.k },
-      h("a", { href: url, target: "_blank", rel: "noopener" }, post, h("div", { class: "nm" }, x.n), h("div", { class: "hn" }, x.hn && x.hn !== x.n ? x.hn : "\u00a0"), h("div", { class: "sm" }, meta[0])),
+      h("div", { class: "pw" }, h("a", { href: url, target: "_blank", rel: "noopener" }, post),
+        h("a", { class: "play", href: nfUrl(x), target: "_blank", rel: "noopener", "aria-label": "לצפייה בנטפליקס", onclick: (e) => e.stopPropagation() })),
+      h("a", { href: url, target: "_blank", rel: "noopener" }, h("div", { class: "nm" }, x.n), h("div", { class: "hn" }, x.hn && x.hn !== x.n ? x.hn : "\u00a0"), h("div", { class: "sm" }, meta[0])),
       meta[1] || null,
       h("div", { class: "acts" }, wlB, seenB));
   }
