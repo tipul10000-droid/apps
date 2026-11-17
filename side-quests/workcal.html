@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#14304F">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.WC_BUILD="1.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.WC_BUILD="1.1";</script>
 <script src="sq-db.js?v=9"></script>
 <title>לו״ז עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -93,7 +93,20 @@ section{margin-bottom:22px}
 .opt{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:7px 12px;min-height:38px;font-weight:700;font-size:14.5px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
 .opt.on{background:var(--hi);border-color:var(--hi);color:#fff}
 .opt.on.n0{background:var(--good);border-color:var(--good)}
-.opt.on.n2{background:var(--muted);border-color:var(--muted)}
+.opt.on.n3,.opt.on.n4{background:var(--muted);border-color:var(--muted)}
+.opt.inc{border-color:var(--hi);color:var(--hi);background:color-mix(in srgb,var(--hi) 9%,var(--surface))}
+.q .qh{display:flex;align-items:flex-start;gap:8px}
+.q .qh .qt{flex:1;min-width:0}
+.q .ed{flex:none;display:none;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:3px 10px;font-size:13px;font-weight:700;cursor:pointer;min-height:30px}
+.q.fold .ed{display:block}
+.q .qs{display:none;font-size:13.5px;font-weight:700;color:var(--good);margin-top:3px}
+.q.fold .qs{display:block}
+.q.fold{cursor:pointer;padding-top:9px;padding-bottom:9px}
+.qb{display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s ease,opacity .25s}
+.qb>div{overflow:hidden;min-height:0}
+.q.fold .qb{grid-template-rows:0fr;opacity:0}
+.fin{margin-top:9px;border:1.5px solid var(--good);color:var(--good);background:var(--surface);border-radius:12px;padding:6px 14px;font-weight:800;font-size:14px;cursor:pointer;min-height:36px}
+.mhint{font-size:12.5px;color:var(--muted);margin-top:4px}
 .sm{font-size:13px;color:var(--muted);margin-top:3px}
 textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;background:var(--surface);color:var(--ink);resize:vertical}
 .save{margin-top:8px;border:0;border-radius:12px;background:var(--ink);color:var(--bg);padding:10px 16px;font-weight:800;cursor:pointer;min-height:42px}
@@ -149,7 +162,7 @@ function isOrg(e){return e.response==="organizer";}
 function unconf(e){return e.response==="tentativelyAccepted"||e.response==="notResponded"||e.show_as==="tentative";}
 function live(e){return !e.cancelled&&!e.deleted&&e.start&&e.end;}
 function rule(e){return (prof.series||{})[skey(e)]||{};}
-function blocking(e){if(!live(e)||e.all_day)return false;if(e.show_as==="free")return false;const r=rule(e);if(r.need==="no")return false;return true;}
+function blocking(e){if(!live(e)||e.all_day)return false;if(e.show_as==="free")return false;const r=rule(e);const n=needOf(r);if(n==="avoid"||n==="opt")return false;return true;}
 
 function hoursRange(){const v=(prof.ans||{}).hours;const m=/^(\d\d):(\d\d)-(\d\d):(\d\d)$/.exec(v||"");return m?[+m[1]*60+ +m[2],+m[3]*60+ +m[4]]:[8*60,17*60];}
 function dayMode(key,dayEvs){
@@ -203,7 +216,7 @@ function renderWeek(){
       if(/\[external\]/i.test(e.subject||""))tags.push("<span>🌍 חיצוני</span>");
       if(isOrg(e))tags.push('<span class="g">👑 אני מזמן</span>');else if(e.organizer)tags.push("<span>"+esc(who(e.organizer))+"</span>");
       if(unconf(e))tags.push("<span>❔ לא אושר</span>");
-      if(r.need==="must")tags.push('<span class="g">חובה</span>');else if(r.need==="maybe")tags.push("<span>לפעמים</span>");else if(r.need==="no")tags.push("<span>לא צריך</span>");
+      {const n=needOf(r);if(n==="must"||n==="high")tags.push(`<span class="g">${NEED_L[n]}</span>`);else if(n)tags.push(`<span>${NEED_L[n]}</span>`);}
       if(r.mode)tags.push("<span>"+esc(MODE_L[r.mode]||r.mode)+"</span>");
       if(cl.has(e._id))tags.push('<span class="r">⚠️ חפיפה</span>');
       if(e.attendees>=50)tags.push("<span>👥 "+e.attendees+"</span>");
@@ -216,7 +229,9 @@ function renderWeek(){
   return `<section><div class="sh"><h2>הימים הקרובים</h2><small>חלונות פנויים לפי שעות העבודה שלך</small></div>${out.join("")||'<div class="empty">אין זימונים</div>'}</section>`;
 }
 
-const NEED=[["must","חובה"],["maybe","לפעמים"],["no","לא צריך"]];
+const NEED=[["must","חובה"],["high","מאוד כדאי"],["rec","מומלץ"],["opt","לא חובה"],["avoid","להימנע"]];
+const NEED_OLD={maybe:"rec",no:"avoid"};
+function needOf(r){return r?NEED_OLD[r.need]||r.need||"":"";}
 const MODES=[["office","🏢 פיזית"],["pc","💻 מחשב"],["phone","📱 טלפון"],["car","🚗 מהרכב"]];
 const MODE_L=Object.fromEntries(MODES);
 function seriesList(){
@@ -225,23 +240,35 @@ function seriesList(){
   return Object.values(m).filter(s=>s.list.length>=2).sort((a,b)=>b.list.length-a.list.length);
 }
 function answeredCount(){const a=prof.ans||{},s=prof.series||{};let n=0;for(const q of meta.questions||[]){const v=a[q.id];if(Array.isArray(v)?v.length:v)n++;}for(const x of seriesList())if((s[x.k]||{}).need)n++;return n;}
+const NEED_L=Object.fromEntries(NEED);
+const openQ=new Set();
+function serDone(r){const n=needOf(r);return n==="avoid"||!!(n&&r.mode);}
+function serSum(r){const n=needOf(r);return n==="avoid"?"להימנע":[NEED_L[n],r.mode?MODE_L[r.mode]+(r.mode!=="office"?" ומעלה":""):""].filter(Boolean).join(" · ");}
+function modeBtns(k,m){const i=MODES.findIndex(x=>x[0]===m);return MODES.map(([v,l],j)=>`<button class="opt ${m===v?"on":""} ${i>=0&&j<i?"inc":""}" data-ser="${k}" data-f="mode" data-v="${v}">${l}</button>`).join("");}
+function foldLater(card){clearTimeout(card._ft);card._ft=setTimeout(()=>{openQ.delete(card.dataset.qk);const hd=card.querySelector(".qh"),y0=hd.getBoundingClientRect().top;card.classList.add("fold");const dy=hd.getBoundingClientRect().top-y0;if(dy)window.scrollBy(0,dy);},650);}
+function updProg(){const b=$("#pgb");if(!b)return;const tot=(meta.questions||[]).length+seriesList().length,n=answeredCount();b.style.width=(tot?Math.round(100*n/tot):0)+"%";$("#pgt").textContent=n+" מתוך "+tot+" נענו";}
+function refreshSum(card,txt){const e=card.querySelector(".qs");if(e)e.textContent=txt;}
 function renderQ(){
   const ser=seriesList(),qs=meta.questions||[],tot=qs.length+ser.length,n=answeredCount();
-  let h=`<div class="card"><b>כמה שיותר תשובות = תכנון מדויק יותר.</b><div class="note">כל לחיצה נשמרת מיד. אפשר לענות בחלקים ולחזור.</div><div class="prog"><i style="width:${tot?Math.round(100*n/tot):0}%"></i></div><div class="sm">${n} מתוך ${tot} נענו</div></div>`;
+  let h=`<div class="card"><b>כמה שיותר תשובות = תכנון מדויק יותר.</b><div class="note">כל לחיצה נשמרת מיד. אפשר לענות בחלקים ולחזור.</div><div class="prog"><i id="pgb" style="width:${tot?Math.round(100*n/tot):0}%"></i></div><div class="sm" id="pgt">${n} מתוך ${tot} נענו</div></div>`;
   h+=`<section style="margin-top:18px"><div class="sh"><h2>🔁 סדרות קבועות</h2><small>${ser.length} סדרות</small></div>`;
   for(const s of ser){const e=s.list[0],r=(prof.series||{})[s.k]||{};
     const slots=[...new Set(s.list.map(x=>"יום "+DOW[dowOf(dkey(new Date(x.start)))]+" "+hm(new Date(x.start))))].slice(0,3).join(", ");
-    h+=`<div class="q ${r.need?"done":""}"><div class="qt">${esc(e.subject)}${r.need?'<span class="ok">✓</span>':""}</div>
-      <div class="why">${s.list.length} מופעים · ${esc(slots)} · ${isOrg(e)?"אתה מזמן":esc(who(e.organizer))}${e.attendees?" · "+e.attendees+" משתתפים":""}${e.teams?" · Teams":""}</div>
-      <div class="opts"><span class="lbl">צריך?</span>${NEED.map(([v,l],i)=>`<button class="opt n${i} ${r.need===v?"on":""}" data-ser="${s.k}" data-f="need" data-v="${v}">${l}</button>`).join("")}</div>
-      <div class="opts"><span class="lbl">איך?</span>${MODES.map(([v,l])=>`<button class="opt ${r.mode===v?"on":""}" data-ser="${s.k}" data-f="mode" data-v="${v}">${l}</button>`).join("")}</div></div>`;}
+    const fold=serDone(r)&&!openQ.has("s:"+s.k);
+    const sum=serSum(r);
+    h+=`<div class="q ${r.need?"done":""} ${fold?"fold":""}" data-qk="s:${s.k}"><div class="qh"><div class="qt">${esc(e.subject)}${r.need?'<span class="ok">✓</span>':""}<div class="qs">${esc(sum)}</div></div><button class="ed">✏️ עריכה</button></div>
+      <div class="qb"><div><div class="why">${s.list.length} מופעים · ${esc(slots)} · ${isOrg(e)?"אתה מזמן":esc(who(e.organizer))}${e.attendees?" · "+e.attendees+" משתתפים":""}${e.teams?" · Teams":""}</div>
+      <div class="opts"><span class="lbl">צריך?</span>${NEED.map(([v,l],i)=>`<button class="opt n${i} ${needOf(r)===v?"on":""}" data-ser="${s.k}" data-f="need" data-v="${v}">${l}</button>`).join("")}</div>
+      <div class="opts"><span class="lbl">הכי קל?</span>${modeBtns(s.k,r.mode)}</div><div class="mhint">בוחרים את הדרך הכי קלה שעדיין עובדת. כל מה שכבד ממנה מתאים גם הוא.</div></div></div></div>`;}
   h+=`</section>`;
   const groups=meta.groups||{};const byG={};qs.forEach(q=>(byG[q.g]=byG[q.g]||[]).push(q));
   for(const g of Object.keys(byG)){
     h+=`<section><div class="sh"><h2>${esc(groups[g]||g)}</h2></div>`;
     for(const q of byG[g]){const v=(prof.ans||{})[q.id],has=Array.isArray(v)?v.length:!!v;
-      h+=`<div class="q ${has?"done":""}"><div class="qt">${esc(q.q)}${has?'<span class="ok">✓</span>':""}</div>${q.why?`<div class="why">${esc(q.why)}</div>`:""}
-      <div class="opts">${(q.o||[]).map(o=>{const on=Array.isArray(v)?v.includes(o):v===o;return `<button class="opt ${on?"on":""}" data-q="${esc(q.id)}" data-v="${esc(o)}" data-m="${q.multi?1:0}">${esc(o)}</button>`;}).join("")}</div>${q.multi?'<div class="sm">אפשר לבחור כמה</div>':""}</div>`;}
+      const fold=has&&!openQ.has("q:"+q.id),sum=Array.isArray(v)?v.join(", "):(v||"");
+      h+=`<div class="q ${has?"done":""} ${fold?"fold":""}" data-qk="q:${esc(q.id)}"><div class="qh"><div class="qt">${esc(q.q)}${has?'<span class="ok">✓</span>':""}<div class="qs">${esc(sum)}</div></div><button class="ed">✏️ עריכה</button></div>
+      <div class="qb"><div>${q.why?`<div class="why">${esc(q.why)}</div>`:""}
+      <div class="opts">${(q.o||[]).map(o=>{const on=Array.isArray(v)?v.includes(o):v===o;return `<button class="opt ${on?"on":""}" data-q="${esc(q.id)}" data-v="${esc(o)}" data-m="${q.multi?1:0}">${esc(o)}</button>`;}).join("")}</div>${q.multi?'<div class="mhint">אפשר לבחור כמה</div><button class="fin" data-fin="q:'+esc(q.id)+'">✓ סיימתי</button>':""}</div></div></div>`;}
     h+=`</section>`;
   }
   h+=`<section><div class="sh"><h2>✍️ עוד משהו שחשוב שאדע</h2></div><div class="card"><textarea id="note" placeholder="למשל: בימי רביעי אני תמיד במשרד בגלל..., דיון X אני רק מאזין, אחרי 17:00 אני עם הילדים...">${esc(prof.note||"")}</textarea><button class="save" id="saveNote">שמירה</button></div></section>`;
@@ -269,14 +296,25 @@ function saveProf(msg){prof.updated_at=new Date().toISOString();clearTimeout(sav
   saveT=setTimeout(async()=>{if(!db){toast("אין חיבור");return;}try{await db.collection("work_calendar").doc("_profile").set(JSON.parse(JSON.stringify(prof)));toast(msg||"נשמר");}catch(e){toast("לא נשמר, נסה שוב");}},350);}
 document.addEventListener("click",e=>{
   const tb=e.target.closest("[data-tab]");if(tb){location.hash=tb.dataset.tab;return;}
+  const fin=e.target.closest("[data-fin]");if(fin){foldLater(fin.closest(".q"));return;}
+  const fq=e.target.closest(".q.fold");if(fq){openQ.add(fq.dataset.qk);fq.classList.remove("fold");clearTimeout(fq._ft);return;}
   const b=e.target.closest(".opt");if(!b)return;
+  const card=b.closest(".q");
   if(b.dataset.ser){const k=b.dataset.ser,f=b.dataset.f,v=b.dataset.v;prof.series=prof.series||{};const r=prof.series[k]=Object.assign({},prof.series[k]);
-    r[f]=r[f]===v?"":v;b.parentNode.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b&&r[f]===v));
-    const card=b.closest(".q");if(f==="need")card.classList.toggle("done",!!r.need);saveProf();hero();return;}
+    r[f]=(f==="need"?needOf(r):r[f])===v?"":v;
+    if(f==="mode"){const i=MODES.findIndex(x=>x[0]===r.mode);b.parentNode.querySelectorAll(".opt").forEach((x,j)=>{x.classList.toggle("on",x.dataset.v===r.mode);x.classList.toggle("inc",i>=0&&j<i);});}
+    else b.parentNode.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b&&r[f]===v));
+    card.classList.toggle("done",!!r.need);
+    refreshSum(card,serSum(r));
+    if(serDone(r))foldLater(card);else clearTimeout(card._ft);
+    saveProf();hero();updProg();return;}
   if(b.dataset.q){const id=b.dataset.q,v=b.dataset.v,multi=b.dataset.m==="1";prof.ans=prof.ans||{};
     if(multi){let a=Array.isArray(prof.ans[id])?prof.ans[id].slice():[];a=a.includes(v)?a.filter(x=>x!==v):a.concat(v);prof.ans[id]=a;b.classList.toggle("on",a.includes(v));}
     else{prof.ans[id]=prof.ans[id]===v?"":v;b.parentNode.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b&&prof.ans[id]===v));}
-    const has=Array.isArray(prof.ans[id])?prof.ans[id].length:!!prof.ans[id];b.closest(".q").classList.toggle("done",!!has);saveProf();hero();}
+    const a=prof.ans[id],has=Array.isArray(a)?a.length:!!a;card.classList.toggle("done",!!has);
+    refreshSum(card,Array.isArray(a)?a.join(", "):(a||""));
+    if(has&&!multi)foldLater(card);else if(!multi)clearTimeout(card._ft);
+    saveProf();hero();updProg();}
 });
 document.addEventListener("click",e=>{if(e.target.id==="saveNote"){prof.note=$("#note").value;saveProf("ההערה נשמרה");}});
 
