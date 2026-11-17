@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.12";window.SQ_BUILD_AT="17.11.2026 19:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.13";window.SQ_BUILD_AT="17.11.2026 19:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -4882,7 +4882,11 @@ html.desk .co-mark{font-size:8cqi}
     const L=updItems(),dayOf=ms=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date(ms)),today=ilDate();
     const C=nwList("chat"),A=[...nwQuest(quest),...(quest==="side"?nwList("settings:"):[]),...nwList("dash:").filter(x=>{const d=dashById(String(x.where).slice(5));return d&&(d.quest||"side")===quest;})],D=questFresh(quest).filter(d=>!A.some(x=>x.where==="dash:"+d.id));
     const G=[];
-    if(C.length)G.push(h("div",{class:"up-g"},"💬 המשך שיחה"),...C.map(x=>nwRow("💬",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
+    // 19.13 (Oren 17.11.2026): two kinds, clearly labelled: ask:true = a real open question/decision for him; otherwise
+    // an update from Claude he has not read yet (a chat waiting on a third party is never an "ask")
+    if(C.length){const CA=C.filter(x=>x.ask),CU=C.filter(x=>!x.ask);
+      G.push(h("div",{class:"up-g"},"💬 המשך שיחה"),...CA.map(x=>nwRow("❓",x.text,"מחכה לתשובה שלך"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x))),
+        ...CU.map(x=>nwRow("📩",x.text,"עדכון ממני שעוד לא קראת"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x))));}
     if(A.length)G.push(h("div",{class:"up-g"},"✨ חדש באפליקציה"),...A.map(x=>nwRow(String(x.where).startsWith("settings:")?"⚙️":String(x.where).startsWith("dash:")?"📊":"✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
     if(D.length)G.push(h("div",{class:"up-g"},"📊 דשבורדים"),...D.map(d=>nwRow(d.icon||"📊",d.title||d.short||d.id,dashWhy(d)+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id))));
     if(L.length)G.push(...(G.length?[h("div",{class:"up-g"},"≡ משימות")]:[]),...L.map(x=>updRow(x)));
