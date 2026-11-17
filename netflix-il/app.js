@@ -119,7 +119,7 @@
     const wlB = h("button", { type: "button", class: "wl" + (wl[x.k] ? " on" : ""), "aria-label": "לרשימה שלי", onclick: () => toggle("wl", x, wlB) }, "🔖");
     const seenB = h("button", { type: "button", class: seen[x.k] ? "on" : "", "aria-label": "ראיתי", onclick: () => toggle("seen", x, seenB) }, "✓");
     return h("div", { class: "card", "data-k": x.k },
-      h("a", { href: url, target: "_blank", rel: "noopener" }, post, h("div", { class: "nm" }, x.n), x.hn ? h("div", { class: "hn" }, x.hn) : null, h("div", { class: "sm" }, meta[0])),
+      h("a", { href: url, target: "_blank", rel: "noopener" }, post, h("div", { class: "nm" }, x.n), h("div", { class: "hn" }, x.hn && x.hn !== x.n ? x.hn : "\u00a0"), h("div", { class: "sm" }, meta[0])),
       meta[1] || null,
       h("div", { class: "acts" }, wlB, seenB));
   }
