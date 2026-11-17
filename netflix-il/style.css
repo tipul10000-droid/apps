@@ -192,3 +192,11 @@ body.embed .totop{display:none}
 .asig{text-align:center;font-size:10px;letter-spacing:.3px;color:#6b6b73;margin:10px 0 2px}
 .ashare{display:flex;align-items:center;justify-content:center;gap:8px}
 .ashare .shi{display:inline-flex;transform:scaleX(-1)}
+.fcred{margin-top:6px;font-size:11.5px;color:#7a7a83;text-align:center}
+.fcred summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:4px 8px}
+.fcred summary::-webkit-details-marker{display:none}
+.fcred summary::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translate(-1px,-1px);transition:transform .2s}
+.fcred[open] summary::after{transform:rotate(-135deg) translate(-1px,-1px)}
+.fcred[open] summary~*{animation:sgrow .2s ease-out}
+.fcred div{line-height:1.6}
+.fcred .fsrc{margin-top:4px;color:#5f5f67;font-size:10.5px}
