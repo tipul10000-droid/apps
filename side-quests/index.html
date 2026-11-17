@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.0";window.SQ_BUILD_AT="17.11.2026 09:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.1";window.SQ_BUILD_AT="17.11.2026 09:25";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2075,7 +2075,7 @@ main{padding-bottom:20px!important}
 .cred{display:flex;flex-direction:column;align-items:center;gap:1px;font:500 11.5px/1.5 var(--f-mono);color:var(--muted);opacity:.85}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stbtn{filter:brightness(.92)}}
 html.desk footer.ver{position:static!important;margin:0 var(--drail) 0 var(--dpane)!important;padding:10px 0 18px!important;pointer-events:auto;background:none}
-html.desk .stbtn{max-height:180px}
+html.desk .stbtn{max-height:none}
 
 /* 18.0 stats screen */
 #statM .sqpanel{height:calc(94vh / var(--tz,1));max-height:none;max-width:560px;padding:0;display:flex;flex-direction:column;overflow:hidden}
@@ -2146,6 +2146,11 @@ html.desk .stbtn{max-height:180px}
 #setM .sqtop2 .tx{display:flex;flex-direction:column;min-width:0;line-height:1.2}
 #setM .sqtop2 .tx b{font-size:15.5px;direction:ltr;text-align:right;white-space:nowrap}
 #setM .sqtop2 .tx small{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 18.1 (Oren 17.11.2026): the ChatGPT banner, centered at 50% of the width (25% each side), not edge to edge */
+.stbtn.img{width:50%;margin:0 auto;max-height:none;border:0;border-radius:12px;background:none;box-shadow:0 4px 14px rgba(0,0,0,.14)}
+.stbtn.img::after{display:none}
+html.desk .stbtn.img{width:50%}
 </style>
 </head>
 <body>
@@ -2258,16 +2263,8 @@ html.desk .stbtn{max-height:180px}
 <footer class="ver">
   <!-- 18.0 (Oren 17.11.2026): stats moved out of settings to their own edge-to-edge button above the about line.
        The art is a temporary CSS/SVG placeholder in the Side theme; Oren's ChatGPT banner (img/stats-banner.*, 3:1) replaces .st-art. -->
-  <button type="button" class="stbtn" id="statBtn" aria-label="Side Quest Statistics">
-    <svg class="st-art" viewBox="0 0 390 130" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
-      <g class="st-grid"><path d="M0 34H390M0 62H390M0 90H390"/></g>
-      <g class="st-bars"><rect x="40" y="92" width="16" height="20" rx="3"/><rect x="66" y="80" width="16" height="32" rx="3"/><rect x="92" y="86" width="16" height="26" rx="3"/><rect x="118" y="64" width="16" height="48" rx="3"/><rect x="144" y="52" width="16" height="60" rx="3"/><rect x="170" y="38" width="16" height="74" rx="3"/></g>
-      <path class="st-area" d="M30 104 C56 98 72 84 88 88 S116 70 132 66 S162 50 178 34 L178 112 L30 112Z"/>
-      <path class="sb-route st-route" d="M30 104 C56 98 72 84 88 88 S116 70 132 66 S162 50 178 34"/>
-      <g class="sb-pin" transform="translate(88 88)"><circle r="4.5"/></g>
-      <g class="sb-pin p2" transform="translate(132 66)"><circle r="4.5"/></g>
-      <g class="sb-x st-x" transform="translate(178 34)"><path d="M-7 -7 L7 7 M7 -7 L-7 7"/></g>
-    </svg>
+  <button type="button" class="stbtn img" id="statBtn" aria-label="Side Quest Statistics">
+    <img class="st-art" src="img/stats-banner.webp?v=1" srcset="img/stats-banner-900.webp?v=1 900w, img/stats-banner.webp?v=1 1800w" sizes="50vw" width="1800" height="600" alt="" decoding="async" loading="lazy">
     <span class="st-txt"><span class="st-tag">PROGRESS REPORT</span><b>SIDE QUEST <i>STATISTICS</i></b><span class="st-kpi" id="statKpi"></span></span>
     <span class="st-go" aria-hidden="true">›</span>
   </button>
