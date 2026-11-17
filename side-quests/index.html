@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.4";window.SQ_BUILD_AT="17.11.2026 21:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.5";window.SQ_BUILD_AT="17.11.2026 21:15";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -849,6 +849,12 @@ main,.sqmodal:not(.bpop) .sqpanel,.bpop:not(.car) .sqpanel{zoom:var(--tz,1)}
 .now-head .e{font-size:18px}.now-head b{font-size:16px}.now-head small{color:var(--muted);font-weight:700;margin-inline-start:auto;font-size:12.5px}
 .now-empty{color:var(--muted);font-size:13.5px;margin:0 4px 6px;line-height:1.4}
 .nowbox .group{margin:0}
+.bp-plan .pf{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#FFF3DC;color:#2A1500;border:1px solid #F3D3A0}
+.bp-plan .pf-x{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.bp-plan .pf-x small{font-size:12px;font-weight:700;opacity:.7}.bp-plan .pf-x b{font-size:15.5px;font-weight:800}
+.bp-plan .pf-ed{flex:none;width:92px;height:38px;border-radius:11px;background:#2A1500;color:#FFE7B0;font-weight:800;font-size:14px;white-space:nowrap}
+.bp-plan .pf-ed.on{background:#fff;color:#2A1500;box-shadow:inset 0 0 0 1.5px #2A1500}
+.bp-plan .pf-card{margin-top:8px;animation:sqgrow .22s ease-out}
 .plancard{border-radius:16px;padding:12px;margin:0 0 12px;background:linear-gradient(150deg,#FFE7B0,#FFC98A);color:#2A1500}
 .plancard b{display:block;font-size:15.5px;margin-bottom:8px}
 .pc-btns{display:flex;flex-wrap:wrap;gap:6px}
@@ -2121,6 +2127,18 @@ html:not(.desk) .ctxrow .toolrow .sbar .refr.spin .rv::before,html:not(.desk) .c
 html:not(.desk) .sbar .conn{min-width:0;justify-content:space-evenly;gap:0;padding:0 6px;border:0!important}
 html:not(.desk) .ctxrow .toolrow .sbar{position:relative}
 html:not(.desk) .ctxrow .toolrow .sbar::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1.5px;margin-left:-.75px;background:rgba(255,255,255,.25);pointer-events:none}
+/* 20.5: SC status line inside the refresh half: "⟳ SC מחובר ● 3 דק׳", the light inline and centered on the text line */
+.sbar .refr .sqx{align-items:center;height:auto;line-height:1}.sbar .refr .sqx .ic{line-height:1;display:block}
+html:not(.desk) .ctxrow .toolrow .sbar .refr{gap:5px!important;padding:0 6px!important}
+.sbar .refr .scs{display:inline-flex;align-items:center;gap:4px;font-size:13px;min-width:0;white-space:nowrap;overflow:hidden;line-height:1}
+.sbar .refr .scs b{font-weight:800;letter-spacing:.02em}
+.sbar .refr .scw{font-weight:700}
+.sbar .refr .scs .cl{position:relative;inset:auto;flex:none;width:8px;height:8px;box-shadow:none;align-self:center}
+.sbar .refr .sct{color:var(--hero-muted);font-weight:600;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.sbar .refr .sct:empty{display:none}
+.sbar .refr.offl .scw{color:#FCA5A5}
+.sbar .refr.offl .sqx{display:none}
+html.desk #dhead .ctxrow{flex-wrap:wrap!important;row-gap:8px!important}html.desk #dhead .toolrow{flex:1 0 100%;margin-inline-start:0!important;justify-content:flex-start}html.desk #dhead .toolrow .sbar{flex:0 0 auto!important}html.desk .sbar .conn{flex:none}html.desk #dhead .toolrow .updbtn{margin-inline-start:auto!important}
 /* 19.10 (Oren 17.11.2026): location and Gmail live in the connections panel now, not in the top ribbon */
 #locBtn,#gmBtn{display:none!important}
 .cnlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
@@ -2388,7 +2406,7 @@ html.desk .co-mark{font-size:8cqi}
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><div class="sbar" role="group" aria-label="מצב העדכון והחיבורים"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="cx sqx" aria-hidden="true"><span class="ic">⟳</span><i class="cl" id="clSq"></i></span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><button class="conn" id="connBtn" type="button" aria-label="מצב החיבורים: Gmail, יומן, מיקום, תזרים, וואטסאפ"><span class="cx" data-c="gm"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M2 6.2v11.3c0 .8.6 1.5 1.4 1.5h3.2V9.7z"/><path fill="#34A853" d="M17.4 19h3.2c.8 0 1.4-.7 1.4-1.5V6.2l-4.6 3.5z"/><path fill="#FBBC04" d="M17.4 5v4.7L22 6.2V5.3c0-1.7-1.9-2.6-3.2-1.6z"/><path fill="#EA4335" d="M6.6 9.7V5l5.4 4.1L17.4 5v4.7L12 13.8z"/><path fill="#C5221F" d="M2 5.3v.9l4.6 3.5V5L5.2 3.7C3.9 2.7 2 3.6 2 5.3z"/></svg><i class="cl" id="clGm"></i></span><span class="cx" data-c="cal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="3" fill="#0F6CBD"/><rect x="3" y="4.5" width="18" height="5" rx="2.5" fill="#0A4F8F"/><path d="M8 2.6v4M16 2.6v4" stroke="#0A4F8F" stroke-width="2" stroke-linecap="round"/><g fill="#fff"><rect x="6.2" y="12" width="3" height="2.6" rx=".6"/><rect x="10.5" y="12" width="3" height="2.6" rx=".6"/><rect x="14.8" y="12" width="3" height="2.6" rx=".6"/><rect x="6.2" y="16" width="3" height="2.6" rx=".6"/><rect x="10.5" y="16" width="3" height="2.6" rx=".6"/></g></svg><i class="cl" id="clCal"></i></span><span class="cx" data-c="loc"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#E5484D" d="M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12z"/><circle cx="12" cy="10" r="2.8" fill="#fff"/></svg><i class="cl" id="clLoc"></i></span><span class="cx" data-c="cf"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="#0E9F6E"/><text x="12" y="17.2" text-anchor="middle" font-size="14" font-weight="800" font-family="Arial,sans-serif" fill="#fff">₪</text></svg><i class="cl" id="clCf"></i></span><span class="cx" data-c="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.2 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2z"/><path fill="#fff" d="M8.6 7.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.7 5.7 5 2.8 1.1 3.4.9 4 .8.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.3.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.5z"/></svg><i class="cl" id="clWa"></i></span></button></div><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
+    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><div class="sbar" role="group" aria-label="מצב העדכון והחיבורים"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="cx sqx" aria-hidden="true"><span class="ic">⟳</span></span><span class="scs"><b dir="ltr">SC</b><span class="scw" id="scSt">…</span><i class="cl" id="clSq"></i><span class="sct" id="refrTxt"></span></span></button><button class="conn" id="connBtn" type="button" aria-label="מצב החיבורים: Gmail, יומן, מיקום, תזרים, וואטסאפ"><span class="cx" data-c="gm"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M2 6.2v11.3c0 .8.6 1.5 1.4 1.5h3.2V9.7z"/><path fill="#34A853" d="M17.4 19h3.2c.8 0 1.4-.7 1.4-1.5V6.2l-4.6 3.5z"/><path fill="#FBBC04" d="M17.4 5v4.7L22 6.2V5.3c0-1.7-1.9-2.6-3.2-1.6z"/><path fill="#EA4335" d="M6.6 9.7V5l5.4 4.1L17.4 5v4.7L12 13.8z"/><path fill="#C5221F" d="M2 5.3v.9l4.6 3.5V5L5.2 3.7C3.9 2.7 2 3.6 2 5.3z"/></svg><i class="cl" id="clGm"></i></span><span class="cx" data-c="cal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="3" fill="#0F6CBD"/><rect x="3" y="4.5" width="18" height="5" rx="2.5" fill="#0A4F8F"/><path d="M8 2.6v4M16 2.6v4" stroke="#0A4F8F" stroke-width="2" stroke-linecap="round"/><g fill="#fff"><rect x="6.2" y="12" width="3" height="2.6" rx=".6"/><rect x="10.5" y="12" width="3" height="2.6" rx=".6"/><rect x="14.8" y="12" width="3" height="2.6" rx=".6"/><rect x="6.2" y="16" width="3" height="2.6" rx=".6"/><rect x="10.5" y="16" width="3" height="2.6" rx=".6"/></g></svg><i class="cl" id="clCal"></i></span><span class="cx" data-c="loc"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#E5484D" d="M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12z"/><circle cx="12" cy="10" r="2.8" fill="#fff"/></svg><i class="cl" id="clLoc"></i></span><span class="cx" data-c="cf"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="#0E9F6E"/><text x="12" y="17.2" text-anchor="middle" font-size="14" font-weight="800" font-family="Arial,sans-serif" fill="#fff">₪</text></svg><i class="cl" id="clCf"></i></span><span class="cx" data-c="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.2 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2z"/><path fill="#fff" d="M8.6 7.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.7 5.7 5 2.8 1.1 3.4.9 4 .8.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.3.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.5z"/></svg><i class="cl" id="clWa"></i></span></button></div><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
@@ -2789,7 +2807,7 @@ html.desk .co-mark{font-size:8cqi}
   function planAsk(){const n=ilNow(),today=ilDate();let iso=null,dd=null,when="";
     if(n.m>=1200){iso=addDays(today,1);dd=(n.d+1)%7;when="מחר בבוקר";}else if(n.m<480){iso=today;dd=n.d;when="הבוקר";}
     if(!iso||dd>4||planFor(iso))return null;return {iso,when};}
-  function savePlan(iso,fields){plan={date:iso,...fields,at:new Date().toISOString()};try{localStorage.setItem("sq_plan",JSON.stringify(plan));}catch(e){}
+  function savePlan(iso,fields){planEdit=null;plan={date:iso,...fields,at:new Date().toISOString()};try{localStorage.setItem("sq_plan",JSON.stringify(plan));}catch(e){}
     if(db&&canWrite)db.collection("settings").doc("plan").set(plan).catch(()=>toast("השמירה נכשלה"));
     renderCtx();renderList();if($("briefM"))showBrief(briefMd);
     toast(fields.office===false?"מחר לא נוסע, הבוקר כולו לסידורים":(fields.errands_net!=null?fields.errands_net:fields.errands_min)?"נשמר: "+fDur(+(fields.errands_net!=null?fields.errands_net:fields.errands_min))+" סידורים":"נשמר: בלי סידורים, ישר לעבודה");}
@@ -2825,6 +2843,17 @@ html.desk .co-mark{font-size:8cqi}
     return h("div",{class:"plancard"},h("b",null,"🌅 "+a.when+": כמה זמן סידורים?"),planMeet(M),
       h("div",{class:"pc-btns pc-how"},pick("in","🛒 בתוך הסידורים"),pick("place","🏢 להיות במקום"),pick("avail","💻 רק זמין")),
       sug,h("div",{class:"pc-or"},"או בחירה ידנית:"),durs);}
+  // 20.5 (Oren 17.11.2026): tomorrow morning's errand time is always visible in the evening briefs (eve / tom / night): a small
+  // frame at the bottom "🌅 זמן סידורים מחר בבוקר: <what he picked>" with "✏️ עריכה" that opens the same question under it.
+  // Not answered yet = the question itself. The edit button never moves (showBrief pins the popup's top while he edits).
+  let planEdit=null;
+  function planHow(p){const f=p&&p.first;if(!f||!f.how)return "";return {in:"🛒 הדיון בתוך הסידורים",place:"🏢 להיות במקום",avail:"💻 רק זמין"}[f.how]||"";}
+  function planFrame(md){const iso=addDays(briefDate(md),1),dd=new Date(iso+"T12:00:00").getDay();if(dd>4||awayOn(iso))return null;
+    const p=planFor(iso);if(!p)return h("div",{class:"bp-sec bp-plan"},planCard({iso,when:"מחר בבוקר"}));
+    const ed=planEdit===iso,hw=planHow(p);
+    return h("div",{class:"bp-sec bp-plan"},h("div",{class:"pf"},h("span",{class:"pf-x"},h("small",null,"🌅 זמן סידורים מחר בבוקר"),h("b",null,planTag(iso)),(()=>{const E=p.errands_net!=null?+p.errands_net:+p.errands_min||0,tm=p.office!==false&&E>0?h("bdi",{dir:"ltr"},"08:00-"+hhmm(480+E)):null;return tm||hw?h("small",null,tm,tm&&hw?" · ":"",hw):null;})()),
+        canWrite?h("button",{type:"button",class:"pf-ed"+(ed?" on":""),"data-pin":"planedit","aria-expanded":ed?"true":"false",onclick:e=>{e.stopPropagation();const el=e.currentTarget;bpKeep={k:"planedit",y:el.getBoundingClientRect().top};planEdit=ed?null:iso;planPick=null;showBrief(briefMd);}},ed?"✕ סגירה":"✏️ עריכה"):null),
+      ed?h("div",{class:"pf-card"},planCard({iso,when:"מחר בבוקר"})):null);}
   // the "עכשיו" box (Side Quests only): 3-5 things that fit this window and the time left in it
   function nowList(live){const w=curWin(),W=WINS[w.id];if(!W.acc.length)return [];
     return live.filter(t=>!isUrgent(t)&&fitsWin(t,w.id)).sort((a,b)=>(isOwn(b)-isOwn(a))||(returned(b)-returned(a))||byDate(a,b)||(minsOf(a)-minsOf(b))).slice(0,5);}
@@ -4577,8 +4606,13 @@ html.desk .co-mark{font-size:8cqi}
     if(q)return{lv:"late",t:`${q===1?"שינוי אחד ממתין":q+" שינויים ממתינים"} לשליחה`,short:last?ago(last):"",q,last};
     if(N.ok)return{lv:"ok",t:`מחובר · עודכן ${ago(last)}`,short:last?ago(last):"",q,last};
     return{lv:"off",t:"בודק חיבור…",short:last?ago(last):"",q,last};}
+  // 20.5 (Oren 17.11.2026): the bar reads "SC מחובר ● 3 דק׳" / "SC offline ● ✈️ 2 שע׳": the light sits inside the text line,
+  // vertically centered with it (it continues the sentence; corner lights are only for the logos on the other side).
+  const scAgo=ms=>{if(!ms)return"";const m=Math.floor((Date.now()-ms)/60000);if(m<1)return"עכשיו";if(m<60)return m+" דק׳";const hr=Math.floor(m/60);if(hr<48)return hr+" שע׳";return Math.floor(hr/24)+" ימים";};
   function renderRefr(){const c=sqConn(),d=document.getElementById("clSq");if(d)d.className="cl"+(c.lv==="off"?"":" "+c.lv);
-    if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=c.short+(c.q?` (${c.q})`:"");$("refr").classList.toggle("offl",c.lv==="bad"||(window.SQ_NET&&SQ_NET.ok===false));
+    const N=window.SQ_NET||{},st=c.lv==="ok"?"מחובר":c.lv==="bad"?"offline":c.lv==="late"?(N.ok===false?"לא עונה":"ממתין"):"בודק…";
+    if($("scSt"))$("scSt").textContent=st;
+    if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=(c.lv==="bad"?"✈️\u2009":"")+scAgo(c.last)+(c.q?` (${c.q})`:"");$("refr").classList.toggle("offl",c.lv==="bad"||(window.SQ_NET&&SQ_NET.ok===false));
     $("refr").setAttribute("aria-label","עדכון מלא. "+c.t);}
   // 20.1: ask the service worker to save every local dashboard page ahead of time (offline from the first time)
   let warmKey="";
@@ -5342,6 +5376,7 @@ html.desk .co-mark{font-size:8cqi}
           h("button",{class:"alt",type:"button",onclick:()=>{markBriefSeen(md);closeModal();openTask(at.id);}},"📅 לתזמן"),
           canWrite?h("button",{class:"alt",type:"button",onclick:()=>bpDone(at)},"✓ לסגור"):null)):null,
         empty?h("div",{class:"bp-empty"},b.quiet?"הכול כמו בבריף של 21:30 😴":md==="morning"?"יום רגיל, אין משהו דחוף ☕":"אין מה להוסיף 🌿"):null,
+        md!=="morning"?planFrame(md):null,
         h("div",{class:"bp-btns"},h("button",{class:"main",type:"button",onclick:closeBrief},V2OK[md]||"הבנתי")),bpImp(md)));
     m.classList.add("bpop");m.classList.toggle("car",carOn);markBriefSeen(md);}
   function bpDone(t){markDone(t);setTimeout(()=>{if($("briefM"))showBrief(briefMd);},350);}
@@ -5380,7 +5415,15 @@ html.desk .co-mark{font-size:8cqi}
   function autoBriefOnOpen(){const L=latestBrief(),m=ilNow().m;if(quest!=="side"||briefSeenToday(L.kind)||location.hash)return;
     if(L.age>16*60||m<300||m>=1380||(L.kind==="morning"&&m>=720))return;
     setTimeout(()=>{if(!document.querySelector(".sqmodal"))showBrief(L.kind);},500);}
-  function showBrief(md){
+  // 20.5: while he edits tomorrow's errand time inside a brief, the popup stops being centered: its top stays where it was and
+  // it grows downward (scrolling inside if needed), so the tapped button never moves and the question opens under it.
+  let bpKeep=null;
+  function showBrief(md){const old=document.querySelector("#briefM .sqpanel");if(!old)bpKeep=null;
+    const top=old&&bpKeep?old.getBoundingClientRect().top:null,st=old?old.scrollTop:0;showBrief0(md);
+    if(top==null)return;const m=$("briefM"),pn=m&&m.querySelector(".sqpanel");if(!pn)return;const z=parseFloat(getComputedStyle(pn).zoom)||1;
+    m.style.alignItems="flex-start";pn.style.animation="none";pn.style.marginTop=Math.max(0,(top-16))/z+"px";pn.style.maxHeight="calc((100dvh - "+(top+16)+"px) / "+z+")";pn.scrollTop=st;
+    if(bpKeep&&bpKeep.y!=null){const n=m.querySelector('[data-pin="'+bpKeep.k+'"]');if(n)pn.scrollTop+=(n.getBoundingClientRect().top-bpKeep.y)/z;bpKeep.y=null;}}
+  function showBrief0(md){
     if(!$("briefM"))briefFull=false; // every new open starts short
     md=BKD[md]?md:briefMode();
     if(tripToday()&&(md==="morning"||md==="eve"))md=md==="eve"?"abroad_pm":"abroad_am"; // abroad there is no commute brief
@@ -5433,14 +5476,14 @@ html.desk .co-mark{font-size:8cqi}
     const m=modal("briefM",
       h("div",{class:"bp-top eve"+(briefFull?"":" short")},h("div",{class:"bp-h"},h("b",null,"🌆 ערב טוב"),h("small",null,`${HE_DAYS[now.getDay()]} ${now.getDate()}.${now.getMonth()+1}`),h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeBrief},"×")),
         b.headline?h("div",{class:"bp-head"},String(b.headline)):null),
-      ...(()=>{if(!briefFull){const [body,more]=bpShort(b,"eve");return [h("div",{class:"bp-in"},body,planAsk()?h("div",{class:"bp-sec"},planCard({...planAsk(),when:"מחר בבוקר"})):null,h("div",{class:"bp-btns"},bpMoreBtn(more),h("button",{class:"main",type:"button",onclick:closeBrief},"יאללה הביתה 🚗")),bpImp("eve"))];}return [];})(),
+      ...(()=>{if(!briefFull){const [body,more]=bpShort(b,"eve");return [h("div",{class:"bp-in"},body,planFrame("eve"),h("div",{class:"bp-btns"},bpMoreBtn(more),h("button",{class:"main",type:"button",onclick:closeBrief},"יאללה הביתה 🚗")),bpImp("eve"))];}return [];})(),
       !briefFull?null:h("div",{class:"bp-in bp-full"},
       bpSec("🚨 קריטי",b.critical,"🚨","bp-crit"),
       bpSec("🆕 מה נכנס היום",b.news,"•"),
       bpSec("🚗 בדרך הביתה",b.way,"🛒"),
       bpSec("📞 בנסיעה",b.call,"📞"),
       bpSec("🌙 הערב, כשיש זמן",b.night,"🌙"),
-      planAsk()?h("div",{class:"bp-sec"},planCard({...planAsk(),when:"מחר בבוקר"})):null,
+      planFrame("eve"),
       h("div",{class:"bp-btns"},bpMoreBtn(1),h("button",{class:"main",type:"button",onclick:closeBrief},"יאללה הביתה 🚗")),bpImp("eve")));
     m.classList.add("bpop");markBriefSeen("eve");
   }
