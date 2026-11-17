@@ -90,7 +90,7 @@
   function segSet(id, val) { for (const b of $(id).querySelectorAll("button")) b.classList.toggle("on", b.dataset.v === String(val)); }
   function renderFilters() {
     segSet("fType", F.t); segSet("fIl", F.il); segSet("fSort", F.sort); segSet("fSub", F.sub);
-    $("fNf").classList.toggle("on", !!F.nf); $("fNf").setAttribute("aria-checked", F.nf ? "true" : "false");
+    $("fNf").classList.toggle("on", !F.nf); $("fNf").setAttribute("aria-checked", F.nf ? "false" : "true"); // switch on = foreign languages shown
     for (const b of $("fSort").children) b.querySelector("i").textContent = b.dataset.v !== F.sort ? "↕" : F.dir === 1 ? "↑" : "↓";
     const fg = $("fGen");
     if (!fg.children.length) {
@@ -266,7 +266,7 @@
       seedTaste(taste);
       minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
       const ns = items.filter((x) => x.k[0] === "s").length;
-      $("meta").textContent = "נטפליקס ישראל · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים · עודכן " +
+      $("meta").textContent = "נטפליקס ישראל 🇮🇱 · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים · עודכן " +
         new Date(cat.at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }) + (cat.pending ? " · משלים " + fmt(cat.pending) + " כותרים…" : "");
       render();
     } catch (e) {
