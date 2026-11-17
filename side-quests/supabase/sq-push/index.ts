@@ -92,7 +92,7 @@ async function sendTo(list: any[], msg: { title: string; body: string; tag?: str
 }
 
 // ---------- prefs ----------
-const DEF = { brief: true, brief_time: "08:00", brief_days: "sun-thu", wk: true, eve: true, eve_time: "18:00", eve_days: "sun-thu", critical: true, quiet_from: 22, quiet_to: 7 };
+const DEF = { brief: true, brief_time: "06:30", brief_days: "sun-thu", wk: true, eve: true, eve_time: "18:00", eve_days: "sun-thu", critical: true, quiet_from: 22, quiet_to: 7 };
 async function prefs() { return { ...DEF, ...((await getDoc(APP, "settings", "notify")) || {}) }; }
 
 // ---------- brief ----------
@@ -181,7 +181,12 @@ const XB = [
   { k: "fri", wd: "Thu", at: 21 * 60 + 30, doc: "fri_brief", title: "🛒 מחר שישי", def: "הבריף לסידורים של מחר מוכן" },
   { k: "wkend", wd: "Fri", at: 13 * 60, doc: "weekend_brief", title: "🏡 סופ״ש טוב", def: "הבריף לסופ״ש מוכן" },
   { k: "week", wd: "Sat", at: 21 * 60, doc: "week_brief", title: "🗓️ שבוע טוב", def: "הבריף לשבוע הקרוב מוכן" },
+  // 18.8 (Oren 17.11.2026): the evening before a workday (21:30) = tomorrow with the work calendar, time to react;
+  // just before sleep (23:45) = a short "don't forget tomorrow". Thursday 21:30 stays the Friday brief.
+  { k: "tom", wd: ["Sun", "Mon", "Tue", "Wed", "Sat"], at: 21 * 60 + 30, doc: "tomorrow_brief", title: "🌙 מחר", def: "", need: true },
+  { k: "night", wd: ["Sun", "Mon", "Tue", "Wed", "Thu", "Sat"], at: 23 * 60 + 45, doc: "night_brief", title: "😴 לפני השינה", def: "", need: true },
 ];
+const xDay = (x: any, wd: string) => Array.isArray(x.wd) ? x.wd.includes(wd) : x.wd === wd;
 async function xNow(x: any, source: string, list?: any[]) {
   const today = il().date;
   const ai = await getDoc(APP, "settings", x.doc);
@@ -344,9 +349,11 @@ async function tick() {
   // sq-push 10.11.2026: the trip's last day (flying home) still gets Thursday's Friday-errands brief
   const lastDay = !!trip && trip.to === t.date;
   if (p.wk !== false && (!p.abroadOn || lastDay)) for (const x of XB) {
-    if (t.wd !== x.wd || t.mins < x.at || t.mins >= x.at + 120) continue;
+    if (!xDay(x, t.wd) || t.mins < x.at || t.mins >= x.at + 120) continue;
     const sx = (await getDoc(SRV, "state", "b_" + x.k)) || {};
     if (sx.date === t.date) continue;
+    if (x.need && p.abroadOn) continue;
+    if (x.need) { const d = await getDoc(APP, "settings", x.doc); if (!d || d.date !== t.date || !d.headline) continue; } // no brief written today = no push
     await putDoc(SRV, "state", "b_" + x.k, { date: t.date });
     out[x.k] = await xNow(x, "schedule");
   }
