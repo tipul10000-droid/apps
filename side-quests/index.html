@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.0";window.SQ_BUILD_AT="18.11.2026 00:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.1";window.SQ_BUILD_AT="18.11.2026 00:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2108,6 +2108,8 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 .sbar .conn:active,.sbar .refr:active{background:rgba(255,255,255,.1)!important}
 .sbar .cx{position:relative;display:inline-flex;width:20px;height:20px}
 .sbar .cx svg{width:20px;height:20px;display:block}
+/* 22.1 (Oren 17.11.2026): connection icons are monochrome (currentColor), simple like the app's other icons; only the status lights keep colour */
+.sbar .cx svg,.cnrow .ci svg{color:inherit}
 .sbar .cl{position:absolute;inset-inline-end:-4px;bottom:-3px;width:9px;height:9px;border-radius:50%;background:#9AA0A6;box-shadow:0 0 0 2px var(--hero-bg,#1b1b1b)}
 .sbar .cl.ok{background:#22C55E}
 .sbar .cl.ok,.sbar .cl.late,.sbar .cl.bad{animation:sqbeat 2.4s ease-in-out infinite}
@@ -2318,8 +2320,8 @@ footer.ver.colo{position:relative;overflow:hidden;container-type:inline-size;mar
 .co-cred div{display:flex;flex-direction:column;min-width:0}
 .co-cred dt{font:500 9.5px/1.3 var(--f-mono);letter-spacing:1.6px;text-transform:uppercase;color:#EE8C4F}
 .co-cred dd{margin:0;font:500 13px/1.3 "Space Grotesk",var(--f-body);color:#EDEDEA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.co-mark{display:block;padding:0 0 4px;direction:ltr;text-align:center;white-space:nowrap;
-  font:800 12.6cqi/.9 "Rubik",var(--f-display);letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1.2px rgba(15,32,58,.55);pointer-events:none;user-select:none}
+.co-mark{display:block;padding:8px 0 6px;direction:ltr;text-align:center;white-space:nowrap;
+  font:800 3.8cqi/.9 "Rubik",var(--f-display);letter-spacing:.04em;color:transparent;-webkit-text-stroke:.8px rgba(15,32,58,.55);pointer-events:none;user-select:none}
 .co-mark i{font-style:normal;margin-left:.22em;-webkit-text-stroke-color:rgba(238,140,79,.85)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .co-band{background-color:#0A0A0A;border-top-color:#EE8C4F}
   :root:not([data-theme="light"]) .co-mark{-webkit-text-stroke-color:rgba(255,255,255,.28)}}
@@ -2331,7 +2333,7 @@ html.desk .co-row{grid-template-columns:360px minmax(0,260px);justify-content:ce
 body:not(.q-side) footer.ver.colo{display:none}
 body:not(.q-side) main{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))!important}
 html.desk body:not(.q-side) main{padding-bottom:44px!important}
-html.desk .co-mark{font-size:8cqi}
+html.desk .co-mark{font-size:2.4cqi}
 /* 18.4 (Oren 17.11.2026): the questions & decisions strip is not a task strip. Its own soft indigo tint and a question-bubble icon.
    Open questions = first on the screen (above the window); all closed = last (after the folded categories). */
 #askSec .fold.ask{--qa:#4F5BD5;--qa-bg:#EEF0FF;--qa-line:#CDD2F7;border-color:var(--qa-line)}
@@ -2449,7 +2451,7 @@ html.desk .co-mark{font-size:8cqi}
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><div class="sbar" role="group" aria-label="מצב העדכון והחיבורים"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="cx sqx" aria-hidden="true"><span class="ic">⟳</span></span><span class="scs"><span class="scl"><b dir="ltr">SC</b><span class="scw" id="scSt">…</span><i class="cl" id="clSq"></i></span><span class="sct" id="refrTxt"></span></span></button><button class="conn" id="connBtn" type="button" aria-label="מצב החיבורים: Gmail, יומן, מיקום, תזרים, וואטסאפ"><span class="cx" data-c="gm"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M2 6.2v11.3c0 .8.6 1.5 1.4 1.5h3.2V9.7z"/><path fill="#34A853" d="M17.4 19h3.2c.8 0 1.4-.7 1.4-1.5V6.2l-4.6 3.5z"/><path fill="#FBBC04" d="M17.4 5v4.7L22 6.2V5.3c0-1.7-1.9-2.6-3.2-1.6z"/><path fill="#EA4335" d="M6.6 9.7V5l5.4 4.1L17.4 5v4.7L12 13.8z"/><path fill="#C5221F" d="M2 5.3v.9l4.6 3.5V5L5.2 3.7C3.9 2.7 2 3.6 2 5.3z"/></svg><i class="cl" id="clGm"></i></span><span class="cx" data-c="cal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="3" fill="#0F6CBD"/><rect x="3" y="4.5" width="18" height="5" rx="2.5" fill="#0A4F8F"/><path d="M8 2.6v4M16 2.6v4" stroke="#0A4F8F" stroke-width="2" stroke-linecap="round"/><g fill="#fff"><rect x="6.2" y="12" width="3" height="2.6" rx=".6"/><rect x="10.5" y="12" width="3" height="2.6" rx=".6"/><rect x="14.8" y="12" width="3" height="2.6" rx=".6"/><rect x="6.2" y="16" width="3" height="2.6" rx=".6"/><rect x="10.5" y="16" width="3" height="2.6" rx=".6"/></g></svg><i class="cl" id="clCal"></i></span><span class="cx" data-c="loc"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#E5484D" d="M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12z"/><circle cx="12" cy="10" r="2.8" fill="#fff"/></svg><i class="cl" id="clLoc"></i></span><span class="cx" data-c="cf"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="#0E9F6E"/><text x="12" y="17.2" text-anchor="middle" font-size="14" font-weight="800" font-family="Arial,sans-serif" fill="#fff">₪</text></svg><i class="cl" id="clCf"></i></span><span class="cx" data-c="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.2 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2z"/><path fill="#fff" d="M8.6 7.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.7 5.7 5 2.8 1.1 3.4.9 4 .8.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.3.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.5z"/></svg><i class="cl" id="clWa"></i></span></button></div><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
+    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><div class="sbar" role="group" aria-label="מצב העדכון והחיבורים"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="cx sqx" aria-hidden="true"><span class="ic">⟳</span></span><span class="scs"><span class="scl"><b dir="ltr">SC</b><span class="scw" id="scSt">…</span><i class="cl" id="clSq"></i></span><span class="sct" id="refrTxt"></span></span></button><button class="conn" id="connBtn" type="button" aria-label="מצב החיבורים: Gmail, יומן, מיקום, תזרים, וואטסאפ"><span class="cx" data-c="gm"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M2 6.2v11.3c0 .8.6 1.5 1.4 1.5h3.2V9.7z"/><path d="M17.4 19h3.2c.8 0 1.4-.7 1.4-1.5V6.2l-4.6 3.5z"/><path d="M17.4 5v4.7L22 6.2V5.3c0-1.7-1.9-2.6-3.2-1.6z"/><path d="M6.6 9.7V5l5.4 4.1L17.4 5v4.7L12 13.8z"/><path d="M2 5.3v.9l4.6 3.5V5L5.2 3.7C3.9 2.7 2 3.6 2 5.3z"/></svg><i class="cl" id="clGm"></i></span><span class="cx" data-c="cal"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkCal" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><rect x="3" y="9.2" width="18" height=".9" fill="#000"/><g fill="#000"><rect x="6.2" y="12" width="3" height="2.6" rx=".6"/><rect x="10.5" y="12" width="3" height="2.6" rx=".6"/><rect x="14.8" y="12" width="3" height="2.6" rx=".6"/><rect x="6.2" y="16" width="3" height="2.6" rx=".6"/><rect x="10.5" y="16" width="3" height="2.6" rx=".6"/></g><path d="M8 2.6v4M16 2.6v4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></mask></defs><g mask="url(#mkCal)" fill="currentColor"><rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.6v4M16 2.6v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></g></svg><i class="cl" id="clCal"></i></span><span class="cx" data-c="loc"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkLoc" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><circle cx="12" cy="10" r="2.8" fill="#000"/></mask></defs><g mask="url(#mkLoc)" fill="currentColor"><path d="M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12z"/></g></svg><i class="cl" id="clLoc"></i></span><span class="cx" data-c="cf"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkCf" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><text x="12" y="17.2" text-anchor="middle" font-size="14" font-weight="800" font-family="Arial,sans-serif" fill="#000">₪</text></mask></defs><g mask="url(#mkCf)" fill="currentColor"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/></g></svg><i class="cl" id="clCf"></i></span><span class="cx" data-c="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkWa" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><path fill="#000" d="M8.6 7.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.7 5.7 5 2.8 1.1 3.4.9 4 .8.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.3.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.5z"/></mask></defs><g mask="url(#mkWa)" fill="currentColor"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.2 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2z"/></g></svg><i class="cl" id="clWa"></i></span></button></div><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
@@ -5294,7 +5296,7 @@ html.desk .co-mark{font-size:8cqi}
   function tripToday(){const a=awayOn(ilDate());if(a)return a;return abroadOn()?{place:"חו״ל",tz:notify.abroad_tz}:null;}
   function tzMin(tz){try{const p=new Intl.DateTimeFormat("en-GB",{timeZone:tz,hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const g=k=>+((p.find(x=>x.type===k)||{}).value||0);return (g("hour")%24)*60+g("minute");}catch(e){return null;}}
   function tripOff(tr){const tz=(tr&&tr.tz&&tr.tz!=="Asia/Jerusalem")?tr.tz:"Europe/Rome",a=tzMin("Asia/Jerusalem"),b=tzMin(tz);if(a==null||b==null)return 60;let d=a-b;if(d>720)d-=1440;if(d<-720)d+=1440;return d;}
-  let xBriefs={};
+  let xBriefs={},bpFrom=null; // 22.1: bpFrom="night" while the 21:30 brief is opened from the night brief
   const dayOkB=(days,d)=>days==="all"?true:days==="sun-fri"?d!==6:d<=4;
   function briefSlots(d){const r=[];
     const tr=tripToday();if(tr){const off=tripOff(tr);return [["abroad_am",Math.max(0,480+off)],["abroad_pm",Math.min(1439,1200+off)]];}
@@ -5309,7 +5311,7 @@ html.desk .co-mark{font-size:8cqi}
       if(L.length){const x=L[L.length-1];return {kind:x[0],date:addDays(base,-k),age:k*1440+n.m-x[1]};}}
     return {kind:"morning",date:base,age:0};}
   function briefMode(){return latestBrief().kind;}
-  function briefDate(md){const L=latestBrief();return L.kind===md?L.date:ilDate();}
+  function briefDate(md){if(md==="tom"&&bpFrom==="night"&&xBriefs.tom&&xBriefs.tom.date)return xBriefs.tom.date;const L=latestBrief();return L.kind===md?L.date:ilDate();}
   const seenKey=md=>"sq_bseen_"+md;
   function briefSeenToday(md){md=md||briefMode();try{return localStorage.getItem(seenKey(md))===briefDate(md);}catch(e){return false;}}
   function markBriefSeen(md){md=md||briefMd;try{localStorage.setItem(seenKey(md),briefDate(md));}catch(e){}renderSunDot();}
@@ -5484,8 +5486,16 @@ html.desk .co-mark{font-size:8cqi}
           canWrite?h("button",{class:"alt",type:"button",onclick:e=>bpDone(at,e.currentTarget)},"✓ לסגור"):null)):null,
         empty?h("div",{class:"bp-empty"},b.quiet?"הכול כמו בבריף של 21:30 😴":md==="morning"?"יום רגיל, אין משהו דחוף ☕":"אין מה להוסיף 🌿"):null,
         md!=="morning"?planFrame(md):null,
-        h("div",{class:"bp-btns"},h("button",{class:"main",type:"button",onclick:closeBrief},V2OK[md]||"הבנתי")),bpImp(md)));
+        h("div",{class:"bp-btns"},prevBriefBtn(md),h("button",{class:"main",type:"button",onclick:closeBrief},V2OK[md]||"הבנתי")),bpImp(md)));
     m.classList.add("bpop");m.classList.toggle("car",carOn);markBriefSeen(md);}
+  // 22.1 (Oren 17.11.2026): the night brief may repeat the 21:30 one, so it carries "📜 הבריף של 21:30" to see that one;
+  // opened from there, the 21:30 brief has "↩ לפני השינה" in the same spot (same button row, nothing moves).
+  function prevBriefBtn(md){
+    if(md==="tom"&&bpFrom==="night")return h("button",{class:"alt",type:"button",onclick:()=>{bpFrom=null;showBrief("night");}},"↩ לפני השינה");
+    if(md!=="tom")bpFrom=null;
+    if(md!=="night")return null;const nb=xBriefs.night,tb=xBriefs.tom;
+    if(!tb||!nb||!tb.date||tb.date!==nb.date)return null;
+    return h("button",{class:"alt",type:"button",onclick:()=>{bpFrom="night";showBrief("tom");}},"📜 הבריף של 21:30");}
   // 21.4: the row fades, the list closes the gap; the brief is not rebuilt meanwhile (that rebuild replayed the pop-in = the flicker)
   let bpHold=0,bpHoldT=null;
   function bpGone(el){if(!el)return;const hgt=el.offsetHeight;el.style.height=hgt+"px";void el.offsetHeight;el.classList.add("gone");el.style.height="0px";}
@@ -5499,7 +5509,7 @@ html.desk .co-mark{font-size:8cqi}
       t&&isOpen(t)&&canWrite?h("button",{class:"ok",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:e=>bpDone(t,e.currentTarget)},"✓"):null);}
   function bpSec(title,items,emoji,cls){const a=(Array.isArray(items)?items:[]).filter(liveItem);if(!a.length)return null;
     return h("div",{class:"bp-sec"+(cls?" "+cls:"")},h("h4",null,title),a.map(x=>bpRow(x,emoji)));}
-  function closeBrief(){markBriefSeen(briefMd);briefFull=false;closeModal();}
+  function closeBrief(){bpFrom=null;markBriefSeen(briefMd);briefFull=false;closeModal();}
   // 18.8 (Oren 17.11.2026): every brief ends with a way to improve it: the chat where he says (or dictates) what to change.
   const bpImp=kind=>h("a",{class:"bp-imp",href:String(notify.brief_chat||AA_CHAT),target:"_blank",rel:"noopener",onclick:()=>markBriefSeen(kind)},"💬 לשפר את הבריף");
   // 8.4 (Oren 6.11.2026: "עמוס מדי, קצר ומדויק"): short view first = the headline and up to 3 rows in big type.
@@ -5610,7 +5620,7 @@ html.desk .co-mark{font-size:8cqi}
     const top=(Array.isArray(b.top)&&b.top.filter(liveItem).length?b.top.filter(liveItem):all).slice(0,3),ids=new Set(top.map(x=>x.id||x.text));
     const more=all.filter(x=>!ids.has(x.id||x.text)).length;
     const empty=h("div",{class:"bp-empty"},kind==="week"?"שבוע פנוי, בלי מועדים ✨":"אין שום דבר דחוף. תהנה 🌿");
-    const btns=h("div",null,h("div",{class:"bp-btns"},bpMoreBtn(briefFull?1:more),h("button",{class:"main",type:"button",onclick:closeBrief},B.ok)),bpImp(kind));
+    const btns=h("div",null,h("div",{class:"bp-btns"},prevBriefBtn(kind),bpMoreBtn(briefFull?1:more),h("button",{class:"main",type:"button",onclick:closeBrief},B.ok)),bpImp(kind));
     const dayL=B.nx?String(b.day||wcLine(addDays(briefDate(kind),1))||""):"";
     const m=modal("briefM",
       h("div",{class:"bp-top "+kind+(briefFull?"":" short")},h("div",{class:"bp-h"},h("b",null,ttl),h("small",null,`${HE_DAYS[dd.getDay()]} ${dd.getDate()}.${dd.getMonth()+1}`),h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeBrief},"×")),
