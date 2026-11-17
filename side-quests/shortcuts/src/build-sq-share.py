@@ -27,7 +27,7 @@ act("is.workflow.actions.gettext",{"UUID":intext,"WFTextActionText":txt(IN)})
 act("is.workflow.actions.ask",{"UUID":note,"WFAskActionPrompt":"📥 משהו להוסיף? (רשות: לאן זה שייך, מה לעשות עם זה)","WFInputType":"Text","WFAskActionDefaultAnswer":"","WFAllowsMultilineText":True})
 act("is.workflow.actions.format.date",{"UUID":did,"WFDateFormatStyle":"Custom","WFDateFormat":"yyyyMMdd-HHmmss","WFDate":txt({"Type":"CurrentDate"})})
 act("is.workflow.actions.format.date",{"UUID":iso,"WFDateFormatStyle":"ISO 8601","WFISO8601IncludeTime":True,"WFDate":txt({"Type":"CurrentDate"})})
-data=[item("kind",txt("share")),item("via",txt("share")),item("status",txt("pending")),
+data=[item("kind",txt("share")),item("via",txt("share")),item("status",txt("share")),
       item("url",txt(att(linkt,"Text"))),item("text",txt(att(intext,"Text"))),
       item("note",txt(att(note,"Provided Input"))),item("at",txt(att(iso,"Formatted Date")))]
 body=[item("p_key",txt(att(pin,"Text"))),item("p_app",txt("sidequests")),item("p_collection",txt("instructions")),
