@@ -1,7 +1,7 @@
 // "מה יש בנטפליקס?" daily catalog builder. Runs as an Edge Function in the FrameHorizon Supabase project,
 // so it reuses FrameHorizon's TMDB token (secret TMDB_READ_ACCESS_TOKEN) and the same sources:
 // availability = JustWatch via TMDB (Netflix IL, providers 8 + 1796), ratings = official IMDb datasets,
-// Oscars = major Academy Award wins (Wikidata), Top 10 = Netflix's own Top 10 TSV files.
+// Oscars = Academy Award wins, all competitive categories (Wikidata), Top 10 = Netflix's own Top 10 TSV files.
 // Output: public JSON in Storage bucket nf-public (catalog.json). No key ever reaches the browser.
 // Called by pg_cron with header x-nf-key (only its SHA-256 lives here). Work is budgeted; repeated
 // calls continue where the last one stopped (first fill of details takes a few calls).
@@ -22,7 +22,6 @@ const GENRES: Record<number, string> = {
   27: 'hor', 99: 'doc', 16: 'ani', 10751: 'fam', 10762: 'fam',
   10764: 'rea', 10767: 'rea', 10763: 'rea',
 }
-const MAJOR = /^Academy Award for Best (Picture|Director|Actor|Actress|Supporting Actor|Supporting Actress|(Writing, )?(Original|Adapted) Screenplay|Animated Feature( Film)?|International Feature Film|Foreign Language Film|Documentary Feature( Film)?)$/
 
 async function sha(s: string) {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s))
@@ -155,7 +154,7 @@ Deno.serve(async (req) => {
       log.ratings = Object.keys(map).length
     }
 
-    // 4. Major Oscar wins (Wikidata), once a week. 2 = Best Picture, 1 = another major category
+    // 4. Oscar wins (Wikidata), once a week. 2 = Best Picture, 1 = any other category
     if (!stage && isDue(st.osc.at, 7 * DAY, 'osc')) {
       stage = 'osc'
       const q = `SELECT DISTINCT ?imdb ?l WHERE {
@@ -164,15 +163,18 @@ Deno.serve(async (req) => {
         ?film wdt:P345 ?imdb . FILTER(STRSTARTS(?imdb, "tt")) }`
       const r = await fetch('https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(q), { headers: { 'user-agent': 'whats-on-netflix-il/1.0 (personal)', accept: 'application/sparql-results+json' }, signal: AbortSignal.timeout(60000) })
       if (r.ok) {
-        const j = await r.json(), ids: J = {}
+        // every competitive win counts toward the number of Oscars (Oren 17.11.2026); tier 2 = Best Picture, 1 = any other
+        const j = await r.json(), ids: J = {}, cats: J = {}
         for (const b of j.results.bindings) {
           const l = b.l.value, im = b.imdb.value
-          if (!MAJOR.test(l)) continue
           const tier = /Best Picture$/.test(l) ? 2 : 1
           ids[im] = Math.max(ids[im] || 0, tier)
-          ;(st.osc_cats ??= {})[im] = [...new Set([...(st.osc_cats?.[im] || []), l.replace('Academy Award for ', '')])]
+          ;(cats[im] ??= new Set()).add(l.replace('Academy Award for ', ''))
         }
-        if (Object.keys(ids).length > 200) st.osc = { at: new Date().toISOString(), ids }
+        if (Object.keys(ids).length > 200) {
+          st.osc = { at: new Date().toISOString(), ids }
+          st.osc_cats = Object.fromEntries(Object.entries(cats).map(([k, v]) => [k, [...(v as Set<string>)]]))
+        }
         log.oscars = Object.keys(ids).length
       } else log.oscars = 'HTTP_' + r.status
     }
@@ -221,10 +223,11 @@ Deno.serve(async (req) => {
       const o: J = { k: x.k, n: x.n, p: x.p, y: Number(String(x.d).slice(0, 4)) || null, g: x.g, f: st.first[x.k], pop: x.pop }
       if (d.hn && d.hn !== x.n) o.hn = d.hn
       if (isIL) o.il = 1
+      if (x.ol && x.ol !== 'en') o.ol = x.ol
       if (d.im) o.im = d.im
       if (r) { o.r = r[0]; o.v = r[1] }
       if (d.im && st.osc.ids?.[d.im]) { o.os = st.osc.ids[d.im]; o.oc = st.osc_cats?.[d.im] }
-      if (x.k[0] === 's') { o.s = d.s; o.e = d.e; if (d.es && d.es.length > 1) o.es = d.es }
+      if (x.k[0] === 's') { o.s = d.s; o.e = d.e }
       if (tIL) o.til = [tIL.w, tIL.b]
       if (tW) o.tw = [tW.w, tW.b]
       items.push(o)

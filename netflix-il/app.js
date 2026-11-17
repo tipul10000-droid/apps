@@ -26,7 +26,8 @@
   if (qs.get("embed") === "1") document.body.classList.add("embed");
 
   let cat = null, items = [], minF = "";
-  let F = Object.assign({ t: "s", g: [], il: "all", r: 0, sort: "r" }, ls.get("nf_f", {}));
+  let F = Object.assign({ t: "s", g: [], il: "all", nf: false, r: 0, sort: "r", dir: -1, sub: "all" }, ls.get("nf_f", {}));
+  const foreign = (x) => !!x.ol && x.ol !== "he"; // original language other than English/Hebrew (ol is absent for English)
   let taste = ls.get("nf_taste", "all");
   let wl = ls.get("nf_wl", {}), seen = ls.get("nf_seen", {});
   let tab = "find", shown = 0, list = [];
@@ -71,22 +72,26 @@
   function baseList() { // everything except the rating step
     return items.filter((x) => x.k[0] === F.t && !seen[x.k] && tasteOk(x)
       && (!F.g.length || F.g.some((g) => x.g.includes(g)))
-      && (F.il === "all" || (F.il === "only" ? x.il : !x.il)));
+      && (F.il === "all" || (F.il === "only" ? x.il : !x.il)) && (!F.nf || !foreign(x)));
   }
   function sortList(a) {
     const isTop = taste === "il" || taste === "w";
     const by = { r: (x, y) => (y.r || 0) - (x.r || 0) || (y.v || 0) - (x.v || 0),
       new: (x, y) => (y.f || "").localeCompare(x.f || "") || (y.pop || 0) - (x.pop || 0),
       pop: (x, y) => (y.pop || 0) - (x.pop || 0) };
-    if (isTop && F.sort === "pop") return a.sort((x, y) => { const k = taste === "il" ? "til" : "tw"; return (y[k][0] - x[k][0]) || (x[k][1] - y[k][1]); });
-    return a.sort(by[F.sort] || by.r);
+    const d = F.dir === 1 ? -1 : 1; // dir -1 = best/newest/most popular first (default), 1 = reversed
+    if (isTop && F.sort === "pop") return a.sort((x, y) => { const k = taste === "il" ? "til" : "tw"; return d * ((y[k][0] - x[k][0]) || (x[k][1] - y[k][1])); });
+    const f = by[F.sort] || by.r;
+    return a.sort((x, y) => d * f(x, y));
   }
   const isNew = (x) => minF && x.f > minF && (Date.now() - Date.parse(x.f)) < NEW_DAYS * 864e5;
 
   // ---------- render ----------
   function segSet(id, val) { for (const b of $(id).querySelectorAll("button")) b.classList.toggle("on", b.dataset.v === String(val)); }
   function renderFilters() {
-    segSet("fType", F.t); segSet("fIl", F.il); segSet("fSort", F.sort);
+    segSet("fType", F.t); segSet("fIl", F.il); segSet("fSort", F.sort); segSet("fSub", F.sub);
+    $("fNf").classList.toggle("on", !!F.nf); $("fNf").setAttribute("aria-checked", F.nf ? "true" : "false");
+    for (const b of $("fSort").children) b.querySelector("i").textContent = b.dataset.v !== F.sort ? "↕" : F.dir === 1 ? "↑" : "↓";
     const fg = $("fGen");
     if (!fg.children.length) {
       fg.append(h("button", { type: "button", "data-v": "" }, "הכול"));
@@ -104,12 +109,13 @@
       b.classList.toggle("in", r > 0 && r < F.r);
     }
   }
+  function oscTxt(x) { const n = (x.oc || []).length || 1; return "🏆 " + (n > 1 ? n + " אוסקרים" : "אוסקר"); }
   function card(x) {
     const url = x.im ? "https://www.imdb.com/title/" + x.im + "/" : "https://www.themoviedb.org/" + (x.k[0] === "m" ? "movie/" : "tv/") + x.k.slice(1);
     const post = h("div", { class: "post" },
       x.p ? h("img", { src: IMG + x.p, alt: "", loading: "lazy", decoding: "async" }) : h("div", { class: "noimg" }, x.n),
       x.r ? h("span", { class: "imdb" }, "IMDb " + x.r.toFixed(1)) : null,
-      x.os ? h("span", { class: "osc" + (x.os === 2 ? " g" : ""), title: (x.oc || []).join(", ") }, x.os === 2 ? "🏆 אוסקר הסרט הטוב" : "🏆 אוסקר") : null,
+      x.os ? h("span", { class: "osc" + (x.os === 2 ? " g" : "") + (x.r ? "" : " top"), title: (x.oc || []).join(", ") }, oscTxt(x)) : null,
       isNew(x) ? h("span", { class: "newb" }, "חדש") : null,
       taste === "il" && x.til ? h("span", { class: "topb" }, "טופ 10 · " + x.til[0] + " שב׳") : taste === "w" && x.tw ? h("span", { class: "topb" }, "טופ 10 · " + x.tw[0] + " שב׳") : null);
     let meta;
@@ -133,14 +139,24 @@
     if (!cat) return;
     document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.tab === tab));
     $("wlN").textContent = Object.keys(wl).filter((k) => !seen[k]).length;
-    $("seenN").textContent = Object.keys(seen).length;
+    $("seenN").textContent = items.filter((x) => seen[x.k]).length;
     $("filters").hidden = tab !== "find";
+    $("fSub").hidden = tab === "find";
+    $("ach").hidden = tab !== "seen";
     renderFilters();
     const g = $("grid"); g.replaceChildren(); shown = 0;
-    if (tab === "wl") {
-      list = items.filter((x) => wl[x.k] && !seen[x.k]).sort((a, b) => (wl[b.k] || 0) - (wl[a.k] || 0));
-      $("resN").replaceChildren(h("b", null, fmt(list.length)), " ברשימה שלי");
-      if (!list.length) g.append(h("div", { class: "empty" }, "הרשימה ריקה. סמנו 🔖 על מה שבא לכם לראות."));
+    if (tab !== "find") {
+      // watchlist / seen, with a movies-series sub filter (Oren 17.11.2026)
+      const m = tab === "wl" ? wl : seen;
+      const all = items.filter((x) => m[x.k] && (tab === "seen" || !seen[x.k]));
+      const nS = all.filter((x) => x.k[0] === "s").length;
+      const cnt = { all: all.length, s: nS, m: all.length - nS };
+      for (const b of $("fSub").children) b.querySelector(".cnt").textContent = fmt(cnt[b.dataset.v]);
+      list = all.filter((x) => F.sub === "all" || x.k[0] === F.sub).sort((a, b) => (m[b.k] || 0) - (m[a.k] || 0));
+      const what = F.sub === "s" ? " סדרות" : F.sub === "m" ? " סרטים" : "";
+      $("resN").replaceChildren(h("b", null, fmt(list.length)), what + (tab === "wl" ? " ברשימה שלי" : " שראיתי"));
+      if (tab === "seen") renderAch(all, nS);
+      if (!list.length) g.append(h("div", { class: "empty" }, tab === "wl" ? "הרשימה ריקה. סמנו 🔖 על מה שבא לכם לראות." : "עוד לא סימנתם כלום. ✓ על כרטיס מעביר אותו לכאן."));
     } else {
       const base = baseList();
       renderRates(base);
@@ -152,6 +168,19 @@
     $("fSort").style.visibility = tab === "find" ? "visible" : "hidden";
     more();
     renderTasteNote();
+  }
+  // "ראיתי" as an achievements board (Oren 17.11.2026)
+  function renderAch(all, nS) {
+    const rs = all.filter((x) => x.r), avg = rs.length ? rs.reduce((a, x) => a + x.r, 0) / rs.length : 0;
+    const osc = all.reduce((a, x) => a + (x.os ? (x.oc || []).length || 1 : 0), 0);
+    const pct = items.length ? Math.round((all.length / items.length) * 1000) / 10 : 0;
+    $("ach").replaceChildren(
+      h("div", { class: "h" }, "🏆 ההישגים שלי בנטפליקס", h("small", null, all.length ? "ראית " + fmt(all.length) + " מתוך " + fmt(items.length) + " כותרים בנטפליקס ישראל (" + pct + "%)" : "כל ✓ על כרטיס נכנס לכאן")),
+      h("div", { class: "tiles" },
+        h("div", null, h("b", null, fmt(nS)), h("small", null, "📺 סדרות")),
+        h("div", null, h("b", null, fmt(all.length - nS)), h("small", null, "🎬 סרטים")),
+        h("div", null, h("b", null, avg ? avg.toFixed(1) : "–"), h("small", null, "⭐ IMDb ממוצע")),
+        h("div", null, h("b", null, fmt(osc)), h("small", null, "🏆 אוסקרים"))));
   }
   function renderTasteNote() {
     const n = $("tasteNote"), p = TASTES[taste];
@@ -174,7 +203,7 @@
     ls.set(key, m);
     btn.classList.toggle("on", !was);
     $("wlN").textContent = Object.keys(wl).filter((k) => !seen[k]).length;
-    $("seenN").textContent = Object.keys(seen).length;
+    $("seenN").textContent = items.filter((x) => seen[x.k]).length;
     const undo = () => { if (was) m[x.k] = was; else delete m[x.k]; ls.set(key, m); render(); };
     if (kind === "seen" && !was) {
       // the button stays put; the card fades and leaves after a moment
@@ -182,7 +211,10 @@
       setTimeout(() => { if (seen[x.k]) render(); }, 900);
       toast("✓ " + x.n + " עבר ל״ראיתי״", undo);
     } else if (kind === "wl") toast(was ? "הוסר מהרשימה" : "🔖 נוסף לרשימה שלי", undo);
-    else if (kind === "seen" && was) { toast("חזר לרשימות", undo); setTimeout(render, 500); }
+    else if (kind === "seen" && was) {
+      if (tab === "seen") { const c = btn.closest(".card"); c.style.transition = "opacity .6s"; c.style.opacity = ".35"; }
+      toast("חזר לרשימות", undo); setTimeout(() => { if (!seen[x.k]) render(); }, tab === "seen" ? 900 : 500);
+    }
   }
 
   // ---------- sheets ----------
@@ -203,30 +235,24 @@
         try { if (navigator.share) await navigator.share({ title: "מה בנטפליקס?", url: pub }); else { await navigator.clipboard.writeText(pub); toast("הקישור הועתק"); } } catch (e) {} } }, "🔗 לשתף את האפליקציה"),
       h("p", { class: "note" }, "הרשימה שלי ו״ראיתי״ נשמרים רק במכשיר הזה."),
       h("div", { class: "h3" }, "מאיפה הנתונים"),
-      h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (בסינון לפי ציון רק כותר עם " + MIN_VOTES + " הצבעות לפחות). אוסקר: זכייה בקטגוריה מרכזית לפי Wikidata (🏆 זהב = הסרט הטוב ביותר). טופ 10: הטבלאות הרשמיות של נטפליקס."),
+      h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (בסינון לפי ציון רק כותר עם " + MIN_VOTES + " הצבעות לפחות). אוסקר: מספר הזכיות בכל הקטגוריות לפי Wikidata (🏆 זהב = זכה גם בסרט הטוב ביותר). ״בלי שפות זרות״ = רק כותרים שהשפה המקורית שלהם אנגלית או עברית. טופ 10: הטבלאות הרשמיות של נטפליקס."),
       cat ? h("p", { class: "note" }, "עודכן: " + new Date(cat.at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })) : null,
       h("button", { type: "button", class: "btn", onclick: closeSheet }, "✓ סגור"),
     ]);
   }
-  function seenSheet() {
-    const rows = items.filter((x) => seen[x.k]).sort((a, b) => seen[b.k] - seen[a.k]);
-    sheet("✓ ראיתי (" + rows.length + ")", rows.length ? rows.map((x) => h("div", { class: "row" },
-      x.p ? h("img", { src: IMG + x.p, alt: "", loading: "lazy" }) : h("img", { alt: "" }),
-      h("div", { class: "t" }, h("b", null, x.n), h("small", null, (x.r ? "IMDb " + x.r.toFixed(1) + " · " : "") + (x.k[0] === "s" ? "סדרה" : "סרט"))),
-      h("button", { type: "button", onclick: (e) => { delete seen[x.k]; ls.set("nf_seen", seen); e.currentTarget.textContent = "✓ חזר"; e.currentTarget.disabled = true; render(); } }, "↩ להחזיר")))
-      : [h("p", { class: "note" }, "עוד לא סימנתם כלום. ✓ על כרטיס מוריד אותו מהרשימות ומעביר לכאן.")]);
-  }
-
   // ---------- events ----------
   function bindSeg(id, key) { $(id).addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; F[key] = b.dataset.v; save(); render(); }); }
   function save() { ls.set("nf_f", F); }
-  bindSeg("fType", "t"); bindSeg("fIl", "il"); bindSeg("fSort", "sort");
+  bindSeg("fType", "t"); bindSeg("fIl", "il"); bindSeg("fSub", "sub");
+  $("fNf").addEventListener("click", () => { F.nf = !F.nf; save(); render(); });
+  // sort: tap the active one again to reverse it (arrow shows the direction)
+  $("fSort").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return;
+    if (F.sort === b.dataset.v) F.dir = F.dir === 1 ? -1 : 1; else { F.sort = b.dataset.v; F.dir = -1; } save(); render(); });
   $("fGen").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; const v = b.dataset.v;
     if (!v) F.g = []; else F.g = F.g.includes(v) ? F.g.filter((x) => x !== v) : [...F.g, v]; save(); render(); });
   $("fRate").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; F.r = Number(b.dataset.v); save(); render(); });
   document.querySelector(".tabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; render(); });
   $("setBtn").addEventListener("click", settings);
-  $("seenBtn").addEventListener("click", seenSheet);
   $("ovX").addEventListener("click", closeSheet);
   $("ov").addEventListener("click", (e) => { if (e.target.id === "ov") closeSheet(); });
   new IntersectionObserver((es) => { if (es[0].isIntersecting && shown < list.length) more(); }, { rootMargin: "600px" }).observe($("more"));
