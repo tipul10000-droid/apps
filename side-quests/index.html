@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.1";window.SQ_BUILD_AT="17.11.2026 09:25";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.2";window.SQ_BUILD_AT="17.11.2026 09:33";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -27,7 +27,7 @@ setTimeout(function(){var l=document.getElementById("list"),pin=document.getElem
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=Bungee&family=Press+Start+2P&family=Black+Ops+One&family=Orbitron:wght@700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=Space+Grotesk:wght@400;500;700&family=Bungee&family=Press+Start+2P&family=Black+Ops+One&family=Orbitron:wght@700;900&display=swap">
 <style>
 /* no double-tap zoom anywhere (4.8) */
 html,body,*{touch-action:manipulation}
@@ -2070,9 +2070,6 @@ main{padding-bottom:20px!important}
 .st-kpi .m{color:#1f9d55}
 .st-go{position:absolute;z-index:1;left:max(14px,env(safe-area-inset-left,0px));top:14px;width:30px;height:30px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font:700 20px/1 system-ui,sans-serif}
 .stbtn.img .st-txt,.stbtn.img .st-go{display:none}
-.about{display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:12px}
-.about #ver{font-size:12.5px;color:var(--muted);font-family:var(--f-mono);padding:6px 10px}
-.cred{display:flex;flex-direction:column;align-items:center;gap:1px;font:500 11.5px/1.5 var(--f-mono);color:var(--muted);opacity:.85}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stbtn{filter:brightness(.92)}}
 html.desk footer.ver{position:static!important;margin:0 var(--drail) 0 var(--dpane)!important;padding:10px 0 18px!important;pointer-events:auto;background:none}
 html.desk .stbtn{max-height:none}
@@ -2147,10 +2144,32 @@ html.desk .stbtn{max-height:none}
 #setM .sqtop2 .tx b{font-size:15.5px;direction:ltr;text-align:right;white-space:nowrap}
 #setM .sqtop2 .tx small{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* 18.1 (Oren 17.11.2026): the ChatGPT banner, centered at 50% of the width (25% each side), not edge to edge */
-.stbtn.img{width:50%;margin:0 auto;max-height:none;border:0;border-radius:12px;background:none;box-shadow:0 4px 14px rgba(0,0,0,.14)}
-.stbtn.img::after{display:none}
-html.desk .stbtn.img{width:50%}
+/* 18.2 (Oren 17.11.2026): the closing band. Dark like the Side hero, dot grid, thin orange top line.
+   Banner and colophon side by side (LTR), English only; the outlined wordmark sits under the floating buttons. */
+footer.ver.colo{position:relative;overflow:hidden;container-type:inline-size;margin-top:26px;color:#EDEDEA;
+  background:radial-gradient(circle,rgba(255,255,255,.075) 1px,transparent 1.5px) 0 0/16px 16px,#111;
+  border-top:3px solid #EE8C4F;padding:22px 16px calc(206px + env(safe-area-inset-bottom,0px))}
+.co-row{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:center;max-width:620px;margin:0 auto;position:relative;z-index:1}
+.colo .stbtn.img{width:100%;margin:0;border-radius:10px;border:0;background:#1d1d1d;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 8px 22px rgba(0,0,0,.45)}
+.colo .stbtn.img::after{display:none}
+.colo .stbtn.img:active{filter:brightness(.9)}
+.co-txt{min-width:0;display:flex;flex-direction:column;gap:9px;text-align:left}
+.colo #ver{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:1px;width:100%;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.colo #ver b{font:700 20px/1 "Space Grotesk",var(--f-display);letter-spacing:-.4px;color:#fff}
+.colo #ver b::first-letter{color:#EE8C4F}
+.colo #ver span{font:500 10.5px/1.4 var(--f-mono);color:rgba(237,237,234,.55);letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.colo #ver:focus-visible{outline:2px solid #EE8C4F;outline-offset:3px;border-radius:4px}
+.co-cred{margin:0;display:flex;flex-direction:column;gap:6px;padding-top:9px;border-top:1px solid rgba(255,255,255,.12)}
+.co-cred div{display:flex;flex-direction:column;min-width:0}
+.co-cred dt{font:500 9.5px/1.3 var(--f-mono);letter-spacing:1.6px;text-transform:uppercase;color:#EE8C4F}
+.co-cred dd{margin:0;font:500 13px/1.3 "Space Grotesk",var(--f-body);color:#EDEDEA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-mark{position:absolute;left:0;right:0;bottom:calc(10px + env(safe-area-inset-bottom,0px));direction:ltr;text-align:center;white-space:nowrap;
+  font:800 12.6cqi/.9 "Rubik",var(--f-display);letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.2);pointer-events:none;user-select:none}
+.co-mark i{font-style:normal;margin-left:.22em;-webkit-text-stroke-color:rgba(238,140,79,.55)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) footer.ver.colo{background-color:#0A0A0A;border-top-color:#EE8C4F}}
+html.desk footer.ver.colo{padding:28px 32px 26px!important;background:radial-gradient(circle,rgba(255,255,255,.075) 1px,transparent 1.5px) 0 0/16px 16px,#111}
+html.desk .co-row{grid-template-columns:360px minmax(0,260px);justify-content:center;gap:28px}
+html.desk .co-mark{position:static;margin-top:34px;font-size:8cqi}
 </style>
 </head>
 <body>
@@ -2260,18 +2279,24 @@ html.desk .stbtn.img{width:50%}
 <div class="aipg" id="pg2" hidden role="region" aria-label="AI Projects"></div>
 <div class="aipg" id="pg3" hidden role="region" aria-label="פרויקט"></div>
 <div class="aipg dpg" id="pgD" hidden role="region" aria-label="דשבורד"></div>
-<footer class="ver">
-  <!-- 18.0 (Oren 17.11.2026): stats moved out of settings to their own edge-to-edge button above the about line.
-       The art is a temporary CSS/SVG placeholder in the Side theme; Oren's ChatGPT banner (img/stats-banner.*, 3:1) replaces .st-art. -->
-  <button type="button" class="stbtn img" id="statBtn" aria-label="Side Quest Statistics">
-    <img class="st-art" src="img/stats-banner.webp?v=1" srcset="img/stats-banner-900.webp?v=1 900w, img/stats-banner.webp?v=1 1800w" sizes="50vw" width="1800" height="600" alt="" decoding="async" loading="lazy">
-    <span class="st-txt"><span class="st-tag">PROGRESS REPORT</span><b>SIDE QUEST <i>STATISTICS</i></b><span class="st-kpi" id="statKpi"></span></span>
-    <span class="st-go" aria-hidden="true">›</span>
-  </button>
-  <div class="about gut">
-    <button type="button" id="ver" aria-label="גרסה. לחיצה בודקת אם יש גרסה חדשה"></button>
-    <div class="cred"><span dir="ltr">idea and design by <span dir="rtl">אורן יצחקי</span></span><span dir="ltr">coded by Claude Code Opus 4.5</span></div>
+<footer class="ver colo">
+  <!-- 18.2 (Oren 17.11.2026): one dark edge-to-edge closing band in the Side theme: the stats banner and the colophon side by side,
+       all in English (Space Grotesk + IBM Plex Mono), and a large outlined SIDE QUESTS wordmark at the very bottom under the floating buttons. -->
+  <div class="co-row" dir="ltr">
+    <button type="button" class="stbtn img" id="statBtn" aria-label="Side Quest Statistics">
+      <img class="st-art" src="img/stats-banner.webp?v=1" srcset="img/stats-banner-900.webp?v=1 900w, img/stats-banner.webp?v=1 1800w" sizes="(min-width:1024px) 360px, 55vw" width="1800" height="600" alt="" decoding="async" loading="lazy">
+      <span class="st-txt"><span class="st-tag">PROGRESS REPORT</span><b>SIDE QUEST <i>STATISTICS</i></b><span class="st-kpi" id="statKpi"></span></span>
+      <span class="st-go" aria-hidden="true">›</span>
+    </button>
+    <div class="co-txt">
+      <button type="button" id="ver" aria-label="Version. Tap to check for an update"><b id="verN"></b><span id="verT"></span></button>
+      <dl class="co-cred">
+        <div><dt>Idea &amp; design</dt><dd>Oren Yitzhaki</dd></div>
+        <div><dt>Code</dt><dd>Claude Code · Opus 4.5</dd></div>
+      </dl>
+    </div>
   </div>
+  <div class="co-mark" aria-hidden="true">SIDE<i>QUESTS</i></div>
 </footer>
 
 <script>
@@ -4428,8 +4453,9 @@ html.desk .stbtn.img{width:50%}
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")checkUpdate();});
   window.addEventListener("pageshow",e=>{if(e.persisted)checkUpdate(true);});
   setTimeout(()=>checkUpdate(true),3000);
-  $("ver").textContent=`גרסה ${window.SQ_BUILD} · ${window.SQ_BUILD_AT}`;
-  $("ver").onclick=async()=>{$("ver").textContent="בודק גרסה חדשה…";await checkUpdate(true);setTimeout(()=>{$("ver").textContent=`גרסה ${window.SQ_BUILD} · ${window.SQ_BUILD_AT} (העדכנית)`;},600);};
+  const verAt=()=>{const m=String(window.SQ_BUILD_AT||"").match(/(\d+)\.(\d+)\.(\d+)\s*(\S*)/);return m?`${+m[1]} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m[2]-1]} ${m[3]}${m[4]?" · "+m[4]:""}`:String(window.SQ_BUILD_AT||"");};
+  $("verN").textContent=`v${window.SQ_BUILD}`;$("verT").textContent=verAt();
+  $("ver").onclick=async()=>{$("verT").textContent="Checking for updates…";await checkUpdate(true);setTimeout(()=>{$("verT").textContent="Up to date ✓ · "+verAt();},600);};
   // 3.0: the refresh button really syncs: pulls fresh data, asks the Claude run for a full scan
   // (settings/sync_request), and shows exactly what changed. Stays at least ~2s so it is visible.
   let syncState={};
