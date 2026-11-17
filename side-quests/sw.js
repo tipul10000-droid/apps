@@ -1,6 +1,61 @@
-// Side Quests service worker: push notifications only (no caching, so new versions load as before).
+// Side Quests service worker: push notifications + offline copy (20.0).
+// Pages and files of the app: network first (new versions load as before); if the network doesn't answer
+// within 3s (plane Wi-Fi) or fails, the last saved copy opens. Data (Supabase) is never cached here: sq-db.js
+// keeps it in IndexedDB. Kill switch: open the app with ?nosw=1 (clears this cache and unregisters).
+var CACHE = "sq-app-v1";
+var FONTS = "sq-fonts-v1";
 self.addEventListener("install", function () { self.skipWaiting(); });
-self.addEventListener("activate", function (e) { e.waitUntil(self.clients.claim()); });
+self.addEventListener("activate", function (e) {
+  e.waitUntil(caches.keys().then(function (ks) {
+    return Promise.all(ks.filter(function (k) { return k.indexOf("sq-") === 0 && k !== CACHE && k !== FONTS; }).map(function (k) { return caches.delete(k); }));
+  }).then(function () { return self.clients.claim(); }));
+});
+function keyOf(req) {
+  // one copy per file: drop the ?v= / ?u= cache-busting query (the page itself is saved without query or hash)
+  var u = new URL(req.url); u.search = ""; u.hash = "";
+  if (req.mode === "navigate" && /\/$/.test(u.pathname)) u.pathname += "index.html";
+  return u.toString();
+}
+function netFirst(e) {
+  var req = e.request, k = keyOf(req);
+  var net = fetch(req).then(function (r) {
+    if (r && r.ok && r.type === "basic") { var c = r.clone(); caches.open(CACHE).then(function (ca) { return ca.put(k, c); }); }
+    return r;
+  });
+  var cached = function () { return caches.open(CACHE).then(function (ca) { return ca.match(k); }); };
+  e.waitUntil(net.catch(function () {}));
+  return new Promise(function (resolve, reject) {
+    var done = false;
+    var t = setTimeout(function () { cached().then(function (c) { if (c && !done) { done = true; resolve(c); } }); }, 3000);
+    net.then(function (r) { if (!done) { done = true; clearTimeout(t); resolve(r); } }, function (err) {
+      clearTimeout(t);
+      cached().then(function (c) { if (done) return; done = true; if (c) resolve(c); else reject(err); });
+    });
+  });
+}
+function fontsCache(e) {
+  return caches.open(FONTS).then(function (ca) {
+    return ca.match(e.request).then(function (c) {
+      var net = fetch(e.request).then(function (r) { if (r && (r.ok || r.type === "opaque")) ca.put(e.request, r.clone()); return r; });
+      if (c) { e.waitUntil(net.catch(function () {})); return c; }
+      return net;
+    });
+  });
+}
+self.addEventListener("fetch", function (e) {
+  var req = e.request;
+  if (req.method !== "GET") return;
+  var u = new URL(req.url);
+  if (u.origin === self.location.origin) {
+    if (u.pathname.indexOf(new URL(self.registration.scope).pathname) !== 0) return;
+    if (u.searchParams.has("nosw")) return;
+    // the version check (?v=<time>, no-store) must really ask the network; offline it just fails quietly
+    if (req.cache === "no-store") return;
+    e.respondWith(netFirst(e));
+  } else if (u.hostname === "fonts.googleapis.com" || u.hostname === "fonts.gstatic.com") {
+    e.respondWith(fontsCache(e));
+  }
+});
 self.addEventListener("push", function (e) {
   var d = {};
   try { d = e.data.json(); } catch (err) { d = { body: e.data ? e.data.text() : "" }; }
