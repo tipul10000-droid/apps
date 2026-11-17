@@ -11,9 +11,9 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.14";window.SQ_BUILD_AT="17.11.2026 19:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.0";window.SQ_BUILD_AT="17.11.2026 19:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
-(function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
+(function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
 d.innerHTML='<b>קרתה תקלה באפליקציה</b><div style="font-size:12px;opacity:.9;margin:4px 0 8px;direction:ltr;text-align:left;word-break:break-word"></div><button type="button" style="background:#fff;color:#B3261E;border:0;border-radius:10px;padding:8px 14px;font:600 15px -apple-system,system-ui,sans-serif">טען מחדש</button>';
 d.querySelector("div").textContent=String(msg||"").slice(0,300)+" · v"+window.SQ_BUILD;d.querySelector("button").onclick=function(){location.replace(location.pathname+"?u="+Date.now()+location.hash);};document.body.appendChild(d);}
@@ -21,7 +21,11 @@ window.sqShowErr=bar;
 window.addEventListener("error",function(e){bar((e.message||"error")+(e.lineno?" @"+e.lineno+":"+e.colno:""));});
 window.addEventListener("unhandledrejection",function(e){var r=e.reason;bar("promise: "+((r&&(r.message||r))||""));});
 setTimeout(function(){var l=document.getElementById("list"),pin=document.getElementById("sq-pin");if(!pin&&l&&/טוען/.test(l.textContent)&&l.children.length<=1)bar("הנתונים לא הגיעו אחרי 20 שניות");},20000);})();</script>
-<script src="sq-db.js?v=9"></script>
+<script>/* 20.0: offline copy. ?nosw=1 = kill switch: clears the saved copy of the app and reloads from the network */
+(function(){if(!("serviceWorker" in navigator)||(location.protocol!=="https:"&&location.hostname!=="localhost"))return;
+if(/[?&]nosw=1/.test(location.search)){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister();}));}).then(function(){return window.caches?caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf("sq-")===0;}).map(function(k){return caches.delete(k);}));}):0;}).then(function(){location.replace(location.pathname+"?u="+Date.now()+location.hash);});return;}
+window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});})();</script>
+<script src="sq-db.js?v=10"></script>
 <script src="workcal-engine.js?v=1"></script>
 <script src="timegate.js?v=3"></script>
 <script src="sqctx.js?v=2"></script>
@@ -2078,6 +2082,11 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 .sbar .cl.ok::after{content:"";position:absolute;inset:0;border-radius:50%;background:#22C55E;animation:clbeat 2.6s ease-out infinite}
 .sbar .cl.late{background:#F59E0B}
 .sbar .cl.bad{background:#EF4444}
+/* 20.0: Side Quests' own connection light on the refresh side (fixed size, only the color changes) */
+.sbar .refr .sqx{position:relative;display:inline-flex;flex:none}
+.sbar .refr .sqx .cl{inset-inline-end:-5px;bottom:-2px}
+.sbar .refr .rv{font-variant-numeric:tabular-nums}
+.row .r-title.pend::before,.row.pend .r-title::before{content:"⇡ ";color:#F59E0B;font-weight:800}
 .sbar .cx.off svg{opacity:.38;filter:grayscale(1)}
 @keyframes clbeat{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(2.6);opacity:0}}
 @media (prefers-reduced-motion:reduce){.sbar .cl.ok::after{animation:none;display:none}}
@@ -2093,10 +2102,10 @@ html.desk #dhead .toolrow .updbtn{flex:0 0 118px!important;width:118px!important
 html:not(.desk) .ctxrow .toolrow .sbar{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))}
 html:not(.desk) .ctxrow .toolrow .sbar .refr{min-width:0;justify-content:center!important;padding:0 8px!important;gap:6px}
 html:not(.desk) .ctxrow .toolrow .sbar .refr .rk{display:inline!important;font-weight:700}
-html:not(.desk) .ctxrow .toolrow .sbar .refr.spin .rk{display:none!important}
+html:not(.desk) .ctxrow .toolrow .sbar .refr.spin .rk,html:not(.desk) .ctxrow .toolrow .sbar .refr.offl .rk{display:none!important}
 html:not(.desk) .ctxrow .toolrow .sbar .refr .rv{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 html:not(.desk) .ctxrow .toolrow .sbar .refr .rv:not(:empty)::before{content:"🕒";font-size:12px}
-html:not(.desk) .ctxrow .toolrow .sbar .refr.spin .rv::before{content:""}
+html:not(.desk) .ctxrow .toolrow .sbar .refr.spin .rv::before,html:not(.desk) .ctxrow .toolrow .sbar .refr.offl .rv::before{content:""}
 html:not(.desk) .sbar .conn{min-width:0;justify-content:space-evenly;gap:0;padding:0 6px;border:0!important}
 html:not(.desk) .ctxrow .toolrow .sbar{position:relative}
 html:not(.desk) .ctxrow .toolrow .sbar::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1.5px;margin-left:-.75px;background:rgba(255,255,255,.25);pointer-events:none}
@@ -2109,6 +2118,7 @@ button.cnrow{cursor:pointer}
 .cnrow .ci{position:relative;flex:none;width:30px;height:30px}
 .cnrow .ci svg{width:30px;height:30px}
 .cnrow .ci.off svg{opacity:.4;filter:grayscale(1)}
+.cnrow .ci .sqic{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#EE8C4F;color:#fff;font-size:20px;font-weight:800}
 .cnrow .cl{position:absolute;inset-inline-end:-3px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:#9AA0A6;box-shadow:0 0 0 2px var(--surface)}
 .cnrow .cl.ok{background:#22C55E}.cnrow .cl.late{background:#F59E0B}.cnrow .cl.bad{background:#EF4444}
 .cnrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
@@ -2365,7 +2375,7 @@ html.desk .co-mark{font-size:8cqi}
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><div class="sbar" role="group" aria-label="מצב העדכון והחיבורים"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><button class="conn" id="connBtn" type="button" aria-label="מצב החיבורים: Gmail, יומן, מיקום, תזרים, וואטסאפ"><span class="cx" data-c="gm"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M2 6.2v11.3c0 .8.6 1.5 1.4 1.5h3.2V9.7z"/><path fill="#34A853" d="M17.4 19h3.2c.8 0 1.4-.7 1.4-1.5V6.2l-4.6 3.5z"/><path fill="#FBBC04" d="M17.4 5v4.7L22 6.2V5.3c0-1.7-1.9-2.6-3.2-1.6z"/><path fill="#EA4335" d="M6.6 9.7V5l5.4 4.1L17.4 5v4.7L12 13.8z"/><path fill="#C5221F" d="M2 5.3v.9l4.6 3.5V5L5.2 3.7C3.9 2.7 2 3.6 2 5.3z"/></svg><i class="cl" id="clGm"></i></span><span class="cx" data-c="cal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="3" fill="#0F6CBD"/><rect x="3" y="4.5" width="18" height="5" rx="2.5" fill="#0A4F8F"/><path d="M8 2.6v4M16 2.6v4" stroke="#0A4F8F" stroke-width="2" stroke-linecap="round"/><g fill="#fff"><rect x="6.2" y="12" width="3" height="2.6" rx=".6"/><rect x="10.5" y="12" width="3" height="2.6" rx=".6"/><rect x="14.8" y="12" width="3" height="2.6" rx=".6"/><rect x="6.2" y="16" width="3" height="2.6" rx=".6"/><rect x="10.5" y="16" width="3" height="2.6" rx=".6"/></g></svg><i class="cl" id="clCal"></i></span><span class="cx" data-c="loc"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#E5484D" d="M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12z"/><circle cx="12" cy="10" r="2.8" fill="#fff"/></svg><i class="cl" id="clLoc"></i></span><span class="cx" data-c="cf"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="#0E9F6E"/><text x="12" y="17.2" text-anchor="middle" font-size="14" font-weight="800" font-family="Arial,sans-serif" fill="#fff">₪</text></svg><i class="cl" id="clCf"></i></span><span class="cx" data-c="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.2 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2z"/><path fill="#fff" d="M8.6 7.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.7 5.7 5 2.8 1.1 3.4.9 4 .8.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.3.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.5z"/></svg><i class="cl" id="clWa"></i></span></button></div><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
+    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><div class="sbar" role="group" aria-label="מצב העדכון והחיבורים"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="cx sqx" aria-hidden="true"><span class="ic">⟳</span><i class="cl" id="clSq"></i></span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><button class="conn" id="connBtn" type="button" aria-label="מצב החיבורים: Gmail, יומן, מיקום, תזרים, וואטסאפ"><span class="cx" data-c="gm"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M2 6.2v11.3c0 .8.6 1.5 1.4 1.5h3.2V9.7z"/><path fill="#34A853" d="M17.4 19h3.2c.8 0 1.4-.7 1.4-1.5V6.2l-4.6 3.5z"/><path fill="#FBBC04" d="M17.4 5v4.7L22 6.2V5.3c0-1.7-1.9-2.6-3.2-1.6z"/><path fill="#EA4335" d="M6.6 9.7V5l5.4 4.1L17.4 5v4.7L12 13.8z"/><path fill="#C5221F" d="M2 5.3v.9l4.6 3.5V5L5.2 3.7C3.9 2.7 2 3.6 2 5.3z"/></svg><i class="cl" id="clGm"></i></span><span class="cx" data-c="cal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="3" fill="#0F6CBD"/><rect x="3" y="4.5" width="18" height="5" rx="2.5" fill="#0A4F8F"/><path d="M8 2.6v4M16 2.6v4" stroke="#0A4F8F" stroke-width="2" stroke-linecap="round"/><g fill="#fff"><rect x="6.2" y="12" width="3" height="2.6" rx=".6"/><rect x="10.5" y="12" width="3" height="2.6" rx=".6"/><rect x="14.8" y="12" width="3" height="2.6" rx=".6"/><rect x="6.2" y="16" width="3" height="2.6" rx=".6"/><rect x="10.5" y="16" width="3" height="2.6" rx=".6"/></g></svg><i class="cl" id="clCal"></i></span><span class="cx" data-c="loc"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#E5484D" d="M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12z"/><circle cx="12" cy="10" r="2.8" fill="#fff"/></svg><i class="cl" id="clLoc"></i></span><span class="cx" data-c="cf"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="#0E9F6E"/><text x="12" y="17.2" text-anchor="middle" font-size="14" font-weight="800" font-family="Arial,sans-serif" fill="#fff">₪</text></svg><i class="cl" id="clCf"></i></span><span class="cx" data-c="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.2 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2z"/><path fill="#fff" d="M8.6 7.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.7 5.7 5 2.8 1.1 3.4.9 4 .8.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.3.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.5z"/></svg><i class="cl" id="clWa"></i></span></button></div><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
@@ -4497,7 +4507,23 @@ html.desk .co-mark{font-size:8cqi}
     for(const t of all){if(!C.wants(t)||ctxBusy.has(t.id))continue;const r=C.apply(t,now);if(!r)continue;ctxBusy.add(t.id);
       db.collection("topics").doc(t.id).update(r.patch).catch(()=>ctxBusy.delete(t.id));}}
   setInterval(()=>{if(db&&!laterFor)renderAll();renderConn();},60000);
-  function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"";}
+  // 20.0: the right side of the bar = Side Quests itself. green = the last server call worked and nothing waits,
+  // orange = network but the server fails, or changes wait to be sent, red = no network ("✈️" + time since the last real sync).
+  function sqConn(){const N=window.SQ_NET||{},q=N.q||0,last=window.SQ_LAST_REFRESH||N.last||0;
+    if(N.ok===false&&N.kind==="net")return{lv:"bad",t:`אין רשת · עדכון אחרון ${last?ago(last):"לא ידוע"}`,short:`✈️ ${last?ago(last):"אופליין"}`,q,last};
+    if(N.ok===false)return{lv:"late",t:`יש רשת, השרת לא עונה · עדכון אחרון ${last?ago(last):"לא ידוע"}`,short:`⚠ ${last?ago(last):"שרת"}`,q,last};
+    if(q)return{lv:"late",t:`${q===1?"שינוי אחד ממתין":q+" שינויים ממתינים"} לשליחה`,short:last?ago(last):"",q,last};
+    if(N.ok)return{lv:"ok",t:`מחובר · עודכן ${ago(last)}`,short:last?ago(last):"",q,last};
+    return{lv:"off",t:"בודק חיבור…",short:last?ago(last):"",q,last};}
+  function renderRefr(){const c=sqConn(),d=document.getElementById("clSq");if(d)d.className="cl"+(c.lv==="off"?"":" "+c.lv);
+    if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=c.short+(c.q?` (${c.q})`:"");$("refr").classList.toggle("offl",c.lv==="bad"||(window.SQ_NET&&SQ_NET.ok===false));
+    $("refr").setAttribute("aria-label","עדכון מלא. "+c.t);}
+  let pendCss=null,skipSeen=0;
+  function renderPend(){const N=window.SQ_NET||{},ids=(N.pending||[]).filter(k=>k.indexOf("topics/")===0).map(k=>k.slice(7));
+    if(!pendCss){pendCss=document.createElement("style");document.head.append(pendCss);}
+    pendCss.textContent=ids.length?ids.map(id=>`.row[data-id="${(window.CSS&&CSS.escape?CSS.escape(id):id)}"] .r-title::before`).join(",")+'{content:"⇡ ";color:#F59E0B;font-weight:800}':"";
+    const sk=N.skipped||[];if(sk.length>skipSeen){const x=sk[sk.length-1];toast(`לא הוחל: ${String(x.title||x.id).slice(0,40)} (${x.why})`);skipSeen=sk.length;}}
+  window.addEventListener("sq-net",()=>{renderRefr();renderPend();try{renderConn();}catch(e){}});
   function showAdd(on){if(!on)micStop(true);if(on)showFind(false);$("quick").hidden=!on;if(on){$("qtitle").focus();$("quick").scrollIntoView({block:"nearest"});}}
   // 13.5 (Oren 8.11.2026): the + is an "instruction" to All Arounder, not only "new task".
   // Tap: ⌨️ typing / 🎤 voice. The bar sits at the bottom and the tasks stay visible behind it.
@@ -4694,7 +4720,7 @@ html.desk .co-mark{font-size:8cqi}
       if(db&&db.refresh)await db.refresh();}catch(e){ok=false;}
     const wait=2000-(Date.now()-t0);if(wait>0)await new Promise(r=>setTimeout(r,wait));
     laterFor=null;renderAll();b.classList.remove("spin");renderRefr();
-    if(!ok){sheet(false,"העדכון נכשל, נסה שוב");return;}
+    if(!ok){const c=sqConn();sheet(false,c.lv==="bad"?"✈️ אין רשת":"העדכון נכשל, נסה שוב",null,`מוצג העדכון האחרון ששמור במכשיר (${c.last?ago(c.last):"לא ידוע"}).`+(c.q?` ${c.q===1?"שינוי אחד ממתין":c.q+" שינויים ממתינים"} ויישלחו כשהרשת תחזור.`:""));return;}
     const ch=diffT(before,snapT());
     const e=sheet(false,ch.length?`עודכן · ${ch.length===1?"שינוי אחד":ch.length+" שינויים"}`:"עודכן · אין שינויים חדשים",ch.slice(0,5),sweepLine());
     setTimeout(()=>e.remove(),ch.length?9000:5000);};
@@ -4994,7 +5020,9 @@ html.desk .co-mark{font-size:8cqi}
     const row=(k,name,st,go,sub)=>{const ic=h("span",{class:"ci"+(st.lv==="off"?" off":""),html:CN_ICON[k]?CN_ICON[k].outerHTML:""});ic.append(h("i",{class:"cl"+(st.lv==="off"?"":" "+st.lv)}));
       const kids=[ic,h("span",{class:"tx"},h("b",null,name),h("small",null,st.t),sub?h("small",null,sub):null),h("span",{class:"st "+st.lv},st.off||CN_TXT[st.lv]),go?h("span",{class:"go","aria-hidden":"true"},"›"):null];
       return go?h("button",{class:"cnrow",type:"button",onclick:go},...kids):h("div",{class:"cnrow"},...kids);};
+    const SQc=sqConn();CN_ICON.sq=CN_ICON.sq||h("span",{class:"sqic"},"⟳");
     el.replaceChildren(h("div",{class:"cnlist"},
+      row("sq","Side Quests (השרת)",{...SQc,off:SQc.lv==="off"?"בודק":SQc.lv==="bad"?"אין רשת":SQc.lv==="late"?(window.SQ_NET&&SQ_NET.ok===false?"תקלה":"ממתין"):"מחובר"},null,SQc.lv==="bad"?"פעולות נשמרות במכשיר ויישלחו כשהרשת תחזור":SQc.q?"יישלחו בעדכון הבא":"השרת, האינטרנט והאפליקציה"),
       row("gm","Gmail",S.gm,()=>{closeModal();setTimeout(showGmail,60);},S.gm.sum),
       row("cal","יומן אאוטלוק (עבודה)",S.cal,()=>{closeModal();setTimeout(()=>openDash("work_calendar"),60);},"נכנס רק כשמשהו ביומן משתנה"),
       row("loc","מיקום",S.loc,()=>{closeModal();setTimeout(()=>showHere(true),60);},"לחיצה בודקת את המיקום עכשיו"),
