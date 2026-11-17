@@ -376,13 +376,15 @@
     const f = (e, t) => h("div", { class: "af" }, h("span", null, e), t);
     sheet("אודות", [
       h("div", { class: "ahero" }, h("img", { src: "icon-192.png?v=3", alt: "", width: "84", height: "84" }),
-        h("b", null, "מה בנטפליקס?"), h("span", null, "מוצאים מה לראות, בלי לגלול שעה")),
+        h("b", null, "מה יש חדש בנטפליקס?"), h("span", null, "מוצאים מה לראות, בלי לגלול לנצח")),
       h("p", { class: "ab" }, "בנטפליקס אי אפשר לסנן לפי ציון, אז הנה מקום שאפשר. כל מה שיש עכשיו בנטפליקס ישראל, עם ציון IMDb, אוסקרים וטופ 10. בוחרים ז׳אנר ורמת ציון, ותוך שנייה יש רשימה של דברים ששווה לראות."),
       h("div", { class: "afs" }, f("⭐", "ציון IMDb לכל סרט וסדרה"), f("🇮🇱", "תוכן ישראלי, ובלי שפות זרות אם רוצים"),
         f("🔖", "הרשימה שלי ומה שכבר ראיתי"), f("🆓", "חינם, בלי הרשמה, מתעדכן כל לילה")),
       h("button", { type: "button", class: "ashare", onclick: share }, "📤 לשלוח לחברים"),
-      h("div", { class: "cred" }, h("div", null, h("small", null, "רעיון ועיצוב"), "אורן יצחקי"), h("div", null, h("small", null, "קוד"), "Claude Code")),
-      h("p", { class: "note anote" }, "נתונים: JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata,\u200f Netflix.\u200f לא קשור לנטפליקס."),
+      h("details", { class: "acred" }, h("summary", null, "קרדיטים ומקורות"),
+        h("div", { class: "cred" }, h("div", null, h("small", null, "רעיון ועיצוב"), "אורן יצחקי"), h("div", null, h("small", null, "קוד"), "Claude Code")),
+        h("p", { class: "note anote" }, "נתונים: JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata,\u200f Netflix.\u200f לא קשור לנטפליקס.")),
+      h("div", { class: "asig", dir: "ltr" }, "Coding by Claude Code · Idea & Design by Oren Itzhaki"),
     ], "about-sh");
   }
 
