@@ -31,7 +31,7 @@
   const foreign = (x) => !!x.ol && x.ol !== "he"; // original language other than English/Hebrew (ol is absent for English)
   let taste = ls.get("nf_taste", "all");
   let wl = ls.get("nf_wl", {}), seen = ls.get("nf_seen", {});
-  let tab = "find", shown = 0, list = [];
+  let tab = "find", shown = 0, list = [], q = "";
   let op = Object.assign({ wl: {}, seen: {} }, ls.get("nf_op", {})), fAt = ls.get("nf_f_at", 0), tAt = ls.get("nf_taste_at", 0);
   const setMark = (kind, id, v) => { const m = kind === "wl" ? wl : seen; if (v) m[id] = v; else delete m[id];
     op[kind][id] = Date.now(); ls.set(kind === "wl" ? "nf_wl" : "nf_seen", m); ls.set("nf_op", op); sync.soon(); };
@@ -93,6 +93,7 @@
     const f = by[F.sort] || by.r;
     return a.sort((x, y) => d * f(x, y));
   }
+  const qn = (s) => String(s || "").toLowerCase().replace(/[\u0591-\u05C7]/g, "").replace(/[^a-z0-9\u05d0-\u05ea]/g, "");
   const isNew = (x) => minF && x.f > minF && (Date.now() - Date.parse(x.f)) < NEW_DAYS * 864e5;
 
   // ---------- render ----------
@@ -149,12 +150,21 @@
     document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.tab === tab));
     $("wlN").textContent = Object.keys(wl).filter((k) => !seen[k]).length;
     $("seenN").textContent = items.filter((x) => seen[x.k]).length;
-    $("filters").hidden = tab !== "find";
-    $("fSub").hidden = tab === "find";
-    $("ach").hidden = tab !== "seen";
+    $("filters").hidden = tab !== "find" || !!q;
+    $("fSub").hidden = tab === "find" || !!q;
+    $("ach").hidden = tab !== "seen" || !!q;
     renderFilters();
     const g = $("grid"); g.replaceChildren(); shown = 0;
-    if (tab !== "find") {
+    if (q) {
+      // search by name, Hebrew or English, across the whole catalog (Oren 17.11.2026)
+      const nq = qn(q), hit = [];
+      for (const x of items) { const a = qn(x.n), b = qn(x.hn);
+        const s = a === nq || b === nq ? 3 : a.startsWith(nq) || b.startsWith(nq) ? 2 : a.includes(nq) || b.includes(nq) ? 1 : 0;
+        if (s) hit.push([s, x]); }
+      list = hit.sort((a, b) => b[0] - a[0] || (b[1].v || 0) - (a[1].v || 0)).map((p) => p[1]);
+      $("resN").replaceChildren(...(list.length === 1 ? ["תוצאה אחת"] : [h("b", null, fmt(list.length)), " תוצאות"]));
+      if (!list.length) g.append(h("div", { class: "empty" }, "״" + q + "״ לא נמצא בנטפליקס ישראל."));
+    } else if (tab !== "find") {
       // watchlist / seen, with a movies-series sub filter (Oren 17.11.2026)
       const m = tab === "wl" ? wl : seen;
       const all = items.filter((x) => m[x.k] && (tab === "seen" || !seen[x.k]));
@@ -174,7 +184,7 @@
       $("resN").replaceChildren(h("b", null, fmt(list.length)), " מתוך " + fmt(all) + (F.t === "s" ? " סדרות" : " סרטים"));
       if (!list.length) g.append(h("div", { class: "empty" }, "אין תוצאות. נסו להוריד את הציון או להוסיף ז׳אנר."));
     }
-    $("fSort").style.visibility = tab === "find" ? "visible" : "hidden";
+    $("fSort").style.visibility = tab === "find" && !q ? "visible" : "hidden";
     more();
     renderTasteNote();
   }
@@ -335,6 +345,15 @@
     return { now, soon, box };
   })();
 
+  function about() {
+    sheet("ⓘ אודות", [
+      h("p", { class: "ab" }, "נטפליקס לא נותנת לסנן לפי ציון. כאן אפשר: כל מה שזמין בנטפליקס ישראל, עם ציון IMDb, אוסקרים וטופ 10, וסינון לפי ז׳אנר, תוכן ישראלי ושפה. שומרים לעצמכם ״הרשימה שלי״ ו״ראיתי״. חינם, בלי הרשמה, מתעדכן כל לילה."),
+      h("div", { class: "cred" }, h("div", null, h("small", null, "רעיון ועיצוב"), "אורן יצחקי"), h("div", null, h("small", null, "קוד"), "Claude Code")),
+      h("p", { class: "note" }, "הנתונים מ-JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata ו-Netflix Top 10.\u200f האפליקציה לא קשורה לנטפליקס."),
+      h("button", { type: "button", class: "btn", onclick: closeSheet }, "✓ סגור"),
+    ]);
+  }
+
   // ---------- events ----------
   function bindSeg(id, key) { $(id).addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; F[key] = b.dataset.v; save(); render(); }); }
   function save() { ls.set("nf_f", F); fAt = Date.now(); ls.set("nf_f_at", fAt); sync.soon(); }
@@ -348,6 +367,15 @@
   $("fRate").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; F.r = Number(b.dataset.v); save(); render(); });
   document.querySelector(".tabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; render(); });
   $("setBtn").addEventListener("click", settings);
+  $("infoBtn").addEventListener("click", about); $("aboutBtn").addEventListener("click", about);
+  let qT = null;
+  $("q").addEventListener("input", () => { clearTimeout(qT); qT = setTimeout(() => { q = $("q").value.trim(); $("qX").hidden = !q; render(); }, 180); });
+  $("q").addEventListener("keydown", (e) => { if (e.key === "Enter") $("q").blur(); });
+  $("qX").addEventListener("click", () => { $("q").value = ""; q = ""; $("qX").hidden = true; render(); });
+  // ↑ back to the top, shown once you scrolled a bit (Oren 17.11.2026)
+  const tt = $("toTop");
+  addEventListener("scroll", () => tt.classList.toggle("on", scrollY > 600), { passive: true });
+  tt.addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
   $("ovX").addEventListener("click", closeSheet);
   $("ov").addEventListener("click", (e) => { if (e.target.id === "ov") closeSheet(); });
   new IntersectionObserver((es) => { if (es[0].isIntersecting && shown < list.length) more(); }, { rootMargin: "600px" }).observe($("more"));

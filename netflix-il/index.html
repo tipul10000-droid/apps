@@ -11,10 +11,10 @@
 <link rel="manifest" href="manifest.json?v=3">
 <link rel="icon" href="icon-64.png?v=3" type="image/png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3">
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
-<div class="bwrap"><img class="banner" src="img/banner-780.webp" srcset="img/banner-780.webp 780w, img/banner.webp 1200w" sizes="(min-width:700px) 680px, 100vw" width="1200" height="400" alt="מה יש חדש בנטפליקס?"><a id="egg" class="egg" href="https://www.youtube.com/watch?v=lU0xlaWd_-U&amp;t=17s" target="_blank" rel="noopener" aria-label="🎵"></a></div>
+<div class="bwrap"><img class="banner" src="img/banner-780.webp" srcset="img/banner-780.webp 780w, img/banner.webp 1200w" sizes="(min-width:700px) 680px, 100vw" width="1200" height="400" alt="מה יש חדש בנטפליקס?"><a id="egg" class="egg" href="https://www.youtube.com/watch?v=lU0xlaWd_-U&amp;t=17s" target="_blank" rel="noopener" aria-label="🎵"></a><button id="infoBtn" class="info" type="button" aria-label="אודות">i</button></div>
 <header class="top">
   <h1 class="sr">מה בנטפליקס?</h1>
   <div class="hrow">
@@ -30,6 +30,7 @@
 </header>
 
 <main>
+  <div class="srch"><span class="mg">🔍</span><input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="חיפוש סרט או סדרה" aria-label="חיפוש"><button id="qX" type="button" aria-label="ניקוי" hidden>✕</button></div>
   <section id="filters">
     <div class="seg" id="fType">
       <button type="button" data-v="s">📺 סדרות</button>
@@ -67,7 +68,9 @@
   <div id="grid" class="grid"></div>
   <div id="more" class="more"></div>
   <p class="src">זמינות: JustWatch דרך TMDB · ציונים: IMDb · אוסקר: Wikidata · טופ 10: Netflix. התוכן מתעדכן כל יום.</p>
+  <footer class="about"><button id="aboutBtn" type="button"><b>מה בנטפליקס?</b> · ⓘ אודות</button><div>רעיון ועיצוב: אורן יצחקי · קוד: Claude Code</div></footer>
 </main>
+<button id="toTop" class="totop" type="button" aria-label="לראש הדף">↑</button>
 
 <div id="ov" class="ov" hidden>
   <div class="sheet" role="dialog" aria-modal="true">
@@ -78,6 +81,6 @@
 <div id="toast" class="toast" hidden></div>
 
 <script src="tastes.js?v=2"></script>
-<script src="app.js?v=10"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>
