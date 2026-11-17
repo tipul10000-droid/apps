@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.4";window.SQ_BUILD_AT="17.11.2026 22:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.5";window.SQ_BUILD_AT="17.11.2026 22:44";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1812,7 +1812,7 @@ html.desk #upBtn{left:calc(var(--dpane,0px) + 18px);bottom:18px}
 main{padding-bottom:150px}
 body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labelledby="hProj"]{display:none!important}
 /* 11.2 (Oren 6.11): Fun and AI Projects are clean: only the quest switcher, then their content. No chat/brief/location/settings, time windows, refresh, search or +. */
-body.q-fun .topbtns>.tb:not(.tundo),body.q-ai .topbtns>.tb:not(.tundo),body.q-fun .ctxrow,body.q-ai .ctxrow,body.q-fun .tfind.fab,body.q-ai .tfind.fab,body.q-fun .tadd.fab,body.q-ai .tadd.fab,body.q-fun #find,body.q-ai #find,body.q-fun #fres,body.q-ai #fres,body.q-fun #quick,body.q-ai #quick{display:none!important}
+body.q-fun .topbtns>.tb:not(.tundo):not(.tset):not(.tchat),body.q-ai .topbtns>.tb:not(.tundo):not(.tset):not(.tchat),body.q-fun .ctxrow,body.q-ai .ctxrow,body.q-fun .tfind.fab,body.q-ai .tfind.fab,body.q-fun .tadd.fab,body.q-ai .tadd.fab,body.q-fun #find,body.q-ai #find,body.q-fun #fres,body.q-ai #fres,body.q-fun #quick,body.q-ai #quick{display:none!important}
 #aiTiles{margin-top:4px}
 #aiTiles .ptiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
 @media (min-width:640px){#aiTiles .ptiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -2348,6 +2348,22 @@ html.desk .co-mark{font-size:8cqi}
 :root[data-theme="dark"] #askSec .fold.ask{--qa:#9AA4FF;--qa-bg:#22264A;--qa-line:#3A4078}
 :root[data-theme="dark"] #askSec .fold.ask>summary,:root[data-theme="dark"] #askSec .fold.noask .fe{color:#DDE0FF}
 
+/* 21.5 (Oren 17.11.2026): one top tool frame in all 6 quests, same place and size: ↩︎ ⚙️ 💬 from the left (Side adds 🌗 at the inner end,
+   so undo/settings/chat never move when switching quests). Fun and AI art moved out of the frame's way. */
+.topbtns .tb.tsun{order:-1}
+.topbtns .tb.tundo{color:#fff!important}
+.topbtns .tb.tundo:not(.off){background:rgba(255,255,255,.06)!important}
+.qb-fun .fz-sun{left:150px!important;bottom:16px!important}
+.qb-fun .fz-eq{left:22px!important;bottom:60px!important;height:22px!important}
+.qa-term{left:14px!important;bottom:56px!important;width:116px!important}
+.qa-term .qa-trow{padding:3px 8px 4px}.qa-term .ai-bar{padding:3px 6px}
+/* Netflix banner = a button */
+.fcard.nf .nfapp.img{position:relative;margin:0 0 12px;border-radius:14px;box-shadow:0 0 0 1.5px rgba(229,9,20,.55),0 6px 18px rgba(0,0,0,.45);transition:filter .12s,box-shadow .12s;-webkit-tap-highlight-color:transparent}
+.fcard.nf .nfapp.img:active{filter:brightness(.82);box-shadow:0 0 0 2.5px #E50914,0 2px 8px rgba(0,0,0,.5)}
+.nfgo{position:absolute;left:61%;bottom:5px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;height:23px;padding:0 9px 0 7px;border-radius:12px;background:rgba(10,10,10,.82);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12.5px;font-weight:700;line-height:1;pointer-events:none;white-space:nowrap}
+.nfgo svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;animation:nftap 2.4s ease-in-out infinite}
+@keyframes nftap{0%,70%,100%{transform:translateY(0)}80%{transform:translateY(2px) scale(.92)}}
+@media (prefers-reduced-motion:reduce){.nfgo svg{animation:none}}
 .cmk{display:inline-block;width:1em;height:1em;vertical-align:-.12em;line-height:0}.cmk svg{width:100%;height:100%;display:block}
 </style>
 </head>
@@ -4322,11 +4338,14 @@ html.desk .co-mark{font-size:8cqi}
   }
   // 6.8: series in their own Netflix-style card (was sub-area 3 of the cinema card)
   const NF_SVG='<svg viewBox="0 0 22 40" aria-hidden="true"><path d="M1 0h6.2v40C5 39.6 3 39.5 1 39.5z" fill="#B1060F"/><path d="M14.8 0H21v39.5c-2 0-4 .1-6.2.5z" fill="#B1060F"/><path d="M1 0h6.2L21 39.5c-2.1 0-4.2.2-6.2.5z" fill="#E50914"/></svg>';
+  const NF_HAND='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11.5V5a1.6 1.6 0 0 1 3.2 0v5.6m0-1.4a1.6 1.6 0 0 1 3.2 0v1.6m0-.6a1.6 1.6 0 0 1 3.2 0v1.2m0-.2a1.5 1.5 0 0 1 3 0v3.4c0 3.6-2.6 6.4-6.2 6.4h-1.4c-2 0-3.4-.8-4.6-2.4L5 14.2a1.6 1.6 0 0 1 2.6-1.9L9 14"/></svg>';
   function seriesCard(){
     const lg=h("a",{class:"nf-logo zlogo",href:"https://www.netflix.com/",target:"_blank",rel:"noopener","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
+    // 21.5 (Oren 17.11): the "מה בנטפליקס?" banner sits above the Netflix ribbon and reads as a button (hand + "פתיחה" pill, press state)
+    const go=h("span",{class:"nfgo","aria-hidden":"true"});go.innerHTML=NF_HAND+"<span>פתיחה</span>";
     return h("article",{class:"fcard nf"},
+      h("button",{class:"nfapp img",type:"button","aria-label":"מה בנטפליקס? סרטים וסדרות בנטפליקס ישראל",onclick:()=>openDash("netflix")},h("img",{src:"img/nf-banner.webp",alt:"",width:"780",height:"260",loading:"lazy"}),go),
       h("div",{class:"nf-head zhead"},h("div",{class:"fc-h"},h("h3",null,"סדרות")),lg),
-      h("button",{class:"nfapp img",type:"button","aria-label":"מה בנטפליקס? סרטים וסדרות בנטפליקס ישראל",onclick:()=>openDash("netflix")},h("img",{src:"img/nf-banner.webp",alt:"",width:"780",height:"260",loading:"lazy"})),
       ...seriesHub(),
       secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן"));
   }
@@ -4341,13 +4360,14 @@ html.desk .co-mark{font-size:8cqi}
   function renderFun(){
     const live=funTopics.filter(t=>t.status!=="archived");
     const list=live.filter(t=>t.status!=="done"&&!isMovieZone(t)).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
-    // 13.0 (Oren 7.11): fixed order: music, series, movies, games, then any other fun card
+    // 21.5 (Oren 17.11): fixed order: Netflix (banner + series), movies, music, games, then any other fun card
     const sp=list.filter(t=>t.zone==="spotify"),rest=list.filter(t=>t.zone!=="spotify");
-    const cards=sp.map(spotifyCard),tail=rest.map((t,i)=>funCard(t,i));
+    const cards=[],tail=rest.map((t,i)=>funCard(t,i));
     // movies zone keeps finished games (shown struck through) so the list grows as a record
     const mz=live.filter(t=>isMovieZone(t)&&(t.zone==="games"||t.zone==="series"||t.status!=="done")),fh=projById("frame-horizon");
     cards.push(seriesCard());
     if(mz.some(t=>t.zone==="movies")||fh)cards.push(moviesCard(mz,fh));
+    cards.push(...sp.map(spotifyCard));
     const games=mz.filter(t=>t.zone==="games").sort((a,b)=>(a.status==="done")-(b.status==="done")||(a.fun_order||99)-(b.fun_order||99));
     if(games.length)cards.push(gamesCard(games));
     cards.push(...tail);
