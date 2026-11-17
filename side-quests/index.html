@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.7";window.SQ_BUILD_AT="17.11.2026 23:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.8";window.SQ_BUILD_AT="17.11.2026 23:15";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2351,6 +2351,8 @@ html.desk .co-mark{font-size:8cqi}
 
 /* 21.5 (Oren 17.11.2026): one top tool frame in all 6 quests, same place and size: ↩︎ ⚙️ 💬 from the left (Side adds 🌗 at the inner end,
    so undo/settings/chat never move when switching quests). Fun and AI art moved out of the frame's way. */
+/* 21.8 (Oren 17.11.2026): All Arounder chat is the rightmost button, the 🌗 brief second from the right */
+.topbtns .tb.tchat{order:-2}
 .topbtns .tb.tsun{order:-1}
 .topbtns .tb.tundo{color:#fff!important}
 .topbtns .tb.tundo:not(.off){background:rgba(255,255,255,.06)!important}
@@ -2491,7 +2493,7 @@ html.desk .co-mark{font-size:8cqi}
       <button type="button" id="ver" aria-label="Version. Tap to check for an update"><b id="verN"></b><span id="verT"></span></button>
       <dl class="co-cred">
         <div><dt>Idea &amp; design</dt><dd>Oren Itzhaki</dd></div>
-        <div><dt>Code</dt><dd>Claude Code · Opus 4.5</dd></div>
+        <div><dt>Code</dt><dd>Claude Code · Opus 5.5</dd></div>
       </dl>
     </div>
   </div>
