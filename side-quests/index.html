@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.9";window.SQ_BUILD_AT="17.11.2026 08:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.0";window.SQ_BUILD_AT="17.11.2026 09:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -552,7 +552,7 @@ body.q-fun .qb-fun,body.q-army .qb-army,body.q-work .qb-work{display:block}
 .qb-fun p{color:#E9D8FF;text-shadow:0 1px 4px #0B0322}
 
 .ver{text-align:center;padding-block:0 calc(24px + env(safe-area-inset-bottom,0px))}
-.ver button{font-size:12.5px;color:var(--muted);font-family:var(--f-mono);padding:6px 10px}
+.ver #ver{font-size:12.5px;color:var(--muted);font-family:var(--f-mono);padding:6px 10px}
 
 /* ===== 2.4: fixed top: banner, 2x2 quest buttons, status grid, refresh. Same size in every quest; only colors and content change ===== */
 .qb-side{display:none}
@@ -1870,73 +1870,39 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
 .tadd.fab{overflow:visible}
 body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none!important}
 /* 17.9 progress graph in stats */
-#setM .prog{display:flex;flex-direction:column;gap:6px}
-#setM .pread{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-#setM .pch{background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:46px;padding:0 2px;min-width:0}
-#setM .pch span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;white-space:nowrap}
-#setM .pch i{display:inline-block;width:9px;height:9px;border-radius:3px}
-#setM .pch.d i{display:none}
-#setM .pch b{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-#setM .pch.i b{color:#2f6fde}#setM .pch.s b{color:#e07b00}#setM .pch.a b{color:#7b4fd6}#setM .pch.c b{color:#1f9d55}
-#setM .pread.fut .pch.o b,#setM .pread.fut .pch.c b{opacity:.45}
-#setM .pread.fut .pch.d b{color:#7b4fd6}
-#setM .pgsvg{touch-action:pan-y;cursor:crosshair;user-select:none;-webkit-user-select:none}
-#setM .pgsvg svg{display:block;width:100%;height:auto;overflow:visible}
-#setM .pgsvg .pl{fill:none;stroke-linejoin:round;stroke-linecap:round}
-#setM .pgsvg .pg{stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
-#setM .pgsvg .pb{stroke:var(--line);stroke-width:1}
-#setM .pgsvg .pf{fill:#7b4fd6;opacity:.05}
-#setM .pgsvg .ptd{stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3;opacity:.5}
-#setM .pgsvg .pt{font:11px -apple-system,system-ui,sans-serif;fill:var(--muted)}
-#setM .pgsvg .pt.tm{font-weight:700;fill:var(--ink)}
-#setM .pgsvg .pcur line{stroke:var(--ink);stroke-width:1.4}
-#setM .pgsvg .pcur circle{stroke:var(--surface);stroke-width:1.5}
-#setM .prng{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden;direction:ltr}
-#setM .prng button{all:unset;box-sizing:border-box;text-align:center;height:36px;line-height:36px;background:var(--surface);font:700 14px -apple-system,system-ui,sans-serif;cursor:pointer;color:var(--ink)}
-#setM .prng button[aria-pressed="true"]{background:#7b4fd6;color:#fff}
-#setM .plog{height:210px;overflow-y:auto;border-top:1px solid var(--line);overscroll-behavior:contain}
-#setM .plr{all:unset;direction:rtl;box-sizing:border-box;display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:6px;width:100%;padding:7px 2px;border-bottom:1px solid var(--line);cursor:pointer}
-#setM .plr .pd{text-align:center;font-size:14px}
-#setM .plr .pt2{font-size:14px;display:flex;flex-direction:column;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-#setM .plr .pt2>*{overflow:hidden;text-overflow:ellipsis}
-#setM .plr small{font-size:12px;color:var(--muted)}
-#setM .plr b{font-size:14px;white-space:nowrap;color:#7b4fd6}
-#setM .plr.em{color:var(--muted);display:block;text-align:center;cursor:default}
-/* 16.2 stats in settings */
-#setM .ssmoney{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:4px 0 8px}
-#setM .ssmn{display:flex;flex-direction:column;gap:2px;padding:10px 4px;text-align:center}
-#setM .ssmn+.ssmn{border-inline-start:1px solid var(--line)}
-#setM .ssmn span{font-size:14px;color:var(--muted)}
-#setM .ssmn b{font-size:21px;font-weight:800;line-height:1.15}
-#setM .ssmn.s b{color:#1f9d55}
-#setM .ssmn.e b{color:#c77d00}
-#setM .ssmn.p b{color:#6b7c93}
+#statM .prog{display:flex;flex-direction:column;gap:6px}
+#statM .pread{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#statM .pch{background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:46px;padding:0 2px;min-width:0}
+#statM .pch span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;white-space:nowrap}
+#statM .pch i{display:inline-block;width:9px;height:9px;border-radius:3px}
+#statM .pch.d i{display:none}
+#statM .pch b{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#statM .pch.i b{color:#2f6fde}#statM .pch.s b{color:#e07b00}#statM .pch.a b{color:#7b4fd6}#statM .pch.c b{color:#1f9d55}
+#statM .pread.fut .pch.o b,#statM .pread.fut .pch.c b{opacity:.45}
+#statM .pread.fut .pch.d b{color:#7b4fd6}
+#statM .pgsvg{touch-action:pan-y;cursor:crosshair;user-select:none;-webkit-user-select:none}
+#statM .pgsvg svg{display:block;width:100%;height:auto;overflow:visible}
+#statM .pgsvg .pl{fill:none;stroke-linejoin:round;stroke-linecap:round}
+#statM .pgsvg .pg{stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
+#statM .pgsvg .pb{stroke:var(--line);stroke-width:1}
+#statM .pgsvg .pf{fill:#7b4fd6;opacity:.05}
+#statM .pgsvg .ptd{stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3;opacity:.5}
+#statM .pgsvg .pt{font:11px -apple-system,system-ui,sans-serif;fill:var(--muted)}
+#statM .pgsvg .pt.tm{font-weight:700;fill:var(--ink)}
+#statM .pgsvg .pcur line{stroke:var(--ink);stroke-width:1.4}
+#statM .pgsvg .pcur circle{stroke:var(--surface);stroke-width:1.5}
+#statM .prng{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden;direction:ltr}
+#statM .prng button{all:unset;box-sizing:border-box;text-align:center;height:36px;line-height:36px;background:var(--surface);font:700 14px -apple-system,system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+#statM .prng button[aria-pressed="true"]{background:#7b4fd6;color:#fff}
+#statM .plog{height:210px;overflow-y:auto;border-top:1px solid var(--line);overscroll-behavior:contain}
+#statM .plr{all:unset;direction:rtl;box-sizing:border-box;display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:6px;width:100%;padding:7px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+#statM .plr .pd{text-align:center;font-size:14px}
+#statM .plr .pt2{font-size:14px;display:flex;flex-direction:column;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#statM .plr .pt2>*{overflow:hidden;text-overflow:ellipsis}
+#statM .plr small{font-size:12px;color:var(--muted)}
+#statM .plr b{font-size:14px;white-space:nowrap;color:#7b4fd6}
+#statM .plr.em{color:var(--muted);display:block;text-align:center;cursor:default}
 .rc.mny.p{background:rgba(107,124,147,.14);color:#56657a}
-#setM .ssmn small{font-size:12.5px;color:var(--muted)}
-#setM .ssmore{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:44px;background:none;border:0;border-top:1px solid var(--line);font:inherit;font-size:15px;color:inherit;cursor:pointer;padding:0 2px}
-#setM .sslist{display:flex;flex-direction:column}
-#setM .ssm{display:grid;grid-template-columns:1fr auto;gap:0 10px;text-align:start;background:none;border:0;border-top:1px solid var(--line);padding:9px 2px;font:inherit;color:inherit;cursor:pointer}
-#setM .ssm .t{font-size:14.5px}
-#setM .ssm small{grid-column:1;color:var(--muted);font-size:12.5px}
-#setM .ssm b{grid-row:1/span 2;grid-column:2;align-self:center;font-size:15px;white-space:nowrap}
-#setM .sssub{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin:14px 0 6px}
-#setM .sssub .lg{margin-inline-start:auto;font-weight:400;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:4px}
-#setM .sssub .lg i,.ssb i{display:inline-block;border-radius:3px}
-#setM .sssub .lg i{width:10px;height:10px}
-#setM .sstiles{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-#setM .sst{display:flex;flex-direction:column;align-items:center;padding:8px 2px;gap:1px}
-#setM .sst+.sst{border-inline-start:1px solid var(--line)}
-#setM .sst b{font-size:21px;font-weight:800}
-#setM .sst span{font-size:12.5px;color:var(--muted);text-align:center}
-#setM .sst.all b{color:var(--hero,#3b5bdb)}
-#setM .ssbars{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;align-items:end;padding:4px 0}
-#setM .ssw{display:flex;flex-direction:column;align-items:center;gap:2px}
-#setM .ssb{height:80px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:2px}
-#setM .ssb i{width:40%;min-height:2px}
-#setM .ssb i.c,#setM .sssub .lg i.c{background:#1f9d55}
-#setM .ssb i.o,#setM .sssub .lg i.o{background:#9aa5b1}
-#setM .ssw small{font-size:11.5px;color:var(--muted)}
-#setM .ssw small.d{font-size:10.5px}
 .rc.mny{background:rgba(31,157,85,.12);color:#1f7a45}
 /* 17.0 (Oren 16.11.2026, concept A): a desktop layout built for the computer, only from 1024px (html.desk, set by JS).
    Dark L-frame: top bar (logo, search, icons, + new) and a quest/dashboard rail on the right.
@@ -2078,6 +2044,108 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 .tpage .tp-sec p{margin:0;font-size:15.5px;line-height:1.55;white-space:pre-wrap}
 .tpage .f-log div{font-size:14px;line-height:1.5;padding:4px 0;border-top:1px solid var(--line)}
 .tpage .f-log b{margin-inline-end:6px}
+
+/* 18.0 (Oren 17.11.2026): the stats get their own place at the bottom: tasks → dashboards → edge-to-edge stats button → about.
+   Side theme: white with the dot grid, black type, the orange route / pins / X and the orange bottom strip of the Side banner. */
+footer.ver{padding:4px 0 calc(112px + env(safe-area-inset-bottom,0px))}
+main{padding-bottom:20px!important}
+.stbtn{all:unset;box-sizing:border-box;position:relative;display:block;width:100%;aspect-ratio:3/1;max-height:210px;overflow:hidden;cursor:pointer;isolation:isolate;
+  color:#111;background:radial-gradient(circle,rgba(0,0,0,.07) 1px,transparent 1.5px) 0 0/16px 16px,linear-gradient(160deg,#FFFFFF,#F2F2F0);
+  border-top:1px solid rgba(0,0,0,.08);-webkit-tap-highlight-color:transparent;transition:filter .15s}
+.stbtn::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:#EE8C4F;z-index:2}
+.stbtn:active{filter:brightness(.95)}
+.stbtn:focus-visible{outline:3px solid #EE8C4F;outline-offset:-3px}
+.stbtn .st-art{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.stbtn img.st-art{object-fit:cover}
+.st-grid path{stroke:rgba(0,0,0,.07);stroke-width:1;stroke-dasharray:2 4}
+.st-bars rect{fill:#111;opacity:.09}
+.st-area{fill:#EE8C4F;opacity:.12}
+.stbtn .st-route{stroke-width:3}
+.stbtn .st-x path{stroke-width:3.4}
+.st-txt{position:absolute;z-index:1;inset-block:0;right:max(18px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;justify-content:center;gap:5px;max-width:58%;text-align:right}
+.st-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#EE8C4F;direction:ltr;text-align:right}
+.st-txt b{font-family:"Rubik",var(--f-display);font-weight:800;font-size:clamp(21px,6.2vw,30px);line-height:.98;direction:ltr;text-align:right;letter-spacing:-.3px}
+.st-txt b i{font-style:normal;color:#EE8C4F;display:block}
+.st-kpi{font-size:13.5px;font-weight:700;color:#333;min-height:1.3em;white-space:nowrap}
+.st-kpi .m{color:#1f9d55}
+.st-go{position:absolute;z-index:1;left:max(14px,env(safe-area-inset-left,0px));top:14px;width:30px;height:30px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font:700 20px/1 system-ui,sans-serif}
+.stbtn.img .st-txt,.stbtn.img .st-go{display:none}
+.about{display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:12px}
+.about #ver{font-size:12.5px;color:var(--muted);font-family:var(--f-mono);padding:6px 10px}
+.cred{display:flex;flex-direction:column;align-items:center;gap:1px;font:500 11.5px/1.5 var(--f-mono);color:var(--muted);opacity:.85}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stbtn{filter:brightness(.92)}}
+html.desk footer.ver{position:static!important;margin:0 var(--drail) 0 var(--dpane)!important;padding:10px 0 18px!important;pointer-events:auto;background:none}
+html.desk .stbtn{max-height:180px}
+
+/* 18.0 stats screen */
+#statM .sqpanel{height:calc(94vh / var(--tz,1));max-height:none;max-width:560px;padding:0;display:flex;flex-direction:column;overflow:hidden}
+@supports (height:1dvh){#statM .sqpanel{height:calc(94dvh / var(--tz,1))}}
+#statM .sthead{flex:none;position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 14px;border-radius:20px 20px 0 0;
+  background:radial-gradient(circle,rgba(0,0,0,.07) 1px,transparent 1.5px) 0 0/16px 16px,linear-gradient(160deg,#FFFFFF,#F2F2F0);color:#111}
+#statM .sthead::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:#EE8C4F}
+#statM .sthead h2{margin:0;display:flex;flex-direction:column;gap:3px;min-width:0}
+#statM .sthead .tg{font-family:var(--f-mono);font-size:10px;letter-spacing:2px;color:#EE8C4F;direction:ltr;text-align:right;font-weight:500}
+#statM .sthead b{font-family:"Rubik",var(--f-display);font-weight:800;font-size:clamp(19px,5.6vw,24px);line-height:1;letter-spacing:-.3px;white-space:nowrap}
+#statM .sthead b i{font-style:normal;color:#EE8C4F}
+#statM .sthead .px{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#111;color:#fff;font:400 26px/1 system-ui,sans-serif;cursor:pointer;display:grid;place-items:center;padding:0}
+#statM .stbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:14px 16px calc(28px + env(safe-area-inset-bottom,0px));font-size:15px}
+#statM .sqhint{font-size:13px;color:var(--muted);line-height:1.45}
+#statM .sssub{display:flex;align-items:center;gap:8px;font-family:"Rubik",var(--f-display);font-weight:700;font-size:15.5px;margin:22px 0 8px}
+#statM .sssub .lg{margin-inline-start:auto;font:400 12.5px var(--f-body);color:var(--muted);display:flex;align-items:center;gap:4px}
+#statM .sssub .lg i{display:inline-block;width:10px;height:10px;border-radius:3px}
+#statM .sssub .lg i.c{background:#1f9d55}#statM .sssub .lg i.o{background:#9aa5b1}
+#statM .ssmoney{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+#statM .ssmn{background:var(--surface);display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;text-align:center}
+#statM .ssmn.big{grid-column:1/-1;padding:14px 8px 12px;background:linear-gradient(180deg,rgba(31,157,85,.07),transparent 70%),var(--surface)}
+#statM .ssmn span{font-size:13.5px;color:var(--muted)}
+#statM .ssmn b{font-family:"Rubik",var(--f-display);font-size:21px;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums}
+#statM .ssmn.big b{font-size:36px;letter-spacing:-.5px}
+#statM .ssmn small{font-size:12.5px;color:var(--muted)}
+#statM .ssmn.s b{color:#1f9d55}#statM .ssmn.e b{color:#c77d00}#statM .ssmn.p b{color:#6b7c93}
+#statM .sslists{grid-column:1/-1;background:var(--surface);display:flex;flex-direction:column}
+#statM .ssmore{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:46px;background:none;border:0;font:inherit;font-size:15px;color:inherit;cursor:pointer;padding:0 14px}
+#statM .ssmore+.ssmore,#statM .sslist+.ssmore{border-top:1px solid var(--line)}
+#statM .ssmore .c{display:flex;align-items:center;gap:6px;color:var(--muted);font-variant-numeric:tabular-nums}
+#statM .ssmore .c i{font-style:normal;width:14px;text-align:center}
+#statM .ssmore[aria-expanded="true"]{background:var(--sunk)}
+#statM .sslist{display:flex;flex-direction:column;padding:0 14px}
+#statM .ssm{display:grid;grid-template-columns:1fr auto;gap:0 10px;text-align:start;background:none;border:0;border-top:1px solid var(--line);padding:9px 0;font:inherit;color:inherit;cursor:pointer}
+#statM .ssm .t{font-size:14.5px}
+#statM .ssm small{grid-column:1;color:var(--muted);font-size:12.5px}
+#statM .ssm b{grid-row:1/span 2;grid-column:2;align-self:center;font-size:15px;white-space:nowrap}
+#statM .sstab{display:grid;grid-template-columns:1.25fr repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+#statM .sstab>div{background:var(--surface);display:flex;align-items:center;justify-content:center;min-height:44px;padding:0 4px}
+#statM .sstab .h{min-height:30px;font-size:12px;color:var(--muted);background:var(--sunk)}
+#statM .sstab .l{justify-content:flex-start;padding-inline-start:10px;font-size:13.5px;font-weight:700;white-space:nowrap}
+#statM .sstab .v{font-family:"Rubik",var(--f-display);font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+#statM .sstab .v.all{color:#EE8C4F}
+#statM .ssbars{direction:ltr;display:grid;gap:5px;align-items:end;padding:8px 8px 6px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+#statM .ssw{display:flex;flex-direction:column;align-items:center;gap:3px}
+#statM .ssb{height:84px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:2px}
+#statM .ssb i{width:38%;min-height:2px;border-radius:3px 3px 1px 1px}
+#statM .ssb i.c{background:#1f9d55}#statM .ssb i.o{background:#9aa5b1}
+#statM .ssw small{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+#statM .ssw small.n{font-weight:700;color:var(--ink)}
+#statM .ssw small.d{font-size:10.5px;white-space:nowrap}
+#statM .ssw.now small.d{color:#EE8C4F;font-weight:700}
+#statM .ssq{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+#statM .ssq>div{background:var(--surface);display:flex;flex-direction:column;align-items:center;padding:8px 2px;gap:1px}
+#statM .ssq .e{font-size:18px}
+#statM .ssq b{font-family:"Rubik",var(--f-display);font-size:18px;font-weight:800}
+#statM .ssq small{font-size:11.5px;color:var(--muted)}
+#statM .ssfoot{margin-top:18px;text-align:center;font-size:12.5px;color:var(--muted)}
+#statM .prog .sqhint{margin:2px 2px 0}
+
+#setM .sqtop2{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;margin:14px 0 0}
+#setM .sqtop2 a{display:flex;align-items:center;gap:10px;min-height:62px;padding:8px 12px;background:var(--surface);color:var(--ink);text-decoration:none;-webkit-tap-highlight-color:transparent}
+#setM .sqtop2 a:active{background:var(--sunk)}
+#setM .sqtop2 .lg{position:relative;flex:none;width:36px;height:36px}
+#setM .sqtop2 .lg>svg{width:36px;height:36px;display:block}
+#setM .sqtop2 .lg i{position:absolute;bottom:-4px;left:-5px;width:19px;height:19px;border-radius:50%;background:var(--surface);display:grid;place-items:center;box-shadow:0 0 0 1px var(--line)}
+#setM .sqtop2 .lg i svg{width:12px;height:12px;fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linejoin:round}
+#setM .sqtop2 .tx{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+#setM .sqtop2 .tx b{font-size:15.5px;direction:ltr;text-align:right;white-space:nowrap}
+#setM .sqtop2 .tx small{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -2187,7 +2255,27 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 <div class="aipg" id="pg2" hidden role="region" aria-label="AI Projects"></div>
 <div class="aipg" id="pg3" hidden role="region" aria-label="פרויקט"></div>
 <div class="aipg dpg" id="pgD" hidden role="region" aria-label="דשבורד"></div>
-<footer class="ver gut"><button type="button" id="ver" aria-label="גרסה. לחיצה בודקת אם יש גרסה חדשה"></button></footer>
+<footer class="ver">
+  <!-- 18.0 (Oren 17.11.2026): stats moved out of settings to their own edge-to-edge button above the about line.
+       The art is a temporary CSS/SVG placeholder in the Side theme; Oren's ChatGPT banner (img/stats-banner.*, 3:1) replaces .st-art. -->
+  <button type="button" class="stbtn" id="statBtn" aria-label="Side Quest Statistics">
+    <svg class="st-art" viewBox="0 0 390 130" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
+      <g class="st-grid"><path d="M0 34H390M0 62H390M0 90H390"/></g>
+      <g class="st-bars"><rect x="40" y="92" width="16" height="20" rx="3"/><rect x="66" y="80" width="16" height="32" rx="3"/><rect x="92" y="86" width="16" height="26" rx="3"/><rect x="118" y="64" width="16" height="48" rx="3"/><rect x="144" y="52" width="16" height="60" rx="3"/><rect x="170" y="38" width="16" height="74" rx="3"/></g>
+      <path class="st-area" d="M30 104 C56 98 72 84 88 88 S116 70 132 66 S162 50 178 34 L178 112 L30 112Z"/>
+      <path class="sb-route st-route" d="M30 104 C56 98 72 84 88 88 S116 70 132 66 S162 50 178 34"/>
+      <g class="sb-pin" transform="translate(88 88)"><circle r="4.5"/></g>
+      <g class="sb-pin p2" transform="translate(132 66)"><circle r="4.5"/></g>
+      <g class="sb-x st-x" transform="translate(178 34)"><path d="M-7 -7 L7 7 M7 -7 L-7 7"/></g>
+    </svg>
+    <span class="st-txt"><span class="st-tag">PROGRESS REPORT</span><b>SIDE QUEST <i>STATISTICS</i></b><span class="st-kpi" id="statKpi"></span></span>
+    <span class="st-go" aria-hidden="true">›</span>
+  </button>
+  <div class="about gut">
+    <button type="button" id="ver" aria-label="גרסה. לחיצה בודקת אם יש גרסה חדשה"></button>
+    <div class="cred"><span dir="ltr">idea and design by <span dir="rtl">אורן יצחקי</span></span><span dir="ltr">coded by Claude Code Opus 4.5</span></div>
+  </div>
+</footer>
 
 <script>
 (function(){
@@ -2608,6 +2696,10 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   function forClaude(t){return offersOf(t).filter(o=>o.state==="approved").length+questionsOf(t).filter(q=>q.answer&&!q.done).length;}
   function chatOf(t){const c=linksOf(t).find(l=>linkType(l)==="chat");return c?safeUrl(c.url):null;}
   const SQ_CHAT="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD";
+  const GPT_CHAT="https://chatgpt.com/share/6afbfe85-fdb0-83ed-8174-3f3036f43cb8";
+  const CC_LOGO='<svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#D97757"/><g stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M16 6.5v19M6.5 16h19M9.3 9.3l13.4 13.4M22.7 9.3 9.3 22.7"/></g><circle cx="16" cy="16" r="3" fill="#D97757"/></svg>';
+  const GPT_LOGO='<svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0D0D0D"/><g fill="none" stroke="#fff" stroke-width="1.9"><ellipse cx="16" cy="16" rx="8.5" ry="4.2"/><ellipse cx="16" cy="16" rx="8.5" ry="4.2" transform="rotate(60 16 16)"/><ellipse cx="16" cy="16" rx="8.5" ry="4.2" transform="rotate(120 16 16)"/></g></svg>';
+  const CHAT_BADGE='<i><svg viewBox="0 0 24 24"><path d="M3.5 4.5h17v11.5H9.5l-6 4.5z"/></svg></i>';
   // 13.1 (Oren 8.11): SQ_CHAT = the Side Quests engineering project (settings link only). Life topics without a chat of their own fall back to All Arounder, the personal assistant.
   const AA_CHAT="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP";
   // Gmail links. Old form mail.google.com/mail/?authuser=X#all/thread-f:N opened Google's Workspace sign-in page on the iPhone
@@ -4133,7 +4225,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     const left=g=>{const m=g.by-n.m;return m<=0?"עכשיו!":m<60?`עוד ${m} דק׳`:`עוד ${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} ש׳`;};
     el.innerHTML=L.slice(0,4).map(g=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`;}).join("");
     el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>openTask(b.dataset.id));}
-  function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();}
+  function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();statKpi();}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:"",...(t.sleep_until&&!("sleep_until" in fields)?{sleep_until:""}:{})};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -4608,7 +4700,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     kids.push(h("div",{class:"lh"},"🆕 התעדכן לאחרונה"));
     kids.push(rec.length?h("div",{class:"lfr"},...rec.map(x=>h("button",{type:"button",onclick:()=>{closeModal();openTask(x.t.id);}},h("i",{class:"gdot"+(isNewUpd(x.t)?"":" seen"),"aria-hidden":"true"}),h("span",{class:"lt"},h("b",null,x.t.title||""),h("small",null,updLine(x.r)))))):h("div",{class:"lfr"},h("div",null,"✓ שום דבר חדש ב-3 הימים האחרונים")));
     el.replaceChildren(...kids);}
-  function closeModal(keep){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(keep!==true)unlockScroll();if(/^#(brief|eve|fri|wkend|week|settings)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
+  function closeModal(keep){document.querySelectorAll(".sqmodal").forEach(x=>x.remove());if(keep!==true)unlockScroll();if(/^#(brief|eve|fri|wkend|week|settings|stats)$/.test(location.hash))try{history.replaceState(null,"",location.pathname+location.search+(quest==="side"?"":"#"+quest));}catch(e){}}
   function modal(id,...kids){closeModal(true);lockScroll();const m=h("div",{class:"sqmodal",id,onclick:e=>{if(e.target===m)closeModal();}},h("div",{class:"sqpanel",role:"dialog","aria-modal":"true"},...kids));document.body.append(m);return m;}
   function sw(on,fn,label){return h("input",{type:"checkbox",class:"sqsw",role:"switch",checked:on||null,"aria-label":label,onchange:e=>fn(e.target.checked)});}
   // ===== 5.9: morning brief = a short popup (Oren 3.11.2026). It tells him only what he does NOT know
@@ -4958,9 +5050,11 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
           sw(loc.on,v=>{setGrow="loc";loc.on=v;locErr="";if(!v)loc.last=null;saveLoc();if(v)sampleLoc(true);refreshMode(true);renderSettings();},"לבדוק מיקום בכל כניסה")),
         ...locBody);
     const m=modal("setM",h("h2",null,"⚙️ הגדרות",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
-      h("a",{class:"sqbtn ghost sqchat sqtopchat",href:SQ_CHAT,target:"_blank",rel:"noopener"},h("span",{class:"chtool","aria-hidden":"true",html:'<svg viewBox="0 0 24 24"><path d="M3.5 4.5h17v11.5H9.5l-6 4.5z"/></svg><i>🛠️</i>'}),"שיפורים ותיקונים במערכת"),
-      grp("📊 סטטיסטיקה"),
-      statsSec(sec),
+      // 18.0 (Oren 17.11.2026): the improvements strip is split half-half: Claude Code (improve the app, this project's chat)
+      // and ChatGPT (design graphics, his graphics chat). Each: the tool's logo with a small chat bubble.
+      h("div",{class:"sqtop2"},
+        h("a",{href:SQ_CHAT,target:"_blank",rel:"noopener"},h("span",{class:"lg cc","aria-hidden":"true",html:CC_LOGO+CHAT_BADGE}),h("span",{class:"tx"},h("b",null,"Claude Code"),h("small",null,"שיפור האפליקציה"))),
+        h("a",{href:GPT_CHAT,target:"_blank",rel:"noopener"},h("span",{class:"lg gp","aria-hidden":"true",html:GPT_LOGO+CHAT_BADGE}),h("span",{class:"tx"},h("b",null,"ChatGPT"),h("small",null,"עיצוב גרפיקות")))),
       grp("👁️ תצוגה"),
       placeSec,
       sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
@@ -5097,10 +5191,24 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     return wrap;
   }
   function progAgo(ms){const m=Math.round(ms/PMON);return m>=12?(m%12?Math.round(m/12*10)/10:m/12)+(m>=24?" שנים":" שנה"):m>=1?m+(m===1?" חודש":" חודשים"):Math.max(1,Math.round(ms/864e5))+" ימים";}
-  function statsSec(sec){
+  // 18.0 (Oren 17.11.2026): the stats left the settings for their own screen, opened from the edge-to-edge
+  // "Side Quest Statistics" button at the bottom of the main screen. Same numbers, finished layout:
+  // money first (what really came in is the big number), the progress graph, one activity table (closed / opened / handled ×
+  // today / week / month / all), the weekly bars and the split by quest. One frame per block, dividers inside.
+  function statsData(){
     const T=allTopics.filter(t=>!t._deleted&&!isFun(t));
-    const dOf=t=>Date.parse(t.done_at||t.updated_at||"")||0,cOf=t=>Date.parse(t.created_at||"")||0;
+    const mon=t=>{const m=+t.money_monthly||0,a=Date.parse(t.money_at||"")||0;return m>0&&a&&a<=Date.now()?Math.floor((Date.now()-a)/(30.44*86400000)):0;};
+    const real=t=>(+t.money_saved||0)+(+t.money_monthly||0)*mon(t);
     const closed=T.filter(t=>t.status==="done"||t.status==="promoted");
+    return {T,real,closed,S:T.reduce((n,t)=>n+real(t),0)};
+  }
+  function statKpi(){const el=$("statKpi");if(!el)return;const D=statsData();
+    el.replaceChildren(D.closed.length+" נסגרו · ",h("span",{class:"m"},"✅ "+fmtNis(D.S)));}
+  function renderStats(){if(document.getElementById("statM"))showStats(true);}
+  function showStats(keep){
+    const sc=document.querySelector("#statM .sqpanel"),top=sc?sc.scrollTop:0;
+    const {T,real,closed,S}=statsData();
+    const dOf=t=>Date.parse(t.done_at||t.updated_at||"")||0,cOf=t=>Date.parse(t.created_at||"")||0;
     const opened=T.filter(t=>!t.merged_into&&cOf(t));
     const now=new Date(),day0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
     const wk0=day0-now.getDay()*86400000,mo0=new Date(now.getFullYear(),now.getMonth(),1).getTime();
@@ -5109,52 +5217,58 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     const logs=t=>Array.isArray(t.log)?t.log:[];
     const touched=from=>T.filter(t=>logs(t).some(x=>(Date.parse(x.at||"")||0)>=from)||cOf(t)>=from||dOf(t)>=from&&(t.status==="done"||t.status==="promoted")).length;
     const steps=T.reduce((n,t)=>n+stepsOf(t).filter(x=>x.done).length,0);
-    // 16.3 (Oren 13.11): separate what really came in from what is on the way and what is only possible.
-    // real = money_saved + money_monthly × full months since money_at; monthly savings count only for months already passed.
-    const mon=t=>{const m=+t.money_monthly||0,a=Date.parse(t.money_at||"")||0;return m>0&&a&&a<=Date.now()?Math.floor((Date.now()-a)/(30.44*86400000)):0;};
-    const real=t=>(+t.money_saved||0)+(+t.money_monthly||0)*mon(t);
     const saved=T.filter(t=>+t.money_saved>0||+t.money_monthly>0),exp=T.filter(t=>+t.money_expected>0),pot=T.filter(t=>+t.money_potential>0);
     const sum=(L,f)=>L.reduce((n,t)=>n+f(t),0);
-    const S=sum(saved,real),E=sum(exp,t=>+t.money_expected||0),P=sum(pot,t=>+t.money_potential||0),M=sum(T,t=>+t.money_monthly||0);
-    const tile=(n,l,cls)=>h("div",{class:"sst"+(cls?" "+cls:"")},h("b",null,String(n)),h("span",null,l));
+    const E=sum(exp,t=>+t.money_expected||0),P=sum(pot,t=>+t.money_potential||0),M=sum(T,t=>+t.money_monthly||0);
     // last 8 weeks (Sun-Sat): closed vs opened
     const nW=Math.min(8,Math.floor((wk0-first)/(7*86400000))+1),W=[];for(let i=nW-1;i>=0;i--){const a=wk0-i*7*86400000,b=a+7*86400000;W.push({a,c:closed.filter(t=>dOf(t)>=a&&dOf(t)<b).length,o:opened.filter(t=>cOf(t)>=a&&cOf(t)<b).length});}
     const mx=Math.max(1,...W.map(w=>Math.max(w.c,w.o)));
     const dm=ms=>{const d=new Date(ms);return d.getDate()+"."+(d.getMonth()+1);};
-    const bars=h("div",{class:"ssbars",style:"grid-template-columns:repeat("+nW+",1fr)",role:"img","aria-label":"נסגרו ונפתחו בכל שבוע"},...W.map(w=>h("div",{class:"ssw"},
+    const bars=h("div",{class:"ssbars",style:"grid-template-columns:repeat("+nW+",1fr)",role:"img","aria-label":"נסגרו ונפתחו בכל שבוע"},...W.map((w,i)=>h("div",{class:"ssw"+(i===W.length-1?" now":"")},
+      h("small",{class:"n"},w.c?String(w.c):"·"),
       h("div",{class:"ssb"},h("i",{class:"c",style:"height:"+Math.round(w.c/mx*100)+"%",title:w.c+" נסגרו"}),h("i",{class:"o",style:"height:"+Math.round(w.o/mx*100)+"%",title:w.o+" נפתחו"})),
-      h("small",null,w.c?String(w.c):"·"),h("small",{class:"d"},dm(w.a)))));
+      h("small",{class:"d"},i===W.length-1?"השבוע":dm(w.a)))));
     const byQ={};closed.forEach(t=>{const q=questOf(t);byQ[q]=(byQ[q]||0)+1;});
+    const qs=Object.keys(byQ).sort((a,b)=>byQ[b]-byQ[a]);
     const val=(t,k)=>k==="s"?real(t):+t[k==="e"?"money_expected":"money_potential"]||0;
     const amt=(t,k)=>k==="s"&&+t.money_monthly>0&&!real(t)?"🔁 "+fmtNis(t.money_monthly)+" בחודש":fmtNis(val(t,k));
     const mRow=(t,k)=>h("button",{class:"ssm",type:"button",onclick:()=>{closeModal();openTask(t.id);}},
       h("span",{class:"t"},t.title||""),t.money_note?h("small",null,t.money_note):null,h("b",null,amt(t,k)));
     const list=(L,k)=>L.slice().sort((a,b)=>val(b,k)-val(a,k)||(+b.money_monthly||0)-(+a.money_monthly||0)).map(t=>mRow(t,k));
-    const tg=(k,label,n)=>h("button",{class:"ssmore",type:"button","aria-expanded":statOpen===k?"true":"false",onclick:()=>{statOpen=statOpen===k?null:k;renderSettings();}},label+" ("+n+")",h("span",{"aria-hidden":"true"},statOpen===k?"▴":"▾"));
-    return sec("stats","📊 סטטיסטיקת Side Quests",closed.length+" נסגרו · ✅ "+fmtNis(S),
-      h("div",{class:"ssmoney"},
-        h("div",{class:"ssmn s"},h("span",null,"✅ בפועל"),h("b",null,fmtNis(S)),h("small",null,"נכנס או נחסך")),
-        h("div",{class:"ssmn e"},h("span",null,"⏳ בדרך"),h("b",null,fmtNis(E)),h("small",null,"אושר או נתבע")),
-        h("div",{class:"ssmn p"},h("span",null,"💭 פוטנציאלי"),h("b",null,fmtNis(P)),h("small",null,"עוד לא נתבע"))),
-      M>0?h("div",{class:"sqhint"},"🔁 חיסכון קבוע: "+fmtNis(M)+" בחודש ("+fmtNis(M*12)+" בשנה). נכנס ל״בפועל״ רק על חודשים שעברו."):null,
-      saved.length?tg("s","✅ מה נכנס או נחסך",saved.length):null,
+    const tg=(k,label,n)=>h("button",{class:"ssmore",type:"button","data-pin":"st:"+k,"aria-expanded":statOpen===k?"true":"false",onclick:()=>{statOpen=statOpen===k?null:k;renderStats();}},h("span",null,label),h("span",{class:"c"},String(n),h("i",{"aria-hidden":"true"},statOpen===k?"▴":"▾")));
+    const hd=(t,...x)=>h("div",{class:"sssub"},h("span",null,t),...x);
+    const row=(l,a)=>[h("div",{class:"l"},l),...a.map((v,i)=>h("div",{class:"v"+(i===3?" all":"")},String(v)))];
+    const lists=[saved.length?tg("s","✅ מה נכנס או נחסך",saved.length):null,
       statOpen==="s"?h("div",{class:"sslist sqgrow"},...list(saved,"s")):null,
       exp.length?tg("e","⏳ מה בדרך",exp.length):null,
       statOpen==="e"?h("div",{class:"sslist sqgrow"},...list(exp,"e")):null,
       pot.length?tg("p","💭 מה עוד אפשר להשיג",pot.length):null,
-      statOpen==="p"?h("div",{class:"sslist sqgrow"},...list(pot,"p")):null,
-      h("div",{class:"sssub"},"📈 ההתקדמות מאז ההתחלה"),
-      progSec(),
-      h("div",{class:"sssub"},"✓ נסגרו"),
-      h("div",{class:"sstiles"},tile(cnt(closed,dOf,day0),"היום"),tile(cnt(closed,dOf,wk0),"השבוע"),tile(cnt(closed,dOf,mo0),"החודש"),tile(closed.length,"מההתחלה","all")),
-      h("div",{class:"sssub"},"＋ נפתחו"),
-      h("div",{class:"sstiles"},tile(cnt(opened,cOf,day0),"היום"),tile(cnt(opened,cOf,wk0),"השבוע"),tile(cnt(opened,cOf,mo0),"החודש"),tile(opened.length,"מההתחלה","all")),
-      h("div",{class:"sssub"},"🗂️ נושאים שטופלו"),
-      h("div",{class:"sstiles"},tile(touched(day0),"היום"),tile(touched(wk0),"השבוע"),tile(touched(mo0),"החודש"),tile(steps,"שלבים שבוצעו","all")),
-      h("div",{class:"sssub"},"📈 לפי שבועות",h("span",{class:"lg"},h("i",{class:"c"}),"נסגרו ",h("i",{class:"o"}),"נפתחו")),
-      bars,
-      h("div",{class:"sqhint"},"מאז "+dm(first)+"."+new Date(first).getFullYear()+" ("+days+" ימים): בממוצע "+(Math.round(closed.length/days*10)/10)+" משימות ביום · "+
-        Object.keys(byQ).sort((a,b)=>byQ[b]-byQ[a]).map(q=>((QUESTS[q]||QUESTS.side).e||"")+" "+byQ[q]).join(" · ")));
+      statOpen==="p"?h("div",{class:"sslist sqgrow"},...list(pot,"p")):null].filter(Boolean);
+    const m=modal("statM",
+      h("div",{class:"sthead"},h("h2",null,h("span",{class:"tg"},"PROGRESS REPORT"),h("b",{dir:"ltr"},"SIDE QUEST ",h("i",null,"STATISTICS"))),
+        h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×")),
+      h("div",{class:"stbody"},
+        h("div",{class:"ssmoney"},
+          h("div",{class:"ssmn s big"},h("span",null,"✅ בפועל · נכנס או נחסך"),h("b",null,fmtNis(S)),M>0?h("small",null,"🔁 "+fmtNis(M)+" בחודש · "+fmtNis(M*12)+" בשנה"):null),
+          h("div",{class:"ssmn e"},h("span",null,"⏳ בדרך"),h("b",null,fmtNis(E))),
+          h("div",{class:"ssmn p"},h("span",null,"💭 פוטנציאלי"),h("b",null,fmtNis(P))),
+          lists.length?h("div",{class:"sslists"},...lists):null),
+        hd("📈 ההתקדמות מאז ההתחלה"),
+        progSec(),
+        hd("⚡ פעילות"),
+        h("div",{class:"sstab"},h("div",{class:"h"}),h("div",{class:"h"},"היום"),h("div",{class:"h"},"השבוע"),h("div",{class:"h"},"החודש"),h("div",{class:"h"},"הכול"),
+          ...row("✓ נסגרו",[cnt(closed,dOf,day0),cnt(closed,dOf,wk0),cnt(closed,dOf,mo0),closed.length]),
+          ...row("＋ נפתחו",[cnt(opened,cOf,day0),cnt(opened,cOf,wk0),cnt(opened,cOf,mo0),opened.length]),
+          ...row("🗂️ טופלו",[touched(day0),touched(wk0),touched(mo0),touched(0)])),
+        hd("📅 לפי שבועות",h("span",{class:"lg"},h("i",{class:"c"}),"נסגרו ",h("i",{class:"o"}),"נפתחו")),
+        bars,
+        qs.length?hd("🧭 נסגרו לפי קווסט"):null,
+        qs.length?h("div",{class:"ssq"},...qs.map(q=>{const Q=QUESTS[q]||QUESTS.side;return h("div",null,h("span",{class:"e"},Q.e||""),h("b",null,String(byQ[q])),h("small",null,Q.a||q));})):null,
+        h("div",{class:"ssfoot"},"מאז "+dm(first)+"."+new Date(first).getFullYear()+" · "+days+" ימים · "+(Math.round(closed.length/days*10)/10)+" משימות ביום · "+steps+" שלבים בוצעו")));
+    const p=m.querySelector(".sqpanel");
+    p.addEventListener("click",e=>{const el=e.target.closest("[data-pin]");if(el&&p.contains(el))setPin={k:pinKey(el),top:el.getBoundingClientRect().top};},true);
+    if(keep&&p){p.scrollTop=top;holdPin(p);}
+    if(!keep)try{history.replaceState(null,"",location.pathname+location.search+"#stats");}catch(e){}
   }
   // 9.5 (Oren 6.11): everything that counts as "archive" lives only here: archived tasks (all quests) and archived / idle dashboards
   let archOpen=null;
@@ -5189,12 +5303,13 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
     setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
   let routed=false;
   function routeHash(){const hs=location.hash;
-    if(hs==="#brief"){showBrief("morning");return true;}if(hs==="#eve"){showBrief("eve");return true;}if(/^#(fri|wkend|week|abroad_am|abroad_pm)$/.test(hs)){showBrief(hs.slice(1));return true;}if(hs==="#settings"){showSettings();return true;}
+    if(hs==="#brief"){showBrief("morning");return true;}if(hs==="#eve"){showBrief("eve");return true;}if(/^#(fri|wkend|week|abroad_am|abroad_pm)$/.test(hs)){showBrief(hs.slice(1));return true;}if(hs==="#settings"){showSettings();return true;}if(hs==="#stats"){showStats();return true;}
     const m=hs.match(/^#t=(.+)$/);if(m&&allTopics.length){const id=decodeURIComponent(m[1]);try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}openTask(id);return true;}
     return false;}
   window.addEventListener("hashchange",routeHash);
   if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.type==="sq-open"&&d.url){try{const u=new URL(d.url);if(u.hash&&u.hash!==location.hash)location.hash=u.hash;else routeHash();}catch(x){}}});
   $("setBtn").onclick=()=>showSettings();
+  $("statBtn").onclick=()=>showStats();
   $("sunBtn").onclick=()=>showBrief();
   $("locBtn").onclick=()=>showHere(true);
   $("gmBtn").onclick=()=>showGmail();
