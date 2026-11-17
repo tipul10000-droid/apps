@@ -8,7 +8,7 @@
   const GEN = [["act", "💥 פעולה"], ["com", "😂 קומדיה"], ["dra", "🎭 דרמה"], ["rom", "💕 רומנטי"], ["thr", "🔪 מתח ופשע"], ["scf", "🚀 מד״ב ופנטזיה"],
     ["hor", "👻 אימה"], ["doc", "🎥 דוקו"], ["ani", "✏️ אנימציה"], ["fam", "🧸 משפחה"], ["rea", "📺 ריאליטי"]];
   const RATES = [0, 6, 7, 7.5, 8, 8.5, 9];
-  const MIN_VOTES = 500, PAGE = 45, NEW_DAYS = 14;
+  const MIN_VOTES = 1000, PAGE = 45, NEW_DAYS = 14;
   const TASTES = window.NF_TASTES || {};
   const TOPS = { il: { name: "הטופ של ישראל", icon: "🇮🇱", sub: "מה שהיה בטופ 10 של נטפליקס ישראל בשנה האחרונה" },
     w: { name: "הטופ העולמי", icon: "🌍", sub: "מה שהיה בטופ 10 העולמי של נטפליקס בשנה האחרונה" } };
@@ -68,7 +68,9 @@
     if ((p.like || []).length && !p.like.some((g) => x.g.includes(g))) return false;
     return true;
   }
-  const rated = (x, r) => !r || (x.r >= r && (x.v || 0) >= MIN_VOTES);
+  // a rating counts only with enough IMDb votes worldwide (Oren 17.11.2026); below that it shows "N/A" and sorts last
+  const okR = (x) => !!x.r && (x.v || 0) >= MIN_VOTES;
+  const rated = (x, r) => !r || (okR(x) && x.r >= r);
   function baseList() { // everything except the rating step
     return items.filter((x) => x.k[0] === F.t && !seen[x.k] && tasteOk(x)
       && (!F.g.length || F.g.some((g) => x.g.includes(g)))
@@ -76,9 +78,10 @@
   }
   function sortList(a) {
     const isTop = taste === "il" || taste === "w";
-    const by = { r: (x, y) => (y.r || 0) - (x.r || 0) || (y.v || 0) - (x.v || 0),
+    const sc = (x) => (okR(x) ? x.r : -1);
+    const by = { r: (x, y) => sc(y) - sc(x) || (y.v || 0) - (x.v || 0),
       new: (x, y) => (y.f || "").localeCompare(x.f || "") || (y.pop || 0) - (x.pop || 0),
-      pop: (x, y) => (y.pop || 0) - (x.pop || 0) };
+      pop: (x, y) => (y.v || 0) - (x.v || 0) || (y.pop || 0) - (x.pop || 0) }; // popular = most IMDb votes
     const d = F.dir === 1 ? -1 : 1; // dir -1 = best/newest/most popular first (default), 1 = reversed
     if (isTop && F.sort === "pop") return a.sort((x, y) => { const k = taste === "il" ? "til" : "tw"; return d * ((y[k][0] - x[k][0]) || (x[k][1] - y[k][1])); });
     const f = by[F.sort] || by.r;
@@ -109,12 +112,12 @@
       b.classList.toggle("in", r > 0 && r < F.r);
     }
   }
-  function oscTxt(x) { const n = (x.oc || []).length || 1; return "🏆 " + (n > 1 ? n + " אוסקרים" : "אוסקר"); }
+  function oscTxt(x) { const n = (x.oc || []).length || 1; return "🏆 " + (n > 1 ? n + " Oscars" : "Oscar"); }
   function card(x) {
     const url = x.im ? "https://www.imdb.com/title/" + x.im + "/" : "https://www.themoviedb.org/" + (x.k[0] === "m" ? "movie/" : "tv/") + x.k.slice(1);
     const post = h("div", { class: "post" },
       x.p ? h("img", { src: IMG + x.p, alt: "", loading: "lazy", decoding: "async" }) : h("div", { class: "noimg" }, x.n),
-      x.r ? h("span", { class: "imdb" }, "IMDb " + x.r.toFixed(1)) : null,
+      x.r ? h("span", { class: "imdb" + (okR(x) ? "" : " na"), title: okR(x) ? null : fmt(x.v || 0) + " הצבעות בלבד" }, "IMDb " + (okR(x) ? x.r.toFixed(1) : "N/A")) : null,
       x.os ? h("span", { class: "osc" + (x.os === 2 ? " g" : "") + (x.r ? "" : " top"), title: (x.oc || []).join(", ") }, oscTxt(x)) : null,
       isNew(x) ? h("span", { class: "newb" }, "חדש") : null,
       taste === "il" && x.til ? h("span", { class: "topb" }, "טופ 10 · " + x.til[0] + " שב׳") : taste === "w" && x.tw ? h("span", { class: "topb" }, "טופ 10 · " + x.tw[0] + " שב׳") : null);
@@ -171,7 +174,7 @@
   }
   // "ראיתי" as an achievements board (Oren 17.11.2026)
   function renderAch(all, nS) {
-    const rs = all.filter((x) => x.r), avg = rs.length ? rs.reduce((a, x) => a + x.r, 0) / rs.length : 0;
+    const rs = all.filter(okR), avg = rs.length ? rs.reduce((a, x) => a + x.r, 0) / rs.length : 0;
     const osc = all.reduce((a, x) => a + (x.os ? (x.oc || []).length || 1 : 0), 0);
     const pct = items.length ? Math.round((all.length / items.length) * 1000) / 10 : 0;
     $("ach").replaceChildren(
@@ -235,7 +238,7 @@
         try { if (navigator.share) await navigator.share({ title: "מה בנטפליקס?", url: pub }); else { await navigator.clipboard.writeText(pub); toast("הקישור הועתק"); } } catch (e) {} } }, "🔗 לשתף את האפליקציה"),
       h("p", { class: "note" }, "הרשימה שלי ו״ראיתי״ נשמרים רק במכשיר הזה."),
       h("div", { class: "h3" }, "מאיפה הנתונים"),
-      h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (בסינון לפי ציון רק כותר עם " + MIN_VOTES + " הצבעות לפחות). אוסקר: מספר הזכיות בכל הקטגוריות לפי Wikidata (🏆 זהב = זכה גם בסרט הטוב ביותר). ״בלי שפות זרות״ = רק כותרים שהשפה המקורית שלהם אנגלית או עברית. טופ 10: הטבלאות הרשמיות של נטפליקס."),
+      h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (ציון נחשב רק מ-" + fmt(MIN_VOTES) + " הצבעות בעולם; פחות מזה מוצג IMDb N/A ויורד לסוף). פופולרי = הכי הרבה הצבעות ב-IMDb. אוסקר: מספר הזכיות בכל הקטגוריות לפי Wikidata (🏆 זהב = זכה גם בסרט הטוב ביותר). ״בלי שפות זרות״ = רק כותרים שהשפה המקורית שלהם אנגלית או עברית. טופ 10: הטבלאות הרשמיות של נטפליקס."),
       cat ? h("p", { class: "note" }, "עודכן: " + new Date(cat.at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })) : null,
       h("button", { type: "button", class: "btn", onclick: closeSheet }, "✓ סגור"),
     ]);
@@ -266,7 +269,7 @@
       seedTaste(taste);
       minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
       const ns = items.filter((x) => x.k[0] === "s").length;
-      $("meta").textContent = "נטפליקס ישראל 🇮🇱 · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים · עודכן " +
+      $("meta").textContent = "נטפליקס ישראל 🇮🇱\u200f · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים · עודכן " +
         new Date(cat.at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }) + (cat.pending ? " · משלים " + fmt(cat.pending) + " כותרים…" : "");
       render();
     } catch (e) {
