@@ -11,8 +11,8 @@
   const RATES = [0, 6, 7, 7.5, 8, 8.5, 9];
   const MIN_VOTES = 1000, PAGE = 45, NEW_DAYS = 14;
   const TASTES = window.NF_TASTES || {};
-  const TOPS = { il: { name: "הטופ של ישראל", icon: "🇮🇱", sub: "מה שהיה בטופ 10 של נטפליקס ישראל בשנה האחרונה" },
-    w: { name: "הטופ העולמי", icon: "🌍", sub: "מה שהיה בטופ 10 העולמי של נטפליקס בשנה האחרונה" } };
+  const TOPS = { il: { name: "טופ ישראל", icon: "🇮🇱", sub: "מה שהיה בטופ 10 של נטפליקס ישראל בשנה האחרונה" },
+    w: { name: "טופ עולמי", icon: "🌍", sub: "מה שהיה בטופ 10 העולמי של נטפליקס בשנה האחרונה" } };
   const $ = (id) => document.getElementById(id);
   const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -203,7 +203,7 @@
   }
   function renderTasteNote() {
     const n = $("tasteNote"), p = TASTES[taste];
-    if (p && p.pending) { n.hidden = false; n.textContent = p.icon + " " + p.name + " עוד לא הוגדר, אז מוצג הכול. שלחו רשימה של מה שאהבתם ומה לא."; }
+    if (p && p.pending) { n.hidden = false; n.textContent = p.icon + " " + p.name + ": עוד אין רשימה, אז מוצג הכול."; }
     else if (TOPS[taste]) { n.hidden = false; n.textContent = TOPS[taste].icon + " מציג רק את " + TOPS[taste].name + ". אפשר לשנות ב-⚙️."; }
     else n.hidden = true;
   }
@@ -239,7 +239,7 @@
   function sheet(title, body) { $("ovT").textContent = title; $("ovB").replaceChildren(...body); $("ov").hidden = false; }
   function closeSheet() { $("ov").hidden = true; }
   function settings() {
-    const opts = [["all", "🍿", "בלי טעם", "כל מה שיש בנטפליקס ישראל"]];
+    const opts = [["all", "🍿", "בלי העדפה", "כל מה שיש בנטפליקס ישראל"]];
     for (const [k, p] of Object.entries(TASTES)) opts.push([k, p.icon, p.name, p.pending ? "בקרוב: מחכה לרשימת האהובים" : "לפי מה שאהבת ומה לא"]);
     for (const [k, p] of Object.entries(TOPS)) opts.push([k, p.icon, p.name, p.sub]);
     const box = h("div", { class: "opt" }, opts.map(([k, e, n, s]) => h("button", { type: "button", class: taste === k ? "on" : "",
@@ -247,7 +247,7 @@
       h("span", { class: "e" }, e), h("span", null, n, h("small", null, s)))));
     const pub = "https://tipul10000-droid.github.io/apps/netflix-il/";
     sheet("⚙️ הגדרות", [
-      h("div", { class: "h3" }, "הטעם שלי"), box,
+      h("div", { class: "h3" }, "העדפה"), box,
       h("div", { class: "h3" }, "לשתף"),
       h("button", { type: "button", class: "btn", onclick: async () => {
         try { if (navigator.share) await navigator.share({ title: "מה בנטפליקס?", url: pub }); else { await navigator.clipboard.writeText(pub); toast("הקישור הועתק"); } } catch (e) {} } }, "🔗 לשתף את האפליקציה"),
