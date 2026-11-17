@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#154A86">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="3.3";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.INS_BUILD="3.4";</script>
 <script>/* 3.0 (Oren 17.11): ?w=1 = the second dashboard "פנסיה, חסכונות ונכסים" (same data). Asset sub pages (#a=) belong to it. */window.INS_W=/[?&]w=1(&|$)/.test(location.search)||/^#a=/.test(location.hash);if(window.INS_W){document.documentElement.classList.add("wealth");document.title="פנסיה, חסכונות ונכסים";}</script>
 <script src="sq-db.js?v=9"></script>
 <script src="dash-lock.js?v=1"></script>
@@ -270,12 +270,31 @@ html.wealth #who,html.wealth #cats{display:none}
 #smcar{min-height:57px}
 .smearly{display:flex;align-items:center;gap:8px;width:100%;height:44px;margin:8px 0 2px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--sunk);font:inherit;font-size:13px;font-weight:700;color:var(--muted);text-align:right;cursor:pointer;overflow:hidden}
 .smearly i{font-style:normal;flex:none}
-.smearly.on{background:#FFF3DF;border-color:#E8A23A;color:#8A4B0F}.smearly.on i{color:#E07B00;font-size:18px;animation:smst 1.6s ease-in-out infinite}
+.smearly.on{background:color-mix(in srgb,#E8A23A 16%,var(--surface));border-color:#E8A23A;color:var(--ink)}.smearly.on i{color:#E07B00;font-size:18px;animation:smst 1.6s ease-in-out infinite}
 @keyframes smst{50%{transform:scale(1.35)}}
 .ebox{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:10px 0}.ebox h4{margin:0 0 6px;font-size:15px}
 .eph{border-radius:10px;padding:8px 10px;margin-top:6px;background:var(--sunk)}.eph>b{display:block;font-size:13.5px}.eph>span{display:block;font-family:var(--f-mono);font-weight:600;font-size:17px;direction:ltr;text-align:right}
 .eph ul{margin:4px 0 0;padding-inline-start:18px;font-size:13px;line-height:1.5}
-.eph.gap{background:#FDECEC}.eph.early{background:#FFF3DF}.eph.ok{background:#E8F5EC}
+.eph{color:var(--ink);border:1px solid transparent}.eph li{color:var(--ink)}
+.eph.gap{background:color-mix(in srgb,#E5484D 13%,var(--surface));border-color:color-mix(in srgb,#E5484D 40%,transparent)}.eph.gap>b{color:#E5484D}
+.eph.early{background:color-mix(in srgb,#E8A23A 14%,var(--surface));border-color:color-mix(in srgb,#E8A23A 45%,transparent)}.eph.early>b{color:#D9861C}
+.eph.ok{background:color-mix(in srgb,#2E8B57 13%,var(--surface));border-color:color-mix(in srgb,#2E8B57 40%,transparent)}.eph.ok>b{color:#2E9E62}
+/* 3.4 (Oren 17.11): liquid capital needed to live like today until 82 + pinned summary while playing with the sliders */
+.snd{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px;background:var(--surface)}
+.snd h4{margin:0;font-size:15.5px}
+.sndbig b{display:block;font-family:var(--f-mono);font-weight:500;font-size:30px;direction:ltr;text-align:right;line-height:1.1;color:#D9861C}
+.sndbig span{display:block;font-size:13px;font-weight:700}.sndbig small{display:block;font-size:12.5px;color:var(--muted)}
+.sndp{display:grid;gap:4px;font-size:13px}.sndp div{background:var(--sunk);border-radius:9px;padding:6px 9px;line-height:1.45}.sndp b{font-weight:800}
+.sndr{display:grid;grid-template-columns:1fr auto;gap:1px 10px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px;min-height:74px;align-content:start}
+.sndr small{color:var(--muted);font-size:12px;grid-column:1/-1}.sndr .n{text-align:left}.sndr .g{grid-column:1/-1;font-weight:800;font-size:15px}
+.sndr .bad{color:var(--bad)}.sndr .good{color:#2E9E62}
+#smpin{position:fixed;z-index:6;top:0;left:0;right:0;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:0 0 14px 14px;box-shadow:0 8px 20px rgba(0,0,0,.18);padding:8px 12px;display:grid;gap:3px;font-size:12.5px;opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .18s,transform .18s}
+#smpin.on{opacity:1;transform:none;pointer-events:auto}
+#smpin .pt{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+#smpin .pt b{font-family:var(--f-mono);font-weight:600;font-size:20px;direction:ltr;color:var(--c-pension)}
+#smpin .pt i{font-style:normal;font-family:var(--f-mono);font-weight:600;font-size:15px;direction:ltr;color:#D9861C}
+.ph{display:inline-block}#smpin .ph{margin-inline-start:8px}.sndp .ph{display:block}
+#smpin .pl{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#smpin .pl b{color:var(--ink)}
 .ecmp{margin-top:8px;font-size:13.5px}
 html.wealth .bar{border-bottom:0;padding:10px 0 8px;margin-bottom:8px}
 html.wealth .jump{margin-top:0;gap:6px}
@@ -682,6 +701,8 @@ function render(){
     if(fam)V.filter(p=>p.cat==="private"&&p.inv&&p.status!=="ended").forEach(p=>{inv+=pvVal(p).ils;});
     const M=(data.house||{}).motzkin, mg=M&&M.mortgage||{}, eq=M&&fam?(+(M.val||{}).est||0)-(+mg.balance||0):0;
     const LNi=((meta.loans||{}).items||[]).filter(x=>!/משכנתא/.test(x.l||"")), debt=fam?LNi.reduce((a,x)=>a+(+x.bal||0),0):0;
+    {let pfv=0;if(PF2){pfv=(PF2.holdings||[]).reduce((a,x)=>{const q=L2&&L2.fx&&L2.q&&L2.q[x.sym]&&L2.q[x.sym].p;return a+(q?x.qty*q*L2.fx.p*(PF2.fx_cal||1):x.val);},0);}
+     window.SMA={pfv,pfc:+(PF2&&PF2.cost)||0,priv:Math.max(0,inv-pfv),est:M?+(M.val||{}).est||0:0,bal:M?+mg.balance||0:0,debt,costs:((data.house||{})._meta||{}).costs||{}};}
     const tiles=[["🧓 פנסיה",sumK("pension"),"s-ret","צבירה בקרנות"],["🏦 השתלמות וגמל",sumK("lump"),"s-liq","נזיל"],kids?["👧 ילדים",kids,"s-kids","חיסכון לכל ילד"]:null,inv?["📈 השקעות",inv,"s-inv","תיק + פרטיות"]:null,M&&fam?["🏠 הון בדירה",eq,"s-home","שווי פחות משכנתא"]:null,debt?["💳 הלוואות",-debt,"s-loans","בלי המשכנתא"]:null].filter(Boolean);
     const net=tiles.reduce((a,t)=>a+t[1],0);
     h+=`<section id="s-ovr"><div class="sh"><h2>${W?"🧭 ":""}כמה יש לנו</h2><span class="hint">שווי נקי</span></div><div class="ovr">${tiles.map(t=>`<a class="ov ${t[1]<0?"neg":""}" href="#${t[2]}" data-j="${t[2]}"><span>${t[0]}</span><b>${t[1]<0?"−":""}${ils(Math.abs(t[1]))}</b><small>${t[3]}</small></a>`).join("")}<div class="ov ovt"><span>ביחד, שווי נקי</span><b>${ils(net)}</b><small>הפנסיה נעולה עד הפרישה. נזיל באמת: ראו "כסף נזיל"</small></div></div></section>`;
@@ -725,8 +746,10 @@ const SG={flat:{g:0,l:"נשאר כמו היום",n:"רק צמוד למדד"},low
 let SM={};try{SM=JSON.parse(localStorage.getItem("ins_sim")||"{}")}catch(e){}
 function saveSM(){try{localStorage.setItem("ins_sim",JSON.stringify(SM))}catch(e){}}
 function smS(R){
-  const s={who:"both",view:"net",mk:"base",sg:"std",yrs:0,...SM};s.age={...(SM.age||{})};
-  (R.people||[]).forEach(p=>{if(s.age[p.id]==null)s.age[p.id]=p.ret;});
+  const s={who:"both",view:"net",mk:"base",sg:"std",yrs:0,mode:"legal",lv:100,...SM};
+  const L={...(SM.ageL||SM.age||{})},E={...(SM.ageE||{})};
+  (R.people||[]).forEach(p=>{L[p.id]=Math.min(70,Math.max(60,L[p.id]??p.ret));E[p.id]=Math.min(60,Math.max(50,E[p.id]??55));});
+  s.ageL=L;s.ageE=E;s.mode=s.mode==="early"?"early":"legal";s.age=s.mode==="early"?E:L;
   if(!R.people.some(p=>p.id===s.who))s.who="both";return s;
 }
 function smT0(R){const m=String(R.as_of||"").match(/(\d+)\.(\d+)\.(\d{4})/);return m?new Date(+m[3],+m[2]-1,+m[1]):new Date();}
@@ -778,7 +801,7 @@ function smCalc(R,s,mk,ageOf){
 }
 const kk=v=>"₪"+(Math.abs(v)>=1e6?(Math.round(v/1e4)/100)+"M":Math.round(v/1000)+"K");
 function smChart(R,s){
-  const ages=[];for(let a=55;a<=70;a++)ages.push(a);
+  const ages=[];for(let a=50;a<=70;a++)ages.push(a);
   const V=c=>s.view==="net"?c.net:c.gross, lines=[];
   if(s.who==="both"){
     (R.people||[]).forEach((p,k)=>{const one={...s,who:p.id};
@@ -789,14 +812,14 @@ function smChart(R,s){
     const p=R.people.find(x=>x.id===s.who);
     ["low","base","high"].forEach(m=>lines.push({c:m===s.mk?"var(--c-pension)":"color-mix(in srgb,var(--c-pension) 40%,transparent)",w:m===s.mk?2.8:1.4,l:MK[m].l.split(" ").slice(1).join(" "),pts:ages.map(a=>V(smCalc(R,s,m,()=>a))),mark:m===s.mk?s.age[p.id]:null}));
   }
-  const mx=Math.max(1,...lines.flatMap(l=>l.pts))*1.08, W=340,H=170,L=40,B=22,T=8,X=a=>L+(a-55)/15*(W-L-8),Y=v=>T+(1-v/mx)*(H-T-B);
+  const mx=Math.max(1,...lines.flatMap(l=>l.pts))*1.08, W=340,H=170,L=40,B=22,T=8,X=a=>L+(a-50)/20*(W-L-8),Y=v=>T+(1-v/mx)*(H-T-B);
   const ticks=[0,.33,.66,1].map(t=>t*mx/1.08);
   let g=ticks.map(v=>`<line x1="${L}" x2="${W-8}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)"/><text x="${L-4}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${kk(v)}</text>`).join("");
-  g+=[55,60,65,67,70].map(a=>`<text x="${X(a).toFixed(1)}" y="${H-6}" text-anchor="middle">${a}</text>`).join("");
+  g+=[50,55,60,65,67,70].map(a=>`<text x="${X(a).toFixed(1)}" y="${H-6}" text-anchor="middle">${a}</text>`).join("");
   g+=`<rect x="${L}" y="${T}" width="${(X(60)-L).toFixed(1)}" height="${H-T-B}" fill="#E8A23A" opacity=".08"/><text x="${((L+X(60))/2).toFixed(1)}" y="${T+12}" text-anchor="middle" fill="#B5651D">אין פנסיה עד 60</text>`;
   (R.people||[]).filter(p=>s.who==="both"||p.id===s.who).forEach(p=>{g+=`<line x1="${X(p.ret).toFixed(1)}" x2="${X(p.ret).toFixed(1)}" y1="${T}" y2="${H-B}" stroke="var(--muted)" stroke-dasharray="2 3" opacity=".5"/>`;});
   lines.forEach(l=>{g+=`<polyline fill="none" stroke="${l.c}" stroke-width="${l.w}" ${l.dash?'stroke-dasharray="3 3" opacity=".6"':""} stroke-linejoin="round" points="${l.pts.map((v,k)=>X(ages[k]).toFixed(1)+","+Y(v).toFixed(1)).join(" ")}"/>`;
-    if(l.mark!=null){const v=l.pts[l.mark-55];g+=`<circle cx="${X(l.mark).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="5" fill="${l.c}" stroke="var(--surface)" stroke-width="2"/>`;}});
+    if(l.mark!=null){const v=l.pts[l.mark-50];g+=`<circle cx="${X(l.mark).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="5" fill="${l.c}" stroke="var(--surface)" stroke-width="2"/>`;}});
   const leg=lines.filter(l=>l.l).map(l=>`<span><i style="background:${l.c}"></i>${esc(l.l)}</span>`).join("")+(s.who==="both"?`<span><i class="dsh"></i>שוק גבוה / נמוך</span>`:"")+`<span><i class="dsh v"></i>גיל פרישה חוקי</span>`;
   return `<svg viewBox="0 0 ${W} ${H}" class="smsvg" role="img" aria-label="הכנסה חודשית לפי גיל הפרישה">${g}</svg><div class="smleg">${leg}</div>`;
 }
@@ -854,11 +877,12 @@ function smHTML(R){
     <div class="hfl">💼 השכר שלנו עד הפרישה</div>${seg(Object.keys(SG).map(k=>[k,SG[k].l]),s.sg,"sg")}
     <div class="nt" id="smsg">${esc(sg.n)}${sg.g?` (${sg.g}% מעל האינפלציה)`:""}. השכר קובע כמה נכנס לפנסיה כל חודש.</div>
     ${smCarHTML(R,s,seg)}
-    <div class="hfl">🎂 גיל פרישה</div>
-    ${P.map(p=>`<label class="hrng">${esc(p.name)}: <b data-agel="${esc(p.id)}">${ageLbl(p,s.age[p.id])}</b><input type="range" data-age="${esc(p.id)}" min="55" max="70" step="1" value="${s.age[p.id]}" aria-label="גיל פרישה ${esc(p.name)}"><span class="smag" data-agen="${esc(p.id)}">${smAgeNote(R,s,p.id)}</span></label>`).join("")}
+    <div class="hfl">🎂 גיל פרישה</div>${seg([["legal","🎯 בגיל החוקי (60-70)"],["early","🚀 מוקדמת (50-60)"]],s.mode,"mode")}
+    ${P.map(p=>`<label class="hrng">${esc(p.name)}: <b data-agel="${esc(p.id)}">${ageLbl(p,s.age[p.id])}</b><input type="range" data-age="${esc(p.id)}" min="${s.mode==="early"?50:60}" max="${s.mode==="early"?60:70}" step="1" value="${s.age[p.id]}" aria-label="גיל פרישה ${esc(p.name)}"><span class="smag" data-agen="${esc(p.id)}">${smAgeNote(R,s,p.id)}</span></label>`).join("")}
     <div class="hfl">🏦 למשוך את ההשתלמות כתוספת חודשית?</div>${seg([[0,"לא"],[20,"על 20 שנה"],[25,"על 25 שנה"],[30,"על 30 שנה"]],s.yrs,"yrs")}
     <button type="button" class="more smreset" data-sm="reset" data-v="1">↺ חזרה לברירת המחדל (המציאות של היום)</button>
   </div>
+  <div id="smneed"></div>
   <div class="hfl">📊 כמה בחודש, לפי גיל הפרישה</div><div id="smch">${smChart(R,s)}</div>
   <details class="more smd"><summary>🧾 כמה מס נשלם בפנסיה</summary><div id="smtx">${smTaxHTML(R,s)}</div></details>
   <details class="more smd"><summary>⚖️ גיל הפרישה בישראל (ותיקון קטן)</summary><div class="smins">
@@ -906,21 +930,77 @@ function smEarlyHTML(R,s){
 }
 function smEarlyOpen(R,s){const sh=$("sheet");sh.innerHTML=smEarlyHTML(R,s);sh.style.height="82vh";document.getElementById("sheetwrap").className="open";
   $("sx").onclick=()=>{document.getElementById("sheetwrap").className="";sh.style.height="";};$("sx").focus();}
+// 3.4 (Oren 17.11): how much liquid capital it takes to live like today until 82, and what we have if we liquidate
+const SM_END=82;
+function smNeed(R,s){
+  const TX=smTX(R), r=MK[s.mk].r, g=SG[s.sg].g, rd=Math.max(.5,r-1.5), im=Math.pow(1+rd/100,1/12)-1, lv=(+s.lv||100)/100, t0=smT0(R);
+  const P=(R.people||[]).filter(p=>s.who==="both"||p.id===s.who).map(p=>{
+    const x=smPerson(R,p,s.age[p.id],r,g,TX,0,p.career?(s.car||"deputy"):null);return {p,x,tgt:(+p.net_now||0)*lv};});
+  const m0=Math.min(...P.map(o=>o.x.n));let need=0;
+  P.forEach(o=>{const {p,x,tgt}=o,end=Math.max(0,(SM_END-x.A)*12),sg={gap:[0,0,x.A,x.S],early:[0,0,Math.max(x.A,x.S),p.ret],old:[0,0,Math.max(x.A,p.ret),SM_END]};let pv=0;
+    for(let k=0;k<end;k++){const a=x.A+k/12,key=a<x.S?"gap":a<p.ret?"early":"old",inc=key==="gap"?-TX.ne:key==="early"?x.n0:x.n1,sf=Math.max(0,tgt-inc);
+      sg[key][0]+=sf;sg[key][1]++;pv+=sf/Math.pow(1+im,x.n-m0+k);}
+    o.pv=pv;o.sg=sg;o.inc={gap:-TX.ne,early:x.n0,old:x.n1};need+=pv;});
+  // what we have, valued at the first retirement (today's money)
+  const A=window.SMA||{}, yrs=m0/12, gr=Math.pow(1+rd/100,yrs), ga=Math.pow(1.01,yrs);
+  let study=0;P.forEach(o=>o.x.funds.filter(f=>f.kind==="lump").forEach(f=>{study+=(f.fv-(+f.debt||0))/Math.pow(1+im,o.x.n-m0);}));
+  const pfNet=(A.pfv||0)-Math.max(0,(A.pfv||0)-(A.pfc||A.pfv||0))*.25, liq=study+(pfNet+(A.priv||0))*gr;
+  const C=A.costs||{}, sell=((+C.broker_pct||2)+(+C.lawyer_pct||.5))/100, home=A.est?A.est*ga*(1-sell)-(A.bal||0):0;
+  const all=liq+home-(A.debt||0);
+  const pmt=gap=>gap<=0||m0<=0?0:gap*im/(Math.pow(1+im,m0)-1);
+  return {rd,lv,P,need,m0,yrs,date:new Date(t0.getFullYear(),t0.getMonth()+m0,1),study,pfNet:pfNet*gr,priv:(A.priv||0)*gr,home,debt:A.debt||0,liq,all,pmt,tgt:P.reduce((a,o)=>a+o.tgt,0),
+    first:P.reduce((a,o)=>o.x.n<a.x.n?o:a,P[0])};
+}
+function smNeedHTML(R,s){
+  const N=smNeed(R,s), F=N.first, two=N.P.length>1, seg=(items,cur,key)=>`<div class="hseg">${items.map(([v,l])=>`<button type="button" data-sm="${key}" data-v="${v}" aria-pressed="${String(v)===String(cur)}">${l}</button>`).join("")}</div>`;
+  const yy=v=>Math.round(v*10)/10, sgl=(o,k,t)=>{const z=o.sg[k];return z[1]?`<span class="ph"><b><bdi dir="ltr">${z[2]}-${z[3]}</bdi></b> ${t} ${ils(o.inc[k]<0?0:o.inc[k])}, חסר <b>${ils(z[0]/z[1])}</b> בחודש</span>`:"";};
+  const row=(l,sub,have)=>{const gap=N.need-have;return `<div class="sndr"><b>${l}</b><span class="n">יש ${ils(have)}</span><small>${sub}</small><span class="g ${gap>0?"bad":"good"}">${gap>0?"חסר "+ils(gap):gap<0?"עודף "+ils(-gap):"✓ מכוסה"}</span><small class="n">${gap>0&&N.m0>0?`לחסוך ${ils(N.pmt(gap))} בחודש מהיום`:""}</small></div>`;};
+  return `<div class="snd"><h4>🏦 כמה הון נזיל צריך כדי לחיות כמו היום עד ${SM_END}</h4>
+    <div class="hfl">רמת החיים שרוצים לשמור</div>${seg([[100,"כמו היום"],[85,"85% ממנה"],[70,"70% ממנה"]],N.lv*100,"lv")}
+    <div class="sndbig"><b>${ils(N.need)}</b><span>${N.need<1?"לא צריך הון נוסף: הפנסיה וביטוח לאומי מכסים את רמת החיים":`צריך שיהיה ביד ב-${N.date.getFullYear()}, כש${esc(F.p.name)} פורש${F.p.id==="lior"?"ת":""} בגיל ${F.x.A}`}</span>
+      <small>כדי להשלים ל-${ils(N.tgt)} נטו בחודש${two?" לשניכם":""} עד גיל ${SM_END}. בכסף של היום, הכסף ממשיך להרוויח ${N.rd}% מעל האינפלציה ונגמר בגיל ${SM_END}.</small></div>
+    <div class="sndp">${N.P.map(o=>`<div>${two?`<b>${esc(o.p.name)}</b> · `:""}${[sgl(o,"gap","בלי פנסיה:"),sgl(o,"early","פנסיה מוקדמת"),sgl(o,"old","פנסיה + ב״ל")].filter(Boolean).join("")}</div>`).join("")}</div>
+    <div class="sndl">
+      ${row("לא מנזילים כלום","את כל הסכום צריך לחסוך מעכשיו",0)}
+      ${row("רק מה שנזיל","השתלמות "+kk(N.study)+" · תיק אחרי מס "+kk(N.pfNet)+(N.priv?" · השקעות "+kk(N.priv):""),N.liq)}
+      ${row("מנזילים הכול","+ הדירה אחרי מכירה "+kk(N.home)+(N.debt?" · פחות הלוואות "+kk(N.debt):""),N.all)}
+    </div>
+    <details class="more"><summary>איך חישבתי</summary><div>רמת החיים = הנטו של היום (${N.P.map(o=>esc(o.p.name)+" "+ils(+o.p.net_now||0)).join(", ")}) כפול ${N.lv*100}%. בכל חודש מגיל הפרישה עד ${SM_END} מחשבים כמה חסר בין זה לבין מה שנכנס: לפני 60 כלום (ומשלמים ביטוח לאומי כ-₪${smTX(R).ne}), 60 עד הגיל החוקי פנסיה מוקדמת בלי פטור ובלי ב״ל, ומהגיל החוקי פנסיה + ב״ל. כל החסר מהוון לשנת הפרישה הראשונה בתשואה ריאלית של ${N.rd}% (השוק שבחרת פחות 1.5% דמי ניהול ומס). ההשתלמות לפי הסימולטור ביום הפרישה, פחות ההלוואה עליה. התיק אחרי 25% מס רווחי הון. הדירה: עולה 1% מעל האינפלציה, פחות ${Math.round(((+(window.SMA||{}).costs?.broker_pct||2)+(+(window.SMA||{}).costs?.lawyer_pct||.5))*10)/10}% תיווך ועו״ד ופחות המשכנתא של היום (בלי מס שבח, דירה יחידה). הפנסיה עצמה נשארת לקצבה ולא נכללת. "בחודש מהיום" = כמה לחסוך כל חודש עד הפרישה כדי לסגור את הפער. שנים עד הפרישה: ${yy(N.yrs)}.</div></details></div>`;
+}
+function smPinHTML(R,s){const C=smCalc(R,s),N=smNeed(R,s),V=s.view==="net",gap=N.need-N.all;
+  return `<div class="pt"><span><b>${ils(V?C.net:C.gross)}</b> ${V?"נטו":"ברוטו"} מהגיל החוקי</span><span>צריך <i>${kk(N.need)}</i></span></div>
+  ${N.P.map(o=>{const x=o.x;return `<div class="pl"><b>${esc(o.p.name)} ${x.A}</b>${x.gap?`<span class="ph">עד ${x.S}: ₪0</span>`:""}${x.early&&x.S<o.p.ret?`<span class="ph"><bdi dir="ltr">${x.S}-${o.p.ret}</bdi>: ${ils(V?x.n0:x.g0)}</span>`:""}<span class="ph">מגיל ${Math.max(x.A,o.p.ret)}: ${ils(V?x.n1:x.g1)}</span></div>`;}).join("")}
+  <div class="pl">מנזילים הכול: ${gap>0?`חסר <b>${kk(gap)}</b>`:`עודף <b>${kk(-gap)}</b>`} · רק נזיל: ${N.need-N.liq>0?`חסר <b>${kk(N.need-N.liq)}</b>`:`עודף <b>${kk(N.liq-N.need)}</b>`}</div>`;}
+// the pin shows while the result box is scrolled away and the sliders are still on screen
+function smPinWatch(){
+  let pin=$("smpin");if(!pin){pin=document.createElement("div");pin.id="smpin";pin.setAttribute("aria-hidden","true");document.body.appendChild(pin);
+    pin.onclick=()=>{const r=$("smres");if(r)r.scrollIntoView({behavior:"smooth",block:"start"});};}
+  if(window.__smpw)return;window.__smpw=1;
+  const chk=()=>{const res=$("smres"),ctl=document.querySelector("#retbox .smctl"),nd=$("smneed"),pin=$("smpin");if(!pin)return;
+    if(!res||!ctl){pin.classList.remove("on");return;}
+    const bar=document.querySelector(".bar"),top=bar?Math.max(0,bar.getBoundingClientRect().bottom):0,box=$("retbox").getBoundingClientRect();
+    pin.style.top=top+"px";pin.style.width=box.width+"px";
+    const endEl=ctl, on=res.getBoundingClientRect().bottom<top+4&&endEl.getBoundingClientRect().bottom>top+pin.offsetHeight+30;
+    pin.classList.toggle("on",on);};
+  window.addEventListener("scroll",chk,{passive:true});window.addEventListener("resize",chk);window.__smpchk=chk;
+}
 function bindSim(){
   const box=$("retbox");if(!box)return;const R=data.meta.retire;
   const full=()=>{box.innerHTML=smHTML(R);bindSim();};
   const be=()=>{const b=box.querySelector("[data-early]");if(b)b.onclick=()=>smEarlyOpen(R,smS(R));};be();
-  const part=()=>{const s=smS(R);$("smres").innerHTML=smRes(R,s);be();$("smch").innerHTML=smChart(R,s);$("smtx").innerHTML=smTaxHTML(R,s);
+  const fillN=s=>{if($("smneed"))$("smneed").innerHTML=smNeedHTML(R,s);if($("smpin"))$("smpin").innerHTML=smPinHTML(R,s);if(window.__smpchk)window.__smpchk();};
+  smPinWatch();fillN(smS(R));
+  const part=()=>{const s=smS(R);$("smres").innerHTML=smRes(R,s);be();fillN(s);$("smch").innerHTML=smChart(R,s);$("smtx").innerHTML=smTaxHTML(R,s);
     const sc=MK[s.mk],sg=SG[s.sg];$("smmk").textContent=`${sc.d}: תשואה של ${sc.r}% מעל האינפלציה (כ-${sc.r+INFL}% בשנה), פחות דמי ניהול.`;
     if($("smcar"))$("smcar").textContent=smCarNote(R,s);
     $("smsg").textContent=`${sg.n}${sg.g?` (${sg.g}% מעל האינפלציה)`:""}. השכר קובע כמה נכנס לפנסיה כל חודש.`;
     box.querySelectorAll("[data-agen]").forEach(e=>{e.textContent=smAgeNote(R,s,e.dataset.agen);});
     box.querySelectorAll("[data-sm]").forEach(b=>{const k=b.dataset.sm;if(k!=="reset")b.setAttribute("aria-pressed",String(String(s[k])===b.dataset.v));});};
-  box.querySelectorAll("[data-sm]").forEach(b=>b.onclick=()=>{const k=b.dataset.sm,v=b.dataset.v;
+  box.onclick=e=>{const b=e.target.closest("[data-sm]");if(!b||!box.contains(b))return;const k=b.dataset.sm,v=b.dataset.v;
     if(k==="reset"){SM={};saveSM();full();return;}
-    SM[k]=k==="yrs"?+v:v;saveSM();if(k==="who")full();else part();});
+    SM[k]=k==="yrs"||k==="lv"?+v:v;saveSM();if(k==="who"||k==="mode")full();else part();};
   box.querySelectorAll("[data-age]").forEach(i=>i.oninput=()=>{const id=i.dataset.age,p=R.people.find(x=>x.id===id),a=+i.value;
-    SM.age={...(SM.age||{}),[id]:a};saveSM();
+    const mk=smS(R).mode==="early"?"ageE":"ageL";SM[mk]={...(SM[mk]||{}),[id]:a};delete SM.age;saveSM();
     const l=box.querySelector(`[data-agel="${id}"]`);if(l)l.textContent=`${a}${a===p.ret?" · חוקי":a<p.ret?" · "+(p.ret-a)+" שנים מוקדם":" · "+(a-p.ret)+" שנים מאוחר"}`;part();});
 }
 
