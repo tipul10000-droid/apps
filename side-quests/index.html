@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.6";window.SQ_BUILD_AT="17.11.2026 22:47";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.7";window.SQ_BUILD_AT="17.11.2026 23:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -734,6 +734,7 @@ html.sqlock body{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 @keyframes locp{50%{opacity:.35}}
 :is(#locM,#gmM,#tpM) .sqpanel{height:calc(70vh / var(--tz,1));max-height:none;display:flex;flex-direction:column;padding:0}
 @supports (height:1dvh){:is(#locM,#gmM,#tpM) .sqpanel{height:calc(70dvh / var(--tz,1))}}
+#tpM{padding-inline:14px}
 :is(#locM,#gmM,#tpM) .lhd{display:flex;align-items:center;gap:8px;padding:14px 16px 8px;flex:none}
 :is(#locM,#gmM,#tpM) .lbody{flex:1;overflow:auto;padding:0 16px 8px}
 :is(#locM,#gmM,#tpM) .lnow{font-size:16px;font-weight:700;margin:2px 0 10px}
@@ -3827,7 +3828,14 @@ html.desk .co-mark{font-size:8cqi}
     modal("tpM",h("div",{class:"lhd"},h("h2",null,t.title||"משימה",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),
       h("div",{class:"lbody"},sec("איפה זה עומד",t.stand),sec("הצעד הבא",t.next_step),t.status==="waiting_other"?sec("מחכה ל",t.waiting_for):null,sec("תקציר",t.summary),
         log.length?h("div",{class:"tp-sec"},h("b",null,"היסטוריה"),h("div",{class:"f-log"},log.map(e=>h("div",null,h("b",null,fmtDate((e.at||"").slice(0,10))),e.text||"")))):null),
-      h("div",{class:"lft"},h("button",{type:"button",onclick:closeModal},"✓ סגור")));}
+      h("div",{class:"lft"},h("button",{type:"button",onclick:closeModal},"✓ סגור")));fitSheet(document.getElementById("tpM"),t.id);}
+  // 21.x (Oren 17.11.2026): the full-details sheet keeps the side edges of the task frame (the orange card), never edge to edge.
+  // The backdrop gets side padding = the task row's distance from each screen edge; no row in view → the page's content column.
+  function fitSheet(m,id){if(!m)return;const fit=()=>{if(!m.isConnected){removeEventListener("resize",fit);return;}
+    const W=document.documentElement.clientWidth;let r=id&&document.querySelector('main .row[data-id="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]'),b=r&&r.getBoundingClientRect();
+    if(!b||!b.width){const n=document.querySelector("main .inner");b=n&&n.getBoundingClientRect();}
+    if(!b||!b.width||b.width>=W-4)return;m.style.paddingLeft=Math.max(8,Math.round(b.left))+"px";m.style.paddingRight=Math.max(8,Math.round(W-b.right))+"px";};
+    fit();addEventListener("resize",fit);}
   function drawer(t){
     const st=stepsOf(t),qs=questionsOf(t),offs=offersOf(t),open=isOpen(t);
     const dd=t.dash&&dashById(t.dash),pr=t.project&&projById(t.project);
