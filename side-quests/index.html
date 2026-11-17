@@ -11,7 +11,8 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.9";window.SQ_BUILD_AT="17.11.2026 21:41";
+<script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.0";window.SQ_BUILD_AT="17.11.2026 22:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1631,10 +1632,8 @@ details.more[open]>summary{margin-bottom:10px}
 .wfold{width:100%;min-height:40px;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;background:transparent;color:var(--hero-ink);font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ctxrow .wseg button.pk{overflow:hidden;min-width:0}.ctxrow .wseg button.pk .pk-l{overflow:hidden;text-overflow:ellipsis;min-width:0}
 /* 17.4 (Oren 16.11): something new = a calm, slow pulse on "חדש" (no auto-open) */
-.ctxrow .wseg button.nw.has{animation:nwPulse 2.8s ease-in-out infinite}
-.ctxrow .wseg button.nw.has .wn{animation:nwDot 2.8s ease-in-out infinite}
-@keyframes nwPulse{0%,100%{background:rgba(47,128,237,0)}50%{background:rgba(47,128,237,.42)}}
-@keyframes nwDot{0%,100%{box-shadow:0 0 0 0 rgba(47,128,237,.0)}50%{box-shadow:0 0 0 5px rgba(47,128,237,.35)}}
+.ctxrow .wseg button.nw.has{background:rgba(47,128,237,.2)}
+.ctxrow .wseg button.nw.has .wn{animation:sqbeat 2.4s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.ctxrow .wseg button.nw.has{animation:none;background:rgba(47,128,237,.35)}.ctxrow .wseg button.nw.has .wn{animation:none}}
 .ai .opts{gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;align-self:stretch}
 .ai .opts>.opt,.ai .opts>a.opt{flex:1 1 auto;border:0!important;border-radius:0!important;background:var(--surface);text-align:center;min-height:38px}
@@ -1737,25 +1736,26 @@ main{padding-bottom:90px}
 /* 15.1 (Oren 11.11.2026): quick access to the dashboards next to "updated", lights up when a dashboard has news */
 .ctxrow .toolrow .dzbtn{margin-inline-start:auto;flex:none;width:128px;min-height:26px;display:flex;align-items:center;justify-content:center;gap:5px;padding:0 8px;border-radius:999px;border:1.5px solid rgba(255,255,255,.34);background:transparent;color:var(--hero-ink);font:inherit;font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer}
 .dzbtn .n{display:none;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#2F7BEA;color:#fff;font-size:11px;line-height:17px;text-align:center}
-.dzbtn.has{border-color:#6FA8FF;animation:dzpulse 1.8s ease-out infinite}
+.dzbtn.has{border-color:#6FA8FF;position:relative}.dzbtn.has::after{content:"";position:absolute;inset:-1.5px;border-radius:inherit;box-shadow:0 0 0 2px rgba(111,168,255,.5);pointer-events:none;animation:sqbeat 2.4s ease-in-out infinite}
 .dzbtn.has .n{display:inline-block}
 .dzbtn:active{background:rgba(255,255,255,.12)}
-@keyframes dzpulse{0%{box-shadow:0 0 0 0 rgba(111,168,255,.6)}70%{box-shadow:0 0 0 8px rgba(111,168,255,0)}100%{box-shadow:0 0 0 0 rgba(111,168,255,0)}}
 .dz-top{position:relative;display:flex;align-items:center;gap:12px;width:100%;margin:0 0 12px;padding:14px 14px 14px 12px;border:0;border-radius:16px;color:#fff;font:inherit;text-align:start;cursor:pointer;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 3px 12px rgba(0,0,0,.18);-webkit-tap-highlight-color:transparent;animation:dztin .25s ease-out}
 .dz-top .ti{flex:none;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:24px}
 .dz-top .b{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.dz-top .b b{font-size:17px;line-height:1.25}.dz-top .b .s{font-size:13.5px;opacity:.9}
 .dz-top .go{flex:none;font-size:26px;opacity:.8;line-height:1}
 .dz-top .dot{position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:#E5483B;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)}.dz-top .dot.soft{background:#F0A23B}
-.dz-top .nw{position:absolute;top:-4px;right:16px;width:12px;height:12px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;animation:dzblink 1.4s ease-in-out infinite}
+.dz-top .nw{position:absolute;top:-4px;right:16px;width:12px;height:12px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;animation:sqbeat 2.4s ease-in-out infinite}
 .dz-top:active{filter:brightness(.95)}
 @keyframes dztin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .qbtn.hasnw{opacity:.82;filter:none}
-.qbtn .qnw{position:absolute;top:3px;inset-inline-start:3px;width:11px;height:11px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);animation:dzblink 1.4s ease-in-out infinite;z-index:2}
-.dz-tile .nw{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:dzblink 1.4s ease-in-out infinite}
-@keyframes dzblink{50%{opacity:.4;transform:scale(.8)}}
+.qbtn .qnw{position:absolute;top:3px;inset-inline-start:3px;width:11px;height:11px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);animation:sqbeat 2.4s ease-in-out infinite;z-index:2}
+.dz-tile .nw{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);animation:sqbeat 2.4s ease-in-out infinite}
+/* 21.0 (Oren 17.11.2026): every indicator light (blue "new", connections) breathes on ONE shared, gentle beat, phase-locked
+   to the wall clock (sqBeatLock below + dash-sub.js), so all dots on the screen, and in a dashboard frame, pulse together. */
+@keyframes sqbeat{0%,100%{opacity:1}50%{opacity:.5}}
 /* 19.8: blue blinking "new" dots everywhere (settings, chat, settings sections, updates groups) */
-.tdot.nw{background:#2F7BEA;width:10px;height:10px;animation:dzblink 1.4s ease-in-out infinite}
-.snw{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2F7BEA;margin-inline-start:7px;vertical-align:middle;animation:dzblink 1.4s ease-in-out infinite}
+.tdot.nw{background:#2F7BEA;width:10px;height:10px;animation:sqbeat 2.4s ease-in-out infinite}
+.snw{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2F7BEA;margin-inline-start:7px;vertical-align:middle;animation:sqbeat 2.4s ease-in-out infinite}
 .up-g{padding:10px 14px 4px;font-size:13px;font-weight:800;color:#2F7BEA}
 .uplist .up-g+.uprow{border-top:0}
 .uprow+.up-g{border-top:1px solid var(--line)}
@@ -1778,7 +1778,7 @@ main{padding-bottom:90px}
 .dnews li.go{cursor:pointer;-webkit-tap-highlight-color:transparent}.dnews li.go:active{background:color-mix(in srgb,#2F7BEA 10%,transparent)}.dnews li.go b::after,.dnews li.go span.solo::after{content:" ‹";color:#2F7BEA;font-weight:800}
 .row.jump{animation:sqjump 1.6s ease-out}@keyframes sqjump{0%,35%{box-shadow:inset 0 0 0 2.5px #2F7BEA;background:color-mix(in srgb,#2F7BEA 12%,transparent)}100%{box-shadow:none}}
 @media (prefers-reduced-motion:reduce){.row.jump{animation:none;box-shadow:inset 0 0 0 2.5px #2F7BEA}}
-@media (prefers-reduced-motion:reduce){.tdot.nw,.snw,.qbtn .qnw,.dzbtn.has,.dz-tile .nw,.dz-tile.flash,.dnews{animation:none}}
+@media (prefers-reduced-motion:reduce){.tdot.nw,.snw,.qbtn .qnw,.dzbtn.has,.dzbtn.has::after,.dz-top .nw,.dz-tile .nw,.dz-tile.flash,.dnews{animation:none}}
 .ctxrow .wseg{border:1.5px solid rgba(255,255,255,.4)!important;border-radius:13px}
 .ctxrow .wseg button{min-height:40px!important}
 .ctxrow .wseg button+button{border-inline-start-width:1.5px!important;border-inline-start-color:rgba(255,255,255,.25)!important}
@@ -2100,7 +2100,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 .sbar .cx svg{width:20px;height:20px;display:block}
 .sbar .cl{position:absolute;inset-inline-end:-4px;bottom:-3px;width:9px;height:9px;border-radius:50%;background:#9AA0A6;box-shadow:0 0 0 2px var(--hero-bg,#1b1b1b)}
 .sbar .cl.ok{background:#22C55E}
-.sbar .cl.ok::after{content:"";position:absolute;inset:0;border-radius:50%;background:#22C55E;animation:clbeat 2.6s ease-out infinite}
+.sbar .cl.ok,.sbar .cl.late,.sbar .cl.bad{animation:sqbeat 2.4s ease-in-out infinite}
 .sbar .cl.late{background:#F59E0B}
 .sbar .cl.bad{background:#EF4444}
 /* 20.0: Side Quests' own connection light on the refresh side (fixed size, only the color changes) */
@@ -2109,7 +2109,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 .sbar .refr .rv{font-variant-numeric:tabular-nums}
 .row .r-title.pend::before,.row.pend .r-title::before{content:"⇡ ";color:#F59E0B;font-weight:800}
 .sbar .cx.off svg{opacity:.38;filter:grayscale(1)}
-@keyframes clbeat{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(2.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.sbar .cl{animation:none!important}}
 @media (prefers-reduced-motion:reduce){.sbar .cl.ok::after{animation:none;display:none}}
 .ctxrow .toolrow .updbtn,.ctxrow .toolrow .dzbtn{flex:1 1 0!important;width:auto!important;min-height:34px!important;border-radius:12px!important;margin:0!important}
 .ctxrow .toolrow .updbtn+.dzbtn{margin-inline-start:0!important}
