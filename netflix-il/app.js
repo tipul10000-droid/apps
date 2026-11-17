@@ -69,7 +69,7 @@
     return true;
   }
   // a rating counts only with enough IMDb votes worldwide (Oren 17.11.2026); below that it shows "N/A" and sorts last
-  const okR = (x) => !!x.r && (x.v || 0) >= MIN_VOTES;
+  const okR = (x) => !!x.r && (x.il || (x.v || 0) >= MIN_VOTES); // Israeli titles are niche: no vote minimum
   const rated = (x, r) => !r || (okR(x) && x.r >= r);
   function baseList() { // everything except the rating step
     return items.filter((x) => x.k[0] === F.t && !seen[x.k] && tasteOk(x)
@@ -238,7 +238,7 @@
         try { if (navigator.share) await navigator.share({ title: "מה בנטפליקס?", url: pub }); else { await navigator.clipboard.writeText(pub); toast("הקישור הועתק"); } } catch (e) {} } }, "🔗 לשתף את האפליקציה"),
       h("p", { class: "note" }, "הרשימה שלי ו״ראיתי״ נשמרים רק במכשיר הזה."),
       h("div", { class: "h3" }, "מאיפה הנתונים"),
-      h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (ציון נחשב רק מ-" + fmt(MIN_VOTES) + " הצבעות בעולם; פחות מזה מוצג IMDb N/A ויורד לסוף). פופולרי = הכי הרבה הצבעות ב-IMDb. אוסקר: מספר הזכיות בכל הקטגוריות לפי Wikidata (🏆 זהב = זכה גם בסרט הטוב ביותר). ״בלי שפות זרות״ = רק כותרים שהשפה המקורית שלהם אנגלית או עברית. טופ 10: הטבלאות הרשמיות של נטפליקס."),
+      h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (ציון נחשב רק מ-" + fmt(MIN_VOTES) + " הצבעות בעולם; פחות מזה מוצג IMDb N/A ויורד לסוף; לתוכן ישראלי אין מינימום). פופולרי = הכי הרבה הצבעות ב-IMDb. אוסקר: מספר הזכיות בכל הקטגוריות לפי Wikidata (🏆 זהב = זכה גם בסרט הטוב ביותר). ״בלי שפות זרות״ = רק כותרים שהשפה המקורית שלהם אנגלית או עברית. טופ 10: הטבלאות הרשמיות של נטפליקס."),
       cat ? h("p", { class: "note" }, "עודכן: " + new Date(cat.at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })) : null,
       h("button", { type: "button", class: "btn", onclick: closeSheet }, "✓ סגור"),
     ]);
