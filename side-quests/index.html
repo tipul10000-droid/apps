@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.3";window.SQ_BUILD_AT="17.11.2026 10:35";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.4";window.SQ_BUILD_AT="17.11.2026 10:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2150,8 +2150,9 @@ html.desk .stbtn{max-height:none}
 
 /* 18.2 (Oren 17.11.2026): the closing band. Dark like the Side hero, dot grid, thin orange top line.
    Banner and colophon side by side (LTR), English only; the outlined wordmark sits under the floating buttons. */
-footer.ver.colo{position:relative;overflow:hidden;container-type:inline-size;margin-top:26px;color:#EDEDEA;
-  background:radial-gradient(circle,rgba(255,255,255,.075) 1px,transparent 1.5px) 0 0/16px 16px,#111;
+footer.ver.colo{position:relative;overflow:hidden;container-type:inline-size;margin-top:26px;color:#EDEDEA;padding:0!important;background:none}
+/* 18.4 (Oren 17.11.2026): the SIDE QUESTS wordmark rises above the orange line, on the page itself; the dark band below stays as it was. */
+.co-band{position:relative;background:radial-gradient(circle,rgba(255,255,255,.075) 1px,transparent 1.5px) 0 0/16px 16px,#111;
   border-top:3px solid #EE8C4F;padding:22px 16px calc(206px + env(safe-area-inset-bottom,0px))}
 .co-row{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:center;max-width:620px;margin:0 auto;position:relative;z-index:1}
 .colo .stbtn.img{width:100%;margin:0;border-radius:10px;border:0;background:#1d1d1d;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 8px 22px rgba(0,0,0,.45)}
@@ -2167,13 +2168,33 @@ footer.ver.colo{position:relative;overflow:hidden;container-type:inline-size;mar
 .co-cred div{display:flex;flex-direction:column;min-width:0}
 .co-cred dt{font:500 9.5px/1.3 var(--f-mono);letter-spacing:1.6px;text-transform:uppercase;color:#EE8C4F}
 .co-cred dd{margin:0;font:500 13px/1.3 "Space Grotesk",var(--f-body);color:#EDEDEA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.co-mark{position:absolute;left:0;right:0;bottom:calc(10px + env(safe-area-inset-bottom,0px));direction:ltr;text-align:center;white-space:nowrap;
-  font:800 12.6cqi/.9 "Rubik",var(--f-display);letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.2);pointer-events:none;user-select:none}
-.co-mark i{font-style:normal;margin-left:.22em;-webkit-text-stroke-color:rgba(238,140,79,.55)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) footer.ver.colo{background-color:#0A0A0A;border-top-color:#EE8C4F}}
-html.desk footer.ver.colo{padding:28px 32px 26px!important;background:radial-gradient(circle,rgba(255,255,255,.075) 1px,transparent 1.5px) 0 0/16px 16px,#111}
+.co-mark{display:block;padding:0 0 4px;direction:ltr;text-align:center;white-space:nowrap;
+  font:800 12.6cqi/.9 "Rubik",var(--f-display);letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1.2px rgba(15,32,58,.55);pointer-events:none;user-select:none}
+.co-mark i{font-style:normal;margin-left:.22em;-webkit-text-stroke-color:rgba(238,140,79,.85)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .co-band{background-color:#0A0A0A;border-top-color:#EE8C4F}
+  :root:not([data-theme="light"]) .co-mark{-webkit-text-stroke-color:rgba(255,255,255,.28)}}
+:root[data-theme="dark"] .co-mark{-webkit-text-stroke-color:rgba(255,255,255,.28)}
+html.desk footer.ver.colo{padding:0!important;background:none}
+html.desk .co-band{padding:28px 32px 26px}
 html.desk .co-row{grid-template-columns:360px minmax(0,260px);justify-content:center;gap:28px}
-html.desk .co-mark{position:static;margin-top:34px;font-size:8cqi}
+html.desk .co-mark{font-size:8cqi}
+/* 18.4 (Oren 17.11.2026): the questions & decisions strip is not a task strip. Its own soft indigo tint and a question-bubble icon.
+   Open questions = first on the screen (above the window); all closed = last (after the folded categories). */
+#askSec .fold.ask{--qa:#4F5BD5;--qa-bg:#EEF0FF;--qa-line:#CDD2F7;border-color:var(--qa-line)}
+#askSec .fold.ask>summary,#askSec .fold.noask .fe{background:var(--qa-bg);color:#2A3283}
+#askSec .fold.ask>summary::before{background:var(--qa);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12Z'/%3E%3Cpath d='M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.5'/%3E%3Cpath d='M12 16.6h.01'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12Z'/%3E%3Cpath d='M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.5'/%3E%3Cpath d='M12 16.6h.01'/%3E%3C/svg%3E") center/contain no-repeat}
+#askSec .fold.noask .fe::before{content:"";flex:none;width:20px;height:20px;margin-inline:4px 6px;background:var(--qa);opacity:.75;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12Z'/%3E%3Cpath d='m8.5 12 2.3 2.3L15.5 9.6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12Z'/%3E%3Cpath d='m8.5 12 2.3 2.3L15.5 9.6'/%3E%3C/svg%3E") center/contain no-repeat}
+#askSec .fold.noask .fe{font-size:15px;font-weight:700}
+#askSec .fold.noask .fok{color:#5A63B8}
+#askSec .fold.ask .fn{background:var(--qa);border-color:var(--qa);color:#fff}
+#askSec .fold.ask[open]>summary{border-bottom-color:var(--qa-line)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #askSec .fold.ask{--qa:#9AA4FF;--qa-bg:#22264A;--qa-line:#3A4078}
+  :root:not([data-theme="light"]) #askSec .fold.ask>summary,:root:not([data-theme="light"]) #askSec .fold.noask .fe{color:#DDE0FF}
+  :root:not([data-theme="light"]) #askSec .fold.noask .fok{color:#AEB5F2}
+  :root:not([data-theme="light"]) #askSec .fold.ask .fn{color:#14173A}}
+:root[data-theme="dark"] #askSec .fold.ask{--qa:#9AA4FF;--qa-bg:#22264A;--qa-line:#3A4078}
+:root[data-theme="dark"] #askSec .fold.ask>summary,:root[data-theme="dark"] #askSec .fold.noask .fe{color:#DDE0FF}
+
 </style>
 </head>
 <body>
@@ -2284,6 +2305,8 @@ html.desk .co-mark{position:static;margin-top:34px;font-size:8cqi}
 <div class="aipg" id="pg3" hidden role="region" aria-label="פרויקט"></div>
 <div class="aipg dpg" id="pgD" hidden role="region" aria-label="דשבורד"></div>
 <footer class="ver colo">
+  <div class="co-mark" aria-hidden="true">SIDE<i>QUESTS</i></div>
+  <div class="co-band">
   <!-- 18.2 (Oren 17.11.2026): one dark edge-to-edge closing band in the Side theme: the stats banner and the colophon side by side,
        all in English (Space Grotesk + IBM Plex Mono), and a large outlined SIDE QUESTS wordmark at the very bottom under the floating buttons. -->
   <div class="co-row" dir="ltr">
@@ -2300,7 +2323,7 @@ html.desk .co-mark{position:static;margin-top:34px;font-size:8cqi}
       </dl>
     </div>
   </div>
-  <div class="co-mark" aria-hidden="true">SIDE<i>QUESTS</i></div>
+  </div>
 </footer>
 
 <script>
@@ -3060,6 +3083,8 @@ html.desk .co-mark{position:static;margin-top:34px;font-size:8cqi}
     });
     // 9.3 (Oren 6.11): the questions & decisions area is always there. Empty = a calm "nothing to decide" line.
     const sec=$("askSec");sec.hidden=false;
+    // 18.4: open questions first (above the window), all closed = last (after the folded categories, before the dashboards).
+    {const anchor=cards.length?$("mainSec"):$("dashSec");if(anchor&&anchor.parentNode&&sec.nextElementSibling!==anchor)anchor.parentNode.insertBefore(sec,anchor);}
     if(!cards.length){sec.replaceChildren(h("div",{class:"fold ask noask"},h("div",{class:"fe"},h("span",{class:"ft"},"שאלות והחלטות"),h("span",{class:"fok"},"✓ אין כרגע, נהדר"))));return;}
     sec.replaceChildren(foldBox("asks","שאלות והחלטות",cards.length,[h("div",{class:"inbox"},cards)],{ask:true}));
   }
