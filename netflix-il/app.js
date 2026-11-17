@@ -1,6 +1,7 @@
 // "מה יש בנטפליקס?" (Oren 17.11.2026). Reads the daily public catalog built by the nf-catalog Edge Function
 // (FrameHorizon Supabase project) and filters it on the device. Personal marks live only on this device.
-// Storage keys: nf_wl (watchlist), nf_seen (seen), nf_f (filters), nf_taste.
+// Storage keys: nf_wl (watchlist), nf_seen (seen), nf_f (filters), nf_taste, nf_op (last change time per mark, for sync),
+// nf_sync (sync code), nf_f_at / nf_taste_at.
 (function () {
   "use strict";
   const CAT_URL = "https://kvdgesrllikgwtuttrpb.supabase.co/storage/v1/object/public/nf-public/catalog.json";
@@ -31,6 +32,9 @@
   let taste = ls.get("nf_taste", "all");
   let wl = ls.get("nf_wl", {}), seen = ls.get("nf_seen", {});
   let tab = "find", shown = 0, list = [];
+  let op = Object.assign({ wl: {}, seen: {} }, ls.get("nf_op", {})), fAt = ls.get("nf_f_at", 0), tAt = ls.get("nf_taste_at", 0);
+  const setMark = (kind, id, v) => { const m = kind === "wl" ? wl : seen; if (v) m[id] = v; else delete m[id];
+    op[kind][id] = Date.now(); ls.set(kind === "wl" ? "nf_wl" : "nf_seen", m); ls.set("nf_op", op); sync.soon(); };
 
   // ---------- filters ----------
   // Taste seeding (Oren 17.11.2026): a profile can carry what its owner already saw (seenM "title|year", seenS) and
@@ -52,9 +56,11 @@
       else if (S.has(k)) to = "seen"; else if (W.has(k)) to = "wl";
       if (!to) continue;
       done[x.k] = 1; n++;
-      if (to === "seen") seen[x.k] = seen[x.k] || now; else if (!seen[x.k]) wl[x.k] = wl[x.k] || now;
+      // seeded marks get op 1 (oldest), so any real change synced from another place wins over them
+      if (to === "seen") { if (!seen[x.k]) { seen[x.k] = now; op.seen[x.k] = op.seen[x.k] || 1; } }
+      else if (!seen[x.k] && !wl[x.k]) { wl[x.k] = now; op.wl[x.k] = op.wl[x.k] || 1; }
     }
-    if (n) { ls.set("nf_seed_" + id, done); ls.set("nf_seen", seen); ls.set("nf_wl", wl); }
+    if (n) { ls.set("nf_seed_" + id, done); ls.set("nf_seen", seen); ls.set("nf_wl", wl); ls.set("nf_op", op); sync.soon(); }
     return n;
   }
   function tasteOk(x) {
@@ -200,14 +206,13 @@
     t.hidden = false; toastT = setTimeout(() => { t.hidden = true; }, 5000);
   }
   function toggle(kind, x, btn) {
-    const m = kind === "wl" ? wl : seen, key = kind === "wl" ? "nf_wl" : "nf_seen";
+    const m = kind === "wl" ? wl : seen;
     const was = m[x.k];
-    if (was) delete m[x.k]; else m[x.k] = Date.now();
-    ls.set(key, m);
+    setMark(kind, x.k, was ? 0 : Date.now());
     btn.classList.toggle("on", !was);
     $("wlN").textContent = Object.keys(wl).filter((k) => !seen[k]).length;
     $("seenN").textContent = items.filter((x) => seen[x.k]).length;
-    const undo = () => { if (was) m[x.k] = was; else delete m[x.k]; ls.set(key, m); render(); };
+    const undo = () => { setMark(kind, x.k, was || 0); render(); };
     if (kind === "seen" && !was) {
       // the button stays put; the card fades and leaves after a moment
       const c = btn.closest(".card"); c.style.transition = "opacity .6s"; c.style.opacity = ".35";
@@ -228,7 +233,7 @@
     for (const [k, p] of Object.entries(TASTES)) opts.push([k, p.icon, p.name, p.pending ? "בקרוב: מחכה לרשימת האהובים" : "לפי מה שאהבת ומה לא"]);
     for (const [k, p] of Object.entries(TOPS)) opts.push([k, p.icon, p.name, p.sub]);
     const box = h("div", { class: "opt" }, opts.map(([k, e, n, s]) => h("button", { type: "button", class: taste === k ? "on" : "",
-      onclick: (ev) => { taste = k; ls.set("nf_taste", k); seedTaste(k); for (const b of box.children) b.classList.remove("on"); ev.currentTarget.classList.add("on"); render(); } },
+      onclick: (ev) => { taste = k; ls.set("nf_taste", k); tAt = Date.now(); ls.set("nf_taste_at", tAt); seedTaste(k); sync.soon(); for (const b of box.children) b.classList.remove("on"); ev.currentTarget.classList.add("on"); render(); } },
       h("span", { class: "e" }, e), h("span", null, n, h("small", null, s)))));
     const pub = "https://tipul10000-droid.github.io/apps/netflix-il/";
     sheet("⚙️ הגדרות", [
@@ -236,16 +241,103 @@
       h("div", { class: "h3" }, "לשתף"),
       h("button", { type: "button", class: "btn", onclick: async () => {
         try { if (navigator.share) await navigator.share({ title: "מה בנטפליקס?", url: pub }); else { await navigator.clipboard.writeText(pub); toast("הקישור הועתק"); } } catch (e) {} } }, "🔗 לשתף את האפליקציה"),
-      h("p", { class: "note" }, "הרשימה שלי ו״ראיתי״ נשמרים רק במכשיר הזה."),
+      h("div", { class: "h3" }, "🔗 סנכרון"), sync.box(),
       h("div", { class: "h3" }, "מאיפה הנתונים"),
       h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (ציון נחשב רק מ-" + fmt(MIN_VOTES) + " הצבעות בעולם; פחות מזה מוצג IMDb N/A ויורד לסוף; לתוכן ישראלי אין מינימום). פופולרי = הכי הרבה הצבעות ב-IMDb. אוסקר: מספר הזכיות בכל הקטגוריות לפי Wikidata (🏆 זהב = זכה גם בסרט הטוב ביותר). ״בלי שפות זרות״ = רק כותרים שהשפה המקורית שלהם אנגלית או עברית. טופ 10: הטבלאות הרשמיות של נטפליקס."),
       cat ? h("p", { class: "note" }, "עודכן: " + new Date(cat.at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })) : null,
       h("button", { type: "button", class: "btn", onclick: closeSheet }, "✓ סגור"),
     ]);
   }
+  // ---------- sync (Oren 17.11.2026) ----------
+  // Every iOS home-screen app has its own storage, so the app inside Side Quests and the home-screen icon held two
+  // different lists. An 8-char code (made in one place, typed in the other) keys one row in nf_sync (FrameHorizon
+  // Supabase). Marks merge per title by the latest change (op); filters and taste by the latest choice.
+  const sync = (() => {
+    const SB = "https://kvdgesrllikgwtuttrpb.supabase.co/rest/v1/rpc/",
+      ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2ZGdlc3JsbGlrZ3d0dXR0cnBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczMjM1MzYsImV4cCI6MjEwMjg5OTUzNn0.DfhlDUv443df9RdYnDr8aNmGpOmHBRHE0wKgABzaCUg";
+    let code = ls.get("nf_sync", ""), t = null, busy = null, last = ls.get("nf_sync_at", 0), host = null;
+    const rpc = async (fn, args) => { const r = await fetch(SB + fn, { method: "POST", headers: { apikey: ANON, Authorization: "Bearer " + ANON,
+      "Content-Type": "application/json" }, body: JSON.stringify(args) }); if (!r.ok) throw new Error(r.status); return r.json(); };
+    const seeds = () => { const o = {}; for (const k of Object.keys(TASTES)) { const v = ls.get("nf_seed_" + k, null); if (v) o[k] = v; } return o; };
+    const snap = () => ({ v: 1, wl, seen, op, seed: seeds(), F, fAt, taste, tAt });
+    function mergeKind(kind, R) {
+      const L = kind === "wl" ? wl : seen, rm = (R && R[kind]) || {}, ro = (R && R.op && R.op[kind]) || {}; let ch = false;
+      for (const id of new Set([...Object.keys(rm), ...Object.keys(ro)])) {
+        const lt = op[kind][id] || L[id] || 0, rt = ro[id] || rm[id] || 0;
+        if (rt <= lt) continue;
+        if (rm[id]) { if (L[id] !== rm[id]) { L[id] = rm[id]; ch = true; } } else if (L[id]) { delete L[id]; ch = true; }
+        op[kind][id] = rt;
+      }
+      return ch;
+    }
+    function merge(R) {
+      let ch = mergeKind("wl", R) | mergeKind("seen", R);
+      for (const [k, v] of Object.entries(R.seed || {})) { const d = ls.get("nf_seed_" + k, {}); let n = 0;
+        for (const id of Object.keys(v)) if (!d[id]) { d[id] = 1; n++; } if (n) ls.set("nf_seed_" + k, d); }
+      if ((R.fAt || 0) > fAt && R.F) { F = Object.assign(F, R.F); fAt = R.fAt; ch = true; }
+      if ((R.tAt || 0) > tAt && R.taste) { taste = R.taste; tAt = R.tAt; ch = true; }
+      ls.set("nf_wl", wl); ls.set("nf_seen", seen); ls.set("nf_op", op); ls.set("nf_f", F); ls.set("nf_f_at", fAt); ls.set("nf_taste", taste); ls.set("nf_taste_at", tAt);
+      return !!ch;
+    }
+    function now() {
+      if (!code) return Promise.resolve(false);
+      if (busy) return busy;
+      busy = (async () => {
+        try {
+          const R = await rpc("nf_sync_get", { p_code: code });
+          const ch = R ? merge(R) : false;
+          if (ch && items.length) { seedTaste(taste); render(); }
+          const s = snap();
+          if (!R || JSON.stringify(s) !== JSON.stringify(R)) await rpc("nf_sync_put", { p_code: code, p_data: s });
+          last = Date.now(); ls.set("nf_sync_at", last); paint();
+          return true;
+        } catch (e) { paint(true); return false; } finally { busy = null; }
+      })();
+      return busy;
+    }
+    const soon = () => { if (!code) return; clearTimeout(t); t = setTimeout(now, 1200); };
+    const fmtCode = (c) => c.slice(0, 4) + "-" + c.slice(4);
+    function paint(err) {
+      if (!host || !host.isConnected) return;
+      const st = host.querySelector(".sst");
+      if (st) st.textContent = err ? "⚠️ אין חיבור, ינסה שוב" : last ? "✓ מסונכרן " + new Date(last).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }) : "";
+    }
+    function box() {
+      host = h("div", { class: "sync" }); draw(); return host;
+    }
+    function draw() {
+      const row = h("div", { class: "srow" });
+      const below = h("div", { class: "sbody" });
+      if (code) {
+        row.append(h("button", { type: "button", onclick: async () => { try { await navigator.clipboard.writeText(fmtCode(code)); toast("הקוד הועתק"); } catch (e) {} } }, "📋 העתק"),
+          h("button", { type: "button", onclick: () => { code = ""; ls.set("nf_sync", ""); draw(); toast("הסנכרון כובה במכשיר הזה"); } }, "✕ ניתוק"));
+        below.append(h("div", { class: "scode" }, fmtCode(code)), h("div", { class: "sst" }), h("p", { class: "note" }, "במקום השני: ⚙️ ← ״יש לי קוד״."));
+      } else {
+        row.append(h("button", { type: "button", onclick: async () => {
+            const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = crypto.getRandomValues(new Uint8Array(8));
+            code = Array.from(r, (b) => A[b % A.length]).join(""); ls.set("nf_sync", code); draw(); await now(); } }, "➕ קוד חדש"),
+          h("button", { type: "button", onclick: () => { below.hidden = !below.hidden; if (!below.hidden) below.querySelector("input").focus({ preventScroll: true }); } }, "⌨️ יש לי קוד"));
+        const inp = h("input", { type: "text", maxlength: "9", autocomplete: "off", autocapitalize: "characters", spellcheck: "false", placeholder: "XXXX-XXXX", dir: "ltr" });
+        const msg = h("div", { class: "sst" });
+        below.hidden = true; below.classList.add("enter");
+        below.append(h("div", { class: "sin" }, inp, h("button", { type: "button", class: "btn", onclick: async () => {
+          const c = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+          if (c.length !== 8) { msg.textContent = "הקוד הוא 8 תווים"; return; }
+          msg.textContent = "מתחבר…";
+          try { const R = await rpc("nf_sync_get", { p_code: c }); if (!R) { msg.textContent = "לא מצאתי את הקוד"; return; } }
+          catch (e) { msg.textContent = "⚠️ אין חיבור"; return; }
+          code = c; ls.set("nf_sync", c); await now(); draw(); toast("✓ מסונכרן"); } }, "חיבור")), msg);
+      }
+      host.replaceChildren(row, below); paint();
+    }
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") now(); });
+    window.addEventListener("focus", () => now());
+    return { now, soon, box };
+  })();
+
   // ---------- events ----------
   function bindSeg(id, key) { $(id).addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; F[key] = b.dataset.v; save(); render(); }); }
-  function save() { ls.set("nf_f", F); }
+  function save() { ls.set("nf_f", F); fAt = Date.now(); ls.set("nf_f_at", fAt); sync.soon(); }
   bindSeg("fType", "t"); bindSeg("fIl", "il"); bindSeg("fSub", "sub");
   $("fNf").addEventListener("click", () => { F.nf = !F.nf; save(); render(); });
   // sort: tap the active one again to reverse it (arrow shows the direction)
@@ -266,6 +358,7 @@
       const r = await fetch(CAT_URL, { cache: "no-cache" });
       if (!r.ok) throw new Error(r.status);
       cat = await r.json(); items = cat.items || [];
+      await sync.now(); // pull first, so marks un-done elsewhere aren't seeded back
       seedTaste(taste);
       minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
       const ns = items.filter((x) => x.k[0] === "s").length;
