@@ -176,7 +176,7 @@
       h("div", { class: "h3" }, "הטעם שלי"), box,
       h("div", { class: "h3" }, "לשתף"),
       h("button", { type: "button", class: "btn", onclick: async () => {
-        try { if (navigator.share) await navigator.share({ title: "מה יש בנטפליקס?", url: pub }); else { await navigator.clipboard.writeText(pub); toast("הקישור הועתק"); } } catch (e) {} } }, "🔗 לשתף את האפליקציה"),
+        try { if (navigator.share) await navigator.share({ title: "מה בנטפליקס?", url: pub }); else { await navigator.clipboard.writeText(pub); toast("הקישור הועתק"); } } catch (e) {} } }, "🔗 לשתף את האפליקציה"),
       h("p", { class: "note" }, "הרשימה שלי ו״ראיתי״ נשמרים רק במכשיר הזה."),
       h("div", { class: "h3" }, "מאיפה הנתונים"),
       h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (בסינון לפי ציון רק כותר עם " + MIN_VOTES + " הצבעות לפחות). אוסקר: זכייה בקטגוריה מרכזית לפי Wikidata (🏆 זהב = הסרט הטוב ביותר). טופ 10: הטבלאות הרשמיות של נטפליקס."),

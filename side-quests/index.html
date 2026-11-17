@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.1";window.SQ_BUILD_AT="17.11.2026 22:25";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.2";window.SQ_BUILD_AT="17.11.2026 22:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2976,7 +2976,7 @@ html.desk .co-mark{font-size:8cqi}
   // 20.8 (Oren 17.11.2026): "מה יש בנטפליקס?" is its own app (../netflix-il/), opened in-app like a dashboard page layer,
   // from the Fun Netflix card and from its AI Projects tile. Virtual: no sq_docs dashboard, so it never shows in the dashboard grids.
   const NF_THREAD="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD?thread=cmsg_01BSiCy73LfhTPuMwCS8XKQDHoodwNVmP186gUqvuEX32M";
-  const NF_DASH={id:"netflix",title:"מה יש בנטפליקס?",short:"מה יש בנטפליקס?",icon:"🍿",url:"https://tipul10000-droid.github.io/apps/netflix-il/",c1:"#101012",quest:"fun",chat_url:NF_THREAD,virtual:true};
+  const NF_DASH={id:"netflix",title:"מה בנטפליקס?",short:"מה בנטפליקס?",icon:"🍿",url:"https://tipul10000-droid.github.io/apps/netflix-il/",c1:"#101012",quest:"fun",chat_url:NF_THREAD,virtual:true};
   function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted)||(id==="netflix"?NF_DASH:undefined);}
   function inApp(u){return /\/netflix-il\/(index\.html)?$/.test(String(u||"").split(/[?#]/)[0])?"netflix":"";}
   function appGo(u){return e=>{const di=inApp(u);if(di){e.preventDefault();openDash(di);}};}
@@ -4314,7 +4314,7 @@ html.desk .co-mark{font-size:8cqi}
     const lg=h("a",{class:"nf-logo zlogo",href:"https://www.netflix.com/",target:"_blank",rel:"noopener","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
     return h("article",{class:"fcard nf"},
       h("div",{class:"nf-head zhead"},h("div",{class:"fc-h"},h("h3",null,"סדרות")),lg),
-      h("button",{class:"nfapp img",type:"button","aria-label":"מה יש בנטפליקס? סרטים וסדרות בנטפליקס ישראל",onclick:()=>openDash("netflix")},h("img",{src:"img/nf-banner.webp",alt:"",width:"780",height:"260",loading:"lazy"})),
+      h("button",{class:"nfapp img",type:"button","aria-label":"מה בנטפליקס? סרטים וסדרות בנטפליקס ישראל",onclick:()=>openDash("netflix")},h("img",{src:"img/nf-banner.webp",alt:"",width:"780",height:"260",loading:"lazy"})),
       ...seriesHub(),
       secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן"));
   }
