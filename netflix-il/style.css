@@ -100,13 +100,13 @@ h1{font-size:21px;margin:4px 0 0;font-weight:800;letter-spacing:-.2px}
 /* Israeli = pick one (segmented); foreign languages = a separate on/off switch */
 .ilrow{display:flex;gap:8px;align-items:stretch}
 .ilrow .seg{flex:1 1 auto;min-width:0}
-.tgl{flex:0 0 108px;display:flex;align-items:center;gap:7px;height:42px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:0 8px;text-align:start}
-.tgl .tl{font-size:11.5px;line-height:1.15;font-weight:600;color:var(--mut)}
-.tgl .sw{flex:0 0 34px;height:20px;border-radius:10px;background:#3a3a40;position:relative;transition:background .15s}
+.tgl{flex:0 0 100px;display:flex;align-items:center;gap:6px;height:42px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:0 8px;text-align:start}
+.tgl .tl{font-size:12px;line-height:1;font-weight:600;color:var(--mut);white-space:nowrap}
+.tgl .sw{flex:0 0 30px;height:20px;border-radius:10px;background:#3a3a40;position:relative;transition:background .15s}
 .tgl .sw::after{content:"";position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:right .15s}
 .tgl.on{border-color:var(--acc)}
 .tgl.on .sw{background:var(--acc)}
-.tgl.on .sw::after{right:16px}
+.tgl.on .sw::after{right:12px}
 .tgl.on .tl{color:var(--tx)}
 #fSort button i{font-style:normal;font-size:11px;opacity:.45;display:inline-block;width:9px}
 #fSort button.on i{opacity:1;font-weight:800}
