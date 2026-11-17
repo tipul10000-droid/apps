@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.3";window.SQ_BUILD_AT="17.11.2026 22:26";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.4";window.SQ_BUILD_AT="17.11.2026 22:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1711,6 +1711,14 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
 .topbtns .tb:active{background:rgba(255,255,255,.18)!important}
 .topbtns .tchat .ic{font-size:17px;line-height:1}
 .topbtns .tdot{top:5px!important;right:6px!important}
+/* 21.4 (Oren 17.11.2026): Undo in the top bar of every quest: each tap walks one action back */
+.topbtns .tb.tundo{position:relative}
+.topbtns .tb.tundo svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.topbtns .tb.tundo.off svg{opacity:.38}
+.topbtns .tb.tundo .un{position:absolute;bottom:3px;left:3px;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:var(--accent,#EE8C4F);color:#111;font-size:9.5px;line-height:14px;font-weight:800;font-style:normal}
+.toast.ud{max-width:min(92vw,460px);text-align:center}
+/* 21.4: ✓ in a brief: the row fades and the list closes the gap (no rebuild flicker) */
+.bp-row.gone,.bp-sec.gone{overflow:hidden;transition:opacity .2s ease,height .26s ease .12s,padding .26s ease .12s,margin .26s ease .12s;opacity:0;padding-top:0!important;padding-bottom:0!important;margin-top:0!important;margin-bottom:0!important;border-top-color:transparent!important}
 .tadd.fab{position:fixed;z-index:30;left:max(18px,env(safe-area-inset-left,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:500 34px/1 system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.4);border:0;padding:0}
 .tadd.fab:active{filter:brightness(.92)}
 main{padding-bottom:90px}
@@ -1804,7 +1812,7 @@ html.desk #upBtn{left:calc(var(--dpane,0px) + 18px);bottom:18px}
 main{padding-bottom:150px}
 body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labelledby="hProj"]{display:none!important}
 /* 11.2 (Oren 6.11): Fun and AI Projects are clean: only the quest switcher, then their content. No chat/brief/location/settings, time windows, refresh, search or +. */
-body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body.q-fun .tfind.fab,body.q-ai .tfind.fab,body.q-fun .tadd.fab,body.q-ai .tadd.fab,body.q-fun #find,body.q-ai #find,body.q-fun #fres,body.q-ai #fres,body.q-fun #quick,body.q-ai #quick{display:none!important}
+body.q-fun .topbtns>.tb:not(.tundo),body.q-ai .topbtns>.tb:not(.tundo),body.q-fun .ctxrow,body.q-ai .ctxrow,body.q-fun .tfind.fab,body.q-ai .tfind.fab,body.q-fun .tadd.fab,body.q-ai .tadd.fab,body.q-fun #find,body.q-ai #find,body.q-fun #fres,body.q-ai #fres,body.q-fun #quick,body.q-ai #quick{display:none!important}
 #aiTiles{margin-top:4px}
 #aiTiles .ptiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
 @media (min-width:640px){#aiTiles .ptiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -2415,7 +2423,7 @@ html.desk .co-mark{font-size:8cqi}
   <div class="qb-in gut"><span class="ai-tag qa-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
 <button id="upBtn" type="button" aria-label="למעלה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button><button class="tfind fab" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tadd fab" id="addBtn" type="button" aria-label="הוראה חדשה" aria-expanded="false">+</button><div class="imenu" id="imenu" hidden role="group" aria-label="משימה או הוראה"><div class="im-r k-quick"><span class="im-l"><span class="e" aria-hidden="true">⚡</span>משימה מהירה</span><button type="button" id="qText" aria-label="משימה מהירה בכתיבה">⌨️</button><button type="button" id="qVoice" aria-label="משימה מהירה בהקלטה">🎤</button></div><div class="im-r k-ins"><span class="im-l"><span class="e" aria-hidden="true">🧠</span>הוראה חכמה</span><button type="button" id="iText" aria-label="הוראה בכתיבה">⌨️</button><button type="button" id="iVoice" aria-label="הוראה בהקלטה">🎤</button></div></div><div class="ibar" id="ibar" hidden></div><div class="ires" id="ires" hidden role="status"></div>
-<div class="topbtns"><a class="tb tchat" id="tchat" aria-label="All Arounder: העוזר האישי" href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span><i class="tdot nw" id="chatDot" hidden></i></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tgm" id="gmBtn" type="button" aria-label="סריקת Gmail לפי דרישה"><svg class="gmic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M1.5 5.6v9.4c0 .6.4 1 1 1h2.4V8.9z"/><path fill="#34A853" d="M17.5 5.6v4.3a5.6 5.6 0 0 0-3.4 1V8.9z"/><path fill="#EA4335" d="M1.5 5.6 9.5 11.6l8-6V4.9c0-1.2-1.4-1.9-2.4-1.2L9.5 7.9 3.9 3.7c-1-.7-2.4 0-2.4 1.2z"/><circle cx="16.6" cy="15.6" r="3.7" fill="none" stroke="#fff" stroke-width="2"/><path d="M19.3 18.3 22.4 21.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg><i class="tdot" id="gmDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button></div>
+<div class="topbtns"><a class="tb tchat" id="tchat" aria-label="All Arounder: העוזר האישי" href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span><i class="tdot nw" id="chatDot" hidden></i></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tgm" id="gmBtn" type="button" aria-label="סריקת Gmail לפי דרישה"><svg class="gmic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M1.5 5.6v9.4c0 .6.4 1 1 1h2.4V8.9z"/><path fill="#34A853" d="M17.5 5.6v4.3a5.6 5.6 0 0 0-3.4 1V8.9z"/><path fill="#EA4335" d="M1.5 5.6 9.5 11.6l8-6V4.9c0-1.2-1.4-1.9-2.4-1.2L9.5 7.9 3.9 3.7c-1-.7-2.4 0-2.4 1.2z"/><circle cx="16.6" cy="15.6" r="3.7" fill="none" stroke="#fff" stroke-width="2"/><path d="M19.3 18.3 22.4 21.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg><i class="tdot" id="gmDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button><button class="tb tundo" id="undoBtn" type="button" aria-label="ביטול הפעולה האחרונה (Undo)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><b class="un" id="undoN" hidden></b></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
@@ -2891,7 +2899,7 @@ html.desk .co-mark{font-size:8cqi}
   let db=null, topics=[], funTopics=[], projects=[], filterKind="all", openId=null, canWrite=true;
   const $=id=>document.getElementById(id);
   function h(tag,attrs,...kids){const e=document.createElement(tag);if(attrs)for(const k in attrs){const v=attrs[k];if(v==null||v===false)continue;if(k==="class")e.className=v;else if(k==="html")e.innerHTML=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v===true?"":v);}for(const c of kids.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
-  function toast(t,undo){document.querySelectorAll(".toast").forEach(x=>x.remove());const e=h("div",{class:"toast"+(undo?" undo":""),role:"status"},h("span",null,t),undo?h("button",{type:"button",onclick:()=>{e.remove();undo();}},"בטל"):null);document.body.append(e);setTimeout(()=>e.remove(),undo?5000:2000);}
+  function toast(t,undo,ms,cls){document.querySelectorAll(".toast").forEach(x=>x.remove());const e=h("div",{class:"toast"+(undo?" undo":"")+(cls?" "+cls:""),role:"status"},h("span",null,t),undo?h("button",{type:"button",onclick:()=>{e.remove();undo();}},"בטל"):null);document.body.append(e);setTimeout(()=>e.remove(),ms||(undo?5000:2000));}
   // a tapped button stays lit ~300ms before the card changes, so the tap is visible
   function press(fn){return e=>{e.stopPropagation();const b=e.currentTarget;if(b.closest(".busy"))return;b.classList.add("pressed");const c=b.closest(".ai,.row,.later-menu");if(c)c.classList.add("busy");setTimeout(fn,300);};}
   function todayISO(){const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);}
@@ -4583,10 +4591,50 @@ html.desk .co-mark{font-size:8cqi}
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:"",...(t.sleep_until&&!("sleep_until" in fields)?{sleep_until:""}:{})};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
     try{await db.collection("topics").doc(t.id).update({...fields,updated_at:new Date().toISOString()});
-      if(noUndo){if(msg)toast(msg);}else toast(msg||"נשמר",async()=>{try{await db.collection("topics").doc(t.id).update(prev);toast("בוטל");}catch(e){fail(e);}});
+      const he=histPush({k:"patch",id:t.id,title:t.title||"",prev,set:JSON.parse(JSON.stringify(fields)),msg:msg||""});
+      if(noUndo){if(msg)toast(msg);}else toast(msg||"נשמר",()=>histUndo(he));
     }catch(e){fail(e);}}
+  // ===== 21.4 Undo (Oren 17.11.2026, after closing 4 tasks from the brief by mistake): every change he makes is kept in a local
+  // history (sq_hist, this device only, last 60). The ↩︎ button in the top bar of every quest takes one action back per tap and
+  // says at the bottom what it did. Works offline too: the revert is an ordinary write, so it waits in the queue of sq-db.js.
+  const HK="sq_hist";let hist=[];try{hist=JSON.parse(localStorage.getItem(HK)||"[]");if(!Array.isArray(hist))hist=[];}catch(e){hist=[];}
+  function histSave(){try{localStorage.setItem(HK,JSON.stringify(hist.slice(-60)));}catch(e){}renderUndo();}
+  function histPush(e){const x={u:Date.now().toString(36)+Math.random().toString(36).slice(2,5),at:new Date().toISOString(),...e};hist.push(x);if(hist.length>60)hist=hist.slice(-60);histSave();return x;}
+  function renderUndo(){const b=$("undoBtn"),n=$("undoN");if(!b)return;const c=hist.length;b.classList.toggle("off",!c);b.setAttribute("aria-label",c?`ביטול הפעולה האחרונה (${c} בהיסטוריה)`:"אין פעולות לביטול");if(n){n.hidden=!c;n.textContent=c>9?"9+":String(c);}}
+  const hq=t=>`"${String(t||"משימה").slice(0,48)}${String(t||"").length>48?"…":""}"`;
+  function histLabel(e){const s=e.set||{},T=hq(e.title);
+    if(e.k==="del")return `שחזר את המשימה ${T} שנמחקה`;
+    if(e.k==="add")return `מחק את המשימה החדשה ${T}`;
+    if(s.status==="done")return `החזיר את המשימה ${T} שנסגרה`;
+    if(s.status==="archived")return `החזיר את ${T} מהארכיון`;
+    if(s.status)return `החזיר את ${T} למצב הקודם`;
+    if("snooze_until" in s||"sleep_until" in s||"next_date" in s)return `ביטל את הדחייה של ${T}`;
+    if(e.msg)return `ביטל "${String(e.msg).replace(/[✓"]/g,"").trim().slice(0,40)}" ב-${T}`;
+    return `ביטל את השינוי ב-${T}`;}
+  // a step is stale when the task moved on since (reopened elsewhere, deleted): skipped silently, the tap goes to the one before it
+  function histStale(e){const t=allTopics.find(z=>z.id===e.id);
+    if(e.k==="add")return !t;if(e.k==="del")return !!t;if(!t)return true;
+    if(e.set&&e.set.status&&(t.status||"active")!==e.set.status)return true;return false;}
+  async function histUndo(e){const i=hist.findIndex(x=>x.u===e.u);if(i<0)return;hist.splice(i,1);histSave();if(!db)return;
+    try{const ref=db.collection("topics").doc(e.id);
+      if(e.k==="del")await ref.set(e.snap);
+      else if(e.k==="add")await ref.delete();
+      else{const prev={...e.prev,updated_at:new Date().toISOString()};if(e.set&&e.set.status==="done"&&!(e.prev&&e.prev.status&&e.prev.status!=="done"))prev.status="active";await ref.update(prev);}
+      if($("briefM"))setTimeout(()=>{if($("briefM"))showBrief(briefMd);},400);
+      toast("↩︎ "+histLabel(e)+(hist.length?` · עוד ${hist.length} אחורה`:""),null,3500,"ud");}
+    catch(err){fail(err);}}
+  function undoStep(){while(hist.length&&histStale(hist[hist.length-1])){hist.pop();}histSave();
+    if(!hist.length){toast("אין עוד פעולות לביטול",null,2200,"ud");return;}
+    document.querySelectorAll(".toast").forEach(x=>x.remove());histUndo(hist[hist.length-1]);}
+  // tonight's mistaken closes from the brief (17.11.2026 ~22:24) happened before this history existed: once per device, closes
+  // made in the app (done_win set) since 22:00 and in the last 24 hours enter the history so Undo can bring them back.
+  function histSeed(){try{if(localStorage.getItem("sq_hist_seed"))return;localStorage.setItem("sq_hist_seed","21.4");}catch(e){return;}
+    const from=Math.max(Date.now()-864e5,Date.parse("2026-11-17T20:00:00Z"));
+    const add=allTopics.filter(t=>t.status==="done"&&t.done_win&&Date.parse(t.done_at||"")>=from).sort((a,b)=>Date.parse(a.done_at)-Date.parse(b.done_at))
+      .map(t=>({u:"s-"+t.id,at:t.done_at,k:"patch",id:t.id,title:t.title||"",prev:{status:"active",done_at:null,done_win:null},set:{status:"done"},msg:"",seed:1}));
+    if(add.length){hist=[...add.filter(a=>!hist.some(x=>x.id===a.id)),...hist].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));histSave();}}
   function snooze(t,n){const base=n===1?todayISO():(t.next_date&&daysUntil(t.next_date)>0?t.next_date:todayISO());patch(t,{next_date:addDays(base,n)},n===1?"נדחה למחר":n===7?"נדחה בשבוע":"נדחה בחודש");}
-  async function del(t,btn){if(btn.dataset.armed!=="1"){btn.dataset.armed="1";btn.textContent="ללחוץ שוב";return;}const snap=JSON.parse(JSON.stringify(t));delete snap.id;try{await db.collection("topics").doc(t.id).delete();openId=null;toast("נמחק",async()=>{try{await db.collection("topics").doc(t.id).set(snap);toast("שוחזר");}catch(e){fail(e);}});}catch(e){fail(e);}}
+  async function del(t,btn){if(btn.dataset.armed!=="1"){btn.dataset.armed="1";btn.textContent="ללחוץ שוב";return;}const snap=JSON.parse(JSON.stringify(t));delete snap.id;try{await db.collection("topics").doc(t.id).delete();openId=null;const he=histPush({k:"del",id:t.id,title:t.title||"",snap});toast("נמחק",()=>histUndo(he));}catch(e){fail(e);}}
   function fail(e){if(e&&e.code==="invalid_argument"){canWrite=false;renderList();notice("הדף מוצג לקריאה בלבד.");}else{renderAll();toast("השמירה נכשלה, נסה שוב");}}
   function notice(t){const n=$("notice");n.textContent=t;n.hidden=false;}
 
@@ -4720,7 +4768,7 @@ html.desk .co-mark{font-size:8cqi}
   async function qAdd(text,via){
     if(/^[\[{`]/.test(text)){$("qtitle").value=text;$("quick").requestSubmit();return;}
     if(!db)return;const v=text.replace(/\s+/g," ").trim(),now=new Date().toISOString(),nid=newId();
-    try{await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:v.length>200?v:"",links:[],source:via==="voice"?"נוסף בהקלטה בדף":"נוסף ידנית בדף",size:"quick",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});}catch(e){fail(e);return;}
+    try{await db.collection("topics").doc(nid).set({title:v.slice(0,200),kind:"research",status:"active",priority:"normal",area:"",next_step:"",next_date:"",summary:v.length>200?v:"",links:[],source:via==="voice"?"נוסף בהקלטה בדף":"נוסף ידנית בדף",size:"quick",...(ctxNow!=="all"&&quest!=="fun"?{context:[ctxNow]}:{}),...(TQ.includes(quest)?{quest}:quest==="fun"?{fun:true,kind:"fun"}:{}),created_at:now,updated_at:now,log:[]});histPush({k:"add",id:nid,title:v.slice(0,200)});}catch(e){fail(e);return;}
     iShow("","⚡ נוספה משימה",[v.length>140?v.slice(0,140)+"…":v],[h("button",{type:"button",onclick:async()=>{try{await db.collection("topics").doc(nid).delete();$("ires").hidden=true;toast("בוטל");}catch(e){fail(e);}}},"↩︎ בטל")]);
     clearTimeout(iResT);iResT=setTimeout(()=>{$("ires").hidden=true;},via==="voice"?7000:4000);}
   async function iSend(text,via){
@@ -4907,7 +4955,7 @@ html.desk .co-mark{font-size:8cqi}
   document.addEventListener("keydown",e=>{const t=e.target,typing=t&&t.offsetParent!==null&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
     const vis=el=>el&&el.offsetParent!==null;const modal=[...document.querySelectorAll(".sqmodal")].find(vis);
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("findBtn").click();return;}
-    if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&!typing){const u=document.querySelector(".toast.undo button");if(u){e.preventDefault();u.click();}return;}
+    if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&!typing){const u=document.querySelector(".toast.undo button");e.preventDefault();if(u)u.click();else undoStep();return;}
     if(e.key==="Escape"&&!typing){if(modal){const x=modal.querySelector("[aria-label*='סגור'],.x,.close,.sqx");if(x){x.click();return;}modal.click();return;}
       const pg=[$("pgD"),$("pg3")].find(p=>!p.hidden);if(pg){const b=pg.querySelector(".pgback");if(b){b.click();return;}history.back();}return;}
     if(typing||e.ctrlKey||e.metaKey||e.altKey||modal)return;
@@ -5380,7 +5428,7 @@ html.desk .co-mark{font-size:8cqi}
     return h("div",{class:"bp-row"},h("span",{class:"e","aria-hidden":"true"},x.e||"•"),
       h("button",{class:"x",type:"button",onclick:()=>{if(t){markBriefSeen();closeModal();openTask(t.id);}}},String(x.text||""),sub?h("small",null,sub):null),
       t&&canWrite?h("button",{class:"no",type:"button","aria-label":"לא רלוונטי: "+(t.title||""),title:"לא רלוונטי",onclick:()=>muteRow(t.id)},"👎"):null,
-      t&&isOpen(t)&&canWrite?h("button",{class:"ok",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:()=>bpDone(t)},"✓"):null);}
+      t&&isOpen(t)&&canWrite?h("button",{class:"ok",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:e=>bpDone(t,e.currentTarget)},"✓"):null);}
   const V2T={morning:"☀️ בוקר טוב",eve:"🌆 ערב טוב",tom:"🌙 מחר",night:"😴 לפני השינה"},V2OK={morning:"הבנתי ☕",eve:"יאללה הביתה 🚗",tom:"לילה טוב 🌙",night:"לילה טוב 😴"};
   function showV2(md,b){const nx=md==="tom"||md==="night",dd=new Date(addDays(briefDate(md),nx?1:0)+"T12:00:00");
     const seen=new Set(),ok=x=>{if(!liveItem(x)||muted(x.id))return false;const k=x.id||x.text;if(seen.has(k))return false;seen.add(k);return true;};
@@ -5401,16 +5449,22 @@ html.desk .co-mark{font-size:8cqi}
         at?h("div",{class:"bp-sec bp-ask"},h("h4",null,"🔁 עולה שוב ושוב"),h("div",{class:"bp-q"},String(b.ask.text||at.title||"")),h("div",{class:"bp-qb"},
           canWrite?h("button",{class:"alt",type:"button",onclick:()=>{const d=new Date();d.setDate(d.getDate()+7);d.setHours(8,0,0,0);remindLater(at,d,"שבוע");setTimeout(()=>{if($("briefM"))showBrief(md);},350);}},"💤 עוד שבוע"):null,
           h("button",{class:"alt",type:"button",onclick:()=>{markBriefSeen(md);closeModal();openTask(at.id);}},"📅 לתזמן"),
-          canWrite?h("button",{class:"alt",type:"button",onclick:()=>bpDone(at)},"✓ לסגור"):null)):null,
+          canWrite?h("button",{class:"alt",type:"button",onclick:e=>bpDone(at,e.currentTarget)},"✓ לסגור"):null)):null,
         empty?h("div",{class:"bp-empty"},b.quiet?"הכול כמו בבריף של 21:30 😴":md==="morning"?"יום רגיל, אין משהו דחוף ☕":"אין מה להוסיף 🌿"):null,
         md!=="morning"?planFrame(md):null,
         h("div",{class:"bp-btns"},h("button",{class:"main",type:"button",onclick:closeBrief},V2OK[md]||"הבנתי")),bpImp(md)));
     m.classList.add("bpop");m.classList.toggle("car",carOn);markBriefSeen(md);}
-  function bpDone(t){markDone(t);setTimeout(()=>{if($("briefM"))showBrief(briefMd);},350);}
+  // 21.4: the row fades, the list closes the gap; the brief is not rebuilt meanwhile (that rebuild replayed the pop-in = the flicker)
+  let bpHold=0,bpHoldT=null;
+  function bpGone(el){if(!el)return;const hgt=el.offsetHeight;el.style.height=hgt+"px";void el.offsetHeight;el.classList.add("gone");el.style.height="0px";}
+  function bpDone(t,btn){const row=btn&&btn.closest(".bp-row,.bp-ask"),sec=row&&row.closest(".bp-sec");
+    bpHold=Date.now()+520;markDone(t);if(!row)return;btn.disabled=true;btn.classList.add("pressed");
+    const last=sec&&(row.classList.contains("bp-ask")||[...sec.querySelectorAll(".bp-row")].every(r=>r===row||r.classList.contains("gone")));
+    setTimeout(()=>bpGone(last?sec:row),120);}
   function bpRow(x,emoji){const t=x.id&&allTopics.find(z=>z.id===x.id);
     return h("div",{class:"bp-row"},h("span",{class:"e","aria-hidden":"true"},x.e||emoji),
       h("button",{class:"x",type:"button",onclick:()=>{if(t){markBriefSeen();closeModal();openTask(t.id);}}},String(x.text||""),x.sub?h("small",null,String(x.sub)):null),
-      t&&isOpen(t)&&canWrite?h("button",{class:"ok",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:()=>bpDone(t)},"✓"):null);}
+      t&&isOpen(t)&&canWrite?h("button",{class:"ok",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:e=>bpDone(t,e.currentTarget)},"✓"):null);}
   function bpSec(title,items,emoji,cls){const a=(Array.isArray(items)?items:[]).filter(liveItem);if(!a.length)return null;
     return h("div",{class:"bp-sec"+(cls?" "+cls:"")},h("h4",null,title),a.map(x=>bpRow(x,emoji)));}
   function closeBrief(){markBriefSeen(briefMd);briefFull=false;closeModal();}
@@ -5446,7 +5500,9 @@ html.desk .co-mark{font-size:8cqi}
   // it grows downward (scrolling inside if needed), so the tapped button never moves and the question opens under it.
   let bpKeep=null;
   function showBrief(md){const old=document.querySelector("#briefM .sqpanel");if(!old)bpKeep=null;
+    if(old&&Date.now()<bpHold){clearTimeout(bpHoldT);bpHoldT=setTimeout(()=>{if($("briefM"))showBrief(md);},bpHold-Date.now()+30);return;}
     const top=old&&bpKeep?old.getBoundingClientRect().top:null,st=old?old.scrollTop:0;showBrief0(md);
+    if(old&&top==null){const p2=document.querySelector("#briefM .sqpanel");if(p2){p2.style.animation="none";p2.scrollTop=st;}}
     if(top==null)return;const m=$("briefM"),pn=m&&m.querySelector(".sqpanel");if(!pn)return;const z=parseFloat(getComputedStyle(pn).zoom)||1;
     m.style.alignItems="flex-start";pn.style.animation="none";pn.style.marginTop=Math.max(0,(top-16))/z+"px";pn.style.maxHeight="calc((100dvh - "+(top+16)+"px) / "+z+")";pn.scrollTop=st;
     if(bpKeep&&bpKeep.y!=null){const n=m.querySelector('[data-pin="'+bpKeep.k+'"]');if(n)pn.scrollTop+=(n.getBoundingClientRect().top-bpKeep.y)/z;bpKeep.y=null;}}
@@ -5877,7 +5933,7 @@ html.desk .co-mark{font-size:8cqi}
   $("statBtn").onclick=()=>showStats();
   $("sunBtn").onclick=()=>showBrief();
   $("locBtn").onclick=()=>showHere(true);
-  $("gmBtn").onclick=()=>showGmail();$("connBtn").onclick=()=>showConn();
+  $("gmBtn").onclick=()=>showGmail();$("undoBtn").onclick=undoStep;renderUndo();$("connBtn").onclick=()=>showConn();
   function initNotify(){
     db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan"),aw=s.docs.find(x=>x.id==="away"),wh=s.docs.find(x=>x.id==="where");
       if(wh&&remoteW(wh.data())&&allTopics.length){renderCtx();renderList();}
@@ -5897,7 +5953,7 @@ html.desk .co-mark{font-size:8cqi}
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
     if(!db){notice("חסר המפתח האישי. פתח את הלינק המלא עם המפתח (?k=...).");$("qbtn").disabled=true;$("list").replaceChildren();return;}
     try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"&&(await user.can("data.write"))===false){canWrite=false;$("qbtn").disabled=true;}}catch(e){}
-    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();ctxRun(all);},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
+    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;histSeed();splitTopics();renderAll();ctxRun(all);},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;const cp=s.docs.find(x=>x.id==="cashflow_ping");cfPing=cp?cp.data():null;const cr=s.docs.find(x=>x.id==="cashflow_refresh");cfReq=cr?cr.data():null;renderConn();const ni=s.docs.find(x=>x.id==="new_items"),nd=ni?ni.data():null;newItems=nd&&Array.isArray(nd.items)?nd.items:[];nwRender();
