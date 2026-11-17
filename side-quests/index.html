@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.1";window.SQ_BUILD_AT="17.11.2026 20:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.2";window.SQ_BUILD_AT="17.11.2026 20:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -4556,6 +4556,10 @@ html.desk .co-mark{font-size:8cqi}
   function renderRefr(){const c=sqConn(),d=document.getElementById("clSq");if(d)d.className="cl"+(c.lv==="off"?"":" "+c.lv);
     if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=c.short+(c.q?` (${c.q})`:"");$("refr").classList.toggle("offl",c.lv==="bad"||(window.SQ_NET&&SQ_NET.ok===false));
     $("refr").setAttribute("aria-label","עדכון מלא. "+c.t);}
+  // 20.1: ask the service worker to save every local dashboard page ahead of time (offline from the first time)
+  let warmKey="";
+  function warmDash(){try{if(!navigator.onLine||!navigator.serviceWorker)return;const urls=[...new Set((dashes||[]).map(d=>dashFrame(safeUrl(d.url||""))).filter(Boolean).map(u=>u.split(/[?#]/)[0]))];const k=urls.join("|");if(!urls.length||k===warmKey)return;
+    navigator.serviceWorker.ready.then(r=>{if(r.active){r.active.postMessage({type:"sq-warm",urls});warmKey=k;}}).catch(()=>{});}catch(e){}}
   let pendCss=null,skipSeen=0;
   function renderPend(){const N=window.SQ_NET||{},ids=(N.pending||[]).filter(k=>k.indexOf("topics/")===0).map(k=>k.slice(7));
     if(!pendCss){pendCss=document.createElement("style");document.head.append(pendCss);}
@@ -5808,7 +5812,7 @@ html.desk .co-mark{font-size:8cqi}
       if(window.SQWorkCal){SQWorkCal.set(ev,pr);renderCtx();renderList();}},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderTiles();renderFun();renderDash();},()=>{});
-    db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));splitTopics();renderAll();},()=>{});
+    db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));splitTopics();renderAll();warmDash();},()=>{});
     db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
     db.collection("payments").onSnapshot(s=>{payDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("family").onSnapshot(s=>{famDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
