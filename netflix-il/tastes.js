@@ -1,12 +1,21 @@
-// Taste profiles ("מה יש בנטפליקס?"). Hard-coded for now (Oren 17.11.2026): Oren and Lior send lists of what they
+// Taste profiles ("מה בנטפליקס?"). Hard-coded for now (Oren 17.11.2026): Oren and Lior send lists of what they
 // liked / didn't, and Claude writes the profile here. A profile narrows the list; the filters still work inside it.
 //   like:  coarse genres that fit (an item needs at least one of them; empty = all genres)
 //   avoid: coarse genres that never fit (an item with any of them is out, unless its IMDb id is in boost)
 //   boost: IMDb ids that are always in (titles they loved, or very close to them)
 //   block: IMDb ids that are always out
+//   seenM / seenS / wantS: normalized titles ("title|year" for movies) seeded once into nf_seen / nf_wl
 //   pending: true = not built yet, shows everything with a short note
 // Genre codes: act com dra rom thr scf hor doc ani fam rea
 window.NF_TASTES = {
-  oren: { name: "הטעם של אורן", icon: "🧔", pending: true, like: [], avoid: [], boost: [], block: [] },
+  oren: {
+    name: "הטעם של אורן", icon: "🧔", like: [], avoid: ["rea"], boost: [], block: [],
+    // What he already saw (17.11.2026, from his screenshots): marked "ראיתי" once on his device when he picks this taste.
+    // Matched by normalized English title (+ year ±1 for movies), so titles that come to Netflix later get marked too.
+    seenM: ["theshawshankredemption|1994", "thegodfather|1972", "thedarkknight|2008", "thegodfatherpartii|1974", "schindlerslist|1993", "thelordoftheringsthefellowshipofthering|2001", "pulpfiction|1994", "thegoodthebadandtheugly|1966", "forrestgump|1994", "fightclub|1999", "inception|2010", "thematrix|1999", "interstellar|2014", "goodfellas|1990", "se7en|1995", "thesilenceofthelambs|1991", "savingprivateryan|1998", "thegreenmile|1999", "cityofgod|2002", "lifeisbeautiful|1997", "terminator2judgmentday|1991", "backtothefuture|1985", "killbillthewholebloodyaffair|2011", "gladiator|2000", "thepianist|2002", "parasite|2019", "thelionking|1994", "thedeparted|2006", "whiplash|2014", "theprestige|2006", "americanhistoryx|1998", "lontheprofessional|1994", "theintouchables|2011", "theusualsuspects|1995", "djangounchained|2012", "alien|1979", "walle|2008", "theodyssey|2026", "apocalypsenow|1979", "memento|2000", "avengersinfinitywar|2018", "duneparttwo|2024", "raidersofthelostark|1981", "theshining|1980", "inglouriousbasterds|2009", "aliens|1986", "avengersendgame|2019", "goodwillhunting|1997", "coco|2017", "thedarkknightrises|2012", "toystory|1995", "braveheart|1995", "oldboy|2003", "capernaum|2018", "joker|2019", "toystory3|2010", "requiemforadream|2000", "heat|1995", "reservoirdogs|1992", "2001aspaceodyssey|1968", "up|2009", "fullmetaljacket|1987", "aseparation|2011", "diehard|1988", "aclockworkorange|1971", "1917|2019", "thewolfofwallstreet|2013", "thetrumanshow|1998", "shutterisland|2010", "jurassicpark|1993", "oppenheimer|2023", "batmanbegins|2005", "therewillbeblood|2007", "taxidriver|1976", "thesixthsense|1999", "nocountryforoldmen|2007", "topgunmaverick|2022", "killbillvol1|2003", "projecthailmary|2026", "abeautifulmind|2001", "findingnemo|2003", "catchmeifyoucan|2002", "vforvendetta|2006", "insideout|2015", "trainspotting|1996", "thewildrobot|2024", "hacksawridge|2016", "fargo|1996", "madmaxfuryroad|2015", "ratatouille|2007", "grantorino|2008", "12yearsaslave|2013", "howtotrainyourdragon|2010", "bladerunner|1982", "monstersinc|2001", "gonegirl|2014", "fordvferrari|2019", "thedeerhunter|1978", "rocky|1976", "logan|2017", "theterminator|1984", "thebiglebowski|1998", "theincredibles|2004", "hachiadogstale|2009", "room|2015"],
+    seenS: ["chernobyl", "calls", "breakingbad", "bettercallsaul", "fargo", "evilgenius", "dexter", "dahmermonsterthejeffreydahmerstory", "kaos", "homeland", "highscore", "gameofthrones", "mrrobot", "moneyheist", "manhunt", "lovedeathandrobots", "squidgame", "siliconvalley", "peakyblinders", "narcos", "wildwildcountry", "thequeensgambit", "thaicaverescue", "suits", "blackmirror", "pluribus", "severance", "theoffice", "strangerthings", "lupin", "thelastofus", "thewire", "westworld", "dark", "badboy", "norsemen", "spaceforce", "thewalkingdead", "house", "thegooddoctor", "thesopranos", "seinfeld", "friends", "thebigbangtheory", "truedetective", "prisonbreak"],
+    // Series he loves but hasn't started: go to "הרשימה שלי"
+    wantS: ["theamericans", "kidding", "bassxmachina", "silo", "dexterresurrection"],
+  },
   lior: { name: "הטעם של ליאור", icon: "👩", pending: true, like: [], avoid: [], boost: [], block: [] },
 };
