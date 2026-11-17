@@ -118,3 +118,38 @@
     var k=JSON.stringify(nd);if(data&&JSON.stringify(data)===k&&box&&box.isConnected)return;data=nd;build();
     if(!obs){obs=new MutationObserver(function(){if(box&&(!box.isConnected||box.previousElementSibling&&!box.previousElementSibling.classList.contains("hero")&&box.previousElementSibling.tagName!=="HEADER"))place();});obs.observe(document.body,{childList:true});}});
 })();
+
+/* 19.5 (Oren 17.11.2026, standing rule for every dashboard): the "new content" path. The app lists, per dashboard, the items
+   that are new (dashboards/<id>.news with `item` + optional `path`) in localStorage sq_item_new; opened items are kept in
+   sq_item_seen {"<dash>:<item>": at}, shared with the app (same origin, so its quest dot and tile update right away).
+   Inside the page: every element with data-sq-item="<id>" that is new gets a blinking "חדש" badge, every element with
+   data-sq-path="<key>" on the way to it (a tab, a section title, a filter chip) gets a blinking dot. Tapping the item (or the
+   page calling SQNew.seen(id)) clears it. The page knows its dashboard id from window.SQ_DASH (standalone) or from the app
+   (sq-items). API for pages: SQNew.isNew(id), SQNew.seen(id), SQNew.last (the item just opened while new), SQNew.apply(). */
+(function(){
+  var dash=window.SQ_DASH||null,raf=0;
+  function rd(k){try{return JSON.parse(localStorage.getItem(k)||"null");}catch(e){return null;}}
+  function list(){if(!dash)return [];var m=rd("sq_item_new")||{},s=rd("sq_item_seen")||{},L=Array.isArray(m[dash])?m[dash]:[];
+    return L.filter(function(x){return x&&x.id&&(Date.parse(s[dash+":"+x.id]||"")||0)<(Date.parse(x.at||"")||1);});}
+  function css(){if(document.getElementById("sqnew-css"))return;var st=document.createElement("style");st.id="sqnew-css";st.textContent=
+    "[data-sq-item].sqnew{position:relative;box-shadow:inset 3px 0 0 #2F7BEA}"+
+    "[data-sq-item].sqnew::after{content:'חדש';position:absolute;bottom:9px;inset-inline-end:10px;background:#2F7BEA;color:#fff;font:800 11.5px/1 system-ui,sans-serif;padding:4px 8px;border-radius:999px;box-shadow:0 1px 4px rgba(47,123,234,.45);animation:sqnewB 1.4s ease-in-out infinite;pointer-events:none}"+
+    "[data-sq-path].sqnew::after{content:'';display:inline-block;width:9px;height:9px;border-radius:50%;background:#2F7BEA;margin-inline-start:6px;vertical-align:middle;box-shadow:0 0 0 2px rgba(255,255,255,.85);animation:sqnewB 1.4s ease-in-out infinite}"+
+    "@keyframes sqnewB{50%{opacity:.35}}@media (prefers-reduced-motion:reduce){[data-sq-item].sqnew::after,[data-sq-path].sqnew::after{animation:none}}";
+    (document.head||document.documentElement).appendChild(st);}
+  function apply(){raf=0;if(!document.body)return;var L=list(),ids={},paths={};
+    L.forEach(function(x){ids[x.id]=1;(x.path||[]).forEach(function(p){paths[p]=1;});});
+    if(L.length)css();
+    document.querySelectorAll("[data-sq-item]").forEach(function(el){var on=!!ids[el.getAttribute("data-sq-item")];if(el.classList.contains("sqnew")!==on)el.classList.toggle("sqnew",on);});
+    document.querySelectorAll("[data-sq-path]").forEach(function(el){var on=!!paths[el.getAttribute("data-sq-path")];if(el.classList.contains("sqnew")!==on)el.classList.toggle("sqnew",on);});}
+  function soon(){if(!raf)raf=requestAnimationFrame(apply);}
+  function isNew(id){return list().some(function(x){return x.id===String(id);});}
+  function seen(id){if(!dash||!id)return;id=String(id);var s=rd("sq_item_seen")||{};if(isNew(id))api.last=id;s[dash+":"+id]=new Date().toISOString();
+    try{localStorage.setItem("sq_item_seen",JSON.stringify(s));}catch(e){}soon();}
+  var api={isNew:isNew,seen:seen,apply:soon,last:null,dash:function(){return dash;}};window.SQNew=api;
+  document.addEventListener("click",function(e){var el=e.target&&e.target.closest&&e.target.closest("[data-sq-item]");if(el)seen(el.getAttribute("data-sq-item"));},true);
+  addEventListener("message",function(e){if(!e.data||e.data.type!=="sq-items"||e.source!==parent)return;if(e.data.dash)dash=String(e.data.dash);soon();});
+  addEventListener("storage",function(e){if(e.key==="sq_item_new"||e.key==="sq_item_seen")soon();});
+  function go(){soon();new MutationObserver(soon).observe(document.body,{childList:true,subtree:true});}
+  if(document.body)go();else document.addEventListener("DOMContentLoaded",go);
+})();
