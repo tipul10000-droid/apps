@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.8";window.SQ_BUILD_AT="17.11.2026 01:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="17.9";window.SQ_BUILD_AT="17.11.2026 08:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1869,6 +1869,39 @@ body.q-fun .topbtns,body.q-ai .topbtns,body.q-fun .ctxrow,body.q-ai .ctxrow,body
 .tadd.fab .ipend{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;border-radius:9px;background:#F6B53C;color:#000;font:700 11px/18px system-ui,sans-serif;text-align:center;padding:0 4px}
 .tadd.fab{overflow:visible}
 body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none!important}
+/* 17.9 progress graph in stats */
+#setM .prog{display:flex;flex-direction:column;gap:6px}
+#setM .pread{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#setM .pch{background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:46px;padding:0 2px;min-width:0}
+#setM .pch span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;white-space:nowrap}
+#setM .pch i{display:inline-block;width:9px;height:9px;border-radius:3px}
+#setM .pch.d i{display:none}
+#setM .pch b{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#setM .pch.i b{color:#2f6fde}#setM .pch.s b{color:#e07b00}#setM .pch.a b{color:#7b4fd6}#setM .pch.c b{color:#1f9d55}
+#setM .pread.fut .pch.o b,#setM .pread.fut .pch.c b{opacity:.45}
+#setM .pread.fut .pch.d b{color:#7b4fd6}
+#setM .pgsvg{touch-action:pan-y;cursor:crosshair;user-select:none;-webkit-user-select:none}
+#setM .pgsvg svg{display:block;width:100%;height:auto;overflow:visible}
+#setM .pgsvg .pl{fill:none;stroke-linejoin:round;stroke-linecap:round}
+#setM .pgsvg .pg{stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
+#setM .pgsvg .pb{stroke:var(--line);stroke-width:1}
+#setM .pgsvg .pf{fill:#7b4fd6;opacity:.05}
+#setM .pgsvg .ptd{stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3;opacity:.5}
+#setM .pgsvg .pt{font:11px -apple-system,system-ui,sans-serif;fill:var(--muted)}
+#setM .pgsvg .pt.tm{font-weight:700;fill:var(--ink)}
+#setM .pgsvg .pcur line{stroke:var(--ink);stroke-width:1.4}
+#setM .pgsvg .pcur circle{stroke:var(--surface);stroke-width:1.5}
+#setM .prng{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden;direction:ltr}
+#setM .prng button{all:unset;box-sizing:border-box;text-align:center;height:36px;line-height:36px;background:var(--surface);font:700 14px -apple-system,system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+#setM .prng button[aria-pressed="true"]{background:#7b4fd6;color:#fff}
+#setM .plog{height:210px;overflow-y:auto;border-top:1px solid var(--line);overscroll-behavior:contain}
+#setM .plr{all:unset;direction:rtl;box-sizing:border-box;display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:6px;width:100%;padding:7px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+#setM .plr .pd{text-align:center;font-size:14px}
+#setM .plr .pt2{font-size:14px;display:flex;flex-direction:column;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#setM .plr .pt2>*{overflow:hidden;text-overflow:ellipsis}
+#setM .plr small{font-size:12px;color:var(--muted)}
+#setM .plr b{font-size:14px;white-space:nowrap;color:#7b4fd6}
+#setM .plr.em{color:var(--muted);display:block;text-align:center;cursor:default}
 /* 16.2 stats in settings */
 #setM .ssmoney{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:4px 0 8px}
 #setM .ssmn{display:flex;flex-direction:column;gap:2px;padding:10px 4px;text-align:center}
@@ -4971,6 +5004,99 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   // Merged children and fun items are not counted as closes; money is summed on every non-deleted topic (never put it on both parent and child).
   function fmtNis(v){v=Math.round(+v||0);return "₪"+v.toLocaleString("he-IL");}
   let statOpen=null;
+  // 17.9 (Oren 17.11.2026): "📈 ההתקדמות" graph in the stats. X axis: left edge = the day Side Quests started, the middle = today,
+  // right edge = today + the chosen range (1M..5Y). Two panels on one time axis: money (received one-offs, saved = one-off savings +
+  // money_monthly accrued in full months from money_at, total) and tasks (cumulative opened / closed, past only).
+  // The future is the same nominal rule carried forward (no yield, no indexation), dashed. A cursor (drag / hover) shows the values and a log below.
+  // money_saved is "received" unless money_kind:"save" (a one-off discount); money_months caps a monthly saving (default: open-ended).
+  const PROG_R={"1M":1,"3M":3,"6M":6,"1Y":12,"5Y":60},PMON=30.44*86400000;
+  let progR=(()=>{try{const v=localStorage.getItem("sq_prog_r");return PROG_R[v]?v:"1Y";}catch(e){return "1Y";}})(),progCur=null;
+  function progData(){
+    const T=allTopics.filter(t=>!t._deleted&&!isFun(t)),P=s=>Date.parse(s||"")||0;
+    const cOf=t=>P(t.created_at),dOf=t=>P(t.done_at||t.updated_at);
+    const op=T.filter(t=>!t.merged_into&&cOf(t)).map(t=>({at:cOf(t),t,k:"o"}));
+    const cl=T.filter(t=>(t.status==="done"||t.status==="promoted")&&dOf(t)).map(t=>({at:dOf(t),t,k:"c"}));
+    const one=T.filter(t=>+t.money_saved>0).map(t=>({at:P(t.money_at)||dOf(t)||cOf(t),t,v:+t.money_saved,k:t.money_kind==="save"?"s":"i"}));
+    const rec=T.filter(t=>+t.money_monthly>0&&P(t.money_at)).map(t=>({a:P(t.money_at),m:+t.money_monthly,n:+t.money_months>0?+t.money_months:Infinity,t}));
+    const now=Date.now(),d0=new Date(Math.min(now,...op.map(e=>e.at),...one.map(e=>e.at)));d0.setHours(0,0,0,0);
+    return {op:op.sort((a,b)=>a.at-b.at),cl:cl.sort((a,b)=>a.at-b.at),one:one.sort((a,b)=>a.at-b.at),rec,x0:d0.getTime(),now};
+  }
+  function progVals(D,x){
+    const n=(L)=>{let c=0;for(const e of L){if(e.at<=x)c++;else break;}return c;};
+    const mo=r=>Math.min(r.n,Math.max(0,Math.floor((x-r.a)/PMON)));
+    let i=0,s=0;for(const e of D.one)if(e.at<=x){if(e.k==="i")i+=e.v;else s+=e.v;}
+    for(const r of D.rec)s+=r.m*mo(r);
+    const tx=Math.min(x,D.now);return {o:n(D.op.filter(e=>e.at<=tx)),c:n(D.cl.filter(e=>e.at<=tx)),i,s,a:i+s};
+  }
+  function progSec(){
+    const D=progData(),end=D.now+PROG_R[progR]*PMON,W=340,HM=128,G0=150,HT=74,H=G0+HT+20,mid=W/2;
+    const X=x=>x<=D.now?(D.now>D.x0?(x-D.x0)/(D.now-D.x0)*mid:mid):mid+(x-D.now)/(end-D.now)*mid;
+    const iX=px=>px<=mid?D.x0+px/mid*(D.now-D.x0):D.now+(px-mid)/mid*(end-D.now);
+    // breakpoints: every event and every monthly accrual inside the range
+    const B=new Set([...D.op,...D.cl,...D.one].map(e=>e.at));
+    D.rec.forEach(r=>{for(let k=1;k<=Math.min(r.n,PROG_R["5Y"]+24);k++){const b=r.a+k*PMON;if(b>end)break;B.add(b);}});
+    const bp=[...B].filter(b=>b>D.x0&&b<=end).sort((a,b)=>a-b);
+    const vEnd=progVals(D,end),vNow=progVals(D,D.now);
+    const mM=Math.max(100,vEnd.a)*1.08,mT=Math.max(5,vNow.o)*1.1;
+    const yM=v=>4+HM-v/mM*HM,yT=v=>G0+HT-v/mT*HT;
+    const path=(f,y,from,to)=>{let x=from,d="M"+X(x).toFixed(1)+" "+y(f(progVals(D,x))).toFixed(1);
+      for(const b of bp){if(b<=from||b>to)continue;d+="H"+X(b).toFixed(1)+"V"+y(f(progVals(D,b))).toFixed(1);}return d+"H"+X(to).toFixed(1);};
+    const S=[["i","#2f6fde",2],["s","#e07b00",2],["a","#7b4fd6",3.2]];
+    let svg="";
+    const k=v=>v>=1e6?Math.round(v/1e5)/10+"M":v>=1e4?Math.round(v/1e3)+"K":v>=1e3?Math.round(v/100)/10+"K":String(Math.round(v));
+    [0.5,1].forEach(f=>{svg+=`<line x1="0" x2="${W}" y1="${yM(mM*f/1.08)}" y2="${yM(mM*f/1.08)}" class="pg"/><text x="2" y="${yM(mM*f/1.08)-3}" class="pt">₪${k(mM*f/1.08)}</text>`;});
+    svg+=`<line x1="0" x2="${mid}" y1="${yT(vNow.o)}" y2="${yT(vNow.o)}" class="pg"/><text x="2" y="${yT(vNow.o)-3}" class="pt">${vNow.o}</text>`;
+    svg+=`<line x1="0" x2="${W}" y1="${4+HM}" y2="${4+HM}" class="pb"/><line x1="0" x2="${W}" y1="${G0+HT}" y2="${G0+HT}" class="pb"/>`;
+    svg+=`<rect x="${mid}" y="0" width="${mid}" height="${4+HM}" class="pf"/><line x1="${mid}" x2="${mid}" y1="0" y2="${G0+HT}" class="ptd"/>`;
+    S.forEach(([f,c,w])=>{svg+=`<path d="${path(v=>v[f],yM,D.x0,D.now)}" stroke="${c}" stroke-width="${w}" class="pl"/><path d="${path(v=>v[f],yM,D.now,end)}" stroke="${c}" stroke-width="${w}" class="pl" stroke-dasharray="5 4"/>`;});
+    [["o","#9aa5b1"],["c","#1f9d55"]].forEach(([f,c])=>{svg+=`<path d="${path(v=>v[f],yT,D.x0,D.now)}" stroke="${c}" stroke-width="2.4" class="pl"/>`;});
+    D.one.forEach(e=>{svg+=`<circle cx="${X(e.at)}" cy="${yM(progVals(D,e.at).a)}" r="3.2" fill="#7b4fd6"/>`;});
+    D.rec.forEach(r=>{if(r.a<=end)svg+=`<circle cx="${X(r.a)}" cy="${yM(progVals(D,r.a).a)}" r="3.6" fill="#fff" stroke="#e07b00" stroke-width="2"/>`;});
+    const dd=ms=>{const d=new Date(ms);return d.getDate()+"."+(d.getMonth()+1)+"."+String(d.getFullYear()).slice(2);};
+    svg+=`<text x="1" y="${H-4}" class="pt">${dd(D.x0)}</text><text x="${mid}" y="${H-4}" class="pt tm" text-anchor="middle">היום</text><text x="${W-1}" y="${H-4}" class="pt" text-anchor="end">${dd(end)}</text>`;
+    svg+=`<g class="pcur"><line y1="0" y2="${G0+HT}"/>${S.map(([f,c])=>`<circle r="4.5" fill="${c}" data-f="${f}"/>`).join("")}<circle r="4" fill="#1f9d55" data-f="c"/><circle r="4" fill="#9aa5b1" data-f="o"/></g>`;
+    const box=h("div",{class:"pgsvg",dir:"ltr",html:`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="גרף התקדמות: משימות וכסף לאורך הזמן">${svg}</svg>`});
+    const chip=(c,cls,l)=>h("div",{class:"pch "+cls},h("span",null,h("i",{style:"background:"+c}),l),h("b",null,"")); 
+    const rd=h("div",{class:"pread"},chip("#9aa5b1","o","＋ נפתחו"),chip("#1f9d55","c","✓ נסגרו"),chip("transparent","d","📅"),
+      chip("#2f6fde","i","💵 נכנס"),chip("#e07b00","s","🔁 נחסך"),chip("#7b4fd6","a","∑ ביחד"));
+    const log=h("div",{class:"plog"});
+    const set=x=>{x=Math.max(D.x0,Math.min(end,x));progCur=x>=D.now-60000&&x<=D.now+60000?null:x;
+      const v=progVals(D,x),fut=x>D.now+60000,px=X(x),q=s=>box.querySelector(s);
+      q(".pcur line").setAttribute("x1",px);q(".pcur line").setAttribute("x2",px);
+      box.querySelectorAll(".pcur circle").forEach(c=>{const f=c.dataset.f;c.setAttribute("cx",f==="o"||f==="c"?X(Math.min(x,D.now)):px);c.setAttribute("cy",f==="o"||f==="c"?yT(v[f]):yM(v[f]));});
+      const put=(cls,txt)=>{rd.querySelector(".pch."+cls+" b").textContent=txt;};
+      put("o",String(v.o));put("c",String(v.c));put("i",fmtNis(v.i));put("s",fmtNis(v.s));put("a",fmtNis(v.a));
+      put("d",fut?"בעוד "+progAgo(x-D.now):Math.abs(x-D.now)<36e5*12?"היום":dd(x));
+      rd.classList.toggle("fut",fut);
+      const rows=[];
+      if(fut){
+        const one=D.one.filter(e=>e.at<=x);
+        D.rec.filter(r=>r.a<=x).map(r=>({r,n:Math.min(r.n,Math.max(0,Math.floor((x-r.a)/PMON)))})).sort((a,b)=>b.r.m*b.n-a.r.m*a.n).forEach(({r,n})=>
+          rows.push(h("button",{type:"button",class:"plr s",onclick:()=>{closeModal();openTask(r.t.id);}},h("span",{class:"pd"},"🔁"),h("span",{class:"pt2"},h("span",null,r.t.title||""),h("small",null,fmtNis(r.m)+" × "+n+" חודשים")),h("b",null,fmtNis(r.m*n)))));
+        const oi=one.reduce((s,e)=>s+e.v,0);
+        if(oi)rows.push(h("div",{class:"plr"},h("span",{class:"pd"},"💵"),h("span",{class:"pt2"},h("span",null,"חד-פעמי עד היום"),h("small",null,one.length+" פריטים")),h("b",null,fmtNis(oi))));
+      }else{
+        const E=[...D.op.map(e=>({...e,ic:"＋"})),...D.cl.map(e=>({...e,ic:"✓"})),...D.one.map(e=>({...e,ic:e.k==="i"?"💵":"🏷️"}))];
+        D.rec.forEach(r=>{E.push({at:r.a,t:r.t,ic:"🔁",v:r.m,mo:1});for(let j=1;j<=r.n;j++){const b=r.a+j*PMON;if(b>D.now)break;E.push({at:b,t:r.t,ic:"🔁",v:r.m});}});
+        E.filter(e=>e.at<=x).sort((a,b)=>b.at-a.at).slice(0,40).forEach(e=>rows.push(h("button",{type:"button",class:"plr "+(e.k||"s"),onclick:()=>{closeModal();openTask(e.t.id);}},
+          h("span",{class:"pd"},e.ic),h("span",{class:"pt2"},h("span",null,e.t.title||""),h("small",null,dd(e.at)+(e.mo?" · התחיל "+fmtNis(e.v)+" בחודש":""))),h("b",null,e.v&&!e.mo?"+"+fmtNis(e.v):""))));
+      }
+      if(!rows.length)rows.push(h("div",{class:"plr em"},"אין עדיין אירועים"));
+      log.replaceChildren(...rows);};
+    let drag=false;const at=e=>{const r=box.getBoundingClientRect();set(iX(Math.max(0,Math.min(W,(e.clientX-r.left)/r.width*W))));};
+    box.addEventListener("pointerdown",e=>{drag=true;try{box.setPointerCapture(e.pointerId);}catch(_){}at(e);});
+    box.addEventListener("pointermove",e=>{if(drag||e.pointerType==="mouse")at(e);});
+    ["pointerup","pointercancel"].forEach(n=>box.addEventListener(n,()=>{drag=false;}));
+    const rng=h("div",{class:"prng"},...Object.keys(PROG_R).map(r=>h("button",{type:"button","aria-pressed":r===progR?"true":"false",
+      onclick:e=>{progR=r;try{localStorage.setItem("sq_prog_r",r);}catch(_){}progCur=D.now+PROG_R[r]*PMON;e.currentTarget.closest(".prog").replaceWith(progSec());}},r)));
+    const M=D.rec.reduce((n,r)=>n+(r.a<=end?r.m:0),0),days=Math.max(1,Math.round((D.now-D.x0)/864e5));
+    const sum=h("div",{class:"sqhint"},"מאז "+dd(D.x0)+" ("+days+" ימים): נפתחו "+vNow.o+", נסגרו "+vNow.c+", נכנס או נחסך "+fmtNis(vNow.a)+
+      (M?". חיסכון קבוע "+fmtNis(M)+" בחודש ("+fmtNis(M*12)+" בשנה), נומינלי בלי תשואה":"")+".");
+    const wrap=h("div",{class:"prog"},rd,box,rng,sum,log);
+    set(progCur==null?D.now:Math.min(progCur,end));
+    return wrap;
+  }
+  function progAgo(ms){const m=Math.round(ms/PMON);return m>=12?(m%12?Math.round(m/12*10)/10:m/12)+(m>=24?" שנים":" שנה"):m>=1?m+(m===1?" חודש":" חודשים"):Math.max(1,Math.round(ms/864e5))+" ימים";}
   function statsSec(sec){
     const T=allTopics.filter(t=>!t._deleted&&!isFun(t));
     const dOf=t=>Date.parse(t.done_at||t.updated_at||"")||0,cOf=t=>Date.parse(t.created_at||"")||0;
@@ -5017,6 +5143,8 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
       statOpen==="e"?h("div",{class:"sslist sqgrow"},...list(exp,"e")):null,
       pot.length?tg("p","💭 מה עוד אפשר להשיג",pot.length):null,
       statOpen==="p"?h("div",{class:"sslist sqgrow"},...list(pot,"p")):null,
+      h("div",{class:"sssub"},"📈 ההתקדמות מאז ההתחלה"),
+      progSec(),
       h("div",{class:"sssub"},"✓ נסגרו"),
       h("div",{class:"sstiles"},tile(cnt(closed,dOf,day0),"היום"),tile(cnt(closed,dOf,wk0),"השבוע"),tile(cnt(closed,dOf,mo0),"החודש"),tile(closed.length,"מההתחלה","all")),
       h("div",{class:"sssub"},"＋ נפתחו"),
