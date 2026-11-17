@@ -236,7 +236,7 @@
   }
 
   // ---------- sheets ----------
-  function sheet(title, body) { $("ovT").textContent = title; $("ovB").replaceChildren(...body); $("ov").hidden = false; }
+  function sheet(title, body, cls) { $("ovT").textContent = title; $("ovB").replaceChildren(...body); document.querySelector("#ov .sheet").className = "sheet" + (cls ? " " + cls : ""); $("ov").hidden = false; }
   function closeSheet() { $("ov").hidden = true; }
   function settings() {
     const opts = [["all", "🍿", "בלי העדפה", "כל מה שיש בנטפליקס ישראל"]];
@@ -245,7 +245,6 @@
     const box = h("div", { class: "opt" }, opts.map(([k, e, n, s]) => h("button", { type: "button", class: taste === k ? "on" : "",
       onclick: (ev) => { taste = k; ls.set("nf_taste", k); tAt = Date.now(); ls.set("nf_taste_at", tAt); seedTaste(k); sync.soon(); for (const b of box.children) b.classList.remove("on"); ev.currentTarget.classList.add("on"); render(); } },
       h("span", { class: "e" }, e), h("span", null, n, h("small", null, s)))));
-    const pub = "https://tipul10000-droid.github.io/apps/netflix-il/";
     sheet("⚙️ הגדרות", [
       G.owner ? h("div", { class: "h3" }, "👥 משתמשים") : null,
       G.owner ? h("p", { class: "users" + (G.n >= G.max ? " cap" : "") }, h("b", { dir: "ltr" }, G.n + " / " + G.max),
@@ -254,8 +253,7 @@
         h("small", null, "המכשירים שלך לא נספרים")) : null,
       h("div", { class: "h3" }, "העדפה"), box,
       h("div", { class: "h3" }, "לשתף"),
-      h("button", { type: "button", class: "btn", onclick: async () => {
-        try { if (navigator.share) await navigator.share({ title: "מה בנטפליקס?", url: pub }); else { await navigator.clipboard.writeText(pub); toast("הקישור הועתק"); } } catch (e) {} } }, "🔗 לשתף את האפליקציה"),
+      h("button", { type: "button", class: "btn", onclick: share }, "🔗 לשתף את האפליקציה"),
       h("div", { class: "h3" }, "🔗 סנכרון"), sync.box(),
       h("div", { class: "h3" }, "מאיפה הנתונים"),
       h("p", { class: "note" }, "מה זמין בנטפליקס ישראל: JustWatch דרך TMDB. ציונים: הנתונים הרשמיים של IMDb (ציון נחשב רק מ-" + fmt(MIN_VOTES) + " הצבעות בעולם; פחות מזה מוצג IMDb N/A ויורד לסוף; לתוכן ישראלי אין מינימום). פופולרי = הכי הרבה הצבעות ב-IMDb. אוסקר: מספר הזכיות בכל הקטגוריות לפי Wikidata (🏆 זהב = זכה גם בסרט הטוב ביותר). ״בלי שפות זרות״ = רק כותרים שהשפה המקורית שלהם אנגלית או עברית. טופ 10: הטבלאות הרשמיות של נטפליקס."),
@@ -350,13 +348,23 @@
     return { now, soon, box, rpc, code: () => code };
   })();
 
+  const PUB = "https://tipul10000-droid.github.io/apps/netflix-il/";
+  async function share() {
+    try { if (navigator.share) await navigator.share({ title: "מה בנטפליקס?", text: "כל מה שיש בנטפליקס ישראל, עם ציון IMDb וסינון נוח", url: PUB });
+      else { await navigator.clipboard.writeText(PUB); toast("הקישור הועתק"); } } catch (e) {}
+  }
   function about() {
-    sheet("ⓘ אודות", [
-      h("p", { class: "ab" }, "נטפליקס לא נותנת לסנן לפי ציון. כאן אפשר: כל מה שזמין בנטפליקס ישראל, עם ציון IMDb, אוסקרים וטופ 10, וסינון לפי ז׳אנר, תוכן ישראלי ושפה. שומרים לעצמכם ״הרשימה שלי״ ו״ראיתי״. חינם, בלי הרשמה, מתעדכן כל לילה."),
+    const f = (e, t) => h("div", { class: "af" }, h("span", null, e), t);
+    sheet("אודות", [
+      h("div", { class: "ahero" }, h("img", { src: "icon-192.png?v=3", alt: "", width: "84", height: "84" }),
+        h("b", null, "מה בנטפליקס?"), h("span", null, "מוצאים מה לראות, בלי לגלול שעה")),
+      h("p", { class: "ab" }, "בנטפליקס אי אפשר לסנן לפי ציון, אז הנה מקום שאפשר. כל מה שיש עכשיו בנטפליקס ישראל, עם ציון IMDb, אוסקרים וטופ 10. בוחרים ז׳אנר ורמת ציון, ותוך שנייה יש רשימה של דברים ששווה לראות."),
+      h("div", { class: "afs" }, f("⭐", "ציון IMDb לכל סרט וסדרה"), f("🇮🇱", "תוכן ישראלי, ובלי שפות זרות אם רוצים"),
+        f("🔖", "הרשימה שלי ומה שכבר ראיתי"), f("🆓", "חינם, בלי הרשמה, מתעדכן כל לילה")),
+      h("button", { type: "button", class: "ashare", onclick: share }, "📤 לשלוח לחברים"),
       h("div", { class: "cred" }, h("div", null, h("small", null, "רעיון ועיצוב"), "אורן יצחקי"), h("div", null, h("small", null, "קוד"), "Claude Code")),
-      h("p", { class: "note" }, "הנתונים מ-JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata ו-Netflix Top 10.\u200f האפליקציה לא קשורה לנטפליקס."),
-      h("button", { type: "button", class: "btn", onclick: closeSheet }, "✓ סגור"),
-    ]);
+      h("p", { class: "note anote" }, "נתונים: JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata,\u200f Netflix.\u200f לא קשור לנטפליקס."),
+    ], "about-sh");
   }
 
   // ---------- events ----------
