@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="18.8";window.SQ_BUILD_AT="17.11.2026 18:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.1";window.SQ_BUILD_AT="17.11.2026 16:15";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1177,6 +1177,10 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 .dashzone{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
 .dashzone[hidden]{display:none}
 /* 6.4: dashboards in one row of 3 */
+.dz-grp{display:flex;align-items:center;gap:8px;margin:4px 2px -1px;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.2px}
+.dz-grp::before,.dz-grp::after{content:"";flex:1;height:1px;background:var(--line,#ddd);opacity:.9}
+.dz-grp::before{flex:0 0 10px}
+.dz-grp+.dz-grid{margin-top:0}
 .dz-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
 .dz-tile{border:0;border-radius:14px;padding:9px 9px;color:#fff;min-height:96px;min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:6px;text-align:start;cursor:pointer;font:inherit;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 2px 8px rgba(0,0,0,.12);position:relative}
 .dz-tile[aria-expanded="true"]{outline:3px solid var(--c1);outline-offset:2px}
@@ -1946,7 +1950,9 @@ html.desk .qnav .qbtn:hover{opacity:1!important;background:rgba(255,255,255,.07)
 html.desk .dsec{font:700 11.5px var(--f-display);letter-spacing:.6px;color:var(--hero-muted);padding:0 12px;margin:0 0 6px;text-transform:uppercase}
 /* dashboards as a compact list in the rail */
 html.desk .hero #dashSec{margin:0!important;gap:6px}
-html.desk .hero #dashSec>*:not(.dz-grid){display:none!important}
+html.desk .hero #dashSec>*:not(.dz-grid):not(.dz-grp){display:none!important}
+html.desk .hero .dz-grp{color:var(--hero-muted);font-size:11px;margin:8px 12px 2px}
+html.desk .hero .dz-grp::before,html.desk .hero .dz-grp::after{background:rgba(255,255,255,.14)}
 html.desk .hero .dz-grid{display:flex!important;flex-direction:column;gap:2px!important}
 html.desk .hero .dz-tile{min-height:40px!important;height:40px;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;padding:0 12px!important;border-radius:9px!important;background:transparent!important;color:var(--hero-ink)!important;box-shadow:none!important;position:relative;outline:0!important}
 html.desk .hero .dz-tile::before{display:none!important}
@@ -3032,6 +3038,14 @@ html.desk .co-mark{font-size:8cqi}
         h("span",{class:"ti","aria-hidden":"true"},d.icon||"📊"),
         h("span",{class:"b"},h("b",null,d.title||d.short||""),h("span",{class:"s"},line||"פתוח")),
         h("span",{class:"go","aria-hidden":"true"},"›"));}));}
+  // 19.1 (Oren 17.11.2026): the Side dashboards split into two light groups: "כלכלי ופיננסי" and everything else.
+  // A dashboard joins the money group with grp:"fin" in its doc, or by id (DASH_FIN). Only one group present = no labels.
+  const DASH_FIN=new Set(["insurance","wealth","budget","income","credit","accounts"]);
+  function dashGroups(act){
+    const fin=act.filter(d=>d.grp?d.grp==="fin":DASH_FIN.has(d.id)),rest=act.filter(d=>!fin.includes(d));
+    if(!fin.length||!rest.length)return act.length?[[null,act]]:[];
+    return [["💰 כלכלי ופיננסי",fin],["🧩 כל השאר",rest]];
+  }
   function renderDash(){renderDzTop();const sec=$("dashSec");if(!sec)return;
     if(quest==="travel"){sec.hidden=true;sec.replaceChildren();renderTravel();return;} // travel dashboards live inside their zone
     const mine=dashes.filter(d=>!d._deleted&&(d.quest||"side")===(quest==="fun"?"__":quest));
@@ -3041,7 +3055,8 @@ html.desk .co-mark{font-size:8cqi}
     sec.hidden=false;updDzBtn();
     // 8.3 (Oren 6.11): dashboards sit open at the very bottom of the app; their tasks also show as regular tasks above
     sec.replaceChildren(...[h("div",{class:"dz-head"},h("b",null,"📊 דשבורדים"),h("span",{class:"n"},act.length)),
-      act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null,
+      ...dashGroups(act).map(([lbl,arr])=>[lbl?h("div",{class:"dz-grp",role:"heading","aria-level":"3"},h("span",null,lbl)):null,
+        h("div",{class:"dz-grid"+(arr.length===2||arr.length===4?" c2":"")},arr.map(d=>dashTile(d)))]).flat(),
       // 9.5 (Oren 6.11): no archive here; archived and idle dashboards live in Settings → ארכיון
       ].filter(Boolean));
   }
