@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.3";window.SQ_BUILD_AT="17.11.2026 21:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.4";window.SQ_BUILD_AT="17.11.2026 21:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2308,6 +2308,7 @@ html.desk .co-mark{font-size:8cqi}
 :root[data-theme="dark"] #askSec .fold.ask{--qa:#9AA4FF;--qa-bg:#22264A;--qa-line:#3A4078}
 :root[data-theme="dark"] #askSec .fold.ask>summary,:root[data-theme="dark"] #askSec .fold.noask .fe{color:#DDE0FF}
 
+.cmk{display:inline-block;width:1em;height:1em;vertical-align:-.12em;line-height:0}.cmk svg{width:100%;height:100%;display:block}
 </style>
 </head>
 <body>
@@ -2904,6 +2905,11 @@ html.desk .co-mark{font-size:8cqi}
   function chatOf(t){const c=linksOf(t).find(l=>linkType(l)==="chat");return c?safeUrl(c.url):null;}
   const SQ_CHAT="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD";
   const GPT_CHAT="https://chatgpt.com/share/6afbfe85-fdb0-83ed-8174-3f3036f43cb8";
+  /* Claude mark (17.11.2026, Oren): replaces the robot emoji for AI everywhere. Icon value "claude" in data = this mark. */
+  const CLAUDE_MARK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.2 10.8 13.5 1.6M12.8 11.1 17.6 6.2M13.2 11.8 21.8 10.3M13.1 12.5 18.7 15.3M12.6 13.1 16.9 21.3M11.8 13.2 10.8 20.4M11.2 12.9 5.4 18.8M10.8 12.2 4.6 13.3M10.9 11.5 3.0 7.6M11.4 10.9 8.2 4.9" fill="none" stroke="#D97757" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  const isCl=x=>x==="claude"||x==="\u{1F916}";
+  function ico(x,fb){x=x||fb||"";return isCl(x)?h("span",{class:"cmk",html:CLAUDE_MARK}):x;}
+  const icoT=x=>isCl(x)?"":(x||"");
   const CC_LOGO='<svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#D97757"/><g stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M16 6.5v19M6.5 16h19M9.3 9.3l13.4 13.4M22.7 9.3 9.3 22.7"/></g><circle cx="16" cy="16" r="3" fill="#D97757"/></svg>';
   const GPT_LOGO='<svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0D0D0D"/><g fill="none" stroke="#fff" stroke-width="1.9"><ellipse cx="16" cy="16" rx="8.5" ry="4.2"/><ellipse cx="16" cy="16" rx="8.5" ry="4.2" transform="rotate(60 16 16)"/><ellipse cx="16" cy="16" rx="8.5" ry="4.2" transform="rotate(120 16 16)"/></g></svg>';
   const CHAT_BADGE='<i><svg viewBox="0 0 24 24"><path d="M3.5 4.5h17v11.5H9.5l-6 4.5z"/></svg></i>';
@@ -2934,8 +2940,8 @@ html.desk .co-mark{font-size:8cqi}
     const qd=dashes.filter(d=>!d._deleted&&!d.archived&&(d.quest||"side")===questOf(t)||d.id===t.dash);
     const sel=(id,opts,cur,on)=>{const s=h("select",{class:"lvsel",id,"aria-label":id.startsWith("ds")?"דשבורד":"פרויקט",onchange:e=>on(e.target.value)},...opts.map(([v,l])=>{const o=h("option",{value:v},l);if(v===(cur||""))o.selected=true;return o;}));return s;};
     return h("div",{class:"d-row"},h("span",{class:"lbl"},"שייך ל"),
-      sel("ds-"+t.id,[["","בלי דשבורד"],...qd.map(d=>[d.id,(d.icon||"📊")+" "+(d.title||d.id)])],t.dash,v=>patch(t,{dash:v},v?"חובר לדשבורד "+((dashById(v)||{}).title||""):"הוסר מהדשבורד")),
-      sel("pj-"+t.id,[["","בלי פרויקט"],...[...projects].sort((a,b)=>(a.order||0)-(b.order||0)).map(p=>[p.id,(p.icon||"")+" "+(p.name||p.id)])],t.project,v=>patch(t,{project:v},v?"שויך לפרויקט "+((projById(v)||{}).name||""):"הוסר מהפרויקט")));
+      sel("ds-"+t.id,[["","בלי דשבורד"],...qd.map(d=>[d.id,(icoT(d.icon)||"📊")+" "+(d.title||d.id)])],t.dash,v=>patch(t,{dash:v},v?"חובר לדשבורד "+((dashById(v)||{}).title||""):"הוסר מהדשבורד")),
+      sel("pj-"+t.id,[["","בלי פרויקט"],...[...projects].sort((a,b)=>(a.order||0)-(b.order||0)).map(p=>[p.id,icoT(p.icon)+" "+(p.name||p.id)])],t.project,v=>patch(t,{project:v},v?"שויך לפרויקט "+((projById(v)||{}).name||""):"הוסר מהפרויקט")));
   }
   function dashTasks(d){return allTopics.filter(t=>t.dash===d.id&&!t._deleted&&!(isBg(t)&&isOpen(t)));}
   function dashActivity(d){let best=Date.parse(d.updated_at||"")||0;for(const t of dashTasks(d)){const x=lastHandled(t);if(x>best)best=x;}return best;}
@@ -3095,7 +3101,7 @@ html.desk .co-mark{font-size:8cqi}
     return h("button",{class:"dz-tile"+(lite?" lite":""),type:"button",style:dashVars(d),"data-dz":d.id,onclick:()=>openDash(d.id)},
       nw?h("span",{class:"nw",title:"יש עדכון חדש","aria-label":"יש עדכון חדש"}):null,
       dzBadge(d),
-      h("b",null,h("span",{class:"ti","aria-hidden":"true"},d.icon||"📊"),d.short||d.title||""),
+      h("b",null,h("span",{class:"ti","aria-hidden":"true"},ico(d.icon,"📊")),d.short||d.title||""),
       // 14.0 (Oren 9.11): locked dashboard = 🔒, no numbers on the tile (the page asks for its own 4-digit code)
       h("span",{class:"s"},d.locked?"🔒":(lv.line||d.note||(k?`${k.v} ${k.l}`:""))));}
   function dashCard(d,page){const lv=liveOf(d),url=safeUrl(d.url||""),all=dashTasks(d),sh=dashShow(d),kids=[...sh.me,...sh.oth],closed=all.filter(t=>!isOpen(t)).length,sugs=dashSugs(d);
@@ -3103,7 +3109,7 @@ html.desk .co-mark{font-size:8cqi}
     const asOf=lv.live?"חי"+(d.updated_at?" · עודכן "+ago(Date.parse(d.updated_at)):""):(d.as_of?"תמונת מצב · נכון ל-"+d.as_of:"דף מידע");
     inDashCard=true;const rows=kids.map(row);inDashCard=false;
     return h("article",{class:"dz-card",id:"dz-card",style:dashVars(d)},
-      h("div",{class:"dz-cv"},h("span",{class:"ic","aria-hidden":"true"},d.icon||"📊"),h("div",{style:"min-width:0"},h("h3",null,d.title||""),h("p",null,asOf)),page?null:h("button",{class:"x",type:"button","aria-label":"סגור",onclick:()=>{dashOpen=null;renderDash();}},"✕")),
+      h("div",{class:"dz-cv"},h("span",{class:"ic","aria-hidden":"true"},ico(d.icon,"📊")),h("div",{style:"min-width:0"},h("h3",null,d.title||""),h("p",null,asOf)),page?null:h("button",{class:"x",type:"button","aria-label":"סגור",onclick:()=>{dashOpen=null;renderDash();}},"✕")),
       dashChat(d,proj),
       // 17.6: open tasks first, highlighted; nothing open = "✓ הכול סגור"
       h("div",{class:"dz-sec dz-tasks"+(kids.length?"":" none")},h("h4",null,kids.length?"📌 משימות פתוחות":h("span",null,h("i",{class:"okv","aria-hidden":"true"},"✓")," הכול סגור"),kids.length?h("span",{class:"n"},kids.length):null),
@@ -3227,7 +3233,7 @@ html.desk .co-mark{font-size:8cqi}
       const line=[me?heN(me,"נושא לעשות","נושאים לעשות"):"",wt?heN(wt,"נושא במעקב","נושאים במעקב"):""].filter(Boolean).join(" · ");
       return h("button",{class:"dz-top",type:"button",style:dashVars(d),"data-dz":d.id,onclick:()=>openDash(d.id),"aria-label":(d.title||"")+": "+line},
         h("span",{class:"dot"+(me?"":" soft"),"aria-hidden":"true"}),nw?h("span",{class:"nw","aria-hidden":"true"}):null,
-        h("span",{class:"ti","aria-hidden":"true"},d.icon||"📊"),
+        h("span",{class:"ti","aria-hidden":"true"},ico(d.icon,"📊")),
         h("span",{class:"b"},h("b",null,d.title||d.short||""),h("span",{class:"s"},line||"פתוח")),
         h("span",{class:"go","aria-hidden":"true"},"›"));}));}
   // 19.1 (Oren 17.11.2026): the Side dashboards split into two light groups: "כלכלי ופיננסי" and everything else.
@@ -3362,7 +3368,7 @@ html.desk .co-mark{font-size:8cqi}
   // 8.9 (Oren 6.11): every open end of a project (question, spec, feature, roadmap) is a sub-task in its project card, whatever its kind.
   function isProjTask(t){return !!t.project&&!!projById(t.project);}
   function inStrip(t){return quest==="ai"&&isProjTask(t);} // project tasks sit inside their project card, only in AI Projects
-  function picOf(p,size){const st=size?`width:${size}px;height:${size}px;border-radius:${size/4}px;font-size:${size*.55}px`:"";const bg=`background:${p.color||"var(--hero)"};${st}`;const img=safeUrl(p.icon_url||"")||(String(p.icon_url||"").startsWith("data:image/")?p.icon_url:null);if(img){const fb=p.icon||(p.name||"?").slice(0,1);return h("span",{class:"pic has-img",style:bg},h("img",{src:img,alt:"",onerror:e=>{const s=e.currentTarget.parentNode;s.classList.remove("has-img");s.textContent=fb;}}));}return h("span",{class:"pic",style:bg},p.icon||(p.name||"?").slice(0,1));}
+  function picOf(p,size){const st=size?`width:${size}px;height:${size}px;border-radius:${size/4}px;font-size:${size*.55}px`:"";const bg=`background:${p.color||"var(--hero)"};${st}`;const img=safeUrl(p.icon_url||"")||(String(p.icon_url||"").startsWith("data:image/")?p.icon_url:null);if(img){const fb=p.icon||(p.name||"?").slice(0,1);return h("span",{class:"pic has-img",style:bg},h("img",{src:img,alt:"",onerror:e=>{const s=e.currentTarget.parentNode;s.classList.remove("has-img");s.textContent=fb;}}));}return h("span",{class:"pic",style:bg},ico(p.icon)||(p.name||"?").slice(0,1));}
   function renderStrip(){
     const s=$("strip");
     if(!projects.length){s.replaceChildren(h("div",{class:"empty"},"אין עדיין פרויקטים."));return;}
@@ -3380,7 +3386,7 @@ html.desk .co-mark{font-size:8cqi}
           app?h("a",{class:"pbtn app",href:app,target:"_blank",rel:"noopener",html:ICON.app},"פתח אפליקציה"):(canWrite?missingBtn("app_url","קישור לאפליקציה",ICON.app):null),
           cl?h("a",{class:"pbtn",href:cl,target:"_blank",rel:"noopener",html:ICON.chat},"פתח ב-Claude"):(canWrite?missingBtn("claude_url","קישור ל-Claude",ICON.chat):null)),
         more.length?h("div",{class:"pc-more"},more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך"))):null,
-        dashes.some(d=>d.project===p.id&&!d._deleted&&!d.archived)?h("div",{class:"pc-more"},dashes.filter(d=>d.project===p.id&&!d._deleted&&!d.archived).map(d=>h("button",{class:"dcrumb",type:"button",style:`--dc:${d.c1||"#555"}`,onclick:()=>openDash(d.id)},(d.icon||"📊")+" "+(d.title||"")+" ›"))):null,
+        dashes.some(d=>d.project===p.id&&!d._deleted&&!d.archived)?h("div",{class:"pc-more"},dashes.filter(d=>d.project===p.id&&!d._deleted&&!d.archived).map(d=>h("button",{class:"dcrumb",type:"button",style:`--dc:${d.c1||"#555"}`,onclick:()=>openDash(d.id)},(icoT(d.icon)||"📊")+" "+(d.title||"")+" ›"))):null,
         tasks.length?h("div",{class:"pc-tasks"},h("div",{class:"pc-th"},"משימות פתוחות",h("span",{class:"n"},tasks.length)),tasks.map(row)):null);
       if(addingFor&&addingFor.id===p.id){
         const inp=h("input",{id:"padd",type:"url",placeholder:addingFor.field==="app_url"?"הדבק את כתובת האפליקציה":"הדבק קישור לפרויקט ב-Claude","aria-label":"קישור"});
@@ -3454,7 +3460,7 @@ html.desk .co-mark{font-size:8cqi}
     const chat=d?h("a",{class:"pgchat",href:cu||AA_CHAT,target:"_blank",rel:"noopener","aria-label":"עבודה עם הצ׳אט על הדשבורד",html:ICON.chat,onclick:e=>{if(!cu){try{navigator.clipboard&&navigator.clipboard.writeText("לגבי הדשבורד "+(d.title||"")+" ב-Side Quests");toast("אין עדיין שיחה לדשבורד. השם הועתק, הדבק בשיחה");}catch(x){}}}}):h("span");
     const bar=h("div",{class:"pgbar",style:d?`--hero:${d.c1||"#1F1E1D"}`:""},h("div",{class:"pgbar-in"},
       pgBack(back,()=>dashBack()),
-      h("div",{class:"pgtitle"},d?((d.icon?d.icon+" ":"")+(d.short||d.title||"")):""),chat));
+      h("div",{class:"pgtitle"},d?((icoT(d.icon)?icoT(d.icon)+" ":"")+(d.short||d.title||"")):""),chat));
     const edge=h("div",{class:"pgedge","aria-hidden":"true"});
     // 15.3 (Oren 11.11): "🆕 מה חדש" is one clear summary box at the top of the dashboard BODY, under its title (not over it),
     // with every item spelled out (also on locked dashboards: it sits inside the page, under the code screen). Frame pages get
@@ -3548,7 +3554,7 @@ html.desk .co-mark{font-size:8cqi}
       const pds=dashes.filter(d=>d.project===id&&!d._deleted&&!d.archived);
       const acts=[app?h("a",{href:app,target:"_blank",rel:"noopener",html:ICON.app},"פתח אפליקציה"):null,cu?h("a",{href:cu,target:"_blank",rel:"noopener",html:ICON.chat},"פתח ב-Claude"):null].filter(Boolean);
       const extra=[...more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך")),
-        ...pds.map(d=>h("button",{type:"button",onclick:()=>openDash(d.id)},(d.icon||"📊")+" "+(d.title||"")))];
+        ...pds.map(d=>h("button",{type:"button",onclick:()=>openDash(d.id)},(icoT(d.icon)||"📊")+" "+(d.title||"")))];
       head=h("div",{class:"pjhead"},
         lok?h("div",{class:"pjlogo "+(p.logo_bg==="dark"?"dark":"light")},h("img",{src:logo,alt:p.name||""})):picOf(p,84),
         lok?null:h("h1",null,p.name||""),
@@ -3771,8 +3777,8 @@ html.desk .co-mark{font-size:8cqi}
       ...offs.filter(o=>(o.state||"open")==="open").map(o=>offerCard(t,o,false)),
       dd&&!inDashCard||pr||links.length||!open&&!c0?h("div",{class:"d-links"},
         !open&&!c0?h("a",{class:"d-link",href:contUrl(t),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true",html:ICON.chat}),h("span",{class:"t"},ICON_TXT_CHAT),h("span",{class:"c","aria-hidden":"true"},"‹")):null,
-        dd&&!inDashCard?h("button",{class:"d-link",type:"button",onclick:()=>openDash(dd.id)},h("span",{class:"i","aria-hidden":"true"},dd.icon||"📊"),h("span",{class:"t"},dd.title||"דשבורד"),h("span",{class:"c","aria-hidden":"true"},"‹")):null,
-        pr?h("a",{class:"d-link",href:contUrl(t),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true"},pr.icon||"🧩"),h("span",{class:"t"},pr.name||"פרויקט"),h("span",{class:"c","aria-hidden":"true"},"‹")):null,
+        dd&&!inDashCard?h("button",{class:"d-link",type:"button",onclick:()=>openDash(dd.id)},h("span",{class:"i","aria-hidden":"true"},ico(dd.icon,"📊")),h("span",{class:"t"},dd.title||"דשבורד"),h("span",{class:"c","aria-hidden":"true"},"‹")):null,
+        pr?h("a",{class:"d-link",href:contUrl(t),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true"},ico(pr.icon,"🧩")),h("span",{class:"t"},pr.name||"פרויקט"),h("span",{class:"c","aria-hidden":"true"},"‹")):null,
         links.map(l=>h("a",{class:"d-link",href:safeUrl(l.url),target:"_blank",rel:"noopener"},h("span",{class:"i","aria-hidden":"true",html:isGmail(l.url)?ICON.mail:linkType(l)==="chat"?ICON.chat:ICON.page}),h("span",{class:"t"},l.label||"קישור"),h("span",{class:"c","aria-hidden":"true"},"‹")))):null,
       actBar(t),
       // 15.7 (Oren 12.11): the snooze options open right under the action bar where "אחר כך" was tapped, not at the top of the task
@@ -3943,7 +3949,7 @@ html.desk .co-mark{font-size:8cqi}
   function isFun(t){return !!t.fun||t.kind==="fun"||(Array.isArray(t.tags)&&t.tags.includes("fun question"));}
   // quests: side (default), fun, army, work, travel, ai. A topic's quest is t.quest (one of TQ); fun topics are isFun(); everything else is side.
   // 11.2 (Oren 6.11): order right to left: Side, Work, Army, Travel, Fun, AI Projects
-  const QUESTS={side:{name:"Side Quests",a:"Side",b:"Quests",e:"🗺️",ph:"משימה (נסח בכמה מילים)"},work:{name:"Work Quest",a:"Work",b:"Quest",e:"💼",ph:"משימה (נסח בכמה מילים)"},army:{name:"Army Quest",a:"Army",b:"Quest",e:"🪖",ph:"משימה (נסח בכמה מילים)"},travel:{name:"Travel Quest",a:"Travel",b:"Quest",e:"✈️",ph:"טיול (נסח בכמה מילים)"},fun:{name:"Fun Quest",a:"Fun",b:"Quest",e:"🕹️",ph:"רעיון (נסח בכמה מילים)"},ai:{name:"AI Projects",a:"AI",b:"Projects",e:"🤖",ph:"משימה (נסח בכמה מילים)"}};
+  const QUESTS={side:{name:"Side Quests",a:"Side",b:"Quests",e:"🗺️",ph:"משימה (נסח בכמה מילים)"},work:{name:"Work Quest",a:"Work",b:"Quest",e:"💼",ph:"משימה (נסח בכמה מילים)"},army:{name:"Army Quest",a:"Army",b:"Quest",e:"🪖",ph:"משימה (נסח בכמה מילים)"},travel:{name:"Travel Quest",a:"Travel",b:"Quest",e:"✈️",ph:"טיול (נסח בכמה מילים)"},fun:{name:"Fun Quest",a:"Fun",b:"Quest",e:"🕹️",ph:"רעיון (נסח בכמה מילים)"},ai:{name:"AI Projects",a:"AI",b:"Projects",e:"claude",ph:"משימה (נסח בכמה מילים)"}};
   const WQ=["side","work","army","travel"]; // 11.2: quests with the full top ribbon (time windows, location, search, +). Brief stays Side only; Fun and AI Projects are clean.
   const TQ=["army","work","travel","ai"]; // quests stored in t.quest; missing = side
   function questOf(t){return TQ.includes(t.quest)?t.quest:"side";}
@@ -3972,7 +3978,7 @@ html.desk .co-mark{font-size:8cqi}
         onclick:()=>{const G=q!==quest?questFresh(q):[],TT=q!==quest?questTasksNew(q).length+nwQuest(q).length:0;setQuest(q);
           if(TT&&WQ.includes(q)){if(!updOn)toggleUpd();}else if(G.length)setTimeout(()=>G.length===1?openDash(G[0].id):goDashes(),180);}},
         any?h("span",{class:"qnw",title:"יש תוכן חדש","aria-hidden":"true"}):null,
-        h("span",{class:"qe","aria-hidden":"true"},Q.e),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
+        h("span",{class:"qe","aria-hidden":"true"},ico(Q.e)),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }
   function applyQuest(){
     funMode=quest==="fun";
@@ -4861,7 +4867,7 @@ html.desk .co-mark{font-size:8cqi}
   function deskMove(el,to,first){if(!el||!to)return;const m=document.createComment("desk");el.before(m);deskMoves.push([el,m]);first?to.prepend(el):to.append(el);}
   function deskFill(t){if(!deskPane)return;deskShown=t.id;const q=QUESTS[questOf(t)]||{};const SZ={quick:"⚡ מהירה",trip:"🚗 נקודתית",long:"🧭 מתמשכת"};
     const was=deskPane.dataset.id;deskPane.dataset.id=t.id;
-    deskPane.replaceChildren(h("div",{class:"dd-meta"},[q.e&&(q.e+" "+(q.a||"")).trim(),SZ[t.size],STATUS[t.status]].filter(Boolean).join(" · ")),h("h2",{class:"dd-t"},t.title||"(ללא כותרת)"),drawer(t));
+    deskPane.replaceChildren(h("div",{class:"dd-meta"},[q.e&&(icoT(q.e)+" "+(q.a||"")).trim(),SZ[t.size],STATUS[t.status]].filter(Boolean).join(" · ")),h("h2",{class:"dd-t"},t.title||"(ללא כותרת)"),drawer(t));
     if(was!==t.id){deskPane.classList.remove("in");void deskPane.offsetWidth;deskPane.classList.add("in");deskPane.scrollTop=0;}}
   function deskEmpty(){if(!deskOn||!deskPane||deskShown)return;deskPane.dataset.id="";
     deskPane.replaceChildren(h("div",{class:"dd-empty"},h("b",{},"אין משימה פתוחה"),h("span",{},"לחיצה על שורה פותחת אותה כאן"),h("span",{},h("kbd",{},"↑"),"  ",h("kbd",{},"↓")," מעבר בין משימות · ",h("kbd",{},"E")," בוצע")));}
@@ -5752,7 +5758,7 @@ html.desk .co-mark{font-size:8cqi}
         hd("📅 לפי שבועות",h("span",{class:"lg"},h("i",{class:"c"}),"נסגרו ",h("i",{class:"o"}),"נפתחו")),
         bars,
         qs.length?hd("🧭 נסגרו לפי קווסט"):null,
-        qs.length?h("div",{class:"ssq"},...qs.map(q=>{const Q=QUESTS[q]||QUESTS.side;return h("div",null,h("span",{class:"e"},Q.e||""),h("b",null,String(byQ[q])),h("small",null,Q.a||q));})):null,
+        qs.length?h("div",{class:"ssq"},...qs.map(q=>{const Q=QUESTS[q]||QUESTS.side;return h("div",null,h("span",{class:"e"},ico(Q.e)),h("b",null,String(byQ[q])),h("small",null,Q.a||q));})):null,
         h("div",{class:"ssfoot"},"מאז "+dm(first)+"."+new Date(first).getFullYear()+" · "+days+" ימים · "+(Math.round(closed.length/days*10)/10)+" משימות ביום · "+steps+" שלבים בוצעו")));
     const p=m.querySelector(".sqpanel");
     p.addEventListener("click",e=>{const el=e.target.closest("[data-pin]");if(el&&p.contains(el))setPin={k:pinKey(el),top:el.getBoundingClientRect().top};},true);
@@ -5769,7 +5775,7 @@ html.desk .co-mark{font-size:8cqi}
     const when=iso=>{const d=iso&&new Date(iso);return d&&!isNaN(d)?d.getDate()+"."+(d.getMonth()+1):"";};
     const tRow=t=>{const op=archOpen===t.id,txt=t.stand||t.summary||"",c=chatOf(t);
       return h("div",{class:"arow"+(op?" op":"")},
-        h("button",{type:"button",class:"ah","aria-expanded":op?"true":"false",onclick:()=>{archOpen=op?null:t.id;renderSettings();}},h("span",{class:"ae"},qe(t)),h("span",{class:"at"},t.title||""),h("span",{class:"ad"},when(t.updated_at))),
+        h("button",{type:"button",class:"ah","aria-expanded":op?"true":"false",onclick:()=>{archOpen=op?null:t.id;renderSettings();}},h("span",{class:"ae"},ico(qe(t))),h("span",{class:"at"},t.title||""),h("span",{class:"ad"},when(t.updated_at))),
         op?h("div",{class:"ab"},txt?h("div",{class:"sqhint"},txt):null,h("div",{class:"acts2"},
           canWrite?h("button",{type:"button",onclick:()=>{archOpen=null;patch(t,{status:"active"},"הוחזר מהארכיון");setTimeout(renderSettings,50);}},"↩︎ החזר למשימות"):null,
           c?h("button",{type:"button",onclick:()=>window.open(c,"_blank","noopener")},"💬 לשיחה"):null)):null);};

@@ -271,9 +271,9 @@ function renderQ(){
       <div class="opts"><span class="lbl">צריך?</span>${NEED.map(([v,l],i)=>`<button class="opt n${i} ${needOf(r)===v?"on":""}" data-ser="${s.k}" data-f="need" data-v="${v}">${l}</button>`).join("")}</div>
       <div class="opts"><span class="lbl">הכי קל?</span>${modeBtns(s.k,r.mode)}</div><div class="mhint">בוחרים את הדרך הכי קלה שעדיין עובדת. כל מה שכבד ממנה מתאים גם הוא.</div></div></div></div>`;}
   h+=`</section>`;
-  const groups=meta.groups||{};const byG={};qs.forEach(q=>(byG[q.g]=byG[q.g]||[]).push(q));
+  const CLM='<svg viewBox="0 0 24 24" aria-hidden="true" style="width:1em;height:1em;vertical-align:-.12em"><path d="M12.2 10.8 13.5 1.6M12.8 11.1 17.6 6.2M13.2 11.8 21.8 10.3M13.1 12.5 18.7 15.3M12.6 13.1 16.9 21.3M11.8 13.2 10.8 20.4M11.2 12.9 5.4 18.8M10.8 12.2 4.6 13.3M10.9 11.5 3.0 7.6M11.4 10.9 8.2 4.9" fill="none" stroke="#D97757" stroke-width="2.5" stroke-linecap="round"/></svg>';const groups=meta.groups||{};const byG={};qs.forEach(q=>(byG[q.g]=byG[q.g]||[]).push(q));
   for(const g of Object.keys(byG)){
-    h+=`<section><div class="sh"><h2>${esc(groups[g]||g)}</h2></div>`;
+    h+=`<section><div class="sh"><h2>${esc(groups[g]||g).replace(/^(claude|\u{1F916})\s*/u,()=>CLM+' ')}</h2></div>`;
     for(const q of byG[g]){const v=(prof.ans||{})[q.id],tx=(prof.txt||{})[q.id]||"",has=(Array.isArray(v)?v.length:!!v)||!!tx;
       const fold=has&&!openQ.has("q:"+q.id),sum=qSum(v,tx);
       h+=`<div class="q ${has?"done":""} ${fold?"fold":""}" data-qk="q:${esc(q.id)}"><div class="qh"><div class="qt">${esc(q.q)}${has?'<span class="ok">✓</span>':""}<div class="qs">${esc(sum)}</div></div><button class="ed">✏️ עריכה</button></div>
