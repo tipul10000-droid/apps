@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#101012">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="מה יש בנטפליקס?">
+<meta name="description" content="מה שווה לראות עכשיו בנטפליקס ישראל, לפי ציוני IMDb">
+<title>מה יש בנטפליקס?</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<header class="top">
+  <div class="hrow">
+    <h1>🍿 מה יש בנטפליקס?</h1>
+    <button id="setBtn" class="ib" type="button" aria-label="הגדרות">⚙️</button>
+  </div>
+  <div id="meta" class="meta">טוען…</div>
+  <div id="tasteNote" class="tnote" hidden></div>
+  <div class="seg tabs" role="tablist">
+    <button type="button" data-tab="find" class="on">🔎 מה לראות</button>
+    <button type="button" data-tab="wl">🔖 הרשימה שלי <span id="wlN" class="cnt">0</span></button>
+  </div>
+</header>
+
+<main>
+  <section id="filters">
+    <div class="seg" id="fType">
+      <button type="button" data-v="s">📺 סדרות</button>
+      <button type="button" data-v="m">🎬 סרטים</button>
+    </div>
+    <div class="lbl">ז׳אנר</div>
+    <div class="chips" id="fGen"></div>
+    <div class="lbl">תוכן ישראלי</div>
+    <div class="seg" id="fIl">
+      <button type="button" data-v="all">הכול</button>
+      <button type="button" data-v="only">🇮🇱 רק ישראלי</button>
+      <button type="button" data-v="no">בלי ישראלי</button>
+    </div>
+    <div class="lbl">ציון IMDb <span class="sub">(כמה נשארו בכל רמה)</span></div>
+    <div class="rates" id="fRate"></div>
+  </section>
+
+  <div class="resbar">
+    <div id="resN" class="resn"></div>
+    <div class="seg mini" id="fSort">
+      <button type="button" data-v="r">⭐ ציון</button>
+      <button type="button" data-v="new">🆕 חדש</button>
+      <button type="button" data-v="pop">🔥 פופולרי</button>
+    </div>
+  </div>
+  <div id="grid" class="grid"></div>
+  <div id="more" class="more"></div>
+  <button id="seenBtn" class="seenlink" type="button">✓ ראיתי <span id="seenN">0</span></button>
+  <p class="src">זמינות: JustWatch דרך TMDB · ציונים: IMDb · אוסקר: Wikidata · טופ 10: Netflix. התוכן מתעדכן כל יום.</p>
+</main>
+
+<div id="ov" class="ov" hidden>
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="shead"><b id="ovT"></b><button id="ovX" class="ib" type="button" aria-label="סגירה">✕</button></div>
+    <div id="ovB" class="sbody"></div>
+  </div>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="tastes.js?v=1"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>

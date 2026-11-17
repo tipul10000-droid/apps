@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.7";window.SQ_BUILD_AT="17.11.2026 21:26";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="20.8";window.SQ_BUILD_AT="17.11.2026 21:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -437,6 +437,9 @@ body.fun-on .tasks-only{display:none!important}
 /* 6.8: series = own Netflix-style card (black + red, N badge), separate from the cinema card */
 .fcard.nf{--fc:#E50914;--sa:#E50914;--sa-ink:#fff;background:linear-gradient(165deg,#1A0A0B 0%,#0B0B0B 55%);border:2px solid #3A1214;border-top:4px solid #E50914;color:#F5F5F1;--line:#2E2E2E;--muted:#B3B3B3;--bg:#141414;--surface:#1F1F1F;--ink:#F5F5F1;gap:12px;box-shadow:0 6px 18px rgba(229,9,20,.12)}
 .nf-head{display:flex;align-items:center;gap:12px}
+.nfapp{display:flex;align-items:center;gap:10px;width:100%;min-height:60px;padding:8px 12px;border:1px solid #5A1A1E;border-radius:12px;background:linear-gradient(100deg,#2A0C0E,#141414 70%);color:#F5F5F1;text-align:start;font:inherit;cursor:pointer}
+.nfapp .e{font-size:26px;flex:0 0 auto}.nfapp .t{flex:1;min-width:0;display:flex;flex-direction:column}.nfapp b{font-size:15px}.nfapp small{font-size:12px;color:#B3B3B3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nfapp .go{font-size:22px;color:#E50914;flex:0 0 auto}
 .nf-logo{flex:none;width:38px;height:52px;display:inline-flex;align-items:center;justify-content:center;background:#000;border-radius:7px;border:1px solid #3A1214}
 .nf-logo svg{width:22px;height:40px}
 .nf-head h3{font-size:18px;font-weight:800}
@@ -2969,7 +2972,13 @@ html.desk .co-mark{font-size:8cqi}
   function mailOf(t){const ls=linksOf(t).filter(l=>isGmail(l.url));const l=ls.find(l=>gmailId(l.url))||ls.find(l=>!/compose=|#drafts/.test(l.url));return l?safeUrl(l.url):null;}
   // ---- 5.0: levels and dashboards (collection "dashboards" in sq_docs) ----
   let dashes=[], dashOpen=null, insDocs=[], payDocs=[], famDocs=[], carDocs=[], houseDocs=[], shopDocs=[], foodDocs=[], sportDocs=[], knowDocs=[], wknowDocs=[], credDocs=[], skillDocs=[], expDocs=[], inDashCard=false;
-  function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted);}
+  // 20.8 (Oren 17.11.2026): "מה יש בנטפליקס?" is its own app (../netflix-il/), opened in-app like a dashboard page layer,
+  // from the Fun Netflix card and from its AI Projects tile. Virtual: no sq_docs dashboard, so it never shows in the dashboard grids.
+  const NF_THREAD="https://claude.ai/code/project/chan_01BSiCy73LfhTPuMwCS8XKQD?thread=cmsg_01BSiCy73LfhTPuMwCS8XKQDHoodwNVmP186gUqvuEX32M";
+  const NF_DASH={id:"netflix",title:"מה יש בנטפליקס?",short:"מה יש בנטפליקס?",icon:"🍿",url:"https://tipul10000-droid.github.io/apps/netflix-il/",c1:"#101012",quest:"fun",chat_url:NF_THREAD,virtual:true};
+  function dashById(id){return dashes.find(d=>d.id===id&&!d._deleted)||(id==="netflix"?NF_DASH:undefined);}
+  function inApp(u){return /\/netflix-il\/(index\.html)?$/.test(String(u||"").split(/[?#]/)[0])?"netflix":"";}
+  function appGo(u){return e=>{const di=inApp(u);if(di){e.preventDefault();openDash(di);}};}
   function levelOf(t){const L=+t.level;if(L>=1&&L<=4)return L;if(t.project&&projById(t.project))return 4;if(t.dash&&dashById(t.dash))return 3;if(chatOf(t)||mailOf(t))return 2;return 1;}
   function levelRow(t){
     const qd=dashes.filter(d=>!d._deleted&&!d.archived&&(d.quest||"side")===questOf(t)||d.id===t.dash);
@@ -3104,7 +3113,7 @@ html.desk .co-mark{font-size:8cqi}
   // 10.3 (Oren 6.11): a tap on a dashboard opens the dashboard itself, no summary card in between. Our own pages open
   // in-app as a page layer (#…/d/<id>, back button + edge swipe); outside pages (claude.ai, Notion) open directly.
   function dashFrame(u){if(!u)return null;try{const x=new URL(u,location.href);
-      if(x.origin===location.origin||/^https:\/\/tipul10000-droid\.github\.io$/.test(x.origin)){const m=x.pathname.match(/\/side-quests\/([\w-]+\.html)$/);if(m)return "./"+m[1]+x.search+x.hash;}}catch(e){}return null;}
+      if(x.origin===location.origin||/^https:\/\/tipul10000-droid\.github\.io$/.test(x.origin)){const m=x.pathname.match(/\/side-quests\/([\w-]+\.html)$/);if(m)return "./"+m[1]+x.search+x.hash;if(/\/netflix-il\/(index\.html)?$/.test(x.pathname))return "../netflix-il/?embed=1"+x.hash;}}catch(e){}return null;}
   function openDash(id){const d=dashById(id);if(!d)return;const u=safeUrl(d.url||"");
     if(u&&!dashFrame(u)&&!dashShow(d).n){window.open(u,"_blank","noopener");return;}
     if(nav.dash===id)return;navGo({lvl:nav.lvl,id:nav.id,dash:id});}
@@ -3418,7 +3427,7 @@ html.desk .co-mark{font-size:8cqi}
           p.stage?h("div",{class:"stage"},h("b",null,"עכשיו: "),p.stage):p.tagline?h("div",{class:"stage"},p.tagline):null,
           null)),
         h("div",{class:"pc-acts"},
-          app?h("a",{class:"pbtn app",href:app,target:"_blank",rel:"noopener",html:ICON.app},"פתח אפליקציה"):(canWrite?missingBtn("app_url","קישור לאפליקציה",ICON.app):null),
+          app?h("a",{class:"pbtn app",href:app,target:"_blank",rel:"noopener",html:ICON.app,onclick:appGo(app)},"פתח אפליקציה"):(canWrite?missingBtn("app_url","קישור לאפליקציה",ICON.app):null),
           cl?h("a",{class:"pbtn",href:cl,target:"_blank",rel:"noopener",html:ICON.chat},"פתח ב-Claude"):(canWrite?missingBtn("claude_url","קישור ל-Claude",ICON.chat):null)),
         more.length?h("div",{class:"pc-more"},more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך"))):null,
         dashes.some(d=>d.project===p.id&&!d._deleted&&!d.archived)?h("div",{class:"pc-more"},dashes.filter(d=>d.project===p.id&&!d._deleted&&!d.archived).map(d=>h("button",{class:"dcrumb",type:"button",style:`--dc:${d.c1||"#555"}`,onclick:()=>openDash(d.id)},(icoT(d.icon)||"📊")+" "+(d.title||"")+" ›"))):null,
@@ -3587,7 +3596,7 @@ html.desk .co-mark{font-size:8cqi}
     if(!gen){const logo=String(p.logo_url||""),lok=logo.startsWith("data:image/")||!!safeUrl(logo);
       const app=safeUrl(p.app_url||""),cu=safeUrl(p.claude_url||""),more=(Array.isArray(p.links)?p.links:[]).filter(l=>l&&safeUrl(l.url));
       const pds=dashes.filter(d=>d.project===id&&!d._deleted&&!d.archived);
-      const acts=[app?h("a",{href:app,target:"_blank",rel:"noopener",html:ICON.app},"פתח אפליקציה"):null,cu?h("a",{href:cu,target:"_blank",rel:"noopener",html:ICON.chat},"פתח ב-Claude"):null].filter(Boolean);
+      const acts=[app?h("a",{href:app,target:"_blank",rel:"noopener",html:ICON.app,onclick:appGo(app)},"פתח אפליקציה"):null,cu?h("a",{href:cu,target:"_blank",rel:"noopener",html:ICON.chat},"פתח ב-Claude"):null].filter(Boolean);
       const extra=[...more.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"מסמך")),
         ...pds.map(d=>h("button",{type:"button",onclick:()=>openDash(d.id)},(icoT(d.icon)||"📊")+" "+(d.title||"")))];
       head=h("div",{class:"pjhead"},
@@ -4304,6 +4313,8 @@ html.desk .co-mark{font-size:8cqi}
     const lg=h("a",{class:"nf-logo zlogo",href:"https://www.netflix.com/",target:"_blank",rel:"noopener","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
     return h("article",{class:"fcard nf"},
       h("div",{class:"nf-head zhead"},h("div",{class:"fc-h"},h("h3",null,"סדרות")),lg),
+      h("button",{class:"nfapp",type:"button",onclick:()=>openDash("netflix")},h("span",{class:"e","aria-hidden":"true"},"🍿"),
+        h("span",{class:"t"},h("b",null,"מה יש בנטפליקס?"),h("small",null,"סרטים וסדרות בנטפליקס ישראל, לפי IMDb")),h("span",{class:"go","aria-hidden":"true"},"‹")),
       ...seriesHub(),
       secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן"));
   }
