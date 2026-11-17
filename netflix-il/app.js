@@ -1,7 +1,7 @@
 // "מה יש בנטפליקס?" (Oren 17.11.2026). Reads the daily public catalog built by the nf-catalog Edge Function
 // (FrameHorizon Supabase project) and filters it on the device. Personal marks live only on this device.
 // Storage keys: nf_wl (watchlist), nf_seen (seen), nf_f (filters), nf_taste, nf_op (last change time per mark, for sync),
-// nf_sync (sync code), nf_f_at / nf_taste_at.
+// nf_sync (sync code), nf_f_at / nf_taste_at, nf_dev (random device id for the 15-device cap, gate.sql).
 (function () {
   "use strict";
   const CAT_URL = "https://kvdgesrllikgwtuttrpb.supabase.co/storage/v1/object/public/nf-public/catalog.json";
@@ -247,6 +247,11 @@
       h("span", { class: "e" }, e), h("span", null, n, h("small", null, s)))));
     const pub = "https://tipul10000-droid.github.io/apps/netflix-il/";
     sheet("⚙️ הגדרות", [
+      G.owner ? h("div", { class: "h3" }, "👥 משתמשים") : null,
+      G.owner ? h("p", { class: "users" + (G.n >= G.max ? " cap" : "") }, h("b", { dir: "ltr" }, G.n + " / " + G.max),
+        G.n >= G.max ? "מלא: מכשירים חדשים לא נכנסים" : "מכשירים פתחו את האפליקציה",
+        G.denied ? h("small", null, fmt(G.denied) + (G.denied === 1 ? " מכשיר ניסה" : " מכשירים ניסו") + " להיכנס אחרי שהתמלא") : null,
+        h("small", null, "המכשירים שלך לא נספרים")) : null,
       h("div", { class: "h3" }, "העדפה"), box,
       h("div", { class: "h3" }, "לשתף"),
       h("button", { type: "button", class: "btn", onclick: async () => {
@@ -325,7 +330,7 @@
       } else {
         row.append(h("button", { type: "button", onclick: async () => {
             const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = crypto.getRandomValues(new Uint8Array(8));
-            code = Array.from(r, (b) => A[b % A.length]).join(""); ls.set("nf_sync", code); draw(); await now(); } }, "➕ קוד חדש"),
+            code = Array.from(r, (b) => A[b % A.length]).join(""); ls.set("nf_sync", code); draw(); await now(); gate(); } }, "➕ קוד חדש"),
           h("button", { type: "button", onclick: () => { below.hidden = !below.hidden; if (!below.hidden) below.querySelector("input").focus({ preventScroll: true }); } }, "⌨️ יש לי קוד"));
         const inp = h("input", { type: "text", maxlength: "9", autocomplete: "off", autocapitalize: "characters", spellcheck: "false", placeholder: "XXXX-XXXX", dir: "ltr" });
         const msg = h("div", { class: "sst" });
@@ -336,13 +341,13 @@
           msg.textContent = "מתחבר…";
           try { const R = await rpc("nf_sync_get", { p_code: c }); if (!R) { msg.textContent = "לא מצאתי את הקוד"; return; } }
           catch (e) { msg.textContent = "⚠️ אין חיבור"; return; }
-          code = c; ls.set("nf_sync", c); await now(); draw(); toast("✓ מסונכרן"); } }, "חיבור")), msg);
+          code = c; ls.set("nf_sync", c); await now(); draw(); toast("✓ מסונכרן"); if (!G.ok) location.reload(); else gate(); } }, "חיבור")), msg);
       }
       host.replaceChildren(row, below); paint();
     }
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") now(); });
     window.addEventListener("focus", () => now());
-    return { now, soon, box };
+    return { now, soon, box, rpc, code: () => code };
   })();
 
   function about() {
@@ -386,8 +391,35 @@
   $("ov").addEventListener("click", (e) => { if (e.target.id === "ov") closeSheet(); });
   new IntersectionObserver((es) => { if (es[0].isIntersecting && shown < list.length) more(); }, { rootMargin: "600px" }).observe($("more"));
 
+  // ---------- device cap (Oren 17.11.2026: 15 devices for now, so the link stays among small groups) ----------
+  // Server side in supabase/gate.sql. A device that got in stays in; Oren's devices (inside SQ, or synced with it)
+  // are owners: not counted, and they see the count in ⚙️ and a red dot when it is full. No answer = let in.
+  let G = { ok: true };
+  const devId = (() => { let d = ls.get("nf_dev", ""); if (!/^[a-z0-9]{20}$/.test(d)) {
+    const A = "abcdefghijklmnopqrstuvwxyz0123456789", r = crypto.getRandomValues(new Uint8Array(20));
+    d = Array.from(r, (b) => A[b % A.length]).join(""); ls.set("nf_dev", d); } return d; })();
+  async function gate() {
+    try {
+      const R = await Promise.race([sync.rpc("nf_gate", { p_dev: devId, p_sync: sync.code() || null, p_emb: qs.get("embed") === "1" }),
+        new Promise((_, no) => setTimeout(() => no(new Error("t")), 5000))]);
+      if (R && typeof R.ok === "boolean") G = R;
+    } catch (e) {}
+    $("setBtn").classList.toggle("dot", !!(G.owner && G.n >= G.max));
+    return G.ok;
+  }
+  function blocked() {
+    $("meta").replaceChildren(h("b", null, "נטפליקס ישראל"));
+    for (const id of ["filters", "fSub", "ach"]) $(id).hidden = true;
+    document.querySelector(".resbar").hidden = true; document.querySelector(".tabs").hidden = true; $("qBtn").hidden = true;
+    const sb = sync.box();
+    $("grid").replaceChildren(h("div", { class: "full" }, h("div", { class: "e" }, "🍿"), h("b", null, "האפליקציה מלאה כרגע"),
+      h("p", null, "הקישור פתוח כרגע למספר קטן של אנשים, וכל המקומות תפוסים. נסו שוב בהמשך."),
+      h("details", null, h("summary", null, "יש לי קוד סנכרון"), sb)));
+  }
+
   // ---------- load ----------
   async function load() {
+    if (!(await gate())) { blocked(); return; }
     try {
       const r = await fetch(CAT_URL, { cache: "no-cache" });
       if (!r.ok) throw new Error(r.status);
