@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.11";window.SQ_BUILD_AT="17.11.2026 18:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.12";window.SQ_BUILD_AT="17.11.2026 19:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -810,6 +810,16 @@ body:not(.q-side) .tb.tsun{display:none}
 .bp-row .x{flex:1;min-width:0;font-size:14.5px;line-height:1.35;text-align:start;color:inherit;background:none;padding:0}
 .bp-row .x small{display:block;color:var(--muted);font-size:12px}
 .bp-row .ok{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--k-admin,#2E8B57);color:var(--k-admin,#2E8B57);font-weight:800}
+/* 19.11 brief v2: calendar timeline, alerts, 👎 per row, one "repeat" question */
+.bp-row .no{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);font-size:13px;opacity:.75;background:none}
+.bp-alerts{background:color-mix(in srgb,#E8A33D 13%,transparent);border-radius:12px;padding:6px 10px}
+.bp-al{display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:14.5px;font-weight:700;line-height:1.35}
+.bp-al .e{flex:none;width:20px;text-align:center}
+.bp-slot h4{display:flex;gap:8px;align-items:baseline}
+.bp-slot h4 .bp-t{font-variant-numeric:tabular-nums;color:var(--ink,inherit);font-weight:800;direction:ltr;unicode-bidi:isolate}
+.bp-ask .bp-q{font-size:14.5px;font-weight:700;line-height:1.35;padding:4px 0}
+.bp-ask .bp-qb{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:4px}
+.bpop.car .bp-al{font-size:19px}.bpop.car .bp-row .no{width:40px;height:40px}
 .bp-crit .bp-row .x{font-weight:700}
 .bp-btns{display:flex;gap:8px;margin-top:12px}
 .bp-btns button{flex:1;min-height:42px;border-radius:12px;font-weight:800;font-size:14.5px}
@@ -5184,6 +5194,43 @@ html.desk .co-mark{font-size:8cqi}
     if(BKD[md]&&!["morning","eve"].includes(md)){const x=xBriefs[md];return x&&x.date===t&&Array.isArray(x.sections)?x:autoX(md,t);}
     if(md==="eve"){const e=eveBrief&&eveBrief.date===t&&(eveBrief.way||eveBrief.news||eveBrief.call)?eveBrief:null;return e||autoEve();}
     const m=morningBrief&&morningBrief.date===t&&(morningBrief.now||morningBrief.news||morningBrief.critical)?morningBrief:null;return m||autoBrief();}
+  // ===== 19.11 (Oren 17.11.2026, approved spec "דיוק הבריף"): brief v2 = a timeline built on the work calendar.
+  // All writers follow ONE rules doc (settings/brief_rules). Doc {v:2, kind, date, headline, day, alerts[], slots[{t,h,items}], news[], ask{id,text}, quiet}.
+  // Max 5 task rows, each task once. 👎 on a row = settings/brief_feedback.mute[id] = today+7 (the writers skip it). Old-shape docs still render the old way.
+  let bFb={};
+  function v2Doc(md){const t=briefDate(md),d=md==="morning"?morningBrief:md==="eve"?eveBrief:xBriefs[md];return d&&d.v===2&&d.date===t?d:null;}
+  const muted=id=>{const u=id&&bFb.mute&&bFb.mute[id];return !!u&&u>=ilDate();};
+  function muteRow(id){if(!id||!db||!canWrite)return;const until=addDays(ilDate(),7),save=m=>{bFb={...bFb,mute:m};db.collection("settings").doc("brief_feedback").update({mute:m,updated_at:new Date().toISOString()}).catch(()=>toast("השמירה נכשלה"));if($("briefM"))showBrief(briefMd);};
+    const old={...(bFb.mute||{})};save({...old,[id]:until});toast("👎 לא יעלה בבריף עד "+fmtDate(until),()=>save(old));}
+  function v2Row(x){const t=x.id&&allTopics.find(z=>z.id===x.id),sub=[x.sub,x.mins?x.mins+" דק׳":""].filter(Boolean).join(" · ");
+    return h("div",{class:"bp-row"},h("span",{class:"e","aria-hidden":"true"},x.e||"•"),
+      h("button",{class:"x",type:"button",onclick:()=>{if(t){markBriefSeen();closeModal();openTask(t.id);}}},String(x.text||""),sub?h("small",null,sub):null),
+      t&&canWrite?h("button",{class:"no",type:"button","aria-label":"לא רלוונטי: "+(t.title||""),title:"לא רלוונטי",onclick:()=>muteRow(t.id)},"👎"):null,
+      t&&isOpen(t)&&canWrite?h("button",{class:"ok",type:"button","aria-label":"סמן כבוצע: "+(t.title||""),onclick:()=>bpDone(t)},"✓"):null);}
+  const V2T={morning:"☀️ בוקר טוב",eve:"🌆 ערב טוב",tom:"🌙 מחר",night:"😴 לפני השינה"},V2OK={morning:"הבנתי ☕",eve:"יאללה הביתה 🚗",tom:"לילה טוב 🌙",night:"לילה טוב 😴"};
+  function showV2(md,b){const nx=md==="tom"||md==="night",dd=new Date(addDays(briefDate(md),nx?1:0)+"T12:00:00");
+    const seen=new Set(),ok=x=>{if(!liveItem(x)||muted(x.id))return false;const k=x.id||x.text;if(seen.has(k))return false;seen.add(k);return true;};
+    const slots=(Array.isArray(b.slots)?b.slots:[]).map(s=>({...s,items:(Array.isArray(s.items)?s.items:[]).filter(ok)})).filter(s=>s.items.length);
+    const alerts=(Array.isArray(b.alerts)?b.alerts:[]).filter(x=>x&&x.text).slice(0,3);
+    const news=(Array.isArray(b.news)?b.news:[]).filter(ok).slice(0,2);
+    const at=b.ask&&b.ask.id?allTopics.find(z=>z.id===b.ask.id&&isOpen(z)&&!snoozed(z)&&!muted(z.id)):null;
+    const head=b.quiet?"אין שינוי מ-21:30":String(b.headline||""),empty=!slots.length&&!alerts.length&&!news.length&&!at;
+    const m=modal("briefM",
+      h("div",{class:"bp-top "+(md==="morning"?"":md)},h("div",{class:"bp-h"},h("b",null,V2T[md]||BKD[md].l),h("small",null,`${HE_DAYS[dd.getDay()]} ${dd.getDate()}.${dd.getMonth()+1}`),
+          md==="morning"?h("button",{class:"bp-car",type:"button","aria-pressed":carOn?"true":"false","aria-label":carOn?"מוד רכב פעיל: לחץ לטקסט רגיל":"מוד רכב: טקסט גדול",onclick:()=>setCar(!carOn)},"🚗"):null,
+          h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeBrief},"×")),
+        head?h("div",{class:"bp-head"},head):null,b.day?h("div",{class:"bp-day"},String(b.day)):null),
+      h("div",{class:"bp-in bp-full bp-v2"},
+        alerts.length?h("div",{class:"bp-sec bp-alerts"},alerts.map(x=>h("div",{class:"bp-al"},h("span",{class:"e","aria-hidden":"true"},x.e||"⚠️"),h("span",null,String(x.text))))):null,
+        ...slots.map(s=>h("div",{class:"bp-sec bp-slot"},h("h4",null,s.t?h("span",{class:"bp-t"},String(s.t)):null,String(s.h||"")),s.items.map(v2Row))),
+        news.length?h("div",{class:"bp-sec"},h("h4",null,"🆕 חדש"),news.map(v2Row)):null,
+        at?h("div",{class:"bp-sec bp-ask"},h("h4",null,"🔁 עולה שוב ושוב"),h("div",{class:"bp-q"},String(b.ask.text||at.title||"")),h("div",{class:"bp-qb"},
+          canWrite?h("button",{class:"alt",type:"button",onclick:()=>{const d=new Date();d.setDate(d.getDate()+7);d.setHours(8,0,0,0);remindLater(at,d,"שבוע");setTimeout(()=>{if($("briefM"))showBrief(md);},350);}},"💤 עוד שבוע"):null,
+          h("button",{class:"alt",type:"button",onclick:()=>{markBriefSeen(md);closeModal();openTask(at.id);}},"📅 לתזמן"),
+          canWrite?h("button",{class:"alt",type:"button",onclick:()=>bpDone(at)},"✓ לסגור"):null)):null,
+        empty?h("div",{class:"bp-empty"},b.quiet?"הכול כמו בבריף של 21:30 😴":md==="morning"?"יום רגיל, אין משהו דחוף ☕":"אין מה להוסיף 🌿"):null,
+        h("div",{class:"bp-btns"},h("button",{class:"main",type:"button",onclick:closeBrief},V2OK[md]||"הבנתי")),bpImp(md)));
+    m.classList.add("bpop");m.classList.toggle("car",carOn);markBriefSeen(md);}
   function bpDone(t){markDone(t);setTimeout(()=>{if($("briefM"))showBrief(briefMd);},350);}
   function bpRow(x,emoji){const t=x.id&&allTopics.find(z=>z.id===x.id);
     return h("div",{class:"bp-row"},h("span",{class:"e","aria-hidden":"true"},x.e||emoji),
@@ -5226,6 +5273,7 @@ html.desk .co-mark{font-size:8cqi}
     if(tripToday()&&(md==="morning"||md==="eve"))md=md==="eve"?"abroad_pm":"abroad_am"; // abroad there is no commute brief
     briefMd=md;
     if(/^abroad_/.test(md))return showAbroad(md);
+    {const v=v2Doc(md);if(v)return showV2(md,v);}
     if(md==="eve")return showEve();
     if(md!=="morning")return showX(md);
     const b=curBrief("morning"),now=new Date(),wk=now.getDay()<=4,fri=now.getDay()===5;
@@ -5652,7 +5700,7 @@ html.desk .co-mark{font-size:8cqi}
       if(wh&&remoteW(wh.data())&&allTopics.length){renderCtx();renderList();}
       const plOld=JSON.stringify([plan,away]);if(pl){plan=pl.data();try{localStorage.setItem("sq_plan",JSON.stringify(plan));}catch(e){}}
       away=aw&&Array.isArray(aw.data().trips)?aw.data().trips:[];const plChg=plOld!==JSON.stringify([plan,away]);morningBrief=mb?mb.data():null;eveBrief=eb?eb.data():null;eveLast=el?el.data():null;
-      xBriefs={};for(const k of ["fri","wkend","week","tom","night","abroad_am","abroad_pm"]){const d0=s.docs.find(x=>x.id===BKD[k].doc);if(d0)xBriefs[k]=d0.data();}
+      xBriefs={};for(const k of ["fri","wkend","week","tom","night","abroad_am","abroad_pm"]){const d0=s.docs.find(x=>x.id===BKD[k].doc);if(d0)xBriefs[k]=d0.data();}{const bf=s.docs.find(x=>x.id==="brief_feedback");bFb=bf?bf.data():{};}
       notify={...NDEF,...(n?n.data():{})};briefLast=b?b.data():null;refreshMode();
       if(!routed&&allTopics.length){routed=true;if(!routeHash())autoBriefOnOpen();}else if($("briefM"))showBrief(briefMd);else renderSettings();renderSunDot();
       if(plChg&&allTopics.length){renderCtx();renderList();}},()=>{});
