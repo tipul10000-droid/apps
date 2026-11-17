@@ -39,7 +39,10 @@ h1{font-size:21px;margin:4px 0 0;font-weight:800;letter-spacing:-.2px}
 .resbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 8px}
 .resn{font-size:13.5px;color:var(--mut);white-space:nowrap}
 .resn b{color:var(--tx);font-size:18px}
-#fSort{flex:0 0 200px}
+.resn small{display:block;font-size:11.5px;line-height:1.1;margin-top:1px}
+#fSort{flex:0 0 212px}
+.resbar:has(#fSort.me){flex-wrap:wrap}
+#fSort.me{flex:1 1 100%;order:2}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 8px}
 .card{position:relative;min-width:0;animation:pop .18s ease-out}
 @keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -85,7 +88,7 @@ h1{font-size:21px;margin:4px 0 0;font-weight:800;letter-spacing:-.2px}
 .note{font-size:12.5px;color:var(--mut);margin:8px 2px}
 .toast{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 16px);left:50%;transform:translateX(-50%);z-index:30;background:#fff;color:#111;border-radius:12px;padding:8px 10px 8px 14px;font-size:14px;display:flex;gap:10px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.4);white-space:nowrap}
 .toast button{border:0;background:#111;color:#fff;border-radius:8px;height:30px;padding:0 10px;font-size:13px}
-@media (max-width:360px){.seg button{font-size:13px}.rates b{font-size:13px}#fSort{flex-basis:180px}}
+@media (max-width:360px){.seg button{font-size:13px}.rates b{font-size:13px}#fSort{flex-basis:196px}#fSort.me{flex-basis:100%}}
 .seg.sub{margin:12px 0 0}
 .seg.sub button{height:36px;font-size:13px}
 .seg.sub .cnt{margin-inline-start:3px}
@@ -109,7 +112,8 @@ h1{font-size:21px;margin:4px 0 0;font-weight:800;letter-spacing:-.2px}
 .tgl.on .sw{background:var(--acc)}
 .tgl.on .sw::after{right:12px}
 .tgl.on .tl{color:var(--tx)}
-#fSort button i{font-style:normal;font-size:11px;opacity:.45;display:inline-block;width:9px}
+#fSort button{padding:0 6px;font-size:12px}
+#fSort button i{font-style:normal;font-size:11px;opacity:.45;display:inline-block;width:9px;margin-inline-start:3px;text-align:center}
 #fSort button.on i{opacity:1;font-weight:800}
 .osc.top{top:5px}
 .tabs button{flex:0 0 29%;font-size:13.5px;padding:0 2px}.tabs .cnt{min-width:18px;padding:0 4px}
@@ -149,7 +153,6 @@ body.embed .totop{display:none}
 .cred small{display:block;color:var(--mut);font-weight:400;font-size:12px}
 .totop{position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom) + 16px);z-index:25;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(30,30,34,.92);color:#fff;font-size:22px;box-shadow:0 6px 18px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s}
 .totop.on{opacity:1;pointer-events:auto}
-@media (max-width:385px){.meta b{font-size:12px}}
 #setBtn{position:relative}
 #setBtn.dot::after{content:"";position:absolute;top:4px;left:4px;width:9px;height:9px;border-radius:50%;background:#e50914;box-shadow:0 0 0 2px var(--bg)}
 .users{margin:0 0 6px;font-size:14px}

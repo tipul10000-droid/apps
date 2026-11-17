@@ -82,12 +82,27 @@
       && (!F.g.length || F.g.some((g) => x.g.includes(g)))
       && (F.il === "all" || (F.il === "only" ? x.il : !x.il)) && (!F.nf || !foreign(x)));
   }
+  // "🎯 בשבילי" (Oren 17.11.2026): with a personal preference, sort by how well a title fits it. The fit is learned
+  // from everything marked "ראיתי" or "הרשימה שלי" (the preference seeds those): genres that show up there more than
+  // in the catalog score higher, and the IMDb rating breaks ties. Recomputed on every render, so new marks teach it.
+  const personal = () => { const p = TASTES[taste]; return !!(p && !p.pending); };
+  let fitG = null;
+  function learn() {
+    const base = {}, mine = {}; let nb = 0, nm = 0;
+    for (const x of items) { for (const g of x.g) base[g] = (base[g] || 0) + 1; nb++;
+      if (seen[x.k] || wl[x.k]) { for (const g of x.g) mine[g] = (mine[g] || 0) + 1; nm++; } }
+    fitG = {}; if (!nm) return;
+    for (const g of Object.keys(base)) fitG[g] = Math.log(((mine[g] || 0) / nm + 0.02) / (base[g] / nb + 0.02));
+  }
+  const fit = (x) => { if (!fitG || !x.g.length) return 0; let s = 0; for (const g of x.g) s += fitG[g] || 0; return s / Math.sqrt(x.g.length); };
   function sortList(a) {
     const isTop = taste === "il" || taste === "w";
     const sc = (x) => (okR(x) ? x.r : -1);
     const by = { r: (x, y) => sc(y) - sc(x) || (y.v || 0) - (x.v || 0),
       new: (x, y) => (y.f || "").localeCompare(x.f || "") || (y.pop || 0) - (x.pop || 0),
-      pop: (x, y) => (y.v || 0) - (x.v || 0) || (y.pop || 0) - (x.pop || 0) }; // popular = most IMDb votes
+      pop: (x, y) => (y.v || 0) - (x.v || 0) || (y.pop || 0) - (x.pop || 0), // popular = most IMDb votes
+      me: (x, y) => (fit(y) + sc(y) / 2) - (fit(x) + sc(x) / 2) || (y.v || 0) - (x.v || 0) };
+    if (F.sort === "me") { if (!personal()) F.sort = "r"; else learn(); }
     const d = F.dir === 1 ? -1 : 1; // dir -1 = best/newest/most popular first (default), 1 = reversed
     if (isTop && F.sort === "pop") return a.sort((x, y) => { const k = taste === "il" ? "til" : "tw"; return d * ((y[k][0] - x[k][0]) || (x[k][1] - y[k][1])); });
     const f = by[F.sort] || by.r;
@@ -101,6 +116,8 @@
   function renderFilters() {
     segSet("fType", F.t); segSet("fIl", F.il); segSet("fSort", F.sort); segSet("fSub", F.sub);
     $("fNf").classList.toggle("on", !F.nf); $("fNf").setAttribute("aria-checked", F.nf ? "false" : "true"); // switch on = foreign languages shown
+    const me = personal(); if (!me && F.sort === "me") F.sort = "r";
+    segSet("fSort", F.sort); $("fSort").classList.toggle("me", me); $("fSort").lastElementChild.hidden = !me;
     for (const b of $("fSort").children) b.querySelector("i").textContent = b.dataset.v !== F.sort ? "↕" : F.dir === 1 ? "↑" : "↓";
     const fg = $("fGen");
     if (!fg.children.length) {
@@ -181,7 +198,7 @@
       renderRates(base);
       list = sortList(base.filter((x) => rated(x, F.r)));
       const all = items.filter((x) => x.k[0] === F.t && !seen[x.k]).length;
-      $("resN").replaceChildren(h("b", null, fmt(list.length)), " מתוך " + fmt(all) + (F.t === "s" ? " סדרות" : " סרטים"));
+      $("resN").replaceChildren(h("b", null, fmt(list.length)), (F.t === "s" ? " סדרות" : " סרטים"), h("small", null, "מתוך " + fmt(all)));
       if (!list.length) g.append(h("div", { class: "empty" }, "אין תוצאות. נסו להוריד את הציון או להוסיף ז׳אנר."));
     }
     $("fSort").style.visibility = tab === "find" && !q ? "visible" : "hidden";
@@ -204,6 +221,7 @@
   function renderTasteNote() {
     const n = $("tasteNote"), p = TASTES[taste];
     if (p && p.pending) { n.hidden = false; n.textContent = p.icon + " " + p.name + ": עוד אין רשימה, אז מוצג הכול."; }
+    else if (p) { n.hidden = false; n.textContent = p.icon + " " + p.name + ": מה שכבר ראית לא מופיע כאן" + ((p.avoid || []).includes("rea") ? ", בלי ריאליטי" : "") + ". המיון 🎯 בשבילי מסדר לפי מה שאהבת."; }
     else if (TOPS[taste]) { n.hidden = false; n.textContent = TOPS[taste].icon + " מציג רק את " + TOPS[taste].name + ". אפשר לשנות ב-⚙️."; }
     else n.hidden = true;
   }
@@ -243,7 +261,8 @@
     for (const [k, p] of Object.entries(TASTES)) opts.push([k, p.icon, p.name, p.pending ? "בקרוב: מחכה לרשימת האהובים" : "לפי מה שאהבת ומה לא"]);
     for (const [k, p] of Object.entries(TOPS)) opts.push([k, p.icon, p.name, p.sub]);
     const box = h("div", { class: "opt" }, opts.map(([k, e, n, s]) => h("button", { type: "button", class: taste === k ? "on" : "",
-      onclick: (ev) => { taste = k; ls.set("nf_taste", k); tAt = Date.now(); ls.set("nf_taste_at", tAt); seedTaste(k); sync.soon(); for (const b of box.children) b.classList.remove("on"); ev.currentTarget.classList.add("on"); render(); } },
+      onclick: (ev) => { taste = k; ls.set("nf_taste", k); tAt = Date.now(); ls.set("nf_taste_at", tAt); seedTaste(k);
+        if (TASTES[k] && !TASTES[k].pending) { F.sort = "me"; F.dir = -1; save(); } sync.soon(); for (const b of box.children) b.classList.remove("on"); ev.currentTarget.classList.add("on"); render(); } },
       h("span", { class: "e" }, e), h("span", null, n, h("small", null, s)))));
     sheet("⚙️ הגדרות", [
       G.owner ? h("div", { class: "h3" }, "👥 משתמשים") : null,
@@ -437,8 +456,10 @@
       minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
       const ns = items.filter((x) => x.k[0] === "s").length;
       $("meta").replaceChildren(
-        h("b", null, "נטפליקס ישראל · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים"),
+        h("b", null, "נטפליקס ישראל 🇮🇱\u200f · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים"),
         h("span", null, "עודכן " + new Date(cat.at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }) + (cat.pending ? " · משלים " + fmt(cat.pending) + " כותרים…" : "")));
+      const mb = $("meta").firstChild; // keep line 1 on one line: shrink the font a little if this screen is too narrow
+      for (let fs = 13; mb.scrollWidth > mb.clientWidth && fs > 10.5; fs -= 0.5) mb.style.fontSize = fs - 0.5 + "px";
       render();
     } catch (e) {
       $("meta").textContent = "לא הצלחתי לטעון את הרשימה. בדקו חיבור ונסו שוב.";
