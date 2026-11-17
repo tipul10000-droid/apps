@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#14304F">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.WC_BUILD="1.1";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.WC_BUILD="1.2";</script>
 <script src="sq-db.js?v=9"></script>
 <title>לו״ז עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -106,6 +106,12 @@ section{margin-bottom:22px}
 .qb>div{overflow:hidden;min-height:0}
 .q.fold .qb{grid-template-rows:0fr;opacity:0}
 .fin{margin-top:9px;border:1.5px solid var(--good);color:var(--good);background:var(--surface);border-radius:12px;padding:6px 14px;font-weight:800;font-size:14px;cursor:pointer;min-height:36px}
+.tx{margin-top:8px}
+.txb{border:none;background:none;color:var(--hi);font-weight:800;font-size:13.5px;padding:4px 0;cursor:pointer;min-height:30px}
+.txw{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+.txw>div{overflow:hidden;min-height:0}
+.tx.on .txw{grid-template-rows:1fr}
+.tx textarea{width:100%;box-sizing:border-box;min-height:96px;margin-top:4px;border:1.5px solid var(--line);border-radius:12px;padding:9px 11px;font:inherit;font-size:15px;background:var(--surface);color:var(--ink);resize:vertical}
 .mhint{font-size:12.5px;color:var(--muted);margin-top:4px}
 .sm{font-size:13px;color:var(--muted);margin-top:3px}
 textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;background:var(--surface);color:var(--ink);resize:vertical}
@@ -171,6 +177,9 @@ function dayMode(key,dayEvs){
   if(away)return {t:"✈️ "+(away.subject||"מחוץ למשרד").slice(0,28),away:true};
   const dw=dowOf(key);if(dw===5||dw===6)return {t:"סופ״ש"};
   const a=prof.ans||{},d=DOW[dw];
+  const op=(prof.office_prob||{})[dw];
+  if(typeof op==="number")return {t:op>=0.85?`🏢 משרד (${Math.round(op*100)}%)`:`🏢 כנראה משרד (${Math.round(op*100)}%)`};
+  if(op==="var")return {t:"🏢❔ משתנה, ברירת מחדל משרד"};
   if(Array.isArray(a.office_days)&&a.office_days.includes(d))return {t:"🏢 משרד"};
   if(Array.isArray(a.home_days)&&a.home_days.includes(d))return {t:"🏠 בית"};
   return {t:"מיקום לא ידוע"};
@@ -239,7 +248,7 @@ function seriesList(){
   for(const e of events){if(!live(e)||e.all_day||+new Date(e.end)<now-30*864e5)continue;const k=skey(e);(m[k]=m[k]||{k,list:[]}).list.push(e);}
   return Object.values(m).filter(s=>s.list.length>=2).sort((a,b)=>b.list.length-a.list.length);
 }
-function answeredCount(){const a=prof.ans||{},s=prof.series||{};let n=0;for(const q of meta.questions||[]){const v=a[q.id];if(Array.isArray(v)?v.length:v)n++;}for(const x of seriesList())if((s[x.k]||{}).need)n++;return n;}
+function answeredCount(){const a=prof.ans||{},s=prof.series||{};let n=0;const T=prof.txt||{};for(const q of meta.questions||[]){const v=a[q.id];if((Array.isArray(v)?v.length:v)||T[q.id])n++;}for(const x of seriesList())if((s[x.k]||{}).need)n++;return n;}
 const NEED_L=Object.fromEntries(NEED);
 const openQ=new Set();
 function serDone(r){const n=needOf(r);return n==="avoid"||!!(n&&r.mode);}
@@ -247,6 +256,7 @@ function serSum(r){const n=needOf(r);return n==="avoid"?"להימנע":[NEED_L[n
 function modeBtns(k,m){const i=MODES.findIndex(x=>x[0]===m);return MODES.map(([v,l],j)=>`<button class="opt ${m===v?"on":""} ${i>=0&&j<i?"inc":""}" data-ser="${k}" data-f="mode" data-v="${v}">${l}</button>`).join("");}
 function foldLater(card){clearTimeout(card._ft);card._ft=setTimeout(()=>{openQ.delete(card.dataset.qk);const hd=card.querySelector(".qh"),y0=hd.getBoundingClientRect().top;card.classList.add("fold");const dy=hd.getBoundingClientRect().top-y0;if(dy)window.scrollBy(0,dy);},650);}
 function updProg(){const b=$("#pgb");if(!b)return;const tot=(meta.questions||[]).length+seriesList().length,n=answeredCount();b.style.width=(tot?Math.round(100*n/tot):0)+"%";$("#pgt").textContent=n+" מתוך "+tot+" נענו";}
+function qSum(v,tx){const a=Array.isArray(v)?v.join(", "):(v||"");const t=tx?"✍️ "+(tx.length>70?tx.slice(0,70)+"…":tx):"";return [a,t].filter(Boolean).join(" · ");}
 function refreshSum(card,txt){const e=card.querySelector(".qs");if(e)e.textContent=txt;}
 function renderQ(){
   const ser=seriesList(),qs=meta.questions||[],tot=qs.length+ser.length,n=answeredCount();
@@ -264,11 +274,13 @@ function renderQ(){
   const groups=meta.groups||{};const byG={};qs.forEach(q=>(byG[q.g]=byG[q.g]||[]).push(q));
   for(const g of Object.keys(byG)){
     h+=`<section><div class="sh"><h2>${esc(groups[g]||g)}</h2></div>`;
-    for(const q of byG[g]){const v=(prof.ans||{})[q.id],has=Array.isArray(v)?v.length:!!v;
-      const fold=has&&!openQ.has("q:"+q.id),sum=Array.isArray(v)?v.join(", "):(v||"");
+    for(const q of byG[g]){const v=(prof.ans||{})[q.id],tx=(prof.txt||{})[q.id]||"",has=(Array.isArray(v)?v.length:!!v)||!!tx;
+      const fold=has&&!openQ.has("q:"+q.id),sum=qSum(v,tx);
       h+=`<div class="q ${has?"done":""} ${fold?"fold":""}" data-qk="q:${esc(q.id)}"><div class="qh"><div class="qt">${esc(q.q)}${has?'<span class="ok">✓</span>':""}<div class="qs">${esc(sum)}</div></div><button class="ed">✏️ עריכה</button></div>
       <div class="qb"><div>${q.why?`<div class="why">${esc(q.why)}</div>`:""}
-      <div class="opts">${(q.o||[]).map(o=>{const on=Array.isArray(v)?v.includes(o):v===o;return `<button class="opt ${on?"on":""}" data-q="${esc(q.id)}" data-v="${esc(o)}" data-m="${q.multi?1:0}">${esc(o)}</button>`;}).join("")}</div>${q.multi?'<div class="mhint">אפשר לבחור כמה</div><button class="fin" data-fin="q:'+esc(q.id)+'">✓ סיימתי</button>':""}</div></div></div>`;}
+      <div class="opts">${(q.o||[]).map(o=>{const on=Array.isArray(v)?v.includes(o):v===o;return `<button class="opt ${on?"on":""}" data-q="${esc(q.id)}" data-v="${esc(o)}" data-m="${q.multi?1:0}">${esc(o)}</button>`;}).join("")}</div>${q.multi?'<div class="mhint">אפשר לבחור כמה</div>':""}
+      <div class="tx ${tx?"on":""}"><button class="txb" data-txb="${esc(q.id)}">✍️ ${tx?"התשובה שכתבת":"לענות במילים"}</button><div class="txw"><div><textarea data-tx="${esc(q.id)}" placeholder="תשובה חופשית, כמה שצריך. למשל: בדרך כלל כן, חוץ מ...">${esc(tx)}</textarea><button class="fin" data-txs="${esc(q.id)}">✓ שמירה</button></div></div></div>
+      ${q.multi?'<button class="fin" data-fin="q:'+esc(q.id)+'">✓ סיימתי</button>':""}</div></div></div>`;}
     h+=`</section>`;
   }
   h+=`<section><div class="sh"><h2>✍️ עוד משהו שחשוב שאדע</h2></div><div class="card"><textarea id="note" placeholder="למשל: בימי רביעי אני תמיד במשרד בגלל..., דיון X אני רק מאזין, אחרי 17:00 אני עם הילדים...">${esc(prof.note||"")}</textarea><button class="save" id="saveNote">שמירה</button></div></section>`;
@@ -293,9 +305,13 @@ window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0);});
 // ---- saving ----
 let saveT=null;
 function saveProf(msg){prof.updated_at=new Date().toISOString();clearTimeout(saveT);
-  saveT=setTimeout(async()=>{if(!db){toast("אין חיבור");return;}try{await db.collection("work_calendar").doc("_profile").set(JSON.parse(JSON.stringify(prof)));toast(msg||"נשמר");}catch(e){toast("לא נשמר, נסה שוב");}},350);}
+  saveT=setTimeout(async()=>{if(!db){toast("אין חיבור");return;}try{await db.collection("work_calendar").doc("_profile").set(JSON.parse(JSON.stringify(prof)));saveT=null;toast(msg||"נשמר");}catch(e){saveT=null;toast("לא נשמר, נסה שוב");}},350);}
 document.addEventListener("click",e=>{
   const tb=e.target.closest("[data-tab]");if(tb){location.hash=tb.dataset.tab;return;}
+  const txb=e.target.closest("[data-txb]");if(txb){const w=txb.parentNode;w.classList.toggle("on");if(w.classList.contains("on"))setTimeout(()=>w.querySelector("textarea").focus(),60);return;}
+  const txs=e.target.closest("[data-txs]");if(txs){const id=txs.dataset.txs,card=txs.closest(".q"),v=card.querySelector("textarea").value.trim();prof.txt=prof.txt||{};if(v)prof.txt[id]=v;else delete prof.txt[id];
+    const a=(prof.ans||{})[id],has=(Array.isArray(a)?a.length:!!a)||!!v;card.classList.toggle("done",!!has);refreshSum(card,qSum(a,v));card.querySelector(".txb").textContent="✍️ "+(v?"התשובה שכתבת":"לענות במילים");
+    if(has)foldLater(card);saveProf("התשובה נשמרה");hero();updProg();return;}
   const fin=e.target.closest("[data-fin]");if(fin){foldLater(fin.closest(".q"));return;}
   const fq=e.target.closest(".q.fold");if(fq){openQ.add(fq.dataset.qk);fq.classList.remove("fold");clearTimeout(fq._ft);return;}
   const b=e.target.closest(".opt");if(!b)return;
@@ -311,8 +327,8 @@ document.addEventListener("click",e=>{
   if(b.dataset.q){const id=b.dataset.q,v=b.dataset.v,multi=b.dataset.m==="1";prof.ans=prof.ans||{};
     if(multi){let a=Array.isArray(prof.ans[id])?prof.ans[id].slice():[];a=a.includes(v)?a.filter(x=>x!==v):a.concat(v);prof.ans[id]=a;b.classList.toggle("on",a.includes(v));}
     else{prof.ans[id]=prof.ans[id]===v?"":v;b.parentNode.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b&&prof.ans[id]===v));}
-    const a=prof.ans[id],has=Array.isArray(a)?a.length:!!a;card.classList.toggle("done",!!has);
-    refreshSum(card,Array.isArray(a)?a.join(", "):(a||""));
+    const a=prof.ans[id],tx=(prof.txt||{})[id],has=(Array.isArray(a)?a.length:!!a)||!!tx;card.classList.toggle("done",!!has);
+    refreshSum(card,qSum(a,tx));
     if(has&&!multi)foldLater(card);else if(!multi)clearTimeout(card._ft);
     saveProf();hero();updProg();}
 });
@@ -321,7 +337,7 @@ document.addEventListener("click",e=>{if(e.target.id==="saveNote"){prof.note=$("
 render();
 window.claude.use("db").then(d=>{db=d;if(!db)return;
   db.collection("work_calendar").onSnapshot(s=>{
-    const ev=[];s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else if(x.id==="_profile"){if(!saveT)prof=Object.assign({ans:{},series:{},note:""},v);}else ev.push(Object.assign({_id:x.id},v));});
+    const ev=[];s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else if(x.id==="_profile"){if(!saveT)prof=Object.assign({ans:{},series:{},txt:{},note:""},v);}else ev.push(Object.assign({_id:x.id},v));});
     events=ev;loaded=true;
     // don't redraw the questions under the finger; the week/insights update live
     if(tab()!=="q"||!document.querySelector(".q"))render();else hero();
