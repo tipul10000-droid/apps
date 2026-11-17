@@ -11,15 +11,16 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=1">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
+<img class="banner" src="img/banner-780.webp" srcset="img/banner-780.webp 780w, img/banner.webp 1200w" sizes="(min-width:700px) 680px, 100vw" width="1200" height="400" alt="מה יש חדש בנטפליקס?">
 <header class="top">
+  <h1 class="sr">מה יש בנטפליקס?</h1>
   <div class="hrow">
-    <h1>🍿 מה יש בנטפליקס?</h1>
+    <div id="meta" class="meta">טוען…</div>
     <button id="setBtn" class="ib" type="button" aria-label="הגדרות">⚙️</button>
   </div>
-  <div id="meta" class="meta">טוען…</div>
   <div id="tasteNote" class="tnote" hidden></div>
   <div class="seg tabs" role="tablist">
     <button type="button" data-tab="find" class="on">🔎 מה לראות</button>
@@ -68,6 +69,6 @@
 <div id="toast" class="toast" hidden></div>
 
 <script src="tastes.js?v=1"></script>
-<script src="app.js?v=1"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

@@ -6,9 +6,12 @@ body.embed{padding-top:10px}
 button{font:inherit;color:inherit;cursor:pointer}
 .top{position:sticky;top:0;z-index:5;background:var(--bg);padding-bottom:8px;margin:0 -12px;padding-inline:12px}
 .hrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.banner{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;border-radius:14px;margin:0 0 8px;background:#1a0a0b}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 h1{font-size:21px;margin:4px 0 0;font-weight:800;letter-spacing:-.2px}
 .ib{width:40px;height:40px;flex:0 0 40px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:18px;display:grid;place-items:center}
-.meta{color:var(--mut);font-size:12.5px;margin:2px 0 8px;min-height:18px}
+.meta{color:var(--mut);font-size:12.5px;margin:2px 0;min-height:18px;flex:1;min-width:0}
+.top .hrow{padding-top:6px;margin-bottom:8px}
 .tnote{font-size:12.5px;background:#2a2116;border:1px solid #5a4422;color:#f3d39b;border-radius:10px;padding:6px 10px;margin-bottom:8px}
 /* one frame split by lines (no frame in a frame) */
 .seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--line);gap:1px}

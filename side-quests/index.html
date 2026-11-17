@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.0";window.SQ_BUILD_AT="17.11.2026 22:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="21.1";window.SQ_BUILD_AT="17.11.2026 22:25";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -441,6 +441,7 @@ body.fun-on .tasks-only{display:none!important}
 .nfapp{display:flex;align-items:center;gap:10px;width:100%;min-height:60px;padding:8px 12px;border:1px solid #5A1A1E;border-radius:12px;background:linear-gradient(100deg,#2A0C0E,#141414 70%);color:#F5F5F1;text-align:start;font:inherit;cursor:pointer}
 .nfapp .e{font-size:26px;flex:0 0 auto}.nfapp .t{flex:1;min-width:0;display:flex;flex-direction:column}.nfapp b{font-size:15px}.nfapp small{font-size:12px;color:#B3B3B3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nfapp .go{font-size:22px;color:#E50914;flex:0 0 auto}
+.nfapp.img{display:block;padding:0;min-height:0;aspect-ratio:3/1;overflow:hidden;border:0;background:#1a0a0b}.nfapp.img img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .nf-logo{flex:none;width:38px;height:52px;display:inline-flex;align-items:center;justify-content:center;background:#000;border-radius:7px;border:1px solid #3A1214}
 .nf-logo svg{width:22px;height:40px}
 .nf-head h3{font-size:18px;font-weight:800}
@@ -4313,8 +4314,7 @@ html.desk .co-mark{font-size:8cqi}
     const lg=h("a",{class:"nf-logo zlogo",href:"https://www.netflix.com/",target:"_blank",rel:"noopener","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
     return h("article",{class:"fcard nf"},
       h("div",{class:"nf-head zhead"},h("div",{class:"fc-h"},h("h3",null,"סדרות")),lg),
-      h("button",{class:"nfapp",type:"button",onclick:()=>openDash("netflix")},h("span",{class:"e","aria-hidden":"true"},"🍿"),
-        h("span",{class:"t"},h("b",null,"מה יש בנטפליקס?"),h("small",null,"סרטים וסדרות בנטפליקס ישראל, לפי IMDb")),h("span",{class:"go","aria-hidden":"true"},"‹")),
+      h("button",{class:"nfapp img",type:"button","aria-label":"מה יש בנטפליקס? סרטים וסדרות בנטפליקס ישראל",onclick:()=>openDash("netflix")},h("img",{src:"img/nf-banner.webp",alt:"",width:"780",height:"260",loading:"lazy"})),
       ...seriesHub(),
       secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן"));
   }
