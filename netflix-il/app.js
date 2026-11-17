@@ -117,7 +117,7 @@
     segSet("fType", F.t); segSet("fIl", F.il); segSet("fSort", F.sort); segSet("fSub", F.sub);
     $("fNf").classList.toggle("on", !F.nf); $("fNf").setAttribute("aria-checked", F.nf ? "false" : "true"); // switch on = foreign languages shown
     const me = personal(); if (!me && F.sort === "me") F.sort = "r";
-    segSet("fSort", F.sort); $("fSort").classList.toggle("me", me); $("fSort").lastElementChild.hidden = !me;
+    segSet("fSort", F.sort); $("fSort").lastElementChild.classList.toggle("off", !me); // 🎯 always there (nothing shifts), active only with a personal preference
     for (const b of $("fSort").children) b.querySelector("i").textContent = b.dataset.v !== F.sort ? "↕" : F.dir === 1 ? "↑" : "↓";
     const fg = $("fGen");
     if (!fg.children.length) {
@@ -128,10 +128,9 @@
   }
   function renderRates(base) {
     const fr = $("fRate");
-    if (!fr.children.length) for (const r of RATES) fr.append(h("button", { type: "button", "data-v": r }, h("b", null, r ? r + "+" : "הכול"), h("small", null, "")));
+    if (!fr.children.length) for (const r of RATES) fr.append(h("button", { type: "button", "data-v": r }, h("b", null, r ? r + "+" : "הכול")));
     for (const b of fr.children) {
-      const r = Number(b.dataset.v), n = base.filter((x) => rated(x, r)).length;
-      b.querySelector("small").textContent = fmt(n);
+      const r = Number(b.dataset.v);
       b.classList.toggle("on", r === F.r);
       b.classList.toggle("in", r > 0 && r < F.r);
     }
@@ -223,13 +222,12 @@
         h("div", null, h("b", null, avg ? avg.toFixed(1) : "–"), h("small", null, "⭐ IMDb ממוצע")),
         h("div", null, h("b", null, fmt(osc)), h("small", null, "🏆 אוסקרים"))));
   }
-  function renderTasteNote() {
-    const n = $("tasteNote"), p = TASTES[taste];
-    if (p && p.pending) { n.hidden = false; n.textContent = p.icon + " " + p.name + ": עוד אין רשימה, אז מוצג הכול."; }
-    else if (p) { n.hidden = false; n.textContent = p.icon + " " + p.name + ": מה שכבר ראית לא מופיע כאן" + ((p.avoid || []).includes("rea") ? ", בלי ריאליטי" : "") + ". המיון 🎯 בשבילי מסדר לפי מה שאהבת."; }
-    else if (TOPS[taste]) { n.hidden = false; n.textContent = TOPS[taste].icon + " מציג רק את " + TOPS[taste].name + ". אפשר לשנות ב-⚙️."; }
-    else n.hidden = true;
+  function renderTasteNote() { // the chosen preference shows as a small badge on ⚙️, so no extra row opens (Oren 17.11.2026)
+    $("tasteNote").hidden = true;
+    const p = TASTES[taste] || TOPS[taste], tb = $("tasteB");
+    tb.hidden = !p; tb.textContent = p ? p.icon : ""; $("setBtn").title = p ? "העדפה: " + p.name : "";
   }
+
 
   // ---------- marks (watchlist / seen) ----------
   let toastT = null;
@@ -259,7 +257,7 @@
   }
 
   // ---------- sheets ----------
-  function sheet(title, body, cls) { $("ovT").textContent = title; $("ovB").replaceChildren(...body); document.querySelector("#ov .sheet").className = "sheet" + (cls ? " " + cls : ""); $("ov").hidden = false; }
+  function sheet(title, body, cls) { $("ovT").textContent = title; $("ovB").replaceChildren(...body.filter(Boolean)); document.querySelector("#ov .sheet").className = "sheet" + (cls ? " " + cls : ""); $("ov").hidden = false; }
   function closeSheet() { $("ov").hidden = true; }
   function settings() {
     const opts = [["all", "🍿", "בלי העדפה", "כל מה שיש בנטפליקס ישראל"]];
@@ -400,6 +398,7 @@
   $("fNf").addEventListener("click", () => { F.nf = !F.nf; save(); render(); });
   // sort: tap the active one again to reverse it (arrow shows the direction)
   $("fSort").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.v === "me" && !personal()) { toast("🎯 בשבילי עובד כשבוחרים העדפה אישית ב-⚙️"); return; }
     if (F.sort === b.dataset.v) F.dir = F.dir === 1 ? -1 : 1; else { F.sort = b.dataset.v; F.dir = -1; } save(); render(); });
   $("fGen").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; const v = b.dataset.v;
     if (!v) F.g = []; else F.g = F.g.includes(v) ? F.g.filter((x) => x !== v) : [...F.g, v]; save(); render(); });

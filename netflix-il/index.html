@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json?v=3">
 <link rel="icon" href="icon-64.png?v=3" type="image/png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3">
-<link rel="stylesheet" href="style.css?v=16">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 <div class="bwrap"><img class="banner" src="img/banner-780.webp" srcset="img/banner-780.webp 780w, img/banner.webp 1200w" sizes="(min-width:700px) 680px, 100vw" width="1200" height="400" alt="מה יש חדש בנטפליקס?"><a id="egg" class="egg" href="https://www.youtube.com/watch?v=lU0xlaWd_-U&amp;t=17s" target="_blank" rel="noopener" aria-label="🎵"></a><button id="infoBtn" class="info" type="button" aria-label="אודות">i</button></div>
@@ -20,7 +20,7 @@
   <div class="hrow">
     <div id="meta" class="meta">טוען…</div>
     <button id="qBtn" class="ib" type="button" aria-label="חיפוש" aria-expanded="false">🔍</button>
-    <button id="setBtn" class="ib" type="button" aria-label="הגדרות">⚙️</button>
+    <button id="setBtn" class="ib" type="button" aria-label="הגדרות">⚙️<span id="tasteB" class="tb" hidden></span></button>
   </div>
   <div id="srchW" class="srchw"><div class="srchi"><div class="srch"><span class="mg">🔍</span><input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="חיפוש סרט או סדרה" aria-label="חיפוש"><button id="qX" type="button" aria-label="ניקוי" hidden>✕</button></div></div></div>
   <div id="tasteNote" class="tnote" hidden></div>
@@ -37,9 +37,7 @@
       <button type="button" data-v="s">📺 סדרות</button>
       <button type="button" data-v="m">🎬 סרטים</button>
     </div>
-    <div class="lbl">ז׳אנר</div>
     <div class="chips" id="fGen"></div>
-    <div class="lbl">תוכן ישראלי</div>
     <div class="ilrow">
       <div class="seg" id="fIl">
         <button type="button" data-v="all">הכול</button>
@@ -48,8 +46,7 @@
       </div>
       <button type="button" id="fNf" class="tgl" role="switch" aria-checked="false"><span class="sw"></span><span class="tl">שפות זרות</span></button>
     </div>
-    <div class="lbl">ציון IMDb <span class="sub">(כמה נשארו בכל רמה)</span></div>
-    <div class="rates" id="fRate"></div>
+    <div class="ratew"><div class="rates" id="fRate"></div><span class="imdbl" aria-hidden="true">IMDb</span></div>
   </section>
 
   <div id="ach" class="ach" hidden></div>
@@ -64,7 +61,7 @@
       <button type="button" data-v="r">ציון <i>↓</i></button>
       <button type="button" data-v="new">חדש <i>↓</i></button>
       <button type="button" data-v="pop">פופולרי <i>↓</i></button>
-      <button type="button" data-v="me" hidden>🎯 בשבילי <i>↓</i></button>
+      <button type="button" data-v="me" class="mebtn" aria-label="בשבילי">🎯<i>↓</i></button>
     </div>
   </div>
   <div id="grid" class="grid"></div>
@@ -86,6 +83,6 @@
 <div id="toast" class="toast" hidden></div>
 
 <script src="tastes.js?v=3"></script>
-<script src="app.js?v=20"></script>
+<script src="app.js?v=21"></script>
 </body>
 </html>
