@@ -95,3 +95,6 @@ details.sqarch>summary::after{content:"▾";margin-inline-start:auto;transition:
 details.sqarch[open]>summary::after{transform:rotate(180deg)}
 details.sqarch>.ab{animation:sqarchgrow .22s ease-out;opacity:.85}
 @keyframes sqarchgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:.85;transform:none}}
+/* בלי סימון טקסט ובלי תפריט לחיצה ארוכה (18.3, אורן 17.11.2026); שדות קלט נשארים לעריכה */
+html,body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select,[contenteditable],[contenteditable] *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
