@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.1";window.SQ_BUILD_AT="17.11.2026 16:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="19.2";window.SQ_BUILD_AT="17.11.2026 16:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2042,6 +2042,48 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 .ctxrow .toolrow .dzbtn{width:108px;padding:0 6px;gap:4px}
 .ctxrow .toolrow .updbtn{margin-inline-start:auto}
 .ctxrow .toolrow .updbtn+.dzbtn{margin-inline-start:6px}
+/* 19.2 (Oren 17.11.2026): status bar = refresh + live connections (Gmail, Outlook calendar, WhatsApp), one frame divided by a line.
+   Below it the updates and dashboards buttons share one row. Light: green = fresh (soft beat), orange = late, red = stale, grey = not connected. */
+.ctxrow .toolrow{flex-wrap:wrap!important;row-gap:7px}
+.ctxrow .toolrow .sbar{flex:1 0 100%;display:flex;align-items:stretch;min-height:36px;border:1.5px solid rgba(255,255,255,.34);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.06)}
+.ctxrow .toolrow .sbar .refr{flex:1 1 auto;justify-content:flex-start;border:0!important;border-radius:0!important;background:transparent!important;min-height:0!important;padding:0 12px;gap:7px}
+.ctxrow .toolrow .sbar .refr .rk{font-weight:700}
+.ctxrow .toolrow .sbar .refr .rv:not(:empty)::before{content:"· ";}
+.sbar .conn{flex:none;display:flex;align-items:center;gap:12px;padding:0 12px;border:0;border-inline-start:1px solid rgba(255,255,255,.26);background:transparent;color:inherit;font:inherit;cursor:pointer}
+.sbar .conn:active,.sbar .refr:active{background:rgba(255,255,255,.1)!important}
+.sbar .cx{position:relative;display:inline-flex;width:20px;height:20px}
+.sbar .cx svg{width:20px;height:20px;display:block}
+.sbar .cl{position:absolute;inset-inline-end:-4px;bottom:-3px;width:9px;height:9px;border-radius:50%;background:#9AA0A6;box-shadow:0 0 0 2px var(--hero-bg,#1b1b1b)}
+.sbar .cl.ok{background:#22C55E}
+.sbar .cl.ok::after{content:"";position:absolute;inset:0;border-radius:50%;background:#22C55E;animation:clbeat 2.6s ease-out infinite}
+.sbar .cl.late{background:#F59E0B}
+.sbar .cl.bad{background:#EF4444}
+.sbar .cx.off svg{opacity:.38;filter:grayscale(1)}
+@keyframes clbeat{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(2.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.sbar .cl.ok::after{animation:none;display:none}}
+.ctxrow .toolrow .updbtn,.ctxrow .toolrow .dzbtn{flex:1 1 0!important;width:auto!important;min-height:34px!important;border-radius:12px!important;margin:0!important}
+.ctxrow .toolrow .updbtn+.dzbtn{margin-inline-start:0!important}
+html.desk #dhead .toolrow{flex-wrap:nowrap!important}
+html.desk #dhead .toolrow .sbar{flex:0 0 auto}
+html.desk #dhead .toolrow .updbtn{flex:0 0 auto!important;padding:0 12px}
+.cnlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.cnrow{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;text-align:start}
+.cnrow:first-child{border-top:0}
+button.cnrow{cursor:pointer}
+.cnrow .ci{position:relative;flex:none;width:30px;height:30px}
+.cnrow .ci svg{width:30px;height:30px}
+.cnrow .ci.off svg{opacity:.4;filter:grayscale(1)}
+.cnrow .cl{position:absolute;inset-inline-end:-3px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:#9AA0A6;box-shadow:0 0 0 2px var(--surface)}
+.cnrow .cl.ok{background:#22C55E}.cnrow .cl.late{background:#F59E0B}.cnrow .cl.bad{background:#EF4444}
+.cnrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cnrow .tx b{font-size:15px}
+.cnrow .tx small{color:var(--muted);font-size:13px;line-height:1.35}
+.cnrow .st{flex:none;font-size:12.5px;font-weight:800;padding:2px 9px;border-radius:99px;background:color-mix(in srgb,#9AA0A6 18%,transparent);color:#5f6368}
+.cnrow .st.ok{background:color-mix(in srgb,#22C55E 16%,transparent);color:#15803D}
+.cnrow .st.late{background:color-mix(in srgb,#F59E0B 18%,transparent);color:#B45309}
+.cnrow .st.bad{background:color-mix(in srgb,#EF4444 16%,transparent);color:#B91C1C}
+.cnrow .go{flex:none;color:var(--muted);font-size:18px}
+.cnnote{font-size:12.5px;color:var(--muted);margin:10px 4px 0;line-height:1.45}
 .updbtn[aria-pressed="true"]{background:#fff!important;color:#111!important;border-color:#fff!important}
 .uplist{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .fold .uplist{border:0;border-radius:0}
@@ -2287,7 +2329,7 @@ html.desk .co-mark{font-size:8cqi}
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
+    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><div class="sbar" role="group" aria-label="מצב העדכון והחיבורים"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="ic" aria-hidden="true">⟳</span><span class="rk">עדכון</span><span class="rv" id="refrTxt"></span></button><button class="conn" id="connBtn" type="button" aria-label="מצב החיבורים: Gmail, יומן אאוטלוק, וואטסאפ"><span class="cx" data-c="gm"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M2 6.2v11.3c0 .8.6 1.5 1.4 1.5h3.2V9.7z"/><path fill="#34A853" d="M17.4 19h3.2c.8 0 1.4-.7 1.4-1.5V6.2l-4.6 3.5z"/><path fill="#FBBC04" d="M17.4 5v4.7L22 6.2V5.3c0-1.7-1.9-2.6-3.2-1.6z"/><path fill="#EA4335" d="M6.6 9.7V5l5.4 4.1L17.4 5v4.7L12 13.8z"/><path fill="#C5221F" d="M2 5.3v.9l4.6 3.5V5L5.2 3.7C3.9 2.7 2 3.6 2 5.3z"/></svg><i class="cl" id="clGm"></i></span><span class="cx" data-c="cal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="3" fill="#0F6CBD"/><rect x="3" y="4.5" width="18" height="5" rx="2.5" fill="#0A4F8F"/><path d="M8 2.6v4M16 2.6v4" stroke="#0A4F8F" stroke-width="2" stroke-linecap="round"/><g fill="#fff"><rect x="6.2" y="12" width="3" height="2.6" rx=".6"/><rect x="10.5" y="12" width="3" height="2.6" rx=".6"/><rect x="14.8" y="12" width="3" height="2.6" rx=".6"/><rect x="6.2" y="16" width="3" height="2.6" rx=".6"/><rect x="10.5" y="16" width="3" height="2.6" rx=".6"/></g></svg><i class="cl" id="clCal"></i></span><span class="cx" data-c="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.2 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2z"/><path fill="#fff" d="M8.6 7.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.7 5.7 5 2.8 1.1 3.4.9 4 .8.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.3.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.5z"/></svg><i class="cl" id="clWa"></i></span></button></div><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
@@ -4362,7 +4404,7 @@ html.desk .co-mark{font-size:8cqi}
   function ctxRun(all){const C=window.SQCtx;if(!C||!db)return;const n=ilNow(),now={date:ilDate(),mins:n.m};
     for(const t of all){if(!C.wants(t)||ctxBusy.has(t.id))continue;const r=C.apply(t,now);if(!r)continue;ctxBusy.add(t.id);
       db.collection("topics").doc(t.id).update(r.patch).catch(()=>ctxBusy.delete(t.id));}}
-  setInterval(()=>{if(db&&!laterFor)renderAll();},60000);
+  setInterval(()=>{if(db&&!laterFor)renderAll();renderConn();},60000);
   function renderRefr(){if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"";}
   function showAdd(on){if(!on)micStop(true);if(on)showFind(false);$("quick").hidden=!on;if(on){$("qtitle").focus();$("quick").scrollIntoView({block:"nearest"});}}
   // 13.5 (Oren 8.11.2026): the + is an "instruction" to All Arounder, not only "new task".
@@ -4772,6 +4814,45 @@ html.desk .co-mark{font-size:8cqi}
   const gmReqs=()=>iDocs.filter(x=>x.kind==="gmail_scan").sort((a,b)=>String(b.at||"").localeCompare(String(a.at||"")));
   const gmPending=()=>gmReqs().find(x=>x.status==="pending"||x.status==="working");
   function nextIns(){const m=ilNow().m;for(let hh=7;hh<=23;hh++){if(hh*60+47>m+1)return (hh<10?"0":"")+hh+":47";}return "מחר 07:47";}
+  // ===== 19.2 (Oren 17.11.2026): connection lights in the status bar =====
+  // Gmail = the sweep (07:31, 10:31, 13:31, 16:31, 19:31 Israel time) writes settings/gmail_scan.last_at: green when the last
+  // due sweep ran, orange when one was missed, red beyond. Outlook calendar = work_calendar/_meta.last_ingest_at (Power Automate
+  // sends only on a change, so it is counted in Sun-Thu hours: under 48 green, under 120 orange). WhatsApp = settings/whatsapp
+  // {last_at} once the bridge is live; until then a grey "not connected yet".
+  let wcMeta=null,waConn=null;
+  const CN_ICON={gm:document.querySelector('.sbar [data-c="gm"] svg'),cal:document.querySelector('.sbar [data-c="cal"] svg'),wa:document.querySelector('.sbar [data-c="wa"] svg')};
+  const GM_SLOTS=[451,631,811,991,1171];
+  function gmLastAt(){const R=gmReqs(),last=R.find(x=>x.status==="done");return Math.max(Date.parse((gmScan&&gmScan.last_at)||"")||0,Date.parse((last&&(last.done_at||last.at))||"")||0);}
+  function connGm(){const last=gmLastAt();if(!last)return {lv:"bad",t:"עוד לא נסרק"};
+    const now=ilNow().m,age=(Date.now()-last)/60000,due=[];
+    for(let k=0;k<4&&due.length<2;k++)for(let i=GM_SLOTS.length-1;i>=0&&due.length<2;i--){const a=now-GM_SLOTS[i]+k*1440;if(a>=25)due.push(a);}
+    const lv=age<=due[0]+10?"ok":age<=due[1]+10?"late":"bad";
+    let nx="";for(let k=0;k<2&&!nx;k++)for(const sl of GM_SLOTS){if(sl+k*1440>now){nx=(k?"מחר ":"")+String(Math.floor(sl/60)).padStart(2,"0")+":"+String(sl%60).padStart(2,"0");break;}}
+    return {lv,last,t:"סריקה אחרונה "+ago(last)+(nx?" · הבאה "+nx:""),sum:gmScan&&gmScan.summary||""};}
+  function workHours(from){let h2=0;const f=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Jerusalem",weekday:"short"});
+    for(let t=from;t<Date.now()&&h2<200;t+=3600e3){const d=f.format(new Date(t));if(d!=="Fri"&&d!=="Sat")h2++;}return h2;}
+  function connCal(){const last=Date.parse((wcMeta&&wcMeta.last_ingest_at)||"")||0;if(!last)return {lv:"bad",t:"עוד לא הגיע שום עדכון מהיומן"};
+    const w=workHours(last);return {lv:w<48?"ok":w<120?"late":"bad",last,t:"עדכון אחרון מהיומן "+ago(last)};}
+  function connWa(){const last=Date.parse((waConn&&waConn.last_at)||"")||0;if(!waConn)return {lv:"off",t:"עוד לא מחובר. יופיע כאן כשהגשר לוואטסאפ יעלה"};
+    if(!last)return {lv:"bad",t:"מחובר, אבל עוד לא הגיעה אף הודעה"};const age=(Date.now()-last)/3600e3;return {lv:age<6?"ok":age<24?"late":"bad",last,t:"הודעה אחרונה "+ago(last)};}
+  const CN_TXT={ok:"תקין",late:"באיחור",bad:"לא מתעדכן",off:"בקרוב"};
+  function renderConn(){const S={gm:connGm(),cal:connCal(),wa:connWa()};
+    for(const [k,id] of [["gm","clGm"],["cal","clCal"],["wa","clWa"]]){const el=document.getElementById(id);if(!el)continue;el.className="cl"+(S[k].lv==="off"?"":" "+S[k].lv);
+      el.parentNode.classList.toggle("off",S[k].lv==="off");}
+    const b=document.getElementById("connBtn");if(b)b.setAttribute("aria-label","חיבורים: Gmail "+CN_TXT[S.gm.lv]+", יומן "+CN_TXT[S.cal.lv]+", וואטסאפ "+CN_TXT[S.wa.lv]);
+    fillConn(S);}
+  function showConn(){modal("cnM",h("div",{class:"lhd"},h("h2",null,"🔌 חיבורים",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),
+      h("div",{class:"lbody",id:"cnBody"}),h("div",{class:"lft"},h("button",{type:"button",onclick:()=>{closeModal();$("refr").click();}},"⟳ עדכון מלא"),h("button",{type:"button",onclick:closeModal},"✓ סגור")));
+    renderConn();}
+  function fillConn(S){const el=document.getElementById("cnBody");if(!el)return;
+    const row=(k,name,st,go,sub)=>{const ic=h("span",{class:"ci"+(st.lv==="off"?" off":""),html:CN_ICON[k]?CN_ICON[k].outerHTML:""});ic.append(h("i",{class:"cl"+(st.lv==="off"?"":" "+st.lv)}));
+      const kids=[ic,h("span",{class:"tx"},h("b",null,name),h("small",null,st.t),sub?h("small",null,sub):null),h("span",{class:"st "+st.lv},CN_TXT[st.lv]),go?h("span",{class:"go","aria-hidden":"true"},"›"):null];
+      return go?h("button",{class:"cnrow",type:"button",onclick:go},...kids):h("div",{class:"cnrow"},...kids);};
+    el.replaceChildren(h("div",{class:"cnlist"},
+      row("gm","Gmail",S.gm,()=>{closeModal();setTimeout(showGmail,60);},S.gm.sum),
+      row("cal","יומן אאוטלוק (עבודה)",S.cal,()=>{closeModal();setTimeout(()=>openDash("work_calendar"),60);},"נכנס רק כשמשהו ביומן משתנה"),
+      row("wa","WhatsApp",S.wa,null,null)),
+      h("div",{class:"cnnote"},"🟢 תקין · 🟠 באיחור · 🔴 לא מתעדכן. העדכון האחרון של הדף: "+(window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עכשיו")+"."));}
   function updGmBtn(){const b=document.getElementById("gmBtn");if(!b)return;b.classList.toggle("busy",!!gmPending());}
   function showGmail(){
     const body=h("div",{class:"lbody",id:"gmBody"});
@@ -5437,7 +5518,7 @@ html.desk .co-mark{font-size:8cqi}
   $("statBtn").onclick=()=>showStats();
   $("sunBtn").onclick=()=>showBrief();
   $("locBtn").onclick=()=>showHere(true);
-  $("gmBtn").onclick=()=>showGmail();
+  $("gmBtn").onclick=()=>showGmail();$("connBtn").onclick=()=>showConn();
   function initNotify(){
     db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan"),aw=s.docs.find(x=>x.id==="away"),wh=s.docs.find(x=>x.id==="where");
       if(wh&&remoteW(wh.data())&&allTopics.length){renderCtx();renderList();}
@@ -5460,11 +5541,11 @@ html.desk .co-mark{font-size:8cqi}
     db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;splitTopics();renderAll();ctxRun(all);},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
-      const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();
+      const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;renderConn();
       const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     // 18.7: the work calendar shapes the automatic windows (never shown here; the details page is in settings)
-    db.collection("work_calendar").onSnapshot(s=>{const ev=[];let pr={};s.docs.forEach(d=>{const v=d.data();if(d.id==="_profile")pr=v;else if(d.id!=="_meta")ev.push(v);});
+    db.collection("work_calendar").onSnapshot(s=>{const ev=[];let pr={};s.docs.forEach(d=>{const v=d.data();if(d.id==="_profile")pr=v;else if(d.id==="_meta")wcMeta=v;else ev.push(v);});renderConn();
       if(window.SQWorkCal){SQWorkCal.set(ev,pr);renderCtx();renderList();}},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderTiles();renderFun();renderDash();},()=>{});
