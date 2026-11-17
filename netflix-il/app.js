@@ -32,6 +32,30 @@
   let tab = "find", shown = 0, list = [];
 
   // ---------- filters ----------
+  // Taste seeding (Oren 17.11.2026): a profile can carry what its owner already saw (seenM "title|year", seenS) and
+  // series they want (wantS). Picking the profile marks matches once per item on this device (nf_seed_<id>), so an
+  // un-mark sticks and titles that reach Netflix later get marked on a later load.
+  const nz = (s) => String(s || "").toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]/g, "");
+  function seedTaste(id) {
+    const p = TASTES[id];
+    if (!p || !items.length || !(p.seenM || p.seenS || p.wantS)) return 0;
+    const done = ls.get("nf_seed_" + id, {}), now = Date.now();
+    const M = new Map(), S = new Set(p.seenS || []), W = new Set(p.wantS || []);
+    for (const t of p.seenM || []) { const [n, y] = t.split("|"); M.set(n, +y); }
+    let n = 0;
+    for (const x of items) {
+      if (done[x.k]) continue;
+      const k = nz(x.n);
+      let to = null;
+      if (x.k[0] === "m") { if (M.has(k) && Math.abs((+x.y || 0) - M.get(k)) <= 1) to = "seen"; }
+      else if (S.has(k)) to = "seen"; else if (W.has(k)) to = "wl";
+      if (!to) continue;
+      done[x.k] = 1; n++;
+      if (to === "seen") seen[x.k] = seen[x.k] || now; else if (!seen[x.k]) wl[x.k] = wl[x.k] || now;
+    }
+    if (n) { ls.set("nf_seed_" + id, done); ls.set("nf_seen", seen); ls.set("nf_wl", wl); }
+    return n;
+  }
   function tasteOk(x) {
     if (taste === "il") return !!x.til;
     if (taste === "w") return !!x.tw;
@@ -169,7 +193,7 @@
     for (const [k, p] of Object.entries(TASTES)) opts.push([k, p.icon, p.name, p.pending ? "בקרוב: מחכה לרשימת האהובים" : "לפי מה שאהבת ומה לא"]);
     for (const [k, p] of Object.entries(TOPS)) opts.push([k, p.icon, p.name, p.sub]);
     const box = h("div", { class: "opt" }, opts.map(([k, e, n, s]) => h("button", { type: "button", class: taste === k ? "on" : "",
-      onclick: (ev) => { taste = k; ls.set("nf_taste", k); for (const b of box.children) b.classList.remove("on"); ev.currentTarget.classList.add("on"); render(); } },
+      onclick: (ev) => { taste = k; ls.set("nf_taste", k); seedTaste(k); for (const b of box.children) b.classList.remove("on"); ev.currentTarget.classList.add("on"); render(); } },
       h("span", { class: "e" }, e), h("span", null, n, h("small", null, s)))));
     const pub = "https://tipul10000-droid.github.io/apps/netflix-il/";
     sheet("⚙️ הגדרות", [
@@ -213,6 +237,7 @@
       const r = await fetch(CAT_URL, { cache: "no-cache" });
       if (!r.ok) throw new Error(r.status);
       cat = await r.json(); items = cat.items || [];
+      seedTaste(taste);
       minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
       const ns = items.filter((x) => x.k[0] === "s").length;
       $("meta").textContent = "נטפליקס ישראל · " + fmt(ns) + " סדרות · " + fmt(items.length - ns) + " סרטים · עודכן " +
