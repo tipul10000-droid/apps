@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.2";window.SQ_BUILD_AT="18.11.2026 07:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.3";window.SQ_BUILD_AT="18.11.2026 07:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2185,8 +2185,11 @@ button.cnrow:active{background:var(--line)}
 .cnrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .cnrow .tx b{font-size:15px;line-height:1.3}
 .cnrow .tx small{color:var(--muted);font-size:13px;line-height:1.4}
-.cnrow .st{flex:none;align-self:center;min-width:64px;text-align:center;box-sizing:border-box;font-size:12.5px;font-weight:800;line-height:1;padding:6px 10px;border-radius:99px;white-space:nowrap;background:color-mix(in srgb,#9AA0A6 18%,transparent);color:#5f6368}
+.cnrow .st{flex:none;align-self:center;min-width:72px;display:inline-flex;align-items:center;justify-content:center;text-align:center;box-sizing:border-box;font-size:12.5px;font-weight:800;line-height:1;padding:6px 10px;border-radius:99px;white-space:nowrap;background:color-mix(in srgb,#9AA0A6 18%,transparent);color:#5f6368}
 .cnrow .st.ok{background:color-mix(in srgb,#22C55E 16%,transparent);color:#15803D}
+.cnrow .st.ok{animation:cnbeat 2.6s ease-in-out infinite}
+@keyframes cnbeat{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.cnrow .st.ok{animation:none}}
 .cnrow .st.late{background:color-mix(in srgb,#F59E0B 18%,transparent);color:#B45309}
 .cnrow .st.bad{background:color-mix(in srgb,#EF4444 16%,transparent);color:#B91C1C}
 .cnrow .go{flex:none;width:16px;text-align:center;color:var(--muted);font-size:18px;line-height:1;margin-inline-start:-4px}
@@ -4087,7 +4090,12 @@ html.desk .co-mark{font-size:2.4cqi}
     if(Q.ph)$("qtitle").placeholder=Q.ph;
     splitTopics();renderQnav();
   }
-  function setQuest(q){if(q===quest)return;qEnter[quest]=Date.now();qEnter[q]=Date.now();quest=q;openId=null;updOn=false;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();window.scrollTo(0,0);}
+  function setQuest(q){if(q===quest)return;qEnter[quest]=Date.now();qEnter[q]=Date.now();quest=q;openId=null;updOn=false;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();qTop();}
+  // 22.3 (Oren 18.11.2026): a quest tap always lands at the very top of that quest. Late renders (dashboards, cards, fonts) and
+  // iOS momentum could leave it a bit under the header, so the jump is repeated for half a second unless he starts scrolling.
+  function qTop(){let stop=false;const off=()=>{stop=true;};addEventListener("touchstart",off,{once:true,passive:true});addEventListener("wheel",off,{once:true,passive:true});
+    const go=()=>{if(!stop&&!document.documentElement.classList.contains("sqlock"))window.scrollTo(0,0);};
+    go();requestAnimationFrame(go);[80,200,450].forEach(t=>setTimeout(go,t));setTimeout(()=>{removeEventListener("touchstart",off);removeEventListener("wheel",off);},500);}
   function setFun(on){setQuest(on?"fun":"side");}
   const FC=["var(--fz2)","var(--fz3)","var(--fz1)","var(--fz4)"];
   function funCard(t,i){
@@ -5186,6 +5194,13 @@ html.desk .co-mark{font-size:2.4cqi}
     try{await db.collection("instructions").doc(id).set({kind:"gmail_scan",text:"סריקת Gmail לפי דרישה",note:"",via:"connections",at:new Date().toISOString(),status:"pending",ctx:{quest,open:openId||""}});
       toast("✓ Gmail בתור לסריקה. מתעדכן עד "+nextIns());try{if(db.refresh)await db.refresh();}catch(e){}}
     catch(e){gmQAt=0;fail(e);}renderConn();updGmBtn();}
+  // 22.3 (Oren 18.11.2026): no row in the connections panel opens another screen. SQ and the Outlook calendar re-read the server
+  // in place (the calendar itself only pushes on a change, so a tap re-checks what arrived).
+  let rdBusy="";
+  async function rdTap(k){if(rdBusy)return;rdBusy=k;renderConn();let ok=true;
+    try{if(db&&db.refresh)await db.refresh();}catch(e){ok=false;}rdBusy="";renderConn();
+    if(!ok){toast("אין חיבור לשרת כרגע");return;}
+    if(k==="cal"){const c=connCal();toast(c.last?"✓ היומן נבדק · עדכון אחרון "+ago(c.last):"עוד לא הגיע שום עדכון מהיומן");}else toast("✓ מחובר לשרת ומעודכן");}
   function locTap(){if(!loc.on){loc.on=true;saveLoc();}
     locHook=()=>{locHook=null;updLocBtn();renderAll();renderConn();toast(locErr||"✓ המיקום עודכן");};sampleLoc(true);updLocBtn();renderConn();}
   function connGm(){const q=gmQueued(),r=connGm0();return q?{...r,off:q,sum:"נסרק עד "+nextIns()+" ומעדכן את המשימות"}:r;}
@@ -5234,7 +5249,7 @@ html.desk .co-mark{font-size:2.4cqi}
     if(R.requested_at===at&&R.state==="failed")toast("התזרים לא הצליח להתעדכן מול הבנקים");
     else if(cfPing&&cfPing.at>at)toast("✓ התזרים עודכן");
     else toast("התזרים לא ענה, ננסה שוב בעדכון הבא");}
-  const CN_TXT={ok:"תקין",late:"באיחור",bad:"לא מתעדכן",off:"בקרוב"};
+  const CN_TXT={ok:"מחובר",late:"באיחור",bad:"לא מתעדכן",off:"בקרוב"};
   function renderConn(){const S={gm:connGm(),cal:connCal(),loc:connLoc(),cf:connCf(),wa:connWa()};
     for(const [k,id] of [["gm","clGm"],["cal","clCal"],["loc","clLoc"],["cf","clCf"],["wa","clWa"]]){const el=document.getElementById(id);if(!el)continue;el.className="cl"+(S[k].lv==="off"?"":" "+S[k].lv);
       el.parentNode.classList.toggle("off",S[k].lv==="off");}
@@ -5244,18 +5259,18 @@ html.desk .co-mark{font-size:2.4cqi}
       h("div",{class:"lbody",id:"cnBody"}),h("div",{class:"lft"},h("button",{type:"button",onclick:()=>{closeModal();$("refr").click();}},"⟳ עדכון מלא"),h("button",{type:"button",onclick:closeModal},"✓ סגור")));
     renderConn();}
   function fillConn(S){const el=document.getElementById("cnBody");if(!el)return;
-    const row=(k,name,st,go,sub,nav)=>{const ic=h("span",{class:"ci"+(st.lv==="off"?" off":""),html:CN_ICON[k]?CN_ICON[k].outerHTML:""});ic.append(h("i",{class:"cl"+(st.lv==="off"?"":" "+st.lv)}));
-      const kids=[ic,h("span",{class:"tx"},h("b",null,name),h("small",null,st.t),sub?h("small",null,sub):null),h("span",{class:"st "+st.lv},st.off||CN_TXT[st.lv]),h("span",{class:"go"+(nav?"":" rf"),"aria-hidden":"true"},go?(nav?"›":"⟳"):"")];
+    const row=(k,name,st,go,sub)=>{const ic=h("span",{class:"ci"+(st.lv==="off"?" off":""),html:CN_ICON[k]?CN_ICON[k].outerHTML:""});ic.append(h("i",{class:"cl"+(st.lv==="off"?"":" "+st.lv)}));
+      const kids=[ic,h("span",{class:"tx"},h("b",null,name),h("small",null,st.t),sub?h("small",null,sub):null),h("span",{class:"st "+st.lv},st.off||CN_TXT[st.lv]),h("span",{class:"go rf","aria-hidden":"true"},go?"⟳":"")];
       return go?h("button",{class:"cnrow",type:"button",onclick:go},...kids):h("div",{class:"cnrow"},...kids);};
     const SQc=sqConn();CN_ICON.sq=CN_ICON.sq||h("span",{class:"sqic"},"⟳");
     el.replaceChildren(h("div",{class:"cnlist"},
-      row("sq","Side Quests (השרת)",{...SQc,off:SQc.lv==="off"?"בודק":SQc.lv==="bad"?"אין רשת":SQc.lv==="late"?(window.SQ_NET&&SQ_NET.ok===false?"תקלה":"ממתין"):"מחובר"},null,SQc.lv==="bad"?"פעולות נשמרות במכשיר ויישלחו כשהרשת תחזור":SQc.q?"יישלחו בעדכון הבא":"השרת, האינטרנט והאפליקציה"),
+      row("sq","Side Quests (השרת)",{...SQc,off:rdBusy==="sq"?"בודק…":SQc.lv==="off"?"בודק":SQc.lv==="bad"?"אין רשת":SQc.lv==="late"?(window.SQ_NET&&SQ_NET.ok===false?"תקלה":"ממתין"):"מחובר"},()=>rdTap("sq"),SQc.lv==="bad"?"פעולות נשמרות במכשיר ויישלחו כשהרשת תחזור":SQc.q?"יישלחו בעדכון הבא":"השרת, האינטרנט והאפליקציה"),
       row("gm","Gmail",S.gm,gmTap,S.gm.sum||"לחיצה שולחת לסריקה עכשיו"),
-      row("cal","יומן אאוטלוק (עבודה)",S.cal,()=>{closeModal();setTimeout(()=>openDash("work_calendar"),60);},"נכנס רק כשמשהו ביומן משתנה",true),
+      row("cal","יומן אאוטלוק (עבודה)",rdBusy==="cal"?{...S.cal,off:"בודק…"}:S.cal,()=>rdTap("cal"),"מתעדכן לבד כשהיומן משתנה"),
       row("loc","מיקום",S.loc,locTap,loc.on?"לחיצה מרעננת את המיקום":null),
       row("cf","תזרים הבית (פיננסי)",S.cf,()=>cfRefresh(),S.cf.sum||"לחיצה מרעננת את התזרים מול הבנקים, בלי לפתוח אותו (עד דקה)"),
       row("wa","WhatsApp",S.wa,null,null)),
-      h("div",{class:"cnnote"},"🟢 תקין · 🟠 באיחור · 🔴 לא מתעדכן. העדכון האחרון של הדף: "+(window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עכשיו")+"."));}
+      h("div",{class:"cnnote"},"🟢 מחובר · 🟠 באיחור · 🔴 לא מתעדכן. העדכון האחרון של הדף: "+(window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עכשיו")+"."));}
   function updGmBtn(){const b=document.getElementById("gmBtn");if(!b)return;b.classList.toggle("busy",!!gmPending());}
   function showGmail(){
     const body=h("div",{class:"lbody",id:"gmBody"});
