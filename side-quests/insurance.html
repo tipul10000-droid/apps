@@ -455,7 +455,7 @@ const LVL={high:"🔴",mid:"🟠",low:"⚪"};
 const TYPE_I={dup:"⧉",cost:"₪",gap:"⚠️",renew:"📅",check:"🔍",pay:"💳"};
 
 const W=!!window.INS_W;
-let showAll=false, showDone=false, stSel=null, fWho=W?"all":(localStorage.getItem("ins_who")||"all"), fCat="all", data={pol:[],meta:{}};
+let showAll=false, showDone=false, stSel=null, fWho="all", fCat="all", data={pol:[],meta:{}};
 
 function monthly(p){if(p.status==="ended")return 0;if(p.monthly!=null)return +p.monthly;if(p.annual!=null)return +p.annual/12;return 0;}
 function matchWho(p){
@@ -469,6 +469,8 @@ function daysTo(d){if(!d)return null;const t=new Date(d+"T00:00:00");return Math
 function fmtD(d){if(!d)return "";const [y,m,dd]=d.split("-");return dd?`${+dd}.${+m}.${y.slice(2)}`:`${+m}.${y.slice(2)}`;}
 
 function chips(){
+  /* 18.11 (Oren): insurance dashboard shows only the jump row, no who/category filters */
+  if(!W){fWho="all";fCat="all";$("who").style.display="none";$("cats").style.display="none";return;}
   const all=data.pol.filter(p=>p.status!=="ended");
   $("who").innerHTML=(W?["all","oren","lior","kids"]:Object.keys(WHO)).map(k=>{const n=k==="all"?all.length:all.filter(p=>{const s=fWho;fWho=k;const r=matchWho(p);fWho=s;return r;}).length;return `<button class="chip" data-w="${k}" aria-pressed="${fWho===k}">${WHO[k]}<span class="n">${n}</span></button>`;}).join("");
   const cs=["all",...Object.keys(CATS).filter(c=>all.some(p=>p.cat===c))];
