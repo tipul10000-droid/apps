@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.4";window.SQ_BUILD_AT="18.11.2026 07:25";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.5";window.SQ_BUILD_AT="18.11.2026 07:33";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1786,6 +1786,21 @@ main{padding-bottom:90px}
 .dnews li small{grid-column:2;grid-row:1;color:var(--muted);font-size:12px;white-space:nowrap}
 .dnews .more{font-size:13px;color:var(--muted);padding-top:4px}
 .dnews li.go{cursor:pointer;-webkit-tap-highlight-color:transparent}.dnews li.go:active{background:color-mix(in srgb,#2F7BEA 10%,transparent)}.dnews li.go b::after,.dnews li.go span.solo::after{content:" ‹";color:#2F7BEA;font-weight:800}
+#qNew{margin:0 0 14px;animation:qnwin .3s ease-out both}@keyframes qnwin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+#qNew .wc-head{align-items:center}#qNew .wc-head small{flex:1}
+#qNew .qnx{width:34px;height:34px;flex:0 0 34px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-size:15px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){#qNew{animation:none}}
+.fcard.jump{animation:sqjump 1.6s ease-out}
+.upwrap{display:flex;align-items:stretch;position:relative;transition:opacity .28s,max-height .28s;max-height:400px}
+.upwrap+.upwrap,.up-g+.upwrap,.up-day+.upwrap,.uprow+.upwrap,.upwrap+.uprow{border-top:1px solid var(--line)}
+.upwrap>.uprow{flex:1;min-width:0}
+.upwrap.nw>.uprow::before{content:"";position:absolute;inset-inline-start:5px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#2F7BEA;animation:upblink 1.6s ease-in-out infinite}
+@keyframes upblink{50%{opacity:.35}}
+.upack{flex:0 0 64px;width:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;border-inline-start:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;font-size:11px;cursor:pointer}
+.upack .ua-i{font-size:17px;line-height:1}
+.upwrap.acked .upack{background:color-mix(in srgb,#1f9d55 14%,transparent);color:#1f7a45}
+.upwrap.gone{opacity:0;max-height:0;overflow:hidden}
+@media (prefers-reduced-motion:reduce){.upwrap.nw>.uprow::before{animation:none}.upwrap{transition:none}}
 .row.jump{animation:sqjump 1.6s ease-out}@keyframes sqjump{0%,35%{box-shadow:inset 0 0 0 2.5px #2F7BEA;background:color-mix(in srgb,#2F7BEA 12%,transparent)}100%{box-shadow:none}}
 @media (prefers-reduced-motion:reduce){.row.jump{animation:none;box-shadow:inset 0 0 0 2.5px #2F7BEA}}
 @media (prefers-reduced-motion:reduce){.tdot.nw,.snw,.qbtn .qnw,.dzbtn.has,.dzbtn.has::after,.dz-top .nw,.dz-tile .nw,.dz-tile.flash,.dnews{animation:none}}
@@ -2474,6 +2489,7 @@ html.desk .co-mark{font-size:2.4cqi}
 
 <main class="gut"><div class="inner">
   <div id="notice" class="notice" hidden></div>
+  <section id="qNew" hidden aria-label="מה חדש"></section>
   <section class="funzone" id="funSec" aria-label="Fun Quest">
     <div class="fzgrid" id="funGrid"></div>
   </section>
@@ -3291,7 +3307,7 @@ html.desk .co-mark{font-size:2.4cqi}
   // scrolls to the row, opens it and flashes it
   function jumpTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;seeUpd(id);
     if(nav.dash&&isOpen(t)&&!isFun(t)){dzTaskOpen(t);return;}
-    closeModal();const go=()=>{updOn=false;openTask(id);setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r){r.classList.remove("jump");void r.offsetWidth;r.classList.add("jump");}},420);};
+    closeModal();const go=()=>{if(updOn)upCommit();updOn=false;openTask(id);setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r){r.classList.remove("jump");void r.offsetWidth;r.classList.add("jump");}},420);};
     if(nav.dash||nav.lvl>1){navBack(true);setTimeout(go,330);}else go();}
   function nwSee(ids){let ch=false;for(const id of [].concat(ids||[])){if(!id)continue;nwSeen[id]=new Date().toISOString();ch=true;}
     if(!ch)return;const ks=Object.keys(nwSeen);if(ks.length>400)ks.sort((a,b)=>String(nwSeen[a]).localeCompare(String(nwSeen[b]))).slice(0,ks.length-400).forEach(k=>delete nwSeen[k]);
@@ -4076,11 +4092,34 @@ html.desk .co-mark{font-size:2.4cqi}
     // 19.8: also its own task changes and new features (settings/new_items quest:<q>); tap = into the quest with "🔔 עדכונים" on
     $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q],F=q!==quest?questFresh(q):[],T=q!==quest?questTasksNew(q).length+nwQuest(q).length:0,any=F.length+T>0;
       return h("button",{class:"qbtn q-"+q+(any?" hasnw":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":any?Q.a+" "+Q.b+": יש תוכן חדש":null,
-        onclick:()=>{const G=q!==quest?questFresh(q):[],TT=q!==quest?questTasksNew(q).length+nwQuest(q).length:0;setQuest(q);
-          if(TT&&WQ.includes(q)){if(!updOn)toggleUpd();}else if(G.length)setTimeout(()=>G.length===1?openDash(G[0].id):goDashes(),180);}},
+        onclick:()=>{const G=q!==quest?questFresh(q):[],A0=q!==quest?nwQuest(q):[],L0=q!==quest?questTasksNew(q).map(t=>({t,r:freshOf(t)})).filter(x=>x.r):[],TT=A0.length+L0.length;setQuest(q);
+          if(TT&&WQ.includes(q)){if(!updOn)toggleUpd();return;}
+          // 22.5 (Oren 18.11.2026): Fun / AI have no "🔔 עדכונים" list, so a tap shows "🆕 מה חדש" at the top and the dot clears
+          if(!WQ.includes(q)&&(TT||G.length)){qNewOpen(q,A0,L0,G);return;}
+          if(G.length)setTimeout(()=>G.length===1?openDash(G[0].id):goDashes(),180);}},
         any?h("span",{class:"qnw",title:"יש תוכן חדש","aria-hidden":"true"}):null,
         h("span",{class:"qe","aria-hidden":"true"},ico(Q.e)),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }
+  // ===== 22.5 (Oren 18.11.2026): "🆕 מה חדש" at the top of a quest without the updates list (Fun, AI Projects) =====
+  // Tapping such a quest with a blue dot lists what is new there (app features, its tasks, its dashboards) and marks it seen,
+  // so the dot clears. The box stays for this visit to the quest, until ✕ or another quest.
+  let qNewShow=null;
+  function qNewOpen(q,A,L,D){qNewShow={q,D:D||[]};renderQNew();}
+  function funJump(id){const go=()=>{const c=document.querySelector(`#funSec [data-id="${CSS.escape(id)}"]`);if(!c)return false;
+      c.scrollIntoView({behavior:"smooth",block:"start"});c.classList.remove("jump");void c.offsetWidth;c.classList.add("jump");return true;};
+    if(!go())jumpTask(id);}
+  function renderQNew(){const el=$("qNew");if(!el)return;const S=qNewShow;
+    const U=S&&S.q===quest?updSet(quest):null,D=S?S.D.filter(d=>dashFresh(d)):[];
+    if(!U||!(U.A.length+U.L.length+D.length)){el.hidden=true;el.replaceChildren();return;}
+    upOnScreen={items:[...U.A,...U.L],old:U.old};
+    const n=U.A.length+U.L.length+D.length,G=[];
+    for(const x of U.A)G.push(ackWrap(x,nwRow("✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
+    for(const d of D)G.push(nwRow(d.icon||"📊",d.title||d.short||d.id,dashWhy(d)+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id)));
+    for(const x of U.L){const t=x.t;G.push(ackWrap(x,nwRow(t.icon||"📌",t.title||"(ללא כותרת)",updLine(x.r),()=>isFun(t)?funJump(t.id):jumpTask(t.id))));}
+    el.replaceChildren(h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🆕"),h("b",null,"מה חדש"),
+        h("small",null,U.n?"חדשים · "+U.n:"ראית, עוד לא אישרת · "+n),h("button",{type:"button",class:"qnx","aria-label":"סגירת מה חדש",onclick:()=>{upCommit();qNewShow=null;renderQNew();}},"✕")),
+      h("div",{class:"uplist"},G)));
+    el.hidden=false;}
   function applyQuest(){
     funMode=quest==="fun";
     for(const q in QUESTS)document.body.classList.toggle("q-"+q,q===quest);
@@ -4090,7 +4129,7 @@ html.desk .co-mark{font-size:2.4cqi}
     if(Q.ph)$("qtitle").placeholder=Q.ph;
     splitTopics();renderQnav();
   }
-  function setQuest(q){if(q===quest)return;qEnter[quest]=Date.now();qEnter[q]=Date.now();quest=q;openId=null;updOn=false;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();qTop();}
+  function setQuest(q){if(q===quest)return;upCommit();qNewShow=null;qEnter[quest]=Date.now();qEnter[q]=Date.now();quest=q;openId=null;updOn=false;shareId=null;laterFor=null;filterKind="all";view="open";try{history.replaceState(null,"",q==="side"?location.pathname+location.search:"#"+q);}catch(e){}applyQuest();if(db)renderAll();qTop();}
   // 22.3 (Oren 18.11.2026): a quest tap always lands at the very top of that quest. Late renders (dashboards, cards, fonts) and
   // iOS momentum could leave it a bit under the header, so the jump is repeated for half a second unless he starts scrolling.
   function qTop(){let stop=false;const off=()=>{stop=true;};addEventListener("touchstart",off,{once:true,passive:true});addEventListener("wheel",off,{once:true,passive:true});
@@ -4639,7 +4678,7 @@ html.desk .co-mark{font-size:2.4cqi}
     const left=g=>{const m=g.by-n.m;return m<=0?"עכשיו!":m<60?`עוד ${m} דק׳`:`עוד ${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} ש׳`;};
     el.innerHTML=L.slice(0,4).map(g=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`;}).join("");
     el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>openTask(b.dataset.id));}
-  function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();statKpi();}
+  function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();statKpi();renderQNew();}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:"",...(t.sleep_until&&!("sleep_until" in fields)?{sleep_until:""}:{})};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -5105,7 +5144,7 @@ html.desk .co-mark{font-size:2.4cqi}
   function endVisit(){try{localStorage.setItem("sq_visit",new Date().toISOString());}catch(e){}}
   document.addEventListener("visibilitychange",()=>{
     if(document.hidden){hidAt=Date.now();endVisit();return;}
-    if(hidAt&&Date.now()-hidAt>120e3){visitBase=hidAt;updOn=false;try{renderList();renderCtx();}catch(e){}}
+    if(hidAt&&Date.now()-hidAt>120e3){visitBase=hidAt;updOn=false;qNewShow=null;try{renderList();renderCtx();}catch(e){}}
     else{try{localStorage.setItem("sq_visit",new Date(visitBase).toISOString());}catch(e){}} // a short peek away is the same visit
     hidAt=0;});
   window.addEventListener("pagehide",endVisit);
@@ -5114,11 +5153,47 @@ html.desk .co-mark{font-size:2.4cqi}
     if(t&&t.created_at&&OWN_SRC.test(t.source||"")){const ms=Date.parse(t.created_at);if(ms&&ms<=Date.now()+6e4&&(!o||ms>o.ms))o={ms,what:"משימה חדשה",src:"own"};}
     return o;}
   function isFresh(t){if(!t||DONE_ST.includes(t.status))return false;const r=freshOf(t);return !!r&&r.ms>visitBase&&Date.now()-r.ms<7*864e5;}
-  function updItems(){return newPool().filter(t=>!(t.fit&&t.fit.owner==="claude")).map(t=>({t,r:freshOf(t)})).filter(x=>x.r&&x.r.ms>visitBase&&Date.now()-x.r.ms<7*864e5).sort((a,b)=>b.r.ms-a.r.ms);}
-  function updUpdBtn(){const b=document.getElementById("updbtn");if(!b)return;let n=0;try{n=updItems().length+nwList("chat").length+nwQuest(quest).length+(quest==="side"?nwList("settings:").length:0)+questFresh(quest).length;}catch(e){}
+  // ===== 22.5 (Oren 18.11.2026): two levels of "done with an update" =====
+  // blue dot = not seen yet. Shown on screen and he left the list = the dot goes, the update stays in the list.
+  // "👍 קיבלתי" = understood: it goes to the archive (📜 עדכוני עבר). As soon as brand new updates arrive they replace
+  // everything that was already seen (those go to the archive); the in-between state lasts only until then.
+  // Per device: sq_upd_shown {key: at} (seen), sq_upd_ack {key: at} (archived). key = "t:<task>:<ms>" or "n:<new_items id>".
+  const ldJ=k=>{try{return JSON.parse(localStorage.getItem(k)||"null");}catch(e){return null;}};
+  let upShown=ldJ("sq_upd_shown"),upAck=ldJ("sq_upd_ack")||{};const upFirst=!upShown||typeof upShown!=="object";if(upFirst)upShown={};
+  function upSave(){for(const o of [upShown,upAck]){const ks=Object.keys(o);if(ks.length>600)ks.sort((a,b)=>String(o[a]).localeCompare(String(o[b]))).slice(0,ks.length-600).forEach(k=>delete o[k]);}
+    try{localStorage.setItem("sq_upd_shown",JSON.stringify(upShown));localStorage.setItem("sq_upd_ack",JSON.stringify(upAck));}catch(e){}}
+  const upKeyT=x=>"t:"+x.t.id+":"+x.r.ms,upKeyN=x=>"n:"+x.id;
+  const upIsShown=k=>!!upShown[k],upIsAck=k=>!!upAck[k];
+  // the candidates: last 7 days, not archived. If anything is unseen, only the unseen ones are listed.
+  function updAllT(q){return newPool(q).filter(t=>!(t.fit&&t.fit.owner==="claude")).map(t=>({t,r:freshOf(t)})).filter(x=>x.r&&Date.now()-x.r.ms<7*864e5&&!upIsAck(upKeyT(x)))
+      .map(x=>{const k=upKeyT(x);if(upFirst&&x.r.ms<=visitBase)upAck[k]=new Date().toISOString();return x;}).filter(x=>!upIsAck(upKeyT(x)))
+      .map(x=>({...x,k:upKeyT(x),nw:!upIsShown(upKeyT(x))&&(Date.parse(updSeen[x.t.id]||"")||0)<x.r.ms})).sort((a,b)=>b.r.ms-a.r.ms);}
+  function nwListAll(pfx){const now=Date.now();return newItems.filter(x=>x&&x.id&&!x.done&&(!pfx||String(x.where||"app").startsWith(pfx))).map(x=>({...x,ms:Date.parse(x.at||"")||0}))
+    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&!upIsAck(upKeyN(x))).map(x=>({...x,k:upKeyN(x),nw:(Date.parse(nwSeen[x.id]||"")||0)<x.ms})).sort((a,b)=>b.ms-a.ms);}
+  const nwQuestAll=q=>nwListAll("").filter(x=>{const w=String(x.where||"app");if(w.startsWith("task:")){const t=allTopics.find(z=>z.id===w.slice(5));return !!t&&(isFun(t)?"fun":questOf(t))===q;}return w==="quest:"+q||(q==="side"&&w==="app");});
+  // everything that belongs in the updates list of quest q: {C chat, A app items, L tasks}; new ones replace the seen ones
+  function updSet(q){q=q||quest;const C=nwListAll("chat"),A=[...nwQuestAll(q),...(q==="side"?nwListAll("settings:"):[]),...nwListAll("dash:").filter(x=>{const d=dashById(String(x.where).slice(5));return d&&(d.quest||"side")===q;})],L=updAllT(q);
+    const any=[...C,...A,...L].some(x=>x.nw),f=a=>any?a.filter(x=>x.nw):a;return {C:f(C),A:f(A),L:f(L),old:any?[...C,...A,...L].filter(x=>!x.nw):[],n:[...C,...A,...L].filter(x=>x.nw).length};}
+  let upOnScreen=null; // what the list showed, committed as seen when he leaves it
+  function upCommit(){const S=upOnScreen;upOnScreen=null;if(!S)return;const now=new Date().toISOString();let ch=false;
+    for(const x of S.items){if(!upShown[x.k]){upShown[x.k]=now;ch=true;}}
+    for(const x of S.old){if(!upAck[x.k]){upAck[x.k]=now;ch=true;}} // brand new ones arrived: the seen ones go to the archive
+    const ids=S.items.filter(x=>x.k.startsWith("n:")).map(x=>x.id);if(ids.length)nwSee(ids);
+    if(ch)upSave();setTimeout(()=>{try{updUpdBtn();renderQnav();}catch(e){}},0);}
+  function upAckOne(x,row){upAck[x.k]=new Date().toISOString();upShown[x.k]=upShown[x.k]||upAck[x.k];upSave();if(x.k.startsWith("n:"))nwSee(x.id);
+    if(upOnScreen){upOnScreen.items=upOnScreen.items.filter(y=>y.k!==x.k);}
+    if(row){row.classList.add("acked");setTimeout(()=>{row.classList.add("gone");setTimeout(()=>{if(updOn)renderList();else renderQNew();updUpdBtn();},280);},650);}}
+  // a row + its "👍 קיבלתי" button side by side (the row itself is a button)
+  function ackWrap(x,rowEl){const w=h("div",{class:"upwrap"+(x.nw?" nw":"")});
+    w.append(rowEl,h("button",{type:"button",class:"upack","aria-label":"קיבלתי, להעביר לארכיון",title:"קיבלתי",onclick:e=>{e.stopPropagation();upAckOne(x,w);}},
+      h("span",{class:"ua-i","aria-hidden":"true"},"👍"),h("span",{class:"ua-t"},"קיבלתי")));return w;}
+  addEventListener("pagehide",()=>{try{upCommit();}catch(e){}});
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)try{upCommit();}catch(e){}});
+  function updItems(){return updSet().L.filter(x=>x.nw);}
+  function updUpdBtn(){const b=document.getElementById("updbtn");if(!b)return;let n=0;try{n=updSet().n+questFresh(quest).length;}catch(e){}
     b.classList.toggle("has",n>0&&!updOn);b.setAttribute("aria-pressed",updOn?"true":"false");$("updN").textContent=n||"";
     b.setAttribute("aria-label",n?`עדכונים: ${n} חדשים`:"עדכונים");}
-  function toggleUpd(){updOn=!updOn;openId=null;renderList();if(updOn)window.scrollTo({top:Math.max(0,$("mainSec").getBoundingClientRect().top+window.scrollY-120),behavior:"smooth"});}
+  function toggleUpd(){updOn=!updOn;openId=null;if(!updOn)upCommit();renderList();if(updOn)window.scrollTo({top:Math.max(0,$("mainSec").getBoundingClientRect().top+window.scrollY-120),behavior:"smooth"});}
   // past updates: every outside event of every task in this quest (incl. closed ones), 30 days, newest first
   function pastLog(){const out=[],lim=Date.now()-30*864e5,qq=quest;
     for(const t of allTopics){if(t._deleted||t.background||(qq==="fun"?!isFun(t):isFun(t)||questOf(t)!==qq))continue;
@@ -5138,27 +5213,31 @@ html.desk .co-mark{font-size:2.4cqi}
   function openNw(x){nwSee(x.id);const w=String(x.where||"");
     {const tid=w==="chat"?"":linkTid(x);if(tid){jumpTask(tid);return;}}
     if(w.startsWith("settings:")){setOpen.add(w.slice(9));showSettings();return;}
-    if(w.startsWith("dash:")){openDash(w.slice(5));return;}
+    if(w.startsWith("dash:")||x.dash){openDash(x.dash||w.slice(5));return;}
     const u=safeUrl(x.url||"");if(u){window.open(u,"_blank","noopener");return;}
     {const tid=w==="chat"?"":titleTid(x.text);if(tid)jumpTask(tid);}}
   function renderUpd(){
-    const L=updItems(),dayOf=ms=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date(ms)),today=ilDate();
-    const C=nwList("chat"),A=[...nwQuest(quest),...(quest==="side"?nwList("settings:"):[]),...nwList("dash:").filter(x=>{const d=dashById(String(x.where).slice(5));return d&&(d.quest||"side")===quest;})],D=questFresh(quest).filter(d=>!A.some(x=>x.where==="dash:"+d.id));
+    const dayOf=ms=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date(ms)),today=ilDate();
+    const U=updSet(quest),C=U.C,A=U.A,L=U.L,D=questFresh(quest).filter(d=>!A.some(x=>x.where==="dash:"+d.id));
+    upOnScreen={items:[...C,...A,...L],old:U.old};
     const G=[];
     // 19.13 (Oren 17.11.2026): two kinds, clearly labelled: ask:true = a real open question/decision for him; otherwise
     // an update from Claude he has not read yet (a chat waiting on a third party is never an "ask")
     if(C.length){const CA=C.filter(x=>x.ask),CU=C.filter(x=>!x.ask);
-      G.push(h("div",{class:"up-g"},"💬 המשך שיחה"),...CA.map(x=>nwRow("❓",x.text,"מחכה לתשובה שלך"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x))),
-        ...CU.map(x=>nwRow("📩",x.text,"עדכון ממני שעוד לא קראת"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x))));}
-    if(A.length)G.push(h("div",{class:"up-g"},"✨ חדש באפליקציה"),...A.map(x=>nwRow(String(x.where).startsWith("task:")?"📌":String(x.where).startsWith("settings:")?"⚙️":String(x.where).startsWith("dash:")?"📊":"✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
+      G.push(h("div",{class:"up-g"},"💬 המשך שיחה"),...CA.map(x=>ackWrap(x,nwRow("❓",x.text,"מחכה לתשובה שלך"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x)))),
+        ...CU.map(x=>ackWrap(x,nwRow("📩",x.text,"עדכון ממני שעוד לא קראת"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x)))));}
+    if(A.length)G.push(h("div",{class:"up-g"},"✨ חדש באפליקציה"),...A.map(x=>ackWrap(x,nwRow(String(x.where).startsWith("task:")?"📌":String(x.where).startsWith("settings:")?"⚙️":String(x.where).startsWith("dash:")?"📊":"✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x)))));
     if(D.length)G.push(h("div",{class:"up-g"},"📊 דשבורדים"),...D.map(d=>nwRow(d.icon||"📊",d.title||d.short||d.id,dashWhy(d)+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id))));
-    if(L.length)G.push(...(G.length?[h("div",{class:"up-g"},"≡ משימות")]:[]),...L.map(x=>updRow(x)));
-    const n=C.length+A.length+D.length+L.length;
-    const top=[h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🔔"),h("b",null,"עדכונים"),h("small",null,n?"מאז הכניסה הקודמת · "+n:"")),
+    if(L.length)G.push(...(G.length?[h("div",{class:"up-g"},"≡ משימות")]:[]),...L.map(x=>ackWrap(x,updRow(x))));
+    const n=C.length+A.length+D.length+L.length,nn=U.n+D.length;
+    const top=[h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🔔"),h("b",null,"עדכונים"),h("small",null,nn?"חדשים · "+nn:n?"ראית, עוד לא אישרת · "+n:"")),
       n?h("div",{class:"uplist"},G):h("div",{class:"wc-empty"},"אין עדכונים חדשים מאז הכניסה הקודמת"))];
     const P=pastLog().filter(x=>!L.some(y=>y.t.id===x.t.id&&y.r.ms===x.r.ms));
-    if(P.length){const body=[];let d="";for(const x of P){const dd=dayOf(x.r.ms);if(dd!==d){d=dd;body.push(h("div",{class:"up-day"},dd===today?"היום":dd===addDays(today,-1)?"אתמול":dd.split("-").reverse().join("/").replace(/^(\d\d\/\d\d\/)20/,"$1")));}body.push(updRow(x,true));}
-      top.push(foldBox("past","📜 עדכוני עבר",P.length,[h("div",{class:"uplist"},body)]));}
+    // archived app / chat items too (👍 or replaced by newer ones), under the same 📜 fold
+    const PA=newItems.filter(x=>x&&x.id&&upIsAck(upKeyN(x))&&Date.now()-(Date.parse(x.at||"")||0)<30*864e5).map(x=>({...x,ms:Date.parse(x.at||"")||0}));
+    const PP=[...P.map(x=>({ms:x.r.ms,el:()=>updRow(x,true)})),...PA.map(x=>({ms:x.ms,el:()=>{const r=nwRow("✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x));r.classList.add("past");return r;}}))].sort((a,b)=>b.ms-a.ms);
+    if(PP.length){const body=[];let d="";for(const x of PP){const dd=dayOf(x.ms);if(dd!==d){d=dd;body.push(h("div",{class:"up-day"},dd===today?"היום":dd===addDays(today,-1)?"אתמול":dd.split("-").reverse().join("/").replace(/^(\d\d\/\d\d\/)20/,"$1")));}body.push(x.el());}
+      top.push(foldBox("past","📜 עדכוני עבר",PP.length,[h("div",{class:"uplist"},body)]));}
     $("list").replaceChildren(...top);$("more").replaceChildren();$("doneSec").replaceChildren();renderInbox();}
   function recentList(days){const lim=Date.now()-days*864e5;return newPool().map(t=>({t,r:recentOf(t)})).filter(x=>x.r&&x.r.ms>=lim).sort((a,b)=>b.r.ms-a.r.ms);}
   function renderNew(){
@@ -5258,7 +5337,7 @@ html.desk .co-mark{font-size:2.4cqi}
   // 22.4 (Oren 18.11.2026): the panel is only the connections, one identical row each: icon, name, when it last connected,
   // status, ⟳. A tap refreshes that connection in place. No legend, no full-refresh button.
   function showConn(){modal("cnM",h("div",{class:"lhd"},h("h2",null,"🔌 חיבורים",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),
-      h("div",{class:"lbody",id:"cnBody"}),h("div",{class:"lft"},h("button",{type:"button",onclick:closeModal},"✓ סגור")));
+      h("div",{class:"lbody",id:"cnBody"}),h("div",{class:"lft"},h("button",{type:"button",onclick:()=>{closeModal();$("refr").click();}},"⟳ עדכון מלא"),h("button",{type:"button",onclick:closeModal},"✓ סגור")));
     renderConn();}
   function fillConn(S){const el=document.getElementById("cnBody");if(!el)return;
     const row=(k,name,st,go)=>{const ic=h("span",{class:"ci"+(st.lv==="off"?" off":""),html:CN_ICON[k]?CN_ICON[k].outerHTML:""});ic.append(h("i",{class:"cl"+(st.lv==="off"?"":" "+st.lv)}));
