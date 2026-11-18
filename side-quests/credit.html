@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#203A4C">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CR_BUILD="1.4";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CR_BUILD="1.5";</script>
 <script src="sq-db.js?v=10"></script>
 <title>כרטיסי אשראי</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,6 +103,30 @@ details.more>div{padding-top:6px;font-size:14px;color:var(--muted);line-height:1
 .sec input{display:block;width:100%;margin-top:4px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:600 16px ui-monospace,Menlo,Consolas,monospace;text-align:left}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.cmp{font-size:13px}.cmp th,.cmp td{padding:7px 5px}}
+/* anomalies tab (1.5) */
+.seg button{font-size:14px;padding:9px 2px}
+.cnt{display:inline-block;min-width:18px;margin-inline-start:4px;padding:0 5px;border-radius:999px;background:var(--bad);color:#fff;font-size:11.5px;line-height:18px;vertical-align:1px}
+.cnt.z{background:var(--good)}
+.fbn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:right;cursor:pointer;border-color:var(--bad);background:var(--bad-soft);position:relative;padding-inline-end:34px}
+.fbn b{font-family:var(--f-display);color:var(--bad);font-size:16px}.fbn span{font-size:13.5px;color:var(--muted)}.fbn .go{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--bad)}
+.scan{display:flex;flex-direction:column;gap:2px;font-size:13.5px;color:var(--muted)}.scan b{color:var(--ink);font-family:var(--f-display);font-size:15px}
+.case+.case{border-top:1px solid var(--line)}
+.case>summary{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;list-style:none}.case>summary::-webkit-details-marker{display:none}
+.case .rk{width:10px;height:10px;border-radius:50%;flex:none}.rk.p-bad{background:var(--bad)}.rk.p-warn{background:var(--warn)}.rk.p-hi{background:var(--hi)}
+.case .b{flex:1;min-width:0}.case .t{font-family:var(--f-display);font-weight:700;font-size:16px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.case .s{color:var(--muted);font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.case[open] .s{white-space:normal}
+.case .v{flex:none;text-align:left;font-family:var(--f-display);font-weight:800;font-size:15px}.case .v small{display:block;color:var(--muted);font-family:var(--f-body);font-weight:600;font-size:12px}
+.case.done{opacity:.7}
+.case .cb{padding:0 14px 12px}.case:not(.rr)[open] .cb{animation:grow .22s ease-out}
+@keyframes grow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.case .kv div{font-size:14.5px}
+.ask{margin:0 0 8px;padding:9px 11px;border-radius:10px;background:var(--warn-soft);color:var(--ink);font-weight:700;font-size:15px}
+.acts button{padding:11px 2px;font-size:14px;white-space:nowrap}
+.acts button.a-ok{background:var(--good-soft);color:var(--good)}.acts button.a-check{background:var(--hi-soft);color:var(--hi)}.acts button.a-dispute{background:var(--bad-soft);color:var(--bad)}.acts button.a-drop{background:var(--sunk);color:var(--muted)}
+.rws{display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;font-size:13.5px}
+.lg li{font-size:13px;color:var(--muted);padding:3px 0}
+details.zone{margin-bottom:22px}details.zone>summary{padding:6px 2px}details.zone .list{margin-top:8px}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=9">
 <script src="dash-sub.js?v=8" defer></script>
@@ -118,6 +142,6 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
   <footer id="foot"></footer>
 </div>
 <div class="toast" id="toast" role="status"></div>
-<script src="credit.js?v=6"></script>
+<script src="credit.js?v=7"></script>
 </body>
 </html>
