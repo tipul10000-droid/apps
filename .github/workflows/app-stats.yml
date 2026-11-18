@@ -1,0 +1,37 @@
+# נתוני פיתוח לכל אפליקציה (אורן 18.11.2026): אחרי כל מיזוג ל-main מחשב מחדש את app-stats.json
+# (מתי נוצרה, כמה גרסאות, הגרסה האחרונה) ש-Side Quests מציג ב-AI Projects ← הפרויקט ← סטטיסטיקה.
+# קומיט של GITHUB_TOKEN לא מפעיל ריצה נוספת, ולכן אין לולאה.
+name: App stats
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['app-stats.json']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: app-stats
+  cancel-in-progress: false
+
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build app-stats.json
+        run: python3 .github/app-stats.py
+      - name: Commit if changed
+        run: |
+          git diff --quiet -- app-stats.json && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add app-stats.json
+          git commit -m "app-stats.json: refresh [skip ci]"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          exit 1

@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.9";window.SQ_BUILD_AT="18.11.2026 20:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="23.0";window.SQ_BUILD_AT="18.11.2026 21:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1531,6 +1531,29 @@ details.more[open]>summary{margin-bottom:10px}
 .pjacts>*{flex:1 1 0;min-width:0;min-height:46px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 8px;background:var(--surface);color:var(--ink);font:inherit;font-size:14.5px;font-weight:600;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pjacts>*:active{background:var(--sunk)}
 .pjacts svg{width:17px;height:17px;flex:none}
+.pjacts>.pjstb .chev{margin-inline-start:4px;transition:transform .2s;display:inline-block;font-size:20px;line-height:1;color:var(--muted)}
+.pjacts>.pjstb.on{background:var(--sunk)}.pjacts>.pjstb.on .chev{transform:rotate(90deg)}
+.pjst{width:100%;text-align:start;display:flex;flex-direction:column;gap:10px}
+.pjst.grow{animation:sqgrowA .3s ease-out both}
+.pjst .sth{font-size:13px;font-weight:700;color:var(--muted);margin:4px 4px 0;display:flex;justify-content:space-between;gap:8px}
+.pjst .sth small{font-weight:500}
+.pjst .stg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.pjst .stg>div{background:var(--surface);padding:10px 12px;min-width:0}
+.pjst .stg b{display:block;font-family:var(--f-display);font-size:21px;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pjst .stg span{display:block;font-size:12.5px;color:var(--muted);line-height:1.3;margin-top:2px}
+.pjst .stg .w{grid-column:1/-1}
+.pjst .stc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px 8px}
+.pjst .stc .ct{font-size:12.5px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between}
+.pjst .bars{display:flex;align-items:flex-end;gap:2px;height:64px;direction:ltr}
+.pjst .bars i{flex:1 1 0;background:var(--hero);border-radius:3px 3px 0 0;min-height:2px;opacity:.85}
+.pjst .bars i.z{background:var(--line)}
+.pjst .bx{display:flex;justify-content:space-between;direction:ltr;font-size:11px;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums}
+.pjst .stl{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.pjst .stl>div{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;border-top:1px solid var(--line);font-size:14px}
+.pjst .stl>div:first-child{border-top:0}
+.pjst .stl>div span{color:var(--muted);white-space:nowrap}
+.pjst .stl>div b{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pjst .stn{color:var(--muted);font-size:13.5px;text-align:center;padding:10px;background:var(--surface);border:1px dashed var(--line);border-radius:14px;line-height:1.4}
 .pjsec{display:flex;flex-direction:column;gap:6px}
 .pjsec>h2{font-size:14px;font-weight:700;color:var(--muted);margin:2px 6px 0;display:flex;gap:6px;align-items:center}
 .pjsec>h2 .n{font-variant-numeric:tabular-nums;font-weight:600}
@@ -2546,6 +2569,7 @@ html.desk .co-mark{font-size:2.4cqi}
     page:'<svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>',
     done:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
     app:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M10 9l5 3-5 3z"/></svg>',
+    stats:'<svg viewBox="0 0 24 24"><rect x="4" y="12" width="4" height="8" rx="1"/><rect x="10" y="5" width="4" height="15" rx="1"/><rect x="16" y="9" width="4" height="11" rx="1"/></svg>',
     claude:'<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>',
     play:'<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',
     snooze:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M5 4l3 2M19 4l-3 2"/></svg>',
@@ -3671,6 +3695,71 @@ html.desk .co-mark{font-size:2.4cqi}
   function pjFold(key,title,count,body){if(!count)return null;const k="pj:"+key;const d=h("details",{class:"fold",open:folded[k]===true?"":null},
       h("summary",null,h("span",{class:"ft"},title),h("span",{class:"fn"},count),h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"fbody"},body));
     d.addEventListener("toggle",()=>{folded[k]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
+  // ===== 23.0 (Oren 18.11): a mini statistics dashboard for every app in AI Projects =====
+  // dev data = ../app-stats.json (GitHub Action after every merge: created, releases, version); external apps write projects/<id>.stats_meta.
+  // usage = appstat_ping from each app (../appstat.js) -> appstat_get (needs the Side Quests code). Nothing here is personal.
+  const stOpen={};let stGrow=null;const ST={git:null,use:null,at:0,busy:false,err:false};
+  function stKey(p){const m=/github\.io\/apps\/([a-z0-9-]+)\//.exec(p.app_url||"");return p.stat_app||(m?m[1]:p.id);}
+  async function stLoad(force){if(ST.busy||(!force&&Date.now()-ST.at<120000))return;ST.busy=true;ST.err=false;
+    let pin="";try{pin=localStorage.getItem("sq_pin")||sessionStorage.getItem("sq_pin")||"";}catch(e){}
+    const g=fetch("../app-stats.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null);
+    const u=pin?fetch("https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/appstat_get",{method:"POST",headers:{"Content-Type":"application/json",apikey:"sb_publishable_Pa6-CuUavcT0rpD8ei_cxA_8oZ-Ykku"},body:JSON.stringify({p_key:pin,p_app:"sidequests"})}).then(r=>r.ok?r.json():null).catch(()=>null):Promise.resolve(null);
+    const [gj,uj]=await Promise.all([g,u]);ST.busy=false;ST.at=Date.now();
+    if(gj&&gj.apps)ST.git=gj.apps;if(uj&&uj.status==="ok")ST.use=uj.apps||{};else ST.err=!uj;
+    if(nav.lvl===3&&stOpen[nav.id])renderProj();}
+  function stD(iso){const d=new Date(iso);return isNaN(d)?"":d.toLocaleDateString("he-IL",{day:"numeric",month:"numeric",year:"2-digit",timeZone:"Asia/Jerusalem"});}
+  function stDays(iso){const t=Date.parse(iso);return isNaN(t)?0:Math.max(0,Math.floor((Date.now()-t)/864e5));}
+  function stDur(sec){sec=Math.round(sec||0);if(sec<60)return sec+" שנ׳";const m=Math.round(sec/60);if(m<60)return m+" דק׳";const hh=m/60;return(hh<10?hh.toFixed(1).replace(/\.0$/,""):Math.round(hh))+" שע׳";}
+  function stNum(n){return Number(n||0).toLocaleString("he-IL");}
+  function stBars(vals,lab0,lab1,title,note){const mx=Math.max(1,...vals);
+    return h("div",{class:"stc"},h("div",{class:"ct"},h("span",null,title),note?h("span",null,note):null),
+      h("div",{class:"bars","aria-hidden":"true"},...vals.map(v=>h("i",{class:v?"":"z",style:`height:${v?Math.max(4,Math.round(v/mx*100)):3}%`}))),
+      h("div",{class:"bx"},h("span",null,lab0),h("span",null,lab1)));}
+  const PLAT={"iphone-app":"אייפון, מסך הבית","iphone":"אייפון, Safari","ipad-app":"אייפד, מסך הבית","ipad":"אייפד","android-app":"אנדרואיד, מסך הבית","android":"אנדרואיד","windows":"מחשב Windows","mac":"מק","other":"אחר","?":"לא ידוע"};
+  function statPanel(p){const k=stKey(p),g=(ST.git&&ST.git[k])||p.stats_meta||null,u=ST.use&&ST.use[k];
+    const box=h("div",{class:"pjst"+(stGrow===p.id?" grow":"")});stGrow=null;
+    if(!ST.at&&!g&&!u){box.append(h("div",{class:"stn"},"טוען…"));stLoad();return box;}
+    // development
+    if(g){const cr=g.created,lr=g.last_release||{},wk=Array.isArray(g.weeks)?g.weeks:[],hi0=g.history||(p.stats_meta&&p.stats_meta.history),hi=hi0&&typeof hi0==="object"?hi0:null;
+      box.append(h("div",{class:"sth"},h("span",null,"פיתוח"),g.lines?h("small",null,stNum(g.lines)+" שורות קוד"):null),
+        h("div",{class:"stg"},
+          h("div",null,h("b",null,cr?stD(cr):"–"),h("span",null,cr?"נוצרה, "+(stDays(cr)?"לפני "+stDays(cr)+" ימים":"היום"):"נוצרה")),
+          h("div",null,h("b",{dir:"ltr"},g.version?(/^\d/.test(g.version)&&String(g.version).length<8?"v"+g.version:g.version):"–"),h("span",null,"הגרסה הנוכחית")),
+          h("div",null,h("b",null,stNum(g.releases)),h("span",null,"עדכונים ששוחררו"+(g.release_days?" ב-"+g.release_days+" ימי עבודה":""))),
+          h("div",null,h("b",null,lr.at?relAgo(lr.at):"–"),h("span",null,"העדכון האחרון"+(lr.at?" · "+stD(lr.at):""))),
+          lr.title?h("div",{class:"w"},h("span",{style:"color:var(--ink);font-size:13.5px;margin:0"},lr.title)):null,
+          hi?h("div",{class:"w"},h("span",{style:"margin:0"},"לפני המדידה"+(hi.since?", מ-"+stD(hi.since):"")+": "+[hi.users?heN(hi.users,"משתמש אחד","משתמשים"):"",hi.devices?heN(hi.devices,"מכשיר אחד","מכשירים"):"",hi.note||""].filter(Boolean).join(" · "))):null));
+      const wm={};wk.forEach(x=>wm[x[0]]=x[1]);const ws=[];if(wk.length){let t=Date.parse(wk[0][0]+"T12:00:00Z");const now=Date.now();while(t<=now&&ws.length<16){const d=new Date(t).toISOString().slice(0,10);ws.push([d,wm[d]||0]);t+=7*864e5;}}
+      if(ws.length>1)box.append(stBars(ws.slice(-12).map(x=>x[1]),stD(ws.slice(-12)[0][0]),"השבוע","עדכונים לפי שבוע",heN(Math.min(12,ws.length),"שבוע אחד","שבועות")));}
+    // usage
+    if(u&&u.devs){const others=u.devs-(u.devs_own||0),avg=u.devdays?u.secs/u.devdays:0,days=Array.isArray(u.days)?u.days:[];
+      const since=stD(u.first_at);
+      box.append(h("div",{class:"sth"},h("span",null,"שימוש"),h("small",null,"נספר מ-"+since)),
+        h("div",{class:"stg"},
+          h("div",null,h("b",null,stNum(u.users)),h("span",null,u.uids?"משתמשים (לפי פרופיל או קוד)":"משתמשים (בלי המכשירים שלך)")),
+          h("div",null,h("b",null,stNum(u.devs)),h("span",null,"מכשירים שהפעילו"+(u.devs_own?" · "+u.devs_own+" שלך":""))),
+          h("div",null,h("b",null,stNum(u.act1)+" / "+stNum(u.act7)),h("span",null,"פעילים היום / ב-7 ימים")),
+          h("div",null,h("b",null,stNum(u.act30)),h("span",null,"פעילים ב-30 יום")),
+          h("div",null,h("b",null,stDur(avg)),h("span",null,"ממוצע ליום למכשיר פעיל")),
+          h("div",null,h("b",null,stDur(u.secs)),h("span",null,"זמן שימוש כולל"+(u.devs_own&&others?" · אחרים "+stDur(u.secs_others):""))),
+          h("div",null,h("b",null,stNum(u.opens)),h("span",null,"פתיחות")),
+          h("div",null,h("b",null,u.devs?Math.round((u.back||0)/u.devs*100)+"%":"–"),h("span",null,"חזרו ביותר מיום אחד"))));
+      if(days.length){const map={};days.forEach(x=>map[x[0]]=x);const arr=[];const t0=new Date(Date.parse(u.first_at)||Date.now());
+        const n=Math.min(30,Math.max(7,stDays(u.first_at)+1));for(let i=n-1;i>=0;i--){const d=new Date(Date.now()-i*864e5).toLocaleDateString("en-CA",{timeZone:"Asia/Jerusalem"});arr.push(map[d]||[d,0,0]);}
+        box.append(stBars(arr.map(x=>x[1]),stD(arr[0][0]),"היום","מכשירים פעילים לפי יום"),
+          stBars(arr.map(x=>Math.round((x[2]||0)/60)),stD(arr[0][0]),"היום","דקות שימוש לפי יום"));}
+      const pl=Object.entries(u.plat||{}).sort((a,b)=>b[1]-a[1]),vs=Array.isArray(u.vers)?u.vers:[];
+      if(pl.length||vs.length)box.append(h("div",{class:"stl"},
+        ...pl.map(([k2,n])=>h("div",null,h("b",null,PLAT[k2]||k2),h("span",null,heN(n,"מכשיר אחד","מכשירים")))),
+        ...vs.slice(0,5).map(v=>h("div",null,h("b",{dir:"ltr"},(/^\d/.test(v[0])&&String(v[0]).length<8?"v":"")+v[0]),h("span",null,(v[2]?heN(v[2],"מכשיר אחד עליה","מכשירים עליה")+" · ":"")+"מ-"+stD(v[1]))))));
+    }else box.append(h("div",{class:"stn"},ST.err?"אין חיבור לשרת הסטטיסטיקה. נסה שוב בעוד רגע.":
+      g&&ST.git&&ST.git[k]?"עוד אין נתוני שימוש. המדידה התחילה ב-18.11.2026, והנתונים יופיעו אחרי שמישהו יפתח את האפליקציה.":
+      "האפליקציה עוד לא שולחת נתונים. מעתיקים את ההנחיה ומדביקים בצ׳אט של הפרויקט שלה."));
+    if(!(u&&u.devs)&&!(ST.git&&ST.git[k])){const cu=safeUrl(p.claude_url||"");
+      box.append(h("div",{class:"pjacts"},h("button",{type:"button",onclick:async e=>{const b=e.currentTarget;try{const t=await (await fetch("app-stats-prompt.md?t="+Date.now(),{cache:"no-store"})).text();
+          await navigator.clipboard.writeText(t.replace(/\{\{APP\}\}/g,k).replace(/\{\{PROJECT\}\}/g,p.id));b.textContent="✓ הועתק";setTimeout(()=>{b.textContent="העתק הנחיה";},2500);}catch(x){toast("ההעתקה נכשלה");}}},"העתק הנחיה"),
+        cu?h("a",{href:cu,target:"_blank",rel:"noopener",html:ICON.chat},"לצ׳אט שלה"):null));}
+    return box;}
   function renderProj(){const pg=$("pg3"),id=nav.id,gen=id===GEN_ID,p=gen?null:projById(id);
     const bar=pgBar("AI Projects",gen?"משימות כלליות":p?(p.name||""):"");
     if(!gen&&!p){pg.replaceChildren(bar,h("div",{class:"pgbody"},h("div",{class:"empty"},projects.length?"הפרויקט לא נמצא.":"טוען…")));return;}
@@ -3696,7 +3785,9 @@ html.desk .co-mark{font-size:2.4cqi}
         lok?null:h("h1",null,p.name||""),
         p.stage||p.tagline?h("div",{class:"pjtag"},p.stage||p.tagline):null,
         acts.length?h("div",{class:"pjacts"},...acts):null,
-        extra.length?h("div",{class:"pjacts"},...extra):null);}
+        extra.length?h("div",{class:"pjacts"},...extra):null,
+        h("div",{class:"pjacts"},h("button",{type:"button",class:"pjstb"+(stOpen[id]?" on":""),"aria-expanded":stOpen[id]?"true":"false",html:ICON.stats,onclick:()=>{stOpen[id]=!stOpen[id];stGrow=stOpen[id]?id:null;if(stOpen[id])stLoad();renderProj();}},"סטטיסטיקה",h("span",{class:"chev","aria-hidden":"true"},"‹"))),
+        stOpen[id]?statPanel(p):null);}
     const none=!me.length&&!cl.length&&!oth.length?h("div",{class:"pjnone"},open.length?"":"✓ אין משימות פתוחות"):null;
     const histBody=[...(hist.length?[h("div",{class:"pjsub"},"בוצעו ונסגרו"),h("div",{class:"glist"},hist.map(row))]:[]),
       ...(plog.length?[h("div",{class:"pjsub"},"היסטוריה"),h("div",{class:"pjlog"},plog.map(x=>h("div",null,x.text,x.at?h("small",null,relAgo(x.at)):null)))]:[])];
@@ -6218,5 +6309,6 @@ html.desk .co-mark{font-size:2.4cqi}
 })();
 </script>
 <script src="sq-tel.js?v=1" defer></script>
+<script src="../appstat.js?v=1"></script><script>window.AppStat&&AppStat.init({app:"side-quests",ver:function(){return window.SQ_BUILD},uid:"oren"})</script>
 </body>
 </html>

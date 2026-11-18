@@ -27,7 +27,7 @@
       if(REG[id]==='live')return;
       if(rv&&review()){window.STUDY_REVIEW=1; // תצוגת בדיקה של הורה: לא מדווחים ולא מגבים התקדמות בשם הילד (track.js)
         // וגם לא נוגעים בהתקדמות של הילד במכשיר (אורן 15.11.2026: הבדיקה של ההורה נשמרה אצל שילה): כל מפתח מקבל את הקידומת "review:", כמו במצב אורח
-        try{var P=Storage.prototype,gi=P.getItem,si=P.setItem,ri=P.removeItem,rk=function(x){x=String(x);return /^study_(qz|ok)_|^study_(guest|profile|adopt)$/.test(x)?x:'review:'+x};
+        try{var P=Storage.prototype,gi=P.getItem,si=P.setItem,ri=P.removeItem,rk=function(x){x=String(x);return /^study_(qz|ok)_|^study_(guest|profile|adopt)$|^(appstat_dev|sq_pin|sq_key)$|^appstat_o_/.test(x)?x:'review:'+x};
           P.getItem=function(x){return this===localStorage?gi.call(this,rk(x)):gi.call(this,x)};
           P.setItem=function(x,v){return this===localStorage?si.call(this,rk(x),v):si.call(this,x,v)};
           P.removeItem=function(x){return this===localStorage?ri.call(this,rk(x)):ri.call(this,x)}}catch(e){}
