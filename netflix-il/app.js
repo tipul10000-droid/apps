@@ -30,6 +30,10 @@
     globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
     moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
     lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    phone: '<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+    share: '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M7 10H5.5v10.5h13V10H17"/>',
+    dots: '<circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/>',
+    chev: '<path d="m6 9 6 6 6-6"/>',
   };
   const icHTML = (n) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICO[n] || "") + "</svg>";
   const ic = (n) => ICO[n] ? h("span", { class: "ic", html: icHTML(n) }) : h("span", { class: "ic t" }, n || ""); // non-icon = text (the flag)
@@ -295,6 +299,41 @@
   // ---------- sheets ----------
   function sheet(title, body, cls) { $("ovT").textContent = title; $("ovB").replaceChildren(...body.filter(Boolean)); const sh = document.querySelector("#ov .sheet"); sh.className = "sheet" + (cls ? " " + cls : ""); sh.style.marginTop = ""; $("ov").style.alignItems = ""; $("ov").hidden = false; }
   function closeSheet() { $("ov").hidden = true; }
+  // ---------- home-screen install guide (Oren 18.11.2026) ----------
+  // Short how-to for adding the site to the home screen as a web app. Shows the steps for this device first
+  // (iPhone or Android), hidden when already running from the home screen or inside Side Quests (embed).
+  let instEv = null;
+  addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); instEv = e; });
+  const isApp = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  function install() {
+    if (isApp() || document.body.classList.contains("embed")) return null;
+    let os = /Android/.test(navigator.userAgent) ? "and" : "ios"; // everything else gets the iPhone steps
+    const K = (t) => h("b", { dir: "ltr" }, t);
+    const STEPS = {
+      ios: [h("li", null, "פותחים את הלינק ב-", K("Safari"), "."),
+        h("li", null, "לוחצים על ", h("span", { class: "ki" }, ic("share")), " (Share). אם לא רואים אותו, קודם על ", h("span", { class: "ki" }, ic("dots")), " למטה."),
+        h("li", null, "בוחרים ", K("Add to Home Screen"), " (הוספה למסך הבית), משאירים דולק את ", K("Open as Web App"), " ולוחצים ", K("Add"), ".")],
+      and: [h("li", null, "פותחים את הלינק ב-", K("Chrome"), "."),
+        h("li", null, "לוחצים על ", h("span", { class: "ki" }, ic("dots")), " בפינה למעלה."),
+        h("li", null, "בוחרים ", K("Add to home screen"), " או ", K("Install app"), " ומאשרים.")],
+    };
+    const list = h("ol", { class: "isteps" }), seg = h("div", { class: "seg mini iseg" });
+    const go = h("button", { type: "button", class: "btn", hidden: true, onclick: async () => { if (!instEv) return; instEv.prompt(); await instEv.userChoice; instEv = null; go.hidden = true; } }, ic("plus"), "להוסיף עכשיו");
+    const show = () => { list.replaceChildren(...STEPS[os]); for (const b of seg.children) b.classList.toggle("on", b.dataset.v === os); go.hidden = !(os === "and" && instEv); };
+    for (const [v, t] of [["ios", "iPhone"], ["and", "Android"]]) seg.append(h("button", { type: "button", "data-v": v, onclick: () => { os = v; show(); } }, t));
+    const body = h("div", { class: "iin" }, h("p", { class: "note" }, "האפליקציה נפתחת מאייקון משלה, במסך מלא ובלי סרגלי הדפדפן."), seg, list, go,
+      h("p", { class: "note" }, "באייקון יש רשימות נפרדות מהדפדפן. כדי שיהיו אותן רשימות, משתמשים בסנכרון למטה."));
+    const wrap = h("div", { class: "iwrap" }, body);
+    const tog = h("button", { type: "button", class: "btn ibtn", "aria-expanded": "false", onclick: () => { const o = !wrap.classList.contains("on"); wrap.classList.toggle("on", o); tog.setAttribute("aria-expanded", o); } },
+      h("span", null, "איך מוסיפים למסך הבית"), h("span", { class: "chev" }, ic("chev")));
+    show();
+    return h("div", null, h("div", { class: "h3" }, ic("phone"), "אפליקציה במסך הבית"), tog, wrap);
+  }
+  // A "show also" switch in settings: off by default, this device only; changing it rebuilds the item list.
+  function showTgl(key, label, sub) {
+    const t = h("button", { type: "button", class: "tgl wide" + (ls.get(key, false) ? " on" : ""), role: "switch" }, h("span", { class: "sw" }), h("span", { class: "tl" }, label, h("small", null, sub)));
+    t.onclick = () => { const v = !ls.get(key, false); ls.set(key, v); t.classList.toggle("on", v); if (cat) { useItems(); render(); } }; return t;
+  }
   function settings() {
     const opts = [["all", "all", "בלי העדפה", "כל מה שיש בנטפליקס ישראל"]];
     for (const [k, p] of Object.entries(TASTES)) opts.push([k, p.icon, p.name, p.pending ? "בקרוב: מחכה לרשימת האהובים" : "לפי מה שאהבת ומה לא"]);
@@ -311,8 +350,9 @@
         h("small", null, "המכשירים שלך לא נספרים")) : null,
       h("div", { class: "h3" }, "העדפה"), box,
       h("div", { class: "h3" }, "תצוגה"),
-      (() => { const t = h("button", { type: "button", class: "tgl wide" + (ls.get("nf_noimg", false) ? " on" : ""), role: "switch" }, h("span", { class: "sw" }), h("span", { class: "tl" }, "להציג גם כותרים בלי תמונה", h("small", null, "בדרך כלל לא מוכרים, ולכן מוסתרים")));
-        t.onclick = () => { const v = !ls.get("nf_noimg", false); ls.set("nf_noimg", v); t.classList.toggle("on", v); if (cat) { useItems(); render(); } }; return t; })(),
+      showTgl("nf_noimg", "להציג גם כותרים בלי תמונה", "בדרך כלל לא מוכרים, ולכן מוסתרים"),
+      showTgl("nf_norate", "להציג גם כותרים בלי ציון IMDb", "אין להם ציון בכלל, ולכן מוסתרים"),
+      install(),
       h("div", { class: "h3" }, "לשתף"),
       h("button", { type: "button", class: "btn", onclick: share }, ic("link"), "לשתף את האפליקציה"),
       h("div", { class: "h3" }, ic("sync"), "סנכרון"), sync.box(),
@@ -491,10 +531,12 @@
       h("details", null, h("summary", null, "יש לי קוד סנכרון"), sb)));
   }
 
-  // Titles without a poster are obscure: left out of everything, counts too, unless switched on in settings
-  // (Oren 18.11.2026; nf_noimg, this device only).
+  // Titles without a poster or without any IMDb rating are obscure: left out of everything, counts too, unless
+  // switched on in settings (Oren 18.11.2026; nf_noimg / nf_norate, this device only). "No rating" = no r at all;
+  // a rating under MIN_VOTES still counts as rated (shown as N/A), so Israeli titles keep their exemption.
   function useItems() {
-    items = ls.get("nf_noimg", false) ? (cat.items || []) : (cat.items || []).filter((x) => x.p);
+    const img = ls.get("nf_noimg", false), rate = ls.get("nf_norate", false);
+    items = (cat.items || []).filter((x) => (img || x.p) && (rate || x.r));
     minF = items.reduce((m, x) => (!m || (x.f && x.f < m) ? x.f : m), "");
     const ns = items.filter((x) => x.k[0] === "s").length;
     $("meta").replaceChildren(
