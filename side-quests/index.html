@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.7";window.SQ_BUILD_AT="18.11.2026 13:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.8";window.SQ_BUILD_AT="18.11.2026 16:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -3240,6 +3240,24 @@ html.desk .co-mark{font-size:2.4cqi}
   // lights up with a count and always scrolls down to the dashboards; opening one shows "🆕 מה חדש" on top, then it is seen.
   let dzSeen=null;try{dzSeen=JSON.parse(localStorage.getItem("sq_dash_seen")||"null");}catch(e){dzSeen=null;}
   if(!dzSeen||typeof dzSeen!=="object"){dzSeen={_base:new Date(Date.now()-72*36e5).toISOString()};try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}}
+  // ===== 22.8 (Oren 18.11.2026): a real refresh = one line per subject, nothing closed, no decision already taken =====
+  // Used by every "מה חדש" (dashboard news, the dashboard box, 🔔 עדכונים, app items). Newest first; a task (tid) keeps one
+  // line (its upd wins over the news lines), lines without a task merge when they say the same thing (60% of the words).
+  const dgTok=s=>new Set(String(s||"").toLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").split(" ").filter(w=>w.length>1));
+  function dgSim(a,b){const A=dgTok(a),B=dgTok(b),m=Math.min(A.size,B.size);if(m<3)return String(a||"").trim()===String(b||"").trim();let n=0;for(const w of A)if(B.has(w))n++;return n/m>=.6;}
+  let dgStat={dup:new Set(),closed:new Set(),dec:new Set()};
+  function dgClosed(id){const t=id&&allTopics.find(x=>x.id===id);return !!t&&(!!t._deleted||["done","promoted","archived"].includes(t.status)||!!t.merged_into);}
+  function dgDecided(id){const t=id&&allTopics.find(x=>x.id===id);if(!t)return false;const Q=questionsOf(t);return Q.length>0&&Q.every(q=>q.answer);}
+  function dgList(L,txt){const out=[];
+    for(const x of [...L].sort((a,b)=>b.ms-a.ms)){const tid=x.tid||"";
+      if(tid&&dgClosed(tid)){dgStat.closed.add(tid+"|"+txt(x));continue;}
+      const same=out.find(y=>(tid&&y.tid===tid)||dgSim(txt(x),txt(y)));
+      if(same){dgStat.dup.add(txt(x)+"|"+x.ms);if(x.k==="upd"&&same.k!=="upd"){same.k="upd";same.title=x.title;same.what=x.what;same.text=x.text;}continue;}
+      out.push({...x});}
+    return out;}
+  // app items (settings/new_items): nothing about a closed task, no "waiting for your answer" once every question is answered
+  function dgNw(L){return dgList(L.filter(x=>{const tid=linkTid(x);if(tid&&dgClosed(tid)){dgStat.closed.add(tid+"|"+x.text);return false;}
+      if(x.ask&&tid&&dgDecided(tid)){dgStat.dec.add(x.id);return false;}return true;}).map(x=>({...x,tid:x.tid||linkTid(x)})),x=>x.text+" "+(x.sub||""));}
   const EXT_NEW=/gmail|ג׳?ימייל|מייל|mail|סריקה|smart|סמארט|משו״?ב|mashov|אתר|portal/i;
   function dashNews(d){const out=[],now=Date.now(),wk=7*864e5;
     for(const n of (Array.isArray(d.news)?d.news:[])){const ms=Date.parse(n&&n.at||"");if(ms&&now-ms<wk&&ms<=now+6e4&&n.text)out.push({ms,k:"news",title:"",what:String(n.text),text:String(n.text),tid:newsTid(n)});}
@@ -3252,7 +3270,7 @@ html.desk .co-mark{font-size:2.4cqi}
       // tasks Oren asked for in a chat, or that are already closed, are not news (income showed "9 updates" of those).
       if(u&&now-u<wk&&u<=now+6e4){const w=clean(t.upd.what);out.push({ms:u,k:"upd",title:t.title||"",what:w&&w!==t.title?w:"",text:(t.title||"")+(w&&w!==t.title?": "+w:""),tid:t.id});}
       else if(c&&now-c<wk&&c<=now+6e4&&isOpen(t)&&EXT_NEW.test(t.source||""))out.push({ms:c,k:"new",title:t.title||"",what:"משימה חדשה",text:"משימה חדשה: "+(t.title||""),tid:t.id});}
-    return out.sort((a,b)=>b.ms-a.ms);}
+    return dgList(out,x=>x.text);}
   function dashUnseen(d){if(!d||d.archived||d._deleted)return [];const s=Math.max(Date.parse(dzSeen[d.id]||"")||0,Date.parse(dzSeen._base||"")||0);
     try{return dashNews(d).filter(x=>x.ms>s);}catch(e){return [];}}
   function dashSeen(id){dzSeen[id]=new Date().toISOString();try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}setTimeout(()=>{updDzBtn();renderDash();},0);}
@@ -3266,6 +3284,8 @@ html.desk .co-mark{font-size:2.4cqi}
   function dashItems(d){if(!d||d.archived||d._deleted)return [];const now=Date.now(),base=Date.parse(dzSeen._base||"")||0,out=[];
     for(const n of (Array.isArray(d.news)?d.news:[])){if(!n||!n.item)continue;const ms=Date.parse(n.at||"");if(!ms||now-ms>14*864e5||ms>now+6e4||ms<=base)continue;
       if((Date.parse(itSeen[d.id+":"+n.item]||"")||0)>=ms)continue;
+      if(n.tid&&dgClosed(String(n.tid)))continue;
+      {const o=out.find(y=>y.id===String(n.item));if(o){if(ms>o.ms){o.ms=ms;o.at=new Date(ms).toISOString();}continue;}}
       out.push({id:String(n.item),at:new Date(ms).toISOString(),ms,path:Array.isArray(n.path)?n.path.map(String):[]});}
     return out;}
   // 19.8: a dashboard that is new on this device, or moved to another quest, is new until it is opened (sq_dash_known {id:{q, nw}})
@@ -3292,8 +3312,8 @@ html.desk .co-mark{font-size:2.4cqi}
   // "💬 המשך שיחה", dot on the 💬 button; tapping the row opens the chat), "quest:<q>" or "app" (a new feature).
   // Seen per device: sq_new_seen {id: at}. "🔔 עדכונים" lists all of it for the quest on screen, in place, newest first.
   let newItems=[],nwSeen={};try{nwSeen=JSON.parse(localStorage.getItem("sq_new_seen")||"{}")||{};}catch(e){nwSeen={};}
-  function nwList(pfx){const now=Date.now();return newItems.filter(x=>x&&x.id&&!x.done&&(!pfx||String(x.where||"app").startsWith(pfx))).map(x=>({...x,ms:Date.parse(x.at||"")||0}))
-    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&(Date.parse(nwSeen[x.id]||"")||0)<x.ms).sort((a,b)=>b.ms-a.ms);}
+  function nwList(pfx){const now=Date.now();return dgNw(newItems.filter(x=>x&&x.id&&!x.done&&(!pfx||String(x.where||"app").startsWith(pfx))).map(x=>({...x,ms:Date.parse(x.at||"")||0}))
+    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&(Date.parse(nwSeen[x.id]||"")||0)<x.ms).sort((a,b)=>b.ms-a.ms));}
   // ===== 20.3 (Oren 17.11.2026): a "מה חדש" item that is about a task jumps to that task =====
   // Explicit link: tid (or topic / task) on the item, or where "task:<id>". Without one, a task whose title (8+ chars)
   // appears in the item's text. Used by settings/new_items, dashboards/<id>.news and the in-dashboard "🆕 מה חדש" box.
@@ -4761,19 +4781,22 @@ html.desk .co-mark{font-size:2.4cqi}
   setInterval(()=>{if(db&&!laterFor)renderAll();renderConn();},60000);
   // 20.0: the right side of the bar = Side Quests itself. green = the last server call worked and nothing waits,
   // orange = network but the server fails, or changes wait to be sent, red = no network ("✈️" + time since the last real sync).
+  let fullAt=0,fullBusy=false;try{fullAt=+(localStorage.getItem("sq_full_at")||0)||0;}catch(e){}
   function sqConn(){const N=window.SQ_NET||{},q=N.q||0,last=window.SQ_LAST_REFRESH||N.last||0;
     if(N.ok===false&&N.kind==="net")return{lv:"bad",t:`אין רשת · עדכון אחרון ${last?ago(last):"לא ידוע"}`,short:`✈️ ${last?ago(last):"אופליין"}`,q,last};
     if(N.ok===false)return{lv:"late",t:`יש רשת, השרת לא עונה · עדכון אחרון ${last?ago(last):"לא ידוע"}`,short:`⚠ ${last?ago(last):"שרת"}`,q,last};
     if(q)return{lv:"late",t:`${q===1?"שינוי אחד ממתין":q+" שינויים ממתינים"} לשליחה`,short:last?ago(last):"",q,last};
-    if(N.ok)return{lv:"ok",t:`מחובר · עודכן ${ago(last)}`,short:last?ago(last):"",q,last};
+    if(N.ok){const fa=fullAt;return{lv:"ok",t:fa?`עודכן ${ago(fa)} (עדכון מלא)`:"מחובר, עוד לא עודכן",short:fa?ago(fa):"",q,last};}
     return{lv:"off",t:"בודק חיבור…",short:last?ago(last):"",q,last};}
   // 20.5 (Oren 17.11.2026): the bar reads "SC מחובר ● 3 דק׳" / "SC אופליין ● ✈️ 2 שע׳": the light sits inside the text line,
   // vertically centered with it (it continues the sentence; corner lights are only for the logos on the other side).
   const scAgo=ms=>{if(!ms)return"";const m=Math.floor((Date.now()-ms)/60000);if(m<1)return"עכשיו";if(m<60)return m+" דק׳";const hr=Math.floor(m/60);if(hr<48)return hr+" שע׳";return Math.floor(hr/24)+" ימים";};
   function renderRefr(){const c=sqConn(),d=document.getElementById("clSq");if(d)d.className="cl"+(c.lv==="off"?"":" "+c.lv);
     const N=window.SQ_NET||{},st=c.lv==="ok"?"מחובר":c.lv==="bad"?"אופליין":c.lv==="late"?(N.ok===false?"לא עונה":"ממתין"):"בודק…";
-    if($("scSt"))$("scSt").textContent=st;
-    if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=(c.lv==="bad"?"✈️\u2009":"")+scAgo(c.last)+(c.q?` (${c.q})`:"");$("refr").classList.toggle("offl",c.lv==="bad"||(window.SQ_NET&&SQ_NET.ok===false));
+    if(fullBusy){if($("scSt"))$("scSt").textContent="מעדכן";return;}
+    const fa=fullAt;
+    if($("scSt"))$("scSt").textContent=c.lv==="ok"?(fa?"עודכן":"לא עודכן"):st;
+    if($("refr").classList.contains("spin"))return;$("refrTxt").textContent=(c.lv==="bad"?"✈️\u2009":"")+scAgo(c.lv==="ok"&&fa?fa:c.last)+(c.q?` (${c.q})`:"");$("refr").classList.toggle("offl",c.lv==="bad"||(window.SQ_NET&&SQ_NET.ok===false));
     $("refr").setAttribute("aria-label","עדכון מלא. "+c.t);}
   // 20.1: ask the service worker to save every local dashboard page ahead of time (offline from the first time)
   let warmKey="";
@@ -4973,18 +4996,43 @@ html.desk .co-mark{font-size:2.4cqi}
   $("dzbtn").onclick=()=>goDashes();$("updbtn").onclick=()=>toggleUpd();
   // 19.8: 💬 with a blue dot = a chat waits for him: the first tap shows "💬 המשך שיחה" in the updates (the next one opens the project)
   $("tchat").addEventListener("click",e=>{if(nwList("chat").length&&!updOn){e.preventDefault();if(!WQ.includes(quest))setQuest("side");toggleUpd();}});
-  $("refr").onclick=async()=>{const b=$("refr");if(b.classList.contains("spin"))return;b.classList.add("spin");$("refrTxt").textContent="מעדכן…";checkUpdate(true);
-    const before=snapT(),t0=Date.now();sheet(true,"מעדכן את הסטטוס האחרון…",null,"מושך נתונים טריים ומבקש סריקה מלאה");
-    let ok=true;
-    cfRefresh(true);
-    try{if(db&&canWrite)await db.collection("settings").doc("sync_request").set({at:new Date().toISOString(),from:"app"}).catch(()=>{});
-      if(db&&db.refresh)await db.refresh();}catch(e){ok=false;}
-    const wait=2000-(Date.now()-t0);if(wait>0)await new Promise(r=>setTimeout(r,wait));
-    laterFor=null;renderAll();b.classList.remove("spin");renderRefr();
+  // ===== 22.8 (Oren 18.11.2026): "עודכן" means the app really refreshed, not that the server answered =====
+  // A full refresh: new app version → send waiting changes and pull every collection → (on a tap) ask the cash-flow
+  // and the Claude sweep to update and wait for them → digest: one line per subject in every "מה חדש", closed tasks and
+  // decisions already taken drop → pull once more and rebuild. It runs by itself when the app opens or comes back after
+  // 10+ minutes (quietly, the bar shows "מעדכן 2/5"); a tap on ⟳ runs the long version (up to ~20s) with the steps on screen.
+  // The bar says "עודכן" only after a full pass (sq_full_at), with the time since it.
+  const FS=["בודק אם יש גרסה חדשה","שולח שינויים ומושך את כל הנתונים","מבקש מהתזרים ומהסריקה להתעדכן","מאחד כפילויות, מוריד מה שנסגר והחלטות שנלקחו","מושך שוב ובונה תמונה עדכנית"];
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  function dgCount(){dgStat={dup:new Set(),closed:new Set(),dec:new Set()};try{for(const d of dashes){if(!d._deleted&&!d.archived)dashNews(d);}nwListAll("");for(const q of ["side","fun","army","work","travel","ai"])updSet(q);}catch(e){}return {dup:dgStat.dup.size,closed:dgStat.closed.size,dec:dgStat.dec.size};}
+  async function fullSync(manual){if(fullBusy||!db)return;fullBusy=true;const b=$("refr");b.classList.add("spin");
+    const t0=Date.now(),before=snapT();let step=0,ok=true,st=null;
+    const show=()=>{$("refrTxt").textContent=`${Math.min(step+1,FS.length)}/${FS.length}`;if($("scSt"))$("scSt").textContent="מעדכן";
+      if(manual)sheet(true,"מעדכן… עד כ-20 שניות",FS.map((x,i)=>(i<step?"✓ ":i===step?"⟳ ":"○ ")+x),"מחכה לתשובות כדי להציג תמונה עדכנית ומאוחדת");};
+    const go=async f=>{show();try{await f();}catch(e){}step++;};
+    await go(()=>checkUpdate(true));
+    await go(async()=>{try{if(db.refresh)await db.refresh();}catch(e){ok=false;}});
+    if(ok)await go(async()=>{if(!manual||!canWrite)return;
+      await db.collection("settings").doc("sync_request").set({at:new Date().toISOString(),from:"app"}).catch(()=>{});
+      await Promise.race([cfRefresh(true),sleep(12000)]);});
+    if(ok)await go(async()=>{st=dgCount();await sleep(manual?400:0);});
+    if(ok)await go(async()=>{try{if(db.refresh)await db.refresh();}catch(e){}});
+    if(manual){const w=4000-(Date.now()-t0);if(w>0)await sleep(w);}
+    if(ok){fullAt=Date.now();try{localStorage.setItem("sq_full_at",String(fullAt));}catch(e){}}
+    fullBusy=false;laterFor=null;renderAll();b.classList.remove("spin");renderRefr();
+    if(!manual)return;
     if(!ok){const c=sqConn();sheet(false,c.lv==="bad"?"✈️ אין רשת":"העדכון נכשל, נסה שוב",null,`מוצג העדכון האחרון ששמור במכשיר (${c.last?ago(c.last):"לא ידוע"}).`+(c.q?` ${c.q===1?"שינוי אחד ממתין":c.q+" שינויים ממתינים"} ויישלחו כשהרשת תחזור.`:""));return;}
-    const ch=diffT(before,snapT());
-    const e=sheet(false,ch.length?`עודכן · ${ch.length===1?"שינוי אחד":ch.length+" שינויים"}`:"עודכן · אין שינויים חדשים",ch.slice(0,5),sweepLine());
-    setTimeout(()=>e.remove(),ch.length?9000:5000);};
+    const ch=diffT(before,snapT()),L=ch.slice(0,5);
+    if(st&&st.dup)L.push(`אוחדו ${st.dup} כפילויות ב"מה חדש"`);
+    if(st&&st.closed)L.push(`הוסתרו ${st.closed} עדכונים על משימות שנסגרו`);
+    if(st&&st.dec)L.push(`הוסתרו ${st.dec} שאלות שכבר ענית עליהן`);
+    const e=sheet(false,ch.length?`עודכן · ${ch.length===1?"שינוי אחד":ch.length+" שינויים"}`:"עודכן · התמונה עדכנית",L,sweepLine());
+    setTimeout(()=>e.remove(),L.length?9000:5000);}
+  $("refr").onclick=()=>fullSync(true);
+  // quietly before he looks: on open (first data) and when the app comes back after 10+ minutes
+  const fsAuto=()=>{if(!fullBusy&&db&&Date.now()-fullAt>10*60e3)setTimeout(()=>fullSync(false),300);};
+  window.addEventListener("sq-refreshed",fsAuto);
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")fsAuto();});
 
   // ===== 3.4: settings + notifications (Web Push via Supabase function sq-push) + morning brief =====
   const PUSH_FN="https://emgtyfksnofzzlutngbf.supabase.co/functions/v1/sq-push";
@@ -5168,11 +5216,12 @@ html.desk .co-mark{font-size:2.4cqi}
   function updAllT(q){return newPool(q).filter(t=>!(t.fit&&t.fit.owner==="claude")).map(t=>({t,r:freshOf(t)})).filter(x=>x.r&&Date.now()-x.r.ms<7*864e5&&!upIsAck(upKeyT(x)))
       .map(x=>{const k=upKeyT(x);if(upFirst&&x.r.ms<=visitBase)upAck[k]=new Date().toISOString();return x;}).filter(x=>!upIsAck(upKeyT(x)))
       .map(x=>({...x,k:upKeyT(x),nw:!upIsShown(upKeyT(x))&&(Date.parse(updSeen[x.t.id]||"")||0)<x.r.ms})).sort((a,b)=>b.r.ms-a.r.ms);}
-  function nwListAll(pfx){const now=Date.now();return newItems.filter(x=>x&&x.id&&!x.done&&(!pfx||String(x.where||"app").startsWith(pfx))).map(x=>({...x,ms:Date.parse(x.at||"")||0}))
-    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&!upIsAck(upKeyN(x))).map(x=>({...x,k:upKeyN(x),nw:(Date.parse(nwSeen[x.id]||"")||0)<x.ms})).sort((a,b)=>b.ms-a.ms);}
+  function nwListAll(pfx){const now=Date.now();return dgNw(newItems.filter(x=>x&&x.id&&!x.done&&(!pfx||String(x.where||"app").startsWith(pfx))).map(x=>({...x,ms:Date.parse(x.at||"")||0}))
+    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&!upIsAck(upKeyN(x))).map(x=>({...x,k:upKeyN(x),nw:(Date.parse(nwSeen[x.id]||"")||0)<x.ms})).sort((a,b)=>b.ms-a.ms));}
   const nwQuestAll=q=>nwListAll("").filter(x=>{const w=String(x.where||"app");if(w.startsWith("task:")){const t=allTopics.find(z=>z.id===w.slice(5));return !!t&&(isFun(t)?"fun":questOf(t))===q;}return w==="quest:"+q||(q==="side"&&w==="app");});
   // everything that belongs in the updates list of quest q: {C chat, A app items, L tasks}; new ones replace the seen ones
   function updSet(q){q=q||quest;const C=nwListAll("chat"),A=[...nwQuestAll(q),...(q==="side"?nwListAll("settings:"):[]),...nwListAll("dash:").filter(x=>{const d=dashById(String(x.where).slice(5));return d&&(d.quest||"side")===q;})],L=updAllT(q);
+    {const Lt=new Set(L.map(x=>x.t.id));for(let i=A.length-1;i>=0;i--){if(A[i].tid&&Lt.has(A[i].tid)){dgStat.dup.add("n:"+A[i].id);A.splice(i,1);}}}
     const any=[...C,...A,...L].some(x=>x.nw),f=a=>any?a.filter(x=>x.nw):a;return {C:f(C),A:f(A),L:f(L),old:any?[...C,...A,...L].filter(x=>!x.nw):[],n:[...C,...A,...L].filter(x=>x.nw).length};}
   let upOnScreen=null; // what the list showed, committed as seen when he leaves it
   function upCommit(){const S=upOnScreen;upOnScreen=null;if(!S)return;const now=new Date().toISOString();let ch=false;
@@ -5218,7 +5267,7 @@ html.desk .co-mark{font-size:2.4cqi}
     {const tid=w==="chat"?"":titleTid(x.text);if(tid)jumpTask(tid);}}
   function renderUpd(){
     const dayOf=ms=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date(ms)),today=ilDate();
-    const U=updSet(quest),C=U.C,A=U.A,L=U.L,D=questFresh(quest).filter(d=>!A.some(x=>x.where==="dash:"+d.id));
+    const U=updSet(quest),C=U.C,A=U.A,L=U.L,Lt=new Set(L.map(x=>x.t.id)),D=questFresh(quest).filter(d=>!A.some(x=>x.where==="dash:"+d.id)&&!(dashUnseen(d).length&&!dashItems(d).length&&!dashNewAt(d)&&dashUnseen(d).every(x=>x.tid&&Lt.has(x.tid))));
     upOnScreen={items:[...C,...A,...L],old:U.old};
     const G=[];
     // 19.13 (Oren 17.11.2026): two kinds, clearly labelled: ask:true = a real open question/decision for him; otherwise
@@ -5227,7 +5276,7 @@ html.desk .co-mark{font-size:2.4cqi}
       G.push(h("div",{class:"up-g"},"💬 המשך שיחה"),...CA.map(x=>ackWrap(x,nwRow("❓",x.text,"מחכה לתשובה שלך"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x)))),
         ...CU.map(x=>ackWrap(x,nwRow("📩",x.text,"עדכון ממני שעוד לא קראת"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x)))));}
     if(A.length)G.push(h("div",{class:"up-g"},"✨ חדש באפליקציה"),...A.map(x=>ackWrap(x,nwRow(String(x.where).startsWith("task:")?"📌":String(x.where).startsWith("settings:")?"⚙️":String(x.where).startsWith("dash:")?"📊":"✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x)))));
-    if(D.length)G.push(h("div",{class:"up-g"},"📊 דשבורדים"),...D.map(d=>nwRow(d.icon||"📊",d.title||d.short||d.id,dashWhy(d)+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id))));
+    if(D.length)G.push(h("div",{class:"up-g"},"📊 דשבורדים"),...D.map(d=>nwRow(d.icon||"📊",d.title||d.short||d.id,((dashUnseen(d).find(x=>!(x.tid&&Lt.has(x.tid)))||{}).text||dashWhy(d))+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id))));
     if(L.length)G.push(...(G.length?[h("div",{class:"up-g"},"≡ משימות")]:[]),...L.map(x=>ackWrap(x,updRow(x))));
     const n=C.length+A.length+D.length+L.length,nn=U.n+D.length;
     const top=[h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🔔"),h("b",null,"עדכונים"),h("small",null,nn?"חדשים · "+nn:n?"ראית, עוד לא אישרת · "+n:"")),
@@ -6113,7 +6162,7 @@ html.desk .co-mark{font-size:2.4cqi}
     db=await (window.claude&&window.claude.use?window.claude.use("db"):Promise.resolve(null));
     if(!db){notice("חסר המפתח האישי. פתח את הלינק המלא עם המפתח (?k=...).");$("qbtn").disabled=true;$("list").replaceChildren();return;}
     try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"&&(await user.can("data.write"))===false){canWrite=false;$("qbtn").disabled=true;}}catch(e){}
-    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;histSeed();splitTopics();renderAll();ctxRun(all);},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
+    db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;histSeed();splitTopics();renderAll();ctxRun(all);fsAuto();},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;const cp=s.docs.find(x=>x.id==="cashflow_ping");cfPing=cp?cp.data():null;const cr=s.docs.find(x=>x.id==="cashflow_refresh");cfReq=cr?cr.data():null;renderConn();const ni=s.docs.find(x=>x.id==="new_items"),nd=ni?ni.data():null;newItems=nd&&Array.isArray(nd.items)?nd.items:[];nwRender();
