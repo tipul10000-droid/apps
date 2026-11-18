@@ -6,9 +6,10 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#3B2F5C">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.BG_BUILD="2.0";window.BG_BUILD_AT="16.11.2026 02:40";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.BG_BUILD="2.1";window.BG_BUILD_AT="18.11.2026 20:10";</script>
 <script src="sq-db.js?v=10"></script>
 <script src="dash-lock.js?v=1"></script>
+<script src="logos.js?v=1"></script>
 <title>הוצאות ותקציב</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
@@ -80,7 +81,7 @@ section{margin-bottom:22px;scroll-margin-top:70px}
 .xh{display:flex;align-items:center;gap:10px;width:100%;min-height:46px;border:0;background:none;padding:9px 14px;text-align:right;color:inherit}
 .xh .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--muted)}
 .dot.bad{background:var(--bad)}.dot.warn{background:var(--warn)}.dot.good{background:var(--good)}.dot.hi{background:var(--hi)}
-.xh .em{flex:none;font-size:16px;width:20px;text-align:center}
+.xh .em{flex:none;font-size:16px;min-width:20px;text-align:center;display:inline-flex;justify-content:center}
 .xh .xt{flex:1;min-width:0;font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .xh .xv{flex:none;font-family:var(--f-display);font-weight:800;font-size:13.5px;white-space:nowrap}
 .xh .xv.save{color:var(--good)}
@@ -257,7 +258,7 @@ function insBody(x){return `${String(x.title||"").length>34?`<b>${esc(x.title)}<
 function todoBody(p){return `<span class="who ${esc(p.todo.who||"oren")}">${WHO[p.todo.who]||WHO.oren}</span>${esc(p.todo.text)}${saveOf(p)?`<p class="meta">חיסכון עד ${ils(saveOf(p))} בחודש</p>`:""}
   <div class="acts">${p.todo.who!=="claude"?`<button class="ok" data-done="${esc(p.id)}">✓ בוצע</button>`:""}<button data-p="${esc(p.id)}">פרטים</button></div>`;}
 function qRow(p){const v=monthly(p),opts=(p.q.options||[]).map(o=>typeof o==="string"?o:o.label);
-  return `<div class="qr"><div class="qt">${esc(p.q.q)}</div><div class="qs">${esc(p.opt_title||p.name)}${v!=null&&v>0?` · היום ${ils(v)} ${p.cycle==="var"?"בממוצע":"לחודש"}`:""}${saveOf(p)?` · עד ${ils(saveOf(p))} בחודש`:""}</div>
+  return `<div class="qr"><div class="qt" style="display:flex;gap:10px;align-items:center">${window.SQ_LOGO?SQ_LOGO(p,24):""}<span>${esc(p.q.q)}</span></div><div class="qs">${esc(p.opt_title||p.name)}${v!=null&&v>0?` · היום ${ils(v)} ${p.cycle==="var"?"בממוצע":"לחודש"}`:""}${saveOf(p)?` · עד ${ils(saveOf(p))} בחודש`:""}</div>
   ${opts.length?`<div class="opts">${opts.map((o,i)=>`<button data-ans="${esc(p.id)}" data-i="${i}">${esc(o)}</button>`).join("")}</div>`:`<div class="acts"><button data-p="${esc(p.id)}">פרטים</button></div>`}</div>`;}
 function tabSum(){const I=arr(S().insights),pt=payTotals();
   const Q=P.items.filter(openQ).sort((a,b)=>saveOf(b)-saveOf(a));
@@ -289,7 +290,7 @@ function tabMonth(){const s=S(),L=arr(s.lines),fx=L.filter(x=>x.verdict==="fixed
 // ---- tab: fixed payments ----
 function saveRow(p){const c=CATS[p.cat]||CATS.other,v=monthly(p);
   const step=openT(p)?`<p><span class="who ${esc(p.todo.who)}">${WHO[p.todo.who]||WHO.oren}</span>${esc(p.todo.text)}</p>`:openQ(p)?`<p>❓ מחכה להחלטה שלך בסיכום</p>`:"";
-  return xr("o"+p.id,p.opt_title||p.name,`${p.why?esc(p.why):""}${v!=null&&v>0?`<p class="meta">היום ${ils(v)} ${p.cycle==="var"?"בממוצע":"לחודש"}</p>`:""}${p.market?`<p><b style="display:inline">מחיר שוק:</b> ${esc(p.market)}</p>`:""}${step}${actsHtml(p,true)}`,{em:esc(p.icon||c.i),v:"עד "+ils(saveOf(p)),vcls:"save"});}
+  return xr("o"+p.id,p.opt_title||p.name,`${p.why?esc(p.why):""}${v!=null&&v>0?`<p class="meta">היום ${ils(v)} ${p.cycle==="var"?"בממוצע":"לחודש"}</p>`:""}${p.market?`<p><b style="display:inline">מחיר שוק:</b> ${esc(p.market)}</p>`:""}${step}${actsHtml(p,true)}`,{em:window.SQ_LOGO?SQ_LOGO(p,24):esc(p.icon||c.i),v:"עד "+ils(saveOf(p)),vcls:"save"});}
 function actsHtml(p,det){const a=[];
   if(p.email&&safe(p.email.draft_url))a.push(`<a href="${esc(safe(p.email.draft_url))}" target="_blank" rel="noopener">✉️ טיוטה</a>`);
   if(p.email&&p.email.body)a.push(`<button data-copy="${esc(p.id)}">📋 העתק נוסח</button>`);
@@ -306,17 +307,17 @@ function tabFixed(){const {L,save:sv}=payTotals(),meta=P.meta;
   if(fCat==="all"){const byCat={};L.forEach(p=>{const v=monthly(p);if(v>0)byCat[p.cat]=(byCat[p.cat]||0)+v;});const mx=Math.max(1,...Object.values(byCat));
     o+=`<section><div class="sh"><h2>לאן הולך הכסף</h2><small>לחודש</small></div><div class="list bars">${Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<button class="brow" data-c="${c}"><span>${CATS[c]?.i||""} ${esc(CATS[c]?.s||c)}</span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;background:var(${CATS[c]?.c||"--c-other"})"></span></span><span class="v">${ils(v)}</span></button>`).join("")||'<div class="empty">אין עדיין סכומים</div>'}</div>${meta.cost_note?`<div class="list" style="margin-top:8px">${xr("cn","הערה על החישוב",esc(meta.cost_note),{em:"ℹ️"})}</div>`:""}</section>`;}
   const U=V.filter(p=>monthly(p)==null);
-  if(U.length)o+=`<section><div class="sh"><h2>בלי סכום עדיין</h2><small>${U.length}</small></div><div class="list">${U.map(p=>`<button class="row" data-p="${esc(p.id)}"><span class="b"><span class="t">${esc(p.name)}</span><span class="s">${openT(p)?esc((WHO[p.todo.who]||"")+": "+shortOf(p.todo.text)):esc(shortOf(p.note||""))}</span></span><span class="v muted">‹</span></button>`).join("")}</div></section>`;
+  if(U.length)o+=`<section><div class="sh"><h2>בלי סכום עדיין</h2><small>${U.length}</small></div><div class="list">${U.map(p=>`<button class="row" data-p="${esc(p.id)}">${window.SQ_LOGO?SQ_LOGO(p):""}<span class="b"><span class="t">${esc(p.name)}</span><span class="s">${openT(p)?esc((WHO[p.todo.who]||"")+": "+shortOf(p.todo.text)):esc(shortOf(p.note||""))}</span></span><span class="v muted">‹</span></button>`).join("")}</div></section>`;
   const groups={};V.forEach(p=>{(groups[p.cat]=groups[p.cat]||[]).push(p);});
   o+=`<section><div class="sh"><h2>כל התשלומים</h2></div><div class="list">`;
   Object.keys(CATS).filter(c=>groups[c]).forEach(c=>{const g=groups[c].sort((a,b)=>(monthly(b)??-1)-(monthly(a)??-1)),sum=g.reduce((s,p)=>s+(monthly(p)||0),0);
     o+=`<div class="mh"><span>${CATS[c].i} ${esc(CATS[c].l)}</span><span>${sum?ils(sum):""}</span></div>`+g.map(p=>{const st=STATUS[p.status]||STATUS.active,v=monthly(p);
-      return `<button class="row" data-p="${esc(p.id)}" style="--cc:var(${CATS[c].c})"><span class="sw"></span><span class="b"><span class="t">${esc(p.name)}</span><span class="m">${p.pay?`<span>${esc(p.pay)}</span>`:""}${p.status!=="active"?`<span class="tag ${st[1]}">${st[0]}</span>`:""}${saveOf(p)>0?`<span class="tag okk">אפשר לחסוך</span>`:""}${openT(p)?`<span class="tag mid">▶ ${WHO[p.todo.who]||""}</span>`:""}</span></span><span class="v">${v!=null?ils(v):p.amt_label?esc(p.amt_label):"?"}<small>${p.cur==="USD"&&p.amt!=null?"$"+esc(p.amt)+" · ":""}${esc(CYC[p.cycle]||"לחודש")}</small></span></button>`;}).join("");});
+      return `<button class="row" data-p="${esc(p.id)}" style="--cc:var(${CATS[c].c})"><span class="sw"></span>${window.SQ_LOGO?SQ_LOGO(p):""}<span class="b"><span class="t">${esc(p.name)}</span><span class="m">${p.pay?`<span>${esc(p.pay)}</span>`:""}${p.status!=="active"?`<span class="tag ${st[1]}">${st[0]}</span>`:""}${saveOf(p)>0?`<span class="tag okk">אפשר לחסוך</span>`:""}${openT(p)?`<span class="tag mid">▶ ${WHO[p.todo.who]||""}</span>`:""}</span></span><span class="v">${v!=null?ils(v):p.amt_label?esc(p.amt_label):"?"}<small>${p.cur==="USD"&&p.amt!=null?"$"+esc(p.amt)+" · ":""}${esc(CYC[p.cycle]||"לחודש")}</small></span></button>`;}).join("");});
   o+=`</div></section>`;
   const miss=arr(meta.missing);
   if(miss.length&&fCat==="all")o+=`<details class="fold2"><summary>חסר בתמונה (${miss.length})</summary><div class="list">${miss.map(x=>`<div class="row"><span class="b"><span class="s" style="color:var(--ink)">○ ${esc(x)}</span></span></div>`).join("")}</div></details>`;
   const E=P.items.filter(p=>p.status==="ended"&&(fCat==="all"||p.cat===fCat));
-  if(E.length)o+=`<details class="sqarch" data-k="ended"><summary>📦 ארכיון: בוטלו או הוזלו · ${E.length}</summary><div class="list">${E.map(p=>`<button class="row" data-p="${esc(p.id)}"><span class="b"><span class="t" style="text-decoration:line-through">${esc(p.name)}</span><span class="s">${esc(shortOf(p.note||""))}</span></span></button>`).join("")}</div></details>`;
+  if(E.length)o+=`<details class="sqarch" data-k="ended"><summary>📦 ארכיון: בוטלו או הוזלו · ${E.length}</summary><div class="list">${E.map(p=>`<button class="row" data-p="${esc(p.id)}" style="opacity:.75">${window.SQ_LOGO?SQ_LOGO(p):""}<span class="b"><span class="t" style="text-decoration:line-through">${esc(p.name)}</span><span class="s">${esc(shortOf(p.note||""))}</span></span></button>`).join("")}</div></details>`;
   return o;}
 
 // ---- tab: yearly ----
@@ -398,7 +399,7 @@ function openItem(id){const p=allItems().find(x=>x.id===id);if(!p)return;
   const row=(k,val)=>val==null||val===""?"":`<dt>${k}</dt><dd>${val}</dd>`;
   const q=p.q&&p.q.q?(p.q.answer?`<div class="box"><h4>החלטה</h4>${esc(p.q.q)}<br><b>✓ ${esc(p.q.answer)}</b><div class="acts"><button data-undo="${esc(p.id)}">שינוי</button></div></div>`:`<div class="box"><h4>החלטה</h4>${qRow(p).replace('class="qr"','class="qr" style="padding:0"')}</div>`):"";
   $("sheet").innerHTML=`<button class="x" id="sx" aria-label="סגירה">✕</button>
-  <h3><span>${esc(p.icon||c.i)}</span>${esc(p.name)}</h3>
+  <h3>${window.SQ_LOGO?SQ_LOGO(p,34):`<span>${esc(p.icon||c.i)}</span>`}${esc(p.name)}</h3>
   <dl class="kv">${row("סטטוס",`<span class="tag ${st[1]}">${st[0]}</span>`)}
     ${row("סכום",p.amt!=null&&p.amt!==""?`${p.cur==="USD"?"$"+esc(p.amt):ils(+p.amt)} ${esc(CYC[p.cycle]||"")}${p.cur==="USD"||p.cycle!=="m"?` · ${ils(v)} לחודש`:""}`:esc(p.amt_label||"לא ידוע עדיין"))}
     ${row("משלמים דרך",esc(p.pay))}${row("מי משתמש",esc(p.who))}${row("החיוב הבא",p.next?fmtD(p.next):"")}${row("קטגוריה",c.i+" "+esc(c.l))}</dl>
