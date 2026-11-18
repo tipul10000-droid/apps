@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.8";window.SQ_BUILD_AT="18.11.2026 16:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.9";window.SQ_BUILD_AT="18.11.2026 20:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1229,6 +1229,8 @@ body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:
 .dz-tasks.none h4{color:#1B6B45;display:flex;align-items:center;gap:6px}
 .dz-tile b{font-size:14px;line-height:1.2;display:flex;flex-direction:column;gap:2px;align-items:flex-start}
 .dz-tile b .ti{font-size:20px;line-height:1}
+.dzlg{display:inline-flex;gap:4px}.dzlg svg{width:24px;height:24px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.dz-cv .ic .dzlg svg{width:28px;height:28px}
 .dz-tile span.s{font-size:11.5px;opacity:.92;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .dz-tile .bd{font-size:11px;padding:0 6px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .dz-chat{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin:10px 12px 0;padding:5px 12px;border-radius:999px;border:1.5px solid var(--c1);color:var(--c1);background:var(--surface);font-weight:800;text-decoration:none;font-size:13.5px}
@@ -3206,12 +3208,16 @@ html.desk .co-mark{font-size:2.4cqi}
   function dzChip(t){const n=daysUntil(t.next_date);if(isUrgent(t))return "❗ דחוף";if(t.next_date&&n!=null&&n<=14)return relDate(t.next_date);return "";}
   function dzPayload(d){const s=dashShow(d),m=t=>({id:t.id,title:String(t.title||"").slice(0,140),line:String(dzLine(t)).slice(0,160),chip:dzChip(t),urg:isUrgent(t)||isHot(t)});
     return {type:"sq-tasks",dash:d.id,me:s.me.map(m),oth:s.oth.map(m)};}
+  // 22.9 (Oren 18.11.2026): a dashboard may show brand marks instead of the emoji (field logos: ["hotels","booking"]). Simple marks drawn here.
+  const BRAND_LOGOS={hotels:'<svg viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#D32F2F"/><path d="M9.5 8h4.2v6.2h4.6V8h4.2v16h-4.2v-6h-4.6v6H9.5z" fill="#fff"/></svg>',
+    booking:'<svg viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#003B95"/><path fill="#fff" fill-rule="evenodd" d="M8 8h7.5c3.3 0 5.3 1.6 5.3 4.1 0 1.6-.9 2.8-2.3 3.4 1.9.5 3.1 1.9 3.1 3.9 0 2.9-2.2 4.6-5.8 4.6H8zM11.8 11.1v3.6h3.1c1.4 0 2.2-.7 2.2-1.8s-.8-1.8-2.2-1.8zM11.8 17.6v3.8h3.5c1.5 0 2.4-.7 2.4-1.9s-.9-1.9-2.4-1.9z"/><circle cx="24.6" cy="21.6" r="2.6" fill="#2E9BFF"/></svg>'};
+  function dzLogos(d){const L=(Array.isArray(d.logos)?d.logos:[]).filter(k=>BRAND_LOGOS[k]);return L.length?h("span",{class:"dzlg",html:L.map(k=>BRAND_LOGOS[k]).join("")}):null;}
   function dashTile(d,lite){const lv=liveOf(d),k=lv.kpis[0];
     const nw=dashFresh(d);
     return h("button",{class:"dz-tile"+(lite?" lite":""),type:"button",style:dashVars(d),"data-dz":d.id,onclick:()=>openDash(d.id)},
       nw?h("span",{class:"nw",title:"יש עדכון חדש","aria-label":"יש עדכון חדש"}):null,
       dzBadge(d),
-      h("b",null,h("span",{class:"ti","aria-hidden":"true"},ico(d.icon,"📊")),d.short||d.title||""),
+      h("b",null,h("span",{class:"ti"+(dzLogos(d)?" lg":""),"aria-hidden":"true"},dzLogos(d)||ico(d.icon,"📊")),d.short||d.title||""),
       // 14.0 (Oren 9.11): locked dashboard = 🔒, no numbers on the tile (the page asks for its own 4-digit code)
       h("span",{class:"s"},d.locked?"🔒":(lv.line||d.note||(k?`${k.v} ${k.l}`:""))));}
   function dashCard(d,page){const lv=liveOf(d),url=safeUrl(d.url||""),all=dashTasks(d),sh=dashShow(d),kids=[...sh.me,...sh.oth],closed=all.filter(t=>!isOpen(t)).length,sugs=dashSugs(d);
@@ -3219,7 +3225,7 @@ html.desk .co-mark{font-size:2.4cqi}
     const asOf=lv.live?"חי"+(d.updated_at?" · עודכן "+ago(Date.parse(d.updated_at)):""):(d.as_of?"תמונת מצב · נכון ל-"+d.as_of:"דף מידע");
     inDashCard=true;const rows=kids.map(row);inDashCard=false;
     return h("article",{class:"dz-card",id:"dz-card",style:dashVars(d)},
-      h("div",{class:"dz-cv"},h("span",{class:"ic","aria-hidden":"true"},ico(d.icon,"📊")),h("div",{style:"min-width:0"},h("h3",null,d.title||""),h("p",null,asOf)),page?null:h("button",{class:"x",type:"button","aria-label":"סגור",onclick:()=>{dashOpen=null;renderDash();}},"✕")),
+      h("div",{class:"dz-cv"},h("span",{class:"ic","aria-hidden":"true"},dzLogos(d)||ico(d.icon,"📊")),h("div",{style:"min-width:0"},h("h3",null,d.title||""),h("p",null,asOf)),page?null:h("button",{class:"x",type:"button","aria-label":"סגור",onclick:()=>{dashOpen=null;renderDash();}},"✕")),
       dashChat(d,proj),
       // 17.6: open tasks first, highlighted; nothing open = "✓ הכול סגור"
       h("div",{class:"dz-sec dz-tasks"+(kids.length?"":" none")},h("h4",null,kids.length?"📌 משימות פתוחות":h("span",null,h("i",{class:"okv","aria-hidden":"true"},"✓")," הכול סגור"),kids.length?h("span",{class:"n"},kids.length):null),

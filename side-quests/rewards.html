@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=3"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#14264A">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.RW_BUILD="1.0";window.SQ_DASH="hotel-clubs";</script>
+<script src="sq-db.js?v=10"></script>
+<title>מועדוני מלונות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* מועדוני מלונות (18.11.2026): Hotels.com One Key + Booking.com Genius. נתונים: sq_docs (app=sidequests, collection=rewards:
+   מסמך לכל תוכנית + _meta). שום מידע אישי בקוד, הכול מהמסד. מחקר ומעקב בלבד: הדף לא מזמין ולא מממש כלום. */
+:root{
+  --bg:#F2F4F8; --surface:#FFFFFF; --sunk:#E7EBF2; --ink:#141B2B; --muted:#5A6378; --line:#D5DBE6;
+  --hero:#14264A; --hero2:#26457E; --hero-ink:#F2F5FB; --hero-muted:#B9C6DE; --accent:#FFC94D; --accent-ink:#2A1E00;
+  --good:#1F8457; --good-soft:#DCF1E5; --warn:#A35C0B; --warn-soft:#FBEAD2; --bad:#B8352B; --bad-soft:#F8DFDC; --link:#1F55B8; --hi:#2A5BC0; --hi-soft:#E2EAF9;
+  --hc:#D32F2F; --bk:#003B95;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F131C; --surface:#171D29; --sunk:#202838; --ink:#E9EEF7; --muted:#A1ABC0; --line:#2B3446;
+  --hero:#121D36; --hero2:#24396A; --hero-ink:#EDF2FB; --hero-muted:#AAB9D6; --good:#5CC88E; --good-soft:#15301F; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#8DB3F5; --hi:#8DB3F5; --hi-soft:#1E2D4D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F131C; --surface:#171D29; --sunk:#202838; --ink:#E9EEF7; --muted:#A1ABC0; --line:#2B3446;
+  --hero:#121D36; --hero2:#24396A; --hero-ink:#EDF2FB; --hero-muted:#AAB9D6; --good:#5CC88E; --good-soft:#15301F; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#8DB3F5; --hi:#8DB3F5; --hi-soft:#1E2D4D; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:linear-gradient(160deg,var(--hero),var(--hero2));color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px;display:flex;align-items:center;gap:10px}
+.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
+.lg{display:inline-flex;gap:6px;flex:none}
+.lg svg{width:30px;height:30px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.chatbtn small{font-family:var(--f-body);font-weight:700;font-size:13px;opacity:.8;margin-inline-start:auto}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.09);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{flex:1;border:0;background:none;padding:9px 2px;font-weight:800;font-size:14.5px;cursor:pointer;font-family:var(--f-display);white-space:nowrap;position:relative;display:flex;align-items:center;justify-content:center;gap:5px}
+.seg button svg{width:17px;height:17px;border-radius:4px}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.seg .dot{position:absolute;top:6px;inset-inline-end:8px;width:7px;height:7px;border-radius:50%;background:var(--bad)}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}.sh small{color:var(--muted);font-size:13px}
+.muted{color:var(--muted)}.empty{color:var(--muted);text-align:center;padding:20px 12px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.list>*+*{border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:none;border:0;padding:12px 14px;cursor:pointer;color:inherit}
+.row .i{flex:none;width:30px;font-size:21px;text-align:center}
+.row .i svg{width:26px;height:26px;border-radius:6px;vertical-align:middle}
+.row .b{flex:1;min-width:0}
+.row .t{font-family:var(--f-display);font-weight:700;font-size:16px;display:block}
+.row .s{color:var(--muted);font-size:13.5px;display:block}
+.row .v{flex:none;text-align:left;font-family:var(--f-display);font-weight:800;font-size:15px;min-width:64px}
+.row .v small{display:block;color:var(--muted);font-family:var(--f-body);font-weight:600;font-size:12px}
+.row .v.pos{color:var(--good)}.row .v.neg{color:var(--bad)}
+.row.wr .t{font-size:15px}
+.row .ch{flex:none;width:14px;color:var(--muted);font-size:12px;transition:transform .2s}
+.it.open .row .ch{transform:rotate(180deg)}
+.pill{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:1px 8px;vertical-align:1px;white-space:nowrap}
+.p-good{background:var(--good-soft);color:var(--good)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-hi{background:var(--hi-soft);color:var(--hi)}.p-mut{background:var(--sunk);color:var(--muted)}
+.det{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease}
+.it.open .det{grid-template-rows:1fr}
+.det>div{overflow:hidden}
+.det .in{padding:0 14px 14px 14px;font-size:14.5px;line-height:1.6;white-space:pre-line}
+.note{font-size:13.5px;color:var(--muted);line-height:1.5}
+/* program card */
+.pc{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.pc .ph{display:flex;align-items:center;gap:12px;padding:14px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
+.pc .ph svg{width:44px;height:44px;border-radius:11px;flex:none;box-shadow:0 1px 6px rgba(0,0,0,.3)}
+.pc .ph .n{flex:1;min-width:0}
+.pc .ph h3{font-size:19px}
+.pc .ph p{margin:0;font-size:13.5px;opacity:.9}
+.tier{flex:none;background:#fff;color:var(--c1);font-family:var(--f-display);font-weight:800;border-radius:999px;padding:3px 12px;font-size:15px}
+.tier.gold{background:#F4B740;color:#3A2600}
+.pc .bd{padding:14px}
+.big{display:flex;gap:10px;flex-wrap:wrap}
+.big>div{flex:1;min-width:130px;background:var(--sunk);border-radius:14px;padding:10px 12px}
+.big b{display:block;font-family:var(--f-display);font-size:22px;line-height:1.2}
+.big span{font-size:12.5px;color:var(--muted)}
+.meter{position:relative;height:12px;border-radius:999px;background:var(--sunk);overflow:hidden;margin:14px 0 6px}
+.meter i{position:absolute;inset-block:0;inset-inline-start:0;background:var(--c1);border-radius:999px}
+.meter i.pd{background:repeating-linear-gradient(45deg,var(--c1) 0 5px,transparent 5px 9px);opacity:.55}
+.meter u{position:absolute;inset-block:-2px;width:2px;background:var(--ink);opacity:.55}
+.mm{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);gap:8px;flex-wrap:wrap}
+.goal{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--warn-soft);color:var(--ink);font-size:14.5px}
+.goal b{color:var(--warn)}
+.goal.ok{background:var(--good-soft)}.goal.ok b{color:var(--good)}
+.dl .row .v{min-width:72px}
+.ln{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.ln a{font-size:13.5px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;background:var(--sunk)}
+/* questions */
+.q{padding:12px 14px}
+.q h3{font-size:16px;margin-bottom:6px}
+.q .why{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.opts{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.opts button{background:var(--surface);border:0;padding:11px 12px;text-align:right;font-weight:700;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
+.opts button+button{border-top:1px solid var(--line)}
+.opts button.on{background:var(--hi-soft);color:var(--hi)}
+.opts .rec{font-size:12px;color:var(--good);font-weight:800;white-space:nowrap}
+details.fold{margin-top:4px}
+details.fold>summary{cursor:pointer;list-style:none;padding:12px 14px;font-family:var(--f-display);font-weight:700;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold[open]>summary{border-radius:16px 16px 0 0;border-bottom:0}
+details.fold>.list{border-radius:0 0 16px 16px}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw}
+.toast.on{display:block}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.seg button{font-size:13px}.big b{font-size:19px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=9">
+<script src="dash-sub.js?v=8" defer></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+<script src="sq-icons.js?v=1"></script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const arr=a=>Array.isArray(a)?a:[];
+/* simple brand marks (drawn here, not the official artwork) */
+const LOGO={hotels:'<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#D32F2F"/><path d="M9.5 8h4.2v6.2h4.6V8h4.2v16h-4.2v-6h-4.6v6H9.5z" fill="#fff"/></svg>',
+  booking:'<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#003B95"/><path fill="#fff" fill-rule="evenodd" d="M8 8h7.5c3.3 0 5.3 1.6 5.3 4.1 0 1.6-.9 2.8-2.3 3.4 1.9.5 3.1 1.9 3.1 3.9 0 2.9-2.2 4.6-5.8 4.6H8zM11.8 11.1v3.6h3.1c1.4 0 2.2-.7 2.2-1.8s-.8-1.8-2.2-1.8zM11.8 17.6v3.8h3.5c1.5 0 2.4-.7 2.4-1.9s-.9-1.9-2.4-1.9z"/><circle cx="24.6" cy="21.6" r="2.6" fill="#2E9BFF"/></svg>'};
+const CUR={USD:"$",ILS:"₪",EUR:"€"};
+const money=(v,c)=>{const n=+v||0;return (n<0?"-":"")+(CUR[c]||"")+Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2});};
+const d6=s=>{if(!s)return "";const [y,m,d]=String(s).split("-");return d&&m&&y?`${+d}.${+m}.${y.slice(2)}`:s;};
+const daysTo=s=>{const t=Date.parse(s+"T23:59:59");return isNaN(t)?null:Math.ceil((t-Date.now())/864e5);};
+const ST={pending:["ממתין","p-warn"],earned:["נצבר","p-good"],conv:["הומר","p-hi"],used:["מומש","p-mut"],refund:["הוחזר","p-hi"],info:["עדכון","p-mut"]};
+let meta=null,progs=[],db=null;
+const UI="sq_rw_ui";let ui={tab:"sum",open:{}};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
+function save(){try{localStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200);}
+const ans=()=>meta.ans||{};
+const openQs=()=>arr(meta.questions).filter(q=>!ans()[q.id]);
+const prog=id=>progs.find(p=>p.id===id);
+function hero(){const K=arr(meta.kpis);
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
+  <h1><span class="lg">${LOGO.hotels}${LOGO.booking}</span>מועדוני מלונות</h1>
+  <p class="sub">${esc(meta.sub||"")}</p>
+  ${safe(meta.chat_url)?`<a class="chatbtn" href="${esc(meta.chat_url)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>`:""}
+  ${K.length?`<div class="kpis">${K.slice(0,3).map(k=>`<div class="kpi"><b>${esc(k.v)}</b><span>${esc(k.l)}</span></div>`).join("")}</div>`:""}`;}
+function bar(){const T=[["sum","סיכום",""],...progs.map(p=>[p.id,p.short||p.name,LOGO[p.brand]||""]),["q","שאלות",""]];
+  return `<div class="seg">${T.map(([k,l,g])=>`<button data-tab="${esc(k)}" data-sq-path="${esc(k)}" class="${ui.tab===k?"on":""}">${g}${esc(l)}${k==="q"&&openQs().length?'<i class="dot"></i>':""}</button>`).join("")}</div>`;}
+function xr(i,k){const o=ui.open[k];return `<div class="it${o?" open":""}" data-sq-item="${esc(i.id||k)}"><button class="row wr" data-x="${esc(k)}"><span class="i">${esc(i.e||"💡")}</span><span class="b"><span class="t">${esc(i.h)}</span></span><span class="ch">▾</span></button><div class="det"><div><div class="in">${esc(i.t||"")}</div></div></div></div>`;}
+function dlRow(x){const n=daysTo(x.d),p=x.prog&&prog(x.prog);
+  return `<div class="row"${p?` data-tab="${esc(p.id)}"`:""}><span class="i">${p&&LOGO[p.brand]?LOGO[p.brand]:esc(x.e||"⏰")}</span><span class="b"><span class="t">${esc(x.t)}</span>${x.s?`<span class="s">${esc(x.s)}</span>`:""}</span><span class="v">${esc(d6(x.d))}<small>${n==null?"":n<0?"עבר":n===0?"היום":"עוד "+n+" ימים"}</small></span></div>`;}
+function tabSum(){let o="";const Q=openQs();
+  const D=arr(meta.deadlines).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||""));
+  if(D.length)o+=`<section><div class="sh"><h2>⏰ תאריכים שחשוב לזכור</h2></div><div class="list dl">${D.map(dlRow).join("")}</div></section>`;
+  o+=`<section><div class="sh"><h2>המצב שלי</h2></div><div class="list">${progs.map(p=>`<button class="row" data-tab="${esc(p.id)}"><span class="i">${LOGO[p.brand]||""}</span><span class="b"><span class="t">${esc(p.name)} · ${esc(p.tier||"")}</span><span class="s">${esc(p.line||"")}</span></span><span class="v">${p.cash?money(p.cash.v,p.cash.cur):p.saved?money(p.saved.v,p.saved.cur):""}<small>${p.cash?esc(p.cash.l||"יתרה"):p.saved?esc(p.saved.l||"נחסך"):""}</small></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
+  if(Q.length)o+=`<section><div class="sh"><h2>❓ שאלות פתוחות</h2><small>${Q.length}</small></div><div class="list">${Q.map(q=>`<button class="row wr" data-tab="q"><span class="i">❓</span><span class="b"><span class="t">${esc(q.q)}</span></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
+  if(arr(meta.tips).length)o+=`<section data-sq-path="tips"><div class="sh"><h2>💡 טיפים מעשיים</h2><small>לחיצה לפירוט</small></div><div class="list">${meta.tips.map((t,i)=>xr(t,"tip"+i)).join("")}</div></section>`;
+  if(meta.connectors)o+=`<section><div class="sh"><h2>🔌 חיבורים</h2></div><div class="list"><div class="row" style="cursor:default"><span class="i">🔌</span><span class="b"><span class="s" style="color:var(--ink)">${esc(meta.connectors)}</span></span></div></div></section>`;
+  return o;}
+function tabProg(p){const P=p.progress||{},have=+P.have||0,pend=+P.pending||0,max=+P.max||+P.goal||1;
+  const pct=v=>Math.min(100,v/max*100);
+  let o=`<section><article class="pc" style="--c1:${esc(p.c1||"#333")};--c2:${esc(p.c2||p.c1||"#555")}"><div class="ph">${LOGO[p.brand]||""}<div class="n"><h3>${esc(p.name)}</h3><p>${esc(p.program||"")}${p.as_of?" · נכון ל-"+esc(p.as_of):""}</p></div><span class="tier${/gold/i.test(p.tier||"")?" gold":""}">${esc(p.tier||"")}</span></div><div class="bd">
+    <div class="big">${arr(p.big).map(b=>`<div><b>${esc(b.v)}</b><span>${esc(b.l)}</span></div>`).join("")}</div>
+    ${P.goal?`<div class="meter" role="img" aria-label="${have} מתוך ${max}"><i class="pd" style="width:${pct(have+pend)}%"></i><i style="width:${pct(have)}%"></i>${arr(P.marks).map(m=>`<u style="inset-inline-start:${pct(m)}%"></u>`).join("")}</div>
+    <div class="mm"><span><b>${have}</b> ${esc(P.unit||"")}${pend?` + ${pend} ממתינים`:""}</span><span>${esc(P.scale||"")}</span></div>`:""}
+    ${p.goal_box?`<div class="goal${p.goal_box.ok?" ok":""}">${esc(p.goal_box.pre||"")}<b>${esc(p.goal_box.b||"")}</b>${esc(p.goal_box.post||"")}</div>`:""}
+    ${arr(p.links).length?`<div class="ln">${p.links.map(l=>safe(l.u)?`<a href="${esc(l.u)}" target="_blank" rel="noopener">${esc(l.l)}</a>`:"").join("")}</div>`:""}
+  </div></article></section>`;
+  if(arr(p.benefits).length)o+=`<section data-sq-path="ben-${esc(p.id)}"><div class="sh"><h2>🎁 מה מגיע לי ברמה שלי</h2></div><div class="list">${p.benefits.map((b,i)=>xr(b,p.id+"b"+i)).join("")}</div></section>`;
+  if(arr(p.terms).length)o+=`<section data-sq-path="terms-${esc(p.id)}"><div class="sh"><h2>📜 התנאים בקיצור</h2><small>שורה לכל כלל · לחיצה לפירוט</small></div><div class="list">${p.terms.map((t,i)=>xr(t,p.id+"t"+i)).join("")}</div>${p.terms_src?`<p class="note" style="margin:8px 4px 0">מקור: ${esc(p.terms_src)}</p>`:""}</section>`;
+  const A=arr(p.activity);
+  if(A.length){const lim=ui["all_"+p.id]?A.length:8;
+    o+=`<section data-sq-path="act-${esc(p.id)}"><div class="sh"><h2>🧾 פעילות</h2><small>${A.length} שורות</small></div><div class="list">${A.slice(0,lim).map(a=>{const s=ST[a.st]||["",""],n=+a.amt;
+      return `<div class="row" style="cursor:default" data-sq-item="${esc(a.id||"")}"><span class="i">${esc(a.e||"🏨")}</span><span class="b"><span class="t">${esc(a.n)}</span><span class="s">${s[0]?`<span class="pill ${s[1]}">${s[0]}</span> `:""}${esc(a.dt||d6(a.d))}${a.note?" · "+esc(a.note):""}</span></span><span class="v ${a.st==="info"?"":n<0?"neg":n>0?"pos":""}">${a.amt!=null?(n>0&&a.st!=="info"?"+":"")+money(n,a.cur||p.cur):""}</span></div>`;}).join("")}
+      ${A.length>8?`<button class="row" data-more="${esc(p.id)}" style="justify-content:center;color:var(--link);font-weight:800">${ui["all_"+p.id]?"הצג פחות":"הצג הכול ("+A.length+")"}</button>`:""}</div></section>`;}
+  return o;}
+function tabQ(){const Q=arr(meta.questions),A=ans();const open=Q.filter(q=>!A[q.id]),done=Q.filter(q=>A[q.id]);
+  let o=`<section><div class="sh"><h2>❓ שאלות פתוחות</h2><small>${open.length}</small></div><div class="list">${open.map(q=>qCard(q)).join("")||'<div class="empty">✓ אין כרגע</div>'}</div></section>`;
+  if(done.length)o+=`<section><details class="fold"><summary>✓ ענית על ${done.length} (אפשר לשנות)</summary><div class="list">${done.map(q=>qCard(q,A[q.id])).join("")}</div></details></section>`;
+  return o;}
+function qCard(q,a){return `<div class="q" data-sq-item="${esc(q.id)}"><h3>${esc(q.q)}</h3>${q.why?`<p class="why">${esc(q.why)}</p>`:""}<div class="opts">${arr(q.opts).map((op,i)=>`<button data-q="${esc(q.id)}" data-v="${esc(op)}" class="${a&&a.v===op?"on":""}"><span>${esc(op)}</span>${q.rec===i?'<span class="rec">מומלץ</span>':""}</button>`).join("")}</div></div>`;}
+function render(){if(!meta)return;
+  if(ui.tab!=="sum"&&ui.tab!=="q"&&!prog(ui.tab))ui.tab="sum";
+  $("hero").innerHTML=hero();$("bar").innerHTML=bar();
+  const p=prog(ui.tab);
+  $("app").innerHTML=p?tabProg(p):ui.tab==="q"?tabQ():tabSum();
+  $("foot").innerHTML=`מועדוני מלונות ${esc(window.RW_BUILD)} · מעקב וידע בלבד: שום הזמנה או מימוש לא קורים מכאן`;}
+document.addEventListener("click",e=>{
+  const mb=e.target.closest("[data-more]");if(mb){const k="all_"+mb.dataset.more;ui[k]=!ui[k];save();render();return;}
+  const tb=e.target.closest("[data-tab]");if(tb){ui.tab=tb.dataset.tab;save();render();window.scrollTo({top:0});return;}
+  const qb=e.target.closest("[data-q]");if(qb&&db){const A=Object.assign({},ans());A[qb.dataset.q]={v:qb.dataset.v,at:new Date().toISOString()};meta.ans=A;render();
+    db.collection("rewards").doc("_meta").update({ans:A}).then(()=>toast("✓ נשמר, אעדכן לפי התשובה")).catch(()=>toast("השמירה נכשלה"));return;}
+  const xb=e.target.closest("[data-x]");if(xb){const k=xb.dataset.x;ui.open[k]=!ui.open[k];save();xb.parentElement.classList.toggle("open",!!ui.open[k]);}
+});
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("rewards").onSnapshot(s=>{progs=[];meta=null;s.docs.forEach(x=>{const v=x.data();if(x.id==="_meta")meta=v;else if(!v._deleted)progs.push(Object.assign({id:x.id},v));});
+    progs.sort((a,b)=>(a.order||9)-(b.order||9));
+    if(!meta){$("app").innerHTML='<div class="empty">אין נתונים</div>';return;}render();},()=>{});});
+})();
+</script>
+</body>
+</html>
