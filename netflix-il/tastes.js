@@ -1,12 +1,12 @@
 // Taste profiles ("מה בנטפליקס?"). Hard-coded for now (Oren 17.11.2026): Oren and Lior send lists of what they
 // liked / didn't, and Claude writes the profile here. A profile narrows the list; the filters still work inside it.
-//   like:  coarse genres that fit (an item needs at least one of them; empty = all genres)
+//   like:  TMDB genre ids that fit (an item needs at least one of them; empty = all genres)
 //   avoid: TMDB genre ids that never fit (an item with any of them is out, unless its IMDb id is in boost)
 //   boost: IMDb ids that are always in (titles they loved, or very close to them)
 //   block: IMDb ids that are always out
 //   seenM / seenS / wantS: normalized titles ("title|year" for movies) seeded once into nf_seen / nf_wl
 //   pending: true = not built yet, shows everything with a short note
-// Genre codes: act com dra rom thr scf hor doc ani fam rea
+// Genre ids = TMDB (see GEN in app.js), e.g. 10764 = Reality, 10749 = Romance (movies only)
 window.NF_TASTES = {
   oren: {
     name: "לפי העדפות של אורן", icon: "user", like: [], avoid: [10764], boost: [], block: [],
