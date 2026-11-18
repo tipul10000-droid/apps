@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.3";window.SQ_BUILD_AT="18.11.2026 07:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.4";window.SQ_BUILD_AT="18.11.2026 07:25";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2172,7 +2172,7 @@ html.desk #dhead .ctxrow{flex-wrap:wrap!important;row-gap:8px!important}html.des
 #cnM .lft button{flex:1;min-height:54px;font-weight:700;font-size:15px;background:none;border:0;color:inherit;cursor:pointer}
 #cnM .lft button+button{border-inline-start:1px solid var(--line,rgba(0,0,0,.14))}
 .cnlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
-.cnrow{display:flex;align-items:center;gap:14px;width:100%;min-height:68px;padding:14px 16px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;text-align:start}
+.cnrow{display:flex;align-items:center;gap:14px;width:100%;height:68px;padding:0 16px;box-sizing:border-box;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;text-align:start}
 .cnrow:first-child{border-top:0}
 button.cnrow{cursor:pointer}
 button.cnrow:active{background:var(--line)}
@@ -2185,6 +2185,7 @@ button.cnrow:active{background:var(--line)}
 .cnrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .cnrow .tx b{font-size:15px;line-height:1.3}
 .cnrow .tx small{color:var(--muted);font-size:13px;line-height:1.4}
+.cnrow .tx b,.cnrow .tx small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cnrow .st{flex:none;align-self:center;min-width:72px;display:inline-flex;align-items:center;justify-content:center;text-align:center;box-sizing:border-box;font-size:12.5px;font-weight:800;line-height:1;padding:6px 10px;border-radius:99px;white-space:nowrap;background:color-mix(in srgb,#9AA0A6 18%,transparent);color:#5f6368}
 .cnrow .st.ok{background:color-mix(in srgb,#22C55E 16%,transparent);color:#15803D}
 .cnrow .st.ok{animation:cnbeat 2.6s ease-in-out infinite}
@@ -2192,8 +2193,7 @@ button.cnrow:active{background:var(--line)}
 @media (prefers-reduced-motion:reduce){.cnrow .st.ok{animation:none}}
 .cnrow .st.late{background:color-mix(in srgb,#F59E0B 18%,transparent);color:#B45309}
 .cnrow .st.bad{background:color-mix(in srgb,#EF4444 16%,transparent);color:#B91C1C}
-.cnrow .go{flex:none;width:16px;text-align:center;color:var(--muted);font-size:18px;line-height:1;margin-inline-start:-4px}
-.cnrow .go.rf{font-size:15px}
+.cnrow .go{flex:none;width:24px;text-align:center;color:var(--muted);font-size:22px;line-height:1;margin-inline-start:-4px}
 .cnnote{font-size:12.5px;color:var(--muted);margin:14px 4px 0;line-height:1.5}
 .updbtn[aria-pressed="true"]{background:#fff!important;color:#111!important;border-color:#fff!important}
 .uplist{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
@@ -5255,22 +5255,24 @@ html.desk .co-mark{font-size:2.4cqi}
       el.parentNode.classList.toggle("off",S[k].lv==="off");}
     const b=document.getElementById("connBtn");if(b)b.setAttribute("aria-label","חיבורים: Gmail "+CN_TXT[S.gm.lv]+", יומן "+CN_TXT[S.cal.lv]+", מיקום "+CN_TXT[S.loc.lv]+", תזרים "+CN_TXT[S.cf.lv]+", וואטסאפ "+CN_TXT[S.wa.lv]);
     fillConn(S);}
+  // 22.4 (Oren 18.11.2026): the panel is only the connections, one identical row each: icon, name, when it last connected,
+  // status, ⟳. A tap refreshes that connection in place. No legend, no full-refresh button.
   function showConn(){modal("cnM",h("div",{class:"lhd"},h("h2",null,"🔌 חיבורים",h("button",{class:"px",type:"button","aria-label":"סגור",onclick:closeModal},"×"))),
-      h("div",{class:"lbody",id:"cnBody"}),h("div",{class:"lft"},h("button",{type:"button",onclick:()=>{closeModal();$("refr").click();}},"⟳ עדכון מלא"),h("button",{type:"button",onclick:closeModal},"✓ סגור")));
+      h("div",{class:"lbody",id:"cnBody"}),h("div",{class:"lft"},h("button",{type:"button",onclick:closeModal},"✓ סגור")));
     renderConn();}
   function fillConn(S){const el=document.getElementById("cnBody");if(!el)return;
-    const row=(k,name,st,go,sub)=>{const ic=h("span",{class:"ci"+(st.lv==="off"?" off":""),html:CN_ICON[k]?CN_ICON[k].outerHTML:""});ic.append(h("i",{class:"cl"+(st.lv==="off"?"":" "+st.lv)}));
-      const kids=[ic,h("span",{class:"tx"},h("b",null,name),h("small",null,st.t),sub?h("small",null,sub):null),h("span",{class:"st "+st.lv},st.off||CN_TXT[st.lv]),h("span",{class:"go rf","aria-hidden":"true"},go?"⟳":"")];
-      return go?h("button",{class:"cnrow",type:"button",onclick:go},...kids):h("div",{class:"cnrow"},...kids);};
+    const row=(k,name,st,go)=>{const ic=h("span",{class:"ci"+(st.lv==="off"?" off":""),html:CN_ICON[k]?CN_ICON[k].outerHTML:""});ic.append(h("i",{class:"cl"+(st.lv==="off"?"":" "+st.lv)}));
+      const when=st.last?"חיבור אחרון "+ago(st.last):"עוד לא התחבר";
+      const kids=[ic,h("span",{class:"tx"},h("b",null,name),h("small",null,when)),h("span",{class:"st "+st.lv},st.off||CN_TXT[st.lv]),h("span",{class:"go","aria-hidden":"true"},go?"⟳":"")];
+      return go?h("button",{class:"cnrow",type:"button",onclick:go,"aria-label":name+": "+(st.off||CN_TXT[st.lv])+", "+when+". לחיצה מרעננת"},...kids):h("div",{class:"cnrow"},...kids);};
     const SQc=sqConn();CN_ICON.sq=CN_ICON.sq||h("span",{class:"sqic"},"⟳");
     el.replaceChildren(h("div",{class:"cnlist"},
-      row("sq","Side Quests (השרת)",{...SQc,off:rdBusy==="sq"?"בודק…":SQc.lv==="off"?"בודק":SQc.lv==="bad"?"אין רשת":SQc.lv==="late"?(window.SQ_NET&&SQ_NET.ok===false?"תקלה":"ממתין"):"מחובר"},()=>rdTap("sq"),SQc.lv==="bad"?"פעולות נשמרות במכשיר ויישלחו כשהרשת תחזור":SQc.q?"יישלחו בעדכון הבא":"השרת, האינטרנט והאפליקציה"),
-      row("gm","Gmail",S.gm,gmTap,S.gm.sum||"לחיצה שולחת לסריקה עכשיו"),
-      row("cal","יומן אאוטלוק (עבודה)",rdBusy==="cal"?{...S.cal,off:"בודק…"}:S.cal,()=>rdTap("cal"),"מתעדכן לבד כשהיומן משתנה"),
-      row("loc","מיקום",S.loc,locTap,loc.on?"לחיצה מרעננת את המיקום":null),
-      row("cf","תזרים הבית (פיננסי)",S.cf,()=>cfRefresh(),S.cf.sum||"לחיצה מרעננת את התזרים מול הבנקים, בלי לפתוח אותו (עד דקה)"),
-      row("wa","WhatsApp",S.wa,null,null)),
-      h("div",{class:"cnnote"},"🟢 מחובר · 🟠 באיחור · 🔴 לא מתעדכן. העדכון האחרון של הדף: "+(window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עכשיו")+"."));}
+      row("sq","Side Quests",{...SQc,last:SQc.last||window.SQ_LAST_REFRESH||0,off:rdBusy==="sq"?"בודק…":SQc.lv==="off"?"בודק":SQc.lv==="bad"?"אין רשת":SQc.lv==="late"?(window.SQ_NET&&SQ_NET.ok===false?"תקלה":"ממתין"):"מחובר"},()=>rdTap("sq")),
+      row("gm","Gmail",S.gm,gmTap),
+      row("cal","יומן אאוטלוק",rdBusy==="cal"?{...S.cal,off:"בודק…"}:S.cal,()=>rdTap("cal")),
+      row("loc","מיקום",S.loc,locTap),
+      row("cf","תזרים הבית",S.cf,()=>cfRefresh()),
+      row("wa","WhatsApp",S.wa,null)));}
   function updGmBtn(){const b=document.getElementById("gmBtn");if(!b)return;b.classList.toggle("busy",!!gmPending());}
   function showGmail(){
     const body=h("div",{class:"lbody",id:"gmBody"});
