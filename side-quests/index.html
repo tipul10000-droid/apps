@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.1";window.SQ_BUILD_AT="18.11.2026 00:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="22.2";window.SQ_BUILD_AT="18.11.2026 07:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2162,25 +2162,36 @@ html:not(.desk) .ctxrow .toolrow .sbar .refr{gap:8px!important;padding:0 12px!im
 html.desk #dhead .ctxrow{flex-wrap:wrap!important;row-gap:8px!important}html.desk #dhead .toolrow{flex:1 0 100%;margin-inline-start:0!important;justify-content:flex-start}html.desk #dhead .toolrow .sbar{flex:0 0 auto!important}html.desk .sbar .conn{flex:none}html.desk #dhead .toolrow .updbtn{margin-inline-start:auto!important}
 /* 19.10 (Oren 17.11.2026): location and Gmail live in the connections panel now, not in the top ribbon */
 #locBtn,#gmBtn{display:none!important}
-.cnlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
-.cnrow{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;text-align:start}
+/* 22.2 (Oren 18.11.2026): connections panel spacing: 20px from the panel edges, one 14px rhythm inside rows, footer like the other panels */
+#cnM .sqpanel{display:flex;flex-direction:column;padding:0;overflow:hidden}
+#cnM .lhd{display:flex;align-items:center;gap:8px;padding:18px 20px 14px;flex:none}
+#cnM .lhd h2{flex:1}
+#cnM .lhd .px{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;margin-inline-end:-10px}
+#cnM .lbody{flex:1;min-height:0;overflow:auto;padding:0 20px 18px}
+#cnM .lft{flex:none;display:flex;border-top:1px solid var(--line,rgba(0,0,0,.14));padding-bottom:env(safe-area-inset-bottom,0px)}
+#cnM .lft button{flex:1;min-height:54px;font-weight:700;font-size:15px;background:none;border:0;color:inherit;cursor:pointer}
+#cnM .lft button+button{border-inline-start:1px solid var(--line,rgba(0,0,0,.14))}
+.cnlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.cnrow{display:flex;align-items:center;gap:14px;width:100%;min-height:68px;padding:14px 16px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;text-align:start}
 .cnrow:first-child{border-top:0}
 button.cnrow{cursor:pointer}
-.cnrow .ci{position:relative;flex:none;width:30px;height:30px}
-.cnrow .ci svg{width:30px;height:30px}
+button.cnrow:active{background:var(--line)}
+.cnrow .ci{position:relative;flex:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.cnrow .ci svg{width:28px;height:28px}
 .cnrow .ci.off svg{opacity:.4;filter:grayscale(1)}
-.cnrow .ci .sqic{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#EE8C4F;color:#fff;font-size:20px;font-weight:800}
-.cnrow .cl{position:absolute;inset-inline-end:-3px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:#9AA0A6;box-shadow:0 0 0 2px var(--surface)}
+.cnrow .ci .sqic{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:#EE8C4F;color:#fff;font-size:18px;font-weight:800;line-height:1}
+.cnrow .cl{position:absolute;inset-inline-end:-4px;bottom:-3px;width:11px;height:11px;border-radius:50%;background:#9AA0A6;box-shadow:0 0 0 2px var(--surface)}
 .cnrow .cl.ok{background:#22C55E}.cnrow .cl.late{background:#F59E0B}.cnrow .cl.bad{background:#EF4444}
-.cnrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.cnrow .tx b{font-size:15px}
-.cnrow .tx small{color:var(--muted);font-size:13px;line-height:1.35}
-.cnrow .st{flex:none;font-size:12.5px;font-weight:800;padding:2px 9px;border-radius:99px;background:color-mix(in srgb,#9AA0A6 18%,transparent);color:#5f6368}
+.cnrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.cnrow .tx b{font-size:15px;line-height:1.3}
+.cnrow .tx small{color:var(--muted);font-size:13px;line-height:1.4}
+.cnrow .st{flex:none;align-self:center;min-width:64px;text-align:center;box-sizing:border-box;font-size:12.5px;font-weight:800;line-height:1;padding:6px 10px;border-radius:99px;white-space:nowrap;background:color-mix(in srgb,#9AA0A6 18%,transparent);color:#5f6368}
 .cnrow .st.ok{background:color-mix(in srgb,#22C55E 16%,transparent);color:#15803D}
 .cnrow .st.late{background:color-mix(in srgb,#F59E0B 18%,transparent);color:#B45309}
 .cnrow .st.bad{background:color-mix(in srgb,#EF4444 16%,transparent);color:#B91C1C}
-.cnrow .go{flex:none;color:var(--muted);font-size:18px}
-.cnnote{font-size:12.5px;color:var(--muted);margin:10px 4px 0;line-height:1.45}
+.cnrow .go{flex:none;width:16px;text-align:center;color:var(--muted);font-size:18px;line-height:1;margin-inline-start:-4px}
+.cnrow .go.rf{font-size:15px}
+.cnnote{font-size:12.5px;color:var(--muted);margin:14px 4px 0;line-height:1.5}
 .updbtn[aria-pressed="true"]{background:#fff!important;color:#111!important;border-color:#fff!important}
 .uplist{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .fold .uplist{border:0;border-radius:0}
@@ -3310,7 +3321,7 @@ html.desk .co-mark{font-size:2.4cqi}
     if(!L.length){sec.hidden=true;sec.replaceChildren();return;}
     sec.hidden=false;sec.replaceChildren(...L.map(d=>{const sh=dashShow(d),me=sh.me.length,wt=sh.oth.length;
       const nw=dashFresh(d);
-      const line=[me?heN(me,"נושא לעשות","נושאים לעשות"):"",wt?heN(wt,"נושא במעקב","נושאים במעקב"):""].filter(Boolean).join(" · ");
+      const line=[me?heN(me,"דבר אחד לטיפול","דברים לטיפול"):"",wt?heN(wt,"נושא במעקב","נושאים במעקב"):""].filter(Boolean).join(" · ");
       return h("button",{class:"dz-top",type:"button",style:dashVars(d),"data-dz":d.id,onclick:()=>openDash(d.id),"aria-label":(d.title||"")+": "+line},
         h("span",{class:"dot"+(me?"":" soft"),"aria-hidden":"true"}),nw?h("span",{class:"nw","aria-hidden":"true"}):null,
         h("span",{class:"ti","aria-hidden":"true"},ico(d.icon,"📊")),
@@ -5167,7 +5178,18 @@ html.desk .co-mark{font-size:2.4cqi}
   const CN_ICON={};document.querySelectorAll(".sbar .cx").forEach(x=>{CN_ICON[x.dataset.c]=x.querySelector("svg");});
   const GM_SLOTS=[451,631,811,991,1171];
   function gmLastAt(){const R=gmReqs(),last=R.find(x=>x.status==="done");return Math.max(Date.parse((gmScan&&gmScan.last_at)||"")||0,Date.parse((last&&(last.done_at||last.at))||"")||0);}
-  function connGm(){const last=gmLastAt();if(!last)return {lv:"bad",t:"עוד לא נסרק"};
+  // 22.2 (Oren 18.11.2026): a tap on Gmail / location in the connections panel refreshes it in place, no extra screen.
+  let gmQAt=0;
+  function gmQueued(){const p=gmPending();if(p)return p.status==="working"?"סורק…":"בתור";return gmQAt&&Date.now()-gmQAt<90e3?"בתור":"";}
+  async function gmTap(){if(gmPending()){toast("Gmail כבר בתור לסריקה, עד "+nextIns());return;}if(!(db&&canWrite)){toast("אין הרשאת כתיבה");return;}
+    const id="g-"+Date.now().toString(36)+Math.random().toString(36).slice(2,4);gmQAt=Date.now();renderConn();
+    try{await db.collection("instructions").doc(id).set({kind:"gmail_scan",text:"סריקת Gmail לפי דרישה",note:"",via:"connections",at:new Date().toISOString(),status:"pending",ctx:{quest,open:openId||""}});
+      toast("✓ Gmail בתור לסריקה. מתעדכן עד "+nextIns());try{if(db.refresh)await db.refresh();}catch(e){}}
+    catch(e){gmQAt=0;fail(e);}renderConn();updGmBtn();}
+  function locTap(){if(!loc.on){loc.on=true;saveLoc();}
+    locHook=()=>{locHook=null;updLocBtn();renderAll();renderConn();toast(locErr||"✓ המיקום עודכן");};sampleLoc(true);updLocBtn();renderConn();}
+  function connGm(){const q=gmQueued(),r=connGm0();return q?{...r,off:q,sum:"נסרק עד "+nextIns()+" ומעדכן את המשימות"}:r;}
+  function connGm0(){const last=gmLastAt();if(!last)return {lv:"bad",t:"עוד לא נסרק"};
     const now=ilNow().m,age=(Date.now()-last)/60000,due=[];
     for(let k=0;k<4&&due.length<2;k++)for(let i=GM_SLOTS.length-1;i>=0&&due.length<2;i--){const a=now-GM_SLOTS[i]+k*1440;if(a>=25)due.push(a);}
     const lv=age<=due[0]+10?"ok":age<=due[1]+10?"late":"bad";
@@ -5222,15 +5244,15 @@ html.desk .co-mark{font-size:2.4cqi}
       h("div",{class:"lbody",id:"cnBody"}),h("div",{class:"lft"},h("button",{type:"button",onclick:()=>{closeModal();$("refr").click();}},"⟳ עדכון מלא"),h("button",{type:"button",onclick:closeModal},"✓ סגור")));
     renderConn();}
   function fillConn(S){const el=document.getElementById("cnBody");if(!el)return;
-    const row=(k,name,st,go,sub)=>{const ic=h("span",{class:"ci"+(st.lv==="off"?" off":""),html:CN_ICON[k]?CN_ICON[k].outerHTML:""});ic.append(h("i",{class:"cl"+(st.lv==="off"?"":" "+st.lv)}));
-      const kids=[ic,h("span",{class:"tx"},h("b",null,name),h("small",null,st.t),sub?h("small",null,sub):null),h("span",{class:"st "+st.lv},st.off||CN_TXT[st.lv]),go?h("span",{class:"go","aria-hidden":"true"},"›"):null];
+    const row=(k,name,st,go,sub,nav)=>{const ic=h("span",{class:"ci"+(st.lv==="off"?" off":""),html:CN_ICON[k]?CN_ICON[k].outerHTML:""});ic.append(h("i",{class:"cl"+(st.lv==="off"?"":" "+st.lv)}));
+      const kids=[ic,h("span",{class:"tx"},h("b",null,name),h("small",null,st.t),sub?h("small",null,sub):null),h("span",{class:"st "+st.lv},st.off||CN_TXT[st.lv]),h("span",{class:"go"+(nav?"":" rf"),"aria-hidden":"true"},go?(nav?"›":"⟳"):"")];
       return go?h("button",{class:"cnrow",type:"button",onclick:go},...kids):h("div",{class:"cnrow"},...kids);};
     const SQc=sqConn();CN_ICON.sq=CN_ICON.sq||h("span",{class:"sqic"},"⟳");
     el.replaceChildren(h("div",{class:"cnlist"},
       row("sq","Side Quests (השרת)",{...SQc,off:SQc.lv==="off"?"בודק":SQc.lv==="bad"?"אין רשת":SQc.lv==="late"?(window.SQ_NET&&SQ_NET.ok===false?"תקלה":"ממתין"):"מחובר"},null,SQc.lv==="bad"?"פעולות נשמרות במכשיר ויישלחו כשהרשת תחזור":SQc.q?"יישלחו בעדכון הבא":"השרת, האינטרנט והאפליקציה"),
-      row("gm","Gmail",S.gm,()=>{closeModal();setTimeout(showGmail,60);},S.gm.sum),
-      row("cal","יומן אאוטלוק (עבודה)",S.cal,()=>{closeModal();setTimeout(()=>openDash("work_calendar"),60);},"נכנס רק כשמשהו ביומן משתנה"),
-      row("loc","מיקום",S.loc,()=>{closeModal();setTimeout(()=>showHere(true),60);},"לחיצה בודקת את המיקום עכשיו"),
+      row("gm","Gmail",S.gm,gmTap,S.gm.sum||"לחיצה שולחת לסריקה עכשיו"),
+      row("cal","יומן אאוטלוק (עבודה)",S.cal,()=>{closeModal();setTimeout(()=>openDash("work_calendar"),60);},"נכנס רק כשמשהו ביומן משתנה",true),
+      row("loc","מיקום",S.loc,locTap,loc.on?"לחיצה מרעננת את המיקום":null),
       row("cf","תזרים הבית (פיננסי)",S.cf,()=>cfRefresh(),S.cf.sum||"לחיצה מרעננת את התזרים מול הבנקים, בלי לפתוח אותו (עד דקה)"),
       row("wa","WhatsApp",S.wa,null,null)),
       h("div",{class:"cnnote"},"🟢 תקין · 🟠 באיחור · 🔴 לא מתעדכן. העדכון האחרון של הדף: "+(window.SQ_LAST_REFRESH?ago(window.SQ_LAST_REFRESH):"עכשיו")+"."));}
@@ -5974,8 +5996,8 @@ html.desk .co-mark{font-size:2.4cqi}
   $("setBtn").onclick=()=>showSettings();
   $("statBtn").onclick=()=>showStats();
   $("sunBtn").onclick=()=>showBrief();
-  $("locBtn").onclick=()=>showHere(true);
-  $("gmBtn").onclick=()=>showGmail();$("undoBtn").onclick=undoStep;renderUndo();$("connBtn").onclick=()=>showConn();
+  $("locBtn").onclick=locTap;
+  $("gmBtn").onclick=gmTap;$("undoBtn").onclick=undoStep;renderUndo();$("connBtn").onclick=()=>showConn();
   function initNotify(){
     db.collection("settings").onSnapshot(s=>{const n=s.docs.find(x=>x.id==="notify"),b=s.docs.find(x=>x.id==="brief_last"),mb=s.docs.find(x=>x.id==="morning_brief"),eb=s.docs.find(x=>x.id==="evening_brief"),el=s.docs.find(x=>x.id==="eve_last"),pl=s.docs.find(x=>x.id==="plan"),aw=s.docs.find(x=>x.id==="away"),wh=s.docs.find(x=>x.id==="where");
       if(wh&&remoteW(wh.data())&&allTopics.length){renderCtx();renderList();}
