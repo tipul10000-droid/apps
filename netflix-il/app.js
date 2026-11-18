@@ -464,8 +464,10 @@
         f("bookmark", "סימון לרשימת צפייה והיסטוריית צפייה"), f("moon", "חינם, בלי הרשמה, מתעדכן כל לילה")),
       h("button", { type: "button", class: "ashare", onclick: share }, h("span", { class: "shi", html: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l6 6-6 6"/><path d="M20 11H11a7 7 0 0 0-7 7v1"/></svg>' }), "לשלוח לחברים"),
       h("details", { class: "acred" }, h("summary", null, "מקורות"),
-        h("p", { class: "note anote" }, "נתונים: JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata,\u200f Netflix.\u200f לא קשור לנטפליקס.")),
+        h("p", { class: "note anote" }, "נתונים: JustWatch,\u200f TMDB,\u200f IMDb,\u200f Wikidata,\u200f Netflix.")),
       h("div", { class: "asig", dir: "ltr" }, h("div", null, "Idea & Design by Oren Itzhaki"), h("div", null, "Coding by Claude Code")),
+      h("div", { class: "adisc" }, h("p", null, "לאפליקציה אין שום קשר רשמי לנטפליקס או לאתר IMDb."),
+        h("p", { dir: "ltr" }, "Not affiliated with or endorsed by Netflix or IMDb.")),
     ], "about-sh");
     // opens centred, then pinned there so opening the sources grows it downwards and nothing above moves
     const sh = document.querySelector("#ov .sheet"), ov = $("ov"), pt = parseFloat(getComputedStyle(ov).paddingTop) || 0;
