@@ -252,3 +252,18 @@ body.embed .totop{display:none}
 
 /* long TMDB genre names (series) stay inside their cell (18.11.2026) */
 #fGen button.lg{font-size:12px;letter-spacing:-.2px}
+/* home-screen install guide (Oren 18.11.2026): the button never moves, the steps open downward */
+.ibtn{display:flex;align-items:center;gap:8px;padding:0 12px;text-align:start}
+.ibtn>span:not(.chev){flex:1 1 auto;text-align:start}
+.ibtn .chev .ic{width:16px;height:16px;transition:transform .22s ease}
+.ibtn[aria-expanded=true] .chev .ic{transform:rotate(180deg)}
+.iwrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease}
+.iwrap.on{grid-template-rows:1fr}
+.iwrap>.iin{overflow:hidden;min-height:0;opacity:0;transition:opacity .22s ease}
+.iwrap.on>.iin{opacity:1}
+.iseg{margin:4px 0 0}
+.isteps{margin:10px 0 0;padding:0 22px 0 0;font-size:14px;line-height:1.55}
+.isteps li{margin:0 0 6px}
+.isteps b{font-weight:700;color:#fff}
+.ki{display:inline-flex;vertical-align:-3px}
+.ki .ic{width:17px;height:17px;margin:0}
