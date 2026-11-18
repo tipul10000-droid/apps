@@ -72,17 +72,17 @@ h1{margin:4px 0 8px;font-size:22px;flex:none}
 <p>כל ילד אוסף כוכבים מהלימוד שלו:</p><p>⭐ <b>כל 5 דקות</b> של לימוד אמיתי (עם תשובות, לא רק לפתוח את האפליקציה)</p><p>⭐ <b>כל 10 תשובות נכונות</b></p>
 <p>זה לא מרוץ. כל אחד לומד משהו אחר ובקצב שלו, וביחד אנחנו אוספים המון כוכבים 💛</p><p>אפשר ללחוץ על כל אחד ולראות את הסקווישים שאסף, ולמעוך אותם.</p>
 <button class="bt pr" id="hx" type="button">הבנתי</button></div></div>
-<script src="../dani/squishies.js?v=2"></script>
+<script src="../dani/squishies.js?v=3"></script>
 <script src="../lia/squishies.js?v=5"></script>
 <script src="../levi/squishies.js?v=1"></script>
 <script src="../shilo/squishies.js?v=3"></script>
-<script src="../sqsound.js?v=13"></script>
+<script src="../sqsound.js?v=14"></script>
 <script src="../effort.js?v=1"></script>
 <script>
 (function(){
 var P=StudyProfiles,$=function(i){return document.getElementById(i)};
 var SB='https://emgtyfksnofzzlutngbf.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
-var ROWS={lia:['🪐 צוות החלל','⭐ סופר סקווישים','💎 אולטרה סקווישים','🐞 חרקי חלל: לוח הכפל','🚀 מסע בין הכוכבים: חיזוק מתמטיקה'],dani:['💜 הלהקה','⭐ סופר סקווישים','💎 אולטרה סקווישים','🎤 סיבוב הופעות: חיזוק מתמטיקה']};
+var ROWS={lia:['🪐 צוות החלל','⭐ סופר סקווישים','💎 אולטרה סקווישים','🐞 חרקי חלל: לוח הכפל','🚀 מסע בין הכוכבים: חיזוק מתמטיקה'],dani:['💜 הלהקה','⭐ סופר סקווישים','💎 אולטרה סקווישים','🎤 סיבוב הופעות: חיזוק מתמטיקה','🏠 הבית של הלהקה: הכתבה 2']};
 var VK='study_fam_view',VIEW='fam';try{VIEW=localStorage.getItem(VK)==='all'?'all':'fam'}catch(e){}
 var D={};// kid -> {sec, ok, sq:[]}
 function lj(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}

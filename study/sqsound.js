@@ -2,6 +2,7 @@
 // דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco + אולטרה u_ramyeon u_hotteok u_bungeo u_corndog u_mandu u_banana
 // דני (אורן 14.11.2026): רק הצלילים המצוירים החמודים המקוריים, בלי ההקלטות מהאינטרנט (ממים, גרעפסים, פלוצים). גם לאולטרה שלה יש צליל מצויר משלה.
 // דני חיזוק מתמטיקה: dm_pepero dm_boba dm_hoppang dm_yakult dm_gyeran dm_injeolmi
+// דני הכתבה 2 (הבית של הלהקה, 19.11.2026): dh_towel dh_mug dh_spoon dh_soap dh_fridge dh_fork
 // ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi + חרקי חלל bg_lady bg_bee bg_ant bg_fire bg_fly bg_queen + מסע בין הכוכבים mt_cheese mt_shake mt_cookie mt_egg mt_jelly mt_berry
 // פרס מאמץ מההורים (14.11.2026): ef_l_* ליה, ef_d_* דני, ef_v_* לביא, ef_s_* שילה. תמיד הצליל המצויר שלהם.
 // לביא ושילה (9.11.2026; שילה = כלי עבודה מ-10.11): lv_* ו-sh_* (18 לכל אחד, כולל האולטרה). כולם תמיד מנגנים רק את הצליל המצויר שלהם, בלי ההקלטות מהאינטרנט (אורן 11.11.2026).
@@ -72,6 +73,13 @@
   dm_yakult:function(){osc('triangle',0,.18,[[0,880],[1,880]],.14);osc('triangle',.18,.18,[[0,988],[1,988]],.14);osc('triangle',.36,.4,[[0,1175],[1,1175]],.15,0,[6,14])},// לָה-לָה-לָההה למיקרופון
   dm_gyeran:function(){noise(0,.35,.12,'lowpass',900,400);osc('sine',.3,.35,[[0,520],[.5,780],[1,660]],.18,0,[8,20])},// טששש של מחבת ו"יאמי"
   dm_injeolmi:function(){osc('sine',0,.6,[[0,180],[.3,360],[.6,200],[1,280]],.28,0,[10,40])},// בּוֹיוֹיוֹנְג רך של עוגת אורז
+  // דני, הבית של הלהקה (הכתבה 2, 19.11.2026): dh_*, תמיד הצליל המצויר שלהם (רק צלילים מצוירים חמודים)
+  dh_towel:function(){noise(0,.45,.14,'bandpass',900,2600,1.5);osc('sine',.4,.3,[[0,600],[.5,1000],[1,800]],.16,0,[6,18])},// פְלַאפּ של מגבת וסיבוב
+  dh_mug:function(){beep(0,1760,.12,.12,'sine');beep(.06,2637,.18,.08,'sine');for(var i=0;i<3;i++)osc('sine',.3+i*.1,.08,[[0,400+i*60],[1,700+i*60]],.15)},// טִינְג של ספל ושלוק-שלוק
+  dh_spoon:function(){osc('triangle',0,.5,[[0,1200],[.3,1600],[1,1400]],.12,0,[14,60]);beep(.5,2093,.15,.1,'triangle')},// דִּינְג-דִּינְג רוטט של כף
+  dh_soap:function(){for(var i=0;i<6;i++)osc('sine',i*.08,.07,[[0,900+i*150],[1,1300+i*170]],.15);noise(.5,.25,.06,'highpass',5000,7000)},// פּוֹפּ-פּוֹפּ של בועות סבון
+  dh_fridge:function(){osc('sawtooth',0,.6,[[0,90],[1,95]],.08,400,[3,4]);osc('sine',.55,.3,[[0,700],[1,1400]],.15);beep(.85,1568,.15,.1,'triangle')},// זמזום של מקרר ו"ברררר קר!"
+  dh_fork:function(){[0,.1,.2].forEach(function(t,i){beep(t,1047+i*262,.08,.12,'square')});osc('square',.35,.35,[[0,330],[.5,440],[1,392]],.09,1600,[5,12])},// טִינְג-טִינְג-טִינְג וריף רוק קטן
   // ליה, מסע בין הכוכבים (חיזוק מתמטיקה, 15.11.2026): mt_*, תמיד הצליל המצויר שלהם
   mt_cheese:function(){osc('sine',0,.25,[[0,400],[1,800]],.2);osc('sine',.22,.25,[[0,600],[1,1200]],.18);osc('triangle',.45,.35,[[0,900],[.5,1400],[1,700]],.16,0,[7,30])},// בּוֹיוֹנְג של ירח קופץ
   mt_shake:function(){noise(0,.5,.12,'bandpass',600,2400,3);for(var i=0;i<5;i++)osc('sine',.15+i*.07,.06,[[0,700+i*160],[1,900+i*160]],.13);osc('triangle',.55,.4,[[0,500],[1,1800]],.15)},// שלוק-שלוק ושיגור
@@ -167,5 +175,5 @@
   function mix(){var n;do{n=POOL[Math.floor(Math.random()*POOL.length)]}while(n===LAST&&POOL.length>1);LAST=n;return n}
   window.SqSound={has:function(id){return !!(S[id]||ULT[id])},ids:Object.keys(S).concat(Object.keys(ULT)),
     play:function(id,muted){if(muted)return false;if(ULT[id]){file(ULT[id]);return true}if(!S[id]||!ac())return false;
-      if(!/^(lv|sh|ef|u|mt|dm)_|^bg_/.test(id)&&!DANI[id]&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
+      if(!/^(lv|sh|ef|u|mt|dm|dh)_|^bg_/.test(id)&&!DANI[id]&&Math.random()<.45){file(mix());return true}try{S[id]()}catch(e){}return true}};
 })();
