@@ -15,13 +15,7 @@ const BUDGET_MS = 125_000
 const PROVIDERS = '8|1796'
 const DAY = 86_400_000
 
-const GENRES: Record<number, string> = {
-  28: 'act', 12: 'act', 10759: 'act', 10752: 'act', 37: 'act', 10768: 'act',
-  35: 'com', 18: 'dra', 36: 'dra', 10766: 'dra', 10749: 'rom',
-  53: 'thr', 80: 'thr', 9648: 'thr', 878: 'scf', 14: 'scf', 10765: 'scf',
-  27: 'hor', 99: 'doc', 16: 'ani', 10751: 'fam', 10762: 'fam',
-  10764: 'rea', 10767: 'rea', 10763: 'rea',
-}
+// Genres = TMDB's own genre ids, exactly as TMDB tags each title (Oren 18.11.2026); names live in netflix-il/app.js.
 
 async function sha(s: string) {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s))
@@ -111,7 +105,7 @@ Deno.serve(async (req) => {
           if (seen.has(x.id)) continue; seen.add(x.id)
           list.push({
             k: (kind === 'movie' ? 'm' : 's') + x.id, n: x.title ?? x.name, on: x.original_title ?? x.original_name,
-            ol: x.original_language, oc: x.origin_country || [], g: [...new Set((x.genre_ids || []).map((g: number) => GENRES[g]).filter(Boolean))],
+            ol: x.original_language, oc: x.origin_country || [], gi: x.genre_ids || [],
             p: x.poster_path, d: x.release_date ?? x.first_air_date ?? '', pop: Math.round((x.popularity || 0) * 10) / 10,
           })
         }
@@ -234,7 +228,7 @@ Deno.serve(async (req) => {
       const tk = x.k[0] + ':'
       const tIL = st.top.il?.[tk + norm(x.n)] || st.top.il?.[tk + norm(x.on)]
       const tW = st.top.w?.[tk + norm(x.n)] || st.top.w?.[tk + norm(x.on)]
-      const o: J = { k: x.k, n: x.n, p: x.p, y: Number(String(x.d).slice(0, 4)) || null, g: x.g, f: st.first[x.k], pop: x.pop }
+      const o: J = { k: x.k, n: x.n, p: x.p, y: Number(String(x.d).slice(0, 4)) || null, g: x.gi || [], f: st.first[x.k], pop: x.pop }
       if (d.hn && d.hn !== x.n) o.hn = d.hn
       if (isIL) o.il = 1
       if (x.ol && x.ol !== 'en') o.ol = x.ol
