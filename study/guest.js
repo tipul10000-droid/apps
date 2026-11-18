@@ -31,7 +31,7 @@
   // חידון הכניסה (אורן 6.11.2026): הנעילה (study_qz_*) וסימון 'עבר' (study_ok_*) משותפים לרגיל ולאורח, כדי שאורח באותו מכשיר לא יעקוף נעילה קיימת
   // study_profile (המשפחה שנבחרה במכשיר, 9.11.2026) משותף גם הוא
   // study_adopt (13.11.2026): בקשה מהאורח להעביר את ההתקדמות שלו לילד (track.js), ולכן נכתבת במפתח הרגיל
-  function k(x){x=String(x);return (x==='study_guest'||x==='study_profile'||x==='study_adopt'||/^study_(qz|ok)_/.test(x))?x:'guest:'+x}
+  function k(x){x=String(x);return (/^(appstat_dev|sq_pin|sq_key)$|^appstat_o_/.test(x)||x==='study_guest'||x==='study_profile'||x==='study_adopt'||/^study_(qz|ok)_/.test(x))?x:'guest:'+x}
   P.getItem=function(x){return gi.call(this,k(x))};
   P.setItem=function(x,v){return si.call(this,k(x),v)};
   P.removeItem=function(x){return ri.call(this,k(x))};
@@ -44,3 +44,9 @@
 
 // 🎤 תמלול קולי בכל תיבת טקסט (voice.js, אורן 14.11.2026): נטען אוטומטית בכל דף study
 (function(){try{var me=document.currentScript&&document.currentScript.src;if(!me||window.StudyVoice)return;var v=document.createElement('script');v.src=me.replace(/guest\.js(\?.*)?$/,'voice.js?v=1');v.defer=true;(document.head||document.documentElement).appendChild(v)}catch(e){}})();
+
+// 📊 סטטיסטיקת שימוש (appstat.js, אורן 18.11.2026): נטען אוטומטית בכל דף study. משתמש = הילד לפי הכתובת; אורח בלי משתמש; תצוגת בדיקה של הורה לא נספרת
+(function(){try{var me=document.currentScript&&document.currentScript.src;if(!me)return;var v=document.createElement('script');v.src=me.replace(/study\/guest\.js(\?.*)?$/,'appstat.js?v=1');v.defer=true;
+  v.onload=function(){var m=/\/study\/([a-z]+)\//.exec(location.pathname),kid=m&&!/^(family|parents|kids|tools|audio|supabase)$/.test(m[1])?m[1]:null;
+    window.AppStat&&AppStat.init({app:'study',uid:function(){return window.STUDY_GUEST?null:kid},skip:function(){return !!window.STUDY_REVIEW}})};
+  (document.head||document.documentElement).appendChild(v)}catch(e){}})();
