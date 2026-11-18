@@ -153,8 +153,8 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 <div class="ov" id="sqov"><div class="pn"><div id="sqtt" style="font-size:15px;color:#6d28d9;font-weight:700">סקווישי חדש! 🎉</div><div id="sqimg"></div><h2 id="sqname" style="margin:4px 0"></h2><p id="sqdesc" style="margin:0 0 6px;line-height:1.45"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="btn" id="sqok" type="button">לאוסף! 💜</button></div></div>
 <div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
 
-<script src="../squishies.js?v=2"></script>
-<script src="../../sqsound.js?v=13"></script>
+<script src="../squishies.js?v=3"></script>
+<script src="../../sqsound.js?v=14"></script>
 <script src="../../effort.js?v=1"></script>
 <script src="../../track.js?v=9"></script>
 <script src="../../guess.js?v=1"></script>
@@ -262,8 +262,8 @@ const SQS3=[
 const ALLSQ=SQS.concat(SQS2,SQS3),baseDone=()=>SQS.every(x=>SQ.includes(x.id)),supDone=()=>baseDone()&&SQS2.every(x=>SQ.includes(x.id));
 const sqEvery=()=>supDone()?50:baseDone()?12:6;
 // 🎤 שורה רביעית מחיזוק המתמטיקה (dani/math6, 15.11.2026): הלוח האחד, נאספים שם ומוצגים גם כאן
-const L4=()=>(window.DaniSquishies&&DaniSquishies.list4)||[],OWN4=()=>{try{return DaniSquishies.owned()}catch(e){return []}};
-const sqN=()=>ALLSQ.filter(x=>SQ.includes(x.id)).length+L4().filter(x=>OWN4().includes(x.id)).length,sqT=()=>ALLSQ.length+L4().length;
+const L4=()=>(window.DaniSquishies&&DaniSquishies.list4)||[],L5=()=>(window.DaniSquishies&&DaniSquishies.list5)||[],OWN4=()=>{try{return DaniSquishies.owned()}catch(e){return []}};
+const sqN=()=>ALLSQ.filter(x=>SQ.includes(x.id)).length+L4().concat(L5()).filter(x=>OWN4().includes(x.id)).length,sqT=()=>ALLSQ.length+L4().length+L5().length;// + 🏠 שורה חמישית מהכתבה 2 (19.11.2026)
 const sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
 
 // ---------- עזר ----------
@@ -431,9 +431,9 @@ function sqRender(){const ev=sqEvery(),left=ev-(S.cc||0),bd=baseDone();
   $('sqtx').innerHTML=supDone()?'כל הסופר סקווישים אצלך! עכשיו <b>אולטרה סקווישים</b> 💎: כל אחד על <b>50 תשובות נכונות</b>. אלופה!':bd?'כל הלהקה אצלך! עכשיו <b>סופר סקווישים</b>: כל אחד על <b>12 תשובות נכונות</b> ⭐':'על כל <b>6 תשובות נכונות</b> מצטרף סקווישי ללהקה. אחרי 6 נפתחים 6 סופר ⭐ ואחריהם 6 אולטרה 💎 לחצי על סקווישי כדי להכיר אותו.';
   $('sqct').textContent=`אספת ${sqN()} מתוך ${sqT()} · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} ל${supDone()?'אולטרה ':bd?'סופר ':''}סקווישי הבא`+(window.StudyGuess&&!StudyGuess.reward()?` · 🤔 הפרסים עצורים בגלל ניחושים: עוד ${StudyGuess.stat().need} תשובות נכונות במחשבה`:'');$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
   const cl=s=>s.ult?' ult':s.sup?' sup':'',tile=s=>SQ.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}<span>${esc(s.n)}</span></div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('')})}<span>???</span></div>`;
-  $('sqg').innerHTML='<div class="sqhd">💜 הלהקה</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')+'<div class="sqhd">💎 אולטרה סקווישים</div>'+SQS3.map(tile).join('')+(L4().length?'<div class="sqhd">🎤 סיבוב הופעות: חיזוק מתמטיקה</div>'+L4().map(s=>OWN4().includes(s.id)?`<div class="own trip" data-id="${s.id}">${sqSvg(s)}<span>${esc(s.n)}</span></div>`:`<div class="lock trip">${sqSvg({svg:s.svg.split(DaniSquishies.orb).join('')})}<span>???</span></div>`).join(''):'')+(window.StudyEffort?StudyEffort.row('dani',{label:true}):'')}
+  $('sqg').innerHTML='<div class="sqhd">💜 הלהקה</div>'+SQS.map(tile).join('')+'<div class="sqhd">⭐ סופר סקווישים</div>'+SQS2.map(tile).join('')+'<div class="sqhd">💎 אולטרה סקווישים</div>'+SQS3.map(tile).join('')+(L4().length?'<div class="sqhd">🎤 סיבוב הופעות: חיזוק מתמטיקה</div>'+L4().map(s=>OWN4().includes(s.id)?`<div class="own trip" data-id="${s.id}">${sqSvg(s)}<span>${esc(s.n)}</span></div>`:`<div class="lock trip">${sqSvg({svg:s.svg.split(DaniSquishies.orb).join('')})}<span>???</span></div>`).join(''):'')+(L5().length?'<div class="sqhd">🏠 הבית של הלהקה: הכתבה 2</div>'+L5().map(s=>OWN4().includes(s.id)?`<div class="own trip" data-id="${s.id}">${sqSvg(s)}<span>${esc(s.n)}</span></div>`:`<div class="lock trip">${sqSvg({svg:s.svg.split(DaniSquishies.orb).join('')})}<span>???</span></div>`).join(''):'')+(window.StudyEffort?StudyEffort.row('dani',{label:true}):'')}
 $('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
-$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id)||L4().find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.eff?'💝 פרס מאמץ מאבא ואמא':s.trip?'הסקווישי שלך מסיבוב ההופעות 🎤':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 💜';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id)||L4().find(x=>x.id===d.dataset.id)||L5().find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;CURSQ=s.id;sqSound(s.id);$('sqtt').textContent=s.eff?'💝 פרס מאמץ מאבא ואמא':s.home?'הסקווישי שלך מהבית של הלהקה 🏠':s.trip?'הסקווישי שלך מסיבוב ההופעות 🎤':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 💜';$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 
 // ---------- ממשק ----------

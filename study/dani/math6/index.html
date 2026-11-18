@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <script src="../../guest.js?v=7"></script>
-<script src="../../content.js?v=13"></script><script>StudyContent.guard('dani/math6')</script>
+<script src="../../content.js?v=14"></script><script>StudyContent.guard('dani/math6')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · חיזוק מתמטיקה</title>
 <link rel="manifest" href="../../manifest.json">
@@ -162,8 +162,8 @@ main{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex
 <div class="ov" id="why"><div class="pn"><h2>כמעט! בואי נבין 💡</h2><div class="wa" id="wya"></div><p class="wy" id="wyt"></p><div class="weq" id="wye"></div><button class="btn" id="wyok" type="button">הבנתי, ממשיכות ←</button></div></div>
 <div class="ov" id="mdov"><div class="pn"><div style="font-size:46px" id="mde">🏅</div><h2 id="mdt"></h2><p id="mdp"></p><button class="btn" id="mdy" type="button">לבמה הבאה 🎤</button></div></div>
 
-<script src="../squishies.js?v=2"></script>
-<script src="../../sqsound.js?v=13"></script>
+<script src="../squishies.js?v=3"></script>
+<script src="../../sqsound.js?v=14"></script>
 <script src="../../effort.js?v=1"></script>
 <script src="../../track.js?v=9"></script>
 <script src="../../guess.js?v=1"></script>
@@ -572,7 +572,7 @@ const cl=s=>s.ult?' ult':s.sup?' sup':s.trip?' trip':'';
 function tile(s,o){return o.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}"><svg viewBox="0 0 100 100">${s.svg}</svg></div>`:`<div class="lock${cl(s)}"><svg viewBox="0 0 100 100">${s.svg.split(DS.aura).join('').split(DS.uaura).join('').split(DS.orb).join('')}</svg></div>`}
 function sqRender(){const o=own(),R=DS.rows,n=L4.filter(x=>o.includes(x.id)).length;
   $('sqtx').innerHTML=`הלוח שלך, אחד לכל התכנים. בסיבוב ההופעות: <b>סקווישי על כל במה</b> שמסיימים (${n} מתוך 6). אספת ${sqN()} מתוך ${ALLSQ.length}.`;$('sqpb').style.width=(PH2()?100:misPct(S.m)*100)+'%';
-  $('sqg').innerHTML=[DS.list,DS.list2,DS.list3,L4].map((l,i)=>`<div class="sqhd">${R[i]}</div>`+l.map(s=>tile(s,o)).join('')).join('')+(window.StudyEffort?StudyEffort.row('dani'):'')}
+  $('sqg').innerHTML=[DS.list,DS.list2,DS.list3,L4,DS.list5].filter(Boolean).map((l,i)=>`<div class="sqhd">${R[i]}</div>`+l.map(s=>tile(s,o)).join('')).join('')+(window.StudyEffort?StudyEffort.row('dani'):'')}
 $('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};
 $('sqcx').onclick=()=>$('sqcol').classList.remove('on');
 $('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=ALLSQ.find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;$('sqcol').classList.remove('on');
