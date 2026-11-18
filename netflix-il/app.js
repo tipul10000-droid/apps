@@ -34,8 +34,15 @@
   const icHTML = (n) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICO[n] || "") + "</svg>";
   const ic = (n) => ICO[n] ? h("span", { class: "ic", html: icHTML(n) }) : h("span", { class: "ic t" }, n || ""); // non-icon = text (the flag)
   for (const el of document.querySelectorAll(".ic[data-i]")) el.innerHTML = icHTML(el.dataset.i);
-  const GEN = [["act", "פעולה"], ["com", "קומדיה"], ["dra", "דרמה"], ["rom", "רומנטי"], ["thr", "מתח ופשע"], ["scf", "מד״ב ופנטזיה"],
-    ["hor", "אימה"], ["doc", "דוקו"], ["ani", "אנימציה"], ["fam", "משפחה"], ["rea", "ריאליטי"]];
+  // genres = TMDB's own genres, the 12 with the most titles on Netflix Israel, separately for movies and series,
+  // most titles first (Oren 18.11.2026; counted 18.11.2026). TMDB has no Romance/Horror for series at all.
+  const GEN = {
+    m: [[35, "קומדיה"], [18, "דרמה"], [10749, "רומנטי"], [53, "מותחן"], [28, "אקשן"], [99, "דוקומנטרי"], [80, "פשע"],
+      [10751, "משפחה"], [12, "הרפתקאות"], [16, "אנימציה"], [14, "פנטזיה"], [27, "אימה"]],
+    s: [[18, "דרמה"], [35, "קומדיה"], [80, "פשע"], [99, "דוקומנטרי"], [16, "אנימציה"], [10765, "מד״ב ופנטזיה"], [9648, "מסתורין"],
+      [10764, "ריאליטי"], [10759, "אקשן והרפתקה"], [10762, "ילדים"], [10751, "משפחה"], [10767, "אירוח"]],
+  };
+  const gSel = () => { const ok = new Set(GEN[F.t].map((x) => x[0])); return (F.g || []).map(Number).filter((g) => ok.has(g)); };
   const RATES = [0, 6, 7, 7.5, 8, 8.5, 9];
   const MIN_VOTES = 1000, PAGE = 45, NEW_DAYS = 14;
   const TASTES = window.NF_TASTES || {};
@@ -106,8 +113,9 @@
   const okR = (x) => !!x.r && (x.il || (x.v || 0) >= MIN_VOTES); // Israeli titles are niche: no vote minimum
   const rated = (x, r) => !r || (okR(x) && x.r >= r);
   function baseList() { // everything except the rating step
+    const gs = gSel();
     return items.filter((x) => x.k[0] === F.t && !seen[x.k] && tasteOk(x)
-      && (!F.g.length || F.g.some((g) => x.g.includes(g)))
+      && (!gs.length || gs.some((g) => x.g.includes(g)))
       && (F.il === "all" || (F.il === "only" ? x.il : !x.il)) && (!F.nf || !foreign(x)));
   }
   // "🎯 בשבילי" (Oren 17.11.2026): with a personal preference, sort by how well a title fits it. The fit is learned
@@ -147,12 +155,12 @@
     const me = personal(); if (!me && F.sort === "me") F.sort = "r";
     segSet("fSort", F.sort); $("fSort").lastElementChild.classList.toggle("off", !me); // 🎯 always there (nothing shifts), active only with a personal preference
     for (const b of $("fSort").children) b.querySelector("i").textContent = b.dataset.v !== F.sort ? "↕" : F.dir === 1 ? "↑" : "↓";
-    const fg = $("fGen");
-    if (!fg.children.length) {
-      fg.append(h("button", { type: "button", "data-v": "" }, "הכול"));
-      for (const [k, l] of GEN) fg.append(h("button", { type: "button", "data-v": k }, l));
+    const fg = $("fGen"), gs = gSel();
+    if (fg.dataset.k !== F.t) { // rebuilt per type: TMDB has a different genre list for movies and for series
+      fg.dataset.k = F.t; fg.replaceChildren(); // 12 genres = 3 rows of 4; none lit = everything, tap a lit one to clear it
+      for (const [k, l] of GEN[F.t]) fg.append(h("button", { type: "button", "data-v": k, class: l.length > 9 ? "lg" : "" }, l));
     }
-    for (const b of fg.children) b.classList.toggle("on", b.dataset.v ? F.g.includes(b.dataset.v) : !F.g.length);
+    for (const b of fg.children) b.classList.toggle("on", b.dataset.v ? gs.includes(Number(b.dataset.v)) : !gs.length);
   }
   function renderRates(base) {
     const fr = $("fRate");
@@ -434,7 +442,7 @@
     if (b.dataset.v === "me" && !personal()) { toast("״בשבילי״ עובד כשבוחרים העדפה אישית בהגדרות"); return; }
     if (F.sort === b.dataset.v) F.dir = F.dir === 1 ? -1 : 1; else { F.sort = b.dataset.v; F.dir = -1; } save(); render(); });
   $("fGen").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; const v = b.dataset.v;
-    if (!v) F.g = []; else F.g = F.g.includes(v) ? F.g.filter((x) => x !== v) : [...F.g, v]; save(); render(); });
+    const gs = gSel(), n = Number(v); F.g = !v ? [] : gs.includes(n) ? gs.filter((x) => x !== n) : [...gs, n]; save(); render(); });
   $("fRate").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; F.r = Number(b.dataset.v); save(); render(); });
   document.querySelector(".tabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; render(); });
   $("setBtn").addEventListener("click", settings);
