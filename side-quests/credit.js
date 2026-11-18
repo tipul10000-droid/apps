@@ -44,6 +44,8 @@ function qBlock(c){return `<div class="card q"><h3>${esc([c.short||c.name,c.last
 function tabCards(){const C=cards();let o="";
   const T=openTodos();
   if(T.length)o+=`<section><div class="sh"><h2>▶️ פעולות פתוחות</h2><small>${T.length}</small></div><div class="card">${T.map(({c,t})=>`<div class="todo"><span class="w">${esc(WHO[t.who]||"")}</span><span>${c?`<b>${esc(c.short||c.name)} ${esc(digits(c))}:</b> `:""}${esc(t.text)}</span></div>`).join("")}</div></section>`;
+  const D=(Array.isArray(meta.drafts)?meta.drafts:[]).filter(d=>d&&d.body&&!d.done);
+  if(D.length)o+=`<section><div class="sh"><h2>✉️ נוסחים לשליחה</h2><small>${D.length}</small></div><div class="card">${D.map(d=>`<details class="dr"><summary><b>${esc(d.title)}</b><span class="s">${esc(d.where||"")}</span></summary><pre class="req">${esc(d.body)}</pre>${d.to?`<p class="note" dir="ltr">${esc(d.to)}</p>`:""}<div class="btns"><button data-cpy="${esc(d.body)}">📋 העתקה</button></div></details>`).join("")}</div></section>`;
   const Q=openQs();
   if(Q.length)o+=`<section><div class="sh"><h2>❓ שאלות אליך</h2><small>${Q.length}</small></div><div style="display:grid;gap:10px">${Q.map(qBlock).join("")}</div></section>`;
   const cRow=c=>{const f=feeOf(c);
