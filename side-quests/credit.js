@@ -14,6 +14,12 @@ try{Object.assign(ui,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch(e){}
 function saveUi(){try{localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch(e){}}
 const EMB=window.self!==window.top;function goHash(x){if(EMB)location.replace(location.pathname+location.search+"#"+x);else location.hash=x;}
 function route(){const m=location.hash.match(/^#c=(.+)$/);return m?decodeURIComponent(m[1]):null;}
+const cases=()=>Object.entries(items).map(([id,v])=>({id,...v})).filter(x=>!x._deleted&&x.kind==="case");
+const RISK={high:["גבוה","p-bad"],mid:["בינוני","p-warn"],low:["נמוך","p-hi"]};
+const CST={new:"לבדיקה",check:"בבירור",dispute:"ביטול והחזר",ok:"תקין",drop:"זניח"};
+const ACTS=[["ok","✓ תקין"],["check","🔎 לבירור"],["dispute","↩ להחזר"],["drop","🤷 זניח"]];
+const hold={},openC={};
+if(location.hash==="#fraud"){ui.tab="fraud";}
 const cards=()=>Object.entries(items).map(([id,v])=>({id,...v})).filter(x=>!x._deleted&&x.name&&(x.kind||"card")==="card").sort((a,b)=>(a.status==="closed")-(b.status==="closed")||(a.order||99)-(b.order||99));
 const live=()=>cards().filter(c=>c.status!=="closed");
 const ils=v=>"₪"+(Math.round(v*100)/100).toLocaleString("he-IL");
@@ -37,11 +43,50 @@ function heroCard(c){return `<div class="top"><button class="sqhome sqsub" type=
   <h1>${esc(c.name)} ${esc(c.last4?"· "+c.last4:"")}</h1>${c.role?`<p class="sub">${esc(c.role)}</p>`:""}`;}
 
 // ---------- home tabs ----------
-function bar(){return `<div class="seg">${[["cards","💳 כרטיסים"],["ins","🛡️ ביטוחים"],["docs","📂 איסוף"]].map(([k,l])=>`<button data-tab="${k}" class="${ui.tab===k?"on":""}">${l}</button>`).join("")}</div>`;}
+function bar(){const n=cases().filter(c=>(c.status||"new")==="new").length;return `<div class="seg">${[["cards","💳 כרטיסים"],["fraud","🚨 חריגים"],["ins","🛡️ ביטוחים"],["docs","📂 איסוף"]].map(([k,l])=>`<button data-tab="${k}" ${k==="fraud"?'data-sq-path="tab:fraud"':""} class="${ui.tab===k?"on":""}">${l}${k==="fraud"?`<b class="cnt${n?"":" z"}">${n||"✓"}</b>`:""}</button>`).join("")}</div>`;}
+// ---------- anomalies / fraud (kind:"case") ----------
+const sec=c=>hold[c.id]||c.status||"new";
+const d6=d=>{const m=String(d||"").match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${+m[3]}/${+m[2]}/${m[1].slice(2)}`:esc(d||"");};
+function spanTxt(c){if(!c.first)return "";if(!c.last||c.last===c.first)return "חיוב אחד, "+d6(c.first);return `מ-${d6(c.first)} עד ${d6(c.last)}`+(c.span?` (${esc(c.span)})`:"");}
+function caseRow(c){const r=RISK[c.risk]||RISK.mid,st=c.status||"new",open=!!openC[c.id],w=c.web||{};
+  const kv=(k,v)=>v?`<div class="k">${k}</div><div>${v}</div>`:"";
+  const web=w.src||w.pattern?[w.src?`<b>${esc(w.src)}</b>${w.rating!=null?`: ${esc(w.rating)}${w.n?` מתוך ${esc(w.n)} ביקורות`:""}`:""}`:"",w.pattern?esc(w.pattern):"",w.tip?"💡 "+esc(w.tip):"",safe(w.url)?`<a href="${esc(w.url)}" target="_blank" rel="noopener">למקור ›</a>`:""].filter(Boolean).join("<br>"):"";
+  const log=(c.log||[]).slice(-4).reverse().map(l=>`<li>${esc(String(l.at||"").slice(0,10))} · ${esc(l.text)}</li>`).join("");
+  return `<details class="case${st!=="new"&&!hold[c.id]?" done":""}${open?" rr":""}" data-case="${esc(c.id)}" data-sq-item="${esc(c.id)}" ${open?"open":""}><summary>
+   <span class="rk ${r[1]}"></span><span class="b"><span class="t">${esc(c.title)}</span><span class="s">${esc(c.what||"")}</span></span>
+   <span class="v">${c.total!=null?ils(c.total):""}<small>${c.n?esc(c.n)+" חיובים":""}</small></span></summary>
+   <div class="cb">${c.ask&&st==="new"?`<p class="ask">❓ ${esc(c.ask)}</p>`:""}
+   <div class="kv">${kv("סוג חריגה",esc(c.type_l||""))}${kv("רמת חשד",`<span class="pill ${r[1]}">${r[0]}</span>`)}${kv("בית עסק",esc(c.merchant||""))}${kv("כרטיס",esc(c.cards||""))}${kv("תקופה",spanTxt(c))}${kv("סכום",c.total!=null?ils(c.total)+(c.extra?` · חריגה ${ils(c.extra)}`:""):"")}${kv("המצב היום",esc(c.now||""))}${kv("למה חשוד",esc(c.why||""))}${kv("ברשת",web)}${kv("במייל",esc(c.mail||""))}${kv("המלצה",esc(c.rec||""))}${kv("סטטוס",esc(CST[st]||st))}</div>
+   ${c.rows&&c.rows.length?`<details class="more"><summary>כל החיובים (${c.rows.length})</summary><div class="rws">${c.rows.map(x=>`<span>${d6(x[0])}</span><span>${esc(x[1])}</span><span>${esc(x[2]||"")}</span>`).join("")}</div></details>`:""}
+   ${c.todo&&c.todo.text&&c.todo.status!=="done"?`<p class="note">▶️ ${esc(WHO[c.todo.who]||"")}: ${esc(c.todo.text)}</p>`:""}
+   <div class="btns acts">${ACTS.map(([k,l])=>`<button data-cact="${esc(c.id)}" data-k="${k}" class="${st===k?"on a-"+k:""}">${l}</button>`).join("")}</div>
+   ${log?`<details class="more"><summary>היסטוריה</summary><ul class="lg">${log}</ul></details>`:""}</div></details>`;}
+function tabFraud(){const C=cases().sort((a,b)=>({high:0,mid:1,low:2}[a.risk]??1)-({high:0,mid:1,low:2}[b.risk]??1)||(b.total||0)-(a.total||0));
+  const N=C.filter(c=>sec(c)==="new"),W=C.filter(c=>["check","dispute"].includes(sec(c))),D=C.filter(c=>["ok","drop"].includes(sec(c)));
+  const pot=W.filter(c=>sec(c)==="dispute").reduce((s,c)=>s+(+c.refund||0),0);const sc=meta.scan||{};
+  let o=`<section><div class="card scan"><b>🔍 סריקת חריגים</b><span>${sc.at?"אחרונה "+d6(sc.at):""}${sc.range?" · "+esc(sc.range):""}${sc.n?" · "+esc(sc.n)+" חיובים":""}</span>${sc.next?`<span>הבאה: ${esc(sc.next)}</span>`:""}</div></section>`;
+  o+=`<section><div class="sh"><h2>❓ לבדיקה שלך</h2><small>${N.length}</small></div>${N.length?`<div class="list cl">${N.map(caseRow).join("")}</div>`:'<div class="card empty">✓ אין חיובים חריגים שמחכים לך</div>'}</section>`;
+  if(W.length)o+=`<section><div class="sh"><h2>🔎 בבירור ולהחזר</h2><small>${pot?"אפשר להחזיר עד "+ils(pot):W.length}</small></div><div class="list cl">${W.map(caseRow).join("")}</div></section>`;
+  if(D.length)o+=`<details class="more zone"><summary>📦 סגור: תקין או זניח (${D.length})</summary><div class="list cl">${D.map(caseRow).join("")}</div></details>`;
+  return o;}
+async function caseAct(id,k){const c=items[id];if(!c)return;const now=new Date().toISOString(),prev=c.status||"new";
+  if(prev===k)return;
+  const T={ok:null,drop:null,check:{who:"oren",text:"לברר: "+(c.ask||c.title),status:"open",at:now},dispute:{who:"claude",text:"לנסח בקשת ביטול והחזר ל-"+(c.merchant||c.title)+" ולחברת האשראי (אתה שולח)",status:"open",at:now}}[k];
+  const patch={status:k,status_at:now,updated_at:now,log:[...(c.log||[]),{at:now,text:"סימנת: "+CST[k]}],todo:T?T:(c.todo?{...c.todo,status:"done"}:null)};
+  if(!hold[id])hold[id]=prev;clearTimeout(hold["t_"+id]);hold["t_"+id]=setTimeout(()=>{delete hold[id];delete hold["t_"+id];openC[id]=false;const y=scrollY;render();scrollTo(0,y);},5000);
+  await upd(id,patch,"נשמר: "+CST[k]);
+  if((k==="check"||k==="dispute")&&db){const tid=c.topic||"fraud-"+id.replace(/^case-/,"");
+    const ttl=(k==="dispute"?"להחזיר כסף: ":"לברר חיוב: ")+(c.merchant||c.title);
+    const t={title:ttl,status:"active",quest:"side",dash:"credit",size:"quick",kind:"task",created_at:now,updated_at:now,source:"דשבורד אשראי · חריגים",summary:[c.what,c.why,c.rec].filter(Boolean).join(" · "),
+      fit:{how:["phone"],mins:15,loc:"house",party:"office",by:"claude"},money_potential:k==="dispute"?(+c.refund||0):0,case_id:id,
+      steps:k==="dispute"?[{id:"s1",text:"Claude מנסח בקשת ביטול והחזר",who:"claude",done:false},{id:"s2",text:"לשלוח לבית העסק",who:"oren",done:false},{id:"s3",text:"אם אין תשובה: הכחשת עסקה בחברת האשראי",who:"oren",done:false}]:[{id:"s1",text:c.ask||"לבדוק אם אני מכיר את החיוב",who:"oren",done:false}],
+      log:[{at:now,text:"נפתח מהדשבורד: "+CST[k]}]};
+    try{if(c.topic){await db.collection("topics").doc(tid).update({status:"active",updated_at:now});}else{await db.collection("topics").doc(tid).set(t);await db.collection("credit").doc(id).update({topic:tid});}}catch(e){}}}
 function openQs(){return cards().filter(c=>c.q&&c.q.q&&!c.q.answer);}
 function openTodos(){return [...cards().filter(c=>c.todo&&c.todo.text&&c.todo.status!=="done").map(c=>({c,t:c.todo})),...(Array.isArray(meta.todos)?meta.todos:[]).filter(t=>t&&t.text&&t.status!=="done").map(t=>({c:null,t}))];}
 function qBlock(c){return `<div class="card q"><h3>${esc([c.short||c.name,c.last4].filter(Boolean).join(" "))}: ${esc(c.q.q)}</h3><div class="opts">${(c.q.options||[]).map((o,i)=>`<button data-ans="${esc(c.id)}" data-i="${i}">${esc(typeof o==="string"?o:o.label)}</button>`).join("")}</div></div>`;}
 function tabCards(){const C=cards();let o="";
+  const FN=cases().filter(c=>(c.status||"new")==="new");if(FN.length)o+=`<section><button class="card fbn" data-gofraud><b>🚨 ${FN.length} חיובים חריגים לבדיקה</b><span>${esc(FN.slice(0,3).map(c=>c.merchant||c.title).join(", "))}</span><span class="go">›</span></button></section>`;
   const T=openTodos();
   if(T.length)o+=`<section><div class="sh"><h2>▶️ פעולות פתוחות</h2><small>${T.length}</small></div><div class="card">${T.map(({c,t})=>`<div class="todo"><span class="w">${esc(WHO[t.who]||"")}</span><span>${c?`<b>${esc(c.short||c.name)} ${esc(digits(c))}:</b> `:""}${esc(t.text)}</span></div>`).join("")}</div></section>`;
   const D=(Array.isArray(meta.drafts)?meta.drafts:[]).filter(d=>d&&d.body&&!d.done);
@@ -71,7 +116,7 @@ function tabDocs(){let o="";const G=Array.isArray(meta.gather)?meta.gather:[];
   if(R&&R.body)o+=`<section><div class="sh"><h2>✉️ ${esc(R.title||"בקשת תנאי כרטיס")}</h2></div><div class="card"><pre class="req">${esc(R.body)}</pre>${R.where?`<p class="note">${esc(R.where)}</p>`:""}<div class="btns"><button data-copy>📋 העתקה</button></div></div></section>`;
   return o||`<div class="card empty">עוד אין</div>`;}
 function renderHome(){$("hero").innerHTML=heroHome();$("bar").innerHTML=bar();
-  $("app").innerHTML=ui.tab==="ins"?tabIns():ui.tab==="docs"?tabDocs():tabCards();}
+  $("app").innerHTML=ui.tab==="fraud"?tabFraud():ui.tab==="ins"?tabIns():ui.tab==="docs"?tabDocs():tabCards();}
 
 // ---------- secure card details (full number + CVV, encrypted on the device with the app PIN; expiry plain) ----------
 const enc=new TextEncoder(),dec=new TextDecoder();
@@ -140,6 +185,9 @@ async function upd(id,patch,msg){const prev=JSON.parse(JSON.stringify(items[id]|
 window.addEventListener("hashchange",()=>{render();scrollTo(0,0);});
 document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
   if(b=g("[data-tab]")){const k=b.dataset.tab;keepPut(`[data-tab="${k}"]`,()=>{ui.tab=k;saveUi();render();});return;}
+  if(b=g("[data-cact]")){const id=b.dataset.cact;openC[id]=true;keepPut(`[data-cact="${id}"][data-k="${b.dataset.k}"]`,()=>caseAct(id,b.dataset.k));return;}
+  if(b=g("[data-case]>summary")){const id=b.parentElement.dataset.case;setTimeout(()=>{openC[id]=b.parentElement.open;},0);return;}
+  if(b=g("[data-gofraud]")){keepPut('[data-tab="fraud"]',()=>{ui.tab="fraud";saveUi();render();});scrollTo(0,0);return;}
   if(b=g("[data-goc]")){goHash("c="+encodeURIComponent(b.dataset.goc));return;}
   if(g("[data-home]")){EMB?goHash(""):history.length>1&&route()?history.back():(location.hash="");return;}
   if(g("[data-copy]")){toast(await copy((meta.request||{}).body||"")?"הועתק":"לא הצלחתי להעתיק");return;}
