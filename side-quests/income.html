@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2D4A2B">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IN_BUILD="1.1";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IN_BUILD="1.2";</script>
 <script src="sq-db.js?v=10"></script>
 <script src="dash-lock.js?v=1"></script>
 <title>שכר והכנסות</title>
@@ -106,11 +106,26 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 .mh:first-child{border-top:0}
 .row{cursor:default}a.row{cursor:pointer;color:inherit;font-weight:400}
 .neg{color:var(--bad)}.pos{color:var(--good)}
+details.fd>summary{list-style:none}details.fd>summary::-webkit-details-marker{display:none}
+details.fd+details.fd{border-top:1px solid var(--line)}
+details.fd>summary.row{cursor:pointer}
+details.fd .row .t{white-space:normal}
+details.fd>.x{padding:0 14px 12px 14px;font-size:14.5px;line-height:1.55}
+details.fd>.x .nx{margin-top:6px;font-weight:700;color:var(--link)}
+.lk{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:22px}
+.lk div{background:var(--surface);padding:10px 8px;text-align:center}.lk b{display:block;font-family:var(--f-display);font-size:19px}.lk span{font-size:12.5px;color:var(--muted)}
+.q+.q{border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
+.opts button.on{background:var(--hi-soft);color:var(--hi)}
+.mchart{display:flex;align-items:flex-end;gap:1px;height:110px;direction:ltr}
+.mchart i{flex:1;background:var(--hi);min-height:1px;border-radius:1px 1px 0 0}.mchart i.d{background:var(--warn)}.mchart i.z{background:var(--bad)}
+.mchl{display:flex;justify-content:space-between;direction:ltr;font-size:11px;color:var(--muted);margin-top:4px}
+.ybar{display:inline-block;height:6px;border-radius:3px;background:var(--hi);vertical-align:middle}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=9">
 <script src="dash-sub.js?v=8" defer></script>
 <script src="fold.js?v=1" defer></script>
 <script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+<script src="sq-icons.js?v=1"></script>
 </head>
 <body>
 <header class="hero"><div class="in" id="hero"></div></header>
@@ -129,7 +144,7 @@ const MON=["","ינו׳","פבר׳","מרץ","אפר׳","מאי","יוני","י�
 const K=v=>{const a=Math.abs(v);return (v<0?"−":"")+"₪"+(a>=10000?(Math.round(a/100)/10).toLocaleString("he-IL")+"K":Math.round(a).toLocaleString("he-IL"));};
 const ils=v=>(v<0?"−":"")+"₪"+Math.round(Math.abs(v)).toLocaleString("he-IL");
 const mLbl=m=>{const [y,mm]=String(m).split("-");return MON[+mm]+" "+String(y).slice(2);};
-let meta=null;
+let meta=null,lior=null,dbr=null;
 const UI="sq_in_ui";let ui={tab:"month"};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
 function save(){try{localStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
 const who=w=>{const x=WHO[w]||["•",""];return `<span class="who" title="${esc(x[1])}">${x[0]}</span>`;};
@@ -144,7 +159,7 @@ function hero(){const r=regular(),ma=milAvg(),an=annualSum();
   <a class="chatbtn" href="${esc(safe(meta.chat_url))}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
   ${safe(meta.collect_url)?`<a class="docsbtn" href="${esc(meta.collect_url)}" target="_blank" rel="noopener">📥 שליפת מסמכים</a>`:""}
   <div class="kpis"><div class="kpi"><b>${K(r)}</b><span>קבוע בחודש</span></div><div class="kpi"><b>${K(ma)}</b><span>מילואים בחודש (ממוצע)</span></div><div class="kpi"><b>${K(an)}</b><span>שנתי, 12 חודשים</span></div></div>`;}
-function bar(){return `<div class="seg">${[["month","📅 חודשי"],["year","🎁 שנתי"],["mil","🎖️ מילואים"],["tax","🧾 מס"]].map(([k,l])=>`<button data-tab="${k}" class="${ui.tab===k?"on":""}">${l}</button>`).join("")}</div>`;}
+function bar(){return `<div class="seg">${[["month","📅 חודשי"],["year","🎁 שנתי"],["mil","🎖️ מילואים"],["tax","🧾 מס"],["lior","👩 ליאור"]].map(([k,l])=>`<button data-tab="${k}" class="${ui.tab===k?"on":""}">${l}</button>`).join("")}</div>`;}
 function row(x,href){const tag=href?`a href="${esc(href)}" target="_top"`:"div";const end=href?"a":"div";
   return `<${tag} class="row">${who(x.who)}<span class="b"><span class="t">${esc(x.l||x.t)}${x.warn?'<span class="pill p-warn">!</span>':""}${x.pill?`<span class="pill ${x.pill[1]}">${esc(x.pill[0])}</span>`:""}</span>${x.note?`<span class="s">${esc(x.note)}</span>`:""}</span>${x.v!=null?`<span class="v ${x.v<0?"neg":""}">${ils(x.v)}${x.rng?`<small>${esc(x.rng)}</small>`:""}</span>`:""}</${end}>`;}
 function openBlock(){const O=arr(meta.open);if(!O.length)return "";
@@ -176,13 +191,39 @@ function returnsBlock(){const R=arr(meta.returns).slice().sort((a,b)=>(+b.y||0)-
   return `<section><div class="sh"><h2>📑 דוחות שנתיים</h2><small>${esc(meta.returns_note||"")}</small></div><div class="list">${R.map(x=>row({who:x.who||"family",l:"דוח "+x.y+(x.when?" · "+x.when:""),note:x.note,v:x.v,pill:RS[x.s]},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
 function tabTax(){const T=arr(meta.tax);const ST={urgent:["דחוף","p-bad"],check:["לבדוק","p-warn"],plan:["מתוכנן","p-hi"]};
   return returnsBlock()+`<section><div class="sh"><h2>מס, זיכויים והחזרים</h2></div><div class="list">${T.map(x=>row({...x,pill:ST[x.s]},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
+function tabLior(){const L=lior;if(!L)return '<div class="empty">אין עדיין נתונים</div>';
+  const FS={open:["לדרוש","p-bad"],check:["לבדוק","p-warn"],ask:["שאלה","p-hi"],ok:["תקין","p-good"],info:["מידע",""],plan:["מתוכנן","p-hi"]};
+  const k=L.kpis||{};let o="";
+  o+=`<div class="lk"><div><b>${ils(k.once||0)}</b><span>כסף חד-פעמי לבדוק / לדרוש</span></div><div><b>${ils(k.monthly||0)}</b><span>בחודש, אם תעלה לדרגה ג׳</span></div><div><b>${k.open||0}</b><span>נושאים פתוחים</span></div></div>`;
+  const F=arr(L.findings),ord={open:0,check:1,ask:2,info:3,ok:4};
+  o+=`<section><div class="sh"><h2>🔎 ממצאים</h2><small>עדכון ${esc(L.updated||"")}</small></div><div class="list">${F.slice().sort((a,b)=>(ord[a.s]??5)-(ord[b.s]??5)).map(f=>`<details class="fd" data-sq-item="${esc(f.id)}"><summary class="row"><span class="b"><span class="t">${esc(f.h)}${FS[f.s]&&FS[f.s][1]?`<span class="pill ${FS[f.s][1]}">${FS[f.s][0]}</span>`:""}</span></span>${f.v?`<span class="v">${ils(f.v)}${f.per==="month"?"<small>בחודש</small>":"<small>הערכה</small>"}</span>`:""}</summary><div class="x">${esc(f.t)}${f.next?`<div class="nx">▶️ ${esc(f.next)}</div>`:""}</div></details>`).join("")}</div></section>`;
+  const Q=arr(L.questions),A=L.ans||{};
+  if(Q.length)o+=`<section><div class="sh"><h2>❓ שאלות אליך</h2><small>${Q.filter(q=>!A[q.id]).length} פתוחות</small></div><div class="card">${Q.map(q=>`<div class="q"><h3>${esc(q.q)}</h3><div class="opts">${arr(q.opts).map(x=>`<button data-qa="${esc(q.id)}" data-v="${esc(x)}" class="${(A[q.id]||{}).a===x?"on":""}">${(A[q.id]||{}).a===x?"✓ ":""}${esc(x)}</button>`).join("")}</div></div>`).join("")}</div></section>`;
+  const N=arr(L.need);
+  if(N.length)o+=`<section><div class="sh"><h2>📥 מה עוד חסר לי</h2><small>שלח בצ׳אט</small></div><div class="list">${N.map(x=>`<div class="row"><span class="b"><span class="t">${esc(x.t)}</span><span class="s">${esc(x.why)}</span></span></div>`).join("")}</div></section>`;
+  const R=arr(L.rights);
+  if(R.length)o+=`<section><div class="sh"><h2>🏅 זכויות לממש</h2></div><div class="list">${R.map(x=>`<div class="row"><span class="b"><span class="t">${esc(x.h)}${FS[x.s]&&FS[x.s][1]?`<span class="pill ${FS[x.s][1]}">${FS[x.s][0]}</span>`:""}</span>${x.t?`<span class="s">${esc(x.t)}</span>`:""}</span></div>`).join("")}</div></section>`;
+  const G=arr(L.grades);
+  if(G.length)o+=`<section><div class="sh"><h2>🪜 דרגות</h2></div><div class="list">${G.map(g=>`<div class="row ${g[1]==="?"?"off":""}"><span class="b"><span class="t">${esc(g[0])}</span></span><span class="v">${g[1]==="?"?"?":esc(mLbl(g[1]))}</span></div>`).join("")}</div></section>`;
+  const H=arr(L.hours);
+  if(H.length)o+=`<section><div class="sh"><h2>📚 שעות פיתוח מקצועי</h2><small>נלמדו / נספרו</small></div><table class="cmp"><tr><th>שנה</th><th>נלמדו</th><th>נספרו</th></tr>${H.map(h=>`<tr><td>${esc(h[0])}</td><td>${h[1]}</td><td class="${h[2]<h[1]?"unk":""}">${h[2]}</td></tr>`).join("")}</table>${L.hours_note?`<p class="note">${esc(L.hours_note)}</p>`:""}</section>`;
+  const Y=arr(L.years),gm=Math.max(1,...Y.map(y=>+y.g||0));
+  if(Y.length)o+=`<section><div class="sh"><h2>💰 שכר לפי שנה</h2><small>ברוטו (106) · נטו · מס</small></div><table class="cmp"><tr><th>שנה</th><th>ברוטו</th><th>נטו</th><th>מס</th><th>משרה</th></tr>${Y.slice().reverse().map(y=>`<tr><td><b>${y.y}</b>${y.mn<12?`<br><small class="muted">${y.mn} חו׳</small>`:""}</td><td>${K(+y.g||0)}<br><span class="ybar" style="width:${Math.round((+y.g||0)/gm*56)}px"></span></td><td>${K(+y.n||0)}</td><td>${y.tax?K(y.tax):"0"}${y.cp?`<br><small class="muted">${y.cp} נק׳</small>`:""}</td><td>${Math.round((+y.fr||0)*100)}%</td></tr>${y.note?`<tr><td colspan="5" class="note" style="border-top:0;padding-top:0">${esc(y.note)}</td></tr>`:""}`).join("")}</table></section>`;
+  const M=arr(L.months).filter(x=>x[0]>="2011-09"),mm=Math.max(1,...M.map(x=>+x[2]||0));
+  if(M.length)o+=`<section><div class="sh"><h2>📊 נטו בכל חודש</h2><small>כתום = הפרשים, אדום = קיזוז</small></div><div class="card"><div class="mchart">${M.map(x=>`<i class="${x[3]<0?"z":x[3]>1000?"d":""}" style="height:${Math.max(1,Math.max(0,+x[2]||0)/mm*100)}%" title="${esc(mLbl(x[0]))}: ${ils(x[2])}${x[3]?" · הפרשים "+ils(x[3]):""}"></i>`).join("")}</div><div class="mchl"><span>${esc(mLbl(M[0][0]))}</span><span>${esc(mLbl(M[M.length-1][0]))}</span></div></div></section>`;
+  const P=arr(L.profile);
+  if(P.length)o+=`<section><div class="sh"><h2>👩 הפרופיל</h2></div><div class="card"><div class="kv">${P.map(p=>`<div class="k">${esc(p[0])}</div><div>${esc(p[1])}</div>`).join("")}</div></div></section>`;
+  o+=`<section><details class="more"><summary>📁 על מה זה מבוסס</summary><div>${arr(L.docs).map(esc).join("<br>")}<br><br>${esc(L.method||"")}</div></details></section>`;
+  return o;}
 function render(){if(!meta){return;}
   $("hero").innerHTML=hero();$("bar").innerHTML=bar();
-  $("app").innerHTML=ui.tab==="year"?tabYear():ui.tab==="mil"?tabMil():ui.tab==="tax"?tabTax():tabMonth();
+  $("app").innerHTML=ui.tab==="year"?tabYear():ui.tab==="mil"?tabMil():ui.tab==="tax"?tabTax():ui.tab==="lior"?tabLior():tabMonth();
   $("foot").innerHTML=`שכר ${esc(window.IN_BUILD)}`;}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b){ui.tab=b.dataset.tab;save();render();}});
-window.claude.use("db").then(db=>{if(!db)return;
-  db.collection("income").onSnapshot(s=>{s.docs.forEach(x=>{if(x.id==="_meta")meta=x.data();});if(!meta)$("app").innerHTML='<div class="empty">אין נתונים</div>';render();},()=>{});});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b){ui.tab=b.dataset.tab;save();render();return;}
+  const q=e.target.closest("[data-qa]");if(q&&lior&&dbr){const A=Object.assign({},lior.ans||{});A[q.dataset.qa]={a:q.dataset.v,at:new Date().toISOString()};lior.ans=A;
+    const y=window.scrollY;render();window.scrollTo(0,y);dbr.collection("income").doc("lior").update({ans:A});}});
+window.claude.use("db").then(db=>{if(!db)return;dbr=db;
+  db.collection("income").onSnapshot(s=>{s.docs.forEach(x=>{if(x.id==="_meta")meta=x.data();if(x.id==="lior")lior=x.data();});if(!meta)$("app").innerHTML='<div class="empty">אין נתונים</div>';render();},()=>{});});
 })();
 </script>
 </body>

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=3"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#33402A">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.ML_BUILD="1.0";window.SQ_DASH="miluim";</script>
+<script src="sq-db.js?v=10"></script>
+<title>הוצאות מילואים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* דשבורד הגשת הוצאות מילואים (18.11.2026). נתונים: sq_docs (app=sidequests, collection=miluim: מסמך לכל הוצאה + _meta). הקבלות עצמן רק בדרייב הפרטי. */
+:root{
+  --bg:#F3F5F0; --surface:#FFFFFF; --sunk:#E8ECE2; --ink:#1A2116; --muted:#5D6855; --line:#D7DDCF;
+  --hero:#33402A; --hero2:#55673F; --hero-ink:#F3F7EE; --hero-muted:#C3D0B3; --accent:#D9B65A; --accent-ink:#2E2300;
+  --good:#23855A; --good-soft:#DDF1E6; --warn:#A8600E; --warn-soft:#FBEAD3; --bad:#B83A2E; --bad-soft:#F8E0DD; --link:#4A6B2A; --hi:#56762F; --hi-soft:#E7EFDC;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12160F; --surface:#1A2016; --sunk:#232B1E; --ink:#EDF2E7; --muted:#A5B097; --line:#2E3828;
+  --hero:#1F2819; --hero2:#3A4A2C; --hero-ink:#EEF4E8; --hero-muted:#AFC09B; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#B5D48E; --hi:#B5D48E; --hi-soft:#26341C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12160F; --surface:#1A2016; --sunk:#232B1E; --ink:#EDF2E7; --muted:#A5B097; --line:#2E3828;
+  --hero:#1F2819; --hero2:#3A4A2C; --hero-ink:#EEF4E8; --hero-muted:#AFC09B; --good:#5CC88E; --good-soft:#163024; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#B5D48E; --hi:#B5D48E; --hi-soft:#26341C; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{background:linear-gradient(160deg,var(--hero),var(--hero2));color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:14px;font-weight:700}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.09);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{flex:1;border:0;background:none;padding:9px 2px;font-weight:800;font-size:14.5px;cursor:pointer;font-family:var(--f-display);white-space:nowrap;position:relative}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.seg .dot{position:absolute;top:6px;inset-inline-end:8px;width:7px;height:7px;border-radius:50%;background:var(--bad)}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}.sh small{color:var(--muted);font-size:13px}
+.muted{color:var(--muted)}.empty{color:var(--muted);text-align:center;padding:20px 12px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.list>*+*{border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:none;border:0;padding:12px 14px;cursor:pointer;color:inherit}
+.row .i{flex:none;width:30px;font-size:21px;text-align:center}
+.row .b{flex:1;min-width:0}
+.row .t{font-family:var(--f-display);font-weight:700;font-size:16px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .s{color:var(--muted);font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .v{flex:none;text-align:left;font-family:var(--f-display);font-weight:800;font-size:15px;min-width:64px}
+.row .v small{display:block;color:var(--muted);font-family:var(--f-body);font-weight:600;font-size:12px}
+.row.wr .t{white-space:normal;font-size:15px}
+.row .ch{flex:none;width:14px;color:var(--muted);font-size:12px;transition:transform .2s}
+.it.open .row .ch{transform:rotate(180deg)}
+.pill{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:1px 8px;vertical-align:1px;white-space:nowrap}
+.p-good{background:var(--good-soft);color:var(--good)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-hi{background:var(--hi-soft);color:var(--hi)}.p-mut{background:var(--sunk);color:var(--muted)}
+.det{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease}
+.it.open .det{grid-template-rows:1fr}
+.det>div{overflow:hidden}
+.det .in{padding:0 14px 14px 14px;font-size:14.5px;line-height:1.55}
+.det p{margin:0 0 8px}
+.gaps{margin:0 0 10px;padding:0}
+.gaps li{list-style:none;padding:6px 0 6px;border-top:1px dashed var(--line);color:var(--ink)}
+.gaps li::before{content:"⚠️ ";}
+.rc{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.rc a{font-size:13.5px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--sunk)}
+.sts{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.sts button{border:0;background:none;padding:9px 2px;font-weight:800;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.sts button+button{border-inline-start:1px solid var(--line)}
+.sts button.on{background:var(--hi);color:#fff}
+.sts button.on.bad{background:var(--bad)}
+.lbl{font-size:12.5px;color:var(--muted);font-weight:700;margin:2px 0 4px}
+/* one-line insights */
+.xr{display:block}
+.xr .row{padding:11px 14px}
+.xr .row .t{font-size:15px;font-weight:700}
+.note{font-size:13.5px;color:var(--muted);line-height:1.5}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+/* tracks */
+.tk{padding:12px 14px}
+.tk .h{display:flex;align-items:center;gap:10px}
+.tk .h .t{flex:1;font-family:var(--f-display);font-weight:700;font-size:16px}
+.meter{height:8px;border-radius:999px;background:var(--sunk);overflow:hidden;margin:8px 0 6px}
+.meter i{display:block;height:100%;background:var(--hi);border-radius:999px}
+.tk .m{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);gap:8px}
+.tk .c{font-size:13.5px;margin-top:4px}
+/* questions */
+.q{padding:12px 14px}
+.q h3{font-size:16px;margin-bottom:6px}
+.q .why{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.opts{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.opts button{background:var(--surface);border:0;padding:11px 12px;text-align:right;font-weight:700;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
+.opts button+button{border-top:1px solid var(--line)}
+.opts button.on{background:var(--hi-soft);color:var(--hi)}
+.opts .rec{font-size:12px;color:var(--good);font-weight:800}
+.done-q{font-size:14px}
+.done-q b{color:var(--good)}
+details.fold{margin-top:4px}
+details.fold>summary{cursor:pointer;list-style:none;padding:12px 14px;font-family:var(--f-display);font-weight:700;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold[open]>summary{border-radius:16px 16px 0 0;border-bottom:0}
+details.fold>.list{border-radius:0 0 16px 16px}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw}
+.toast.on{display:block}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+.v6{display:flex;gap:10px;align-items:center;font-size:14px}
+@media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.seg button{font-size:13.5px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=9">
+<script src="dash-sub.js?v=8" defer></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+<script src="sq-icons.js?v=1"></script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const arr=a=>Array.isArray(a)?a:[];
+const ils=v=>"₪"+Math.round(+v||0).toLocaleString("he-IL");
+const d6=s=>{if(!s)return "";const [y,m,d]=String(s).split("-");return d&&m&&y?`${+d}/${+m}/${y.slice(2)}`:s;};
+const ST={todo:["להגיש","p-warn"],tbd:["חסרים פרטים","p-mut"],unknown:["לא ברור","p-bad"],sent:["הוגש","p-hi"],received:["התקבל","p-good"],rejected:["נדחה","p-bad"]};
+const STB=[["todo","להגיש"],["sent","הוגש"],["received","התקבל"],["rejected","נדחה"]];
+let meta=null,items=[],db=null;
+const UI="sq_ml_ui";let ui={tab:"sum",open:{}};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
+function save(){try{localStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200);}
+const real=()=>items.filter(x=>!x.note_only);
+const track=id=>arr(meta.tracks).find(t=>t.id===id)||{};
+const ans=()=>meta.ans||{};
+const openQs=()=>arr(meta.questions).filter(q=>!ans()[q.id]);
+function got(){return real().filter(x=>x.st==="received").reduce((s,x)=>s+(+x.got||0),0);}
+/* realistic potential: house claims, capped tracks by what's left, 2026 therapy by exp; low-chance items out */
+function potential(){const P=real().filter(x=>["todo","tbd","sent"].includes(x.st)&&x.chance!=="low");const by={};
+  P.forEach(x=>{(by[x.track]=by[x.track]||[]).push(x);});let s=0;
+  Object.keys(by).forEach(k=>{const t=track(k),sum=by[k].reduce((a,x)=>a+(+(x.exp!=null?x.exp:x.claim)||0),0);
+    s+=t.cap!=null?Math.min(sum,Math.max(0,(+t.cap)-(+t.used||0))):sum;});
+  const e=track("emo2024");if(P.some(x=>x.track==="combo2025")&&e.cap!=null)s+=Math.max(0,e.cap-(e.used||0));
+  return s;}
+function hero(){const todo=real().filter(x=>["todo","tbd","unknown"].includes(x.st)).length;
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
+  <h1>🎖️ הגשת הוצאות מילואים</h1>
+  <p class="sub">קרן הסיוע: מה הוגש, מה התקבל ומה עוד אפשר להגיש</p>
+  <a class="chatbtn" href="${esc(safe(meta.chat_url))}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
+  <div class="kpis"><div class="kpi"><b>${ils(got())}</b><span>התקבל (בלי V6)</span></div><div class="kpi"><b>≈ ${ils(potential())}</b><span>אפשר לקבל עוד</span></div><div class="kpi"><b>${todo}</b><span>פריטים פתוחים</span></div></div>`;}
+function bar(){const T=[["sum","סיכום"],["exp","הוצאות"],["trk","מסלולים"],["q","שאלות"]];
+  return `<div class="seg">${T.map(([k,l])=>`<button data-tab="${k}" data-sq-path="${k}" class="${ui.tab===k?"on":""}">${l}${k==="q"&&openQs().length?'<i class="dot"></i>':""}</button>`).join("")}</div>`;}
+function itemRow(x){const s=ST[x.st]||["",""],o=ui.open[x.id];
+  const amt=x.note_only?"":`${ils(x.exp!=null&&x.st!=="received"?x.exp:(x.st==="received"?x.got:x.claim))}<small>${x.st==="received"?"התקבל":x.exp!=null?"צפוי":"לתביעה"}</small>`;
+  const t=track(x.track);
+  return `<div class="it${o?" open":""}" data-sq-item="${esc(x.id)}"><button class="row" data-x="${esc(x.id)}"><span class="i">${esc(x.icon||"•")}</span><span class="b"><span class="t">${esc(x.title)}</span><span class="s"><span class="pill ${s[1]}">${s[0]}</span> ${esc(x.d_txt||d6(x.d))}${x.chance==="low"?" · סיכוי נמוך":""}</span></span><span class="v">${amt}</span><span class="ch">▾</span></button>
+  <div class="det"><div><div class="in">
+    ${x.sub?`<p class="muted">${esc(x.sub)}</p>`:""}
+    ${t.name?`<p>מסלול: <b>${esc(t.name)}</b></p>`:""}
+    ${x.paid!=null?`<p>עלות ${ils(x.amt)} · שולם בפועל ${ils(x.paid)} · לתביעה ${ils(x.claim)}</p>`:""}
+    ${x.check?`<p>${esc(x.check)}</p>`:""}
+    ${arr(x.gaps).length?`<ul class="gaps">${x.gaps.map(g=>`<li>${esc(g)}</li>`).join("")}</ul>`:""}
+    ${arr(x.rcpt).length?`<div class="lbl">קבלות (דרייב פרטי)</div><div class="rc">${x.rcpt.map(r=>safe(r.u)?`<a href="${esc(r.u)}" target="_blank" rel="noopener">📄 ${esc(r.l)}</a>`:"").join("")}</div>`:""}
+    ${x.note_only?"":`<div class="lbl">מצב</div><div class="sts">${STB.map(([k,l])=>`<button data-st="${k}" data-id="${esc(x.id)}" class="${x.st===k?"on"+(k==="rejected"?" bad":""):""}">${l}</button>`).join("")}</div>`}
+  </div></div></div></div>`;}
+function xr(i,k){const o=ui.open["i"+k];return `<div class="it xr${o?" open":""}"><button class="row wr" data-x="i${k}"><span class="i">${esc(i.e||"💡")}</span><span class="b"><span class="t">${esc(i.h)}</span></span><span class="ch">▾</span></button><div class="det"><div><div class="in">${esc(i.t)}</div></div></div></div>`;}
+function tabSum(){let o="";const Q=openQs();
+  const todo=real().filter(x=>["todo","tbd","unknown"].includes(x.st)).sort((a,b)=>(a.order||0)-(b.order||0));
+  if(Q.length)o+=`<section><div class="sh"><h2>❓ מחכה לתשובה שלך</h2><small>${Q.length}</small></div><div class="list">${Q.map(q=>`<button class="row wr" data-tab="q"><span class="i">❓</span><span class="b"><span class="t">${esc(q.q)}</span></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
+  o+=`<section><div class="sh"><h2>📌 פתוח להגשה</h2><small>${todo.length}</small></div><div class="list">${todo.map(itemRow).join("")||'<div class="empty">✓ הכול הוגש</div>'}</div></section>`;
+  o+=`<section><div class="sh"><h2>💡 מה רואים</h2></div><div class="list">${arr(meta.insights).map(xr).join("")}</div></section>`;
+  if(meta.v6_note)o+=`<section><div class="card v6"><span>🛣️</span><span>${esc(meta.v6_note)}</span></div></section>`;
+  o+=`<section><div class="sh"><h2>🔗 טפסים ולינקים</h2></div><div class="list">${arr(meta.links).map(l=>safe(l.u)?`<a class="row" href="${esc(l.u)}" target="_blank" rel="noopener"><span class="b"><span class="t">${esc(l.l)}</span></span><span class="ch">‹</span></a>`:"").join("")}</div></section>`;
+  return o;}
+function tabExp(){const S=real().slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  const open=S.filter(x=>["todo","tbd","unknown"].includes(x.st)),sent=S.filter(x=>x.st==="sent"),done=S.filter(x=>["received","rejected"].includes(x.st));
+  let o=`<section><div class="sh"><h2>📌 להגיש או לברר</h2><small>${open.length}</small></div><div class="list">${open.map(itemRow).join("")||'<div class="empty">אין</div>'}</div></section>`;
+  if(sent.length)o+=`<section><div class="sh"><h2>⏳ הוגש, מחכה לתשובה</h2><small>${sent.length}</small></div><div class="list">${sent.map(itemRow).join("")}</div></section>`;
+  const v6=items.find(x=>x.note_only);
+  o+=`<section><details class="fold"${ui.fold?" open":""} id="fold"><summary>✅ התקבל או נסגר (${done.length}) · ${ils(got())}</summary><div class="list">${done.map(itemRow).join("")}${v6?itemRow(v6):""}</div></details></section>`;
+  return o;}
+function tabTrk(){return `<section><div class="sh"><h2>המסלולים והיתרות</h2><small>לפי הכללים והמוקד</small></div><div class="list">${arr(meta.tracks).filter(t=>t.id!=="v6").map(t=>{const cap=t.cap,used=+t.used||0,left=cap!=null?Math.max(0,cap-used):null;
+  return `<div class="tk"><div class="h"><span>${esc(t.icon||"")}</span><span class="t">${esc(t.name)}</span>${t.open?(left===0?'<span class="pill p-mut">נוצל</span>':'<span class="pill p-good">פתוח</span>'):'<span class="pill p-mut">סגור</span>'}</div>
+  ${cap!=null?`<div class="meter"><i style="width:${Math.min(100,used/cap*100)}%"></i></div><div class="m"><span>נוצל ${ils(used)} מתוך ${ils(cap)}</span><span>נשאר <b>${ils(left)}</b></span></div>`:`<div class="m" style="margin-top:6px"><span>${used?"התקבל עד היום "+ils(used):"עוד לא נוצל"}</span><span>תקרה לא ידועה</span></div>`}
+  <div class="c">${esc(t.note||"")}</div>
+  <div class="note">${esc([t.cond,t.until?"עד "+d6(t.until):""].filter(Boolean).join(" · "))}</div></div>`;}).join("")}</div></section>
+  ${meta.src?`<p class="note">מקורות: ${esc(meta.src)}</p>`:""}`;}
+function tabQ(){const Q=arr(meta.questions),A=ans();const open=Q.filter(q=>!A[q.id]),done=Q.filter(q=>A[q.id]);
+  let o=`<section><div class="sh"><h2>❓ שאלות פתוחות</h2><small>${open.length}</small></div><div class="list">${open.map(q=>qCard(q)).join("")||'<div class="empty">✓ אין כרגע, נהדר</div>'}</div></section>`;
+  if(done.length)o+=`<section><details class="fold"><summary>✓ ענית על ${done.length} שאלות (אפשר לשנות)</summary><div class="list">${done.map(q=>qCard(q,A[q.id])).join("")}</div></details></section>`;
+  return o;}
+function qCard(q,a){return `<div class="q"><h3>${esc(q.q)}</h3>${q.why?`<p class="why">${esc(q.why)}</p>`:""}<div class="opts">${arr(q.opts).map((op,i)=>`<button data-q="${esc(q.id)}" data-v="${esc(op)}" class="${a&&a.v===op?"on":""}"><span>${esc(op)}</span>${q.rec===i?'<span class="rec">מומלץ</span>':""}</button>`).join("")}</div></div>`;}
+function render(){if(!meta)return;
+  $("hero").innerHTML=hero();$("bar").innerHTML=bar();
+  $("app").innerHTML=ui.tab==="exp"?tabExp():ui.tab==="trk"?tabTrk():ui.tab==="q"?tabQ():tabSum();
+  $("foot").innerHTML=`הוצאות מילואים ${esc(window.ML_BUILD)} · מחקר ומעקב בלבד, ההגשה אצלך`;
+  const f=$("fold");if(f)f.addEventListener("toggle",()=>{ui.fold=f.open;save();});}
+document.addEventListener("click",e=>{
+  const tb=e.target.closest("[data-tab]");if(tb){ui.tab=tb.dataset.tab;save();render();window.scrollTo({top:0});return;}
+  const sb=e.target.closest("[data-st]");if(sb&&db){const id=sb.dataset.id,st=sb.dataset.st,x=items.find(i=>i.id===id);if(!x||x.st===st)return;
+    x.st=st;render();db.collection("miluim").doc(id).update({st,st_at:new Date().toISOString()}).then(()=>toast("✓ נשמר")).catch(()=>toast("השמירה נכשלה"));return;}
+  const qb=e.target.closest("[data-q]");if(qb&&db){const A=Object.assign({},ans());A[qb.dataset.q]={v:qb.dataset.v,at:new Date().toISOString()};meta.ans=A;render();
+    db.collection("miluim").doc("_meta").update({ans:A}).then(()=>toast("✓ נשמר, אעדכן לפי התשובה")).catch(()=>toast("השמירה נכשלה"));return;}
+  const xb=e.target.closest("[data-x]");if(xb){const k=xb.dataset.x;ui.open[k]=!ui.open[k];save();xb.parentElement.classList.toggle("open",!!ui.open[k]);}
+});
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("miluim").onSnapshot(s=>{items=[];meta=null;s.docs.forEach(x=>{const v=x.data();if(x.id==="_meta")meta=v;else if(!v._deleted)items.push(Object.assign({id:x.id},v));});
+    if(!meta){$("app").innerHTML='<div class="empty">אין נתונים</div>';return;}render();},()=>{});});
+})();
+</script>
+</body>
+</html>

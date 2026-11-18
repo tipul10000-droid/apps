@@ -251,7 +251,7 @@
     const osc = all.reduce((a, x) => a + (x.os ? (x.oc || []).length || 1 : 0), 0);
     const pct = items.length ? Math.round((all.length / items.length) * 1000) / 10 : 0;
     $("ach").replaceChildren(
-      h("div", { class: "h" }, ic("trophy"), "ההישגים שלי בנטפליקס", h("small", null, all.length ? "ראית " + fmt(all.length) + " מתוך " + fmt(items.length) + " כותרים בנטפליקס ישראל (" + pct + "%)" : "כל ✓ על כרטיס נכנס לכאן")),
+      h("div", { class: "h" }, ic("trophy"), "ההיסטוריה שלי בנטפליקס", h("small", null, all.length ? "ראית " + fmt(all.length) + " מתוך " + fmt(items.length) + " כותרים בנטפליקס ישראל (" + pct + "%)" : "כל ✓ על כרטיס נכנס לכאן")),
       h("div", { class: "tiles" },
         h("div", null, h("b", null, fmt(nS)), h("small", null, ic("tv"), "סדרות")),
         h("div", null, h("b", null, fmt(all.length - nS)), h("small", null, ic("film"), "סרטים")),
