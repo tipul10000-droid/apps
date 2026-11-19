@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.1";window.SQ_BUILD_AT="19.11.2026 17:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.2";window.SQ_BUILD_AT="19.11.2026 17:58";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2456,31 +2456,34 @@ html.desk .co-mark{font-size:2.4cqi}
 #sqSplash{position:fixed;inset:0;z-index:100000;overflow:hidden;background:radial-gradient(circle at 50% 42%,#18302A 0%,#0F1513 62%);color:#fff;
   font-family:"Space Grotesk","Assistant",-apple-system,system-ui,sans-serif;transition:opacity .35s ease,transform .35s ease;touch-action:none}
 #sqSplash.out{opacity:0;transform:scale(1.03);pointer-events:none}
-#sqSplash .ssA{position:absolute;inset:0;background:center 42%/cover no-repeat;display:none}
-#sqSplash.a .ssA{display:block}
 #sqSplash .ssB{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding-bottom:6vh}
-#sqSplash.a .ssB{display:none}
+/* 24.2 (Oren 19.11.2026): art = the ChatGPT illustration (with "Side Quests" drawn in it) in the upper two-thirds, on its own
+   near-black, and everything else right under it. */
+#sqSplash.a{background:#02070A}
+#sqSplash .ssB img.art{width:min(100vw,60vh,520px);height:auto;border-radius:0;box-shadow:none;margin-bottom:-14px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 96%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
+#sqSplash.a .ssW{display:none}
+#sqSplash .ssS{font:500 13px/1 "Space Grotesk","Assistant",-apple-system,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(214,232,222,.62);direction:ltr;margin-top:-8px}
+#sqSplash.a .ssS{color:rgba(255,236,190,.72);margin-top:0}
 #sqSplash .ssB img{width:96px;height:96px;border-radius:22px;box-shadow:0 0 44px rgba(244,182,58,.28),0 8px 24px rgba(0,0,0,.4)}
 #sqSplash .ssW{font-weight:700;font-size:28px;letter-spacing:.01em;color:#E5ECE8;direction:ltr}
-#sqSplash.a .ssW{position:absolute;top:calc(17% + env(safe-area-inset-top,0px)/2);inset-inline:0;text-align:center;font-size:34px;color:#fff;text-shadow:0 2px 14px rgba(10,40,70,.4)}
 /* 23.10 (Oren 19.11.2026): no bar. The 6 quest dots (bigger, each in its quest color) are the loading progress: each fills from the
    center in turn. Dots, status line and the "כניסה" button sit in one tight block (.ssK) right under the title; the button fades in
    with a soft glow only after loading ends. Every slot keeps its size, so nothing moves. */
 #sqSplash .ssK{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:4px}
-#sqSplash.a .ssK{position:absolute;inset-inline:0;top:calc(17% + env(safe-area-inset-top,0px)/2 + 62px);margin:0}
 #sqSplash .ssD{display:flex;gap:14px;direction:ltr;height:16px;align-items:center}
 #sqSplash .ssD i{position:relative;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 45%,transparent)}
-#sqSplash.a .ssD i{background:rgba(0,0,0,.32)}
+#sqSplash.a .ssD i{background:rgba(255,255,255,.06)}
 #sqSplash .ssD i::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--c);transform:scale(var(--f,0));transition:transform .18s ease-out}
 #sqSplash .ssD i.on{box-shadow:inset 0 0 0 1.5px var(--c),0 0 10px var(--c)}
 #sqSplash .ssT{font:600 13px/18px "Assistant",-apple-system,system-ui,sans-serif;height:18px;color:rgba(255,255,255,.82);direction:rtl;text-align:center;white-space:nowrap}
 #sqSplash.a .ssT{text-shadow:0 1px 6px rgba(0,0,0,.5)}
-#sqSplash .ssGo{width:168px;height:48px;margin-top:2px;border:1px solid rgba(255,255,255,.55);border-radius:999px;
-  background:rgba(15,21,19,.45);color:#fff;font:800 17px/1 "Assistant",-apple-system,system-ui,sans-serif;direction:rtl;visibility:hidden;opacity:0;transition:opacity .6s ease;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);cursor:pointer}
+#sqSplash .ssGo{width:168px;height:48px;margin-top:2px;border:1px solid rgba(255,206,110,.55);border-radius:999px;
+  background:linear-gradient(180deg,rgba(18,62,66,.92),rgba(5,30,32,.92));color:#FFF1C9;text-shadow:0 0 8px rgba(255,200,90,.35);font:800 17px/1 "Assistant",-apple-system,system-ui,sans-serif;direction:rtl;visibility:hidden;opacity:0;transition:opacity .6s ease;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);cursor:pointer}
 #sqSplash.ready .ssGo{visibility:visible;opacity:1;animation:ssGlow 2.4s ease-in-out .5s infinite}
-@keyframes ssGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,214,120,0),0 0 10px rgba(255,214,120,.18);border-color:rgba(255,255,255,.55)}
-  50%{box-shadow:0 0 0 4px rgba(255,214,120,.12),0 0 22px rgba(255,214,120,.45);border-color:rgba(255,230,160,.9)}}
-#sqSplash .ssGo:active{background:rgba(244,182,58,.35)}
+@keyframes ssGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,196,80,0),0 0 12px rgba(255,196,80,.2);border-color:rgba(255,206,110,.55)}
+  50%{box-shadow:0 0 0 4px rgba(255,196,80,.1),0 0 26px rgba(255,196,80,.5);border-color:rgba(255,222,150,.95)}}
+#sqSplash .ssGo:active{background:linear-gradient(180deg,rgba(60,96,52,.95),rgba(20,52,34,.95))}
 #sqSplash .ssGo:focus-visible{outline:2px solid #F4B63A;outline-offset:3px}
 @media (prefers-reduced-motion:reduce){#sqSplash{transition:opacity .2s}#sqSplash.out{transform:none}#sqSplash.ready .ssGo{animation:none}}
 </style>
@@ -2494,14 +2497,14 @@ html.desk .co-mark{font-size:2.4cqi}
 function ls(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function make(o){o=o||{};var old=document.getElementById("sqSplash");if(old)old.remove();
 var S=document.createElement("div");S.id="sqSplash";S.setAttribute("role",o.preview?"dialog":"presentation");
-S.innerHTML='<div class="ssA"></div><div class="ssB"><img src="apple-touch-icon.png?v=2" alt=""><div class="ssW">Side Quests</div>'+
+S.innerHTML='<div class="ssB"><img src="apple-touch-icon.png?v=2" alt=""><div class="ssW">Side Quests</div><div class="ssS">AI-powered life assistant</div>'+
 '<div class="ssK"><div class="ssD" aria-hidden="true"><i style="--c:#EE8C4F"></i><i style="--c:#FF4F8B"></i><i style="--c:#C9B866"></i><i style="--c:#6CBDF7"></i><i style="--c:#FFC857"></i><i style="--c:#D97757"></i></div>'+
 '<div class="ssT"></div><button type="button" class="ssGo">כניסה<span aria-hidden="true"> ←</span></button></div></div>';
 (document.body||document.documentElement).appendChild(S);
 var QA={side:"#EE8C4F",fun:"#FF4F8B",army:"#C9B866",work:"#6CBDF7",travel:"#FFC857",ai:"#D97757"},q=location.hash.slice(1);
 S.style.setProperty("--qa",QA[q]||"#F4B63A");
 var img=ls("sq_splash"),style=o.style||ls("sq_splash_style")||"art";
-if(style==="art"&&img&&/^data:image\//.test(img)){S.querySelector(".ssA").style.backgroundImage="url("+img+")";S.className="a";S.querySelector(".ssA").after(S.querySelector(".ssW"));S.querySelector(".ssW").after(S.querySelector(".ssK"));}
+if(style==="art"&&img&&/^data:image\//.test(img)){var ai=S.querySelector(".ssB img");ai.src=img;ai.className="art";S.className="a";}
 var tap=o.preview||ls("sq_splash_enter")==="tap",go=S.querySelector(".ssGo");
 var txt=S.querySelector(".ssT"),dots=S.querySelectorAll(".ssD i"),t0=performance.now(),cap=12,p=0,fin=0,gone=0,ready=0;
 var red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2509,7 +2512,7 @@ function stage(c){if(c>cap)cap=c;}
 function out(){if(gone)return;gone=1;S.classList.add("out");setTimeout(function(){S.remove();},400);}
 go.onclick=out;
 function tick(){if(gone)return;var now=performance.now(),el=now-t0,target=fin?100:cap-2;
-  p+=(target-p)*(fin?0.3:0.04);if(red)p=target;if(p>target)p=target;
+  p+=(target-p)*(fin?0.3:0.04);if(red)p=target;if(p>target)p=target;var lim=el/1000*100;if(p>lim)p=lim;
   var u=p/100*dots.length;for(var i=0;i<dots.length;i++){var f=Math.max(0,Math.min(1,u-i));dots[i].style.setProperty("--f",f.toFixed(3));dots[i].classList.toggle("on",f>=.999);}
   if(!fin){
     if(!o.preview&&navigator.onLine===false&&el>600)txt.textContent="בלי רשת, פותח מהעותק השמור";
@@ -2522,7 +2525,7 @@ function tick(){if(gone)return;var now=performance.now(),el=now-t0,target=fin?10
     if(!tap){out();return;}
     if(!ready){ready=1;txt.textContent="";S.classList.add("ready");}}
   requestAnimationFrame(tick);}
-function done(){if(fin)return;fin=Math.max(performance.now()+250,t0+800);}
+function done(){if(fin)return;fin=Math.max(performance.now()+250,t0+1000);}
 if(o.preview){setTimeout(function(){stage(30);},150);setTimeout(function(){stage(55);},700);setTimeout(function(){stage(85);},1500);}
 else{document.addEventListener("DOMContentLoaded",function(){stage(30);});
   window.addEventListener("sq-net",function(){stage(55);});
@@ -6080,13 +6083,14 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
   function splashHave(){try{return !!localStorage.getItem("sq_splash");}catch(e){return false;}}
   function splashSync(force){
     if(!window.SQGfx)return;let last=0;try{last=+localStorage.getItem("sq_splash_chk")||0;}catch(e){}
+    if(splashLs("sq_splash_v")!=="2")force=true;
     if(!force&&Date.now()-last<6*3600e3)return;
     SQGfx.get([SPLASH_GFX.id]).then(g=>{const x=g&&g[SPLASH_GFX.id];if(!x||!x.data)return;
       try{localStorage.setItem("sq_splash_chk",String(Date.now()));if(!force&&localStorage.getItem("sq_splash_at")===String(x.at)&&splashHave())return;}catch(e){}
       const im=new Image();im.onload=()=>{const W=Math.min(860,im.naturalWidth),H=Math.round(im.naturalHeight*W/im.naturalWidth),c=document.createElement("canvas");c.width=W;c.height=H;
         c.getContext("2d").drawImage(im,0,0,W,H);
         for(const q of [0.8,0.65,0.5]){let d=c.toDataURL("image/webp",q);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/jpeg",q);
-          try{localStorage.setItem("sq_splash",d);localStorage.setItem("sq_splash_at",String(x.at));break;}catch(e){}}
+          try{localStorage.setItem("sq_splash",d);localStorage.setItem("sq_splash_at",String(x.at));localStorage.setItem("sq_splash_v","2");break;}catch(e){}}
         if(force&&$("setM"))renderSettings();};
       im.src="data:"+(x.mime||"image/webp")+";base64,"+x.data;});
   }
