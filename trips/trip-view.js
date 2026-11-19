@@ -17,6 +17,14 @@
     try { return new Intl.DateTimeFormat("en-CA", { timeZone: tz || "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
     catch (e) { return new Date().toISOString().slice(0, 10); }
   }
+  function isT1(a) {
+    a = a || {};
+    return (a.c === "TLV" || /נתב/.test(a.n || "")) && /^\s*1\b/.test(String(a.t || "")) && !/\?/.test(String(a.t || ""));
+  }
+  function t1Box(f, big) {
+    return '<div class="tp-t1' + (big ? " big" : "") + '" role="alert"><span class="n">1</span><div><b>טרמינל 1, לא 3!</b><span>' +
+      esc((big ? (f.dir ? f.dir + " " : "") + "ב-" + dShort(f.d) + " " + (f.dep || "") + ": " : "") + "ממריאים מטרמינל 1 בנתב״ג. לא לנסוע לטרמינל 3.") + "</span></div></div>";
+  }
   function nowHM(tz) {
     var q = new URLSearchParams(location.search).get("now");
     if (q && /^\d{2}:\d{2}$/.test(q)) return q;
@@ -107,6 +115,10 @@
     }
     H.push(nowBox);
 
+    // ---- TLV terminal 1 warning (permanent rule: T1 must never be missed) ----
+    var t1f = (Array.isArray(t.flights) ? t.flights : []).filter(function (f) { return isT1(f.from) && (!ph.today || f.d >= ph.today); })[0];
+    if (t1f && ph.k !== "post") H.push(t1Box(t1f, true));
+
     // ---- map ----
     if (t.map) {
       H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">🗺️</span><h2>המסלול</h2><small>' + esc(t.map.note || "") + '</small></div><div class="tp-card tp-map">' + mapSvg(t.map) +
@@ -136,6 +148,7 @@
         fl.map(function (f) {
           var A = f.from || {}, B = f.to || {};
           return '<details class="tp-bp"><summary><div class="tp-bph"><span>' + esc(f.dir || "") + " · יום " + esc(dowOf(f.d)) + " " + esc(dShort(f.d)) + '</span><span dir="ltr">' + esc((f.air || "") + " " + (f.no || "")) + "</span></div>" +
+            (isT1(A) ? t1Box(f, false) : "") +
             '<div class="tp-bpm"><div class="tp-ap"><b>' + esc(A.c) + "</b><span>" + esc(A.n) + "</span><i>" + esc(f.dep) + '</i></div><div class="tp-fly">' + plane + esc(f.dur || "") + '</div><div class="tp-ap r"><b>' + esc(B.c) + "</b><span>" + esc(B.n) + "</span><i>" + esc(f.arr) + "</i></div></div>" +
             '<div class="tp-bpf"><span>טרמינל <b>' + esc(A.t || "?") + "</b> ← <b>" + esc(B.t || "?") + "</b></span>" + (f.seats ? "<span>מושבים <b dir=\"ltr\">" + esc(f.seats) + "</b></span>" : "") + "</div>" +
             '<span class="tp-tap">▾ פרטים</span></summary><div class="tear"></div><div class="tp-more"><dl class="tp-kv">' +
