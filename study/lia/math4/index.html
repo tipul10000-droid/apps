@@ -485,6 +485,10 @@ function next(){DONE=false;WAIT=false;resetIn();$('fb').innerHTML='';
   const it=choose();if(!it)return missionDone();const w=W(S.m,it.id),first=!w.seen;w.seen=1;LASTID=it.id;CUR={it,mi:S.m,first};render(it,first);upd()}
 function nextRv(){const pool=shuf(RVP).sort((a,b)=>RW(b.mi+':'+b.x.id).err-RW(a.mi+':'+a.x.id).err-(RW(b.mi+':'+b.x.id).c-RW(a.mi+':'+a.x.id).c)*.5).slice(0,8).filter(p=>p.mi+':'+p.x.id!==LASTID);
   const p=pick(pool.length?pool:RVP);LASTID=p.mi+':'+p.x.id;CUR={it:p.x,mi:p.mi,first:false,rv:1};render(p.x,false);upd()}
+// 🙋 עזרה מקרוב משפחה (help.js): דילוג על השאלה עד שהעוזר מגיע, וחזרה אליה בדיוק כמו שהייתה (אורן 19.11.2026)
+(window.StudyHelpQ=window.StudyHelpQ||[]).push({can:()=>!!(CUR&&CUR.it&&!DONE&&!WAIT&&!(CUR.col&&CUR.col.pend)),
+  skip(){if(!this.can())return null;const c=CUR;next();return c},
+  back(c){if(!c)return;DONE=false;WAIT=false;resetIn();$('fb').innerHTML='';CUR=c;render(c.it,c.first);upd()}});
 function render(it,first){let h='',kind='kp',mode=first?'🆕 חדש':'🔁 שוב';CUR.st=it.st||null;CUR.ci=null;CUR.col=null;CUR.ok=null;
   $('mode').className='mode'+(first?' new':'');
   if(CUR.rv){mode='🎯 מיפוי חוזר';$('mode').className='mode fast'}
