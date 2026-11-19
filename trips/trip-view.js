@@ -23,9 +23,9 @@
     a = a || {};
     return (a.c === "TLV" || /נתב/.test(a.n || "")) && /^\s*1\b/.test(String(a.t || "")) && !/\?/.test(String(a.t || ""));
   }
-  function t1Box(f, big) {
-    return '<div class="tp-t1' + (big ? " big" : "") + '" role="alert"><span class="n">1</span><div><b>טרמינל 1, לא 3!</b><span>' +
-      esc((big ? (f.dir ? f.dir + " " : "") + "ב-" + dShort(f.d) + " " + (f.dep || "") + ": " : "") + "ממריאים מטרמינל 1 בנתב״ג. לא לנסוע לטרמינל 3.") + "</span></div></div>";
+  // Terminal 1 (Oren 19.11.2026): calm, no "!", shown in the "important to remember" box, not as an alarm.
+  function t1Note(f) {
+    return { i: "1", h: "ממריאים מטרמינל 1 בנתב״ג", s: (f.dir ? f.dir + " " : "") + "ב-" + dShort(f.d) + " " + (f.dep || "") + ". שימו לב, לא טרמינל 3." };
   }
   function nowHM(tz) {
     var q = new URLSearchParams(location.search).get("now");
@@ -91,12 +91,16 @@
     var gfxUrl = function (key) { var s = (t.gfx || {})[key], g = s && G[s.id]; return g && g.data ? "data:" + (g.mime || "image/webp") + ";base64," + g.data : ""; };
 
     // ---- hero ----
-    var hero = gfxUrl("hero") || img(base, t.hero_img);
+    var hdef = (t.gfx || {}).hero, hg = hdef && G[hdef.id], hban = gfxUrl("hero");
+    // a ready-made banner (with its own title, e.g. 3:1 from ChatGPT) is shown whole, not cropped, with the chips under it
+    var isBan = !!hban && (hdef.banner || (hg && hg.w && hg.h && hg.w / hg.h >= 2.2));
+    var hero = hban || img(base, t.hero_img);
     var cd = ph.k === "pre" ? (ph.n === 1 ? "מחר טסים!" : "עוד " + ph.n + " ימים") : ph.k === "trip" ? "יום " + ph.n + " מתוך " + ph.of : "היה מדהים";
-    H.push('<header class="tp-hero">' + (hero ? '<img src="' + esc(hero) + '" alt="">' : "") + (t.snow ? '<div class="tp-snow"></div>' : "") +
-      '<div class="in"><div class="tp-flag">' + esc(t.flag || "") + "</div><h1>" + esc(t.title) + '</h1><p class="sub">' + esc(t.tagline || "") + "</p>" +
-      '<div class="tp-chips"><span class="tp-chip big">' + esc(cd) + '</span><span class="tp-chip" dir="ltr">' + esc(dShort(t.from) + " – " + dShort(t.to) + "." + String(t.to || "").slice(2, 4)) + "</span>" +
-      (t.who ? '<span class="tp-chip">' + esc(t.who) + "</span>" : "") + "</div></div></header>");
+    var chips = '<div class="tp-chips"><span class="tp-chip big">' + esc(cd) + '</span><span class="tp-chip" dir="ltr">' + esc(dShort(t.from) + " – " + dShort(t.to) + "." + String(t.to || "").slice(2, 4)) + "</span>" +
+      (t.who ? '<span class="tp-chip">' + esc(t.who) + "</span>" : "") + "</div>";
+    if (isBan) H.push('<header class="tp-hero ban"><img src="' + esc(hero) + '" alt="' + esc(t.title) + '"><div class="in"><h1 class="tp-sr">' + esc(t.title) + "</h1>" + chips + "</div></header>");
+    else H.push('<header class="tp-hero">' + (hero ? '<img src="' + esc(hero) + '" alt="">' : "") + (t.snow ? '<div class="tp-snow"></div>' : "") +
+      '<div class="in"><div class="tp-flag">' + esc(t.flag || "") + "</div><h1>" + esc(t.title) + '</h1><p class="sub">' + esc(t.tagline || "") + "</p>" + chips + "</div></header>");
     if (own && o.slot) H.push('<div class="w"><div data-slot="hero" style="margin-top:12px"></div></div>');
 
     H.push('<div class="w">');
@@ -117,9 +121,14 @@
     }
     H.push(nowBox);
 
-    // ---- TLV terminal 1 warning (permanent rule: T1 must never be missed) ----
+    // ---- 📌 important to remember (calm notices: Terminal 1 + t.alerts [{e,h,s}]) ----
     var t1f = (Array.isArray(t.flights) ? t.flights : []).filter(function (f) { return isT1(f.from) && (!ph.today || f.d >= ph.today); })[0];
-    if (t1f && ph.k !== "post") H.push(t1Box(t1f, true));
+    var notes = [];
+    if (t1f && ph.k !== "post") notes.push(t1Note(t1f));
+    (Array.isArray(t.alerts) ? t.alerts : []).forEach(function (a) { if (a && a.h) notes.push({ i: a.e || "•", h: a.h, s: a.s || "" }); });
+    if (notes.length) H.push('<section class="tp-notes" aria-label="חשוב לזכור"><div class="h">📌 חשוב לזכור</div>' + notes.map(function (n) {
+      return '<div class="it"><span class="ic">' + esc(n.i) + "</span><div><b>" + esc(n.h) + "</b>" + (n.s ? "<span>" + esc(n.s) + "</span>" : "") + "</div></div>";
+    }).join("") + "</section>");
 
     // ---- map ----
     if (t.map) {
@@ -150,7 +159,7 @@
         fl.map(function (f) {
           var A = f.from || {}, B = f.to || {};
           return '<details class="tp-bp"><summary><div class="tp-bph"><span>' + esc(f.dir || "") + " · יום " + esc(dowOf(f.d)) + " " + esc(dShort(f.d)) + '</span><span dir="ltr">' + esc((f.air || "") + " " + (f.no || "")) + "</span></div>" +
-            (isT1(A) ? t1Box(f, false) : "") +
+            (isT1(A) ? '<div class="tp-t1s">ממריאים מטרמינל 1, לא 3</div>' : "") +
             '<div class="tp-bpm"><div class="tp-ap"><b>' + esc(A.c) + "</b><span>" + esc(A.n) + "</span><i>" + esc(f.dep) + '</i></div><div class="tp-fly">' + plane + esc(f.dur || "") + '</div><div class="tp-ap r"><b>' + esc(B.c) + "</b><span>" + esc(B.n) + "</span><i>" + esc(f.arr) + "</i></div></div>" +
             '<div class="tp-bpf"><span>טרמינל <b>' + esc(A.t || "?") + "</b> ← <b>" + esc(B.t || "?") + "</b></span>" + (f.seats ? "<span>מושבים <b dir=\"ltr\">" + esc(f.seats) + "</b></span>" : "") + "</div>" +
             '<span class="tp-tap">▾ פרטים</span></summary><div class="tear"></div><div class="tp-more"><dl class="tp-kv">' +
