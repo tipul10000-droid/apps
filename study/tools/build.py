@@ -68,7 +68,9 @@ body = d[a:b].rstrip()
 part = rd('dani/math6/squishies.part.js').rstrip()
 # + השורה החמישית "🏠 הבית של הלהקה" של הכתבה 2 (dani/spelling2/squishies.part.js, 19.11.2026)
 part += '\n' + rd('dani/spelling2/squishies.part.js').rstrip()
-js = ('// נוצר אוטומטית מ-dani/spelling/index.html + dani/math6/squishies.part.js + dani/spelling2/squishies.part.js ע"י study/tools/build.py (הלוח האחד של דני). לא לערוך כאן.\n'
+# + השורה השישית "📜 יהושע × סטריי קידס" של התנ״ך (dani/tanach/squishies.part.js, 19.11.2026)
+part += '\n' + rd('dani/tanach/squishies.part.js').rstrip()
+js = ('// נוצר אוטומטית מ-dani/spelling/index.html + dani/math6/squishies.part.js + dani/spelling2/squishies.part.js + dani/tanach/squishies.part.js ע"י study/tools/build.py (הלוח האחד של דני). לא לערוך כאן.\n'
       '(function(){\n' + body + '\n' + part + '\n'
-      'window.DaniSquishies={list:SQS,list2:SQS2,list3:SQS3,list4:SQS4,list5:SQS5,aura,uaura,orb:stage,owned,sync,keys:KEYS,all:SQS.concat(SQS2,SQS3,SQS4,SQS5),rows:["💜 הלהקה","⭐ סופר סקווישים","💎 אולטרה סקווישים","🎤 סיבוב הופעות: חיזוק מתמטיקה","🏠 הבית של הלהקה: הכתבה 2"]};\n})();\n')
+      'window.DaniSquishies={list:SQS,list2:SQS2,list3:SQS3,list4:SQS4,list5:SQS5,list6:SQS6,aura,uaura,orb:stage,owned,sync,keys:KEYS,all:SQS.concat(SQS2,SQS3,SQS4,SQS5,SQS6),rows:["💜 הלהקה","⭐ סופר סקווישים","💎 אולטרה סקווישים","🎤 סיבוב הופעות: חיזוק מתמטיקה","🏠 הבית של הלהקה: הכתבה 2","📜 יהושע × סטריי קידס: תנ״ך"]};\n})();\n')
 wr('dani/squishies.js', js)
