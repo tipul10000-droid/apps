@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=3"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1B0B33">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EV_BUILD="1.0";window.SQ_DASH="events";</script>
+<script src="sq-db.js?v=10"></script>
+<title>הופעות ואירועים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* הופעות ואירועים (Fun Quest, 19.11.2026). נתונים: sq_docs (app=sidequests, collection=events):
+   artist = אמן במעקב, show = הופעה, _meta = סריקה וצ׳אט. שום מידע אישי בקוד, הכול מהמסד.
+   מעקב בלבד: הדף לא קונה כרטיסים ולא נרשם לשום דבר. */
+:root{
+  --bg:#F4F1FA; --surface:#FFFFFF; --sunk:#ECE6F6; --ink:#1A1226; --muted:#625A73; --line:#DDD4EC;
+  --hero:#1B0B33; --hero2:#4A1A7A; --hero-ink:#F7F2FF; --hero-muted:#CDBDE8; --accent:#FF3D9A; --accent-ink:#fff; --neon:#2EE6D6;
+  --good:#1F8457; --good-soft:#DCF1E5; --warn:#A35C0B; --warn-soft:#FBEAD2; --bad:#B8352B; --bad-soft:#F8DFDC; --link:#6B2BC4; --hi:#6B2BC4; --hi-soft:#EEE3FB;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#110B1A; --surface:#1B1428; --sunk:#251C36; --ink:#EFE9F8; --muted:#AFA4C4; --line:#33284A;
+  --hero:#140826; --hero2:#3A1366; --good:#5CC88E; --good-soft:#15301F; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#C9A4FF; --hi:#C9A4FF; --hi-soft:#2E2147; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#110B1A; --surface:#1B1428; --sunk:#251C36; --ink:#EFE9F8; --muted:#AFA4C4; --line:#33284A;
+  --hero:#140826; --hero2:#3A1366; --good:#5CC88E; --good-soft:#15301F; --warn:#EBA654; --warn-soft:#3A2814; --bad:#F07A6E; --bad-soft:#3A1E1B; --link:#C9A4FF; --hi:#C9A4FF; --hi-soft:#2E2147; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 64px}
+.hero{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 85% 0%,rgba(255,61,154,.38),transparent 55%),radial-gradient(90% 80% at 0% 100%,rgba(46,230,214,.22),transparent 60%),linear-gradient(160deg,var(--hero),var(--hero2));color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:880px;margin:0 auto;position:relative}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{color:var(--hero-muted);font-size:13.5px;font-weight:700;text-align:left}
+.hero h1{font-size:25px;margin:10px 0 2px;display:flex;align-items:center;gap:10px}
+.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
+.chatbtn{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:13px 16px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:17px;box-shadow:0 4px 18px rgba(255,61,154,.35)}
+.chatbtn small{font-family:var(--f-body);font-weight:700;font-size:13px;opacity:.85;margin-inline-start:auto}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.09);border-radius:14px;padding:9px 11px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi span{color:var(--hero-muted);font-size:12.5px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{flex:1;border:0;background:none;padding:9px 2px;font-weight:800;font-size:14.5px;cursor:pointer;font-family:var(--f-display);white-space:nowrap;position:relative}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 0;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.chips button.on{background:var(--hi);border-color:var(--hi);color:var(--bg)}
+section{margin-bottom:22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:19px}.sh small{color:var(--muted);font-size:13px}
+.empty{color:var(--muted);text-align:center;padding:18px 12px;font-size:14.5px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.list>*+*{border-top:1px solid var(--line)}
+/* show row */
+.sw .row{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:none;border:0;padding:12px 14px;cursor:pointer;color:inherit}
+.dt{flex:none;width:52px;border-radius:12px;background:linear-gradient(160deg,var(--hero),var(--hero2));color:#fff;text-align:center;padding:5px 0 6px;line-height:1.1}
+.dt b{display:block;font-family:var(--f-display);font-size:21px}
+.dt span{display:block;font-size:11.5px;font-weight:700;opacity:.85}
+.sw .b{flex:1;min-width:0}
+.sw .t{font-family:var(--f-display);font-weight:700;font-size:16px;display:block}
+.sw .s{color:var(--muted);font-size:13.5px;display:block}
+.sw .tg{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.sw .ch{flex:none;width:14px;color:var(--muted);font-size:12px;transition:transform .2s}
+.sw.open .ch{transform:rotate(180deg)}
+.pill{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.p-good{background:var(--good-soft);color:var(--good)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-hi{background:var(--hi-soft);color:var(--hi)}.p-mut{background:var(--sunk);color:var(--muted)}
+.p-go{background:var(--accent);color:#fff}
+.det{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease}
+.sw.open .det{grid-template-rows:1fr}
+.det>div{overflow:hidden}
+.det .in{padding:0 14px 14px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14.5px;margin-bottom:10px}
+.kv dt{color:var(--muted);font-weight:700}.kv dd{margin:0}
+.deals{margin:0 0 10px;padding:0;list-style:none;font-size:14px}
+.deals li{padding:6px 10px;border-radius:10px;background:var(--warn-soft);margin-bottom:5px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.acts a{display:inline-flex;align-items:center;gap:6px;border-radius:12px;padding:8px 14px;font-size:14.5px;border:1px solid var(--line);background:var(--sunk);color:var(--ink)}
+.acts a.tk{background:var(--accent);border-color:var(--accent);color:#fff}
+.who h4{margin:0 0 6px;font-family:var(--f-display);font-size:14.5px}
+.who .opts{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--line);gap:1px}
+.who .opts button{border:0;background:var(--surface);padding:9px 2px;font-weight:700;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.who .opts button.on{background:var(--hi);color:var(--bg)}
+.note{font-size:13px;color:var(--muted);line-height:1.5;margin:10px 0 0}
+.mon{font-family:var(--f-display);font-weight:800;font-size:14px;color:var(--muted);margin:14px 4px 6px}
+/* artists */
+.ar{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.ar .e{flex:none;width:42px;height:42px;border-radius:12px;background:linear-gradient(160deg,var(--hero),var(--hero2));display:flex;align-items:center;justify-content:center;font-size:21px}
+.ar .b{flex:1;min-width:0}
+.ar .t{font-family:var(--f-display);font-weight:700;font-size:16px;display:block}
+.ar .s{color:var(--muted);font-size:13.5px;display:block}
+.ar .n{flex:none;text-align:left;font-family:var(--f-display);font-weight:800;font-size:18px;min-width:44px}
+.ar .n small{display:block;font-family:var(--f-body);font-size:11.5px;color:var(--muted);font-weight:600}
+.ln{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 12px 14px}
+.ln a{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--sunk)}
+.how{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:14.5px}
+.how p{margin:0 0 6px}.how p:last-child{margin:0}
+details.fold>summary{cursor:pointer;list-style:none;padding:12px 14px;font-family:var(--f-display);font-weight:700;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold[open]>summary{border-radius:16px 16px 0 0;border-bottom:0}
+details.fold>.list{border-radius:0 0 16px 16px}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;display:none;max-width:92vw}
+.toast.on{display:block}
+@media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.seg button{font-size:13.5px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=9">
+<script src="dash-sub.js?v=9" defer></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+<script src="sq-icons.js?v=1"></script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <div class="bar" id="bar"></div>
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const arr=a=>Array.isArray(a)?a:[];
+const MON=["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
+const DOW=["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+const pd=s=>{const [y,m,d]=String(s||"").split("-").map(Number);return y&&m&&d?new Date(y,m-1,d):null;};
+const d6=s=>{const d=pd(s);return d?d.getDate()+"."+(d.getMonth()+1)+"."+String(d.getFullYear()).slice(2):"";};
+const daysTo=s=>{const d=pd(s);if(!d)return null;const t=pd(today());return Math.round((d-t)/864e5);};
+const inDays=n=>n==null?"":n<0?"עבר":n===0?"היום!":n===1?"מחר":"בעוד "+n+" ימים";
+/* status of ticket sales */
+const ST={on_sale:["בקופות","p-good"],few:["כרטיסים אחרונים","p-warn"],sold_out:["סולד אאוט","p-bad"],soon:["המכירה בקרוב","p-hi"],unknown:["",""]};
+const GO={lior:"💑 עם ליאור",friends:"👥 עם חברים",maybe:"🤔 אולי",no:"✕ לא הפעם"};
+let meta=null,artists=[],shows=[],db=null;
+const UI="sq_ev_ui";let ui={tab:"shows",art:"all",open:{}};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
+function save(){try{localStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200);}
+const art=id=>artists.find(a=>a.id===id);
+const artIds=s=>[s.artist,...arr(s.artists)].filter(Boolean);
+const upcoming=()=>shows.filter(s=>!s.abroad&&s.d&&s.d>=today()).sort((a,b)=>(a.d+(a.t||"")).localeCompare(b.d+(b.t||"")));
+const past=()=>shows.filter(s=>s.d&&s.d<today()).sort((a,b)=>b.d.localeCompare(a.d));
+function price(s){const p=s.price||{};if(p.txt)return p.txt;if(p.min&&p.max&&p.min!==p.max)return "₪"+p.min+"-"+p.max;if(p.min)return "מ-₪"+p.min;return "";}
+function hero(){const U=upcoming(),nx=U[0];
+  const K=[[String(U.length),"הופעות קרובות"],[nx?d6(nx.d):"—",nx?"הבאה: "+(art(nx.artist)||{}).name:"אין עדיין"],[String(artists.filter(a=>a.follow!==false).length),"אמנים במעקב"]];
+  const sc=meta.scan||{};
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a></div>
+  <h1>🎤 הופעות ואירועים</h1>
+  <p class="sub">${esc(meta.sub||"")}${sc.at?" · נסרק "+esc(sc.at_l||d6(String(sc.at).slice(0,10))):""}</p>
+  ${safe(meta.chat_url)?`<a class="chatbtn" href="${esc(meta.chat_url)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span><small>להוסיף אמן · לשאול</small></a>`:""}
+  <div class="kpis">${K.map(k=>`<div class="kpi"><b>${esc(k[0])}</b><span>${esc(k[1])}</span></div>`).join("")}</div>`;}
+function bar(){const T=[["shows","🎤 הופעות"],["artists","⭐ אמנים"],["past","📜 עבר"]];
+  let o=`<div class="seg">${T.map(([k,l])=>`<button data-tab="${k}" data-sq-path="${k}" class="${ui.tab===k?"on":""}">${l}</button>`).join("")}</div>`;
+  if(ui.tab==="shows"&&artists.length>1){const A=artists.filter(a=>a.follow!==false).sort((a,b)=>(a.order||99)-(b.order||99));
+    o+=`<div class="chips"><button data-art="all" class="${ui.art==="all"?"on":""}">כולם</button>${A.map(a=>`<button data-art="${esc(a.id)}" data-sq-path="art:${esc(a.id)}" class="${ui.art===a.id?"on":""}">${esc(a.icon||"")} ${esc(a.name)}</button>`).join("")}</div>`;}
+  return o;}
+function showRow(s){const d=pd(s.d),n=daysTo(s.d),A=art(s.artist)||{},st=ST[s.status]||ST.unknown,o=ui.open[s.id],pr=price(s);
+  const withs=arr(s.artists).map(id=>(art(id)||{}).name).filter(Boolean),wl=s.with||withs.join(", ");
+  const title=s.title||A.name||"הופעה";
+  const tk=safe(s.url),mq=s.maps_q||[s.venue,s.city].filter(Boolean).join(", ");
+  return `<div class="sw${o?" open":""}" data-sq-item="${esc(s.id)}">
+  <button class="row" data-x="${esc(s.id)}"><span class="dt">${d?`<span>${DOW[d.getDay()]}</span><b>${d.getDate()}</b><span>${MON[d.getMonth()].slice(0,3)}</span>`:"?"}</span>
+   <span class="b"><span class="t">${esc(title)}</span><span class="s">${esc([s.venue,s.city].filter(Boolean).join(" · "))}${s.t?" · "+esc(s.t):""}</span>
+   <span class="tg">${n!=null&&n>=0?`<span class="pill ${n<=14?"p-warn":"p-mut"}">${inDays(n)}</span>`:""}${wl?`<span class="pill p-hi">🤝 עם ${esc(wl)}</span>`:""}${pr?`<span class="pill p-mut" dir="ltr">${esc(pr)}</span>`:""}${st[0]?`<span class="pill ${st[1]}">${st[0]}</span>`:""}${arr(s.deals).length?'<span class="pill p-warn">🏷️ מבצע</span>':""}${s.go&&GO[s.go]&&s.go!=="no"?`<span class="pill p-go">${GO[s.go]}</span>`:""}</span></span>
+   <span class="ch">▾</span></button>
+  <div class="det"><div><div class="in">
+   <dl class="kv"><dt>אמן</dt><dd>${esc(A.name||"")}${wl?" + "+esc(wl):""}</dd><dt>מתי</dt><dd>${esc(d6(s.d))}${d?" (יום "+DOW[d.getDay()]+")":""}${s.t?" · "+esc(s.t):""}${s.doors?" · פתיחת דלתות "+esc(s.doors):""}</dd><dt>איפה</dt><dd>${esc([s.venue,s.city].filter(Boolean).join(", "))}</dd>${pr?`<dt>מחיר</dt><dd>${esc(pr)}</dd>`:""}${s.seller?`<dt>קופה</dt><dd>${esc(s.seller)}</dd>`:""}</dl>
+   ${arr(s.deals).length?`<ul class="deals">${arr(s.deals).map(x=>`<li>🏷️ ${esc(x)}</li>`).join("")}</ul>`:""}
+   <div class="acts">${tk?`<a class="tk" href="${esc(tk)}" target="_blank" rel="noopener">🎟️ לכרטיסים</a>`:""}${mq?`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mq)}" target="_blank" rel="noopener">📍 Google Maps</a>`:""}${arr(s.links).map(l=>safe(l.u)?`<a href="${esc(l.u)}" target="_blank" rel="noopener">${esc(l.l||"לינק")}</a>`:"").join("")}</div>
+   <div class="who"><h4>הולכים?</h4><div class="opts">${Object.keys(GO).map(k=>`<button data-go="${esc(s.id)}" data-v="${k}" class="${s.go===k?"on":""}">${GO[k]}</button>`).join("")}</div></div>
+   ${s.note?`<p class="note">${esc(s.note)}</p>`:""}
+   <p class="note">${s.checked_at?"נבדק "+esc(d6(String(s.checked_at).slice(0,10)))+" · ":""}כדאי לוודא מחיר וזמינות בקופה לפני קנייה. אני לא קונה כרטיסים.</p>
+  </div></div></div></div>`;}
+function tabShows(){let U=upcoming();if(ui.art!=="all")U=U.filter(s=>artIds(s).includes(ui.art));
+  if(!U.length){const a=ui.art!=="all"&&art(ui.art);return `<section><div class="list"><div class="empty">${a?esc(a.name)+": אין כרגע הופעה מתוכננת בארץ.":"אין כרגע הופעות קרובות."} הסריקה היומית תוסיף כל הופעה חדשה ותדליק נקודה כחולה.</div></div></section>`+howBox();}
+  let o="",cur="";const G=[];
+  for(const s of U){const m=s.d.slice(0,7);if(m!==cur){cur=m;G.push({m,L:[]});}G[G.length-1].L.push(s);}
+  for(const g of G){const d=pd(g.m+"-01");o+=`<div class="mon">${MON[d.getMonth()]} ${d.getFullYear()}</div><div class="list">${g.L.map(showRow).join("")}</div>`;}
+  return `<section>${o}</section>`+noShowArtists()+howBox();}
+function noShowArtists(){if(ui.art!=="all")return "";const U=upcoming(),A=artists.filter(a=>a.follow!==false&&!U.some(s=>artIds(s).includes(a.id)));
+  return A.length?`<section><div class="sh"><h2>בלי הופעה כרגע</h2></div><div class="list">${A.map(a=>`<div class="ar"><span class="e">${esc(a.icon||"🎵")}</span><span class="b"><span class="t">${esc(a.name)}</span><span class="s">${esc(a.status_l||"אין הופעה מתוכננת בארץ")}</span></span></div>`).join("")}</div></section>`:"";}
+function howBox(){const H=arr(meta.how);return H.length?`<section><details class="fold"><summary>ℹ️ איך זה עובד</summary><div class="list"><div class="how">${H.map(x=>`<p>${esc(x)}</p>`).join("")}</div></div></details></section>`:"";}
+function tabArtists(){const U=upcoming(),A=artists.slice().sort((a,b)=>(a.order||99)-(b.order||99));
+  return `<section><div class="list">${A.map(a=>{const n=U.filter(s=>artIds(s).includes(a.id)),nx=n[0];
+    return `<div data-sq-item="${esc(a.id)}"><div class="ar"><span class="e">${esc(a.icon||"🎵")}</span><span class="b"><span class="t">${esc(a.name)}${a.en?` <small class="muted" style="font-weight:600;color:var(--muted)">${esc(a.en)}</small>`:""}</span><span class="s">${nx?"הבאה: "+esc(d6(nx.d))+" · "+esc(nx.venue||nx.city||""):esc(a.status_l||"אין הופעה מתוכננת בארץ")}${a.scope==="il+abroad"?" · בארץ ובחו״ל":""}</span></span><span class="n">${n.length}<small>קרובות</small></span></div>
+    ${arr(a.links).length?`<div class="ln">${arr(a.links).map(l=>safe(l.u)?`<a href="${esc(l.u)}" target="_blank" rel="noopener">${esc(l.l)}</a>`:"").join("")}</div>`:""}</div>`;}).join("")}</div></section>
+  <p class="note" style="text-align:center">רוצה להוסיף אמן? כתוב בצ׳אט של הדשבורד.</p>`;}
+function tabPast(){const P=past();return P.length?`<section><div class="list">${P.map(showRow).join("")}</div></section>`:`<section><div class="list"><div class="empty">עוד אין</div></div></section>`;}
+function toBar(){const b=$("bar");if(!b)return;b.style.position="static";const y=b.getBoundingClientRect().top+window.scrollY;b.style.position="";window.scrollTo({top:Math.max(0,Math.round(y)),behavior:"smooth"});}
+function render(){if(!meta)return;
+  if(!["shows","artists","past"].includes(ui.tab))ui.tab="shows";
+  if(ui.art!=="all"&&!art(ui.art))ui.art="all";
+  $("hero").innerHTML=hero();$("bar").innerHTML=bar();
+  $("app").innerHTML=ui.tab==="artists"?tabArtists():ui.tab==="past"?tabPast():tabShows();
+  $("foot").innerHTML=`הופעות ואירועים ${esc(window.EV_BUILD)} · סריקה יומית של הופעות בארץ · מעקב בלבד, שום קנייה לא קורית מכאן`;}
+document.addEventListener("click",e=>{
+  const tb=e.target.closest("[data-tab]");if(tb){ui.tab=tb.dataset.tab;save();render();toBar();return;}
+  const ab=e.target.closest("[data-art]");if(ab){ui.art=ab.dataset.art;save();render();return;}
+  const gb=e.target.closest("[data-go]");if(gb&&db){const s=shows.find(x=>x.id===gb.dataset.go);if(!s)return;const v=s.go===gb.dataset.v?"":gb.dataset.v;s.go=v;
+    gb.parentElement.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+    db.collection("events").doc(s.id).update({go:v,go_at:new Date().toISOString()}).then(()=>toast(v?"✓ נשמר: "+GO[v]:"✓ בוטל")).catch(()=>toast("השמירה נכשלה"));return;}
+  const xb=e.target.closest("[data-x]");if(xb){const k=xb.dataset.x;ui.open[k]=!ui.open[k];save();xb.parentElement.classList.toggle("open",!!ui.open[k]);}
+});
+window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.collection("events").onSnapshot(s=>{artists=[];shows=[];meta=null;s.docs.forEach(x=>{const v=x.data();if(x.id==="_meta")meta=v;else if(!v._deleted){const o=Object.assign({id:x.id},v);if(v.kind==="artist")artists.push(o);else if(v.kind==="show")shows.push(o);}});
+    if(!meta){$("app").innerHTML='<div class="empty">אין נתונים</div>';return;}render();},()=>{});});
+})();
+</script>
+<script src="sq-tel.js?v=2" defer></script>
+</body>
+</html>
