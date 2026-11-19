@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
-<script src="guest.js?v=7"></script>
+<script src="guest.js?v=8"></script>
 <script src="profiles.js?v=5"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster</title>
@@ -176,4 +176,12 @@ h1{margin:0;font-size:0;line-height:0}header{flex:none;display:block!important}@
  // סימון "חדש" על הכרטיס של הילד במסך הראשי, עד שהיא נכנסת לתוכן (אורן 6.11.2026)
  var n=a.querySelector('.knw');if(StudyContent.isNew('lia/phonics')){if(!n){n=document.createElement('span');n.className='knw';n.textContent='חדש! ✨';a.appendChild(n)}}else if(n)n.remove()}}u();StudyContent.refresh(u)})()</script>
 <script>(function(){function u(){var a=document.querySelector('a.kid[href="evyatar/"]');if(!a)return;var n=a.querySelector('.knw');if(StudyContent.isNew('evyatar/past')||StudyContent.isNew('evyatar/econ')||StudyContent.isNew('evyatar/hist')){if(!n){n=document.createElement('span');n.className='knw';n.textContent='חדש! ✨';a.appendChild(n)}}else if(n)n.remove()}u();StudyContent.refresh(u)})()</script>
+<style>a.tb[href="parents/"]{position:relative}.pnw{position:absolute;top:7px;right:7px;width:11px;height:11px;border-radius:50%;background:#2563eb;box-shadow:0 0 0 0 rgba(37,99,235,.55);animation:pnw 1.6s ease-out infinite;pointer-events:none}@keyframes pnw{0%{box-shadow:0 0 0 0 rgba(37,99,235,.55)}70%{box-shadow:0 0 0 8px rgba(37,99,235,0)}100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}}</style>
+<script>/* נקודה כחולה על "אזור הורים" כשיש תוכן לאישור או בקשה פתוחה (אורן 19.11.2026) */(function(){var a=document.querySelector('a.tb[href="parents/"]');if(!a||window.STUDY_GUEST)return;var P=StudyProfiles,f=P.cur(),K=P.kidsOf(f),rq=0;
+function pend(){var n=0;for(var id in StudyContent.reg){if(StudyContent.reg[id]==='review'&&K.indexOf(id.split('/')[0])>=0&&!StudyContent.ok(id))n++}return n}
+function u(){var on=pend()+rq>0,d=a.querySelector('.pnw');if(on&&!d){d=document.createElement('i');d.className='pnw';a.appendChild(d)}else if(!on&&d)d.remove();a.setAttribute('aria-label',on?'אזור הורים: יש משהו חדש':'אזור הורים')}
+u();StudyContent.refresh(u);
+var pin='';try{pin=localStorage.getItem(f==='a'?'study_par_pin':'study_par_pin_'+f)||''}catch(e){}
+if(pin)fetch('https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/study_parents_requests',{method:'POST',headers:{'Content-Type':'application/json',apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k'},body:JSON.stringify({p_pin:pin,p_id:null,p_set:null})}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.ok&&j.items){rq=j.items.filter(function(x){return !x.done&&K.indexOf(x.kid)>=0}).length;u()}}).catch(function(){});
+})()</script>
 </body></html>

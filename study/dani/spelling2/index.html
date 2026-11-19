@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
-<script src="../../guest.js?v=7"></script>
+<script src="../../guest.js?v=8"></script>
 <script src="../../content.js?v=14"></script><script>StudyContent.guard('dani/spelling2')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · הכתבה 2 של דני</title>
@@ -157,7 +157,7 @@ main{padding:10px 14px 10px;display:flex;flex-direction:column}
 <div class="ov" id="rsov"><div class="pn"><h2>להתחיל מההתחלה?</h2><p>כל ההתקדמות, הנקודות והרצף יימחקו. הסקווישים נשארים באוסף.</p><button class="btn" id="rsy" type="button">כן, מההתחלה</button><button class="btn soft" style="width:100%;margin-top:8px" id="rsn" type="button">לא, חזרה</button></div></div>
 
 <script src="../squishies.js?v=3"></script>
-<script src="../../sqsound.js?v=14"></script>
+<script src="../../sqsound.js?v=15"></script>
 <script src="../../effort.js?v=1"></script>
 <script src="../../track.js?v=9"></script>
 <script src="../../guess.js?v=1"></script>
@@ -190,7 +190,7 @@ const save=()=>LS.set('dani_sp2',S);save();
 let SQ=LS.get('dani_sp2_sq')||[];let MUTE=!!LS.get('dani_sp_mute');
 
 // ---------- צלילים (WebAudio, בלי קבצים) ----------
-let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state!=='running'&&AC.state!=='closed')AC.resume();return AC}
 function tone(f,t0,d,type,vol,f2){const a=ac();if(!a||MUTE)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,a.currentTime+t0+d);g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(vol||.18,a.currentTime+t0+.015);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)}
 const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.22,'triangle')},
 mid(){tone(660,0,.14,'sine',.14);tone(587,.12,.2,'sine',.12)},

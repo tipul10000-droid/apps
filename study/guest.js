@@ -2,6 +2,26 @@
 // (לא לאזור ההורים ולא ללוח הדירוג). נטען ראשון בכל דף. הדגל: study_guest = "1".
 // מרווח עליון קבוע (44px לפחות, אורן ביקש פחות מ-72), כדי שכלום לא ייכנס מתחת לאיילנד/שורת הסטטוס (אורן 6.11.2026).
 // גם: כל דף לימוד נכנס במסך אחד, בלי גלילה ובלי זום (אורן 6.11.2026). דף שצריך גלילה (אזור ההורים) לא טוען את הקובץ הזה.
+// 🔊 סאונדים קטנים שנעלמו אחרי 2-3 שאלות (אורן 19.11.2026, כל האפליקציות): באייפון ה-AudioContext עובר למצב "interrupted"
+// (אחרי הקראה של speechSynthesis, הקלטה מתנגנת או שינוי של audioSession.type), והקוד הישן חידש אותו רק ממצב "suspended".
+// כאן, לפני כל קוד אחר בדף: כל AudioContext שנוצר נרשם, ובכל נגיעה/מקש/חזרה לדף מחדשים כל אחד שלא "running".
+// audioSession.type נקבע פעם אחת ל-playback, וכתיבה חוזרת של אותו ערך (שמפריעה לסאונד שמתנגן) מדולגת.
+(function(){
+  try{var S=navigator.audioSession;if(S){try{if(S.type!=='playback')S.type='playback'}catch(e){}
+    var P=Object.getPrototypeOf(S),D=P&&Object.getOwnPropertyDescriptor(P,'type');
+    if(D&&D.get&&D.set)Object.defineProperty(S,'type',{configurable:true,get:function(){return D.get.call(S)},set:function(v){try{if(D.get.call(S)!==v)D.set.call(S,v)}catch(e){}}})}}catch(e){}
+  var L=[],N=window.AudioContext||window.webkitAudioContext;if(!N)return;
+  function fix(){for(var i=0;i<L.length;i++){var c=L[i];try{if(c.state!=='running'&&c.state!=='closed'){var p=c.resume();if(p&&p.catch)p.catch(function(){})}}catch(e){}}}
+  function W(a,b){var c=b===undefined?new N(a):new N(a,b);L.push(c);
+    try{c.addEventListener('statechange',function(){if(c.state==='interrupted'&&!document.hidden)setTimeout(fix,250)})}catch(e){}return c}
+  W.prototype=N.prototype;try{Object.setPrototypeOf(W,N)}catch(e){}
+  window.AudioContext=W;if(window.webkitAudioContext)window.webkitAudioContext=W;
+  ['touchstart','touchend','pointerdown','mousedown','keydown','click'].forEach(function(ev){document.addEventListener(ev,fix,{capture:true,passive:true})});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)fix()});window.addEventListener('pageshow',fix);window.addEventListener('focus',fix);
+  // אחרי הקראה (speechSynthesis) באייפון: מחדשים כשהיא נגמרת
+  try{var sp=window.speechSynthesis&&speechSynthesis.speak.bind(speechSynthesis);if(sp)speechSynthesis.speak=function(u){try{u.addEventListener('end',function(){setTimeout(fix,60)});u.addEventListener('error',function(){setTimeout(fix,60)})}catch(e){}return sp(u)}}catch(e){}
+  window.StudyAudioFix=fix;
+})();
 (function(){
   var css='html,body,*{touch-action:manipulation}html,body{height:100%;overflow:hidden;overscroll-behavior:none}body{height:100dvh;min-height:0!important;display:flex;flex-direction:column}html{padding-top:0!important;padding-bottom:0!important}body{box-sizing:border-box;padding-top:max(calc(env(safe-area-inset-top,0px) + 6px),44px);padding-bottom:env(safe-area-inset-bottom,0px)}main{flex:1 1 auto;min-height:0!important;width:100%;box-sizing:border-box;overflow:hidden}';
   var st=document.createElement('style');st.textContent=css;(document.head||document.documentElement).appendChild(st);

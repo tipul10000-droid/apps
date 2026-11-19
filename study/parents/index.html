@@ -110,6 +110,9 @@ html,body,main{overflow-anchor:none}
 .efk .efa{height:96px;box-sizing:border-box;margin-top:8px;border-radius:12px;background:#fdf2f8;padding:8px;display:flex;align-items:center;gap:10px;overflow:hidden;transition:background .4s}.efk .efa.fl{background:#e9f7ef}
 .efk .efa .efp{flex:none;width:72px;height:72px}.efk .efa .efp svg{width:100%;height:100%}.efk .efa .eft{flex:1;min-width:0;font-size:14px;line-height:1.35}.efk .efa .eft b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.efk .efa .eft small{display:block;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .efk .efa .efb{display:flex;gap:6px;margin-top:6px}.efk .efa .efb button{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;font:700 14px system-ui,Arial,sans-serif;padding:8px 4px;border-radius:10px;border:1px solid #f9a8d4;background:#fff;color:#9d174d;cursor:pointer;white-space:nowrap}.efk .efa .efb button.go{background:#db2777;border-color:#db2777;color:#fff}.efk .efa .efb button:disabled{opacity:.6}
+.efk.open .qzb,.rqs.open .qzb{grid-template-rows:1fr}.efk.open .qzh .cv,.rqs.open .qzh .cv{transform:rotate(180deg)}.efk .qzh,.rqs .qzh{height:44px}.qzh .qzm b.rqn{color:#2563eb}
+.need button.nc i{background:#2563eb;box-shadow:0 0 0 0 rgba(37,99,235,.55);animation:ncp 1.6s ease-out infinite}.need button.nc b{color:#1d4ed8}@keyframes ncp{0%{box-shadow:0 0 0 0 rgba(37,99,235,.55)}70%{box-shadow:0 0 0 7px rgba(37,99,235,0)}100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}}
+.cnt.flash{animation:cfl 1.6s ease 2}@keyframes cfl{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}40%{box-shadow:0 0 0 4px rgba(37,99,235,.45)}}
 .efk .efa .efe{color:var(--mut);font-size:14px;text-align:center;width:100%}.kx>.qzc:first-child{margin-top:0;padding-top:0;border-top:0}.kx>.rqs:first-child{margin-top:0;padding-top:0;border-top:0}
 </style></head><body><main>
 <a class="back" href="../">→ כל הילדים</a>
@@ -174,7 +177,7 @@ const id0=(k,a)=>k.id+'_'+a.id;
 let TAB='dani',SAVED='',DELD='';try{TAB=localStorage.getItem('study_par_tab')||'dani'}catch(e){}if(!KIDS.some(k=>k.id===TAB))TAB=KIDS[KIDS.length>1&&FAM==='a'?1:0].id;
 // קפסולות (אורן 10.11.2026): כל תוכן לימוד באזור ההורים סגור בקפסולה עם כותרת ותקציר, ולחיצה פותחת אותו בגלילה עדינה למטה.
 // רק קפסולה אחת פתוחה בכל ילד (נשמר ב-study_par_cap). הכותרת שנלחצה לא זזה: אם קפסולה אחרת מעליה נסגרת, הגלילה מפצה.
-let CAP={};try{CAP=JSON.parse(localStorage.getItem('study_par_cap'))||{}}catch(e){}
+let CAP={};// אורן 19.11.2026: כל מה שבאזור ההורים נפתח סגור בכל כניסה (נשמר רק עד שיוצאים מהדף)
 function capGrp(t,RS){const dl=t&&t.d&&!t.done?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null;
  if(dl!==null&&dl>=0)return'up';if((RS&&RS.length)||(t&&t.done)||dl!==null)return'done';return'gen'}
 // חותמת ציון (אורן 13.11.2026), אותה חותמת כמו בדף הילד: 85+ כחולה מלאה עם ★, 70-84 מסגרת כחולה, מתחת אפורה.
@@ -190,7 +193,7 @@ function capWire(){V.querySelectorAll('.cap>.caph').forEach(b=>b.onclick=()=>{co
  if(on){V.style.minHeight=V.offsetHeight+'px';clearTimeout(capWire.t);capWire.t=setTimeout(()=>V.style.minHeight='',450)} // שלא תקפוץ הגלילה כשקפסולה אחרת נסגרת
  if(on)V.querySelectorAll(`.cap.open[data-k="${k}"]`).forEach(o=>{if(o===c)return;const ob=o.querySelector('.capb');ob.style.transition='none';o.classList.remove('open');o.querySelector('.caph').setAttribute('aria-expanded','false');ob.offsetHeight;ob.style.transition=''});
  const dy=b.getBoundingClientRect().top-y0;if(dy)scrollBy(0,dy);
- c.classList.toggle('open',on);b.setAttribute('aria-expanded',on);CAP[k]=on?c.dataset.id:'';try{localStorage.setItem('study_par_cap',JSON.stringify(CAP))}catch(e){}})}
+ c.classList.toggle('open',on);b.setAttribute('aria-expanded',on);CAP[k]=on?c.dataset.id:'';})}
 // אירוע = תוכן לימוד עם מבחן/הכתבה אחד (אורן 6.11.2026): תאריך ← אחרי שעבר: ציון ← הציון. תאריך שנשמר מוצג עם ✓ ועיפרון לעריכה.
 function evBox(k,a,t,RS,id){const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null;
  const G=RS[0],DN=t&&t.done,PAST=t&&t.d&&dl!==null&&dl<=0,TN=esc(t&&t.note||a.test),fl=SAVED===id?' fl':'';
@@ -272,12 +275,18 @@ function timeline(r,t,a,k){const D0=d=>{const x=new Date(d);x.setHours(0,0,0,0);
  return`<div class="tl"><div class="tt"><span>📆 ימי לימוד: <b>${studied}</b></span><small>${dm(st)} ← ${ex?'יום ה'+T+' '+dm(ex):'היום'}</small></div><div class="cols">${cols.map(cell).join('')}</div>${ft?`<div class="ft">${ft}</div>`:''}</div>`}
 // 🔴 הנקודה על שם הילד (אורן 11.11.2026): מופיעה רק כשמשהו מחכה להורים, ובראש הלשונית כתוב מה. לחיצה מובילה למקום.
 const RQO={};
-function drawNeed(k){const G=NG[k.id]||[],n=RQO[k.id]||0,el=$('nd_'+k.id),dt=$('dot_'+k.id);if(dt)dt.classList.toggle('on',!!(G.length||n));if(!el)return;
- if(!G.length&&!n){el.hidden=true;el.innerHTML='';return}
- el.innerHTML='<div class="nh">מחכה לכם:</div>'+G.map(a=>`<button type="button" data-g="${id0(k,a)}"><i></i><span>✏️ להזין ציון: ${esc(a.sn||a.n)}</span><b>המבחן כבר היה</b></button>`).join('')+(n?`<button type="button" data-r="${k.id}"><i></i><span>💬 ${n===1?'בקשה פתוחה אחת':n+' בקשות פתוחות'}</span><b>לסמן "טופל"</b></button>`:'');
+// 🧪 תוכן חדש שמחכה לאישור (אורן 19.11.2026): ראשון ובולט בקופסה, לחיצה = פותחת את התוכן ומגיעה לכרטיס הבדיקה והאישור
+const pendC=k=>window.StudyContent?k.apps.filter(a=>StudyContent.reg[k.id+'/'+a.id]==='review'&&!StudyContent.ok(k.id+'/'+a.id)):[];
+function drawNeed(k){const G=NG[k.id]||[],n=RQO[k.id]||0,C=pendC(k),el=$('nd_'+k.id),dt=$('dot_'+k.id);if(dt)dt.classList.toggle('on',!!(G.length||n||C.length));if(!el)return;
+ if(!G.length&&!n&&!C.length){el.hidden=true;el.innerHTML='';return}
+ el.innerHTML='<div class="nh">מחכה לכם:</div>'+C.map(a=>`<button type="button" class="nc" data-nc="${id0(k,a)}"><i></i><span>🧪 תוכן חדש לאישור: ${esc(a.sn||a.n)}</span><b>לבדוק ולאשר ›</b></button>`).join('')+G.map(a=>`<button type="button" data-g="${id0(k,a)}"><i></i><span>✏️ להזין ציון: ${esc(a.sn||a.n)}</span><b>המבחן כבר היה</b></button>`).join('')+(n?`<button type="button" data-r="${k.id}"><i></i><span>💬 ${n===1?'בקשה פתוחה אחת':n+' בקשות פתוחות'}</span><b>לסמן "טופל"</b></button>`:'');
  el.hidden=false;
  el.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{const c=$('cap_'+b.dataset.g);if(!c)return;if(!c.classList.contains('open'))c.querySelector('.caph').click();setTimeout(()=>c.scrollIntoView({behavior:'smooth',block:'start'}),60)});
- el.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=$('rq_'+b.dataset.r);if(r)r.scrollIntoView({behavior:'smooth',block:'start'})})}
+ el.querySelectorAll('[data-nc]').forEach(b=>b.onclick=()=>{const c=$('cap_'+b.dataset.nc);if(!c)return;if(!c.classList.contains('open'))c.querySelector('.caph').click();setTimeout(()=>{const r=$('cr_'+b.dataset.nc)||c;r.scrollIntoView({behavior:'smooth',block:'center'});r.classList.remove('flash');void r.offsetWidth;r.classList.add('flash')},380)});
+ el.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=$('rq_'+b.dataset.r);if(!r)return;if(!RQV[b.dataset.r]){RQV[b.dataset.r]=1;r.classList.add('open');const h=r.querySelector('.rqh');if(h)h.setAttribute('aria-expanded','true')}setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'start'}),60)})}
+// אורן 19.11.2026: כשנכנסים, אם בלשונית הנוכחית אין מה לאשר ובילד אחר יש, עוברים אליו
+function needJump(){if(needJump.done)return;const has=k=>pendC(k).length||(NG[k.id]||[]).length||RQO[k.id];const cur=KIDS.find(k=>k.id===TAB);if(cur&&has(cur))return;
+ const o=KIDS.find(k=>pendC(k).length)||KIDS.find(has);if(o){needJump.done=1;const b=V.querySelector(`#tabs button[data-k="${o.id}"]`);if(b)b.click()}}
 function needsGrade(j,k){return k.apps.filter(a=>{const t=(j.tests||[]).find(x=>x.kid===k.id&&x.app===a.id)||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null);if(!t)return false;
  if((j.results||[]).some(x=>x.kid===k.id&&x.app===a.id))return false;return t.done||(t.d&&new Date(t.d+'T00:00:00')<=new Date(new Date().toDateString()))})}
 function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/'+t.app]=t);
@@ -345,7 +354,7 @@ function gdWire(){V.querySelectorAll('[data-gd]').forEach(b=>b.onclick=()=>b.clo
 // אורן 13.11.2026: התווית "✅ התוכן אושר" נסגרת ב-✕ (נשמר במכשיר, study_cnt_x), ויורדת לבד כשהילד כבר התחיל להשתמש בתוכן (יש התקדמות מאז האישור).
 function cntGone(id,u){let at=null,x={};try{at=(JSON.parse(localStorage.getItem('study_cnt_ok'))||{})[id]||null;x=JSON.parse(localStorage.getItem('study_cnt_x'))||{}}catch(e){}
  if(at&&x[id]===at)return true;if(!u)return false;return u==='1'||!at||Date.parse(u)>=Date.parse(at)}
-function drawCnt(){V.querySelectorAll('.crv').forEach(x=>x.hidden=StudyContent.ok(x.dataset.c));V.querySelectorAll('.cnt').forEach(b=>{const id=b.dataset.c,kn=b.dataset.n,ok=StudyContent.ok(id),boy=!!(StudyProfiles.kids[id.split('/')[0]]||{}).boy;
+function drawCnt(){KIDS.forEach(k=>drawNeed(k));needJump();V.querySelectorAll('.crv').forEach(x=>x.hidden=StudyContent.ok(x.dataset.c));V.querySelectorAll('.cnt').forEach(b=>{const id=b.dataset.c,kn=b.dataset.n,ok=StudyContent.ok(id),boy=!!(StudyProfiles.kids[id.split('/')[0]]||{}).boy;
  b.hidden=ok&&cntGone(id,b.dataset.u);if(b.hidden){b.innerHTML='';return}
  b.classList.toggle('okd',ok);
  b.innerHTML=ok?`<div class="cl">✅ התוכן אושר. ${kn} ${boy?'רואה':'רואה'} אותו עכשיו עם סרט "חדש!" ✨</div><button class="cx" type="button" data-cx="${id}" aria-label="לסגור">✕</button>`
@@ -355,7 +364,7 @@ function drawCnt(){V.querySelectorAll('.crv').forEach(x=>x.hidden=StudyContent.o
   rpc('study_parents_content_approve',{p_pin:PIN,p_id:id}).then(j=>{if(j&&j.ok)StudyContent.refresh(drawCnt);else m.textContent=j&&j.err==='bad'?'צריך להיכנס שוב עם הקוד':'לא הצלחנו לשמור. נסו שוב'}).catch(()=>{m.textContent='אין חיבור לשרת כרגע. נסו שוב בעוד רגע'})})}
 // 💝 פרס מאמץ מיוחד (אורן 14.11.2026): 6 סקווישים לכל ילד שרק ההורים נותנים, על מאמץ ולמידה גם בלי לסיים.
 // נשמר בשרת (effort.js → study_state app 'effort'), והילד מקבל חלון חגיגי בדף שלו בכניסה הבאה. "לבטל" = רק ללחיצה בטעות.
-const EF={},EFS={};
+const EF={},EFS={},EFO={};// EFO = פתוח (אורן 19.11.2026: נפתח סגור)
 function loadEf(){KIDS.forEach(k=>{if(!$('ef_'+k.id))return;drawEf(k);StudyEffort.sync(k.id,()=>drawEf(k))})}
 function drawEf(k,msg){const box=$('ef_'+k.id);if(!box)return;const L=StudyEffort.lists[k.id],own=StudyEffort.owned(k.id),at=StudyEffort.at(k.id),boy=!!k.boy,sel=EFS[k.id],s=sel&&L.find(x=>x.id===sel),hv=s&&own.includes(s.id);
  const h1=boy?'הוא':'היא',l1=boy?'לו':'לה';
@@ -363,10 +372,12 @@ function drawEf(k,msg){const box=$('ef_'+k.id);if(!box)return;const L=StudyEffor
  else if(!s)act=`<div class="efe">${msg||`לחצו על סקווישי אפור כדי לבחור מה לתת ${l1} 👆`}</div>`;
  else act=`<div class="efp">${StudyEffort.svg(s)}</div><div class="eft"><b>${esc(s.n)}</b>${hv?`<small>✓ ניתן${at[s.id]?' ב-'+fmtD(at[s.id]):''}</small>`:`<small>${boy?'יקבל':'תקבל'} אותו בכניסה הבאה 🎁</small>`}
   <div class="efb">${hv?`<button type="button" data-efu="${k.id}">↩ לבטל</button><button type="button" data-efc="${k.id}">סגירה</button>`:`<button class="go" type="button" data-efg="${k.id}">💝 לתת ל${k.n}</button><button type="button" data-efc="${k.id}">ביטול</button>`}</div></div>`;
- box.innerHTML=`<div class="efh"><b>💝 פרס מאמץ מיוחד</b><small>ניתנו ${own.filter(x=>L.some(s=>s.id===x)).length} מתוך ${L.length}</small></div>
+ box.classList.toggle('open',!!EFO[k.id]);
+ box.innerHTML=`<button class="qzh efh" type="button" data-efo="${k.id}" aria-expanded="${!!EFO[k.id]}"><span class="qzt">💝 פרס מאמץ מיוחד</span><span class="qzm">ניתנו ${own.filter(x=>L.some(s=>s.id===x)).length} מתוך ${L.length}</span><span class="cv">▾</span></button><div class="qzb"><div class="qzi">
  <div class="efx">ראיתם ש${k.n} ${boy?'למד והתאמץ':'למדה והתאמצה'} במיוחד, גם אם ${boy?'הוא עוד לא סיים':'היא עוד לא סיימה'}? כאן נותנים ${l1} סקווישי מיוחד שאי אפשר להשיג באפליקציה, רק מכם. ${h1} ${boy?'יראה':'תראה'} אותו בלוח הסקווישים ${boy?'שלו':'שלה'} בשורה "💝 פרס מאמץ מאבא ואמא".</div>
  <div class="efg">${L.map(x=>{const o=own.includes(x.id);return `<button type="button" class="${o?'hv':'lk'}${sel===x.id?' sel':''}" data-efs="${k.id}|${x.id}" aria-label="${esc(x.n)}">${StudyEffort.svg(x,!o)}</button>`}).join('')}</div>
- <div class="efa${msg&&!s?' fl':''}">${act}</div>`;
+ <div class="efa${msg&&!s?' fl':''}">${act}</div></div></div>`;
+ box.querySelector('[data-efo]').onclick=()=>{EFO[k.id]=!EFO[k.id];box.classList.toggle('open',EFO[k.id]);box.querySelector('[data-efo]').setAttribute('aria-expanded',EFO[k.id])};
  box.querySelectorAll('[data-efs]').forEach(b=>b.onclick=()=>{const [kid,id]=b.dataset.efs.split('|');EFS[kid]=EFS[kid]===id?null:id;drawEf(k)});
  box.querySelectorAll('[data-efc]').forEach(b=>b.onclick=()=>{EFS[k.id]=null;drawEf(k)});
  const go=(on)=>{const id=EFS[k.id],nm=(L.find(x=>x.id===id)||{}).n||'';EF[k.id]='busy';drawEf(k);
@@ -393,7 +404,7 @@ function loadQz(kid,cmd){rpc('study_parents_quiz',{p_pin:PIN,p_kid:kid||null,p_c
   <div class="none" style="font-size:12px;margin-top:6px">${perm?'פתוח קבוע גובר על הכול. "↩ חזרה לכללים" מחזיר את הנעילה האוטומטית.':`הכלל הרגיל: אחרי 2 חידונים ברצף נעול ל-4 שעות, ו-20 דקות לימוד משחררות. "לשחרר הפעם" פותח רק את הנעילה הנוכחית. "פתוח קבוע" מבטל את הנעילה עד שתחזיר לכללים.`}</div></div></div>`});
  QZF='';V.querySelectorAll('[data-qzo]').forEach(b=>b.onclick=()=>{const k=b.dataset.qzo,o=!QZO[k];QZO[k]=o;b.parentNode.classList.toggle('open',o);b.setAttribute('aria-expanded',o)});V.querySelectorAll('[data-qz]').forEach(b=>b.onclick=()=>{const [k,c]=b.dataset.qz.split('|');QZF=k;loadQz(k,c)})}).catch(()=>{})}
 // בקשות והצעות מהילדים (study_requests, נשלחות מדף הילד דרך study/req.js)
-const ARC={},NG={};const RQK={test:'📅 מבחן קרוב',quiz:'⏰ בוחן',hard:'🤔 לא מבין/ה',topic:'📚 נושא ללימוד',idea:'💡 רעיון לאפליקציה',bug:'🐞 באג באפליקציה'};
+const ARC={},NG={},RQV={};/* RQV = בקשות פתוחות לתצוגה (אורן 19.11.2026: נפתח סגור) */const RQK={test:'📅 מבחן קרוב',quiz:'⏰ בוחן',hard:'🤔 לא מבין/ה',topic:'📚 נושא ללימוד',idea:'💡 רעיון לאפליקציה',bug:'🐞 באג באפליקציה'};
 // ✍️ תשובות פתוחות (אורן 11.11.2026): מה הילד הקליד, הציון וההערה של Claude. study_parents_answers מחזיר רק ילד מהמשפחה של הקוד.
 // אורן 11.11.2026: תשובה פתוחה שקיבלה 7 ומעלה נחשבת נלמדה גם אם הילד עוד לא חזר לאפליקציה מאז הבדיקה.
 // oad = השאלות הפתוחות שהמכשיר כבר סופר. מוסיפים רק ציונים מהשרת שעוד לא בפנים (הציון האחרון לכל שאלה).
@@ -409,10 +420,12 @@ function loadOA(){V.querySelectorAll('.oaw').forEach(el=>{const k=el.dataset.k,a
 function loadReq(id,set){rpc('study_parents_requests',{p_pin:PIN,p_id:id||null,p_set:set||null}).then(j=>{if(!j||!j.ok)return;
  KIDS.forEach(k=>{const box=$('rq_'+k.id);if(!box)return;const L=j.items.filter(x=>x.kid===k.id),open=L.filter(x=>!x.done).length;
   const O=L.filter(x=>!x.done),D=L.filter(x=>x.done),row=x=>`<div class="rq${x.done?' dn':''}"><div class="t"><span>${RQK[x.kind]||''}</span><span>${ago(x.at)}</span></div><div class="tx">${esc(x.txt)}</div><div class="a">${x.done?`<span class="none" style="font-size:13px">✓ טופל ${x.done_at?ago(x.done_at):''}</span><button class="lnk" type="button" data-q="${x.id}|open">↩ לא טופל</button>`:`<button class="lnk" type="button" data-q="${x.id}|done">✓ טופל</button>`}<button class="lnk" type="button" data-q="${x.id}|hide">הסתרה</button></div></div>`;
-  box.innerHTML=`<h3>💬 בקשות והצעות${open?` (${open===1?"1 פתוחה":open+" פתוחות"})`:''}</h3>`+(O.length?O.slice(0,30).map(row).join(''):`<div class="none">${L.length?'אין בקשות פתוחות 👍':'עוד לא '+(!!k.boy?'שלח':'שלחה')+' בקשות'}</div>`)+
-   (D.length?`<details class="arc"${ARC[k.id]?' open':''} data-k="${k.id}"><summary>📦 ארכיון: טופלו (${D.length})</summary>${D.slice(0,30).map(row).join('')}<div class="none" style="font-size:12px;margin-top:6px">${!!k.boy?'הוא מקבל':'היא מקבלת'} הודעה "✅ אבא ואמא טיפלו בזה" כשנכנס${!!k.boy?'':'ת'} לדף ${!!k.boy?'שלו':'שלה'}.</div></details>`:'');
+  box.classList.add('qzc');box.classList.toggle('open',!!RQV[k.id]);
+  box.innerHTML=`<button class="qzh rqh" type="button" data-rqo="${k.id}" aria-expanded="${!!RQV[k.id]}"><span class="qzt">💬 בקשות והצעות</span><span class="qzm">${open?`<b class="rqn">${open===1?"1 פתוחה":open+" פתוחות"}</b>`:L.length?'אין פתוחות':'עוד אין'}</span><span class="cv">▾</span></button><div class="qzb"><div class="qzi">`+(O.length?O.slice(0,30).map(row).join(''):`<div class="none">${L.length?'אין בקשות פתוחות 👍':'עוד לא '+(!!k.boy?'שלח':'שלחה')+' בקשות'}</div>`)+
+   (D.length?`<details class="arc"${ARC[k.id]?' open':''} data-k="${k.id}"><summary>📦 ארכיון: טופלו (${D.length})</summary>${D.slice(0,30).map(row).join('')}<div class="none" style="font-size:12px;margin-top:6px">${!!k.boy?'הוא מקבל':'היא מקבלת'} הודעה "✅ אבא ואמא טיפלו בזה" כשנכנס${!!k.boy?'':'ת'} לדף ${!!k.boy?'שלו':'שלה'}.</div></details>`:'')+'</div></div>';
   RQO[k.id]=O.length;drawNeed(k)});
  V.querySelectorAll('details.arc').forEach(d=>d.ontoggle=()=>{ARC[d.dataset.k]=d.open})
+  V.querySelectorAll('[data-rqo]').forEach(b=>b.onclick=()=>{const k=b.dataset.rqo;RQV[k]=!RQV[k];b.closest('.rqs').classList.toggle('open',!!RQV[k]);b.setAttribute('aria-expanded',!!RQV[k])})
  V.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const [i,s]=b.dataset.q.split('|');if(s==='hide'&&!confirm('להסתיר את הבקשה?'))return;b.textContent='...';loadReq(+i,s)})}).catch(()=>{})}
 ['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,ev=>ev.preventDefault(),{passive:false}));
 // דאבל-טאפ: באייפון user-scalable=no לא עובד. touch-action:manipulation מבטל זום בהקשה כפולה, ולמקרה שלא: הקשה שנייה מהירה לא מגיעה לזום, והלחיצה נשלחת ידנית.

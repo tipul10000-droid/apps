@@ -9,7 +9,7 @@
 // שימוש: <script src="../../sqsound.js"></script>  SqSound.play(id, muted)
 (function(){
   var AC=null;
-  function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+  function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state!=='running'&&AC.state!=='closed')AC.resume();return AC}
   // מתנד עם מסלול תדר, מעטפת, פילטר וויברטו
   function osc(type,t0,d,pts,vol,lp,lfo,q){var a=AC,T=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();o.type=type;
     o.frequency.setValueAtTime(pts[0][1],T);for(var i=1;i<pts.length;i++)o.frequency.linearRampToValueAtTime(pts[i][1],T+pts[i][0]*d);
