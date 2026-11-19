@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
-<script src="../../guest.js?v=7"></script>
+<script src="../../guest.js?v=8"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster</title>
 <link rel="manifest" href="../../manifest.json">
@@ -2210,7 +2210,7 @@ start();
 
 // צלילים (WebAudio, בלי קבצים). השתקה במפתח נפרד ev_mute.
 (function(){let M=false;try{M=localStorage.getItem('ev_mute')==='1'}catch(e){}let AC=null;const b=$('mut');
- function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+ function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state!=='running'&&AC.state!=='closed')AC.resume();return AC}
  function tone(f,t0,d,ty,v,f2){const a=ac();if(!a||M)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+t0;o.type=ty||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.16,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.05)}
  const ok=()=>{tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.2,'triangle')},bad=()=>tone(330,0,.25,'sine',.14,220),win=()=>[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.09,.25,'triangle',.15));
  b.textContent=M?'🔇':'🔊';b.onclick=()=>{M=!M;try{localStorage.setItem('ev_mute',M?'1':'0')}catch(e){}b.textContent=M?'🔇':'🔊';if(!M)tone(1800,0,.05,'square',.04)};
