@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.4";window.SQ_BUILD_AT="19.11.2026 19:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.5";window.SQ_BUILD_AT="19.11.2026 19:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2524,9 +2524,9 @@ function call(body){var ac=new AbortController(),tm=setTimeout(function(){ac.abo
 var pre=null,preVal=null;
 function prep(){var id=ls("sq_fid");preVal=null;pre=call({a:"auth-options",id:id}).then(function(j){j.at=Date.now();return j;},function(e){return {local:true,at:Date.now(),err:e};});
   var mine=pre;pre.then(function(j){if(pre===mine)preVal=j;});return pre;}
-function cred(){var id=ls("sq_fid");return id?[{type:"public-key",id:u2b(id),transports:["internal","hybrid"]}]:[];}
+function cred(){var id=ls("sq_fid");return id?[{type:"public-key",id:u2b(id),transports:["internal"]}]:[];}
 function getA(j){var ch=j.local?crypto.getRandomValues(new Uint8Array(32)).buffer:u2b(j.opts.challenge);
-  return navigator.credentials.get({publicKey:{challenge:ch,rpId:location.hostname,allowCredentials:cred(),userVerification:"required",timeout:60000}});}
+  return navigator.credentials.get({publicKey:{challenge:ch,rpId:location.hostname,allowCredentials:cred(),userVerification:"required",hints:["client-device"],timeout:60000}});}
 window.SQFid={
   ok:function(){return !!(window.PublicKeyCredential&&navigator.credentials&&window.isSecureContext);},
   on:function(){return this.ok()&&ls("sq_fid_on")==="1"&&!!ls("sq_fid")&&!!ls("sq_pin");},
@@ -2543,7 +2543,7 @@ window.SQFid={
     return (p||prep()).then(function(j){pre=preVal=null;if(Date.now()-j.at>240000)return prep().then(function(k){pre=preVal=null;return run(k);});return run(j);});},
   register:function(regPre){var pin=ls("sq_pin")||"";
     var go=function(j){return navigator.credentials.create({publicKey:{rp:{id:location.hostname,name:j.opts.rp.name},user:{id:u2b(j.opts.user.id),name:j.opts.user.name,displayName:j.opts.user.displayName},
-      challenge:u2b(j.opts.challenge),pubKeyCredParams:j.opts.pubKeyCredParams,timeout:60000,attestation:"none",
+      challenge:u2b(j.opts.challenge),pubKeyCredParams:j.opts.pubKeyCredParams,timeout:60000,attestation:"none",hints:["client-device"],
       authenticatorSelection:j.opts.authenticatorSelection,excludeCredentials:(j.opts.excludeCredentials||[]).map(function(c){return {type:"public-key",id:u2b(c.id)};})}})
       .then(function(c){var r=c.response,resp={id:c.id,rawId:b2u(c.rawId),type:c.type,clientExtensionResults:{},authenticatorAttachment:c.authenticatorAttachment||undefined,
           response:{clientDataJSON:b2u(r.clientDataJSON),attestationObject:b2u(r.attestationObject),transports:r.getTransports?r.getTransports():["internal"]}};
