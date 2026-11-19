@@ -71,7 +71,7 @@
   function close(){ov.classList.remove('on');ov.innerHTML=''}
   function show(h,bind){ov.innerHTML='<div class="pn">'+h+'</div>';ov.classList.add('on');
     ov.querySelectorAll('[data-a]').forEach(function(b){b.addEventListener('click',function(e){bind(b.getAttribute('data-a'),b.getAttribute('data-id'),e)})})}
-  function wa(id){var go=function(){var u=FN+'?action=wa&kid='+kid+'&sid='+S.sid+'&to='+id+'&apikey='+SB_KEY,w=null;try{w=window.open(u,'_blank')}catch(e){}if(!w)location.href=u};if(S&&sentOnce)go();else{begin([]);var t=setInterval(function(){if(sentOnce){clearInterval(t);go()}},200)}}
+  function wa(id){var w=null;try{w=window.open('','_blank')}catch(e){}var go=function(){var u=FN+'?action=wa&kid='+kid+'&sid='+S.sid+'&to='+id+'&apikey='+SB_KEY;if(w&&!w.closed)w.location.href=u;else location.href=u};if(S&&sentOnce)go();else{begin([]);var n=0,t=setInterval(function(){if(sentOnce||++n>40){clearInterval(t);go()}},200)}}
   function rows(){return HL.map(function(h){var a=AV[h[0]],req=S&&(S.to||[]).indexOf(h[0])>=0,seen=S&&S.seen&&S.seen[h[0]]&&Date.now()-S.seen[h[0]]<15000;
       var b=h[3],st=seen?'<span class="dt ok"></span>רואה את המסך שלך עכשיו':req?'<span class="dt pd"></span>'+(b?'קיבל':'קיבלה')+' הודעה, מחכים ש'+(b?'יפתח':'תפתח')+'…':
         !a?'<span class="dt"></span>בודק זמינות…':a.ok?'<span class="dt ok"></span>'+(b?'זמין':'זמינה')+(a.why?' · '+esc(a.why):'')+(a.dev?'':' · בלי התראות, רק וואטסאפ'):
