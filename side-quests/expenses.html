@@ -463,5 +463,6 @@ window.claude.use("db").then(d=>{if(!d)return;db=d;
   db.collection("expenses").onSnapshot(s=>{docs=s.docs.map(x=>({id:x.id,...x.data()}));meta=docs.find(x=>x.id==="_meta")||{};loaded=true;render();},()=>{});});
 })();
 </script>
+<script src="sq-tel.js?v=2" defer></script>
 </body>
 </html>

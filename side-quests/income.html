@@ -228,5 +228,6 @@ window.claude.use("db").then(db=>{if(!db)return;dbr=db;
   db.collection("income").onSnapshot(s=>{s.docs.forEach(x=>{if(x.id==="_meta")meta=x.data();if(x.id==="lior")lior=x.data();});if(!meta)$("app").innerHTML='<div class="empty">אין נתונים</div>';render();},()=>{});});
 })();
 </script>
+<script src="sq-tel.js?v=2" defer></script>
 </body>
 </html>
