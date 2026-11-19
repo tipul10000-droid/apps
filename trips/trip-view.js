@@ -76,6 +76,35 @@
     return '<svg viewBox="0 0 360 200" direction="ltr" role="img" aria-label="מפת המסלול"><rect width="360" height="200" fill="rgba(80,150,200,.10)"/>' + land + legs + pts + "</svg>";
   }
 
+  // אייקונים נקיים בקו אחד (Lucide, ISC) במקום אימוג׳ים, בצבע הטקסט (אורן 19.11.2026).
+  var ICP = {
+    sight: '<path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2l8 5H4z"/>',
+    view: '<path d="M12 10V2"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M16 18a4 4 0 0 0-8 0"/>',
+    food: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+    coffee: '<path d="M10 2v2"/><path d="M14 2v2"/><path d="M6 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/>',
+    sweet: '<path d="m7 11 4.08 10.35a1 1 0 0 0 1.84 0L17 11"/><path d="M17 7A5 5 0 0 0 7 7"/><path d="M17 7a2 2 0 0 1 0 4H7a2 2 0 0 1 0-4"/>',
+    bar: '<path d="M8 22h8"/><path d="M7 10h10"/><path d="M12 15v7"/><path d="M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z"/>',
+    shop: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+    hotel: '<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>',
+    compass: '<circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36z"/>',
+    cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+    bulb: '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>',
+    map: '<path d="M14.1 4.4 9.9 2.3a2 2 0 0 0-1.8 0L3.6 4.6A1 1 0 0 0 3 5.5v14.3a1 1 0 0 0 1.4.9l3.7-1.9a2 2 0 0 1 1.8 0l4.2 2.1a2 2 0 0 0 1.8 0l4.5-2.3a1 1 0 0 0 .6-.9V3.4a1 1 0 0 0-1.4-.9l-3.7 1.9a2 2 0 0 1-1.8 0z"/><path d="M15 5.8v15"/><path d="M9 3.2v15"/>',
+    pin: '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+    plane: '<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+    train: '<rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><path d="M8 15h.01"/><path d="M16 15h.01"/>',
+    wx: '<path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/>',
+    cam: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+    info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+    star: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>'
+  };
+  // אימוג׳י שמגיע מהנתונים (תובנות הליסט) -> אייקון נקי
+  var EMO = { "🏛️": "sight", "🏛": "sight", "🌅": "view", "🍝": "food", "🥪": "food", "🍕": "food", "☕": "coffee", "🍦": "sweet", "🍰": "sweet", "🍸": "bar", "🍷": "bar", "🛍️": "shop", "🛍": "shop", "🏨": "hotel", "🧭": "compass", "📅": "cal", "🗓️": "cal", "💡": "bulb", "🗺️": "map", "📍": "pin", "✈️": "plane", "🚆": "train", "📸": "cam", "⭐": "star" };
+  function ic(k, cls) { var d = ICP[k] || ICP[EMO[k]] || ICP.bulb; return '<svg class="tp-ic' + (cls ? " " + cls : "") + '" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + d + "</svg>"; }
+  // section that opens and closes; closed by default (Oren 19.11.2026: a lot of knowledge, less scrolling)
+  function sx(k, title, small, body, open, sub) {
+    return '<section class="tp-sec"><details class="tp-sx"' + (open ? " open" : "") + '><summary class="tp-sh">' + ic(k, "e") + '<span class="tp-sht"><h2>' + title + "</h2>" + (sub || "") + "</span>" + (small ? "<small>" + small + "</small>" : "") + chev() + '</summary><div class="tp-sxb">' + body + "</div></details></section>";
+  }
   function chev() { return '<span class="tp-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'; }
   // כל מקום בטיול = קישור קטן ושקט לגוגל מפס עם סיכה וכיתוב "Google Maps" (אורן 19.11.2026).
   // x.g = קישור מוכן, x.q = מה לחפש בגוגל מפס. בלי אף אחד מהם = בלי קישור.
@@ -138,13 +167,13 @@
 
     // ---- map ----
     if (t.map) {
-      H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">🗺️</span><h2>המסלול</h2><small>' + esc(t.map.note || "") + '</small></div><div class="tp-card tp-map">' + mapSvg(t.map) +
-        '<div class="tp-legend"><span style="color:var(--acc)"><u style="border-top-style:dashed"></u>טיסה</span><span style="color:var(--acc2)"><u></u>רכבת</span>' + (t.map.legend || []).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("") + "</div></div></section>");
+      H.push(sx("map", "המסלול", esc(t.map.note || ""), '<div class="tp-card tp-map">' + mapSvg(t.map) +
+        '<div class="tp-legend"><span style="color:var(--acc)"><u style="border-top-style:dashed"></u>טיסה</span><span style="color:var(--acc2)"><u></u>רכבת</span>' + (t.map.legend || []).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("") + "</div></div>"));
     }
 
     // ---- days ----
     if (days.length) {
-      H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">📅</span><h2>יום אחרי יום <span class="tp-h2s">(הצעת תכנון)</span></h2><small>לחיצה פותחת</small></div><div class="tp-days">' +
+      H.push('<section class="tp-sec"><div class="tp-sh">' + ic("cal", "e") + '<h2>יום אחרי יום <span class="tp-h2s">(הצעת תכנון)</span></h2><small>לחיצה פותחת</small></div><div class="tp-days">' +
         days.map(function (d, i) {
           var isT = ph.k === "trip" && d.d === ph.today, hm = isT ? nowHM(t.tz) : "", nextDone = false;
           return '<details class="tp-day' + (isT ? " today" : "") + '"' + (isT || (ph.k === "pre" && i === 0 && o.openFirst) ? " open" : "") + "><summary>" +
@@ -161,7 +190,7 @@
     var fl = Array.isArray(t.flights) ? t.flights : [];
     if (fl.length) {
       var plane = '<svg viewBox="0 0 84 26" aria-hidden="true"><path d="M4 18 Q42 -2 80 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 4"/><g transform="translate(42 8)">' + PLANE + "</g></svg>";
-      H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">✈️</span><h2>טיסות</h2><small>לחיצה לפרטים</small></div>' +
+      H.push('<section class="tp-sec"><div class="tp-sh">' + ic("plane", "e") + '<h2>טיסות</h2><small>לחיצה לפרטים</small></div>' +
         fl.map(function (f) {
           var A = f.from || {}, B = f.to || {};
           return '<details class="tp-bp"><summary><div class="tp-bph"><span>' + esc(f.dir || "") + " · יום " + esc(dowOf(f.d)) + " " + esc(dShort(f.d)) + '</span><span dir="ltr">' + logo(base, f.logo) + esc((f.air || "") + " " + (f.no || "")) + "</span></div>" +
@@ -177,7 +206,7 @@
     // ---- hotels ----
     var ho = Array.isArray(t.hotels) ? t.hotels : [];
     if (ho.length) {
-      H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">🏨</span><h2>איפה ישנים</h2><small>' + esc(t.nights_l || "") + "</small></div>" +
+      H.push('<section class="tp-sec"><div class="tp-sh">' + ic("hotel", "e") + '<h2>איפה ישנים</h2><small>' + esc(t.nights_l || "") + "</small></div>" +
         ho.map(function (x) {
           var mu = url(x.maps || "");
           return '<details class="tp-hotel"><summary><div class="tp-himg">' + (x.img ? '<img src="' + esc(img(base, x.img)) + '" alt="" loading="lazy">' : "") + '<span class="tp-hn">' + esc(x.city || "") + " · " + esc(x.nights_l || "") + "</span></div>" +
@@ -191,61 +220,64 @@
     // ---- getting around ----
     var mv = Array.isArray(t.moves) ? t.moves : [];
     if (mv.length) {
-      H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">🚆</span><h2>איך מתניידים</h2></div><div class="tp-grid">' +
-        mv.map(function (m) { return '<div class="tp-tile' + (m.open ? " open" : "") + (m.full ? " full" : "") + '"><span class="e">' + esc(m.e) + "</span><b>" + esc(m.h) + "</b><span>" + esc(m.s || "") + "</span>" + gml(m) + "</div>"; }).join("") + "</div></section>");
+      H.push(sx("train", "איך מתניידים", "", '<div class="tp-grid">' +
+        mv.map(function (m) { return '<div class="tp-tile' + (m.open ? " open" : "") + (m.full ? " full" : "") + '"><span class="e">' + esc(m.e) + "</span><b>" + esc(m.h) + "</b><span>" + esc(m.s || "") + "</span>" + gml(m) + "</div>"; }).join("") + "</div>"));
     }
 
     // ---- weather ----
     var wx = Array.isArray(t.weather) ? t.weather : [];
     if (wx.length) {
-      H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">🌦️</span><h2>מזג אוויר</h2><small>ממוצע לתאריכים</small></div><div class="tp-grid">' +
+      H.push(sx("wx", "מזג אוויר", "ממוצע לתאריכים", '<div class="tp-grid">' +
         wx.map(function (w) { return '<div class="tp-tile"><div class="tp-wx"><span class="e">' + esc(w.e || "⛅") + '</span><div><b>' + esc(w.city) + '</b><span class="tmp">' + esc(w.hi) + "°<small> / " + esc(w.lo) + "°</small></span></div></div><span>" + esc(w.s || "") + "</span></div>"; }).join("") + "</div>" +
-        (t.wx_tip ? '<div class="tp-tip">🧥 ' + esc(t.wx_tip) + "</div>" : "") + "</section>");
+        (t.wx_tip ? '<div class="tp-tip">🧥 ' + esc(t.wx_tip) + "</div>" : "")));
     }
 
     // ---- extra notes (Hanukkah etc.) ----
     var nt = Array.isArray(t.notes) ? t.notes : [];
-    if (nt.length) H.push('<section class="tp-sec"><div class="tp-grid">' + nt.map(function (n) { return '<div class="tp-tile full"><span class="e">' + esc(n.e) + "</span><b>" + esc(n.h) + "</b><span>" + esc(n.s || "") + "</span>" + gml(n) + "</div>"; }).join("") + "</div></section>");
+    if (nt.length) H.push(sx("info", "טוב לדעת", "", '<div class="tp-grid">' + nt.map(function (n) { return '<div class="tp-tile full"><span class="e">' + esc(n.e) + "</span><b>" + esc(n.h) + "</b><span>" + esc(n.s || "") + "</span>" + gml(n) + "</div>"; }).join("") + "</div>"));
 
     // ---- our Google Maps list: insights + every place (short line, tap for the full insight) ----
     var mp = t.maps || null, pl = mp && Array.isArray(mp.places) ? mp.places : [];
     if (pl.length) {
-      var CAT = [["sight", "🏛️", "לראות"], ["view", "🌅", "תצפיות"], ["food", "🍝", "לאכול"], ["coffee", "☕", "קפה ומאפים"], ["sweet", "🍦", "מתוקים"], ["bar", "🍸", "גגות ובר"], ["shop", "🛍️", "קניות"], ["hotel", "🏨", "המלונות"]];
-      var RK = { must: ["★", "חובה"], good: ["●", "שווה"], optional: ["○", "אם יש זמן"], skip: ["–", "אפשר לוותר"] };
+      var CAT = [["sight", "לראות"], ["view", "תצפיות"], ["food", "לאכול"], ["coffee", "קפה ומאפים"], ["sweet", "מתוקים"], ["bar", "גגות ובר"], ["shop", "קניות"], ["hotel", "המלונות"]];
+      var RK = { must: "חובה", good: "שווה", optional: "אם יש זמן", skip: "אפשר לוותר" };
       var cities = []; pl.forEach(function (x) { if (cities.indexOf(x.city || "") < 0) cities.push(x.city || ""); });
       var row = function (x) {
-        var g = url(x.g || ""), rk = RK[x.rank] || RK.good;
+        var g = url(x.g || ""), rk = RK[x.rank] || RK.good, ck = x.cat || "sight";
         var kv = [["שעות", x.hours], ["הזמנה", x.book], ["הכי כדאי", x.best], ["הליכה", x.walk ? x.walk + " דק׳ מהמלון" : ""]].filter(function (k) { return k[1]; });
-        return '<details class="tp-pl r-' + esc(x.rank || "good") + '"><summary><span class="rk" title="' + esc(rk[1]) + '">' + rk[0] + '</span><span class="x"><b>' + esc(x.he || x.n) + "</b><span>" + esc(x.tip || "") + "</span></span>" + chev() + "</summary>" +
+        return '<details class="tp-pl r-' + esc(x.rank || "good") + '"><summary><span class="rk" title="' + esc(rk) + '">' + ic(ck) + '</span><span class="x"><b>' + esc(x.he || x.n) + "</b><span>" + esc(x.tip || "") + "</span></span>" + chev() + "</summary>" +
           '<div class="tp-plm">' + (x.full ? "<p>" + esc(x.full) + "</p>" : "") +
           (x.note ? '<p class="nt">💬 ' + esc((x.by === "oren" ? "אורן" : "ליאור") + ": " + x.note) + "</p>" : "") +
           (kv.length ? '<dl class="tp-kv">' + kv.map(function (k) { return "<dt>" + esc(k[0]) + "</dt><dd>" + esc(k[1]) + "</dd>"; }).join("") + "</dl>" : "") +
-          '<div class="tp-plf"><span class="tp-pill">' + esc(rk[0] + " " + rk[1]) + "</span>" + gml({ g: g, q: g ? "" : (x.n ? x.n + (x.city_en ? ", " + x.city_en : "") : "") }) + "</div></div></details>";
+          '<div class="tp-plf"><span class="tp-pill tp-rk r-' + esc(x.rank || "good") + '">' + (x.rank === "must" ? ic("star") : "") + esc(rk) + "</span>" + gml({ g: g, q: g ? "" : (x.n ? x.n + (x.city_en ? ", " + x.city_en : "") : "") }) + "</div></div></details>";
       };
       var tops = Array.isArray(mp.top) ? mp.top : [];
-      H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">📍</span><h2>' + esc(mp.title || "הליסט שלנו") + "</h2><small>" + pl.length + " מקומות · לחיצה לפירוט</small></div>" +
-        (tops.length ? '<div class="tp-card tp-ins"><div class="tp-insh">💡 תובנות מהליסט</div>' + tops.map(function (x) {
-          return '<details class="tp-pl"><summary><span class="rk">' + esc(x.e || "•") + '</span><span class="x"><b>' + esc(x.h) + "</b></span>" + chev() + '</summary><div class="tp-plm"><p>' + esc(x.t || "") + "</p></div></details>";
-        }).join("") + "</div>" : "") +
-        '<div class="tp-lg"><span>★ חובה</span><span>● שווה</span><span>○ אם יש זמן</span><span>– אפשר לוותר</span></div>' +
+      var lname = mp.name || "", lurl = url(mp.url || "");
+      var lsub = lurl ? '<a class="tp-lnk" href="' + esc(lurl) + '" target="_blank" rel="noopener">' + GMAPS + '<span dir="auto">' + esc(lname || "Google Maps") + "</span></a>" : "";
+      var grp = function (k, label, n, body) { return '<details class="tp-card tp-plg"><summary class="tp-insh">' + ic(k) + "<b>" + esc(label) + "</b><i>" + n + "</i>" + chev() + '</summary><div class="tp-plb">' + body + "</div></details>"; };
+      H.push(sx("pin", esc(mp.title || "הליסט שלנו"), pl.length + " מקומות",
+        (tops.length ? grp("bulb", "תובנות מהליסט", tops.length, tops.map(function (x) {
+          return '<details class="tp-pl"><summary><span class="rk">' + ic(x.e || "bulb") + '</span><span class="x"><b>' + esc(x.h) + "</b></span>" + chev() + '</summary><div class="tp-plm"><p>' + esc(x.t || "") + "</p></div></details>";
+        }).join("")) : "") +
+        '<div class="tp-lg"><span><i class="tp-rkd r-must"></i>חובה</span><span><i class="tp-rkd r-good"></i>שווה</span><span><i class="tp-rkd r-optional"></i>אם יש זמן</span><span><i class="tp-rkd r-skip"></i>אפשר לוותר</span></div>' +
         cities.map(function (c) {
           var mine = pl.filter(function (x) { return (x.city || "") === c; });
           return (cities.length > 1 && c ? '<h3 class="tp-city">' + esc(c) + "</h3>" : "") + CAT.map(function (k) {
             var g = mine.filter(function (x) { return (x.cat || "sight") === k[0]; });
-            return g.length ? '<div class="tp-card tp-plg"><div class="tp-insh">' + k[1] + " " + esc(k[2]) + " <i>" + g.length + "</i></div>" + g.map(row).join("") + "</div>" : "";
+            return g.length ? grp(k[0], k[1], g.length, g.map(row).join("")) : "";
           }).join("");
         }).join("") +
-        (url(mp.url || "") ? '<a class="tp-mapsph" href="' + esc(url(mp.url)) + '" target="_blank" rel="noopener">' + GMAPS + "<span>" + esc(mp.label || "הרשימה המלאה ב-Google Maps") + "</span></a>" : "") + "</section>");
+        (lurl ? '<a class="tp-mapsph" href="' + esc(lurl) + '" target="_blank" rel="noopener">' + GMAPS + "<span>" + esc(mp.label || "הרשימה המלאה ב-Google Maps") + "</span></a>" : ""), false, lsub));
     }
 
     // ---- gallery ----
     var phs = Array.isArray(t.photos) ? t.photos : [];
     if (phs.length || (t.maps && !pl.length)) {
       var mu = t.maps && url(t.maps.url || "");
-      H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">📸</span><h2>' + (pl.length ? "תמונות" : "המקומות שלנו") + "</h2></div>" +
+      H.push(sx("cam", pl.length ? "תמונות" : "המקומות שלנו", "",
         (phs.length ? '<div class="tp-gal">' + phs.map(function (p) { return '<figure><img src="' + esc(img(base, p.img)) + '" alt="" loading="lazy"><figcaption>' + esc(p.cap) + "</figcaption></figure>"; }).join("") + "</div>" : "") +
         (pl.length ? "" : mu ? '<a class="tp-mapsph" href="' + esc(mu) + '" target="_blank" rel="noopener">' + GMAPS + "<span>" + esc(t.maps.label || "הרשימה שלנו ב-Google Maps") + "</span></a>"
-          : t.maps ? '<div class="tp-mapsph"><span class="e">📍</span><span>' + esc(t.maps.pending || "רשימת המקומות ב-Google Maps תגיע בקרוב") + "</span></div>" : "") + "</section>");
+          : t.maps ? '<div class="tp-mapsph">' + ic("pin", "e") + "<span>" + esc(t.maps.pending || "רשימת המקומות ב-Google Maps תגיע בקרוב") + "</span></div>" : "")));
     }
 
     // ---- owner: what's left to plan ----
