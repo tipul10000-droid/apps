@@ -19,7 +19,7 @@ const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { sta
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   const url = new URL(req.url), action = url.searchParams.get("action") || "";
-  if (!["help", "avail", "iam", "wa"].includes(action)) return json({ ok: false, err: "action" }, 400);
+  if (!["help", "avail", "iam", "wa", "tok"].includes(action)) return json({ ok: false, err: "action" }, 400);
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const { data: ks } = await sb.from("study_secrets").select("k,h").in("k", ["vapid_public", "vapid_private"]);
   const V: Record<string, string> = {};
@@ -37,6 +37,8 @@ Deno.serve(async (req) => {
 //  ?action=avail&kid=          → רשימת העוזרים של המשפחה (בלי הילד עצמו): זמין או לא, למה, עד מתי, כמה מכשירים עם התראות, ואם יש וואטסאפ.
 //  ?action=help&kid=&sid=&to=  → התראה מיידית לעוזר (גם בשעות השקט: הילד מבקש עכשיו). רק כשיש שידור חי עם אותו sid. פעם אחת לכל עוזר ובקשה, עד 10 בשעה.
 //  ?action=wa&kid=&sid=&to=    → הפניה לוואטסאפ של העוזר עם הודעה מוכנה וקישור למסך המראה. המספרים רק בשרת (study_secrets 'phone_<id>'), לא במאגר.
+//  ?action=tok&kid=&t=         → הלינק מוואטסאפ נפתח בספארי בלי קוד הורים: t = מפתח צפייה אקראי שנוצר ב-wa לבקשה הזאת בלבד (study_push_log 'htok:<t>'),
+//                                 תקף רק כל עוד אותה בקשה (sid) פתוחה ועד 3 שעות. מחזיר {ok, sid, by}.
 //  ?action=iam&pin=&who=&endpoint= → הורה מסמן שהמכשיר שלו שייך לו (אבא / אמא), כדי שבקשה אליו תגיע רק אליו. נשמר ב-study_push_log 'dev:<sha>'.
 // הורה בלי מכשיר מסומן: ההתראה הולכת למכשירי ההורים של המשפחה שלא סומנו (עם השם בכותרת).
 const HELPERS: Record<string, { id: string; n: string; kid?: boolean; boy?: boolean }[]> = {
@@ -122,6 +124,16 @@ async function helpApi(action: string, url: URL, sb: any, FAM: Record<string, st
     return json({ ok: true });
   }
   if (!fam) return json({ ok: false, err: "kid" }, 400);
+  if (action === "tok") {
+    const t = (url.searchParams.get("t") || "").replace(/[^a-f0-9]/g, "");
+    if (t.length < 24) return json({ ok: false });
+    const { data: r } = await sb.from("study_push_log").select("info,at").eq("key", "htok:" + t).maybeSingle();
+    if (!r || r.info?.kid !== kid || now - Date.parse(r.at) > 3 * 36e5) return json({ ok: false });
+    const { data: st } = await sb.from("study_state").select("keys").eq("kid", kid).eq("app", "live").maybeSingle();
+    const k: any = st?.keys || {};
+    if (k.sid !== r.info.sid || !k.on) return json({ ok: false });
+    return json({ ok: true, sid: r.info.sid, by: r.info.to });
+  }
   if (action === "avail") {
     const t = ilNow(now), list = [];
     for (const h of H) {
@@ -143,7 +155,11 @@ async function helpApi(action: string, url: URL, sb: any, FAM: Record<string, st
     // הודעה בשם הילד לעוזר (אורן 19.11.2026): "היי אבא, אני צריכה עזרה ב..." + קישור שפותח בדיוק את המסך שלו
     const hi: Record<string, string> = { oren: "אבא", lior: "אמא", evyatar: "אביה", dani: "דני", lia: "ליה", yehuda: "אבא" };
     const fem = !h.boy, cn = CN[`${kid}/${k.app}`];
-    const txt = `היי ${hi[to] || h.n}! אני ${boy ? "צריך" : "צריכה"} עזרה${cn ? ` ב${cn}` : " בשאלה באפליקציה"} 🙋\n${fem ? "תלחצי" : "תלחץ"} כאן ${fem ? "ותראי" : "ותראה"} בדיוק את המסך שלי ואת השאלה שאני ${boy ? "תקוע" : "תקועה"} בה:\n${mirror(to)}`;
+    // מפתח צפייה לבקשה הזאת (הלינק נפתח בספארי, שם אין קוד הורים)
+    const tb = new Uint8Array(16); crypto.getRandomValues(tb);
+    const tok = Array.from(tb, (x) => x.toString(16).padStart(2, "0")).join("");
+    await sb.from("study_push_log").insert({ key: "htok:" + tok, info: { kid, sid, to } });
+    const txt = `היי ${hi[to] || h.n}! אני ${boy ? "צריך" : "צריכה"} עזרה${cn ? ` ב${cn}` : " בשאלה באפליקציה"} 🙋\n${fem ? "תלחצי" : "תלחץ"} כאן ${fem ? "ותראי" : "ותראה"} בדיוק את המסך שלי ואת השאלה שאני ${boy ? "תקוע" : "תקועה"} בה:\n${mirror(to)}&t=${tok}`;
     return new Response(null, { status: 302, headers: { Location: `https://wa.me/${num}?text=${encodeURIComponent(txt)}`, ...CORS } });
   }
   // help
@@ -156,10 +172,11 @@ async function helpApi(action: string, url: URL, sb: any, FAM: Record<string, st
     body: `${cn ? `ב${cn}. ` : ""}${h.kid ? (h.boy ? "לחץ" : "לחצי") : "לחצו"} כדי לראות בדיוק את המסך ${boy ? "שלו" : "שלה"}, ואז ${h.kid ? (h.boy ? "תתקשר" : "תתקשרי") : "התקשרו"} ${boy ? "אליו" : "אליה"} ${h.kid ? (h.boy ? "ותעזור" : "ותעזרי") : "ותעזרו"} בשאלה.`,
     tag: `help-${kid}`, url: mirror(to),
   });
-  let n = 0;
+  let n = 0; const errs: number[] = [];
   await Promise.allSettled(devs.map(async (s: any) => {
     try { await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, msg, { TTL: 3600, urgency: "high" }); n++; }
-    catch (e: any) { if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("study_push").update({ active: false }).eq("endpoint", s.endpoint); }
+    catch (e: any) { errs.push(e?.statusCode || 0); if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("study_push").update({ active: false }).eq("endpoint", s.endpoint); }
   }));
+  await sb.from("study_push_log").update({ info: { app: k.app, to, sent: n, devices: devs.length, errs } }).eq("key", `help:${kid}:${sid}:${to}`);
   return json({ ok: true, sent: n, devices: devs.length, wa: PH.has(to) });
 }
