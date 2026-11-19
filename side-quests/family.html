@@ -6,9 +6,9 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0E5F56">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="1.4";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="2.0";</script>
 <script src="sq-db.js?v=10"></script>
-<title>משפחה - לימודים</title>
+<title>משפחה ולימודים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
 <style>
@@ -114,6 +114,13 @@ section{margin-bottom:22px}
 .prep li{margin:3px 0}
 .prep{margin:0;padding-inline-start:20px}
 .kids{display:grid;gap:12px}
+/* 2.0 (Oren 19.11.2026): weekly routine of every family member (activities, rides, when Lior is home) */
+.rt{display:flex;gap:8px;align-items:baseline;padding:4px 0;font-size:14.5px;line-height:1.35}
+.rt .tm{flex:none;min-width:84px;font-weight:800;font-variant-numeric:tabular-nums;direction:ltr;text-align:right}
+.rt .w{color:var(--muted);font-size:13px}
+.rt .ride{display:inline-block;margin-inline-start:4px;padding:0 7px;border-radius:99px;background:var(--quiz-soft);color:var(--quiz);font-size:12px;font-weight:800}
+.rt.adult .tm{color:var(--muted)}
+.rtnone{color:var(--muted);font-size:14px;padding:4px 0}
 .kc{border-top:5px solid var(--kc,#888)}
 .kc h3{font-size:21px;display:flex;align-items:center;gap:8px}
 .kc .meta{color:var(--muted);font-size:14px;margin:2px 0 8px}
@@ -144,7 +151,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 <body>
 <header class="hero"><div class="in">
   <div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back" id="upd"></span></div>
-  <h1>👨‍👩‍👧‍👦 משפחה - לימודים</h1>
+  <h1>👨‍👩‍👧‍👦 משפחה ולימודים</h1>
   <a class="chatbtn" id="chat" target="_blank" rel="noopener" hidden><span>💬</span><span>צ׳אט</span></a>
   <div class="kpis k2">
     <div class="kpi"><b id="k-ex">…</b><span>מבחנים ב-14 יום</span></div>
@@ -165,7 +172,7 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const safe=u=>/^https:\/\//.test(u||"")?u:"";
 const TYPE={exam:["📝","מבחן"],quiz:["✏️","בוחן"],submit:["📤","הגשה"],trip:["🚌","טיול/סיור"],event:["📅","אירוע"],holiday:["🕯️","חופש"]};
 const DOW=["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
-let kids=[],meta={},fKid="all",db=null;
+let kids=[],adults=[],meta={},fKid="all",db=null;
 
 function todayStr(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function addDays(s,n){const d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
@@ -232,6 +239,23 @@ function archItems(){const out=[];
 function whenTxt(d){if(!d)return "";const n=diff(d);return n<0?"עבר":n===0?"היום":n===1?"מחר":dow(d)+" "+dm(d);}
 function actRow(x,arch){const n=x.d?diff(x.d):null;
   return `<div class="act" data-key="${esc(x.key)}"><button class="ck" data-wk="${esc(x.key)}" aria-label="${arch?"להחזיר לרשימה":"סמן שבוצע"}">${arch?"✓":""}</button>${arch?"":`<span class="ic" aria-hidden="true">${x.ic}</span>`}<div style="flex:1;min-width:0"><div class="t">${(x.kids||[]).map(id=>kidTag(kidOf(id))).join("")}${esc(x.text)}</div>${!arch&&x.sub?`<div class="s">${esc(x.sub)}</div>`:""}${arch&&x.at?`<div class="s">בוצע ${esc(dm(x.at.slice(0,10)))}</div>`:""}</div>${!arch&&x.d?`<span class="when${n!=null&&n<=1?" soon":""}">${esc(whenTxt(x.d))}</span>`:""}${!arch&&safe(x.url)?`<a class="go" href="${esc(safe(x.url))}" target="_blank" rel="noopener">פתח</a>`:""}</div>`;}
+// routine [{dow: 0-6 or [..], from, to, t, where, ride}] on every person doc (kids and adults, e.g. lior)
+function rtList(p,dw){return (Array.isArray(p.routine)?p.routine:[]).filter(r=>r&&r.t&&(Array.isArray(r.dow)?r.dow.includes(dw):+r.dow===dw)).sort((a,b)=>String(a.from||"").localeCompare(String(b.from||"")));}
+function rtRow(p,r,withWho){const tm=r.from?(r.from+(r.to?"–"+r.to:"")):(r.to?"עד "+r.to:"");
+  return `<div class="rt${p.adult?" adult":""}"><span class="tm">${esc(tm)}</span><span>${withWho?kidTag(p)+" ":""}${esc(r.t)}${r.where?` <span class="w">· ${esc(r.where)}</span>`:""}${r.ride?`<span class="ride">🚗 מי לוקח?</span>`:""}</span></div>`;}
+function weekRoutine(){const t=todayStr(),ppl=[...kids,...adults].filter(p=>fKid==="all"||p.id===fKid);const out=[];
+  for(let i=0;i<7;i++){const d=addDays(t,i),dw=new Date(d+"T12:00:00").getDay();const rows=[];
+    for(const p of ppl)for(const r of rtList(p,dw))rows.push({p,r});
+    rows.sort((a,b)=>String(a.r.from||a.r.to||"").localeCompare(String(b.r.from||b.r.to||"")));
+    if(rows.length)out.push(`<div class="day"><div class="dl${i===0?" today":""}"><b>${DOW[dw]}</b>${i===0?"היום":i===1?"מחר":dm(d)}</div><div>${rows.map(x=>rtRow(x.p,x.r,true)).join("")}</div></div>`);}
+  return out.join("");}
+function rtAll(p){return [0,1,2,3,4,5,6].map(dw=>rtList(p,dw).map(r=>`<b>${DOW[dw]}</b> <bdi dir="ltr">${esc((r.from||"")+(r.to?"–"+r.to:""))}</bdi> ${esc(r.t)}${r.where?" · "+esc(r.where):""}`).join("<br>")).filter(Boolean).join("<br>");}
+function adultCard(a){const r=(key,val)=>val?`<div class="row"><span class="k">${key}</span><span class="v">${val}</span></div>`:"";
+  return `<article class="card kc" style="--kc:${esc(a.color||"#888")}" id="kid-${esc(a.id)}">
+    <h3><span>${esc(a.emoji||"🙂")}</span>${esc(a.name)}</h3>
+    <div class="meta">${esc(a.role||"")}${a.place?" · "+esc(a.place):""}</div>
+    ${r("לו״ז קבוע",rtAll(a))}${r("מתי בבית",esc(a.home||""))}${(a.unknown||[]).length?`<details class="more"><summary>עוד לא יודעים (${a.unknown.length})</summary><div><ul>${a.unknown.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></details>`:""}
+  </article>`;}
 function kidCard(k){
   const r=(key,val)=>val?`<div class="row"><span class="k">${key}</span><span class="v">${val}</span></div>`:"";
   const hr=k.homeroom?`${esc(k.homeroom.name)}${k.homeroom.note?` <span style="color:var(--muted)">(${esc(k.homeroom.note)})</span>`:""}${k.homeroom.phone?` · <a href="tel:${esc(k.homeroom.phone.replace(/\D/g,""))}">${esc(k.homeroom.phone)}</a>`:""}${k.homeroom.email?` · <a href="mailto:${esc(k.homeroom.email)}">מייל</a>`:""}`:`<span style="color:var(--muted)">עוד לא ידוע</span>`;
@@ -244,7 +268,7 @@ function kidCard(k){
   return `<article class="card kc" style="--kc:${esc(k.color||"#888")}" id="kid-${esc(k.id)}">
     <h3><span>${esc(k.emoji||"🙂")}</span>${esc(k.name)}</h3>
     <div class="meta">${esc(k.class_label||k.grade)} · ${esc(k.school)}${clsSel}</div>
-    ${r("מחנך/ת",hr)}${r("מורים",teach)}${r("צוות",staff)}${r("קבוע בשבוע",weekly)}${r("מערכת",schTxt)}
+    ${r("מחנך/ת",hr)}${r("מורים",teach)}${r("צוות",staff)}${r("קבוע בשבוע",weekly)}${r("חוגים",rtAll(k))}${r("מערכת",schTxt)}
     ${(k.equipment||[]).length?`<details><summary>🎒 רשימת ציוד (${k.equipment.length})</summary><ul class="prep">${k.equipment.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`:""}
     ${fut.length?`<details><summary>📅 כל הלוח מהיום (${fut.length})</summary>${timeline(fut.map(e=>({...e,kid:k,maybe:applies(k,e)==="maybe"})))}</details>`:""}
     ${(k.unknown||[]).length?`<details class="more"><summary>עוד לא יודעים (${k.unknown.length})</summary><div><ul>${k.unknown.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></details>`:""}
@@ -271,9 +295,11 @@ function render(){
   const later=fut.filter(e=>diff(e.d)>14&&(e.big||e.type==="trip"));
   let h="";
   h+=`<section><div class="sh"><h2>⭐ חשוב השבוע</h2></div><div class="card wk" id="wk">${wk.length?wk.map(x=>actRow(x,false)).join(""):`<div class="empty">✓ אין כלום פתוח לשבוע הקרוב</div>`}</div></section>`;
+  const wr=weekRoutine();
+  h+=`<section><div class="sh"><h2>🗓️ לו״ז קבוע</h2><small>חוגים והסעות</small></div><div class="card">${wr||`<div class="rtnone">עוד אין לו״ז קבוע. שלח לי את המערכות והחוגים ואכניס.</div>`}</div></section>`;
   h+=`<section><div class="sh"><h2>📅 השבועיים הקרובים</h2><small>★ מבחן גדול${kids.some(k=>k.class_n==null&&(k.events||[]).some(e=>e.cls))?" · קטן = לא בטוח":""}</small></div><div class="card">${soon.length?timeline(soon):`<div class="empty">אין כלום בלוח בשבועיים הקרובים</div>`}</div></section>`;
   if(later.length)h+=`<section><div class="sh"><h2>🔭 בהמשך</h2></div><div class="card">${timeline(later.slice(0,12))}</div></section>`;
-  h+=`<section><div class="sh"><h2>👧🧑 הילדים</h2></div><div class="kids">${kids.filter(k=>fKid==="all"||k.id===fKid).map(kidCard).join("")}</div></section>`;
+  h+=`<section><div class="sh"><h2>👨‍👩‍👧‍👦 המשפחה</h2></div><div class="kids">${kids.filter(k=>fKid==="all"||k.id===fKid).map(kidCard).join("")}${fKid==="all"?adults.map(adultCard).join(""):""}</div></section>`;
   if((meta.missing||[]).length&&fKid==="all")h+=`<section><details class="more"><summary>חסר בדשבורד (${meta.missing.length})</summary><div><ul>${meta.missing.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></details></section>`;
   if(arch.length)h+=`<section><details class="more arch"><summary>📦 בוצע (${arch.length})</summary><div class="card" style="margin-top:6px">${arch.map(x=>actRow(x,true)).join("")}</div></details></section>`;
   const op=document.querySelector("details.arch")?.open;
@@ -305,7 +331,8 @@ document.addEventListener("change",async e=>{const s=e.target.closest("select.cl
 window.claude.use("db").then(d=>{db=d;if(!db)return;
   db.collection("family").onSnapshot(s=>{const ks=[];meta={};
     s.docs.forEach(x=>{const v=x.data();if(!v||v._deleted)return;if(x.id==="_meta")meta=v;else if(v.name)ks.push({id:x.id,...v});});
-    kids=ks.sort((a,b)=>(a.order||9)-(b.order||9));render();},()=>{});
+    const srt=(a,b)=>(a.order||9)-(b.order||9);
+    kids=ks.filter(k=>!k.adult).sort(srt);adults=ks.filter(k=>k.adult).sort(srt);render();},()=>{});
 });
 })();
 </script>
