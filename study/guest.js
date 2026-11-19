@@ -63,6 +63,7 @@
 })();
 
 // 🎤 תמלול קולי בכל תיבת טקסט (voice.js, אורן 14.11.2026): נטען אוטומטית בכל דף study
+(function(){try{var me=document.currentScript&&document.currentScript.src;if(!me)return;var f=document.createElement('script');f.src=me.replace(/guest\.js(\?.*)?$/,'fresh.js?v=1');f.defer=true;(document.head||document.documentElement).appendChild(f)}catch(e){}})();
 (function(){try{var me=document.currentScript&&document.currentScript.src;if(!me||window.StudyVoice)return;var v=document.createElement('script');v.src=me.replace(/guest\.js(\?.*)?$/,'voice.js?v=1');v.defer=true;(document.head||document.documentElement).appendChild(v)}catch(e){}})();
 
 // 📊 סטטיסטיקת שימוש (appstat.js, אורן 18.11.2026): נטען אוטומטית בכל דף study. משתמש = הילד לפי הכתובת; אורח בלי משתמש; תצוגת בדיקה של הורה לא נספרת

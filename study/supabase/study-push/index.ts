@@ -4,6 +4,8 @@
 // 3. הכל נכון לפני מבחן: מתנה לילד באפליקציה + התראה לילד ולהורים.
 // 4. תור תוכן חדש (study_notify) לילדים.
 // 5. בקשה או הצעה חדשה מילד (study_requests) → התראה להורים (אורן 6.11.2026).
+// 6. ציון שהילד הזין בעצמו (study_results.by_kid) → התראה להורים (אורן 19.11.2026).
+// 7. שבוע אחרי מבחן בלי ציון, אם הילד למד את התוכן באפליקציה לפני המבחן → התראה לילד להזין ציון (study_score_due, פעם אחת למבחן, 17:00).
 // הורים מקבלים רק על ילדי המשפחה שלהם (9.11.2026): ב-study_push להורה kid = '' (משפחה a) או מזהה המשפחה ('b'), והמשפחה של כל ילד מ-study_kids.
 // שעות שקט: ילדים 21:00-07:00, הורים 22:00-07:00 (מה שלא נשלח נשלח אחר כך).
 import webpush from "npm:web-push@3.6.7";
@@ -178,6 +180,34 @@ Deno.serve(async (req) => {
         body: String(r.txt || "").slice(0, 140), tag: `req-${r.id}`, url: BASE + "parents/",
       });
       await sb.from("study_requests").update({ notified_at: new Date().toISOString() }).eq("id", r.id);
+    }
+  }
+  // 6. ציון שהילד הזין בעצמו → להורים
+  const KN6: Record<string, string> = { evyatar: "אביתר", dani: "דני", lia: "ליה", levi: "לביא", shilo: "שילה" };
+  const BOY6: Record<string, boolean> = { evyatar: true, levi: true, shilo: true };
+  if (!parQuiet) {
+    const { data: ks } = await sb.from("study_results").select("id,kid,app,d,score").eq("by_kid", true).eq("hidden", false).is("notified_at", null).order("id").limit(10);
+    for (const r of ks || []) {
+      const boy = !!BOY6[r.kid];
+      await push("parent", r.kid, {
+        title: `✏️ ${KN6[r.kid] || r.kid} ${boy ? "הזין" : "הזינה"} ציון: ${+r.score}`,
+        body: `המבחן מ-${String(r.d).split("-").reverse().slice(0, 2).join(".")}. אפשר לראות ולאשר באזור ההורים.`,
+        tag: `kscore-${r.id}`, url: BASE + "parents/",
+      });
+      await sb.from("study_results").update({ notified_at: new Date().toISOString() }).eq("id", r.id);
+    }
+  }
+  // 7. שבוע אחרי מבחן: תזכורת לילד להזין ציון (פעם אחת לכל ילד ומבחן)
+  if (!kidQuiet && il.hour === 17) {
+    const { data: due } = await sb.rpc("study_score_due");
+    for (const r of due || []) {
+      if (!(await once(`scoreask:${r.kid}:${r.d}`))) continue;
+      const boy = !!BOY6[r.kid];
+      await push("kid", r.kid, {
+        title: "✏️ כמה קיבלת במבחן?",
+        body: `${boy ? "תיכנס ותזין" : "תיכנסי ותזיני"} את הציון של המבחן מ-${String(r.d).split("-").reverse().slice(0, 2).join(".")}, כדי שאבא ואמא יראו כמה התקדמת 💪`,
+        tag: `scoreask-${r.kid}`, url: BASE + `${r.kid}/?score=${r.app}`,
+      });
     }
   }
   return json({ ok: true, il, out });
