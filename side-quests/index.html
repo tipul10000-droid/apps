@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.0";window.SQ_BUILD_AT="19.11.2026 16:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.1";window.SQ_BUILD_AT="19.11.2026 17:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1449,6 +1449,21 @@ details.more[open]>summary{margin-bottom:10px}
 .f-foot button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .f-foot .danger{color:var(--due)}
 /* the current window */
+/* 24.1 (Oren 19.11.2026): project capsule banner at the top of a quest (settings/quest_info.<quest>, e.g. RWMTC in Work Quest). Folded line, tap opens the facts. */
+.qinfo{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
+.qinfo>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;min-height:44px}
+.qinfo>summary::-webkit-details-marker{display:none}
+.qinfo .qi-ic{font-size:20px;line-height:1}
+.qinfo .qi-t{display:flex;flex-direction:column;min-width:0;flex:1}
+.qinfo .qi-t b{font-size:15px}
+.qinfo .qi-t small{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qinfo[open] .qi-t small{white-space:normal}
+.qinfo .qi-ch{color:var(--muted);transition:transform .2s}
+.qinfo[open] .qi-ch{transform:rotate(-90deg)}
+.qinfo .qi-b{padding:0 12px 12px;display:grid;gap:6px}
+.qinfo .qi-r{display:grid;grid-template-columns:minmax(84px,30%) 1fr;gap:8px;font-size:13.5px;border-top:1px solid var(--line);padding-top:6px}
+.qinfo .qi-r span{color:var(--muted)}
+.qinfo .qi-go{justify-self:start;margin-top:4px;font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 12px}
 .wcard{display:flex;flex-direction:column;gap:8px}
 .wc-head{display:flex;align-items:baseline;gap:8px;margin:2px 8px 0}
 .wc-head .e{font-size:20px}
@@ -3515,6 +3530,15 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // 6.3: one chat button for every managed section (movies, series, games, travel, dashboards...). Dedicated chat per section:
   // settings/chats {movies, series, games, spotify, travel_il, travel_abroad, dash_<id>} wins, then a fallback from the data, then this project (title copied).
   let secChats={};
+  // 24.1 (Oren 19.11.2026): a small project-capsule banner on top of a quest's list. Data: settings/quest_info {<quest>:[{id,icon,title,sub,rows:[{k,v}],url,url_label,hidden}]}
+  let questInfo={};
+  function qInfoBanners(){const L=Array.isArray(questInfo[quest])?questInfo[quest]:[];
+    return L.filter(x=>x&&!x.hidden&&x.title).map(x=>{let op=false;try{op=localStorage.getItem("sq_qi_"+x.id)==="1";}catch(e){}
+      const d=h("details",{class:"qinfo","data-sq-item":"qi-"+(x.id||"")},
+        h("summary",null,h("span",{class:"qi-ic","aria-hidden":"true"},x.icon||"📌"),h("span",{class:"qi-t"},h("b",null,x.title),x.sub?h("small",null,x.sub):null),h("span",{class:"qi-ch","aria-hidden":"true"},"‹")),
+        h("div",{class:"qi-b"},...(Array.isArray(x.rows)?x.rows:[]).map(r=>h("div",{class:"qi-r"},h("span",null,r.k||""),h("div",null,r.v||""))),
+          safeUrl(x.url||"")?h("a",{class:"qi-go",href:safeUrl(x.url),target:"_blank",rel:"noopener"},x.url_label||"לכל הפרטים"):null));
+      if(op)d.open=true;d.addEventListener("toggle",()=>{try{localStorage.setItem("sq_qi_"+x.id,d.open?"1":"0");}catch(e){}});return d;});}
   function secUrl(key,...fb){return safeUrl(secChats[key]||"")||fb.map(x=>safeUrl(x||"")).find(Boolean)||null;}
   function secChat(url,ctx,label){const u=safeUrl(url||"");return h("a",{class:"cont",href:u||AA_CHAT,target:"_blank",rel:"noopener",html:ICON.chat,onclick:e=>{e.stopPropagation();if(!u){try{navigator.clipboard&&navigator.clipboard.writeText("לגבי Side Quests: "+ctx);toast("אין עדיין שיחה נפרדת. הנושא הועתק, הדבק בשיחה");}catch(x){}}}},label||"שיחה");}
   function logPush(t,text,now){return [...(Array.isArray(t.log)?t.log:[]),{at:now,text}];}
@@ -4260,6 +4284,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const wk=t=>String(t.sleep_until||(t.snooze_until==="someday"?"9999":t.snooze_until)||"9998");
     more.push(foldRows("wait",catT("wait"),C.wait.sort((a,b)=>byDate(a,b))),foldRows("dorm",catT("dorm"),C.dorm.sort((a,b)=>wk(a).localeCompare(wk(b)))));
     const doneL=C.done.sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")); // 16.2: no cap
+    top.unshift(...qInfoBanners());
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
     $("doneSec").replaceChildren(...[foldRows("done",catT("done"),doneL)].filter(Boolean));
@@ -6437,7 +6462,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;const cp=s.docs.find(x=>x.id==="cashflow_ping");cfPing=cp?cp.data():null;const cr=s.docs.find(x=>x.id==="cashflow_refresh");cfReq=cr?cr.data():null;renderConn();const ni=s.docs.find(x=>x.id==="new_items"),nd=ni?ni.data():null;newItems=nd&&Array.isArray(nd.items)?nd.items:[];nwRender();
-      const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};renderTravel();renderFun();renderDash();
+      const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};const qi=s.docs.find(x=>x.id==="quest_info");const qiN=qi?qi.data():{};if(JSON.stringify(qiN)!==JSON.stringify(questInfo)){questInfo=qiN;try{renderMain();}catch(e){}}renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     // 18.7: the work calendar shapes the automatic windows (never shown here; the details page is in settings)
     db.collection("work_calendar").onSnapshot(s=>{const ev=[];let pr={};s.docs.forEach(d=>{const v=d.data();if(d.id==="_profile")pr=v;else if(d.id==="_meta")wcMeta=v;else ev.push(v);});renderConn();
