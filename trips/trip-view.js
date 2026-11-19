@@ -7,6 +7,8 @@
   var HEB_DOW = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function url(u) { try { var x = new URL(u, location.href); return /^https?:$/.test(x.protocol) ? x.href : ""; } catch (e) { return ""; } }
+  // לוגו גוגל מפס (סיכה בארבעת הצבעים) ליד כל קישור לגוגל מפס (אורן 19.11.2026).
+  var GMAPS = '<svg class="tp-gm" viewBox="0 0 92 132" aria-hidden="true"><path d="M60.2 2.2C55.8.8 51 0 46.1 0 32 0 19.3 6.4 10.8 16.5l21.8 18.3L60.2 2.2z" fill="#1a73e8"/><path d="M10.8 16.5C4.1 24.5 0 34.9 0 46.1c0 8.7 1.7 15.7 4.6 22l28-33.3-21.8-18.3z" fill="#ea4335"/><path d="M46.2 28.5c9.8 0 17.7 7.9 17.7 17.7 0 4.3-1.6 8.3-4.2 11.4 0 0 13.9-16.6 27.5-32.7-5.6-10.8-15.3-19-27-22.7L32.6 34.8c3.3-3.8 8.1-6.3 13.6-6.3" fill="#4285f4"/><path d="M46.2 63.8c-9.8 0-17.7-7.9-17.7-17.7 0-4.3 1.5-8.3 4.1-11.3l-28 33.3c4.8 10.6 12.8 19.2 21 29.9l34.1-40.5c-3.3 3.9-8.1 6.3-13.5 6.3" fill="#fbbc04"/><path d="M59.1 109.2c15.4-24.1 33.3-35 33.3-63 0-7.7-1.9-14.9-5.2-21.3L25.6 98c2.6 3.4 5.3 7.3 7.9 11.3 9.4 14.5 6.8 23.1 12.8 23.1s3.4-8.7 12.8-23.2" fill="#34a853"/></svg>';
   function ymd(s) { var p = String(s || "").split("-").map(Number); return p.length === 3 ? Date.UTC(p[0], p[1] - 1, p[2]) : NaN; }
   function dShort(s) { var p = String(s || "").split("-").map(Number); return p.length === 3 ? p[2] + "." + p[1] : ""; }
   function dowOf(s) { var t = ymd(s); return isNaN(t) ? "" : HEB_DOW[new Date(t).getUTCDay()]; }
@@ -166,7 +168,7 @@
             '<div class="tp-hb"><b>' + esc(x.name) + "</b><span>" + esc(x.area || x.addr || "") + "</span></div>" +
             '<div class="tp-hrow"><span class="tp-pill" dir="rtl">📅 ' + esc(dShort(x.in) + " ← " + dShort(x.out)) + "</span>" + (x.pills || []).map(function (p) { return '<span class="tp-pill ' + esc(p.c || "") + '">' + esc(p.t) + "</span>"; }).join("") + "</div>" +
             '<span class="tp-tap">▾ פרטים</span></summary><div class="tp-more"><dl class="tp-kv">' + (x.kv || []).map(function (k) { return "<dt>" + esc(k[0]) + "</dt><dd>" + esc(k[1]) + "</dd>"; }).join("") + "</dl>" +
-            (mu ? '<a class="tp-mapsph" style="margin-top:10px" href="' + esc(mu) + '" target="_blank" rel="noopener"><span class="e">📍</span>פתיחה בגוגל מפס</a>' : "") + "</div></details>";
+            (mu ? '<a class="tp-mapsph" style="margin-top:10px" href="' + esc(mu) + '" target="_blank" rel="noopener">' + GMAPS + "<span>פתיחה בגוגל מפס</span></a>" : "") + "</div></details>";
         }).join("") + "</section>");
     }
 
@@ -202,7 +204,7 @@
           '<div class="tp-plm">' + (x.full ? "<p>" + esc(x.full) + "</p>" : "") +
           (x.note ? '<p class="nt">💬 ' + esc((x.by === "oren" ? "אורן" : "ליאור") + ": " + x.note) + "</p>" : "") +
           (kv.length ? '<dl class="tp-kv">' + kv.map(function (k) { return "<dt>" + esc(k[0]) + "</dt><dd>" + esc(k[1]) + "</dd>"; }).join("") + "</dl>" : "") +
-          '<div class="tp-plf"><span class="tp-pill">' + esc(rk[0] + " " + rk[1]) + "</span>" + (g ? '<a href="' + esc(g) + '" target="_blank" rel="noopener">📍 במפות</a>' : "") + "</div></div></details>";
+          '<div class="tp-plf"><span class="tp-pill">' + esc(rk[0] + " " + rk[1]) + "</span>" + (g ? '<a class="tp-gml" href="' + esc(g) + '" target="_blank" rel="noopener">' + GMAPS + "<span>במפות</span></a>" : "") + "</div></div></details>";
       };
       var tops = Array.isArray(mp.top) ? mp.top : [];
       H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">📍</span><h2>' + esc(mp.title || "הליסט שלנו") + "</h2><small>" + pl.length + " מקומות · לחיצה לפירוט</small></div>" +
@@ -217,7 +219,7 @@
             return g.length ? '<div class="tp-card tp-plg"><div class="tp-insh">' + k[1] + " " + esc(k[2]) + " <i>" + g.length + "</i></div>" + g.map(row).join("") + "</div>" : "";
           }).join("");
         }).join("") +
-        (url(mp.url || "") ? '<a class="tp-mapsph" href="' + esc(url(mp.url)) + '" target="_blank" rel="noopener"><span class="e">🗺️</span><span>' + esc(mp.label || "הרשימה המלאה בגוגל מפס") + "</span></a>" : "") + "</section>");
+        (url(mp.url || "") ? '<a class="tp-mapsph" href="' + esc(url(mp.url)) + '" target="_blank" rel="noopener">' + GMAPS + "<span>" + esc(mp.label || "הרשימה המלאה בגוגל מפס") + "</span></a>" : "") + "</section>");
     }
 
     // ---- gallery ----
@@ -226,7 +228,7 @@
       var mu = t.maps && url(t.maps.url || "");
       H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">📸</span><h2>' + (pl.length ? "תמונות" : "המקומות שלנו") + "</h2></div>" +
         (phs.length ? '<div class="tp-gal">' + phs.map(function (p) { return '<figure><img src="' + esc(img(base, p.img)) + '" alt="" loading="lazy"><figcaption>' + esc(p.cap) + "</figcaption></figure>"; }).join("") + "</div>" : "") +
-        (pl.length ? "" : mu ? '<a class="tp-mapsph" href="' + esc(mu) + '" target="_blank" rel="noopener"><span class="e">📍</span><span>' + esc(t.maps.label || "הרשימה שלנו בגוגל מפס") + "</span></a>"
+        (pl.length ? "" : mu ? '<a class="tp-mapsph" href="' + esc(mu) + '" target="_blank" rel="noopener">' + GMAPS + "<span>" + esc(t.maps.label || "הרשימה שלנו בגוגל מפס") + "</span></a>"
           : t.maps ? '<div class="tp-mapsph"><span class="e">📍</span><span>' + esc(t.maps.pending || "רשימת המקומות בגוגל מפס תגיע בקרוב") + "</span></div>" : "") + "</section>");
     }
 
