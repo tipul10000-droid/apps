@@ -38,6 +38,8 @@
     '#hlpB:active{background:#e8eef7}#gbar.hlp{background:#e7f6ec!important;border-bottom:1px solid #a7dcb9!important}#gbar.hlp #hlpB{border-color:#1d7a4a;color:#1d7a4a}'+
     '#hlpC{display:none;flex:0 1 auto;min-width:0;height:26px;overflow:hidden;text-overflow:ellipsis;font:600 13px system-ui,Arial,sans-serif;color:#1d7a4a;background:none;border:0;border-radius:13px;padding:0 10px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}#gbar.hlp #hlpC{display:block}'+
     '#hlpC.bk{background:#1d7a4a;color:#fff}#hlpC i{font-style:normal;display:inline-block;animation:hlpP 1.6s ease-in-out infinite}@keyframes hlpP{50%{transform:scale(1.18)}}'+
+    '#hlpT{display:none;flex:none;width:34px;height:26px;box-sizing:border-box;border-radius:13px;border:0;background:#25D366;padding:0;margin-inline-start:6px;cursor:pointer;place-items:center;animation:hlpG 1.6s ease-in-out infinite;-webkit-tap-highlight-color:transparent}#hlpT svg{width:18px;height:18px}'+
+    '#gbar.call #hlpT{display:grid}@keyframes hlpG{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.7)}50%{box-shadow:0 0 0 6px rgba(37,211,102,0)}}'+
     '#hlpO{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:flex-start;justify-content:center;z-index:60;padding:max(calc(env(safe-area-inset-top,0px) + 40px),48px) 16px 16px;box-sizing:border-box;direction:rtl}#hlpO.on{display:flex}'+
     '#hlpO .pn{background:#fff;border-radius:18px;width:100%;max-width:400px;max-height:100%;overflow-y:auto;box-sizing:border-box;padding:16px 14px 12px;box-shadow:0 10px 40px rgba(0,0,0,.3);color:#1f2933;font:16px/1.45 system-ui,Arial,sans-serif;text-align:center;animation:hlpI .18s ease-out}'+
     '@keyframes hlpI{from{transform:translateY(8px);opacity:0}}#hlpO .em{font-size:36px;line-height:1.1}#hlpO h2{margin:2px 0 4px;font-size:20px}#hlpO p{margin:0 0 10px;font-size:14px;color:#3e4c59}'+
@@ -56,18 +58,21 @@
     '#hlpO .hb.wa{background:#25D366;color:#fff;border:1.5px solid #1ebe5a}#hlpO .hb.wa svg{flex:none}#hlpO .hb.wa.no{visibility:hidden}#hlpO .hb.wa.go{animation:hlpW 1.1s ease-in-out 4}'+
     '@keyframes hlpW{50%{box-shadow:0 0 0 5px rgba(37,211,102,.35)}}#hlpO .hn{margin-top:6px;font-size:13px;color:#9a3412;min-height:0}'+
     '#hlpO .pk{margin:10px 0 0;font-size:14px;color:#3e4c59}';
-  var bar,btn,chip,ov;
+  var bar,btn,chip,ov,callB;
   function ui(){bar=document.getElementById('gbar');if(!bar){setTimeout(ui,100);return}
     var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
     chip=document.createElement('button');chip.type='button';chip.id='hlpC';bar.appendChild(chip);
     btn=document.createElement('button');btn.type='button';btn.id='hlpB';bar.appendChild(btn);
+    // שיחה קולית בוואטסאפ עם מי שעוזר (אורן 19.11.2026): מופיע וזוהר כשהעוזר כבר רואה את המסך
+    callB=document.createElement('button');callB.type='button';callB.id='hlpT';callB.setAttribute('aria-label','שיחה בוואטסאפ');
+    callB.innerHTML=WA.replace('fill="#25D366"','fill="#fff"').replace('fill="#fff" d="M17','fill="#25D366" d="M17');bar.insertBefore(callB,btn);callB.onclick=function(){var w=anySeen();if(w)call(w)};
     btn.onclick=panel;chip.onclick=function(){if(PARK.length&&anySeen())back();else panel()};
     ov=document.createElement('div');ov.id='hlpO';document.body.appendChild(ov);
     ov.addEventListener('click',function(e){if(e.target===ov)close()});
     paint();if(S)start(true)}
   function anySeen(){if(!S||!S.seen)return null;var b=null;for(var k in S.seen)if(Date.now()-S.seen[k]<15000)b=k;return b}
   function paint(){if(!btn)return;btn.textContent='🙋 עזרה';bar.classList.toggle('hlp',!!S);
-    var w=anySeen();chip.classList.toggle('bk',!!(S&&PARK.length&&w));
+    var w=anySeen();bar.classList.toggle('call',!!(S&&w&&(!AV[w]||AV[w].wa!==false)));chip.classList.toggle('bk',!!(S&&PARK.length&&w));
     if(!S){chip.innerHTML='';return}
     if(PARK.length&&w)chip.innerHTML='🔙 לשאלה ששמרתי';
     else if(w)chip.innerHTML='<i>👀</i> '+esc(hn(w))+' '+(hb(w)?'רואה':'רואה')+' את המסך שלך';
@@ -79,6 +84,10 @@
   function wa(id){var w=null;try{w=window.open('','_blank')}catch(e){}var go=function(){var u=FN+'?action=wa&kid='+kid+'&sid='+S.sid+'&to='+id+'&apikey='+SB_KEY;if(w&&!w.closed)w.location.href=u;else location.href=u};if(S&&sentOnce)go();else{begin([]);var n=0,t=setInterval(function(){if(sentOnce||++n>40){clearInterval(t);go()}},200)}}
   // שורה לכל עוזר: מי, זמינות, ושני כפתורים ברורים: "🔔 לשלוח התראה" (באפליקציה, רק אם אישר/ה התראות) ו"וואטסאפ" (אורן 19.11.2026)
   var NOTE={};
+  // שיחה: וואטסאפ לא מאפשר להתחיל שיחה קולית מלינק, אז נפתח הצ׳אט עם העוזר, ושם לוחצים על 📞 (המספר רק בשרת)
+  function call(id){var w=null;try{w=window.open('','_blank')}catch(e){}var u=FN+'?action=call&kid='+kid+'&sid='+S.sid+'&to='+id+'&apikey='+SB_KEY;
+    if(w&&!w.closed)w.location.href=u;else location.href=u;
+    show('<div class="em">📞</div><h2>שיחה עם '+esc(hn(id))+'</h2><p>הוואטסאפ נפתח בצ׳אט עם '+esc(hn(id))+'.<br>1. '+g('לחצי','לחץ')+' על 📞 למעלה.<br>2. '+g('כשעונים, לחצי','כשעונים, לחץ')+' על "רמקול".<br>3. '+g('חזרי','חזור')+' לאפליקציה. '+esc(hn(id))+' '+(hb(id)?'רואה':'רואה')+' את המסך שלך ומדבר'+(hb(id)?'':'ת')+' איתך.</p><button class="bt" data-a="x">הבנתי</button>',close)}
   function rows(){return HL.map(function(h){var id=h[0],a=AV[id],req=S&&(S.to||[]).indexOf(id)>=0,seen=S&&S.seen&&S.seen[id]&&Date.now()-S.seen[id]<15000;
       var b=h[3],st=seen?'<span class="dt ok"></span>רואה את המסך שלך עכשיו':req?'<span class="dt pd"></span>מחכים ש'+(b?'יפתח':'תפתח')+' את המסך שלך…':
         !a?'<span class="dt"></span>בודק זמינות…':a.ok?'<span class="dt ok"></span>'+(b?'זמין':'זמינה')+(a.why?' · '+esc(a.why):''):
@@ -86,7 +95,7 @@
       var nt=req||seen?['dn','✓ נשלחה התראה']:a&&!a.dev?['no','🔕 '+(b?'לא אישר':'לא אישרה')+' התראות']:a&&!a.ok?['no','🔕 לא '+(b?'זמין':'זמינה')+' עכשיו']:['','🔔 לשלוח התראה'];
       return '<div class="hr"><div class="hm"><span class="e">'+h[2]+'</span><span><b>'+esc(h[1])+'</b><small>'+st+'</small></span></div>'+
         '<div class="h2b"><button type="button" class="hb nt'+(nt[0]?' '+nt[0]:'')+'" data-a="ask" data-id="'+id+'">'+nt[1]+'</button>'+
-        '<a class="hb wa'+(a&&!a.wa?' no':'')+(NOTE[id]?' go':'')+'" data-a="wa" data-id="'+id+'" href="#">'+WA.replace('fill="#25D366"','fill="#fff"').replace('fill="#fff" d="M17','fill="#25D366" d="M17')+'וואטסאפ</a></div>'+
+        '<a class="hb wa'+(a&&!a.wa?' no':'')+(NOTE[id]?' go':'')+(seen?' go':'')+'" data-a="'+(seen?'call':'wa')+'" data-id="'+id+'" href="#">'+WA.replace('fill="#25D366"','fill="#fff"').replace('fill="#fff" d="M17','fill="#25D366" d="M17')+(seen?'שיחה בוואטסאפ':'וואטסאפ')+'</a></div>'+
         (NOTE[id]?'<div class="hn">'+esc(NOTE[id])+'</div>':'')+'</div>'}).join('')}
   function noNotif(id){var b=hb(id);NOTE[id]=hn(id)+' עוד לא '+(b?'אישר':'אישרה')+' התראות באפליקציה, אז ההתראה לא '+(b?'תגיע אליו':'תגיע אליה')+'. '+g('שלחי','שלח')+' '+(b?'לו':'לה')+' הודעה בוואטסאפ 👇'}
   function redraw(){var L=ov.querySelector('.hl');if(ov.classList.contains('on')&&L){L.innerHTML=rows();L.querySelectorAll('[data-a]').forEach(function(x){x.addEventListener('click',function(e){act1(x.getAttribute('data-a'),x.getAttribute('data-id'),e)})})}}
@@ -106,6 +115,7 @@
       if(v&&!v.ok){NOTE[id]=hn(id)+' לא '+(hb(id)?'זמין':'זמינה')+' עכשיו'+(v.why?' ('+v.why+')':'')+'. אפשר לנסות בוואטסאפ, או לבקש ממישהו אחר.';redraw();return}
       request(id)}
     else if(a==='wa'){e.preventDefault();if(AV[id]&&AV[id].wa)wa(id)}
+    else if(a==='call'){e.preventDefault();call(id)}
     else if(a==='skip'){var t=HOOK.skip();close();if(t!=null){PARK.push(t);paint();send(true);var w=(S.to||[])[0];toast('📌 השאלה נשמרה בצד. ממשיכים, ונחזור אליה כש'+(w?hn(w)+' '+(hb(w)?'יגיע':'תגיע'):'יגיעו לעזור')+'.')}else toast('אפשר לדלג רק על שאלה פתוחה, לפני שעונים עליה.')}
     else if(a==='back'){close();back()}
     else if(a==='end'){close();stop(true)}

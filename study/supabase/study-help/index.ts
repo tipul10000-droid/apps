@@ -19,7 +19,7 @@ const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { sta
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   const url = new URL(req.url), action = url.searchParams.get("action") || "";
-  if (!["help", "avail", "iam", "wa", "tok"].includes(action)) return json({ ok: false, err: "action" }, 400);
+  if (!["help", "avail", "iam", "wa", "tok", "call"].includes(action)) return json({ ok: false, err: "action" }, 400);
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const { data: ks } = await sb.from("study_secrets").select("k,h").in("k", ["vapid_public", "vapid_private"]);
   const V: Record<string, string> = {};
@@ -37,6 +37,7 @@ Deno.serve(async (req) => {
 //  ?action=avail&kid=          → רשימת העוזרים של המשפחה (בלי הילד עצמו): זמין או לא, למה, עד מתי, כמה מכשירים עם התראות, ואם יש וואטסאפ.
 //  ?action=help&kid=&sid=&to=  → התראה מיידית לעוזר (גם בשעות השקט: הילד מבקש עכשיו). רק כשיש שידור חי עם אותו sid. פעם אחת לכל עוזר ובקשה, עד 10 בשעה.
 //  ?action=wa&kid=&sid=&to=    → הפניה לוואטסאפ של העוזר עם הודעה מוכנה וקישור למסך המראה. המספרים רק בשרת (study_secrets 'phone_<id>'), לא במאגר.
+//  ?action=call&kid=&sid=&to=  → שיחה קולית: פותח את הצ׳אט בוואטסאפ עם העוזר (אין לינק שמתחיל שיחה), הילד לוחץ 📞 ורמקול.
 //  ?action=tok&kid=&t=         → הלינק מוואטסאפ נפתח בספארי בלי קוד הורים: t = מפתח צפייה אקראי שנוצר ב-wa לבקשה הזאת בלבד (study_push_log 'htok:<t>'),
 //                                 תקף רק כל עוד אותה בקשה (sid) פתוחה ועד 3 שעות. מחזיר {ok, sid, by}.
 //  ?action=iam&pin=&who=&endpoint= → הורה מסמן שהמכשיר שלו שייך לו (אבא / אמא), כדי שבקשה אליו תגיע רק אליו. נשמר ב-study_push_log 'dev:<sha>'.
@@ -149,6 +150,13 @@ async function helpApi(action: string, url: URL, sb: any, FAM: Record<string, st
   if (!h || to === kid || !/^[a-f0-9]{16}$/.test(sid)) return json({ ok: false, err: "arg" }, 400);
   const k = await live(sid);
   if (!k) return json({ ok: false, err: "nolive" });
+  // שיחה קולית (אורן 19.11.2026): וואטסאפ לא מאפשר להתחיל שיחה מלינק, אז פותחים את הצ׳אט עם העוזר בלי טקסט, ושם לוחצים על 📞
+  if (action === "call") {
+    const { data: s } = await sb.from("study_secrets").select("h").eq("k", "phone_" + to).maybeSingle();
+    const num = String(s?.h || "").replace(/\D/g, "").replace(/^0/, "972");
+    if (!num) return json({ ok: false, err: "nophone" });
+    return new Response(null, { status: 302, headers: { Location: `https://wa.me/${num}`, ...CORS } });
+  }
   if (action === "wa") {
     const { data: s } = await sb.from("study_secrets").select("h").eq("k", "phone_" + to).maybeSingle();
     const num = String(s?.h || "").replace(/\D/g, "").replace(/^0/, "972");
