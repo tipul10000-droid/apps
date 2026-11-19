@@ -111,6 +111,7 @@ html,body,main{overflow-anchor:none}
 .efk .efa .efp{flex:none;width:72px;height:72px}.efk .efa .efp svg{width:100%;height:100%}.efk .efa .eft{flex:1;min-width:0;font-size:14px;line-height:1.35}.efk .efa .eft b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.efk .efa .eft small{display:block;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .efk .efa .efb{display:flex;gap:6px;margin-top:6px}.efk .efa .efb button{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;font:700 14px system-ui,Arial,sans-serif;padding:8px 4px;border-radius:10px;border:1px solid #f9a8d4;background:#fff;color:#9d174d;cursor:pointer;white-space:nowrap}.efk .efa .efb button.go{background:#db2777;border-color:#db2777;color:#fff}.efk .efa .efb button:disabled{opacity:.6}
 .efk.open .qzb,.rqs.open .qzb{grid-template-rows:1fr}.efk.open .qzh .cv,.rqs.open .qzh .cv{transform:rotate(180deg)}.efk .qzh,.rqs .qzh{height:44px}.qzh .qzm b.rqn{color:#2563eb}
+.need button.ks .ksn{color:#1d4ed8;font-variant-numeric:tabular-nums}.need button.ks.done b:last-child{color:#15803d}.need button.ks.done{opacity:.6;transition:opacity .5s}
 .need button.nc i{background:#2563eb;box-shadow:0 0 0 0 rgba(37,99,235,.55);animation:ncp 1.6s ease-out infinite}.need button.nc b{color:#1d4ed8}@keyframes ncp{0%{box-shadow:0 0 0 0 rgba(37,99,235,.55)}70%{box-shadow:0 0 0 7px rgba(37,99,235,0)}100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}}
 .cnt.flash{animation:cfl 1.6s ease 2}@keyframes cfl{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}40%{box-shadow:0 0 0 4px rgba(37,99,235,.45)}}
 .efk .efa .efe{color:var(--mut);font-size:14px;text-align:center;width:100%}.kx>.qzc:first-child{margin-top:0;padding-top:0;border-top:0}.kx>.rqs:first-child{margin-top:0;padding-top:0;border-top:0}
@@ -119,6 +120,7 @@ html,body,main{overflow-anchor:none}
 <div id="v"></div>
 <script src="../profiles.js?v=5"></script>
 <script src="../content.js?v=14"></script>
+<script src="../fresh.js?v=1" defer></script>
 <script src="../push.js?v=4"></script>
 <script src="../effort.js?v=1"></script>
 <script src="../../appstat.js?v=1"></script><script>window.AppStat&&AppStat.init({app:"study",uid:"parents"})</script>
@@ -197,7 +199,7 @@ function capWire(){V.querySelectorAll('.cap>.caph').forEach(b=>b.onclick=()=>{co
 // אירוע = תוכן לימוד עם מבחן/הכתבה אחד (אורן 6.11.2026): תאריך ← אחרי שעבר: ציון ← הציון. תאריך שנשמר מוצג עם ✓ ועיפרון לעריכה.
 function evBox(k,a,t,RS,id){const dl=t&&t.d?Math.ceil((new Date(t.d+'T00:00:00')-new Date(new Date().toDateString()))/864e5):null;
  const G=RS[0],DN=t&&t.done,PAST=t&&t.d&&dl!==null&&dl<=0,TN=esc(t&&t.note||a.test),fl=SAVED===id?' fl':'';
- if(G)return`<div class="ev${fl}"><div class="l"><span class="evg">${stampH(+G.score)}<span class="evt">✅ ${esc(G.note||TN)}${G.d?`<small>${fmtD(G.d)}</small>`:''}</span></span><button class="pen" type="button" data-h="${G.id}" data-hs="${+G.score}">🗑️ מחיקה</button></div>${fl?'<div class="sv">✓ הציון נשמר</div>':''}</div>`;
+ if(G)return`<div class="ev${fl}"><div class="l"><span class="evg">${stampH(+G.score)}<span class="evt">✅ ${esc(G.note||TN)}${G.d?`<small>${fmtD(G.d)}${G.by_kid?` · ✏️ ${esc(k.n)} ${k.boy?'הזין':'הזינה'}`:''}</small>`:''}</span></span><button class="pen" type="button" data-h="${G.id}" data-hs="${+G.score}">🗑️ מחיקה</button></div>${fl?'<div class="sv">✓ הציון נשמר</div>':''}</div>`;
  if(DN||PAST)return`<div class="ev${fl}"><div class="l"><span>📝 ${TN}${t&&t.d?' ('+fmtD(t.d)+')':''} כבר היה. מה הציון?</span></div>${DELD===id?'<div class="sv">✓ הציון נמחק, גם מהדף של הילד</div>':''}<div class="row"><input type="number" id="s_${id}" placeholder="ציון (0-100)" min="0" max="100" inputmode="decimal"><button class="b s" type="button" data-r="${k.id}|${a.id}|${t&&t.d||''}">שמירת ציון</button></div></div>`;
  // לימוד כללי (אורן 6.11.2026): לא לכל תוכן יש מבחן. בלי תאריך = לימוד כללי, ו"+ מבחן" פותח תאריך. "📚 בלי מבחן" מחזיר ללימוד כללי (וגם מבטל ניחוש אוטומטי).
  const has=t&&t.d,when=has?(dl===1?'מחר':'בעוד '+dl+' ימים'):'';
@@ -274,18 +276,19 @@ function timeline(r,t,a,k){const D0=d=>{const x=new Date(d);x.setHours(0,0,0,0);
  else ft=ex?'':`לימוד כללי. אם יהיה ${T}, הציר יגיע עד היום שלו.`;
  return`<div class="tl"><div class="tt"><span>📆 ימי לימוד: <b>${studied}</b></span><small>${dm(st)} ← ${ex?'יום ה'+T+' '+dm(ex):'היום'}</small></div><div class="cols">${cols.map(cell).join('')}</div>${ft?`<div class="ft">${ft}</div>`:''}</div>`}
 // 🔴 הנקודה על שם הילד (אורן 11.11.2026): מופיעה רק כשמשהו מחכה להורים, ובראש הלשונית כתוב מה. לחיצה מובילה למקום.
-const RQO={};
+const RQO={},KSR={};// KSR = ציונים שהילד הזין וההורים עוד לא ראו (אורן 19.11.2026)
 // 🧪 תוכן חדש שמחכה לאישור (אורן 19.11.2026): ראשון ובולט בקופסה, לחיצה = פותחת את התוכן ומגיעה לכרטיס הבדיקה והאישור
 const pendC=k=>window.StudyContent?k.apps.filter(a=>StudyContent.reg[k.id+'/'+a.id]==='review'&&!StudyContent.ok(k.id+'/'+a.id)):[];
-function drawNeed(k){const G=NG[k.id]||[],n=RQO[k.id]||0,C=pendC(k),el=$('nd_'+k.id),dt=$('dot_'+k.id);if(dt)dt.classList.toggle('on',!!(G.length||n||C.length));if(!el)return;
- if(!G.length&&!n&&!C.length){el.hidden=true;el.innerHTML='';return}
- el.innerHTML='<div class="nh">מחכה לכם:</div>'+C.map(a=>`<button type="button" class="nc" data-nc="${id0(k,a)}"><i></i><span>🧪 תוכן חדש לאישור: ${esc(a.sn||a.n)}</span><b>לבדוק ולאשר ›</b></button>`).join('')+G.map(a=>`<button type="button" data-g="${id0(k,a)}"><i></i><span>✏️ להזין ציון: ${esc(a.sn||a.n)}</span><b>המבחן כבר היה</b></button>`).join('')+(n?`<button type="button" data-r="${k.id}"><i></i><span>💬 ${n===1?'בקשה פתוחה אחת':n+' בקשות פתוחות'}</span><b>לסמן "טופל"</b></button>`:'');
+function drawNeed(k){const G=NG[k.id]||[],n=RQO[k.id]||0,C=pendC(k),KS=(KSR[k.id]||[]),el=$('nd_'+k.id),dt=$('dot_'+k.id);if(dt)dt.classList.toggle('on',!!(G.length||n||C.length||KS.length));if(!el)return;
+ if(!G.length&&!n&&!C.length&&!KS.length){el.hidden=true;el.innerHTML='';return}
+ el.innerHTML='<div class="nh">מחכה לכם:</div>'+KS.map(x=>{const a=k.apps.find(y=>y.id===x.app)||{n:x.app};return`<button type="button" class="nc ks" data-ks="${x.id}" data-ka="${id0(k,a)}"><i></i><span>✏️ ${esc(k.n)} ${k.boy?'הזין':'הזינה'} ציון <b class="ksn">${+x.score}</b> ב${esc(a.sn||a.n)}</span><b>✓ ראיתי</b></button>`}).join('')+C.map(a=>`<button type="button" class="nc" data-nc="${id0(k,a)}"><i></i><span>🧪 תוכן חדש לאישור: ${esc(a.sn||a.n)}</span><b>לבדוק ולאשר ›</b></button>`).join('')+G.map(a=>`<button type="button" data-g="${id0(k,a)}"><i></i><span>✏️ להזין ציון: ${esc(a.sn||a.n)}</span><b>המבחן כבר היה</b></button>`).join('')+(n?`<button type="button" data-r="${k.id}"><i></i><span>💬 ${n===1?'בקשה פתוחה אחת':n+' בקשות פתוחות'}</span><b>לסמן "טופל"</b></button>`:'');
  el.hidden=false;
+ el.querySelectorAll('[data-ks]').forEach(b=>b.onclick=()=>{const id=+b.dataset.ks;KSR[k.id]=(KSR[k.id]||[]).filter(x=>x.id!==id);b.classList.add('done');setTimeout(()=>drawNeed(k),600);rpc('study_parents_result_seen',{p_pin:PIN,p_id:id}).catch(()=>{})});
  el.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{const c=$('cap_'+b.dataset.g);if(!c)return;if(!c.classList.contains('open'))c.querySelector('.caph').click();setTimeout(()=>c.scrollIntoView({behavior:'smooth',block:'start'}),60)});
  el.querySelectorAll('[data-nc]').forEach(b=>b.onclick=()=>{const c=$('cap_'+b.dataset.nc);if(!c)return;if(!c.classList.contains('open'))c.querySelector('.caph').click();setTimeout(()=>{const r=$('cr_'+b.dataset.nc)||c;r.scrollIntoView({behavior:'smooth',block:'center'});r.classList.remove('flash');void r.offsetWidth;r.classList.add('flash')},380)});
  el.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=$('rq_'+b.dataset.r);if(!r)return;if(!RQV[b.dataset.r]){RQV[b.dataset.r]=1;r.classList.add('open');const h=r.querySelector('.rqh');if(h)h.setAttribute('aria-expanded','true')}setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'start'}),60)})}
 // אורן 19.11.2026: כשנכנסים, אם בלשונית הנוכחית אין מה לאשר ובילד אחר יש, עוברים אליו
-function needJump(){if(needJump.done)return;const has=k=>pendC(k).length||(NG[k.id]||[]).length||RQO[k.id];const cur=KIDS.find(k=>k.id===TAB);if(cur&&has(cur))return;
+function needJump(){if(needJump.done)return;const has=k=>pendC(k).length||(KSR[k.id]||[]).length||(NG[k.id]||[]).length||RQO[k.id];const cur=KIDS.find(k=>k.id===TAB);if(cur&&has(cur))return;
  const o=KIDS.find(k=>pendC(k).length)||KIDS.find(has);if(o){needJump.done=1;const b=V.querySelector(`#tabs button[data-k="${o.id}"]`);if(b)b.click()}}
 function needsGrade(j,k){return k.apps.filter(a=>{const t=(j.tests||[]).find(x=>x.kid===k.id&&x.app===a.id)||(!a.gen&&j.auto&&j.auto[k.id]&&j.auto[k.id].d?j.auto[k.id]:null);if(!t)return false;
  if((j.results||[]).some(x=>x.kid===k.id&&x.app===a.id))return false;return t.done||(t.d&&new Date(t.d+'T00:00:00')<=new Date(new Date().toDateString()))})}
@@ -330,7 +333,7 @@ function show(j){const P=j.progress||[],T={};(j.tests||[]).forEach(t=>T[t.kid+'/
   if(window.StudyEffort&&StudyEffort.lists[k.id])h+=`<div class="kx efk" id="ef_${k.id}"></div>`;
   h+=`<div class="kx">${k.noqz?'':`<div class="qzc" id="qz_${k.id}"></div>`}<div class="rqs" id="rq_${k.id}"></div></div></div>`});
  h+=`<p class="none" style="font-size:13px;text-align:center">הנתונים מגיעים מהטלפונים של הילדים בכל פעם שהם לומדים.</p>`;
- V.innerHTML=h;SAVED='';DELD='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);drawNeed(k)});loadReq();loadQz();loadOA();loadEf();drawCnt();capWire();gdWire();StudyContent.refresh(drawCnt);
+ V.innerHTML=h;SAVED='';DELD='';KIDS.forEach(k=>{NG[k.id]=needsGrade(j,k);KSR[k.id]=(j.results||[]).filter(x=>x.kid===k.id&&x.by_kid&&!x.seen_at);drawNeed(k)});loadReq();loadQz();loadOA();loadEf();drawCnt();capWire();gdWire();StudyContent.refresh(drawCnt);
  V.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{TAB=b.dataset.k;try{localStorage.setItem('study_par_tab',TAB)}catch(e){}V.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));KIDS.forEach(k=>$('kd_'+k.id).classList.toggle('off',k.id!==TAB));scrollTo(0,0)});
  V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=$('e_'+b.dataset.e),on=!e.classList.contains('on');e.classList.toggle('on',on);b.textContent=on?'✕ ביטול':(b.dataset.l||'✏️ עריכה')});if(window.StudyPush)StudyPush.parent($('nt'),()=>PIN);{const g=$('pgdgo');if(g)g.onclick=()=>$('nt').click();const d=$('pgd');if(d)d.ontoggle=()=>{try{localStorage.setItem('study_pgd_'+FAM,d.open?'1':'0')}catch(e){}}}$('rf').onclick=()=>load();$('lo').onclick=()=>{try{localStorage.removeItem(PINK)}catch(e){}PIN='';pinView()};
  const done=(b,p)=>p.then(j=>{if(j&&j.ok)load();else pinView('הקוד לא נכון')}).catch(()=>{b.textContent='שגיאה'});
