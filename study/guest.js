@@ -25,14 +25,8 @@
 (function(){
   var css='html,body,*{touch-action:manipulation}html,body{height:100%;overflow:hidden;overscroll-behavior:none}body{height:100dvh;min-height:0!important;display:flex;flex-direction:column}html{padding-top:0!important;padding-bottom:0!important}body{box-sizing:border-box;padding-top:max(calc(env(safe-area-inset-top,0px) + 6px),44px);padding-bottom:env(safe-area-inset-bottom,0px)}main{flex:1 1 auto;min-height:0!important;width:100%;box-sizing:border-box;overflow:hidden}';
   var st=document.createElement('style');st.textContent=css;(document.head||document.documentElement).appendChild(st);
-  var fixVp=function(){var m=document.querySelector('meta[name=viewport]');if(m)m.content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover'};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fixVp);else fixVp();
-  ['gesturestart','gesturechange','gestureend'].forEach(function(e){document.addEventListener(e,function(ev){ev.preventDefault()},{passive:false})});
-  document.addEventListener('touchmove',function(ev){if(ev.touches.length>1||(ev.scale&&ev.scale!==1))ev.preventDefault()},{passive:false});
-  // דאבל-טאפ: באייפון user-scalable=no לא עובד. touch-action:manipulation מבטל זום בהקשה כפולה, ולמקרה שלא: הקשה שנייה מהירה לא מגיעה לזום, והלחיצה נשלחת ידנית.
-  var lastT=0;document.addEventListener('touchend',function(ev){var n=Date.now(),t=ev.target;if(n-lastT<350&&ev.cancelable&&!(t.closest&&t.closest('input,textarea,select,[contenteditable]'))){ev.preventDefault();if(t.click)t.click();else if(t.dispatchEvent)t.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))}lastT=n},{passive:false});
-  document.addEventListener('touchstart',function(ev){if(ev.touches.length>1)ev.preventDefault()},{passive:false});
-  document.addEventListener('dblclick',function(ev){ev.preventDefault()},{passive:false});
+  // בלי זום ובלי סימון טקסט: nozoom.js (נטען כאן גם בדף שלא כלל אותו ב-<head>)
+  if(!window.StudyNoZoom){var cs=document.currentScript,nz=document.createElement('script');nz.src=(cs&&cs.src?cs.src.replace(/guest\.js(\?.*)?$/,''):'/apps/study/')+'nozoom.js?v=1';(document.head||document.documentElement).appendChild(nz)}
   addEventListener('scroll',function(){if(scrollX||scrollY)scrollTo(0,0)});
 })();
 (function(){

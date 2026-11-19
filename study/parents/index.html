@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><script src="../nozoom.js?v=1"></script>
 <title>Study Monster · אזור הורים</title>
 <link rel="manifest" href="../manifest.json">
 <link rel="icon" href="../icon-64.png?v=2" type="image/png">
@@ -432,11 +432,7 @@ function loadReq(id,set){rpc('study_parents_requests',{p_pin:PIN,p_id:id||null,p
  V.querySelectorAll('details.arc').forEach(d=>d.ontoggle=()=>{ARC[d.dataset.k]=d.open})
   V.querySelectorAll('[data-rqo]').forEach(b=>b.onclick=()=>{const k=b.dataset.rqo;RQV[k]=!RQV[k];b.closest('.rqs').classList.toggle('open',!!RQV[k]);b.setAttribute('aria-expanded',!!RQV[k])})
  V.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const [i,s]=b.dataset.q.split('|');if(s==='hide'&&!confirm('להסתיר את הבקשה?'))return;b.textContent='...';loadReq(+i,s)})}).catch(()=>{})}
-['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,ev=>ev.preventDefault(),{passive:false}));
-// דאבל-טאפ: באייפון user-scalable=no לא עובד. touch-action:manipulation מבטל זום בהקשה כפולה, ולמקרה שלא: הקשה שנייה מהירה לא מגיעה לזום, והלחיצה נשלחת ידנית.
-var lastT=0;document.addEventListener('touchend',function(ev){var n=Date.now(),t=ev.target;if(n-lastT<350&&ev.cancelable&&!(t.closest&&t.closest('input,textarea,select,[contenteditable]'))){ev.preventDefault();if(t.click)t.click();else if(t.dispatchEvent)t.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))}lastT=n},{passive:false});
-document.addEventListener('touchstart',function(ev){if(ev.touches.length>1)ev.preventDefault()},{passive:false});
-document.addEventListener('dblclick',function(ev){ev.preventDefault()},{passive:false});
+// זום וסימון טקסט: nozoom.js (נטען ב-<head>)
 
 
 // 🙋 ילד מבקש עזרה עכשיו (help.js, אורן 19.11.2026): פס ירוק צף בתחתית (לא מזיז כלום) עם כניסה למסך המראה, נבדק כל 15 שניות.
