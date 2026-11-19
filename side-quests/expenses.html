@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.4";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.5";</script>
 <script src="sq-db.js?v=10"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -354,6 +354,7 @@ function acts(){const R=tripRows(),C=cars(),A=[],K=[],sc=scanRow(),until=x=>((St
   const stepRow=(row,s,nm)=>({k:"st:"+row.id+":"+s.id,ic:"🔎",t:s.text,s:nm||"",b:"✓ טופל",wait:!!s.wait});
   R.forEach(t=>{const st=tState(t),nm=tLabel(t),v=tripTot(t);
     if(st==="open")A.push({d:"t:"+t.id,k:"ts:"+t.id+":scanned",ic:"🧾",t:"לשלוח קבלות לצ׳אט",s:nm,v:v?ils0(v):"",b:"✓ נשלח"});
+    if(st==="submitted")K.push({d:"t:"+t.id,k:"ts:"+t.id+":received",ic:"⏳",t:"הוגש, מחכה להחזר בבנק",s:nm,v:v?ils0(v):"",b:"✓ התקבל"});
     if(st==="scanned")A.push({d:"t:"+t.id,k:"ts:"+t.id+":submitted",ic:"📤",t:"להגיש באלביט",s:nm+" · הוצאות + אש״ל",v:v?ils0(v):"",b:"✓ הגשתי"});
     const ask=0;if(ask)A.push({k:"open:"+t.id,ic:"❓",t:`לסווג ${ask} חיובים: עבודה או פרטי`,s:nm,b:"פתח ›",go:1});
     if(st==="open"||st==="scanned")arr(t.steps).filter(s=>!s.tx&&!s.done&&!s.superseded&&!["scan","submit","paid","classify"].includes(s.id)).forEach(s=>{const r=stepRow(t,s,nm);(r.wait?K:A).push(r);});});
@@ -372,7 +373,7 @@ function acRow(x){const xo=x.d&&ui.xp===x.d;return `<div class="ac${pend[x.k]?" 
 function zone(id,title,sub,body,cls){return body?`<details class="zone ${cls||""}" data-zone="${id}"${ui["z_"+id]?" open":""}><summary><span class="n">${title}</span><small>${sub||""}</small></summary><div class="zb">${body}</div></details>`:"";}
 const carAct=c=>!c.state||c.state==="check"||c.state==="bad";
 function elbitView(){const R=tripRows();if(!R.length)return "";
-  const cur=R.filter(t=>lv(tState(t))<2),arc=R.filter(t=>lv(tState(t))>=2);
+  const cur=R.filter(t=>lv(tState(t))<3),arc=R.filter(t=>lv(tState(t))>=3);
   const C=cars(),co=C.filter(carAct),cd=C.filter(c=>!carAct(c)),{A,K}=acts();
   const wait=cur.reduce((a,t)=>a+tripTot(t),0);
   let o=`<div class="box todo-box"><div class="bh"><span>📌 לעשות עכשיו</span><small>${A.length||""}</small></div>${A.length?A.map(acRow).join(""):'<div class="allok">✓ אין מה לעשות עכשיו</div>'}</div>`;
