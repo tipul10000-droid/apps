@@ -162,3 +162,14 @@ a.tp-mapsph{border-style:solid;color:var(--ink);text-decoration:none}
 .tp-ask>*+*{border-inline-start:1px solid var(--line)!important}
 .tp-ask svg{width:17px;height:17px;flex:none}
 .tp-hidden-own{display:none!important}
+
+/* TLV terminal 1 warning: never miss it */
+.tp-t1{display:flex;gap:12px;align-items:center;margin:10px 12px 0;padding:10px 12px;border-radius:14px;background:#d62828;color:#fff;border:3px solid #ffd60a;box-shadow:0 0 0 3px #d62828;animation:tpT1 1.6s ease-in-out infinite}
+.tp-t1.big{margin:16px 0 0;padding:14px 16px}
+.tp-t1 .n{flex:none;width:44px;height:44px;border-radius:50%;background:#ffd60a;color:#111;display:grid;place-items:center;font:900 28px/1 var(--f-d,system-ui)}
+.tp-t1.big .n{width:56px;height:56px;font-size:36px}
+.tp-t1 b{display:block;font:900 18px/1.2 var(--f-d,system-ui)}
+.tp-t1.big b{font-size:22px}
+.tp-t1 span{font-size:13.5px;font-weight:700}
+@keyframes tpT1{50%{box-shadow:0 0 0 7px rgba(214,40,40,.35)}}
+@media (prefers-reduced-motion:reduce){.tp-t1{animation:none}}
