@@ -1,9 +1,9 @@
 /* מיני דשבורד לטיול (19.11.2026). משותף לדף הציבורי (trips/) ולדף של אורן (side-quests/trip.html).
    צבעי הטיול מגיעים מהנתונים (theme), כאן רק ברירת מחדל. */
-.tp{--c1:#8E1B2C;--c2:#1E5B43;--gold:#E8B54A;--ink:#1D1A17;--muted:#6B645C;--bg:#FBF7F1;--card:#FFFFFF;--line:#ECE3D6;--soft:#F5EEE3;--good:#1F8457;--warn:#B86A0E;
+.tp{--c1:#8E1B2C;--c2:#1E5B43;--gold:#E8B54A;--ink:#1D1A17;--muted:#6B645C;--bg:#FBF7F1;--card:#FFFFFF;--line:#ECE3D6;--soft:#F5EEE3;--good:#1F8457;--warn:#B86A0E;--acc:var(--c1);--acc2:var(--c2);
   --f-d:"Rubik","Assistant",system-ui,sans-serif;--f-b:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
   font-family:var(--f-b);color:var(--ink);background:var(--bg);direction:rtl;line-height:1.5;font-size:16px}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tp{--ink:#F3EEE7;--muted:#B5ACA0;--bg:#16130F;--card:#211D18;--line:#3A332B;--soft:#2A241E;--good:#5CC88E;--warn:#EBA654;color-scheme:dark}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tp{--ink:#F3EEE7;--muted:#B5ACA0;--bg:#16130F;--card:#211D18;--line:#3A332B;--soft:#2A241E;--good:#5CC88E;--warn:#EBA654;--acc:color-mix(in srgb,var(--c1) 40%,#fff);--acc2:color-mix(in srgb,var(--c2) 45%,#fff);color-scheme:dark}}
 .tp *{box-sizing:border-box}
 .tp h1,.tp h2,.tp h3{font-family:var(--f-d);margin:0;text-wrap:balance}
 .tp a{color:inherit}
@@ -64,7 +64,7 @@
 .tp-dimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tp-dnum{position:absolute;top:8px;inset-inline-start:8px;background:rgba(0,0,0,.55);color:#fff;font-family:var(--f-d);font-weight:800;font-size:12.5px;border-radius:8px;padding:2px 7px}
 .tp-dt{flex:1;min-width:0;padding:11px 14px;display:flex;flex-direction:column;justify-content:center}
-.tp-dt small{color:var(--c1);font-weight:800;font-size:13px}
+.tp-dt small{color:var(--acc);font-weight:800;font-size:13px}
 .tp-dt b{font-family:var(--f-d);font-size:16.5px;line-height:1.3}
 .tp-dt span{color:var(--muted);font-size:13.5px}
 .tp-chev{flex:none;width:34px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:transform .2s}
@@ -93,8 +93,8 @@
 .tp-ap span{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tp-ap i{display:block;font-style:normal;font-family:var(--f-d);font-weight:800;font-size:18px;margin-top:4px}
 .tp-ap.r{text-align:right}
-.tp-fly{text-align:center;color:var(--c1);font-size:12px;font-weight:800;color:var(--muted)}
-.tp-fly svg{display:block;width:84px;height:26px;margin:0 auto 2px;color:var(--c1)}
+.tp-fly{text-align:center;color:var(--acc);font-size:12px;font-weight:800;color:var(--muted)}
+.tp-fly svg{display:block;width:84px;height:26px;margin:0 auto 2px;color:var(--acc)}
 .tp-bpf{display:flex;justify-content:space-between;gap:8px;padding:0 16px 12px;font-size:13px;color:var(--muted);font-weight:700}
 .tp-bpf b{color:var(--ink)}
 .tp-bp .tear{border-top:2px dashed var(--line);margin:0 12px;position:relative}
@@ -187,7 +187,7 @@ a.tp-mapsph{border-style:solid;color:var(--ink);text-decoration:none}
 .tp-pl+.tp-pl{border-top:1px solid var(--line)}
 .tp-pl>summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:flex-start;padding:11px 14px;min-height:44px}
 .tp-pl>summary::-webkit-details-marker{display:none}
-.tp-pl .rk{flex:none;width:22px;text-align:center;font-weight:900;color:var(--c1);font-size:16px;line-height:1.35}
+.tp-pl .rk{flex:none;width:22px;text-align:center;font-weight:900;color:var(--acc);font-size:16px;line-height:1.35}
 .tp-pl.r-optional .rk,.tp-pl.r-skip .rk{color:var(--muted)}
 .tp-pl .x{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .tp-pl .x b{font-size:15px;line-height:1.3}
@@ -198,9 +198,28 @@ a.tp-mapsph{border-style:solid;color:var(--ink);text-decoration:none}
 .tp-plm p{margin:0 0 8px}
 .tp-plm .nt{background:var(--soft);border-radius:10px;padding:6px 10px;font-size:13.5px}
 .tp-plf{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:8px}
-.tp-plf a{font-weight:800;color:var(--c1);text-decoration:none;font-size:14px}
+.tp-plf a{font-weight:800;color:var(--acc);text-decoration:none;font-size:14px}
 .tp-lg{display:flex;flex-wrap:wrap;gap:4px 14px;margin:12px 4px 0;font-size:12.5px;color:var(--muted);font-weight:700}
 .tp-city{font-size:17px;margin:16px 4px 0}
 @keyframes tpGrow{from{opacity:0;transform:translateY(-4px)}}
 .tp-plf a.tp-gml{display:inline-flex;align-items:center;gap:6px}
 .tp-plf a.tp-gml .tp-gm{width:14px;height:20px}
+
+/* קישור קטן לגוגל מפס ליד כל מקום (אורן 19.11.2026): שקט, אבל תמיד שם */
+.tp a.tp-gl{display:inline-flex;align-items:center;gap:4px;margin-top:3px;padding:2px 0;font-size:11.5px;font-weight:700;color:var(--muted);text-decoration:none;opacity:.8;white-space:nowrap;min-height:24px}
+.tp a.tp-gl .tp-gm{width:10px;height:14px}
+.tp a.tp-gl:hover,.tp a.tp-gl:active{opacity:1;text-decoration:underline}
+.tp-tl .x a.tp-gl{display:inline-flex}
+.tp-tile a.tp-gl{display:inline-flex}
+.tp a.tp-gl.lt{color:#fff;opacity:.85}
+.tp-gls{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:8px;font-size:13px;color:var(--muted)}
+.tp-gls>span{display:flex;flex-direction:column}
+.tp-dgl{padding:0 14px 10px}
+.tp-h2s{font-size:14px;font-weight:700;color:var(--muted);font-family:var(--f-b)}
+.tp a.tp-gl span{display:inline;font-size:inherit;color:inherit;font-weight:inherit;margin:0}
+.tp-now a.tp-gl{display:flex;width:max-content}
+
+/* brand logos next to names (Oren 19.11.2026) */
+.tp-logo{height:1.15em;width:auto;max-width:4.5em;vertical-align:-.2em;margin-inline-end:6px;border-radius:4px;object-fit:contain}
+.tp-bph .tp-logo{background:#fff;padding:2px 3px;height:1.35em}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tp-logo{background:#fff;padding:1px 3px}}
