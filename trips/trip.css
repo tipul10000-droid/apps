@@ -1,0 +1,164 @@
+/* מיני דשבורד לטיול (19.11.2026). משותף לדף הציבורי (trips/) ולדף של אורן (side-quests/trip.html).
+   צבעי הטיול מגיעים מהנתונים (theme), כאן רק ברירת מחדל. */
+.tp{--c1:#8E1B2C;--c2:#1E5B43;--gold:#E8B54A;--ink:#1D1A17;--muted:#6B645C;--bg:#FBF7F1;--card:#FFFFFF;--line:#ECE3D6;--soft:#F5EEE3;--good:#1F8457;--warn:#B86A0E;
+  --f-d:"Rubik","Assistant",system-ui,sans-serif;--f-b:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-family:var(--f-b);color:var(--ink);background:var(--bg);direction:rtl;line-height:1.5;font-size:16px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tp{--ink:#F3EEE7;--muted:#B5ACA0;--bg:#16130F;--card:#211D18;--line:#3A332B;--soft:#2A241E;--good:#5CC88E;--warn:#EBA654;color-scheme:dark}}
+.tp *{box-sizing:border-box}
+.tp h1,.tp h2,.tp h3{font-family:var(--f-d);margin:0;text-wrap:balance}
+.tp a{color:inherit}
+.tp button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.tp .w{max-width:760px;margin:0 auto;padding:0 16px}
+
+/* hero */
+.tp-hero{position:relative;min-height:340px;color:#fff;overflow:hidden;background:linear-gradient(150deg,var(--c1),var(--c2));display:flex;align-items:flex-end}
+.tp-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tp-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 30%,rgba(0,0,0,.72) 100%)}
+.tp-hero .in{position:relative;z-index:1;width:100%;max-width:760px;margin:0 auto;padding:18px 16px 20px}
+.tp-flag{font-size:30px;line-height:1}
+.tp-hero h1{font-size:30px;line-height:1.15;margin:6px 0 4px;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+.tp-hero .sub{font-size:15px;opacity:.92;margin:0}
+.tp-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tp-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-weight:700;font-size:13.5px;white-space:nowrap}
+.tp-chip.big{background:var(--gold);color:#2A1E00}
+.tp-snow{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.55;background-image:radial-gradient(2px 2px at 20% 30%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 70% 20%,#fff 50%,transparent 51%),radial-gradient(2px 2px at 40% 70%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 85% 60%,#fff 50%,transparent 51%),radial-gradient(1.8px 1.8px at 10% 85%,#fff 50%,transparent 51%);background-size:180px 180px;animation:tpsnow 14s linear infinite}
+@keyframes tpsnow{from{background-position:0 0}to{background-position:-40px 180px}}
+@media (prefers-reduced-motion: reduce){.tp-snow{animation:none}}
+
+/* stats strip */
+.tp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--card);border:1px solid var(--line);border-radius:18px;margin:-26px 0 0;position:relative;z-index:2;box-shadow:0 8px 24px rgba(60,30,10,.10)}
+.tp-stat{padding:12px 4px 10px;text-align:center;min-width:0}
+.tp-stat+.tp-stat{border-inline-start:1px solid var(--line)}
+.tp-stat i{font-style:normal;font-size:20px;display:block;line-height:1.2}
+.tp-stat b{display:block;font-family:var(--f-d);font-size:17px;line-height:1.2;white-space:nowrap}
+.tp-stat span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* sections */
+.tp-sec{margin-top:26px}
+.tp-sh{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+.tp-sh h2{font-size:20px}
+.tp-sh .e{font-size:20px}
+.tp-sh small{margin-inline-start:auto;color:var(--muted);font-weight:700;font-size:13px}
+.tp-card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tp-desc{font-size:16.5px;margin:18px 2px 0;color:var(--ink)}
+
+/* now / next */
+.tp-now{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,var(--c2),var(--c1));color:#fff;margin-top:18px}
+.tp-now .ic{font-size:28px;flex:none}
+.tp-now b{display:block;font-family:var(--f-d);font-size:17px}
+.tp-now span{font-size:14px;opacity:.92}
+
+/* map */
+.tp-map svg{display:block;width:100%;height:auto}
+.tp-legend{display:flex;flex-wrap:wrap;gap:6px 14px;padding:10px 14px 12px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted);font-weight:700}
+.tp-legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.tp-legend u{display:inline-block;width:18px;height:0;border-top:3px solid currentColor;text-decoration:none}
+
+/* days */
+.tp-days{display:flex;flex-direction:column;gap:10px}
+.tp-day{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tp-day.today{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.tp-day>summary{list-style:none;display:flex;align-items:stretch;gap:0;cursor:pointer;min-height:92px}
+.tp-day>summary::-webkit-details-marker{display:none}
+.tp-dimg{width:96px;flex:none;position:relative;background:var(--soft)}
+.tp-dimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tp-dnum{position:absolute;top:8px;inset-inline-start:8px;background:rgba(0,0,0,.55);color:#fff;font-family:var(--f-d);font-weight:800;font-size:12.5px;border-radius:8px;padding:2px 7px}
+.tp-dt{flex:1;min-width:0;padding:11px 14px;display:flex;flex-direction:column;justify-content:center}
+.tp-dt small{color:var(--c1);font-weight:800;font-size:13px}
+.tp-dt b{font-family:var(--f-d);font-size:16.5px;line-height:1.3}
+.tp-dt span{color:var(--muted);font-size:13.5px}
+.tp-chev{flex:none;width:34px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:transform .2s}
+.tp-day[open] .tp-chev{transform:rotate(180deg)}
+.tp-tl{list-style:none;margin:0;padding:6px 14px 14px;border-top:1px solid var(--line);animation:tpgrow .22s ease-out}
+@keyframes tpgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.tp-tl li{display:grid;grid-template-columns:48px 28px 1fr;gap:6px;align-items:start;padding:8px 0;position:relative}
+.tp-tl li+li{border-top:1px dashed var(--line)}
+.tp-tl .t{font-family:var(--f-d);font-weight:800;font-size:13.5px;direction:ltr;text-align:right;padding-top:2px}
+.tp-tl .e{font-size:18px;text-align:center}
+.tp-tl .x b{display:block;font-weight:800;font-size:15px;line-height:1.35}
+.tp-tl .x span{display:block;color:var(--muted);font-size:13.5px}
+.tp-tl li.open .x b::after{content:" · לתכנון";color:var(--warn);font-size:12.5px;font-weight:800}
+.tp-tl li.next{background:linear-gradient(90deg,transparent,rgba(232,181,74,.18));border-radius:10px}
+
+/* flights: boarding passes */
+.tp-bp{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;position:relative}
+.tp-bp+.tp-bp{margin-top:10px}
+.tp-bp>summary{list-style:none;cursor:pointer;display:block}
+.tp-bp>summary::-webkit-details-marker{display:none}
+.tp-bph{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:linear-gradient(90deg,var(--c1),var(--c2));color:#fff;font-weight:800;font-size:13.5px}
+.tp-bph span{opacity:.92}
+.tp-bpm{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 16px 12px;direction:ltr;gap:8px}
+.tp-ap{min-width:0}
+.tp-ap b{display:block;font-family:var(--f-d);font-size:28px;line-height:1;letter-spacing:.5px}
+.tp-ap span{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-ap i{display:block;font-style:normal;font-family:var(--f-d);font-weight:800;font-size:18px;margin-top:4px}
+.tp-ap.r{text-align:right}
+.tp-fly{text-align:center;color:var(--c1);font-size:12px;font-weight:800;color:var(--muted)}
+.tp-fly svg{display:block;width:84px;height:26px;margin:0 auto 2px;color:var(--c1)}
+.tp-bpf{display:flex;justify-content:space-between;gap:8px;padding:0 16px 12px;font-size:13px;color:var(--muted);font-weight:700}
+.tp-bpf b{color:var(--ink)}
+.tp-bp .tear{border-top:2px dashed var(--line);margin:0 12px;position:relative}
+.tp-more{padding:10px 16px 14px;animation:tpgrow .22s ease-out}
+.tp-kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px;margin:0}
+.tp-kv dt{color:var(--muted);font-weight:700}
+.tp-kv dd{margin:0;font-weight:700}
+.tp-tap{display:block;text-align:center;font-size:12.5px;color:var(--muted);font-weight:800;padding:0 0 10px}
+details[open]>summary .tp-tap{display:none}
+
+/* hotels */
+.tp-hotel{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tp-hotel+.tp-hotel{margin-top:10px}
+.tp-hotel>summary{list-style:none;cursor:pointer;display:block}
+.tp-hotel>summary::-webkit-details-marker{display:none}
+.tp-himg{height:130px;position:relative;background:var(--soft)}
+.tp-himg img{width:100%;height:100%;object-fit:cover;display:block}
+.tp-hn{position:absolute;bottom:8px;inset-inline-start:8px;background:rgba(0,0,0,.6);color:#fff;border-radius:10px;padding:4px 10px;font-weight:800;font-size:13px}
+.tp-hb{padding:12px 16px 4px}
+.tp-hb b{font-family:var(--f-d);font-size:17px;display:block}
+.tp-hb span{color:var(--muted);font-size:14px}
+.tp-hrow{display:flex;gap:6px;flex-wrap:wrap;padding:8px 16px 12px}
+.tp-pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;background:var(--soft);padding:4px 10px;font-size:13px;font-weight:800;white-space:nowrap}
+.tp-pill.g{background:rgba(31,132,87,.12);color:var(--good)}
+.tp-pill.w{background:rgba(184,106,14,.13);color:var(--warn)}
+
+/* transport + weather tiles */
+.tp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tp-tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;min-width:0}
+.tp-tile .e{font-size:22px}
+.tp-tile b{display:block;font-family:var(--f-d);font-size:15.5px;line-height:1.3;margin-top:2px}
+.tp-tile span{display:block;color:var(--muted);font-size:13.5px}
+.tp-tile.open{border-style:dashed}
+.tp-tile.full{grid-column:1/-1}
+.tp-wx{display:flex;align-items:center;gap:12px}
+.tp-wx .tmp{font-family:var(--f-d);font-weight:800;font-size:24px;direction:ltr;white-space:nowrap}
+.tp-wx .tmp small{font-size:15px;color:var(--muted);font-weight:700}
+.tp-tip{margin-top:10px;background:var(--soft);border-radius:14px;padding:10px 14px;font-size:14.5px}
+
+/* gallery */
+.tp-gal{display:grid;grid-auto-flow:column;grid-auto-columns:72%;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tp-gal::-webkit-scrollbar{display:none}
+.tp-gal figure{margin:0;scroll-snap-align:start;border-radius:16px;overflow:hidden;position:relative;aspect-ratio:4/3;background:var(--soft)}
+.tp-gal img{width:100%;height:100%;object-fit:cover;display:block}
+.tp-gal figcaption{position:absolute;inset:auto 0 0 0;padding:20px 12px 9px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-weight:800;font-size:14px}
+.tp-mapsph{display:flex;gap:12px;align-items:center;padding:14px 16px;border:2px dashed var(--line);border-radius:16px;margin-top:10px;color:var(--muted);font-weight:700;font-size:14.5px}
+.tp-mapsph .e{font-size:24px}
+a.tp-mapsph{border-style:solid;color:var(--ink);text-decoration:none}
+
+/* WhatsApp + footer */
+.tp-wa{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:#1FAF5A;color:#fff!important;text-decoration:none;font-weight:800;font-family:var(--f-d);font-size:16.5px;margin-top:26px;box-shadow:0 6px 18px rgba(31,175,90,.3)}
+.tp-wa svg{width:30px;height:30px;flex:none}
+.tp-wa small{display:block;font-family:var(--f-b);font-weight:600;font-size:13px;opacity:.92}
+.tp-foot{text-align:center;color:var(--muted);font-size:12.5px;padding:22px 0 36px}
+.tp-credit{font-size:11px;opacity:.75;margin-top:6px}
+
+/* owner tools (side-quests/trip.html only) */
+.tp-gaps{display:flex;flex-direction:column;gap:0;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tp-gap{padding:12px 14px}
+.tp-gap+.tp-gap{border-top:1px solid var(--line)}
+.tp-gap b{display:block;font-size:15px}
+.tp-gap span{display:block;color:var(--muted);font-size:13.5px}
+.tp-ask{display:flex;margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.tp-ask a,.tp-ask button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 4px;font-weight:800;font-size:13.5px;text-decoration:none;background:none;border:0;white-space:nowrap}
+.tp-ask>*+*{border-inline-start:1px solid var(--line)!important}
+.tp-ask svg{width:17px;height:17px;flex:none}
+.tp-hidden-own{display:none!important}

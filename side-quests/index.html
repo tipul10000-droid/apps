@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="23.0";window.SQ_BUILD_AT="18.11.2026 21:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="23.1";window.SQ_BUILD_AT="19.11.2026 08:19";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1043,6 +1043,14 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
 .tvzone{display:none}
 body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:6px}
 .tv-sec-h{display:flex;align-items:center;gap:8px;margin:2px 2px -4px;font-size:12.5px;font-weight:800;letter-spacing:.4px;color:var(--muted)}
+.tp-mini{display:block;width:100%;position:relative;border:0;padding:0;border-radius:18px;overflow:hidden;cursor:pointer;text-align:start;font:inherit;color:#fff;background:#3a1218;box-shadow:0 4px 16px rgba(60,10,20,.28);aspect-ratio:2/1;min-height:168px;margin:0 0 12px}
+.tp-mini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tp-mini::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 25%,rgba(20,4,8,.82))}
+.tp-mini .tm-in{position:absolute;inset:auto 0 0 0;z-index:1;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.tp-mini .tm-cd{position:absolute;z-index:1;top:10px;inset-inline-start:10px;background:var(--tc,#8E1B2C);color:#fff;border-radius:999px;padding:4px 11px;font-weight:800;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.tp-mini .tm-go{position:absolute;z-index:1;top:10px;inset-inline-end:10px;background:rgba(255,255,255,.92);color:#2a0a10;border-radius:999px;padding:4px 10px;font-weight:800;font-size:12.5px}
+.tp-mini b{font-size:19px;line-height:1.2}.tp-mini .tm-dt{font-size:13px;opacity:.9}
+.tp-mini .tm-ch{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.tp-mini .tm-ch span{background:rgba(255,255,255,.18);backdrop-filter:blur(4px);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap}
 .tv-trips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:10px}
 .tv-wk{display:grid;gap:10px}
 .tv-wkc,.ws{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-top:4px solid #1FB3AE;border-radius:18px;padding:14px;display:grid;gap:10px;min-width:0}
@@ -4567,6 +4575,8 @@ html.desk .co-mark{font-size:2.4cqi}
   // {upcoming:[{topic,title,flag,from,to,note}], israel:{visits,places,per_year,since,as_of,regions:[{name,n,icon}],recent:[{name,date}],next,report_img,report_at,links:[{label,url,main,pending}]},
   //  abroad:{app:{name,url,icon,tag},highlights:[{icon,text}],links:[...]}}. A link with no url and a `pending` note shows as a dashed placeholder.
   let travelHub=null;
+  // 23.1 (Oren 19.11.2026): booked trips with their own mini dashboard (collection trips; page trip.html, public share page /trips/?t=)
+  let tripDocs=[];
   const TRAIL_SVG='<svg viewBox="0 0 30 30" aria-hidden="true"><path d="M4 5 Q6 4 9 5 L9.5 25 Q7 26 4.5 25 Z" fill="#F08A24"/><path d="M11.5 4.6 Q14.5 4 18 4.8 L18.4 25.2 Q15 26 11.8 25.3 Z" fill="#2F6FD6"/><path d="M20.5 5 Q23 4.2 26 5 L25.6 25 Q23 25.8 20.8 25 Z" fill="#fff"/></svg>';
   function tvLinks(list){
     const ls=(Array.isArray(list)?list:[]).filter(l=>l&&l.label);if(!ls.length)return null;
@@ -4629,7 +4639,7 @@ html.desk .co-mark{font-size:2.4cqi}
     +'</g></svg>';
   const tvZone={il:"tvZil",abroad:"tvZab"};
   function travelDashes(z){return dashes.filter(d=>!d._deleted&&d.quest==="travel"&&(d.tzone==="il"?"il":"abroad")===z);}
-  function zoneDash(z){const all=travelDashes(z),act=all.filter(d=>!d.archived).sort((a,b)=>(a.order||99)-(b.order||99));
+  function zoneDash(z){const tD=tripDocs.filter(t=>!t._deleted&&t.stage==="booked"&&!(daysUntil(t.to||t.from)<0)).map(t=>t.dash),all=travelDashes(z).filter(d=>!tD.includes(d.id)),act=all.filter(d=>!d.archived).sort((a,b)=>(a.order||99)-(b.order||99));
     if(!act.length)return null;
     return h("div",{class:"tv-dash"},h("p",{class:"tv-sub"},"דשבורדים"),act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null);}
   // 11.9: the full list of Israel trips (settings/travel_hub israel.trips [{n, r (region name as in israel.regions), v visits, d last date}])
@@ -4739,6 +4749,19 @@ html.desk .co-mark{font-size:2.4cqi}
         ls.length?h("div",{class:"lk"},ls.map((l,i)=>h("a",{class:/⭐/.test(l.label||"")?"main":"",href:safeUrl(l.url),target:"_blank",rel:"noopener"},"📍 "+(l.label||"מפה")))):null,
         h("button",{type:"button",class:"op",onclick:()=>openTask(t.id)},"פתח כמשימה"));}))];}
   function zoneHead(z,title,sub,svg){return h("div",{class:"tz-hero tz-"+z,id:tvZone[z]},h("div",{class:"tz-art",html:svg}),h("div",{class:"tz-txt"},h("h2",null,title),h("p",null,sub)));}
+  function tripMini(t){
+    const n=daysUntil(t.from),e=daysUntil(t.to||t.from);if(e!=null&&e<0)return null;
+    const len=t.from&&t.to?daysUntil(t.to)-daysUntil(t.from)+1:0;
+    const cd=n==null?"":n>1?"עוד "+n+" ימים":n===1?"מחר טסים!":"יום "+(1-n)+" מתוך "+len;
+    const fl=(t.flights||[])[0],st=(t.stats||[]).find(x=>/°/.test(x.v||""));
+    const ch=[fl&&n>0?"✈️ "+fl.dep:"",(t.hotels||[]).length?"🏨 "+heN(t.hotels.length,"מלון אחד","מלונות"):"",st?"🌡️ \u2066"+st.v+"\u2069":"",n<=0&&t.next_up?(t.next_up.e||"")+" "+t.next_up.h:""].filter(Boolean);
+    const img=/^[a-z0-9-]+$/.test(t.hero_img||"")?"../trips/img/"+t.hero_img+".webp":"";
+    const go=()=>{if(t.dash&&dashById(t.dash))openDash(t.dash);else location.href="trip.html?id="+encodeURIComponent(t.id);};
+    return h("button",{type:"button",class:"tp-mini",style:"--tc:"+((t.theme&&/^#[0-9a-fA-F]{6}$/.test(t.theme.c1||""))?t.theme.c1:"#8E1B2C"),onclick:go,"aria-label":"דשבורד הטיול "+(t.title||"")},
+      img?h("img",{src:img,alt:"",loading:"lazy"}):null,cd?h("span",{class:"tm-cd"},cd):null,h("span",{class:"tm-go"},"לדשבורד ›"),
+      h("span",{class:"tm-in"},h("b",null,(t.flag?t.flag+" ":"")+(t.title||"")),h("span",{class:"tm-dt",dir:"ltr"},tvRange(t.from,t.to)),t.who?h("span",{class:"tm-dt"},t.who):null,
+        ch.length?h("span",{class:"tm-ch"},ch.map(x=>h("span",null,x))):null));
+  }
   function renderTravel(){
     const sec=$("tvSec");if(!sec)return;
     if(quest!=="travel"||!travelHub){sec.replaceChildren();return;}
@@ -4768,13 +4791,16 @@ html.desk .co-mark{font-size:2.4cqi}
         tvLinks(noDup(I.links,"il")),
         secChat(secUrl("travel_il",...(I.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),chatOf(allTopics.find(x=>x.id==="family-trips")||{})),"טיולים בארץ","שיחה: טיולים בארץ")));
     // abroad zone
-    const trips=(Array.isArray(H.upcoming)?H.upcoming:[]).slice().sort((a,b)=>(a.from||"").localeCompare(b.from||"")).map(tripCard).filter(Boolean);
+    const tdocs=tripDocs.filter(t=>!t._deleted&&t.stage==="booked").sort((a,b)=>(a.from||"").localeCompare(b.from||"")).map(t=>({t,el:tripMini(t)})).filter(x=>x.el);
+    const tIds=tdocs.map(x=>x.t.id),tTop=tdocs.map(x=>x.t.topic).filter(Boolean),tDash=tdocs.map(x=>x.t.dash).filter(Boolean);
+    const trips=(Array.isArray(H.upcoming)?H.upcoming:[]).filter(u=>!(u.trip&&tIds.includes(u.trip))&&!(u.topic&&tTop.includes(u.topic))).slice().sort((a,b)=>(a.from||"").localeCompare(b.from||"")).map(tripCard).filter(Boolean);
     const onCal=trips.filter(x=>!x.concept),ideas=trips.filter(x=>x.concept);
     const ap=A.app||{},apu=safeUrl(ap.url||"");
     const ab=h("section",{class:"tz tz-ab-z"},
-      zoneHead("abroad","בחו״ל",[onCal.length?heN(onCal.length,"נסיעה אחת","נסיעות")+" בלוח":"",ideas.length?heN(ideas.length,"רעיון אחד","רעיונות")+" בקונספט":""].filter(Boolean).join(" · ")||"תכנון, היסטוריה ונתונים",AB_BANNER),
+      zoneHead("abroad","בחו״ל",[onCal.length+tdocs.length?heN(onCal.length+tdocs.length,"נסיעה אחת","נסיעות")+" בלוח":"",ideas.length?heN(ideas.length,"רעיון אחד","רעיונות")+" בקונספט":""].filter(Boolean).join(" · ")||"תכנון, היסטוריה ונתונים",AB_BANNER),
       h("div",{class:"ab-seg",role:"tablist"},[["trip","✈️ טיול בחו״ל"],["work","💼 עבודה בחו״ל"]].map(([v,l])=>h("button",{type:"button",role:"tab","aria-selected":abTab===v?"true":"false",class:abTab===v?"on":"",onclick:()=>{abTab=v;try{localStorage.setItem("sq_tv_ab",v);}catch(e){}renderTravel();}},l))),
       ...(abTab==="work"?workTrips(true):[
+      tdocs.length?h("div",{class:"tp-minis"},tdocs.map(x=>x.el)):null,
       onCal.length?h("div",{class:"tv-sec-h"},"✈️ בלוח: טיסות הוזמנו"):null,onCal.length?h("div",{class:"tv-trips"},onCal.map(x=>x.el)):null,
       ideas.length?h("div",{class:"tv-sec-h"},"💭 בקונספט: עוד בלי טיסות"):null,ideas.length?h("div",{class:"tv-trips"},ideas.map(x=>x.el)):null,
       h("article",{class:"tv-card tv-ab"},
@@ -6270,6 +6296,7 @@ html.desk .co-mark{font-size:2.4cqi}
       if(window.SQWorkCal){SQWorkCal.set(ev,pr);renderCtx();renderList();}},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderTiles();renderFun();renderDash();},()=>{});
+    db.collection("trips").onSnapshot(s=>{tripDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderTravel();},()=>{});
     db.collection("dashboards").onSnapshot(s=>{dashes=s.docs.map(d=>({id:d.id,...d.data()}));splitTopics();renderAll();warmDash();},()=>{});
     db.collection("insurance").onSnapshot(s=>{insDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderDash();},()=>{});
     db.collection("payments").onSnapshot(s=>{payDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
