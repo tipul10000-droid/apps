@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=9"></script>
+<script src="../../content.js?v=16"></script><script>StudyContent.guard('evyatar/pres')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · Present Simple / Continuous</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css?v=7">
+<style>
+:root{--ok:#15803d;--okb:#dcfce7;--no:#be123c;--nob:#ffe4e6;--pl:#e8eef7}
+main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;flex-direction:column}
+.nav{display:flex;align-items:center;gap:6px;height:32px;flex:none}.nav .back{margin:0;flex:1}
+.ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh);margin-top:4px}
+.prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:22px}
+.prog .row b{color:var(--fg);font-size:16px}
+.chip{font-size:13px;background:var(--pl);color:#1e3a8a;border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
+.stg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:6px}
+.stg span{height:22px;border-radius:7px;background:#f1f3f7;color:var(--mut);font:600 11px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;white-space:nowrap}
+.stg span i{position:absolute;inset:0 0 0 auto;background:rgba(47,93,158,.16);width:0}
+.stg span em{position:relative;font-style:normal}
+.stg span.cur{background:#dbe7f7;color:#1e3a8a;outline:2px solid #93b4e0}.stg span.ok{background:var(--okb);color:#166534}
+.card{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px 12px;box-shadow:var(--sh);margin-top:8px;overflow:hidden}
+.tag{display:flex;justify-content:space-between;align-items:center;height:24px;flex:none;font-size:13px;color:var(--mut)}
+.tag b{font-weight:700;color:#1e3a8a;background:var(--pl);border-radius:20px;padding:2px 10px}
+.tag .rt{color:#c2410c;background:#fff1e6;border-radius:20px;padding:2px 8px;font-weight:700;visibility:hidden}.tag .rt.on{visibility:visible}
+.q{flex:0 1 auto;min-height:64px;display:flex;align-items:center;justify-content:center;direction:ltr;text-align:center;font:600 19px/1.4 system-ui,Arial,sans-serif;padding:4px 2px;overflow:hidden}
+.q u{text-decoration:none;display:inline-block;min-width:54px;border-bottom:2px solid #64748b;margin:0 2px}
+.opts{display:flex;flex-direction:column;gap:7px;flex:none}
+.op{font:600 16px/1.25 system-ui,Arial,sans-serif;direction:ltr;text-align:left;min-height:46px;padding:6px 12px;border-radius:12px;border:1.5px solid var(--bd);background:#f8fafc;color:var(--fg);cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px}
+.op .k{flex:none;width:24px;height:24px;border-radius:50%;background:#e2e8f0;color:#475569;font:700 12px/24px system-ui,Arial,sans-serif;text-align:center}
+.op:active{background:#eef2f7}
+.op.ok{border-color:#22c55e;background:var(--okb);color:#14532d}.op.ok .k{background:#22c55e;color:#fff}
+.op.no{border-color:#fb7185;background:var(--nob);color:#881337}.op.no .k{background:#fb7185;color:#fff}
+.op.dim{opacity:.55}
+.fb{flex:1 1 0;min-height:84px;margin-top:8px;border-radius:12px;padding:8px 12px;font-size:15px;line-height:1.45;overflow:auto;background:#f1f5f9;color:var(--mut);display:flex;align-items:center;justify-content:center;text-align:center}
+.fb.ok{background:var(--okb);color:#14532d}.fb.no{background:var(--nob);color:#881337}
+.fb bdi{direction:ltr;font-weight:700}
+.nx{flex:none;margin-top:8px;height:48px;border:0;border-radius:14px;font:700 17px system-ui,Arial,sans-serif;background:var(--ac);color:#fff;cursor:pointer}
+.nx:disabled{background:#cbd5e1;color:#f8fafc;cursor:default}
+.end{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
+.end .big{font-size:54px;line-height:1}.end h2{margin:0;font-size:22px}.end p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
+.end .bt{width:100%;max-width:320px;height:46px;border-radius:14px;border:1.5px solid var(--bd);background:var(--card);font:700 16px system-ui,Arial,sans-serif;color:var(--fg);cursor:pointer}
+.end .bt.pr{background:var(--ac);color:#fff;border:0}
+.card.fin .tag,.card.fin .q,.card.fin .opts,.card.fin .fb,.card.fin .nx{display:none}.card.fin .end{display:flex}
+.ov{position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.ov.on{display:flex}
+.pop{background:var(--card);border-radius:18px;max-width:420px;width:100%;height:min(470px,calc(100dvh - 90px));display:flex;flex-direction:column;overflow:hidden;padding:12px 14px;box-shadow:0 10px 40px rgba(0,0,0,.3);font-size:14.5px;line-height:1.45}
+.ph{display:flex;justify-content:space-between;align-items:center;flex:none;height:30px}.ph .x{width:32px;height:30px;border:0;background:#f1f5f9;border-radius:10px;font-size:15px;color:var(--mut);cursor:pointer}
+.pb{flex:1 1 auto;min-height:0;overflow:hidden;margin-top:4px}.pb section{display:none}.pb section.on{display:block;animation:pin .2s ease}@keyframes pin{from{opacity:0}to{opacity:1}}
+.pf{flex:none;display:grid;grid-template-columns:1fr 64px 1fr;gap:8px;align-items:center;margin-top:8px}.pf button{height:42px;border-radius:12px;font:700 15px system-ui,Arial,sans-serif;cursor:pointer;border:1.5px solid var(--bd);background:var(--card);color:var(--fg)}.pf button.pr{background:var(--ac);color:#fff;border:0}.pf button:disabled{opacity:.35;cursor:default}.pf span{text-align:center;color:var(--mut);font-size:13px}
+.pop h3{margin:0;font-size:18px}.pop h4{margin:8px 0 1px;font-size:15px;color:#1e3a8a}.pop p{margin:2px 0}
+.pop .en{direction:ltr;text-align:left;display:block;font-weight:500;color:#334155;background:#f1f5f9;border-radius:8px;padding:1px 8px;margin:2px 0}
+.pop .cl{margin-top:10px;width:100%;height:42px;border:0;border-radius:12px;background:var(--ac);color:#fff;font:700 16px system-ui,Arial,sans-serif}
+@media (max-height:700px){.q{min-height:52px}.op{min-height:40px;font-size:15px;padding:4px 10px}.opts{gap:6px}.fb{min-height:66px;font-size:14px;margin-top:6px}.nx{height:44px;margin-top:6px}.card{padding:8px 10px 10px;margin-top:6px}.stg{margin-top:4px}}
+</style>
+</head><body><main>
+<div class="nav"><a class="back" href="../">→ אביתר</a><button class="ib" id="rules" type="button">📘 הכללים</button></div>
+<div class="prog">
+ <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך <span id="nn">50</span> שאלות</span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span></span></div>
+ <div class="stg" id="stg"></div>
+</div>
+<div class="card" id="card">
+ <div class="tag"><b id="tg"></b><span class="rt" id="rt">↺ שוב</span></div>
+ <div class="q" id="q"></div>
+ <div class="opts" id="opts"></div>
+ <div class="fb" id="fb">בחר את התשובה הנכונה</div>
+ <button class="nx" id="nx" type="button" disabled>הבא ›</button>
+ <div class="end" id="end"></div>
+</div>
+</main>
+<div class="ov" id="ov"><div class="pop">
+ <div class="ph"><h3>📘 הכללים: זמני הווה</h3><button class="x" id="cl" type="button" aria-label="סגירה">✕</button></div>
+ <div class="pb" id="pb">
+<section><h4>1. Present Simple: מתי משתמשים?</h4>
+ <p>משתמשים ב-<bdi>present simple</bdi> כשמדברים על דברים שקורים באופן קבוע: הרגלים שחוזרים, עובדות שתמיד נכונות ומצבים קבועים.</p>
+ <span class="en">I <b>play</b> tennis every Tuesday.</span>
+ <span class="en">Water <b>boils</b> at 100 degrees.</span>
+ <span class="en">She <b>works</b> in a bank.</span></section>
+<section><h4>2. Present Simple: איך בונים?</h4>
+ <p>עם <bdi>I, you, we, they</bdi> הפועל נשאר בצורת בסיס. עם <bdi>he, she, it</bdi> מוסיפים לפועל <bdi>s</bdi> או <bdi>es</bdi>.</p>
+ <span class="en">play → <b>plays</b> · go → <b>goes</b> · study → <b>studies</b> · have → <b>has</b></span>
+ <p>בשלילה ובשאלה מוסיפים <bdi>don't / doesn't</bdi> או <bdi>Do / Does</bdi>, והפועל חוזר לצורת בסיס.</p>
+ <span class="en">He <b>doesn't like</b> fish. <b>Does</b> she <b>work</b> here?</span></section>
+<section><h4>3. Present Continuous: מתי משתמשים?</h4>
+ <p>משתמשים ב-<bdi>present continuous</bdi> כשמשהו קורה עכשיו, ברגע שמדברים, או כשזה מצב זמני שנמשך רק בתקופה הזו.</p>
+ <span class="en">I<b>'m working</b> at the moment.</span>
+ <span class="en">She<b>'s staying</b> with her friend for a week.</span>
+ <p>משהו שמשתנה לאט ועדיין משתנה, גם הוא ב-<bdi>continuous</bdi>.</p>
+ <span class="en">My English <b>is getting</b> better and better.</span></section>
+<section><h4>4. Present Continuous: איך בונים?</h4>
+ <p>בונים עם <bdi>am / is / are</bdi> ואחריו הפועל עם <bdi>ing</bdi>. בשלילה מוסיפים <bdi>not</bdi>, ובשאלה שמים את <bdi>am / is / are</bdi> לפני הנושא.</p>
+ <span class="en">He <b>isn't playing</b>. <b>Are</b> you <b>coming</b>?</span>
+ <p>כתיב: מורידים <bdi>e</bdi> שקטה, מכפילים עיצור אחרי תנועה קצרה, ו-<bdi>ie</bdi> הופך ל-<bdi>y</bdi>.</p>
+ <span class="en">make → <b>making</b> · swim → <b>swimming</b> · lie → <b>lying</b></span></section>
+<section><h4>5. מילים שעוזרות לזהות</h4>
+ <p>המילים האלה בדרך כלל מראות הרגל, ולכן משתמשים איתן ב-<bdi>present simple</bdi>:</p>
+ <span class="en">always, usually, often, sometimes, never, every day, on Mondays, twice a week</span>
+ <p>המילים האלה בדרך כלל מראות שזה קורה עכשיו או בתקופה הזו, ולכן משתמשים איתן ב-<bdi>present continuous</bdi>:</p>
+ <span class="en">now, right now, at the moment, today, this week, these days, Look! Listen!</span></section>
+<section><h4>6. מדברים על העתיד</h4>
+ <p>תוכנית אישית שכבר סגרנו, עם מילת זמן, כותבים ב-<bdi>present continuous</bdi>.</p>
+ <span class="en">I<b>'m meeting</b> my father tomorrow.</span>
+ <p>לוח זמנים קבוע (רכבת, סרט, בית ספר) כותבים ב-<bdi>present simple</bdi>.</p>
+ <span class="en">The train <b>leaves</b> at eight tonight.</span>
+ <p>אחרי <bdi>when, until, before, after, as soon as</bdi> כותבים <bdi>present simple</bdi>, ולא <bdi>will</bdi>.</p>
+ <span class="en">I'll call you when I <b>get</b> home.</span></section>
+<section><h4>7. עוד שימושים שכדאי לזכור</h4>
+ <p>הרגל מעצבן כותבים לפעמים ב-<bdi>present continuous</bdi> עם <bdi>always</bdi>.</p>
+ <span class="en">You<b>'re always losing</b> your keys!</span>
+ <p>מה שאנשים עושים בתמונה כותבים ב-<bdi>present continuous</bdi>.</p>
+ <span class="en">In this photo, my mother <b>is walking</b> by a lake.</span>
+ <p>עלילה של סרט או ספר, ושידור של משחק, כותבים ב-<bdi>present simple</bdi>.</p>
+ <span class="en">He <b>takes</b> the ball, he <b>runs</b>, and he <b>scores</b>!</span></section>
+<section><h4>8. ⚠️ פעלי מצב: בלי ing</h4>
+ <p>פעלים של מחשבה, רגש, רצון, בעלות וחושים מתארים מצב ולא פעולה. לכן לא מוסיפים להם <bdi>ing</bdi>, גם כשמדברים על עכשיו.</p>
+ <span class="en">know, understand, believe, want, need, like, love, hate, prefer, belong, own, seem, mean</span>
+ <span class="en">I <b>know</b> the answer. ✓ &nbsp; I am knowing the answer. ✗</span></section>
+<section><h4>9. פעלים עם שתי משמעויות</h4>
+ <p>יש פעלים שהם פועל מצב במשמעות אחת ופעולה במשמעות אחרת. כשהם פעולה, מותר להוסיף להם <bdi>ing</bdi>.</p>
+ <span class="en">I <b>think</b> it's a good idea. (דעה) · I<b>'m thinking</b> about it. (חושב עכשיו)</span>
+ <span class="en">They <b>have</b> a big house. (בעלות) · We<b>'re having</b> lunch. (אוכלים)</span>
+ <span class="en">The soup <b>tastes</b> good. (הטעם שלו) · He<b>'s tasting</b> the soup. (טועם)</span></section>
+ </div>
+ <div class="pf"><button id="pv" type="button">→ הקודם</button><span id="pn" dir="ltr"></span><button class="pr" id="pnx" type="button">הבא ←</button></div>
+</div></div>
+<script src="../../track.js?v=9"></script>
+<script src="../../guess.js?v=1"></script>
+<script>
+// הכנה לבוחן באנגלית של אביתר: Present Simple / Present Continuous (אורן 19.11.2026, בוחן 22.11.2026). כיתה י׳, הקבצה א׳.
+// נבנה מהחזרה על זמני עבר (evyatar/past), לפי החומר של perfect-english-grammar.com (שימושים, מבנה, כתיב, פעלי מצב, תרגילים 1-2).
+// מפתח: ev_pres. שאלה = [שלב, משפט (___ = מקום ריק), [תשובה נכונה, מסיח, מסיח, מסיח], הסבר בעברית במשפטים מלאים].
+// טעות: ההסבר מוצג והשאלה חוזרת אחרי כמה שאלות, עד שעונים נכון. 📘 הכללים = 9 עמודים קצרים, נפתחים בכל כניסה עד שקוראים עד הסוף (S.sm).
+const ST=['Present Simple','Present Continuous','מה מתאים?','שימושים מיוחדים','אתגר'];
+const QS=[
+// שלב 1: Present Simple
+[0,'My brother ___ football every Tuesday after school.',['plays','play','is playing','playing'],'המילים <bdi>every Tuesday</bdi> מראות הרגל שחוזר כל שבוע, ולכן משתמשים ב-<bdi>present simple</bdi>. הנושא <bdi>my brother</bdi> הוא כמו <bdi>he</bdi>, ולכן מוסיפים <bdi>s</bdi> לפועל: <bdi>plays</bdi>.'],
+[0,'Water ___ at 100 degrees Celsius.',['boils','boil','is boiling','boiling'],'זו עובדה שתמיד נכונה, ולכן משתמשים ב-<bdi>present simple</bdi>. הנושא <bdi>water</bdi> הוא כמו <bdi>it</bdi>, ולכן כותבים <bdi>boils</bdi>.'],
+[0,'My aunt ___ in a bank in Tel Aviv. She has had this job for ten years.',['works','work','is working','working'],'זה מצב קבוע שנמשך כבר שנים, ולכן משתמשים ב-<bdi>present simple</bdi>. עם <bdi>she</bdi> מוסיפים <bdi>s</bdi>: <bdi>works</bdi>.'],
+[0,'___ your sister speak French?',['Does','Do','Is','Are'],'בשאלה ב-<bdi>present simple</bdi> משתמשים ב-<bdi>do</bdi> או <bdi>does</bdi> לפני הנושא. <bdi>your sister</bdi> היא כמו <bdi>she</bdi>, ולכן כותבים <bdi>Does</bdi>, והפועל <bdi>speak</bdi> נשאר בצורת בסיס.'],
+[0,'I ___ like mushrooms, so please don\'t put them on my pizza.',['don\'t','doesn\'t','am not','not'],'זו העדפה קבועה, ולכן משתמשים ב-<bdi>present simple</bdi>. שלילה עם <bdi>I</bdi> נבנית עם <bdi>don\'t</bdi> ואחריו הפועל בצורת בסיס: <bdi>I don\'t like</bdi>.'],
+[0,'Tom usually ___ his homework after dinner.',['does','do','dos','is doing'],'המילה <bdi>usually</bdi> מראה הרגל, ולכן משתמשים ב-<bdi>present simple</bdi>. לפועל <bdi>do</bdi> מוסיפים <bdi>es</bdi> עם <bdi>he</bdi>, ולכן כותבים <bdi>does</bdi>.'],
+[0,'My little sister ___ very hard for every test.',['studies','studys','study','studyes'],'כשפועל נגמר בעיצור ואחריו <bdi>y</bdi>, עם <bdi>he/she/it</bdi> מחליפים את ה-<bdi>y</bdi> ב-<bdi>ies</bdi>: <bdi>study</bdi> הופך ל-<bdi>studies</bdi>.'],
+[0,'The train to Haifa ___ at 7:15 tomorrow morning.',['leaves','is leave','leave','leaving'],'זה לוח זמנים קבוע של הרכבת, ולכן משתמשים ב-<bdi>present simple</bdi> גם כשמדברים על מחר. עם <bdi>the train</bdi>, שהוא כמו <bdi>it</bdi>, כותבים <bdi>leaves</bdi>.'],
+[0,'How often ___ to the gym?',['do you go','are you go','does you go','you go'],'בשאלה על הרגל (<bdi>How often</bdi>) משתמשים ב-<bdi>present simple</bdi>. עם <bdi>you</bdi> כותבים <bdi>do</bdi> לפני הנושא, והפועל נשאר בצורת בסיס: <bdi>do you go</bdi>.'],
+[0,'Noa and Dana ___ in the same class, but they ___ sit together.',['are / don\'t','is / doesn\'t','are / aren\'t','be / don\'t'],'<bdi>Noa and Dana</bdi> הן רבות, ולכן כותבים <bdi>are</bdi>. בשלילה של פועל רגיל כמו <bdi>sit</bdi> משתמשים ב-<bdi>don\'t</bdi>, ולא ב-<bdi>aren\'t</bdi>.'],
+// שלב 2: Present Continuous
+[1,'Please be quiet! The baby ___ in the next room.',['is sleeping','sleeps','are sleeping','is sleep'],'התינוק ישן עכשיו, בזמן שמדברים, ולכן משתמשים ב-<bdi>present continuous</bdi>. עם <bdi>the baby</bdi>, שהוא כמו <bdi>he</bdi>, כותבים <bdi>is</bdi> ואחריו פועל עם <bdi>ing</bdi>.'],
+[1,'Look out of the window! It ___, so take an umbrella.',['is raining','rains','raining','is rain'],'המילה <bdi>Look</bdi> מראה שהגשם יורד ממש עכשיו, ולכן משתמשים ב-<bdi>present continuous</bdi>: <bdi>is raining</bdi>. לא מספיק לכתוב <bdi>raining</bdi> בלי <bdi>is</bdi>.'],
+[1,'I ___ TV right now. I\'m doing my English homework.',['am not watching','don\'t watch','not watching','am not watch'],'המילים <bdi>right now</bdi> מראות שמדובר ברגע הזה, ולכן משתמשים ב-<bdi>present continuous</bdi>. השלילה נבנית כך: <bdi>am not</bdi> ואחריו פועל עם <bdi>ing</bdi>.'],
+[1,'What ___ at the moment? You look really busy.',['are you doing','do you do','you are doing','are you do'],'המילים <bdi>at the moment</bdi> מראות שמדובר בעכשיו. בשאלה ב-<bdi>present continuous</bdi> שמים את <bdi>are</bdi> לפני הנושא, ואחר כך את הפועל עם <bdi>ing</bdi>: <bdi>are you doing</bdi>.'],
+[1,'The kids are ___ in the pool with their dad.',['swimming','swiming','swimeing','swim'],'כתיב: כשפועל קצר נגמר בתנועה אחת ועיצור אחד, מכפילים את העיצור לפני <bdi>ing</bdi>. לכן <bdi>swim</bdi> הופך ל-<bdi>swimming</bdi>.'],
+[1,'Grandpa is ___ on the sofa because he is tired.',['lying','lieing','lyeing','lie'],'כתיב: כשפועל נגמר ב-<bdi>ie</bdi>, מחליפים את ה-<bdi>ie</bdi> ב-<bdi>y</bdi> לפני <bdi>ing</bdi>. לכן <bdi>lie</bdi> הופך ל-<bdi>lying</bdi>.'],
+[1,'Mom is ___ a chocolate cake for the party tonight.',['making','makeing','makking','make'],'כתיב: כשפועל נגמר ב-<bdi>e</bdi> שקטה, מורידים את ה-<bdi>e</bdi> לפני <bdi>ing</bdi>. לכן <bdi>make</bdi> הופך ל-<bdi>making</bdi>.'],
+[1,'My friends ___ for me outside, so I have to go now!',['are waiting','is waiting','waits','wait'],'החברים מחכים עכשיו, ברגע הזה, ולכן משתמשים ב-<bdi>present continuous</bdi>. <bdi>My friends</bdi> הם רבים, ולכן כותבים <bdi>are</bdi> ולא <bdi>is</bdi>.'],
+[1,'I usually walk to school, but this week I ___ the bus because my leg hurts.',['am taking','take','takes','am take'],'המילים <bdi>this week</bdi> מראות מצב זמני, שונה מההרגל הרגיל. למצב זמני משתמשים ב-<bdi>present continuous</bdi>: <bdi>am taking</bdi>.'],
+[1,'Listen! Somebody ___ the piano upstairs.',['is playing','plays','are playing','play'],'המילה <bdi>Listen</bdi> מראה שזה קורה עכשיו, ולכן משתמשים ב-<bdi>present continuous</bdi>. <bdi>Somebody</bdi> הוא יחיד, ולכן כותבים <bdi>is playing</bdi>.'],
+// שלב 3: Simple או Continuous?
+[2,'Dad ___ a cup of coffee every morning before work.',['drinks','is drinking','drink','are drinking'],'המילים <bdi>every morning</bdi> מראות הרגל קבוע, ולכן משתמשים ב-<bdi>present simple</bdi>. עם <bdi>Dad</bdi>, שהוא כמו <bdi>he</bdi>, כותבים <bdi>drinks</bdi>.'],
+[2,'Dad can\'t talk to you right now. He ___ a shower.',['is having','has','have','are having'],'אבא באמצע מקלחת ברגע הזה, ולכן משתמשים ב-<bdi>present continuous</bdi>. כאן <bdi>have a shower</bdi> הוא פעולה (להתקלח), ולכן מותר להוסיף לו <bdi>ing</bdi>.'],
+[2,'We often ___ to the cinema on Saturday nights.',['go','are going','goes','is going'],'המילה <bdi>often</bdi> מראה הרגל שחוזר, ולכן משתמשים ב-<bdi>present simple</bdi>. עם <bdi>we</bdi> הפועל נשאר בצורת בסיס: <bdi>go</bdi>.'],
+[2,'Shh! The teacher ___ something important right now.',['is explaining','explains','explain','are explaining'],'המילים <bdi>right now</bdi> מראות שהמורה מסבירה ממש עכשיו, ולכן משתמשים ב-<bdi>present continuous</bdi>: <bdi>is explaining</bdi>.'],
+[2,'They ___ rice every day, because they prefer pasta.',['don\'t eat','aren\'t eating','doesn\'t eat','isn\'t eating'],'המילים <bdi>every day</bdi> מראות הרגל, ולכן משתמשים ב-<bdi>present simple</bdi>. בשלילה עם <bdi>they</bdi> כותבים <bdi>don\'t</bdi> ואחריו צורת בסיס: <bdi>don\'t eat</bdi>.'],
+[2,'She isn\'t at home this week. She ___ her grandmother in Eilat.',['is visiting','visits','visit','are visiting'],'היא אצל סבתא רק בשבוע הזה, וזה מצב זמני שקורה עכשיו. לכן משתמשים ב-<bdi>present continuous</bdi>: <bdi>is visiting</bdi>.'],
+[2,'How often ___ your room?',['do you clean','are you cleaning','does you clean','you clean'],'שאלה עם <bdi>How often</bdi> שואלת על הרגל, ולכן משתמשים ב-<bdi>present simple</bdi>. עם <bdi>you</bdi> כותבים <bdi>do you clean</bdi>.'],
+[2,'These days Evyatar ___ a really good book about football.',['is reading','reads','read','are reading'],'המילים <bdi>These days</bdi> מראות פעולה זמנית שנמשכת בתקופה הזו, גם אם הוא לא קורא ברגע הזה ממש. לכן משתמשים ב-<bdi>present continuous</bdi>.'],
+[2,'Cole Palmer ___ for Chelsea, and he scores a lot of goals every season.',['plays','is playing','play','are playing'],'זה מצב קבוע (הוא שחקן של צ׳לסי), והמילים <bdi>every season</bdi> מראות משהו שחוזר. לכן משתמשים ב-<bdi>present simple</bdi>: <bdi>plays</bdi>.'],
+[2,'Right now my parents ___ dinner in the kitchen, and I ___ the table.',['are cooking / am setting','cook / set','are cooking / set','cook / am setting'],'המילים <bdi>Right now</bdi> מתייחסות לשתי הפעולות, ולכן שתיהן ב-<bdi>present continuous</bdi>: <bdi>are cooking</bdi> (הם רבים) ו-<bdi>am setting</bdi> (עם <bdi>I</bdi>).'],
+// שלב 4: שימושים מיוחדים
+[3,'I ___ my cousins tomorrow evening. We planned it last week.',['am meeting','meet','meets','am meet'],'זו תוכנית אישית לעתיד שכבר סגרו, עם מילת זמן (<bdi>tomorrow</bdi>). לתוכנית כזו משתמשים ב-<bdi>present continuous</bdi>: <bdi>I am meeting</bdi>.'],
+[3,'Hurry up! The movie ___ at 8:00, and it\'s already 7:45.',['starts','is start','start','starting'],'שעת התחלה של סרט היא לוח זמנים קבוע של הקולנוע, ולכן משתמשים ב-<bdi>present simple</bdi>: <bdi>The movie starts</bdi>.'],
+[3,'What ___ this weekend? Do you want to come to the beach with us?',['are you doing','do you do','you are doing','does you do'],'שואלים על התוכניות של סוף השבוע הקרוב, ולכן משתמשים ב-<bdi>present continuous</bdi>. בשאלה <bdi>are</bdi> בא לפני הנושא: <bdi>are you doing</bdi>.'],
+[3,'My little brother ___ my phone without asking! It drives me crazy.',['is always taking','always is taking','is always take','always taking'],'הרגל מעצבן נכתב לפעמים ב-<bdi>present continuous</bdi> עם <bdi>always</bdi>. המילה <bdi>always</bdi> באה בין <bdi>is</bdi> לבין הפועל עם <bdi>ing</bdi>: <bdi>is always taking</bdi>.'],
+[3,'Julie usually lives in London, but this month she ___ in Paris.',['is living','lives','live','is live'],'בדרך כלל היא גרה בלונדון (קבוע), אבל רק בחודש הזה היא בפריז. למצב זמני כזה משתמשים ב-<bdi>present continuous</bdi>: <bdi>is living</bdi>.'],
+[3,'My English ___ better and better. Now I can understand movies!',['is getting','gets','get','are getting'],'משהו שמשתנה לאט ועדיין ממשיך להשתנות (<bdi>better and better</bdi>) נכתב ב-<bdi>present continuous</bdi>: <bdi>is getting</bdi>.'],
+[3,'I will call you when I ___ home tonight.',['get','will get','am getting','gets'],'אחרי מילים כמו <bdi>when</bdi>, <bdi>until</bdi>, <bdi>before</bdi> ו-<bdi>as soon as</bdi> מדברים על העתיד ב-<bdi>present simple</bdi>, ולא עם <bdi>will</bdi>. לכן כותבים <bdi>when I get home</bdi>.'],
+[3,'At the end of the movie, the detective ___ the killer.',['catches','is catching','catch','are catching'],'כשמספרים מה קורה בעלילה של סרט או ספר, משתמשים ב-<bdi>present simple</bdi>. עם <bdi>the detective</bdi>, שהוא כמו <bdi>he</bdi>, כותבים <bdi>catches</bdi>.'],
+[3,'In this photo, my mother ___ beside a beautiful lake.',['is walking','walks','walk','is walk'],'כשמתארים מה אנשים עושים בתמונה, משתמשים ב-<bdi>present continuous</bdi>, כאילו זה קורה עכשיו: <bdi>is walking</bdi>.'],
+[3,'Palmer takes the ball, he ___ past two defenders, and he scores!',['runs','is running','run','running'],'בשידור של משחק (פרשנות ספורט) מתארים פעולות קצרות שקורות עכשיו ב-<bdi>present simple</bdi>, כמו <bdi>takes</bdi> ו-<bdi>scores</bdi>. לכן גם <bdi>runs</bdi>.'],
+// שלב 5: אתגר (פעלי מצב, טעויות, משמעות)
+[4,'Sorry, I ___ what you mean. Can you say it again?',['don\'t understand','am not understanding','doesn\'t understand','not understand'],'<bdi>understand</bdi> הוא פועל מצב (פועל של מחשבה), ולא מוסיפים לו <bdi>ing</bdi> גם כשמדברים על עכשיו. לכן כותבים <bdi>I don\'t understand</bdi>.'],
+[4,'This soup ___ delicious! Can I have some more, please?',['tastes','is tasting','taste','are tasting'],'כאן <bdi>taste</bdi> מתאר איך המרק (מה הטעם שלו), וזה פועל מצב, ולכן אין <bdi>ing</bdi>. עם <bdi>this soup</bdi>, שהוא כמו <bdi>it</bdi>, כותבים <bdi>tastes</bdi>.'],
+[4,'Please don\'t interrupt me. I ___ about the answer.',['am thinking','think','thinks','am think'],'כאן <bdi>think about</bdi> פירושו לחשוב ולשקול עכשיו, וזו פעולה ולא דעה. לכן מותר <bdi>present continuous</bdi>: <bdi>I am thinking</bdi>.'],
+[4,'I ___ that this is a great idea for the class trip.',['think','am thinking','thinks','am think'],'כאן <bdi>think</bdi> פירושו "יש לי דעה", וזה פועל מצב. דעה כותבים ב-<bdi>present simple</bdi>: <bdi>I think that...</bdi>.'],
+[4,'We ___ a great time at the party! Come and join us.',['are having','have','has','is having'],'כאן <bdi>have a great time</bdi> פירושו "לעשות חיים" עכשיו, וזו חוויה ולא בעלות. לכן מותר <bdi>present continuous</bdi>: <bdi>We are having</bdi>.'],
+[4,'My grandparents ___ a big house with a beautiful garden.',['have','are having','has','is having'],'כאן <bdi>have</bdi> פירושו "יש להם" (בעלות), וזה פועל מצב בלי <bdi>ing</bdi>. עם <bdi>my grandparents</bdi>, שהם רבים, כותבים <bdi>have</bdi>.'],
+[4,'Which sentence has a mistake?',['I am wanting a new phone for my birthday.','She is talking to her friend on the phone.','He doesn\'t watch TV on school nights.','Are you coming to the party tonight?'],'<bdi>want</bdi> הוא פועל מצב ולא בא עם <bdi>ing</bdi>, ולכן הנכון הוא <bdi>I want a new phone</bdi>. שלושת המשפטים האחרים נכונים.'],
+[4,'Which sentence is correct?',['This bag belongs to my sister.','This bag is belonging to my sister.','This bag belong to my sister.','This bag is belong to my sister.'],'<bdi>belong</bdi> (שייך ל-) הוא פועל מצב, ולכן לא מוסיפים לו <bdi>ing</bdi>. עם <bdi>this bag</bdi>, שהוא כמו <bdi>it</bdi>, כותבים <bdi>belongs</bdi>.'],
+[4,'Which sentence describes a temporary situation?',['I am working in a café this summer.','I work in a café near my house.','I usually work in a café on Fridays.','I always work in a café on holidays.'],'<bdi>I am working ... this summer</bdi> מתאר מצב זמני, רק בקיץ הזה. שלושת המשפטים האחרים ב-<bdi>present simple</bdi> ומתארים מצב קבוע או הרגל.'],
+[4,'Which sentence talks about a plan for next week?',['We are flying to Rome next Monday.','We fly to Rome every summer.','We usually fly to Rome in July.','We love flying to Rome with Dad.'],'<bdi>We are flying ... next Monday</bdi> הוא <bdi>present continuous</bdi> עם מילת זמן בעתיד, וזו תוכנית שכבר סגרו. המשפטים האחרים מתארים הרגל או משהו שאוהבים.']
+];
+const N=QS.length,$=id=>document.getElementById(id);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+// S.d[i]=1 נלמדה, S.w[i]=מספר טעויות, S.f[i]=1 נכון בניסיון הראשון. S.rv = סבב חזרה על שאלות שטעו בהן.
+function fresh(){return{v:1,d:{},w:{},f:{},att:0,okc:0,st:{c:0,b:0},rv:null,rvd:{},started:new Date().toISOString()}}
+let S=LS.get('ev_pres');if(!S||!S.d)S=fresh();S.rvd=S.rvd||{};
+const save=()=>LS.set('ev_pres',S);
+const done=()=>Object.keys(S.d).length;
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+let Q=[],cur=-1,answered=false,first=true;
+function stageOf(){for(let s=0;s<ST.length;s++)if(QS.some((q,i)=>q[0]===s&&!S.d[i]))return s;return -1}
+function build(){if(S.rv){Q=shuf(S.rv.filter(i=>!S.rvd[i]));return}const s=stageOf();Q=s<0?[]:shuf(QS.map((q,i)=>i).filter(i=>QS[i][0]===s&&!S.d[i]))}
+function bar(){$('dn').textContent=done();$('acc').textContent='🎯 '+(S.att?Math.round(S.okc/S.att*100)+'%':'—');$('stk').textContent='🔥 '+S.st.c;
+ const sc=stageOf();$('stg').innerHTML=ST.map((n,s)=>{const t=QS.filter(q=>q[0]===s).length,d=QS.filter((q,i)=>q[0]===s&&S.d[i]).length;
+  return `<span class="${d===t?'ok':s===sc?'cur':''}"><i style="width:${d/t*100}%"></i><em>${d===t?'✓':'שלב '+(s+1)}</em></span>`}).join('')}
+// מקטינים גופן של השאלה והתשובות עד שהכול נכנס במסך אחד
+// הסבר ארוך במסך נמוך: מקטינים את הגופן של ההסבר עד שנכנס בלי גלילה
+function fitFb(){const b=$('fb');let f=15;b.style.fontSize='';while(f>12&&b.scrollHeight>b.clientHeight+1){f-=.5;b.style.fontSize=f+'px'}}
+function fit(){const q=$('q'),c=$('card');let f=19;q.style.fontSize='';document.querySelectorAll('.op').forEach(o=>o.style.fontSize='');
+ while(f>13&&(q.scrollHeight>q.clientHeight+1||c.scrollHeight>c.clientHeight+1)){f--;q.style.fontSize=f+'px';if(f<16)document.querySelectorAll('.op').forEach(o=>o.style.fontSize=(f-1)+'px')}}
+const blank=t=>t.replace(/___/g,'<u>&nbsp;</u>');
+function show(){answered=false;$('nx').disabled=true;$('nx').textContent='הבא ›';
+ if(!Q.length)build();if(!Q.length)return finish();
+ cur=Q.shift();const q=QS[cur];first=!(S.w[cur]>0)||!!S.rv;
+ $('tg').textContent=S.rv?'🔁 חזרה על טעויות':'שלב '+(q[0]+1)+': '+ST[q[0]];
+ $('rt').classList.toggle('on',S.w[cur]>0&&!S.rv);
+ $('q').innerHTML='<span>'+blank(q[1])+'</span>';
+ const os=shuf(q[2].map((t,i)=>({t,i})));
+ $('opts').innerHTML=os.map((o,k)=>`<button class="op" type="button" data-i="${o.i}"><span class="k">${'ABCD'[k]}</span><span>${o.t}</span></button>`).join('');
+ $('fb').className='fb';$('fb').style.fontSize='';$('fb').textContent='בחר את התשובה הנכונה';bar();fit();if(window.StudyGuess)StudyGuess.q()}
+// זיהוי ניחושים (אורן 13.11.2026): כמה טעויות מהירות מדי = ההודעה של הילה, והתשובה לא מתקבלת
+$('opts').onclick=e=>{const b=e.target.closest('.op');if(!b||answered)return;if(window.StudyGuess&&StudyGuess.chk(b.dataset.i==='0'))return;answered=true;const ok=b.dataset.i==='0',q=QS[cur];S.att++;
+ document.querySelectorAll('.op').forEach(x=>{if(x.dataset.i==='0')x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
+ if(ok){S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);if(S.rv)S.rvd[cur]=1;else{S.d[cur]=1;if(!(S.w[cur]>0))S.f[cur]=1}
+  $('fb').className='fb ok';$('fb').innerHTML='<div>✓ נכון! '+q[3]+'</div>'}
+ else{S.st.c=0;S.w[cur]=(S.w[cur]||0)+1;Q.splice(Math.min(3,Q.length),0,cur); // חוזרת אחרי 3 שאלות
+  $('fb').className='fb no';$('fb').innerHTML='<div>✗ לא נכון. '+q[3]+'</div>'}
+ if(S.rv&&!Q.length&&ok){S.rv=null;S.rvd={}}
+ fitFb();save();bar();$('nx').disabled=false;if(!Q.length&&(S.rv?false:stageOf()!==QS[cur][0]))$('nx').textContent=stageOf()<0?'לסיום 🎉':'לשלב הבא ›';report()};
+$('nx').onclick=()=>{if(answered)show()};
+function finish(){bar();const f=Object.keys(S.f).length,wr=QS.map((q,i)=>i).filter(i=>S.w[i]>0);$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">🏆</div><h2>סיימת את כל ${N} השאלות!</h2><p><b>${f}</b> מתוך ${N} נכונות בניסיון הראשון.<br>${wr.length?'יש '+wr.length+' שאלות שטעית בהן. שווה לעבור עליהן שוב לפני הבוחן.':'בלי אף טעות, אלוף! 💪'}</p>`+
+ (wr.length?'<button class="bt pr" id="rvb" type="button">🔁 חזרה על השאלות שטעיתי</button>':'')+'<button class="bt" id="agb" type="button">↺ להתחיל מההתחלה</button>';
+ const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();$('card').classList.remove('fin');Q=[];show()};
+ $('agb').onclick=()=>{if(!confirm('להתחיל מההתחלה? ההתקדמות תתאפס.'))return;S=fresh();save();report();$('card').classList.remove('fin');Q=[];show()}}
+function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1})}
+// הכללים בעמודים קצרים (כלל: הסבר ארוך = כמה עמודים קצרים). נפתחים בכל כניסה עד שקוראים עד העמוד האחרון.
+const PG=[...document.querySelectorAll('#pb section')];let pg=0;
+function page(i){pg=Math.max(0,Math.min(PG.length-1,i));PG.forEach((x,k)=>x.classList.toggle('on',k===pg));$('pn').textContent=(pg+1)+' / '+PG.length;$('pv').disabled=pg===0;$('pnx').textContent=pg===PG.length-1?'סיימתי ✓':'הבא ←'}
+function rules(){page(0);$('ov').classList.add('on')}
+const shut=()=>$('ov').classList.remove('on');
+$('rules').onclick=rules;$('cl').onclick=shut;$('ov').onclick=e=>{if(e.target===$('ov'))shut()};
+$('pv').onclick=()=>page(pg-1);$('pnx').onclick=()=>{if(pg<PG.length-1)page(pg+1);else{S.sm=1;save();shut()}};
+if(!S.sm)setTimeout(rules,300);
+if(window.StudyGuess)StudyGuess.init('evyatar','pres',{fast:2500});
+if(window.StudyTrack)StudyTrack.init('evyatar','pres',['ev_pres']);
+$('nn').textContent=N;
+addEventListener('resize',fit);
+show();
+</script>
+</body></html>
