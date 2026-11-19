@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="23.7";window.SQ_BUILD_AT="19.11.2026 15:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="23.8";window.SQ_BUILD_AT="19.11.2026 15:25";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -242,7 +242,7 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
 .opt.pressed,.ib.pressed{background:var(--k-admin)!important;color:#fff!important;border-color:var(--k-admin)!important;transform:scale(.96);transition:transform .1s}
 .busy{pointer-events:none}.busy .opt:not(.pressed){opacity:.45}
 .toast.undo{display:flex;align-items:center;gap:12px;padding:6px 8px 6px 16px}
-.toast.undo button{border:0;border-radius:999px;background:var(--accent);color:#111;font-weight:800;font-size:14px;padding:6px 14px}
+.toast.undo button{white-space:nowrap;flex:none;border:0;border-radius:999px;background:var(--accent);color:#111;font-weight:800;font-size:14px;padding:6px 14px}
 details.more{border-top:1px dashed var(--line);padding-top:6px}
 details.more summary{cursor:pointer;color:var(--muted);font-size:13.5px;font-weight:700;list-style:none}
 details.more summary::-webkit-details-marker{display:none}
@@ -2451,45 +2451,65 @@ html.desk .co-mark{font-size:2.4cqi}
 #sqSplash .ssD{display:flex;gap:10px;direction:ltr}
 #sqSplash .ssD i{width:9px;height:9px;border-radius:50%;background:#2B3732;transition:background .25s,box-shadow .25s}
 #sqSplash .ssD i.on{background:var(--c);box-shadow:0 0 8px var(--c)}
-#sqSplash .ssBar{position:absolute;left:18%;right:18%;bottom:calc(11% + env(safe-area-inset-bottom,0px));height:4px;border-radius:9px;background:#2B3732;direction:ltr}
+#sqSplash .ssBar{position:absolute;left:18%;right:18%;bottom:calc(18% + env(safe-area-inset-bottom,0px));height:4px;border-radius:9px;background:#2B3732;direction:ltr}
 #sqSplash.a .ssBar{left:14%;right:14%;height:6px;background:rgba(0,0,0,.3)}
 #sqSplash .ssBar b{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:9px;background:linear-gradient(90deg,#FFE08A,#F4B63A);box-shadow:0 0 10px rgba(255,210,90,.75)}
 #sqSplash .ssBar b::after{content:"";position:absolute;right:-6px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#FFF4C9;box-shadow:0 0 12px 4px var(--qa,#F4B63A)}
-#sqSplash .ssT{position:absolute;inset-inline:0;bottom:calc(11% + env(safe-area-inset-bottom,0px) - 30px);text-align:center;font:600 13px/1.3 "Assistant",-apple-system,system-ui,sans-serif;color:rgba(255,255,255,.82);direction:rtl;min-height:18px}
+#sqSplash .ssT{position:absolute;inset-inline:0;bottom:calc(18% + env(safe-area-inset-bottom,0px) - 30px);text-align:center;font:600 13px/1.3 "Assistant",-apple-system,system-ui,sans-serif;color:rgba(255,255,255,.82);direction:rtl;min-height:18px}
+#sqSplash .ssGo{position:absolute;left:50%;bottom:calc(18% + env(safe-area-inset-bottom,0px) - 82px);transform:translateX(-50%);width:168px;height:48px;border:1px solid rgba(255,255,255,.55);border-radius:999px;
+  background:rgba(15,21,19,.45);color:#fff;font:800 17px/1 "Assistant",-apple-system,system-ui,sans-serif;direction:rtl;visibility:hidden;opacity:0;transition:opacity .25s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);cursor:pointer}
+#sqSplash.ready .ssGo{visibility:visible;opacity:1}
+#sqSplash .ssGo:active{background:rgba(244,182,58,.35)}
+#sqSplash .ssGo:focus-visible{outline:2px solid #F4B63A;outline-offset:3px}
 @media (prefers-reduced-motion:reduce){#sqSplash{transition:opacity .2s}#sqSplash.out{transform:none}}
 </style>
 </head>
 <body>
-<div id="sqSplash" aria-hidden="true"><div class="ssA"></div><div class="ssB"><img src="apple-touch-icon.png?v=2" alt=""><div class="ssW">Side Quests</div>
-<div class="ssD"><i style="--c:#EE8C4F"></i><i style="--c:#FF4F8B"></i><i style="--c:#C9B866"></i><i style="--c:#6CBDF7"></i><i style="--c:#FFC857"></i><i style="--c:#D97757"></i></div></div>
-<div class="ssBar"><b></b></div><div class="ssT"></div></div>
-<script>/* 23.7: splash controller. The bar moves on real steps (30% code, 55% data on the device, 85% server answered, 100% screen drawn)
-   and creeps slowly toward the next step in between, so it never stops and never hits 100% early. Min 0.8s, max 6s. */
-(function(){var S=document.getElementById("sqSplash");if(!S)return;
+<script>/* 23.7-23.8: splash controller. The bar moves on real steps (30% code, 55% data on the device, 85% server answered, 100% screen drawn)
+   and creeps slowly toward the next step in between, so it never stops and never hits 100% early. Min 0.8s, max 6s.
+   23.8 (Oren 19.11.2026): style choice (sq_splash_style: art = the ChatGPT illustration, basic = the built-in one), entry mode
+   (sq_splash_enter: auto, or tap = stays on the splash with a "כניסה" button, for privacy) and a preview from settings. */
+(function(){
+function ls(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function make(o){o=o||{};var old=document.getElementById("sqSplash");if(old)old.remove();
+var S=document.createElement("div");S.id="sqSplash";S.setAttribute("role",o.preview?"dialog":"presentation");
+S.innerHTML='<div class="ssA"></div><div class="ssB"><img src="apple-touch-icon.png?v=2" alt=""><div class="ssW">Side Quests</div>'+
+'<div class="ssD"><i style="--c:#EE8C4F"></i><i style="--c:#FF4F8B"></i><i style="--c:#C9B866"></i><i style="--c:#6CBDF7"></i><i style="--c:#FFC857"></i><i style="--c:#D97757"></i></div></div>'+
+'<div class="ssBar"><b></b></div><div class="ssT"></div><button type="button" class="ssGo">כניסה<span aria-hidden="true"> ←</span></button>';
+(document.body||document.documentElement).appendChild(S);
 var QA={side:"#EE8C4F",fun:"#FF4F8B",army:"#C9B866",work:"#6CBDF7",travel:"#FFC857",ai:"#D97757"},q=location.hash.slice(1);
 S.style.setProperty("--qa",QA[q]||"#F4B63A");
-var img=null;try{img=localStorage.getItem("sq_splash");}catch(e){}
-if(img&&/^data:image\//.test(img)){S.querySelector(".ssA").style.backgroundImage="url("+img+")";S.className="a";S.querySelector(".ssA").after(S.querySelector(".ssW"));}
-var bar=S.querySelector(".ssBar b"),txt=S.querySelector(".ssT"),dots=S.querySelectorAll(".ssD i"),t0=performance.now(),cap=12,p=0,fin=0,gone=0;
+var img=ls("sq_splash"),style=o.style||ls("sq_splash_style")||"art";
+if(style==="art"&&img&&/^data:image\//.test(img)){S.querySelector(".ssA").style.backgroundImage="url("+img+")";S.className="a";S.querySelector(".ssA").after(S.querySelector(".ssW"));}
+var tap=o.preview||ls("sq_splash_enter")==="tap",go=S.querySelector(".ssGo");
+var bar=S.querySelector(".ssBar b"),txt=S.querySelector(".ssT"),dots=S.querySelectorAll(".ssD i"),t0=performance.now(),cap=12,p=0,fin=0,gone=0,ready=0;
 var red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 function stage(c){if(c>cap)cap=c;}
+function out(){if(gone)return;gone=1;bar.style.width="100%";S.classList.add("out");setTimeout(function(){S.remove();},400);}
+go.onclick=out;
 function tick(){if(gone)return;var now=performance.now(),el=now-t0,target=fin?100:cap-2;
   p+=(target-p)*(fin?0.3:0.04);if(red)p=target;if(p>target)p=target;
   bar.style.width=p.toFixed(1)+"%";var n=Math.round(p/100*6);for(var i=0;i<dots.length;i++)dots[i].classList.toggle("on",i<n);
   if(!fin){
-    if(navigator.onLine===false&&el>600)txt.textContent="בלי רשת, פותח מהעותק השמור";
-    else if(el>2500)txt.textContent="הקליטה חלשה, עוד רגע";
+    if(!o.preview&&navigator.onLine===false&&el>600)txt.textContent="בלי רשת, פותח מהעותק השמור";
+    else if(!o.preview&&el>2500)txt.textContent="הקליטה חלשה, עוד רגע";
     var pin=document.getElementById("sq-pin"),l=document.getElementById("list");
-    if(pin||(l&&l.children.length&&!/^\s*טוען/.test(l.textContent)))done();
-    else if(el>6000)done();}
-  else if(p>99.5&&now>=fin){gone=1;bar.style.width="100%";S.classList.add("out");setTimeout(function(){S.remove();},400);return;}
+    if(o.preview){if(el>2200)done();}
+    else if(pin){tap=false;done();}
+    else if((l&&l.children.length&&!/^\s*טוען/.test(l.textContent))||el>6000)done();}
+  else if(p>99.5&&now>=fin){bar.style.width="100%";
+    if(!tap){out();return;}
+    if(!ready){ready=1;txt.textContent="";S.classList.add("ready");try{go.focus({preventScroll:true});}catch(e){}}}
   requestAnimationFrame(tick);}
 function done(){if(fin)return;fin=Math.max(performance.now()+250,t0+800);}
-document.addEventListener("DOMContentLoaded",function(){stage(30);});
-window.addEventListener("sq-net",function(){stage(55);});
-window.addEventListener("sq-refreshed",function(){stage(85);});
-setTimeout(function(){stage(30);},400);setTimeout(function(){stage(55);},1500);setTimeout(function(){stage(70);},3000);
-window.SQSplash={stage:stage,done:done};requestAnimationFrame(tick);})();</script>
+if(o.preview){setTimeout(function(){stage(30);},150);setTimeout(function(){stage(55);},700);setTimeout(function(){stage(85);},1500);}
+else{document.addEventListener("DOMContentLoaded",function(){stage(30);});
+  window.addEventListener("sq-net",function(){stage(55);});
+  window.addEventListener("sq-refreshed",function(){stage(85);});
+  setTimeout(function(){stage(30);},400);setTimeout(function(){stage(55);},1500);setTimeout(function(){stage(70);},3000);}
+requestAnimationFrame(tick);return {stage:stage,done:done};}
+window.SQSplash=make();window.SQSplash.preview=function(style){return make({preview:true,style:style});};
+})();</script>
 
 <div class="qband qb-side">
   <svg class="qa-art" viewBox="0 0 390 102" aria-hidden="true">
@@ -3039,7 +3059,7 @@ window.SQSplash={stage:stage,done:done};requestAnimationFrame(tick);})();</scrip
   let db=null, topics=[], funTopics=[], projects=[], filterKind="all", openId=null, canWrite=true;
   const $=id=>document.getElementById(id);
   function h(tag,attrs,...kids){const e=document.createElement(tag);if(attrs)for(const k in attrs){const v=attrs[k];if(v==null||v===false)continue;if(k==="class")e.className=v;else if(k==="html")e.innerHTML=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v===true?"":v);}for(const c of kids.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
-  function toast(t,undo,ms,cls){document.querySelectorAll(".toast").forEach(x=>x.remove());const e=h("div",{class:"toast"+(undo?" undo":"")+(cls?" "+cls:""),role:"status"},h("span",null,t),undo?h("button",{type:"button",onclick:()=>{e.remove();undo();}},"בטל"):null);document.body.append(e);setTimeout(()=>e.remove(),ms||(undo?5000:2000));}
+  function toast(t,undo,ms,cls,lbl){document.querySelectorAll(".toast").forEach(x=>x.remove());const e=h("div",{class:"toast"+(undo?" undo":"")+(cls?" "+cls:""),role:"status"},h("span",null,t),undo?h("button",{type:"button",onclick:()=>{e.remove();undo();}},lbl||"בטל"):null);document.body.append(e);setTimeout(()=>e.remove(),ms||(undo?5000:2000));}
   // a tapped button stays lit ~300ms before the card changes, so the tap is visible
   function press(fn){return e=>{e.stopPropagation();const b=e.currentTarget;if(b.closest(".busy"))return;b.classList.add("pressed");const c=b.closest(".ai,.row,.later-menu");if(c)c.classList.add("busy");setTimeout(fn,300);};}
   function todayISO(){const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);}
@@ -4909,13 +4929,27 @@ window.SQSplash={stage:stage,done:done};requestAnimationFrame(tick);})();</scrip
   function histStale(e){const t=allTopics.find(z=>z.id===e.id);
     if(e.k==="add")return !t;if(e.k==="del")return !!t;if(!t)return true;
     if(e.set&&e.set.status&&(t.status||"active")!==e.set.status)return true;return false;}
+  // 23.8 (Oren 19.11.2026): Redo. The note that says what Undo did carries "↪ Redo", which puts back exactly what was there a moment
+  // before the Undo (the task's fields as they were, the delete, or the new task) and returns the step to the history.
   async function histUndo(e){const i=hist.findIndex(x=>x.u===e.u);if(i<0)return;hist.splice(i,1);histSave();if(!db)return;
+    const cur=allTopics.find(z=>z.id===e.id),rd={};
+    if(e.k==="add"&&cur){rd.snap=JSON.parse(JSON.stringify(cur));delete rd.snap.id;}
+    else if(e.k==="patch"&&cur){rd.vals={};for(const k of Object.keys(e.prev||{}))if(k!=="updated_at")rd.vals[k]=k in cur?JSON.parse(JSON.stringify(cur[k])):null;}
     try{const ref=db.collection("topics").doc(e.id);
       if(e.k==="del")await ref.set(e.snap);
       else if(e.k==="add")await ref.delete();
       else{const prev={...e.prev,updated_at:new Date().toISOString()};if(e.set&&e.set.status==="done"&&!(e.prev&&e.prev.status&&e.prev.status!=="done"))prev.status="active";await ref.update(prev);}
       if($("briefM"))setTimeout(()=>{if($("briefM"))showBrief(briefMd);},400);
-      toast("↩︎ "+histLabel(e)+(hist.length?` · עוד ${hist.length} אחורה`:""),null,3500,"ud");}
+      toast("↩︎ "+histLabel(e)+(hist.length?` · עוד ${hist.length} אחורה`:""),()=>histRedo(e,rd),6000,"ud","↪ Redo");}
+    catch(err){fail(err);}}
+  async function histRedo(e,rd){if(!db)return;
+    try{const ref=db.collection("topics").doc(e.id);
+      if(e.k==="del")await ref.delete();
+      else if(e.k==="add"){if(!rd.snap)return;await ref.set(rd.snap);}
+      else await ref.update({...(rd.vals||e.set||{}),updated_at:new Date().toISOString()});
+      hist.push(e);histSave();
+      if($("briefM"))setTimeout(()=>{if($("briefM"))showBrief(briefMd);},400);
+      toast("↪ "+hq(e.title)+" חזר למצב שלפני הביטול",null,3000,"ud");}
     catch(err){fail(err);}}
   function undoStep(){while(hist.length&&histStale(hist[hist.length-1])){hist.pop();}histSave();
     if(!hist.length){toast("אין עוד פעולות לביטול",null,2200,"ud");return;}
@@ -6004,11 +6038,13 @@ Composition (important, UI will be placed on top):
 - Top 12%: plain sky only (iPhone status bar area).
 - From 14% to 30% from the top: calm, open sky with no clouds or details, for the app name in white.
 - The pin and hilltop sit around 40-45% from the top, centered horizontally.
-- Bottom 22%: darker foreground hills, simple and low-detail, slightly darker overall, so a thin golden loading bar and small white text stay readable there.
+- Bottom 25%: darker foreground hills, simple and low-detail, slightly darker overall, so a thin golden loading bar, small white text and a round \"enter\" button stay readable there.
 - Keep the left and right 6% free of important details.
 
 Mood: early morning, optimistic, adventurous but calm. Feels like the beginning of a journey.
 Do NOT include: any text, letters, logos, UI elements, people, animals, buildings, frames or borders, watermark. No photorealism, no 3D render look, no heavy grain.`};
+  function splashLs(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function splashSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
   function splashHave(){try{return !!localStorage.getItem("sq_splash");}catch(e){return false;}}
   function splashSync(force){
     if(!window.SQGfx)return;let last=0;try{last=+localStorage.getItem("sq_splash_chk")||0;}catch(e){}
@@ -6092,7 +6128,20 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
       placeSec,
       sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
         h("div",{class:"tsbtns"},...[["auto","לפי האייפון"],["1","רגיל"],["1.15","גדול"],["1.3","גדול מאוד"],["1.5","🚗 רכב"]].map(([v,l])=>h("button",{type:"button","aria-pressed":tsPref===v?"true":"false",onclick:()=>setTs(v)},l)))),
-      sec("splash","🖼️ מסך פתיחה",splashHave()?"איור":"בסיסי",(()=>{const el=h("div");window.SQGfx&&SQGfx.slot(el,SPLASH_GFX,{have:splashHave(),db,onDone:()=>splashSync(true)});return el;})()),
+      sec("splash","🖼️ מסך פתיחה",(splashHave()&&splashLs("sq_splash_style")!=="basic"?"איור":"בסיסי")+" · "+(splashLs("sq_splash_enter")==="tap"?"כניסה בלחיצה":"כניסה אוטומטית"),
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"סגנון")),
+        h("div",{class:"tsbtns two"},
+          h("button",{type:"button","data-pin":"spl:basic","aria-pressed":!splashHave()||splashLs("sq_splash_style")==="basic"?"true":"false",onclick:()=>{splashSet("sq_splash_style","basic");renderSettings();}},"✦ בסיסי"),
+          h("button",{type:"button","data-pin":"spl:art",disabled:splashHave()?null:true,"aria-pressed":splashHave()&&splashLs("sq_splash_style")!=="basic"?"true":"false",onclick:()=>{splashSet("sq_splash_style","art");renderSettings();}},splashHave()?"🖼️ איור":"🖼️ איור · בקרוב")),
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"כניסה לאפליקציה")),
+        h("div",{class:"tsbtns two"},
+          h("button",{type:"button","data-pin":"spl:auto","aria-pressed":splashLs("sq_splash_enter")!=="tap"?"true":"false",onclick:()=>{splashSet("sq_splash_enter","auto");renderSettings();}},"⚡ אוטומטית"),
+          h("button",{type:"button","data-pin":"spl:tap","aria-pressed":splashLs("sq_splash_enter")==="tap"?"true":"false",onclick:()=>{splashSet("sq_splash_enter","tap");renderSettings();}},"👆 בלחיצה")),
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"תצוגה מקדימה")),
+        h("div",{class:"tsbtns two"},
+          h("button",{type:"button","data-pin":"spl:pvb",onclick:()=>window.SQSplash&&SQSplash.preview&&SQSplash.preview("basic")},"👁️ בסיסי"),
+          h("button",{type:"button","data-pin":"spl:pva",disabled:splashHave()?null:true,onclick:()=>window.SQSplash&&SQSplash.preview&&SQSplash.preview("art")},splashHave()?"👁️ איור":"👁️ איור · בקרוב")),
+        (()=>{const el=h("div");window.SQGfx&&SQGfx.slot(el,SPLASH_GFX,{have:splashHave(),db,onDone:()=>splashSync(true)});return el;})()),
       sec("geo","🗺️ סידור לפי אזור",geoOff?"כבוי":"פעיל",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"סידור לפי אזור"),sw(!geoOff,v=>setGeo(v),"סידור לפי אזור"))),
       // 18.7 (Oren 17.11.2026): the work-calendar page (answers, series, insights) lives here, not in the dashboards
