@@ -6,6 +6,9 @@
 // 5. בקשה או הצעה חדשה מילד (study_requests) → התראה להורים (אורן 6.11.2026).
 // 6. ציון שהילד הזין בעצמו (study_results.by_kid) → התראה להורים (אורן 19.11.2026).
 // 7. שבוע אחרי מבחן בלי ציון, אם הילד למד את התוכן באפליקציה לפני המבחן → התראה לילד להזין ציון (study_score_due, פעם אחת למבחן, 17:00).
+// 8. תזכורת יומית לתוכן חדש שעוד לא התחילו (אורן 19.11.2026, כלל לכל הילדים ולכל תוכן): תוכן שאושר באזור ההורים (study_content)
+//    ואין לו אף שורת התקדמות (study_progress) יום אחרי האישור = תזכורת אחת ביום לילד (מ-16:00), עם עידוד והסיבה (NUDGE.why).
+//    אחת ביום לכל ילד גם כשמחכים כמה תכנים. עד 14 ימים מהאישור; לא אחרי שהמבחן של התוכן עבר או קיבל ציון. ?action=nudge_preview = מה יישלח, בלי לשלוח.
 // הורים מקבלים רק על ילדי המשפחה שלהם (9.11.2026): ב-study_push להורה kid = '' (משפחה a) או מזהה המשפחה ('b'), והמשפחה של כל ילד מ-study_kids.
 // שעות שקט: ילדים 21:00-07:00, הורים 22:00-07:00 (מה שלא נשלח נשלח אחר כך).
 import webpush from "npm:web-push@3.6.7";
@@ -19,6 +22,23 @@ const APPS = [
   // { kid: "lia", app: "phonics", name: "ליה", boy: false, what: "אותיות וצלילים באנגלית", unit: "צלילים", test: "המבחן" },
   { kid: "levi", app: "phonics", name: "לביא", boy: true, what: "אותיות וצלילים באנגלית", unit: "צלילים", test: "המבחן" },
 ];
+// תוכן חדש = שורה כאן: n = איך קוראים לו בהתראה, why = למה זה חשוב (משפט מלא, בלשון הילד: {ת} / {י} מתחלפים לפי מין).
+const NUDGE: Record<string, { n: string; why: string }> = {
+  "lia/math4": { n: "חיזוק המתמטיקה 🚀 מסע בין הכוכבים", why: "הוא נבנה בדיוק בשבילך, כדי לסגור את הפערים שמצאנו במבחן המיפוי של תחילת השנה." },
+  "dani/math6": { n: "חיזוק המתמטיקה 🎤 סיבוב הופעות", why: "הוא נבנה בדיוק בשבילך, כדי לסגור את הפערים שמצאנו במבחן המיפוי של תחילת השנה." },
+  "dani/spelling2": { n: "ההכתבה החדשה באנגלית (מילים מהבית)", why: "ככה תגיע{י} להכתבה כש{את|אתה} כבר יודע{ת} את כל המילים." },
+  "dani/spelling": { n: "ההכתבה באנגלית", why: "ככה תגיע{י} להכתבה כש{את|אתה} כבר יודע{ת} את כל המילים." },
+  "lia/mult": { n: "לוח הכפל 🐞 חרקי חלל", why: "לוח הכפל הוא הבסיס של כמעט כל המתמטיקה בכיתה ד׳, ועם כל כוכב הוא נהיה קל יותר." },
+  "lia/phonics": { n: "אותיות וצלילים באנגלית", why: "ככה תוכל{י} לקרוא מילים באנגלית לבד." },
+  "evyatar/past": { n: "החזרה על past simple ו-past progressive", why: "ככה תגיע{י} לבוחן מוכן{ה} ורגוע{ה}." },
+  "evyatar/econ": { n: "הבוחן בכלכלה", why: "ככה תגיע{י} לבוחן מוכן{ה} ורגוע{ה}." },
+  "evyatar/hist": { n: "הבוחן בהיסטוריה", why: "ככה תגיע{י} לבוחן מוכן{ה} ורגוע{ה}." },
+  "shilo/numbers": { n: "המספרים של שילה", why: "ככה תכיר{י} את כל המספרים עד 10." },
+};
+const KN: Record<string, string> = { evyatar: "אביתר", dani: "דני", lia: "ליה", levi: "לביא", shilo: "שילה" };
+const BOY: Record<string, boolean> = { evyatar: true, levi: true, shilo: true };
+// {י} = "י" לבת, ריק לבן; {ה} / {ת} כנ"ל; {את|אתה} = בת|בן
+const g = (t: string, boy: boolean) => t.replace(/\{([^}|]*)\|([^}]*)\}/g, (_, f, m) => (boy ? m : f)).replace(/\{([^}]*)\}/g, (_, x) => (boy ? "" : x));
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json", ...CORS } });
 
@@ -51,7 +71,9 @@ async function getKeys(sb: any) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   const url = new URL(req.url);
-  if (url.searchParams.get("action") !== "tick") return json({ ok: false, err: "action" }, 400);
+  const action = url.searchParams.get("action");
+  if (action !== "tick" && action !== "nudge_preview") return json({ ok: false, err: "action" }, 400);
+  const preview = action === "nudge_preview";
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const keys = await getKeys(sb);
   webpush.setVapidDetails(BASE, keys.pub, keys.priv);
@@ -86,7 +108,7 @@ Deno.serve(async (req) => {
   const { data: snaps } = await sb.from("study_sess").select("*");
   const snap = (r: any) => (snaps || []).find((s: any) => s.device === r.device && s.kid === r.kid && s.app === r.app);
 
-  for (const A of APPS) {
+  for (const A of preview ? [] : APPS) {
     const rows = (prog || []).filter((r: any) => r.kid === A.kid && r.app === A.app);
     const best = rows.reduce((b: any, r: any) => (!b || (r.data?.done || 0) > (b.data?.done || 0) ? r : b), null);
     const done = best?.data?.done || 0, total = best?.data?.total || 0;
@@ -139,7 +161,7 @@ Deno.serve(async (req) => {
 
   // מתנות שעוד לא נשלחה עליהן התראה
   const { data: gifts } = await sb.from("study_gifts").select("*").gte("created_at", new Date(now - 3 * 864e5).toISOString());
-  for (const g of gifts || []) {
+  for (const g of preview ? [] : gifts || []) {
     const A = APPS.find((a) => a.kid === g.kid && a.app === g.app);
     if (!A) continue;
     if (!parQuiet && (await once(`giftpar:${g.id}`))) {
@@ -158,7 +180,7 @@ Deno.serve(async (req) => {
   }
 
   // 4. תוכן חדש
-  if (!kidQuiet) {
+  if (!kidQuiet && !preview) {
     const { data: q } = await sb.from("study_notify").select("*").is("sent_at", null).order("id").limit(10);
     for (const m of q || []) {
       const kids = m.kid ? [m.kid] : ["evyatar", "dani", "lia"];
@@ -167,9 +189,7 @@ Deno.serve(async (req) => {
     }
   }
   // 5. בקשות והצעות חדשות מהילדים
-  if (!parQuiet) {
-    const KN: Record<string, string> = { evyatar: "אביתר", dani: "דני", lia: "ליה", levi: "לביא", shilo: "שילה" };
-    const BOY: Record<string, boolean> = { evyatar: true, levi: true, shilo: true };
+  if (!parQuiet && !preview) {
     const KK: Record<string, string> = { test: "📅 מבחן קרוב", quiz: "⏰ בוחן", hard: "🤔 לא הבנתי נושא", topic: "📚 נושא חדש ללימוד", idea: "💡 רעיון לאפליקציה", bug: "🐞 באג באפליקציה" };
     const { data: rq } = await sb.from("study_requests").select("id,kid,kind,txt").is("notified_at", null).eq("hidden", false).order("id").limit(10);
     for (const r of rq || []) {
@@ -185,7 +205,7 @@ Deno.serve(async (req) => {
   // 6. ציון שהילד הזין בעצמו → להורים
   const KN6: Record<string, string> = { evyatar: "אביתר", dani: "דני", lia: "ליה", levi: "לביא", shilo: "שילה" };
   const BOY6: Record<string, boolean> = { evyatar: true, levi: true, shilo: true };
-  if (!parQuiet) {
+  if (!parQuiet && !preview) {
     const { data: ks } = await sb.from("study_results").select("id,kid,app,d,score").eq("by_kid", true).eq("hidden", false).is("notified_at", null).order("id").limit(10);
     for (const r of ks || []) {
       const boy = !!BOY6[r.kid];
@@ -198,7 +218,7 @@ Deno.serve(async (req) => {
     }
   }
   // 7. שבוע אחרי מבחן: תזכורת לילד להזין ציון (פעם אחת לכל ילד ומבחן)
-  if (!kidQuiet && il.hour === 17) {
+  if (!kidQuiet && !preview && il.hour === 17) {
     const { data: due } = await sb.rpc("study_score_due");
     for (const r of due || []) {
       if (!(await once(`scoreask:${r.kid}:${r.d}`))) continue;
@@ -210,5 +230,36 @@ Deno.serve(async (req) => {
       });
     }
   }
-  return json({ ok: true, il, out });
+  // 8. תזכורת יומית לתוכן חדש שעוד לא התחילו
+  const plan: any[] = [];
+  {
+    const { data: cnt } = await sb.from("study_content").select("id,approved_at").not("approved_at", "is", null);
+    const byKid: Record<string, any[]> = {};
+    for (const c of cnt || []) {
+      const [kid, app] = String(c.id).split("/");
+      if (!kid || !app) continue;
+      const age = (now - Date.parse(c.approved_at)) / 864e5;
+      if (age < 1 || age > 14) continue;
+      if ((prog || []).some((r: any) => r.kid === kid && r.app === app)) continue; // נכנס/ה ותרגל/ה לפחות פעם אחת = התחיל/ה
+      const { data: t } = await sb.rpc("study_test_get", { p_kid: kid, p_app: app });
+      if (t?.score != null || (t?.d && dayDiff(il.date, String(t.d)) < 0)) continue;
+      (byKid[kid] ||= []).push({ id: c.id, app, at: c.approved_at, days: Math.floor(age), test: t?.d ? dayDiff(il.date, String(t.d)) : null });
+    }
+    for (const kid of Object.keys(byKid)) {
+      // קודם תוכן עם מבחן קרוב, אחר כך החדש ביותר
+      const L = byKid[kid].sort((a, b) => (a.test ?? 99) - (b.test ?? 99) || Date.parse(b.at) - Date.parse(a.at));
+      const c = L[0], boy = !!BOY[kid], name = KN[kid] || "", N = NUDGE[c.id] || { n: "התוכן החדש שאבא ואמא הכינו לך", why: "כל תרגול קטן מקדם אותך." };
+      const more = L.length === 2 ? " ויש עוד תוכן חדש אחד שמחכה לך." : L.length > 2 ? ` ויש עוד ${L.length - 1} תכנים חדשים שמחכים לך.` : "";
+      const test = c.test !== null && c.test >= 0 && c.test <= 7 ? ` המבחן ${inDays(c.test)}${c.test <= 1 ? "!" : "."}` : ""; // רק מבחן בשבוע הקרוב
+      const msg = {
+        title: `${name}, ${N.n} מחכה לך ✨`,
+        body: g(`עוד לא התחל{ת} אותו. ${N.why}${test} מספיקות 10 דקות היום כדי להתחיל, בוא{י} לתרגל! 💪${more}`, boy),
+        tag: `nudge-${kid}`, url: BASE + `${kid}/${c.app}/`,
+      };
+      plan.push({ kid, items: L.map((x) => x.id), msg });
+      if (preview || kidQuiet || il.hour < 16) continue;
+      if (await once(`nudge:${kid}:${il.date}`, { items: L.map((x) => x.id) })) await push("kid", kid, msg);
+    }
+  }
+  return json({ ok: true, il, out, nudge: plan });
 });
