@@ -44,12 +44,17 @@
     '#hlpO .bt{display:block;width:100%;box-sizing:border-box;font:600 16px system-ui,Arial,sans-serif;border-radius:14px;padding:10px;margin-top:8px;cursor:pointer;border:1.5px solid #2f5d9e;background:#2f5d9e;color:#fff;text-decoration:none}'+
     '#hlpO .bt.s{background:#fff;color:#2f5d9e}#hlpO .bt.g{background:#fff;color:#1d7a4a;border-color:#1d7a4a}#hlpO .bt.r{background:#fff;color:#b42318;border-color:#e3a19b}'+
     '#hlpO .hl{border:1.5px solid #d3d9e2;border-radius:16px;overflow:hidden;text-align:right}'+
-    '#hlpO .hr{display:flex;align-items:center;gap:8px;min-height:54px;padding:4px 8px 4px 10px;border-top:1px solid #e3e8ef}#hlpO .hr:first-child{border-top:0}'+
-    '#hlpO .hm{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:0;font:inherit;color:inherit;text-align:right;padding:4px 0;cursor:pointer}'+
-    '#hlpO .hm:disabled{cursor:default}#hlpO .hm.off{opacity:.55}#hlpO .hm .e{font-size:26px;width:34px;flex:none;text-align:center}#hlpO .hm b{display:block;font-size:17px}'+
-    '#hlpO .hm small{display:block;font-size:13px;color:#5b6675;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
+    '#hlpO .hr{padding:10px 10px 10px;border-top:1px solid #e3e8ef}#hlpO .hr:first-child{border-top:0}'+
+    '#hlpO .hm{display:flex;align-items:center;gap:10px;min-width:0}#hlpO .hm .e{font-size:26px;width:34px;flex:none;text-align:center}#hlpO .hm b{display:block;font-size:17px}'+
+    '#hlpO .hm small{display:block;font-size:13px;color:#5b6675;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#hlpO .hm span{min-width:0}'+
     '#hlpO .dt{display:inline-block;width:9px;height:9px;border-radius:50%;background:#9aa5b1;margin-inline-end:5px;vertical-align:0}#hlpO .dt.ok{background:#1d9a55}#hlpO .dt.pd{background:#d97706;animation:hlpP 1.4s infinite}'+
-    '#hlpO .wa{flex:none;width:44px;height:44px;border-radius:12px;border:1.5px solid #bfe8cf;background:#f1fbf5;display:grid;place-items:center;text-decoration:none}#hlpO .wa.no{visibility:hidden}'+
+    '#hlpO .h2b{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}'+
+    '#hlpO .hb{height:44px;box-sizing:border-box;border-radius:12px;font:700 15px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:0 6px;white-space:nowrap;overflow:hidden;text-decoration:none;-webkit-tap-highlight-color:transparent;box-shadow:0 2px 0 rgba(15,23,42,.12)}'+
+    '#hlpO .hb:active{transform:translateY(1px);box-shadow:none}'+
+    '#hlpO .hb.nt{background:#2f5d9e;color:#fff;border:1.5px solid #2f5d9e}#hlpO .hb.nt.no{background:#eef1f5;color:#5b6675;border-color:#c9d1dc;box-shadow:none;font-weight:600;font-size:13.5px}'+
+    '#hlpO .hb.nt.dn{background:#e7f6ec;color:#1d7a4a;border-color:#a7dcb9;box-shadow:none}'+
+    '#hlpO .hb.wa{background:#25D366;color:#fff;border:1.5px solid #1ebe5a}#hlpO .hb.wa svg{flex:none}#hlpO .hb.wa.no{visibility:hidden}#hlpO .hb.wa.go{animation:hlpW 1.1s ease-in-out 4}'+
+    '@keyframes hlpW{50%{box-shadow:0 0 0 5px rgba(37,211,102,.35)}}#hlpO .hn{margin-top:6px;font-size:13px;color:#9a3412;min-height:0}'+
     '#hlpO .pk{margin:10px 0 0;font-size:14px;color:#3e4c59}';
   var bar,btn,chip,ov;
   function ui(){bar=document.getElementById('gbar');if(!bar){setTimeout(ui,100);return}
@@ -72,13 +77,19 @@
   function show(h,bind){ov.innerHTML='<div class="pn">'+h+'</div>';ov.classList.add('on');
     ov.querySelectorAll('[data-a]').forEach(function(b){b.addEventListener('click',function(e){bind(b.getAttribute('data-a'),b.getAttribute('data-id'),e)})})}
   function wa(id){var w=null;try{w=window.open('','_blank')}catch(e){}var go=function(){var u=FN+'?action=wa&kid='+kid+'&sid='+S.sid+'&to='+id+'&apikey='+SB_KEY;if(w&&!w.closed)w.location.href=u;else location.href=u};if(S&&sentOnce)go();else{begin([]);var n=0,t=setInterval(function(){if(sentOnce||++n>40){clearInterval(t);go()}},200)}}
-  function rows(){return HL.map(function(h){var a=AV[h[0]],req=S&&(S.to||[]).indexOf(h[0])>=0,seen=S&&S.seen&&S.seen[h[0]]&&Date.now()-S.seen[h[0]]<15000;
-      var b=h[3],st=seen?'<span class="dt ok"></span>רואה את המסך שלך עכשיו':req?'<span class="dt pd"></span>'+(b?'קיבל':'קיבלה')+' הודעה, מחכים ש'+(b?'יפתח':'תפתח')+'…':
-        !a?'<span class="dt"></span>בודק זמינות…':a.ok?'<span class="dt ok"></span>'+(b?'זמין':'זמינה')+(a.why?' · '+esc(a.why):'')+(a.dev?'':' · בלי התראות, רק וואטסאפ'):
+  // שורה לכל עוזר: מי, זמינות, ושני כפתורים ברורים: "🔔 לשלוח התראה" (באפליקציה, רק אם אישר/ה התראות) ו"וואטסאפ" (אורן 19.11.2026)
+  var NOTE={};
+  function rows(){return HL.map(function(h){var id=h[0],a=AV[id],req=S&&(S.to||[]).indexOf(id)>=0,seen=S&&S.seen&&S.seen[id]&&Date.now()-S.seen[id]<15000;
+      var b=h[3],st=seen?'<span class="dt ok"></span>רואה את המסך שלך עכשיו':req?'<span class="dt pd"></span>מחכים ש'+(b?'יפתח':'תפתח')+' את המסך שלך…':
+        !a?'<span class="dt"></span>בודק זמינות…':a.ok?'<span class="dt ok"></span>'+(b?'זמין':'זמינה')+(a.why?' · '+esc(a.why):''):
         '<span class="dt"></span>'+(a.why?esc(a.why):'לא '+(b?'זמין':'זמינה')+' עכשיו')+(a.until?' עד '+esc(a.until):'');
-      var off=!seen&&!req&&a&&(!a.ok||!a.dev);
-      return '<div class="hr"><button class="hm'+(off?' off':'')+'" data-a="ask" data-id="'+h[0]+'"'+(off||seen||req?' disabled':'')+'><span class="e">'+h[2]+'</span><span style="min-width:0"><b>'+esc(h[1])+'</b><small>'+st+'</small></span></button>'+
-        '<a class="wa'+(a&&a.wa?'':' no')+'" data-a="wa" data-id="'+h[0]+'" href="#" aria-label="וואטסאפ ל'+esc(h[1])+'">'+WA+'</a></div>'}).join('')}
+      var nt=req||seen?['dn','✓ נשלחה התראה']:a&&!a.dev?['no','🔕 '+(b?'לא אישר':'לא אישרה')+' התראות']:a&&!a.ok?['no','🔕 לא '+(b?'זמין':'זמינה')+' עכשיו']:['','🔔 לשלוח התראה'];
+      return '<div class="hr"><div class="hm"><span class="e">'+h[2]+'</span><span><b>'+esc(h[1])+'</b><small>'+st+'</small></span></div>'+
+        '<div class="h2b"><button type="button" class="hb nt'+(nt[0]?' '+nt[0]:'')+'" data-a="ask" data-id="'+id+'">'+nt[1]+'</button>'+
+        '<a class="hb wa'+(a&&!a.wa?' no':'')+(NOTE[id]?' go':'')+'" data-a="wa" data-id="'+id+'" href="#">'+WA.replace('fill="#25D366"','fill="#fff"').replace('fill="#fff" d="M17','fill="#25D366" d="M17')+'וואטסאפ</a></div>'+
+        (NOTE[id]?'<div class="hn">'+esc(NOTE[id])+'</div>':'')+'</div>'}).join('')}
+  function noNotif(id){var b=hb(id);NOTE[id]=hn(id)+' עוד לא '+(b?'אישר':'אישרה')+' התראות באפליקציה, אז ההתראה לא '+(b?'תגיע אליו':'תגיע אליה')+'. '+g('שלחי','שלח')+' '+(b?'לו':'לה')+' הודעה בוואטסאפ 👇'}
+  function redraw(){var L=ov.querySelector('.hl');if(ov.classList.contains('on')&&L){L.innerHTML=rows();L.querySelectorAll('[data-a]').forEach(function(x){x.addEventListener('click',function(e){act1(x.getAttribute('data-a'),x.getAttribute('data-id'),e)})})}}
   // החלון הראשי: ממי לבקש עזרה + (בזמן עזרה) מצב כל אחד, דילוג על השאלה, חזרה לשאלה, סיום
   function panel(){
     var h='<div class="em">🙋</div><h2>'+(S?'עזרה מהמשפחה':'ממי לבקש עזרה?')+'</h2><p>'+(S?'מי שפותח את ההודעה רואה בדיוק את המסך שלך. אפשר לבקש גם ממישהו נוסף.':'מי ש'+g('תבחרי','תבחר')+' יקבל הודעה ויראה בטלפון שלו בדיוק את המסך שלך, כולל השאלה הזאת. אפשר לדבר בטלפון בזמן הזה.')+'</p>'+
@@ -88,9 +99,12 @@
     h+=S?'<button class="bt r" data-a="end">✓ לסיים את העזרה</button><button class="bt s" data-a="x">סגירה</button>':'<button class="bt s" data-a="x">ביטול</button>';
     show(h,act1);
     if(Date.now()-AVT>20000){AVT=Date.now();fn('action=avail&kid='+kid).then(function(j){if(j&&j.list){AV={};j.list.forEach(function(x){AV[x.id]=x});
-      var L=ov.querySelector('.hl');if(ov.classList.contains('on')&&L){L.innerHTML=rows();L.querySelectorAll('[data-a]').forEach(function(b){b.addEventListener('click',function(e){act1(b.getAttribute('data-a'),b.getAttribute('data-id'),e)})})}}}).catch(function(){AVT=0})}}
+      redraw()}}).catch(function(){AVT=0})}}
   function act1(a,id,e){
-    if(a==='ask')request(id);
+    if(a==='ask'){var v=AV[id],sn=S&&((S.to||[]).indexOf(id)>=0||(S.seen&&S.seen[id]));if(sn)return;
+      if(v&&!v.dev){noNotif(id);redraw();return}
+      if(v&&!v.ok){NOTE[id]=hn(id)+' לא '+(hb(id)?'זמין':'זמינה')+' עכשיו'+(v.why?' ('+v.why+')':'')+'. אפשר לנסות בוואטסאפ, או לבקש ממישהו אחר.';redraw();return}
+      request(id)}
     else if(a==='wa'){e.preventDefault();if(AV[id]&&AV[id].wa)wa(id)}
     else if(a==='skip'){var t=HOOK.skip();close();if(t!=null){PARK.push(t);paint();send(true);var w=(S.to||[])[0];toast('📌 השאלה נשמרה בצד. ממשיכים, ונחזור אליה כש'+(w?hn(w)+' '+(hb(w)?'יגיע':'תגיע'):'יגיעו לעזור')+'.')}else toast('אפשר לדלג רק על שאלה פתוחה, לפני שעונים עליה.')}
     else if(a==='back'){close();back()}
@@ -100,7 +114,7 @@
   function begin(to){if(!S){S={sid:rid(),t0:Date.now(),act:Date.now(),to:[],seen:{}};sv(S);start(false)}to.forEach(function(x){if(S.to.indexOf(x)<0)S.to.push(x)});sv(S);paint()}
   var PEND=[];
   function request(id){begin([id]);close();PEND.push(id);flush();
-    toast('📨 '+hn(id)+' '+(hb(id)?'יקבל':'תקבל')+' הודעה עכשיו.'+(HOOK?' אם לוקח זמן: "🙋 עזרה" ← לדלג על השאלה ולחזור אליה.':''))}
+    toast('🔔 נשלחה התראה ל'+hn(id)+'.'+(HOOK?' אם לוקח זמן: "🙋 עזרה" ← לדלג על השאלה ולחזור אליה.':''))}
   function flush(){if(!S||!sentOnce)return;send(true);while(PEND.length){var id=PEND.shift();fn('action=help&kid='+kid+'&sid='+S.sid+'&to='+id).catch(function(){})}}
   function back(){if(!PARK.length||!HOOK)return;var t=PARK.shift();HOOK.back(t);paint();send(true)}
   // תוכן שרושם hook לדילוג וחזרה (הדף נטען לפני הקובץ הזה, ולכן דרך תור)

@@ -37,7 +37,7 @@ body{display:flex;flex-direction:column;box-sizing:border-box;padding-top:max(ca
 <div class="tip" id="tip">📞 התקשרו לילד/ה ברמקול: אתם רואים בדיוק את המסך שלו/ה, כולל מה שמוקלד, ונקודה אדומה איפה שנגע/ה.</div>
 <script src="../profiles.js?v=5"></script>
 <script>
-(function(){
+(async function(){
 const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
 const $=id=>document.getElementById(id);
 function rpc(fn,body){return fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(body)}).then(r=>{if(!r.ok)throw new Error('net');return r.json()})}
@@ -56,7 +56,11 @@ const PIN=pinFor(K.fam),KIDOK=P.kidsOf(K.fam).filter(x=>x!==kid&&ls('study_ok_'+
 const PAR={a:[['oren','אבא'],['lior','אמא']],b:[['yehuda','אבא']]}[K.fam]||[];
 let BY=(q.get('by')||'').replace(/[^a-z]/g,'');if(!BY&&PIN)BY=ls('study_iam_'+K.fam)||'';if(!BY&&KIDOK.length===1)BY=KIDOK[0];
 $('bk').href=PIN?'../parents/':'../'+(KIDOK[0]?KIDOK[0]+'/':'');$('bk').textContent=PIN?'→ אזור הורים':'→ חזרה';
-if(!PIN&&!KIDOK.length){msg('<div class="em">🔒</div><h2>המסך נפתח רק במכשיר של המשפחה</h2><p>המסך של '+N+' נפתח במכשיר של הורה (אחרי כניסה לאזור ההורים עם הקוד) או של אח/ות שכבר נכנס/ה לאזור שלו/ה באפליקציה. היכנסו פעם אחת, ואז פתחו שוב את הקישור.</p><a class="b" href="../">לאפליקציה</a>');$('st').style.visibility='hidden';return}
+// לינק מוואטסאפ (אורן 19.11.2026): נפתח בספארי, בלי קוד ההורים. t = מפתח צפייה חד-פעמי לבקשת העזרה הזאת בלבד (נוצר בשרת), תקף רק כל עוד אותה בקשה פתוחה.
+let TOK=null;const tq=(q.get('t')||'').replace(/[^a-f0-9]/g,'');
+if(!PIN&&!KIDOK.length&&tq){try{const r=await fetch(SB_URL+'/functions/v1/study-help?action=tok&kid='+kid+'&t='+tq,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:'{}'});const j=await r.json();
+  if(j&&j.ok){TOK=j;if(!BY)BY=j.by||''}else{msg('<div class="em">⌛</div><h2>בקשת העזרה הזאת כבר הסתיימה</h2><p>כש'+N+' '+g('תבקש','יבקש')+' שוב עזרה, '+g('היא תשלח','הוא ישלח')+' לינק חדש.</p>');$('st').style.visibility='hidden';return}}catch(e){}}
+if(!PIN&&!KIDOK.length&&!TOK){msg('<div class="em">🔒</div><h2>המסך נפתח רק במכשיר של המשפחה</h2><p>המסך של '+N+' נפתח במכשיר של הורה (אחרי כניסה לאזור ההורים עם הקוד) או של אח/ות שכבר נכנס/ה לאזור שלו/ה באפליקציה. היכנסו פעם אחת, ואז פתחו שוב את הקישור.</p><a class="b" href="../">לאפליקציה</a>');$('st').style.visibility='hidden';return}
 
 let fr=null,dev=null,cur={sid:null,path:null,cssKey:null,at:0,html:null},lastSeen=0,lastTap=0;
 function setSt(c,t){$('st').className='st '+c;$('stt').textContent=t}
@@ -82,6 +86,7 @@ let busy=false;
 function tick(){if(busy)return;busy=true;rpc('study_state_get',{p_kid:kid,p_app:'live'}).then(j=>{busy=false;const k=j&&j.keys;const now=Date.now();
   if(!k||!k.sid){idle(N+' לא ביקש'+g('ה','')+' עזרה','<div class="em">🙂</div><h2>'+N+' לא ביקש'+g('ה','')+' עזרה כרגע</h2><p>כש'+N+' '+g('תלחץ','ילחץ')+' על "🙋 עזרה" בפס העליון באפליקציה, המסך של'+g('ה','ו')+' יופיע כאן מיד.</p>');return}
   if(!k.on||now-k.at>20*60e3){idle('העזרה הסתיימה','<div class="em">💪</div><h2>העזרה הסתיימה</h2><p>'+(k.on?N+' לא '+g('פעילה','פעיל')+' באפליקציה כבר זמן מה. ':'')+'כש'+g('היא תבקש','הוא יבקש')+' שוב עזרה, המסך יופיע כאן מיד.</p>');return}
+  if(TOK&&k.sid!==TOK.sid){idle('העזרה הסתיימה','<div class="em">💪</div><h2>בקשת העזרה הזאת הסתיימה</h2><p>כש'+N+' '+g('תבקש','יבקש')+' שוב עזרה, '+g('היא תשלח','הוא ישלח')+' לינק חדש.</p>');return}
   $('end').classList.add('on');
   if(k.sid!==cur.sid||k.path!==cur.path||JSON.stringify(k.css).length!==cur.cssKey||k.w!==cur.w||k.h!==cur.h){cur={sid:k.sid,path:k.path,cssKey:JSON.stringify(k.css).length,w:k.w,h:k.h,at:k.at,html:null};build(k)}
   else if(k.at!==cur.at){cur.at=k.at;paint(k,false)}
