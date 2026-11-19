@@ -1,7 +1,7 @@
 // 🙋 עזרה מקרוב משפחה בזמן אמת (אורן 19.11.2026, כלל קבוע לכל הילדים ולכל תוכן לימוד, קיים ועתידי).
 // נטען אוטומטית מ-guest.js בכל דף תוכן (study/<ילד>/<תוכן>/), כך שכל תוכן חדש מקבל את זה בלי קוד נוסף.
 // 1. כפתור "🙋 עזרה" בפס העליון (#gbar) פותח חלון צף (רקע מוחשך): ממי לבקש עזרה? כל בני המשפחה (אבא, אמא, האחים), עם נקודת זמינות
-//    (study-push?action=avail: כללים קבועים + הלו״ז של אבא) ואייקון וואטסאפ לכל אחד (?action=wa, המספרים רק בשרת).
+//    (study-help?action=avail: כללים קבועים + הלו״ז של אבא) ואייקון וואטסאפ לכל אחד (?action=wa, המספרים רק בשרת).
 // 2. בחירה = מצב "עזרה" (פס ירוק) + התראה רק למי שנבחר (?action=help&to=). בפס: "⏳ מחכים ל..." עד שהוא פותח את המסך, ואז "👀 ... רואה".
 // 3. בזמן המצב הדף שולח "צילום" חי של המסך (ה-DOM כמו שהוא: השאלה המדויקת, מה שהוקלד, חלונות, צבעים) כשמשהו משתנה (עד פעם בשנייה)
 //    ל-study_state_put (app 'live', בלי שינוי סכמה; score = שניות, תמיד עולה). העוזר פותח את study/help/?kid=<ילד> ורואה בדיוק את אותו מסך,
@@ -14,7 +14,7 @@
   var m=/\/study\/([a-z]+)\/([a-z0-9]+)\/?/.exec(location.pathname);if(!m)return;
   var kid=m[1],app=m[2];if(/^(family|parents|kids|tools|audio|supabase|sqfx|help)$/.test(kid)||/^(notes|audio|try)$/.test(app))return;
   if(window.STUDY_GUEST||window.STUDY_REVIEW||/[?&]review=1/.test(location.search)||window.self!==window.top)return;
-  var SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k',FN=SB_URL+'/functions/v1/study-push';
+  var SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k',FN=SB_URL+'/functions/v1/study-help';
   var BOY={evyatar:1,levi:1,shilo:1}[kid]?1:0,g=function(f,b){return BOY?b:f};
   var K='study_help_'+kid,IDLE=20*60e3,MAX=60*60e3,HOOK=null;
   function rpc(fn,body,keep){return fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',keepalive:!!keep,headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw new Error('net');return r.json()})}

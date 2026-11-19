@@ -8,7 +8,7 @@
 <!-- 🤝 מסך המראה של "עזרה מקרוב משפחה" (אורן 19.11.2026): העוזר רואה בדיוק את המסך של הילד (help.js שולח צילום DOM חי ל-study_state app 'live').
      פתיחה: מההתראה, מהבאנר באזור ההורים, או מלינק בוואטסאפ: help/?kid=<ילד>&by=<מי עוזר>. נפתח רק במכשיר של המשפחה:
      קוד ההורים של המשפחה שמור בו, או שאחד מילדי המשפחה כבר נכנס בו לאזור שלו (study_ok_<ילד>). מכשיר הורה בלי סימון שואל פעם אחת "המכשיר הזה של..."
-     (study-push?action=iam), כדי שבקשת עזרה לאבא או לאמא תגיע רק למכשיר שלו/ה.
+     (study-help?action=iam), כדי שבקשת עזרה לאבא או לאמא תגיע רק למכשיר שלו/ה.
      התצוגה ב-iframe בלי סקריפטים (sandbox), כך ששום קוד של הדף לא רץ אצל ההורה; רק הגוף מתחלף, בלי הבהוב. -->
 <style>
 html,body{height:100%;margin:0}
@@ -92,7 +92,7 @@ $('end').onclick=()=>{if(!cur.sid)return;const now=Date.now();rpc('study_state_p
   idle('העזרה הסתיימה','<div class="em">💪</div><h2>סיימתם את העזרה</h2><p>'+N+' '+g('קיבלה','קיבל')+' הודעה שהעזרה הסתיימה, והמסך כבר לא משותף.</p>')};
 // מכשיר של הורה שעוד לא סומן: "המכשיר הזה של..." (פעם אחת), כדי שבקשת עזרה לאבא / לאמא תגיע רק אליו/ה
 function iam(){if(!PIN||ls('study_iam_'+K.fam)||!('serviceWorker' in navigator))return;navigator.serviceWorker.getRegistration('../').then(r=>r&&r.pushManager.getSubscription()).then(sub=>{if(!sub)return;
-  const save=w=>fetch(SB_URL+'/functions/v1/study-push?action=iam&who='+w+'&pin='+encodeURIComponent(PIN)+'&endpoint='+encodeURIComponent(sub.endpoint),{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:'{}'}).then(r=>r.json()).then(j=>{if(j&&j.ok){try{localStorage.setItem('study_iam_'+K.fam,w)}catch(e){}if(!BY)BY=w;$('tip').textContent='✓ נשמר: בקשות עזרה ל'+PAR.find(x=>x[0]===w)[1]+' יגיעו למכשיר הזה.'}}).catch(()=>{});
+  const save=w=>fetch(SB_URL+'/functions/v1/study-help?action=iam&who='+w+'&pin='+encodeURIComponent(PIN)+'&endpoint='+encodeURIComponent(sub.endpoint),{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:'{}'}).then(r=>r.json()).then(j=>{if(j&&j.ok){try{localStorage.setItem('study_iam_'+K.fam,w)}catch(e){}if(!BY)BY=w;$('tip').textContent='✓ נשמר: בקשות עזרה ל'+PAR.find(x=>x[0]===w)[1]+' יגיעו למכשיר הזה.'}}).catch(()=>{});
   if(PAR.length===1)return save(PAR[0][0]);
   const t=$('tip');t.innerHTML='🔔 המכשיר הזה של: '+PAR.map(x=>'<button type="button" data-w="'+x[0]+'" style="font:600 14px system-ui;border:1.5px solid #2f5d9e;color:#2f5d9e;background:#fff;border-radius:12px;padding:5px 14px;margin:0 4px;cursor:pointer">'+x[1]+'</button>').join('');
   t.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>save(b.dataset.w))}).catch(()=>{})}
