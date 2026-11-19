@@ -1,5 +1,5 @@
 // דף ילד (אורן 11.11.2026): החדש והרלוונטי למעלה. כל תוכן לימוד = .item עם data-c="<ילד>/<תוכן>" (ו-data-t = מבחן/בוחן/הכתבה, data-gen = בלי ניחוש אוטומטי של תאריך, data-x = נבנה למבחן מסוים ולכן אף פעם לא "למידה כללית").
-// סדר: חדש עם מבחן קרוב ← חדש ← מבחן קרוב (הקרוב ראשון, עד 14 יום) ← השאר לפי הסדר בקובץ ← "בקרוב" (בבדיקה) בסוף.
+// סדר: חדש עם מבחן קרוב ← חדש ← מבחן קרוב (הקרוב ראשון, עד 14 יום) ← השאר לפי הסדר בקובץ (מהחדש לישן) ← "בקרוב" (בבדיקה) בסוף.
 // תאריכי המבחנים נשמרים במכשיר (study_kl_<ילד>), כך שהסדר נקבע מיד כשהדף נפתח ולא קופץ אחרי טעינה.
 (function(){
   var SB='https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
@@ -61,7 +61,11 @@
     L.addEventListener('click',function(e){var ch=e.target.closest&&e.target.closest('.chip.sc');if(!ch)return;e.preventDefault();e.stopPropagation();open(ch.closest('.item'))},true);
     var Q=(location.search.match(/[?&]score=([a-z0-9_]+)/)||[])[1],asked=0;
     function ask(){if(asked||!Q)return;var a=I.filter(function(x){return x.dataset.c===kid+'/'+Q})[0];if(a&&!a.classList.contains('soon')&&due(C[a.dataset.c]||{})){asked=1;open(a)}}
-    function sc(a){if(a.classList.contains('soon'))return 900;return (a.querySelector('.nwr')?0:50)+(a.dataset.n!==''?+a.dataset.n:30)} // בתוך כל אזור: חדש + מבחן קרוב = הכי למעלה
+    // אורן 19.11.2026: החדש למעלה בכל האפליקציה. סדר התוכן בקובץ = מהחדש לישן. ב"לפנינו" המבחן הקרוב ראשון,
+    // וב"הישגים" המבחן האחרון שהיה ראשון (לפי תאריך המבחן), ואחריו הישנים יותר.
+    function sc(a){if(a.classList.contains('soon'))return 900;var t=C[a.dataset.c]||{},nw=a.querySelector('.nwr')?0:50;
+      if(a.dataset.g==='done'){var d=t.d||t.p;return nw+(d?Math.max(0,Math.min(40,-days(d))):41)}
+      return nw+(a.dataset.n!==''?+a.dataset.n:30)} // בתוך כל אזור: חדש + מבחן קרוב = הכי למעלה
     draw();ask();
     // אורן 11.11.2026: "חדש!" רק עד הכניסה הראשונה. לחיצה על התוכן מסמנת אותו כנראה מיד, וחזרה לדף (גם מהמטמון של ספארי) מורידה את הסרט.
     function unNew(){I.forEach(function(a){var r=a.querySelector('.nwr');if(r&&window.StudyContent&&!StudyContent.isNew(a.dataset.c))r.remove()});draw()}
