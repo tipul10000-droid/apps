@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.7";window.SQ_BUILD_AT="19.11.2026 20:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.8";window.SQ_BUILD_AT="19.11.2026 21:00";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -27,6 +27,7 @@ setTimeout(function(){var l=document.getElementById("list"),pin=document.getElem
 if(/[?&]nosw=1/.test(location.search)){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister();}));}).then(function(){return window.caches?caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf("sq-")===0;}).map(function(k){return caches.delete(k);}));}):0;}).then(function(){location.replace(location.pathname+"?u="+Date.now()+location.hash);});return;}
 window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});})();</script>
 <script src="sq-db.js?v=10"></script>
+<script src="sq-fid.js?v=1"></script>
 <script src="workcal-engine.js?v=2"></script>
 <script src="timegate.js?v=4"></script>
 <script src="personal-events.js?v=1"></script>
@@ -2477,7 +2478,6 @@ html.desk .co-mark{font-size:2.4cqi}
 #sqSplash.a .ssD i{background:rgba(255,255,255,.06)}
 #sqSplash .ssD i::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--c);transform:scale(var(--f,0));opacity:var(--o,1);transition:transform .18s ease-out}
 #sqSplash .ssD i.on{box-shadow:inset 0 0 0 1.5px var(--c),0 0 var(--gl,10px) color-mix(in srgb,var(--c) calc(var(--o,1)*100%),transparent)}
-#sqSplash .ssD.k i::after{transition:none}
 #sqSplash .ssT{font:600 13px/18px "Assistant",-apple-system,system-ui,sans-serif;height:18px;color:rgba(255,255,255,.82);direction:rtl;text-align:center;white-space:nowrap}
 #sqSplash.a .ssT{text-shadow:0 1px 6px rgba(0,0,0,.5)}
 #sqSplash .ssGo{width:168px;height:48px;border:1px solid rgba(255,206,110,.55);border-radius:999px;
@@ -2486,21 +2486,7 @@ html.desk .co-mark{font-size:2.4cqi}
 @keyframes ssGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,196,80,0),0 0 12px rgba(255,196,80,.2);border-color:rgba(255,206,110,.55)}
   50%{box-shadow:0 0 0 4px rgba(255,196,80,.1),0 0 26px rgba(255,196,80,.5);border-color:rgba(255,222,150,.95)}}
 #sqSplash .ssGo:active{background:linear-gradient(180deg,rgba(60,96,52,.95),rgba(20,52,34,.95))}
-/* 24.4 (Oren 19.11.2026): Face ID. A small lock sits in the button's slot (same place, nothing moves): closed while Face ID runs,
-   opens when it passes, then fades and the "כניסה" button appears. Failed or not allowed without a tap = the lock is tappable. */
 #sqSplash .ssL{position:relative;width:168px;height:50px;display:flex;align-items:center;justify-content:center}
-#sqSplash .ssLk{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border:0;background:none;padding:0;display:none;color:rgba(255,226,160,.9);cursor:pointer;transition:opacity .45s ease}
-#sqSplash.fid .ssLk{display:block}
-#sqSplash .ssLk svg{width:22px;height:26px;margin:9px 11px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(255,200,90,.35))}
-#sqSplash .ssLk .kh{fill:currentColor;stroke:none}
-#sqSplash .ssLk .sh{transition:transform .45s cubic-bezier(.3,1.4,.5,1);transform-origin:7px 13px}
-#sqSplash.fid.wait .ssLk{animation:ssLkP 1.8s ease-in-out infinite}
-@keyframes ssLkP{0%,100%{opacity:.55}50%{opacity:1}}
-#sqSplash.fid.open .ssLk{color:#FFE7A8}
-#sqSplash.fid.open .ssLk .sh{transform:translateY(-3.5px) rotate(-24deg)}
-#sqSplash.fid.ready .ssLk{opacity:0;pointer-events:none}
-#sqSplash.fid.fail .ssLk{color:#FFF1C9;animation:ssGlowL 2.4s ease-in-out infinite}
-@keyframes ssGlowL{0%,100%{filter:drop-shadow(0 0 0 rgba(255,196,80,0))}50%{filter:drop-shadow(0 0 10px rgba(255,196,80,.7))}}
 #sqSplash .ssT button{border:0;background:none;color:rgba(255,236,190,.85);font:inherit;text-decoration:underline;padding:0 2px;cursor:pointer}
 #sqSplash .ssGo:focus-visible{outline:2px solid #F4B63A;outline-offset:3px}
 @media (prefers-reduced-motion:reduce){#sqSplash{transition:opacity .2s}#sqSplash.out{transform:none}#sqSplash.ready .ssGo{animation:none}}
@@ -2513,53 +2499,11 @@ html.desk .co-mark{font-size:2.4cqi}
    (sq_splash_enter: auto, or tap = stays on the splash with a "כניסה" button, for privacy) and a preview from settings. */
 (function(){
 function ls(k){try{return localStorage.getItem(k);}catch(e){return null;}}
-/* 24.4: Face ID (passkey) helper. sq_fid = this device's credential id, sq_fid_on = "1" when the lock is on.
-   The server (edge function sq-passkey) checks every signature; offline, iOS still checks the face and we accept it locally. */
-var FN="https://emgtyfksnofzzlutngbf.supabase.co/functions/v1/sq-passkey";
-function b2u(b){b=new Uint8Array(b);var s="";for(var i=0;i<b.length;i++)s+=String.fromCharCode(b[i]);return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
-function u2b(u){u=u.replace(/-/g,"+").replace(/_/g,"/");while(u.length%4)u+="=";var s=atob(u),b=new Uint8Array(s.length);for(var i=0;i<s.length;i++)b[i]=s.charCodeAt(i);return b.buffer;}
-function call(body){var ac=new AbortController(),tm=setTimeout(function(){ac.abort();},8000);
-  return fetch(FN,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),signal:ac.signal})
-    .then(function(r){return r.json().catch(function(){return {};}).then(function(j){if(!r.ok){var e=new Error(j.err||("HTTP "+r.status));e.status=r.status;throw e;}return j;});},
-      function(){var e=new Error("offline");e.net=true;throw e;}).finally(function(){clearTimeout(tm);});}
-var pre=null,preVal=null;
-function prep(){var id=ls("sq_fid");preVal=null;pre=call({a:"auth-options",id:id}).then(function(j){j.at=Date.now();return j;},function(e){return {local:true,at:Date.now(),err:e};});
-  var mine=pre;pre.then(function(j){if(pre===mine)preVal=j;});return pre;}
-function cred(){var id=ls("sq_fid");return id?[{type:"public-key",id:u2b(id),transports:["internal"]}]:[];}
-function getA(j){var ch=j.local?crypto.getRandomValues(new Uint8Array(32)).buffer:u2b(j.opts.challenge);
-  return navigator.credentials.get({publicKey:{challenge:ch,rpId:location.hostname,allowCredentials:cred(),userVerification:"required",hints:["client-device"],timeout:60000}});}
-window.SQFid={
-  ok:function(){return !!(window.PublicKeyCredential&&navigator.credentials&&window.isSecureContext);},
-  on:function(){return this.ok()&&ls("sq_fid_on")==="1"&&!!ls("sq_fid")&&!!ls("sq_pin");},
-  prep:prep,
-  auth:function(){var t0=performance.now(),v=preVal,p=pre;pre=preVal=null;
-    function run(j){
-      return getA(j).then(function(a){if(!a)throw new Error("none");
-        if(j.local)return true;
-        var r=a.response,resp={id:a.id,rawId:b2u(a.rawId),type:a.type,clientExtensionResults:{},authenticatorAttachment:a.authenticatorAttachment||undefined,
-          response:{clientDataJSON:b2u(r.clientDataJSON),authenticatorData:b2u(r.authenticatorData),signature:b2u(r.signature),userHandle:r.userHandle?b2u(r.userHandle):undefined}};
-        return call({a:"auth-verify",cid:j.cid,resp:resp}).then(function(){return true;},function(e){if(e.net||(e.status>=500))return true;throw e;});
-      },function(e){prep();if(e&&e.name==="NotAllowedError"&&performance.now()-t0<900){var g=new Error("gesture");g.gesture=true;throw g;}throw e;});}
-    if(v&&Date.now()-v.at<240000)return run(v);
-    return (p||prep()).then(function(j){pre=preVal=null;if(Date.now()-j.at>240000)return prep().then(function(k){pre=preVal=null;return run(k);});return run(j);});},
-  register:function(regPre){var pin=ls("sq_pin")||"";
-    var go=function(j){return navigator.credentials.create({publicKey:{rp:{id:location.hostname,name:j.opts.rp.name},user:{id:u2b(j.opts.user.id),name:j.opts.user.name,displayName:j.opts.user.displayName},
-      challenge:u2b(j.opts.challenge),pubKeyCredParams:j.opts.pubKeyCredParams,timeout:60000,attestation:"none",hints:["client-device"],
-      authenticatorSelection:j.opts.authenticatorSelection,excludeCredentials:(j.opts.excludeCredentials||[]).map(function(c){return {type:"public-key",id:u2b(c.id)};})}})
-      .then(function(c){var r=c.response,resp={id:c.id,rawId:b2u(c.rawId),type:c.type,clientExtensionResults:{},authenticatorAttachment:c.authenticatorAttachment||undefined,
-          response:{clientDataJSON:b2u(r.clientDataJSON),attestationObject:b2u(r.attestationObject),transports:r.getTransports?r.getTransports():["internal"]}};
-        return call({a:"reg-verify",pin:pin,cid:j.cid,resp:resp,device:/iPhone/.test(navigator.userAgent)?"iPhone":/iPad/.test(navigator.userAgent)?"iPad":"device"});})
-      .then(function(r){try{localStorage.setItem("sq_fid",r.id);localStorage.setItem("sq_fid_on","1");}catch(e){}return r;});};
-    return regPre?go(regPre):call({a:"reg-options",pin:pin}).then(go);},
-  regOpts:function(){return call({a:"reg-options",pin:ls("sq_pin")||""}).then(function(j){j.at=Date.now();return j;});}
-};
-if(window.SQFid.on())prep();
 function make(o){o=o||{};var old=document.getElementById("sqSplash");if(old)old.remove();
 var S=document.createElement("div");S.id="sqSplash";S.setAttribute("role",o.preview?"dialog":"presentation");
 S.innerHTML='<div class="ssB"><img src="apple-touch-icon.png?v=2" alt=""><div class="ssW">Side Quests</div><div class="ssS">AI-powered life assistant</div>'+
 '<div class="ssK"><div class="ssD" aria-hidden="true"><i style="--c:#EE8C4F"></i><i style="--c:#B26BFF"></i><i style="--c:#7FA650"></i><i style="--c:#4A9BE8"></i><i style="--c:#1FB3AE"></i><i style="--c:#D97757"></i></div>'+
-'<div class="ssT"></div><div class="ssL"><button type="button" class="ssGo">כניסה<span aria-hidden="true"> ←</span></button>'+
-'<button type="button" class="ssLk" aria-label="Face ID"><svg viewBox="0 0 24 28" aria-hidden="true"><path class="sh" d="M7 13V9a5 5 0 0 1 10 0v4"/><rect x="3.5" y="13" width="17" height="12.5" rx="3"/><circle class="kh" cx="12" cy="19" r="1.6"/></svg></button></div></div></div>';
+'<div class="ssT"></div><div class="ssL"><button type="button" class="ssGo">כניסה<span aria-hidden="true"> ←</span></button></div></div></div>';
 (document.body||document.documentElement).appendChild(S);
 var QA={side:"#EE8C4F",fun:"#FF4F8B",army:"#C9B866",work:"#6CBDF7",travel:"#FFC857",ai:"#D97757"},q=location.hash.slice(1);
 S.style.setProperty("--qa",QA[q]||"#F4B63A");
@@ -2567,17 +2511,7 @@ var img=ls("sq_splash"),style=o.style||ls("sq_splash_style")||"art";
 if(style==="art"&&img&&/^data:image\//.test(img)){var ai=S.querySelector(".ssB img");ai.src=img;ai.className="art";S.className="a";}
 var tap=o.preview||ls("sq_splash_enter")==="tap",go=S.querySelector(".ssGo");
 var txt=S.querySelector(".ssT"),dots=S.querySelectorAll(".ssD i"),t0=performance.now(),cap=12,p=0,fin=0,gone=0,ready=0;
-var lk=S.querySelector(".ssLk"),fid=!!(window.SQFid&&SQFid.on()),unl=!fid;
-if(o.preview&&o.fid){fid=true;unl=false;}
-if(fid){tap=true;S.classList.add("fid","wait");}
-function unlock(){if(unl||gone)return;unl=true;unlAt=performance.now();S.classList.remove("wait","fail");S.classList.add("open");txt.textContent="";}
-function failed(){if(unl||gone)return;S.classList.remove("wait");S.classList.add("fail");
-  txt.textContent="נגיעה במנעול · ";var c=document.createElement("button");c.type="button";c.textContent="כניסה עם קוד";
-  c.onclick=function(){try{localStorage.removeItem("sq_pin");sessionStorage.removeItem("sq_pin");}catch(e){}location.reload();};txt.appendChild(c);}
-if(fid){if(o.preview)setTimeout(unlock,1700);
-  else{SQFid.auth().then(unlock,function(e){if(e&&e.gesture){S.classList.remove("wait");S.classList.add("fail");txt.textContent="";}else failed();});}
-  lk.onclick=function(){if(unl||o.preview)return;S.classList.remove("fail");S.classList.add("wait");txt.textContent="";SQFid.auth().then(unlock,failed);};}
-var red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches,tF=0,unlAt=0,FL=480,KT=2600,dw=S.querySelector(".ssD");
+var red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 function stage(c){if(c>cap)cap=c;}
 function out(){if(gone)return;gone=1;S.classList.add("out");setTimeout(function(){S.remove();},400);}
 go.onclick=out;
@@ -2589,15 +2523,14 @@ function tick(){if(gone)return;var now=performance.now(),el=now-t0,target=fin?10
     else if(!o.preview&&el>2500)txt.textContent="הקליטה חלשה, עוד רגע";
     var pin=document.getElementById("sq-pin"),l=document.getElementById("list");
     if(o.preview){if(el>2200)done();}
-    else if(pin){tap=false;unl=true;done();}
+    else if(pin){tap=false;done();}
     else if((l&&l.children.length&&!/^\s*טוען/.test(l.textContent))||el>6000)done();}
-  else if(p>99.5&&now>=fin){if(!tF){tF=now;dw.classList.add("k");}var t=now-tF;
-    for(var j=0;j<dots.length;j++){var d=dots[j],o2=1,f2=1,g=10;
-      if(t<FL){var w=Math.sin(Math.PI*t/FL);f2=1+.22*w;g=10+16*w;}
-      else if(!red){var s2=t-FL,pos=2.5+2.5*Math.cos(2*Math.PI*s2/KT),k=Math.max(0,1-Math.abs(j-pos)/1.4),sw=.32+.68*k*k,m=Math.min(1,s2/450);o2=1+(sw-1)*m;g=10+(3+11*k-10)*m;}
-      d.style.setProperty("--f",f2.toFixed(3));d.style.setProperty("--o",o2.toFixed(3));d.style.setProperty("--gl",g.toFixed(1)+"px");d.classList.add("on");}
-    if(t>=FL&&!tap){out();return;}
-    if(t>=FL*.6&&!ready&&unl&&now-unlAt>650){ready=1;txt.textContent="";S.classList.add("ready");}}
+  else if(p>99.5&&now>=fin){
+    /* 24.8 (Oren 19.11.2026): the dots fill during loading and then simply stay lit, no flash and no sweep. */
+    for(var j=0;j<dots.length;j++){dots[j].style.setProperty("--f","1");dots[j].classList.add("on");}
+    if(!tap){out();return;}
+    if(!ready){ready=1;txt.textContent="";S.classList.add("ready");}
+    return;}
   requestAnimationFrame(tick);}
 function done(){if(fin)return;fin=Math.max(performance.now()+250,t0+1000);}
 if(o.preview){setTimeout(function(){stage(30);},150);setTimeout(function(){stage(55);},700);setTimeout(function(){stage(85);},1500);}
@@ -2606,7 +2539,7 @@ else{document.addEventListener("DOMContentLoaded",function(){stage(30);});
   window.addEventListener("sq-refreshed",function(){stage(85);});
   setTimeout(function(){stage(30);},400);setTimeout(function(){stage(55);},1500);setTimeout(function(){stage(70);},3000);}
 requestAnimationFrame(tick);return {stage:stage,done:done};}
-window.SQSplash=make();window.SQSplash.preview=function(style,fidDemo){return make({preview:true,style:style,fid:fidDemo});};
+window.SQSplash=make();window.SQSplash.preview=function(style){return make({preview:true,style:style});};
 })();</script>
 
 <div class="qband qb-side">
@@ -6160,17 +6093,17 @@ Mood: early morning, optimistic, adventurous but calm. Feels like the beginning 
 Do NOT include: any text, letters, logos, UI elements, people, animals, buildings, frames or borders, watermark. No photorealism, no 3D render look, no heavy grain.`};
   function splashLs(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function splashSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
-  // 24.4: Face ID. The registration options are fetched ahead (when settings open), so the tap calls Face ID right away
+  // 24.4/24.8: Face ID for the locked dashboards. The registration options are fetched ahead (when settings open), so the tap calls Face ID right away
   // (iPhone allows the Face ID sheet only straight from a tap).
   let fidReg=null,fidBusy=false;
   function fidOn(){return !!(window.SQFid&&SQFid.on());}
   function fidPrep(){if(!window.SQFid||!SQFid.ok()||(fidReg&&Date.now()-fidReg.at<240000))return;fidReg={at:Date.now(),p:SQFid.regOpts().then(j=>{fidReg.j=j;return j;},()=>{fidReg=null;})};}
   function fidEnable(){
     if(!window.SQFid||!SQFid.ok()||fidBusy)return;
-    if(splashLs("sq_fid")){splashSet("sq_fid_on","1");renderSettings();toast("Face ID פעיל בכניסה");return;}
+    if(splashLs("sq_fid")){splashSet("sq_fid_on","1");renderSettings();toast("Face ID פעיל בדשבורדים הנעולים");return;}
     const j=fidReg&&fidReg.j&&Date.now()-fidReg.j.at<240000?fidReg.j:null;fidReg=null;
     fidBusy=true;renderSettings();
-    SQFid.register(j).then(()=>{fidBusy=false;renderSettings();toast("Face ID פעיל בכניסה");},e=>{fidBusy=false;fidPrep();renderSettings();
+    SQFid.register(j).then(()=>{fidBusy=false;renderSettings();toast("Face ID פעיל בדשבורדים הנעולים");},e=>{fidBusy=false;fidPrep();renderSettings();
       toast(e&&e.name==="NotAllowedError"?"Face ID לא אושר, אפשר לנסות שוב":e&&e.net?"אין חיבור לשרת, נסה שוב":"Face ID לא הופעל ("+((e&&e.message)||"שגיאה").slice(0,40)+")",null,3500);});}
   function splashHave(){try{return !!localStorage.getItem("sq_splash");}catch(e){return false;}}
   function splashSync(force){
@@ -6256,12 +6189,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
       placeSec,
       sec("ts","🔠 גודל טקסט",{auto:"לפי האייפון","1":"רגיל","1.15":"גדול","1.3":"גדול מאוד","1.5":"רכב"}[tsPref]||"לפי האייפון",
         h("div",{class:"tsbtns"},...[["auto","לפי האייפון"],["1","רגיל"],["1.15","גדול"],["1.3","גדול מאוד"],["1.5","🚗 רכב"]].map(([v,l])=>h("button",{type:"button","aria-pressed":tsPref===v?"true":"false",onclick:()=>setTs(v)},l)))),
-      sec("splash","🖼️ מסך פתיחה",(splashHave()&&splashLs("sq_splash_style")!=="basic"?"איור":"בסיסי")+" · "+(fidOn()?"Face ID":splashLs("sq_splash_enter")==="tap"?"כניסה בלחיצה":"כניסה אוטומטית"),
-        // 24.4 (Oren 19.11.2026): Face ID on this device. Registering needs the stored code (server checks it).
-        h("div",{class:"sqrow"},h("div",{class:"lb"},"🔐 Face ID בכניסה")),
-        h("div",{class:"tsbtns two"},
-          h("button",{type:"button","data-pin":"spl:fid0","aria-pressed":fidOn()?"false":"true",onclick:()=>{splashSet("sq_fid_on","0");renderSettings();}},"כבוי"),
-          h("button",{type:"button","data-pin":"spl:fid1",disabled:window.SQFid&&SQFid.ok()?null:true,"aria-pressed":fidOn()?"true":"false",onclick:fidEnable},fidBusy?"רגע…":"פעיל")),
+      sec("splash","🖼️ מסך פתיחה",(splashHave()&&splashLs("sq_splash_style")!=="basic"?"איור":"בסיסי")+" · "+(splashLs("sq_splash_enter")==="tap"?"כניסה בלחיצה":"כניסה אוטומטית"),
         h("div",{class:"tsbtns two"},
           h("button",{type:"button","data-pin":"spl:basic","aria-pressed":!splashHave()||splashLs("sq_splash_style")==="basic"?"true":"false",onclick:()=>{splashSet("sq_splash_style","basic");renderSettings();}},"✦ בסיסי"),
           h("button",{type:"button","data-pin":"spl:art",disabled:splashHave()?null:true,"aria-pressed":splashHave()&&splashLs("sq_splash_style")!=="basic"?"true":"false",onclick:()=>{splashSet("sq_splash_style","art");renderSettings();}},splashHave()?"🖼️ איור":"🖼️ איור · בקרוב")),
@@ -6271,9 +6199,14 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
           h("button",{type:"button","data-pin":"spl:tap","aria-pressed":splashLs("sq_splash_enter")==="tap"?"true":"false",onclick:()=>{splashSet("sq_splash_enter","tap");renderSettings();}},"👆 בלחיצה")),
         h("div",{class:"sqrow"},h("div",{class:"lb"},"תצוגה מקדימה")),
         h("div",{class:"tsbtns two"},
-          h("button",{type:"button","data-pin":"spl:pvb",onclick:()=>window.SQSplash&&SQSplash.preview&&SQSplash.preview("basic",fidOn())},"👁️ בסיסי"),
-          h("button",{type:"button","data-pin":"spl:pva",disabled:splashHave()?null:true,onclick:()=>window.SQSplash&&SQSplash.preview&&SQSplash.preview("art",fidOn())},splashHave()?"👁️ איור":"👁️ איור · בקרוב")),
-        (()=>{const el=h("div");window.SQGfx&&SQGfx.slot(el,SPLASH_GFX,{have:splashHave(),db,onDone:()=>splashSync(true)});return el;})()),
+          h("button",{type:"button","data-pin":"spl:pvb",onclick:()=>window.SQSplash&&SQSplash.preview&&SQSplash.preview("basic")},"👁️ בסיסי"),
+          h("button",{type:"button","data-pin":"spl:pva",disabled:splashHave()?null:true,onclick:()=>window.SQSplash&&SQSplash.preview&&SQSplash.preview("art")},splashHave()?"👁️ איור":"👁️ איור · בקרוב"))),
+      // 24.8 (Oren 19.11.2026): Face ID opens the locked dashboards (insurance, income, budget); the 4-digit code always stays.
+      // Registering needs the stored code (the server checks it). No Face ID at app entry.
+      sec("fid","🔐 Face ID לדשבורדים נעולים",fidOn()?"פעיל":"כבוי",
+        h("div",{class:"tsbtns two"},
+          h("button",{type:"button","data-pin":"fid:0","aria-pressed":fidOn()?"false":"true",onclick:()=>{splashSet("sq_fid_on","0");renderSettings();}},"כבוי"),
+          h("button",{type:"button","data-pin":"fid:1",disabled:window.SQFid&&SQFid.ok()?null:true,"aria-pressed":fidOn()?"true":"false",onclick:fidEnable},fidBusy?"רגע…":"פעיל"))),
       sec("geo","🗺️ סידור לפי אזור",geoOff?"כבוי":"פעיל",
         h("div",{class:"sqrow"},h("div",{class:"lb"},"סידור לפי אזור"),sw(!geoOff,v=>setGeo(v),"סידור לפי אזור"))),
       // 18.7 (Oren 17.11.2026): the work-calendar page (answers, series, insights) lives here, not in the dashboards
