@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=3"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#8E1B2C">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.TRIP_BUILD="1.0";window.SQ_DASH=(new URLSearchParams(location.search).get("dash")||"rome");</script>
+<script src="sq-db.js?v=10"></script>
+<title>טיול</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../trips/trip.css?v=1">
+<style>
+/* מיני דשבורד לטיול, הדף של אורן (19.11.2026). שלושה מצבים: ✏️ עריכה (פלייסהולדרים, מה עוד לתכנן, טקסטים),
+   👀 תצוגה (בדיוק מה שמי שמקבל את הלינק רואה) ו-🔗 שיתוף (הלינק הקבוע, וואטסאפ, הפעלה/כיבוי ותצוגה מקדימה).
+   הנתונים: sq_docs collection "trips" (מסמך לכל טיול). התצוגה עצמה ב-../trips/trip-view.js, משותפת לדף הציבורי. */
+:root{--hero:#8E1B2C;--hero2:#1E5B43;--hero-ink:#fff;--hero-muted:rgba(255,255,255,.8);--accent:#E8B54A;--f-display:"Rubik","Assistant",system-ui,sans-serif}
+html,body{margin:0;background:#FBF7F1}
+@media (prefers-color-scheme: dark){html,body{background:#16130F}}
+.hero{color:#fff;padding:12px 16px 12px;padding-top:calc(12px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:760px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hero h1{font-family:var(--f-display);font-size:18px;margin:10px 0 0;font-weight:800}
+.seg{display:flex;margin-top:10px;border:1px solid rgba(255,255,255,.35);border-radius:12px;overflow:hidden}
+.seg button{flex:1;border:0;background:rgba(255,255,255,.08);color:#fff;font:inherit;font-family:var(--f-display);font-weight:800;font-size:14.5px;padding:9px 2px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.seg button+button{border-inline-start:1px solid rgba(255,255,255,.35)}
+.seg button.on{background:#fff;color:var(--hero)}
+.own{max-width:760px;margin:0 auto;padding:0 16px;font-family:Assistant,system-ui,sans-serif;direction:rtl;color:#1D1A17}
+@media (prefers-color-scheme: dark){.own{color:#F3EEE7}}
+.box{background:var(--card,#fff);border:1px solid #ECE3D6;border-radius:18px;padding:14px 16px;margin-top:16px}
+@media (prefers-color-scheme: dark){.box{background:#211D18;border-color:#3A332B}}
+.box h3{font-family:var(--f-display);font-size:17px;margin:0 0 4px}
+.box p{margin:0 0 10px;font-size:14px;opacity:.8}
+.lnk{display:block;direction:ltr;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:rgba(127,127,127,.12);border-radius:10px;padding:9px 10px;word-break:break-all;margin-bottom:10px}
+.row{display:flex;border:1px solid rgba(127,127,127,.35);border-radius:12px;overflow:hidden}
+.row>*{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:42px;border:0;background:none;font:inherit;font-weight:800;font-size:14px;color:inherit;text-decoration:none;cursor:pointer;white-space:nowrap;padding:4px}
+.row>*+*{border-inline-start:1px solid rgba(127,127,127,.35)}
+.row .on{background:#1F8457;color:#fff}
+.st{font-size:13px;font-weight:700;min-height:20px;margin-top:6px}
+.frame{margin-top:14px;border-radius:26px;border:8px solid #1d1d1f;overflow:hidden;height:640px;max-width:390px;margin-inline:auto;background:#FBF7F1}
+.frame iframe{width:100%;height:100%;border:0;display:block}
+.fld{display:block;margin-bottom:10px;font-weight:800;font-size:13.5px}
+.fld input,.fld textarea{display:block;width:100%;box-sizing:border-box;margin-top:4px;font:inherit;font-weight:600;font-size:15px;border:1px solid rgba(127,127,127,.4);border-radius:10px;padding:8px 10px;background:transparent;color:inherit}
+.fld textarea{min-height:84px;resize:vertical}
+.pv{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:12px;background:rgba(232,181,74,.18);font-weight:800;font-size:13.5px;margin-top:14px}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=9">
+<script src="dash-sub.js?v=8" defer></script>
+<script src="sq-gfx.js?v=1"></script>
+<script src="../trips/trip-view.js?v=2"></script>
+</head>
+<body>
+<header class="hero"><div class="in">
+  <div class="top"><a class="sqhome" href="./#travel"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a></div>
+  <h1 id="ttl">טיול</h1>
+  <div class="seg" role="tablist"><button type="button" data-m="edit" class="on">✏️ עריכה</button><button type="button" data-m="view">👀 תצוגה</button><button type="button" data-m="share">🔗 שיתוף</button></div>
+</div></header>
+<div id="ownTop" class="own"></div>
+<div id="app"></div>
+<div id="ownBot" class="own" style="padding-bottom:40px"></div>
+<script>
+(function(){
+  "use strict";
+  const ID=new URLSearchParams(location.search).get("id")||"";
+  const CLAUDE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.2 10.8 13.5 1.6M12.8 11.1 17.6 6.2M13.2 11.8 21.8 10.3M13.1 12.5 18.7 15.3M12.6 13.1 16.9 21.3M11.8 13.2 10.8 20.4M11.2 12.9 5.4 18.8M10.8 12.2 4.6 13.3M10.9 11.5 3.0 7.6M11.4 10.9 8.2 4.9" fill="none" stroke="#D97757" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  const esc=v=>TripView.esc(v);
+  let db=null,trip=null,gfx={},mode="edit",gfxIds="";
+  try{const m=sessionStorage.getItem("trip_m_"+ID);if(m)mode=m;}catch(e){}
+  const $=id=>document.getElementById(id);
+  document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{mode=b.dataset.m;try{sessionStorage.setItem("trip_m_"+ID,mode);}catch(e){}draw();});
+  function pubUrl(){const s=trip&&trip.share;return s&&s.token?new URL("../trips/?t="+s.token,location.href).href:"";}
+  function newTok(){const r=new Uint8Array(24);crypto.getRandomValues(r);return btoa(String.fromCharCode(...r)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
+  function save(fields){return db.collection("trips").doc(ID).update({...fields,updated_at:new Date().toISOString()});}
+  function copy(t,st,msg){const ok=()=>{if(st)st.textContent=msg||"✓ הועתק";};if(navigator.clipboard)navigator.clipboard.writeText(t).then(ok,()=>prompt("העתק:",t));else prompt("העתק:",t);}
+
+  function gapsUI(el){
+    el.innerHTML=(trip.gaps||[]).map((g,i)=>{const q=g.q||g.h;const cq="https://claude.ai/new?q="+encodeURIComponent(q),gq="https://chatgpt.com/?q="+encodeURIComponent(q);
+      return `<div class="tp-gap"><b>${esc(g.e||"•")} ${esc(g.h)}</b>${g.s?`<span>${esc(g.s)}</span>`:""}<div class="tp-ask"><a href="${cq}" target="_blank" rel="noopener">${CLAUDE}לתכנן עם Claude</a><a href="${gq}" target="_blank" rel="noopener">${SQGfx.GPT_LOGO}ChatGPT</a></div></div>`;}).join("");
+  }
+  function slotUI(el,key){const d=(trip.gfx||{})[key];if(!d){el.remove();return;}SQGfx.slot(el,d,{db,have:!!(gfx[d.id]&&gfx[d.id].data),onDone:loadGfx});}
+
+  function drawShare(){
+    const s=trip.share||{},u=pubUrl(),on=!!s.on&&!!s.token;
+    $("ownTop").innerHTML=`<div class="box"><h3>🔗 לינק קבוע לשיתוף</h3><p>מי שמקבל את הלינק רואה רק את הדף של הטיול הזה, בלי שום גישה לשאר Side Quests. אפשר לכבות בכל רגע.</p>
+      ${u?`<span class="lnk">${esc(u)}</span>`:""}
+      <div class="row">${u?`<button type="button" id="cp">📋 העתקה</button><a href="https://wa.me/?text=${encodeURIComponent((trip.title||"")+" ✈️ "+u)}" target="_blank" rel="noopener">💬 וואטסאפ</a>`:""}
+        <button type="button" id="tg" class="${on?"on":""}">${on?"✓ השיתוף פעיל":u?"השיתוף כבוי":"יצירת לינק"}</button></div>
+      <div class="st" id="sst" aria-live="polite"></div>
+      ${u?`<div class="row" style="margin-top:8px"><button type="button" id="rg">🔄 לינק חדש (הישן יפסיק לעבוד)</button></div>`:""}</div>
+      ${u&&on?`<div class="pv">👀 ככה זה נראה בטלפון של מי שמקבל את הלינק</div><div class="frame"><iframe src="${esc(u)}" title="תצוגה מקדימה" loading="lazy" referrerpolicy="no-referrer"></iframe></div>`:""}`;
+    const st=$("sst");
+    if($("cp"))$("cp").onclick=()=>copy(u,st,"✓ הלינק הועתק");
+    $("tg").onclick=()=>{const tok=s.token||newTok();save({share:{...s,token:tok,on:!(s.on&&s.token),wa:s.wa||""}}).then(()=>{st.textContent="✓ נשמר";},e=>st.textContent="✕ "+e.message);};
+    if($("rg"))$("rg").onclick=()=>{if(!confirm("ליצור לינק חדש? מי שיש לו את הלינק הישן לא יוכל להיכנס."))return;save({share:{...s,token:newTok(),on:true}}).then(()=>{st.textContent="✓ לינק חדש נוצר";});};
+  }
+  function drawEditExtras(){
+    const sp=trip.sync_prompt||"";
+    $("ownBot").innerHTML=`<div class="box"><h3>✏️ טקסטים</h3>
+      <label class="fld">כותרת<input id="f_title" value="${esc(trip.title||"")}"></label>
+      <label class="fld">שורה מתחת לכותרת<input id="f_tag" value="${esc(trip.tagline||"")}"></label>
+      <label class="fld">תיאור קצר<textarea id="f_desc">${esc(trip.desc||"")}</textarea></label>
+      <div class="row"><button type="button" id="f_save">💾 שמירה</button></div><div class="st" id="fst"></div></div>
+      <div class="box"><h3>🔄 סנכרון עם Holiday Optimizer</h3><p>אותו טיול באותם נתונים בשני המקומות. ההנחיה מסבירה ל-Holiday Optimizer לאן לכתוב ומה לקרוא.</p>
+      <div class="row"><button type="button" id="sp">📋 העתק הנחיה</button>${trip.ho_url?`<a href="${esc(trip.ho_url)}" target="_blank" rel="noopener">${CLAUDE}לשיחה</a>`:""}</div><div class="st" id="spst"></div></div>`;
+    $("f_save").onclick=()=>save({title:$("f_title").value.trim(),tagline:$("f_tag").value.trim(),desc:$("f_desc").value.trim()}).then(()=>$("fst").textContent="✓ נשמר",e=>$("fst").textContent="✕ "+e.message);
+    $("sp").onclick=()=>copy(sp||"",$("spst"),"✓ ההנחיה הועתקה");
+  }
+  function draw(){
+    document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.dataset.m===mode));
+    if(!trip){$("app").innerHTML='<div class="own" style="padding:60px 16px;text-align:center">טוען…</div>';return;}
+    $("ttl").textContent=(trip.flag?trip.flag+" ":"")+(trip.title||"טיול");document.title=trip.title||"טיול";
+    const th=trip.theme||{};if(th.c1)document.documentElement.style.setProperty("--hero",th.c1);if(th.c2)document.documentElement.style.setProperty("--hero2",th.c2);
+    $("ownTop").innerHTML="";$("ownBot").innerHTML="";
+    if(mode==="share"){$("app").innerHTML="";drawShare();return;}
+    TripView.render($("app"),trip,{mode:mode==="edit"?"edit":"view",img:"../trips/img/",gfx,wa:(trip.share||{}).wa,slot:slotUI,gaps:gapsUI});
+    if(mode==="edit")drawEditExtras();
+  }
+  function loadGfx(){const ids=Object.values(trip.gfx||{}).map(x=>x&&x.id).filter(Boolean);gfxIds=ids.join(",");
+    SQGfx.get(ids).then(g=>{gfx=g;draw();});}
+  window.claude.use("db").then(d=>{db=d;if(!db)return;
+    db.collection("trips").onSnapshot(s=>{const x=s.docs.find(z=>z.id===ID);trip=x?x.data():null;
+      if(!trip||trip._deleted){$("app").innerHTML='<div class="own" style="padding:60px 16px;text-align:center">הטיול לא נמצא</div>';return;}
+      const ids=Object.values(trip.gfx||{}).map(x=>x&&x.id).filter(Boolean).join(",");
+      if(ids!==gfxIds)loadGfx();else draw();
+    });
+  });
+  draw();
+})();
+</script>
+</body>
+</html>

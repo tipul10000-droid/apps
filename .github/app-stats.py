@@ -5,7 +5,7 @@
 רץ ב-GitHub Actions אחרי כל מיזוג (.github/workflows/app-stats.yml), וגם ידנית: python3 .github/app-stats.py"""
 import json, re, subprocess, collections, datetime, os
 
-APPS = ["side-quests", "study", "sandwich", "netflix-il", "frida", "movies"]
+APPS = ["side-quests", "study", "sandwich", "netflix-il", "frida", "movies", "trips"]
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -27,6 +27,9 @@ def cur_version(app):
     if app == "sandwich":
         m = re.search(r'RELEASES\s*=\s*\[\s*\{v:\s*"([^"]+)"', read("sandwich/app.js"))
         return m and m.group(1)
+    if app == "trips":
+        m = re.search(r'trip-view\.js\?v=([\w.]+)', read("trips/index.html"))
+        return m and ("v" + m.group(1))
     m = re.search(r'app\.js\?v=([\w.]+)', read(app + "/index.html"))
     return m and ("v" + m.group(1))
 
