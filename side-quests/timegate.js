@@ -132,10 +132,13 @@
   // recurring task (9.2): recur {dow: 0-6}. A done task reopens on its next day (closed before that day's 00:00 = open again),
   // planned for that day. Same rule in the app and in sq-push, so a weekly reminder pushes again every week.
   function recurOpen(t, today) {
-    const r = t && t.recur; if (!r || r.dow == null || t.status !== "done") return t;
+    const r = t && t.recur; if (!r || r.dow == null) return t;
     const d = today ? new Date(today + "T00:00:00") : new Date(); d.setHours(0, 0, 0, 0);
     d.setDate(d.getDate() - ((d.getDay() - r.dow + 7) % 7));
     const iso = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    // 19.11.2026 (Oren: Lia missed her Thursday orchestra 3 times): a weekly task that was never ticked done must still
+    // remind every week, so an open one whose planned day is behind this week's day rolls forward to it.
+    if (t.status !== "done") return (["active", "waiting_me"].includes(t.status || "active") && (!t.next_date || t.next_date < iso)) ? { ...t, next_date: iso } : t;
     const doneAt = t.done_at ? Date.parse(t.done_at) : 0;
     // done_at is UTC; compare with that day's 00:00 in Israel (UTC+2/+3): 21:00Z the evening before is safe enough
     return doneAt < Date.parse(iso + "T00:00:00Z") - 2 * 3600000 ? { ...t, status: "active", done_at: "", next_date: iso } : t;
