@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <script src="nozoom.js?v=3"></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#8E1B2C">
 <script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.TRIP_BUILD="1.0";window.SQ_DASH=(new URLSearchParams(location.search).get("dash")||"rome");</script>
@@ -11,7 +12,7 @@
 <title>טיול</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
-<link rel="stylesheet" href="../trips/trip.css?v=4">
+<link rel="stylesheet" href="../trips/trip.css?v=5">
 <style>
 /* מיני דשבורד לטיול, הדף של אורן (19.11.2026). שלושה מצבים: ✏️ עריכה (פלייסהולדרים, מה עוד לתכנן, טקסטים),
    👀 תצוגה (בדיוק מה שמי שמקבל את הלינק רואה) ו-🔗 שיתוף (הלינק הקבוע, וואטסאפ, הפעלה/כיבוי ותצוגה מקדימה).
@@ -23,6 +24,8 @@ html,body{margin:0;background:#FBF7F1}
 .hero .in{max-width:760px;margin:0 auto}
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .hero h1{font-family:var(--f-display);font-size:18px;margin:10px 0 0;font-weight:800}
+/* inside the SQ app (19.11.2026): the app bar is the only top ribbon (back + title), the page keeps just its tabs */
+.embed .hero h1{display:none}.embed .hero .seg{margin-top:0}
 .seg{display:flex;margin-top:10px;border:1px solid rgba(255,255,255,.35);border-radius:12px;overflow:hidden}
 .seg button{flex:1;border:0;background:rgba(255,255,255,.08);color:#fff;font:inherit;font-family:var(--f-display);font-weight:800;font-size:14.5px;padding:9px 2px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
 .seg button+button{border-inline-start:1px solid rgba(255,255,255,.35)}
@@ -49,7 +52,7 @@ html,body{margin:0;background:#FBF7F1}
 <link rel="stylesheet" href="dash-back.css?v=9">
 <script src="dash-sub.js?v=8" defer></script>
 <script src="sq-gfx.js?v=1"></script>
-<script src="../trips/trip-view.js?v=5"></script>
+<script src="../trips/trip-view.js?v=6"></script>
 </head>
 <body>
 <header class="hero"><div class="in">
