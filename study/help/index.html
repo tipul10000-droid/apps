@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>🤝 עזרה בזמן אמת · Study Monster</title>
+<link rel="icon" href="../icon-64.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../theme.css?v=8">
+<!-- 🤝 מסך המראה של "עזרה מקרוב משפחה" (אורן 19.11.2026): העוזר רואה בדיוק את המסך של הילד (help.js שולח צילום DOM חי ל-study_state app 'live').
+     פתיחה: מההתראה, מהבאנר באזור ההורים, או מלינק בוואטסאפ: help/?kid=<ילד>&by=<מי עוזר>. נפתח רק במכשיר של המשפחה:
+     קוד ההורים של המשפחה שמור בו, או שאחד מילדי המשפחה כבר נכנס בו לאזור שלו (study_ok_<ילד>). מכשיר הורה בלי סימון שואל פעם אחת "המכשיר הזה של..."
+     (study-push?action=iam), כדי שבקשת עזרה לאבא או לאמא תגיע רק למכשיר שלו/ה.
+     התצוגה ב-iframe בלי סקריפטים (sandbox), כך ששום קוד של הדף לא רץ אצל ההורה; רק הגוף מתחלף, בלי הבהוב. -->
+<style>
+html,body{height:100%;margin:0}
+body{display:flex;flex-direction:column;box-sizing:border-box;padding-top:max(calc(env(safe-area-inset-top,0px) + 6px),44px);padding-bottom:env(safe-area-inset-bottom,0px);overflow:hidden}
+.top{flex:none;display:flex;align-items:center;gap:8px;padding:0 12px 6px;direction:rtl}
+.top .back{flex:none;font-size:15px;text-decoration:none;color:#2f5d9e;white-space:nowrap}
+.top h1{flex:1 1 0;min-width:0;margin:0;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.top .end{flex:none;width:86px;height:34px;font:600 14px system-ui,Arial,sans-serif;border-radius:12px;border:1.5px solid #b42318;background:#fff;color:#b42318;cursor:pointer;visibility:hidden}
+.top .end.on{visibility:visible}
+.st{flex:none;height:22px;display:flex;align-items:center;justify-content:center;gap:6px;font:600 13px system-ui,Arial,sans-serif;color:#5b6675;padding:0 12px;white-space:nowrap;overflow:hidden}
+.st .dot{width:9px;height:9px;border-radius:50%;background:#9aa5b1;flex:none}.st.ok .dot{background:#1d9a55;animation:pp 1.6s infinite}.st.ok{color:#1d7a4a}.st.warn .dot{background:#d97706}.st.warn{color:#b45309}
+@keyframes pp{50%{opacity:.35}}
+.stage{flex:1 1 0;min-height:0;position:relative;display:flex;align-items:flex-start;justify-content:center;padding:6px 10px 10px;box-sizing:border-box}
+.dev{position:relative;border-radius:22px;box-shadow:0 0 0 7px #1f2933,0 10px 30px rgba(0,0,0,.25);overflow:hidden;background:#fff;transform-origin:top center;margin-top:7px}
+.dev iframe{border:0;display:block;pointer-events:none;background:transparent}
+.tap{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:rgba(239,68,68,.35);border:2px solid rgba(239,68,68,.9);pointer-events:none;animation:tp 1.3s ease-out forwards}
+@keyframes tp{0%{transform:scale(.4);opacity:1}100%{transform:scale(1.4);opacity:0}}
+.msg{position:absolute;inset:6px 14px auto;margin:auto;max-width:420px;background:#fff;border-radius:18px;padding:22px 18px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.12);font-size:16px;line-height:1.5}
+.msg .em{font-size:46px}.msg h2{margin:6px 0 8px;font-size:20px}.msg p{margin:0 0 10px}
+.msg a.b,.msg button.b{display:block;width:100%;box-sizing:border-box;font:600 16px system-ui,Arial,sans-serif;border-radius:14px;padding:11px;margin-top:8px;border:1.5px solid #2f5d9e;background:#fff;color:#2f5d9e;text-decoration:none;cursor:pointer}
+.tip{flex:none;font-size:13px;color:#5b6675;text-align:center;padding:0 14px 8px;line-height:1.4}
+</style></head><body>
+<div class="top"><a class="back" id="bk" href="../">→ חזרה</a><h1 id="ttl">🤝 עזרה בזמן אמת</h1><button class="end" id="end" type="button">סיום עזרה</button></div>
+<div class="st" id="st"><span class="dot"></span><span id="stt">מתחבר…</span></div>
+<div class="stage" id="stage"></div>
+<div class="tip" id="tip">📞 התקשרו לילד/ה ברמקול: אתם רואים בדיוק את המסך שלו/ה, כולל מה שמוקלד, ונקודה אדומה איפה שנגע/ה.</div>
+<script src="../profiles.js?v=5"></script>
+<script>
+(function(){
+const SB_URL='https://emgtyfksnofzzlutngbf.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
+const $=id=>document.getElementById(id);
+function rpc(fn,body){return fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify(body)}).then(r=>{if(!r.ok)throw new Error('net');return r.json()})}
+const P=StudyProfiles,q=new URLSearchParams(location.search);let kid=q.get('kid');
+const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+function pinFor(f){return ls(f==='a'?'study_par_pin':'study_par_pin_'+f)}
+const stage=$('stage');
+function msg(h){stage.innerHTML='<div class="msg">'+h+'</div>'}
+// בלי קוד הורים במכשיר: רק דרך אזור ההורים (המסך של הילד לא נפתח לכל מי שיש לו את הלינק)
+if(!kid||!P.kids[kid]){const f=P.cur(),ks=P.kidsOf(f);
+  msg('<div class="em">🤝</div><h2>איזה ילד/ה צריך/ה עזרה?</h2>'+ks.map(k=>'<a class="b" href="?kid='+k+'">'+P.kids[k].n+'</a>').join(''));$('st').style.visibility='hidden';return}
+const K=P.kids[kid],boy=!!K.boy,N=K.n,g=(f,m)=>boy?m:f;
+$('ttl').textContent='🤝 עוזרים ל'+N;
+$('tip').textContent='📞 מתקשרים ל'+N+' ברמקול: רואים בדיוק את המסך של'+g('ה','ו')+', כולל מה ש'+g('היא מקלידה','הוא מקליד')+', ונקודה אדומה איפה ש'+g('נגעה','נגע')+'.';
+const PIN=pinFor(K.fam),KIDOK=P.kidsOf(K.fam).filter(x=>x!==kid&&ls('study_ok_'+x));
+const PAR={a:[['oren','אבא'],['lior','אמא']],b:[['yehuda','אבא']]}[K.fam]||[];
+let BY=(q.get('by')||'').replace(/[^a-z]/g,'');if(!BY&&PIN)BY=ls('study_iam_'+K.fam)||'';if(!BY&&KIDOK.length===1)BY=KIDOK[0];
+$('bk').href=PIN?'../parents/':'../'+(KIDOK[0]?KIDOK[0]+'/':'');$('bk').textContent=PIN?'→ אזור הורים':'→ חזרה';
+if(!PIN&&!KIDOK.length){msg('<div class="em">🔒</div><h2>המסך נפתח רק במכשיר של המשפחה</h2><p>המסך של '+N+' נפתח במכשיר של הורה (אחרי כניסה לאזור ההורים עם הקוד) או של אח/ות שכבר נכנס/ה לאזור שלו/ה באפליקציה. היכנסו פעם אחת, ואז פתחו שוב את הקישור.</p><a class="b" href="../">לאפליקציה</a>');$('st').style.visibility='hidden';return}
+
+let fr=null,dev=null,cur={sid:null,path:null,cssKey:null,at:0,html:null},lastSeen=0,lastTap=0;
+function setSt(c,t){$('st').className='st '+c;$('stt').textContent=t}
+function ago(ms){const s=Math.round(ms/1000);return s<4?'עכשיו':s<60?'לפני '+s+' שנ׳':'לפני '+Math.round(s/60)+' דק׳'}
+function fit(){if(!dev||!cur.w)return;const W=stage.clientWidth-34,H=stage.clientHeight-30,s=Math.min(1,W/cur.w,H/cur.h);dev.style.transform='scale('+s+')';dev.style.marginBottom=(-(1-s)*cur.h)+'px';dev.dataset.s=s}
+addEventListener('resize',fit);
+function build(k){stage.innerHTML='';dev=document.createElement('div');dev.className='dev';dev.style.width=k.w+'px';dev.style.height=k.h+'px';
+  fr=document.createElement('iframe');fr.setAttribute('sandbox','allow-same-origin');fr.width=k.w;fr.height=k.h;fr.style.width=k.w+'px';fr.style.height=k.h+'px';
+  const base=new URL(k.path,location.origin).href,ha=k.ha||{};
+  const css=(k.css||[]).map(x=>x[0]==='l'?'<link rel="stylesheet" href="'+x[1].replace(/"/g,'&quot;')+'">':'<style>'+x[1].replace(/<\/style/gi,'<\\/style')+'</style>').join('');
+  fr.srcdoc='<!doctype html><html lang="'+(ha.lang||'he')+'" dir="'+(ha.dir||'rtl')+'"><head><meta charset="utf-8"><base href="'+base+'"><meta name="viewport" content="width='+k.w+'">'+css+
+    '<style>html,body{overflow:hidden!important}*{animation-play-state:running}</style></head><body></body></html>';
+  dev.appendChild(fr);stage.appendChild(dev);cur.html=null;
+  fr.onload=()=>{cur.html=null;paint(k,true)};fit()}
+function paint(k,force){if(!fr)return;const d=fr.contentDocument;if(!d||!d.body)return;
+  const ha=k.ha||{},ba=k.ba||{},de=d.documentElement;
+  if(ha.cls!==undefined)de.className=ha.cls;if(ha.st)de.setAttribute('style',ha.st);else de.removeAttribute('style');if(ha.fam)de.setAttribute('data-fam',ha.fam);
+  d.body.className=ba.cls||'';if(ba.st)d.body.setAttribute('style',ba.st);else d.body.removeAttribute('style');
+  if(force||k.html!==cur.html){d.body.innerHTML=k.html;cur.html=k.html}
+  if(k.tap&&k.tap[2]>lastTap&&Date.now()-k.at<8000){lastTap=k.tap[2];const t=document.createElement('div');t.className='tap';t.style.left=k.tap[0]+'px';t.style.top=k.tap[1]+'px';dev.appendChild(t);setTimeout(()=>t.remove(),1400)}}
+function idle(t,h){fr=null;dev=null;cur={sid:null};$('end').classList.remove('on');msg(h);setSt('',t)}
+let busy=false;
+function tick(){if(busy)return;busy=true;rpc('study_state_get',{p_kid:kid,p_app:'live'}).then(j=>{busy=false;const k=j&&j.keys;const now=Date.now();
+  if(!k||!k.sid){idle(N+' לא ביקש'+g('ה','')+' עזרה','<div class="em">🙂</div><h2>'+N+' לא ביקש'+g('ה','')+' עזרה כרגע</h2><p>כש'+N+' '+g('תלחץ','ילחץ')+' על "🙋 עזרה" בפס העליון באפליקציה, המסך של'+g('ה','ו')+' יופיע כאן מיד.</p>');return}
+  if(!k.on||now-k.at>20*60e3){idle('העזרה הסתיימה','<div class="em">💪</div><h2>העזרה הסתיימה</h2><p>'+(k.on?N+' לא '+g('פעילה','פעיל')+' באפליקציה כבר זמן מה. ':'')+'כש'+g('היא תבקש','הוא יבקש')+' שוב עזרה, המסך יופיע כאן מיד.</p>');return}
+  $('end').classList.add('on');
+  if(k.sid!==cur.sid||k.path!==cur.path||JSON.stringify(k.css).length!==cur.cssKey||k.w!==cur.w||k.h!==cur.h){cur={sid:k.sid,path:k.path,cssKey:JSON.stringify(k.css).length,w:k.w,h:k.h,at:k.at,html:null};build(k)}
+  else if(k.at!==cur.at){cur.at=k.at;paint(k,false)}
+  const age=now-k.at;age>25000?setSt('warn','⚠️ אין עדכון מהמכשיר של '+N+' '+ago(age)+' (אולי האפליקציה ברקע)'):setSt('ok','בשידור חי מהמסך של '+N+' · עודכן '+ago(age));
+  if(now-lastSeen>4000){lastSeen=now;rpc('study_state_put',{p_kid:kid,p_app:'livep',p_keys:{sid:k.sid,at:now,by:BY},p_score:Math.floor(now/1000)}).catch(()=>{})}
+}).catch(()=>{busy=false;setSt('warn','⚠️ אין חיבור לשרת, מנסה שוב…')})}
+$('end').onclick=()=>{if(!cur.sid)return;const now=Date.now();rpc('study_state_put',{p_kid:kid,p_app:'livep',p_keys:{sid:cur.sid,at:now,end:true,by:BY},p_score:Math.floor(now/1000)}).catch(()=>{});
+  idle('העזרה הסתיימה','<div class="em">💪</div><h2>סיימתם את העזרה</h2><p>'+N+' '+g('קיבלה','קיבל')+' הודעה שהעזרה הסתיימה, והמסך כבר לא משותף.</p>')};
+// מכשיר של הורה שעוד לא סומן: "המכשיר הזה של..." (פעם אחת), כדי שבקשת עזרה לאבא / לאמא תגיע רק אליו/ה
+function iam(){if(!PIN||ls('study_iam_'+K.fam)||!('serviceWorker' in navigator))return;navigator.serviceWorker.getRegistration('../').then(r=>r&&r.pushManager.getSubscription()).then(sub=>{if(!sub)return;
+  const save=w=>fetch(SB_URL+'/functions/v1/study-push?action=iam&who='+w+'&pin='+encodeURIComponent(PIN)+'&endpoint='+encodeURIComponent(sub.endpoint),{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:'{}'}).then(r=>r.json()).then(j=>{if(j&&j.ok){try{localStorage.setItem('study_iam_'+K.fam,w)}catch(e){}if(!BY)BY=w;$('tip').textContent='✓ נשמר: בקשות עזרה ל'+PAR.find(x=>x[0]===w)[1]+' יגיעו למכשיר הזה.'}}).catch(()=>{});
+  if(PAR.length===1)return save(PAR[0][0]);
+  const t=$('tip');t.innerHTML='🔔 המכשיר הזה של: '+PAR.map(x=>'<button type="button" data-w="'+x[0]+'" style="font:600 14px system-ui;border:1.5px solid #2f5d9e;color:#2f5d9e;background:#fff;border-radius:12px;padding:5px 14px;margin:0 4px;cursor:pointer">'+x[1]+'</button>').join('');
+  t.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>save(b.dataset.w))}).catch(()=>{})}
+iam();
+tick();setInterval(tick,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
+})();
+</script>
+</body></html>
