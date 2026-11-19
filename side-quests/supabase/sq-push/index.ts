@@ -9,6 +9,8 @@ import "./timegate.js"; // shared with the app: side-quests/timegate.js (copy it
 const SQGate = (globalThis as any).SQGate;
 import "./sqctx.js"; // shared with the app: side-quests/sqctx.js (copy it here on every change)
 const SQCtx = (globalThis as any).SQCtx;
+import "./personal-events.js"; // shared with the app: side-quests/personal-events.js (copy it here on every change)
+const SQPersonal = (globalThis as any).SQPersonal;
 
 const APP = "sidequests";
 const SRV = "sq_push_srv";
@@ -279,6 +281,69 @@ async function gateTick(p: any, t: ReturnType<typeof il>) {
   return { gates: out };
 }
 
+// ---------- private calendar events (24.6, Oren 19.11.2026: arrived 30 min late to a private 18:00 treatment, no reminder) ----------
+// STANDING RULE: every private event (one he opened for himself, see personal-events.js) gets pushes:
+//   1 heads-up: the day of the event, from 08:00 (or 3 h before leaving, whichever is later): "היום 18:00 · לצאת ב-17:19"
+//   2 ~30 min before leaving, 3 leave now, 4 ten minutes late and the event has not started: "⚠️ עוד לא יצאת?"
+//   tomorrow's private events: one push 20:00-21:59. Quiet only 23:00-06:00 (a 07:00 appointment still gets its 06:15 push).
+// Origin = his phone's last location (settings/loc_last, written by the app, < 45 min) > the office on a work day > home.
+const ilDow = (iso: string) => new Date(iso + "T12:00:00Z").getUTCDay();
+async function calCtx() {
+  const evs = (await listColl(APP, "work_calendar")).filter((e: any) => String(e.id).startsWith("ev-")).map((e: any) => ({ ...e, _id: e.id }));
+  const gc = (await listColl(APP, "personal_calendar")).map((e: any) => ({ ...e, _id: e.id, src: "gcal" }));
+  const prof = (await getDoc(APP, "work_calendar", "_profile")) || {};
+  const places = (await getDoc(APP, "settings", "places")) || {};
+  const loc = await getDoc(APP, "settings", "loc_last");
+  return { events: [...evs, ...gc], opt: { prof, places, loc } };
+}
+async function evTick(p: any, t: ReturnType<typeof il>) {
+  if (p.ev_alerts === false || p.abroadOn) return { ev: 0 };
+  if (t.hour >= 23 || t.hour < 6) return { ev: 0, quiet: true };
+  const { events, opt } = await calCtx();
+  const st = (await getDoc(SRV, "state", "evgates")) || {};
+  const sent: Record<string, number> = st.date === t.date ? (st.sent || {}) : {};
+  const L = SQPersonal.tasks(events, t.date, { ...opt, now: Date.now() });
+  const out: any[] = [];
+  let list: any[] | null = null;
+  for (const e of L) {
+    const g = SQGate.gate(e, t.date, ilDow(t.date), t.mins); if (!g) continue;
+    const by = g.by, start = e.start, travel = e.fit.travel;
+    if (t.mins >= start) continue;
+    const left = by - t.mins;
+    let stage = 0;
+    if (travel > 0 && left <= -10) stage = 4;
+    else if (travel > 0 && left <= 2) stage = 3;
+    else if (travel > 0 && left <= 32) stage = 2;
+    else if (t.mins >= Math.max(480, by - 180)) stage = 1;
+    else if (!travel && start - t.mins <= 15) stage = 3;
+    const k = e.id + "@" + e.fit.appt;
+    if (!stage || (sent[k] || 0) >= stage) continue;
+    const at = SQGate.fmt(start), lv = SQGate.fmt(by), why = SQPersonal.why(e);
+    const where = e.fit.where ? " · " + e.fit.where : "";
+    const msg = stage === 1 ? { title: `📅 היום ${at} · ${short(e.title, 40)}`, body: travel ? `לצאת ב-${lv}${where}. ${why}` : `ב-${at}${where}` }
+      : stage === 2 ? { title: `🚗 בעוד ${Math.max(left, 1)} דק׳ לצאת · ${short(e.title, 36)}`, body: `יציאה ב-${lv}, מתחיל ב-${at}${where}. ${why}` }
+      : stage === 3 ? { title: travel ? `🚗 צא עכשיו · ${short(e.title, 40)}` : `⏰ עוד מעט · ${short(e.title, 40)}`, body: travel ? `מתחיל ב-${at}${where}. ${why}` : `מתחיל ב-${at}` }
+      : { title: `⚠️ עוד לא יצאת? · ${short(e.title, 40)}`, body: `מתחיל ב-${at}. יציאה עכשיו = הגעה בערך ב-${SQGate.fmt(t.mins + travel)}${where}` };
+    list = list || (await subs());
+    await sendTo(list, { ...msg, body: short(msg.body, 170), tag: "sq-ev-" + e.id, url: APP_URL });
+    sent[k] = stage; out.push({ id: k, stage });
+  }
+  let tom = st.tom || "";
+  if (t.hour >= 20 && t.hour < 22 && tom !== t.date) {
+    const d2 = new Date(Date.parse(t.date + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
+    const T = SQPersonal.tasks(events, d2, { ...opt, loc: null, now: Date.now() });
+    if (T.length) {
+      const lines = T.slice(0, 3).map((e: any) => { const g = SQGate.gate(e, d2, ilDow(d2), 0); return `${short(e.title, 24)} ${e.fit.appt}${e.fit.travel && g ? ` (לצאת ${SQGate.fmt(g.by)})` : ""}`; });
+      list = list || (await subs());
+      await sendTo(list, { title: "🗓️ מחר, אירוע פרטי", body: lines.join(" · "), tag: "sq-ev-tom", url: APP_URL });
+      out.push({ tomorrow: T.length });
+    }
+    tom = t.date;
+  }
+  await putDoc(SRV, "state", "evgates", { date: t.date, sent, tom, at: new Date().toISOString(), n: L.length });
+  return { ev: out, today: L.map((e: any) => ({ id: e.id, appt: e.fit.appt, travel: e.fit.travel, from: e.from, where: e.fit.where, guess: e.guess })) };
+}
+
 async function ctxTick(t: any) {
   const now = { date: t.date, mins: t.mins };
   const all = (await listColl(APP, "topics")).filter((x: any) => SQCtx.wants(x));
@@ -359,6 +424,7 @@ async function tick() {
   }
   out.crit = await criticalTick(p, t);
   try { out.gates = await gateTick(p, t); } catch (e: any) { out.gates = { error: String(e?.message || e) }; }
+  try { out.ev = await evTick(p, t); } catch (e: any) { out.ev = { error: String(e?.message || e) }; }
   return out;
 }
 
@@ -370,6 +436,11 @@ Deno.serve(async (req) => {
     const action = u.searchParams.get("action") || body.action || "tick";
     if (action === "key") return json({ key: (await keys()).pub });
     if (action === "tick") return json(await tick());
+    if (action === "ev_preview") {
+      const { events, opt } = await calCtx();
+      const d = u.searchParams.get("date") || body.date || il().date;
+      return json(SQPersonal.tasks(events, d, { ...opt, now: Date.now() }).map((e: any) => { const g = SQGate.gate(e, d, ilDow(d), 0); return { title: e.title, appt: e.fit.appt, leave: g ? SQGate.fmt(g.by) : "", travel: e.fit.travel, from: e.from, where: e.fit.where, guess: e.guess }; }));
+    }
     // test / brief: only to a device that is already registered (registering needs the code)
     if (action === "test" || action === "brief" || action === "eve") {
       const mine = (await subs()).filter((s: any) => s.endpoint === body.endpoint);

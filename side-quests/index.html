@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.5";window.SQ_BUILD_AT="19.11.2026 19:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.6";window.SQ_BUILD_AT="19.11.2026 20:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -29,6 +29,7 @@ window.addEventListener("load",function(){navigator.serviceWorker.register("sw.j
 <script src="sq-db.js?v=10"></script>
 <script src="workcal-engine.js?v=2"></script>
 <script src="timegate.js?v=3"></script>
+<script src="personal-events.js?v=1"></script>
 <script src="sqctx.js?v=2"></script>
 <title>Side Quests</title>
 
@@ -2766,7 +2767,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style,fidDemo){return ma
   // Side Quests is always the main quest. Inside it the list adapts by mode and time of day (phase): quick things on top, heavy things folded.
   // Manual choice in localStorage sq_mode {m, auto, day}: holds until the automatic mode changes, never past today.
   // 9.6 (Oren 6.11): "תצוגה לפי מיקום". Automatic = by hours, and (opt-in) by a location sample taken each time the app opens.
-  // Device only: localStorage sq_loc {on, home:{la,lo}, work:{la,lo}, last:{la,lo,acc,at}}. Never sent anywhere, never in the repo.
+  // Device: localStorage sq_loc {on, home:{la,lo}, work:{la,lo}, last:{la,lo,acc,at}}. Since 24.6 a coarse last sample also goes to sq_docs settings/loc_last (Oren asked, for leave-by alerts). Never in the repo.
   let loc={on:false};try{loc=JSON.parse(localStorage.getItem("sq_loc")||"null")||{on:false};}catch(e){}
   let locErr="",locBusy=false,spotEdit=null,spotErr="";
   let locHook=null;
@@ -2797,11 +2798,14 @@ window.SQSplash=make();window.SQSplash.preview=function(style,fidDemo){return ma
   // where the last fresh sample (up to 4 hours old) puts him: abroad | work | home | other (= not near either, the hours decide)
   function locPlace(){const L=loc.last;if(!loc.on||!L||Date.now()-L.at>4*3600e3)return null;if(!inIsrael(L))return "abroad";
     const r=Math.max(400,Math.min(1500,(L.acc||0)+300));if(loc.work&&distM(L,loc.work)<r)return "work";if(loc.home&&distM(L,loc.home)<r)return "home";return "other";}
+  // 24.6 (Oren 19.11.2026: "אתה יודע את המיקום שלי, תתריע לי מתי לצאת"): a coarse copy (about 100 m) of a fresh sample goes to
+  // his own settings/loc_last, so the push server times "leave now" for private calendar events from where he really is.
+  function sendLoc(c){try{if(!db||!loc.on||!c)return;const pl=locPlace();db.collection("settings").doc("loc_last").set({lat:+c.la.toFixed(3),lng:+c.lo.toFixed(3),at:new Date(c.at).toISOString(),label:pl==="home"?"הבית":pl==="work"?"העבודה":"המיקום שלך"});}catch(e){}}
   function locMode(){const p=locPlace();return p&&p!=="other"?p:null;}
   function sampleLoc(force,cb){if(!cb&&!loc.on)return;if(!navigator.geolocation){locErr="המכשיר לא נותן מיקום";renderSettings();return;}
     if(!force&&!cb&&loc.last&&Date.now()-loc.last.at<5*60e3)return;if(locBusy)return;locBusy=true;
     navigator.geolocation.getCurrentPosition(p=>{locBusy=false;const c={la:+p.coords.latitude.toFixed(5),lo:+p.coords.longitude.toFixed(5),acc:Math.round(p.coords.accuracy||0),at:Date.now()};
-        loc.last=c;locErr="";if(cb)cb(c);saveLoc();refreshMode();renderSettings();if(locHook)locHook();},
+        loc.last=c;locErr="";if(cb)cb(c);saveLoc();refreshMode();renderSettings();if(locHook)locHook();sendLoc(c);},
       e=>{locBusy=false;locErr=e&&e.code===1?"אין הרשאת מיקום. באייפון: הגדרות ← Safari ← מיקום ← לשאול או לאפשר":"לא הצלחתי לקבל מיקום. ננסה שוב בכניסה הבאה";renderSettings();if(locHook)locHook();},
       {enableHighAccuracy:false,timeout:12000,maximumAge:120000});}
   const MODES={home:{e:"🏠",l:"בית",sub:"כל 6 הקווסטים"},work:{e:"💼",l:"עבודה",sub:"רק סייד, צבא ועבודה. קצרות למעלה"},abroad:{e:"✈️",l:"חו״ל",sub:"בלי עבודה וצבא. מה שאפשר מהנייד למעלה"}};
@@ -5003,11 +5007,11 @@ window.SQSplash=make();window.SQSplash.preview=function(style,fidDemo){return ma
   // 9.9 (Oren 6.11.2026): "צא עד Y, סוגרים ב-X" for today's tasks that depend on opening hours (timegate.js; same math as the push)
   function renderGate(){const el=document.getElementById("tgate");if(!el||!window.SQGate)return;
     const n=ilNow(),G=window.SQGate,today=ilDate(),esc=v=>String(v==null?"":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
-    updLocBtn();const L=G.list(allTopics.map(hereFit),today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past");
+    updLocBtn();const L=G.list([...allTopics.map(hereFit),...calTasks(today)],today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past"&&(!String(g.id).startsWith("cal:")||g.by-n.m<=240));
     if(!L.length){el.hidden=true;el.innerHTML="";return;}
     const left=g=>{const m=g.by-n.m;return m<=0?"עכשיו!":m<60?`עוד ${m} דק׳`:`עוד ${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} ש׳`;};
     el.innerHTML=L.slice(0,4).map(g=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`;}).join("");
-    el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>openTask(b.dataset.id));}
+    el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>{if(String(b.dataset.id).startsWith("cal:")){toast("אירוע פרטי מהיומן. ההתראות על היציאה מגיעות לבד");return;}openTask(b.dataset.id);});}
   function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();statKpi();renderQNew();}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:"",...(t.sleep_until&&!("sleep_until" in fields)?{sleep_until:""}:{})};
@@ -5634,6 +5638,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style,fidDemo){return ma
   // due sweep ran, orange when one was missed, red beyond. Outlook calendar = work_calendar/_meta.last_ingest_at (Power Automate
   // sends only on a change, so it is counted in Sun-Thu hours: under 48 green, under 120 orange). WhatsApp = settings/whatsapp
   // {last_at} once the bridge is live; until then a grey "not connected yet".
+  var calEv=[],calProf={},calPlaces={},calLoc=null;
+  // 24.6: today's private calendar events (personal-events.js) as pseudo tasks for the "צא עד" strip and the brief top
+  function calTasks(iso){if(!window.SQPersonal)return [];try{return SQPersonal.tasks(calEv,iso||ilDate(),{prof:calProf,places:calPlaces,loc:loc.on&&loc.last?{lat:loc.last.la,lng:loc.last.lo,at:new Date(loc.last.at).toISOString(),label:"המיקום שלך"}:calLoc,day:window.SQWorkCal?SQWorkCal.day:null});}catch(e){return [];}}
   var wcMeta=null,waConn=null,cfPing=null,cfReq=null,cfBusy=0;
   const CN_ICON={};document.querySelectorAll(".sbar .cx").forEach(x=>{CN_ICON[x.dataset.c]=x.querySelector("svg");});
   const GM_SLOTS=[451,631,811,991,1171];
@@ -6011,7 +6018,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style,fidDemo){return ma
     :[["critical","🚨"],["now","📞"],["news","🆕"],...(errandsOn?[["errands","🛒"]]:[]),["work","⚡"],["evening","🛒"]];}
   // 10.0: today's "צא עד" deadlines always lead the brief (timegate.js)
   function gateTop(){if(!window.SQGate)return [];const n=ilNow(),G=window.SQGate;
-    return G.list(allTopics,ilDate(),n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past").slice(0,2)
+    return G.list([...allTopics,...calTasks()],ilDate(),n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past").slice(0,2)
       .map(g=>{const tx=G.text(g);return {text:`${tx.head.replace(/^\S+\s/,"")} · ${g.title}`,id:g.id,e:g.closed?"🚫":g.call?"📞":"🚗"};});}
   function briefTop(b,md){const g=md==="eve"?[]:gateTop(),gi=new Set(g.map(x=>x.id));return [...g,...briefTop0(b,md).filter(x=>!x.id||!gi.has(x.id))].slice(0,3);}
   function briefTop0(b,md){const own=(Array.isArray(b.top)?b.top:[]).filter(liveItem);if(own.length)return own.slice(0,3);
@@ -6555,11 +6562,12 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;const cp=s.docs.find(x=>x.id==="cashflow_ping");cfPing=cp?cp.data():null;const cr=s.docs.find(x=>x.id==="cashflow_refresh");cfReq=cr?cr.data():null;renderConn();const ni=s.docs.find(x=>x.id==="new_items"),nd=ni?ni.data():null;newItems=nd&&Array.isArray(nd.items)?nd.items:[];nwRender();
+      const pc=s.docs.find(x=>x.id==="places");calPlaces=pc?pc.data():{};const ll=s.docs.find(x=>x.id==="loc_last");calLoc=ll?ll.data():null;
       const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};const qi=s.docs.find(x=>x.id==="quest_info");const qiN=qi?qi.data():{};if(JSON.stringify(qiN)!==JSON.stringify(questInfo)){questInfo=qiN;try{renderMain();}catch(e){}}renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     // 18.7: the work calendar shapes the automatic windows (never shown here; the details page is in settings)
-    db.collection("work_calendar").onSnapshot(s=>{const ev=[];let pr={};s.docs.forEach(d=>{const v=d.data();if(d.id==="_profile")pr=v;else if(d.id==="_meta")wcMeta=v;else ev.push(v);});renderConn();
-      if(window.SQWorkCal){SQWorkCal.set(ev,pr);renderCtx();renderList();}},()=>{});
+    db.collection("work_calendar").onSnapshot(s=>{const ev=[];let pr={};s.docs.forEach(d=>{const v=d.data();if(d.id==="_profile")pr=v;else if(d.id==="_meta")wcMeta=v;else ev.push({...v,_id:d.id});});renderConn();
+      calEv=ev;calProf=pr;if(window.SQWorkCal){SQWorkCal.set(ev,pr);renderCtx();renderList();}renderGate();},()=>{});
     db.collection("series").onSnapshot(s=>{seriesAll=s.docs.map(d=>({id:d.id,...d.data()}));renderFun();},()=>{});
     db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderStrip();renderList();renderTiles();renderFun();renderDash();},()=>{});
     db.collection("trips").onSnapshot(s=>{tripDocs=s.docs.map(d=>({id:d.id,...d.data()}));renderTravel();},()=>{});
