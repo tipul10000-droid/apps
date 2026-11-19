@@ -14,7 +14,7 @@
 <a class="back" href="../">→ כל הילדים</a>
 <div class="top"><img src="../kids/dani.webp" alt=""><div><h1>היי דני!</h1><p>מה לומדים היום?</p></div></div>
 <div class="list">
-<a class="item" id="tni" data-c="dani/tanach" data-t="מבחן" data-x="1" href="tanach/"><span class="ic">📜</span><span class="tx"><b>תנ״ך: יהושע פרקים א׳-ו׳</b><small id="tn">הכנה למבחן: סיכום, 23 שאלות מיקוד ומבחנים לדוגמה</small><div class="bar"><i id="tnb" style="width:0"></i></div></span><span class="go">›</span></a>
+<a class="item" id="tni" data-c="dani/tanach" data-t="מבחן" data-x="1" href="tanach/"><span class="ic">📜</span><span class="tx"><b>תנ״ך: יהושע פרקים א׳-ו׳</b><small id="tn">הכנה למבחן: סיכום, שאלות מיקוד ומבחנים לדוגמה</small><div class="bar"><i id="tnb" style="width:0"></i></div></span><span class="go">›</span></a>
 <a class="item" id="s2i" data-c="dani/spelling2" data-t="הכתבה" href="spelling2/"><span class="ic">🛁</span><span class="tx"><b>הכתבה 2: מילים מהבית</b><small id="s2">21 מילים: חדר האמבטיה והמטבח, 6 סקווישים חדשים</small><div class="bar"><i id="s2b" style="width:0%"></i></div></span></a>
 <a class="item" id="m6i" data-c="dani/math6" data-gen="1" href="math6/"><span class="ic">🎤</span><span class="tx"><b>חיזוק מתמטיקה: סיבוב הופעות</b><small id="m6">6 במות לפי מבחן המיפוי, 6 סקווישים חדשים</small><div class="bar"><i id="m6b" style="width:0"></i></div></span><span class="go">›</span></a>
 <a class="item" data-c="dani/spelling" data-t="הכתבה" data-gen="1" href="spelling/"><span class="ic">✏️</span><span class="tx"><b>הכתבה ואוצר מילים באנגלית</b><small id="sp">36 מילים: בבית, בגדים ותיאורים</small><div class="bar"><i id="spb" style="width:0"></i></div></span><span class="go">›</span></a>
@@ -27,7 +27,7 @@
 (function(){var a=document.getElementById('tni'),ok=StudyContent.ok('dani/tanach');a.classList.toggle('soon',!ok);
  if(!ok){document.getElementById('tn').textContent='בקרוב! 🚧 אבא ואמא מכינים לך משהו מיוחד';return}
  if(StudyContent.isNew('dani/tanach')&&!a.querySelector('.nwr')){var r=document.createElement('span');r.className='nwr';r.textContent='חדש! ✨';a.appendChild(r)}
- try{var s=JSON.parse(localStorage.getItem('dani_tn'));if(s&&s.d){var n=Object.keys(s.d).length;document.getElementById('tn').textContent='למדת '+n+' מתוך 75 שאלות 📜';document.getElementById('tnb').style.width=(n/75*100)+'%'}}catch(e){}})();
+ try{var s=JSON.parse(localStorage.getItem('dani_tn'));if(s&&s.d){var n=Object.keys(s.d).length;document.getElementById('tn').textContent='למדת '+n+' מתוך 50 שאלות 📜';document.getElementById('tnb').style.width=(n/50*100)+'%'}}catch(e){}})();
 </script>
 <script>
 // הכתבה 2 (19.11.2026): שער אישור הורים, כמו בחיזוק המתמטיקה
