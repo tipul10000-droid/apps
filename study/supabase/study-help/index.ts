@@ -140,7 +140,10 @@ async function helpApi(action: string, url: URL, sb: any, FAM: Record<string, st
   if (action === "wa") {
     const { data: s } = await sb.from("study_secrets").select("h").eq("k", "phone_" + to).maybeSingle();
     const num = String(s?.h || "").replace(/\D/g, "").replace(/^0/, "972");
-    const txt = `🙋 ${name} ${boy ? "צריך" : "צריכה"} עזרה בשאלה באפליקציה. לחצו כאן ותראו בדיוק את המסך ${boy ? "שלו" : "שלה"}: ${mirror(to)}`;
+    // הודעה בשם הילד לעוזר (אורן 19.11.2026): "היי אבא, אני צריכה עזרה ב..." + קישור שפותח בדיוק את המסך שלו
+    const hi: Record<string, string> = { oren: "אבא", lior: "אמא", evyatar: "אביה", dani: "דני", lia: "ליה", yehuda: "אבא" };
+    const fem = !h.boy, cn = CN[`${kid}/${k.app}`];
+    const txt = `היי ${hi[to] || h.n}! אני ${boy ? "צריך" : "צריכה"} עזרה${cn ? ` ב${cn}` : " בשאלה באפליקציה"} 🙋\n${fem ? "תלחצי" : "תלחץ"} כאן ${fem ? "ותראי" : "ותראה"} בדיוק את המסך שלי ואת השאלה שאני ${boy ? "תקוע" : "תקועה"} בה:\n${mirror(to)}`;
     return new Response(null, { status: 302, headers: { Location: `https://wa.me/${num}?text=${encodeURIComponent(txt)}`, ...CORS } });
   }
   // help
