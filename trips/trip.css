@@ -173,3 +173,26 @@ a.tp-mapsph{border-style:solid;color:var(--ink);text-decoration:none}
 .tp-t1 span{font-size:13.5px;font-weight:700}
 @keyframes tpT1{50%{box-shadow:0 0 0 7px rgba(214,40,40,.35)}}
 @media (prefers-reduced-motion:reduce){.tp-t1{animation:none}}
+
+/* Google Maps list: insights + places */
+.tp-ins,.tp-plg{margin-top:10px}
+.tp-insh{padding:10px 14px;font-weight:900;font-size:15px;border-bottom:1px solid var(--line);background:var(--soft)}
+.tp-insh i{font-style:normal;color:var(--muted);font-weight:700;font-size:13px}
+.tp-pl+.tp-pl{border-top:1px solid var(--line)}
+.tp-pl>summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:flex-start;padding:11px 14px;min-height:44px}
+.tp-pl>summary::-webkit-details-marker{display:none}
+.tp-pl .rk{flex:none;width:22px;text-align:center;font-weight:900;color:var(--c1);font-size:16px;line-height:1.35}
+.tp-pl.r-optional .rk,.tp-pl.r-skip .rk{color:var(--muted)}
+.tp-pl .x{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tp-pl .x b{font-size:15px;line-height:1.3}
+.tp-pl .x span{font-size:13.5px;color:var(--muted);line-height:1.35}
+.tp-pl>summary>.tp-chev{flex:none;margin-top:3px;transition:transform .2s}
+.tp-pl[open]>summary>.tp-chev{transform:rotate(180deg)}
+.tp-plm{padding:0 14px 12px 14px;padding-inline-start:46px;font-size:14px;line-height:1.5;animation:tpGrow .22s ease-out}
+.tp-plm p{margin:0 0 8px}
+.tp-plm .nt{background:var(--soft);border-radius:10px;padding:6px 10px;font-size:13.5px}
+.tp-plf{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:8px}
+.tp-plf a{font-weight:800;color:var(--c1);text-decoration:none;font-size:14px}
+.tp-lg{display:flex;flex-wrap:wrap;gap:4px 14px;margin:12px 4px 0;font-size:12.5px;color:var(--muted);font-weight:700}
+.tp-city{font-size:17px;margin:16px 4px 0}
+@keyframes tpGrow{from{opacity:0;transform:translateY(-4px)}}
