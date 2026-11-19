@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0F3B66">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.3";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EX_BUILD="2.4";</script>
 <script src="sq-db.js?v=10"></script>
 <title>החזר הוצאות עבודה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -278,7 +278,7 @@ const nowIso=()=>new Date().toISOString();
 const tripRows=()=>topics.filter(t=>/^elbit-trip-\d{4}-\d{2}-\d{2}$/.test(t.id)&&!t._deleted&&t.status!=="archived").sort((a,b)=>b.id.localeCompare(a.id));
 const scanRow=()=>topics.find(t=>t.id==="elbit-car-charges-scan");
 const stp=(t,id)=>arr(t.steps).find(s=>s.id===id);
-function tState(t){const p=stp(t,"paid"),s=stp(t,"submit");if((p&&p.done)||(t.status==="done"&&!(s&&!s.done)))return "received";if((s&&s.done)||t.status==="waiting_other")return "submitted";const c=stp(t,"scan");return c&&c.done?"scanned":"open";}
+function tState(t){const p=stp(t,"paid"),s=stp(t,"submit");if((p&&p.done)||(t.status==="done"&&!(s&&!s.done)&&!(p&&!p.done)))return "received";if((s&&s.done)||t.status==="waiting_other")return "submitted";const c=stp(t,"scan");return c&&c.done?"scanned":"open";}
 // potential reimbursement in ILS (work items, else money_potential). Not income: money that has to come back.
 function tripIls(t){const L=itemsOf(t);if(!L.length)return t.claim&&t.claim.exp_ils!=null?+t.claim.exp_ils:(+t.money_potential||0);return Math.round(L.filter(i=>fin(i)==="work").reduce((a,i)=>a+(i.ils?+i.ils:(i.cur||"ILS")==="ILS"?+i.amt||0:0),0));}
 const ils0=v=>"₪"+Math.round(v).toLocaleString("en-US");
