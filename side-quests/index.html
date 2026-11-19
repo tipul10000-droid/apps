@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="23.9";window.SQ_BUILD_AT="19.11.2026 15:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.0";window.SQ_BUILD_AT="19.11.2026 15:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -3298,7 +3298,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function dashVars(d){return `--c1:${d.c1||"#444"};--c2:${d.c2||d.c1||"#777"}`;}
   // 17.6 (Oren 16.11.2026): the tag on a dashboard tile counts exactly the tasks shown at the very top of that dashboard
   // (📌 box in the page, dash-sub.js; or the in-app card). Same filter everywhere: open, not paused, not snoozed/dormant.
-  // me = on Oren (urgent first), oth = waiting for others. Nothing = "✓ הכול סגור" with a small green check.
+  // me = on Oren (urgent first), oth = waiting for others. Nothing open = no tag (Oren 19.11.2026).
   function dzOrd(a,b){const u=t=>isUrgent(t)?0:isHot(t)?1:2;return u(a)-u(b)||byDate(a,b);}
   function dashShow(d){const o=dashTasks(d).filter(t=>isOpen(t)&&t.status!=="paused"&&!snoozed(t)&&!isFun(t));
     const me=o.filter(t=>t.status!=="waiting_other").sort(dzOrd),oth=o.filter(t=>t.status==="waiting_other").sort(dzOrd);
@@ -3307,7 +3307,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(s.urg.length)return b(" hot",s.urg.length===1?"⚡ דחוף":"⚡ "+s.urg.length+" דחופות",heN(s.urg.length,"משימה דחופה אחת","משימות דחופות"));
     if(s.me.length)return b("","📌 "+(s.me.length===1?"1 פתוחה":s.me.length+" פתוחות"),heN(s.me.length,"משימה פתוחה אחת","משימות פתוחות"));
     if(s.oth.length)return b(" soft","⏳ "+(s.oth.length===1?"ממתינה":s.oth.length+" ממתינות"),heN(s.oth.length,"משימה אחת ממתינה לאחרים","משימות ממתינות לאחרים"));
-    return h("span",{class:"bd ok"},h("i",{class:"okv","aria-hidden":"true"},"✓"),"הכול סגור");}
+    return null;} // Oren 19.11.2026: nothing open = no tag at all
   function dzLine(t){if(t.status==="waiting_other")return t.waiting_for?"מחכה ל"+String(t.waiting_for).replace(/^(ל|ל-)/,""):(t.stand||"");
     return t.next_step||t.stand||"";}
   function dzChip(t){const n=daysUntil(t.next_date);if(isUrgent(t))return "❗ דחוף";if(t.next_date&&n!=null&&n<=14)return relDate(t.next_date);return "";}
@@ -3332,10 +3332,10 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     return h("article",{class:"dz-card",id:"dz-card",style:dashVars(d)},
       h("div",{class:"dz-cv"},h("span",{class:"ic","aria-hidden":"true"},dzLogos(d)||ico(d.icon,"📊")),h("div",{style:"min-width:0"},h("h3",null,d.title||""),h("p",null,asOf)),page?null:h("button",{class:"x",type:"button","aria-label":"סגור",onclick:()=>{dashOpen=null;renderDash();}},"✕")),
       dashChat(d,proj),
-      // 17.6: open tasks first, highlighted; nothing open = "✓ הכול סגור"
-      h("div",{class:"dz-sec dz-tasks"+(kids.length?"":" none")},h("h4",null,kids.length?"📌 משימות פתוחות":h("span",null,h("i",{class:"okv","aria-hidden":"true"},"✓")," הכול סגור"),kids.length?h("span",{class:"n"},kids.length):null),
-        rows.length?h("div",{class:"group"},rows):null,
-        closed?h("span",{class:"src"},heN(closed,"משימה סגורה אחת","משימות סגורות")):null),
+      // 17.6: open tasks first, highlighted; nothing open = nothing shown (Oren 19.11.2026)
+      kids.length?h("div",{class:"dz-sec dz-tasks"},h("h4",null,"📌 משימות פתוחות",h("span",{class:"n"},kids.length)),
+        h("div",{class:"group"},rows),
+        closed?h("span",{class:"src"},heN(closed,"משימה סגורה אחת","משימות סגורות")):null):null,
       lv.kpis.length&&!d.locked?h("div",{class:"dz-kpis"},lv.kpis.slice(0,3).map(k=>h("div",{class:"dz-kpi"},h("b",null,k.v),h("span",null,k.l)))):null,
       url?h("a",{class:"dz-go",href:url,target:"_blank",rel:"noopener"},"פתח את הדשבורד ←"):null,
       links.length||proj?h("div",{class:"dz-links"},links.map(l=>h("a",{href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"קישור")),proj&&safeUrl(proj.app_url||"")?h("a",{href:safeUrl(proj.app_url),target:"_blank",rel:"noopener"},"פרויקט: "+(proj.name||"")):null):null,
@@ -4295,7 +4295,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
           if(TT&&WQ.includes(q)){if(!updOn)toggleUpd(true);return;}
           // 22.5 (Oren 18.11.2026): Fun / AI have no "🔔 עדכונים" list, so a tap shows "🆕 מה חדש" at the top and the dot clears
           if(!WQ.includes(q)&&(TT||G.length)){qNewOpen(q,A0,L0,G);return;}
-          if(G.length)setTimeout(()=>G.length===1?openDash(G[0].id):goDashes(),180);}},
+          // Oren 19.11.2026: never open a dashboard by itself; scroll to the tiles, the new one blinks, he taps it
+          if(G.length)setTimeout(()=>goDashes(),180);}},
         any?h("span",{class:"qnw",title:"יש תוכן חדש","aria-hidden":"true"}):null,
         h("span",{class:"qe","aria-hidden":"true"},ico(Q.e)),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }

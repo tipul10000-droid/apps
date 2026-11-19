@@ -50,7 +50,7 @@ html,body{margin:0;background:#FBF7F1}
 .pv{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:12px;background:rgba(232,181,74,.18);font-weight:800;font-size:13.5px;margin-top:14px}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=9">
-<script src="dash-sub.js?v=8" defer></script>
+<script src="dash-sub.js?v=9" defer></script>
 <script src="sq-gfx.js?v=1"></script>
 <script src="../trips/trip-view.js?v=9"></script>
 </head>
@@ -73,7 +73,8 @@ html,body{margin:0;background:#FBF7F1}
   try{const m=sessionStorage.getItem("trip_m_"+ID);if(m)mode=m;}catch(e){}
   const $=id=>document.getElementById(id);
   document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{mode=b.dataset.m;try{sessionStorage.setItem("trip_m_"+ID,mode);}catch(e){}draw();});
-  function pubUrl(){const s=trip&&trip.share;return s&&s.token?new URL("../trips/?t="+s.token,location.href).href:"";}
+  // Oren 19.11.2026: a trip with its own share page (trips/<path>, built by trips/tools/share_page.py) gets the WhatsApp preview: banner + icon
+  function pubUrl(){const s=trip&&trip.share,p=s&&/^[a-z0-9-]+\/$/.test(s.path||"")?s.path:"";return s&&s.token?new URL("../trips/"+p+"?t="+s.token,location.href).href:"";}
   function newTok(){const r=new Uint8Array(24);crypto.getRandomValues(r);return btoa(String.fromCharCode(...r)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
   function save(fields){return db.collection("trips").doc(ID).update({...fields,updated_at:new Date().toISOString()});}
   function copy(t,st,msg){const ok=()=>{if(st)st.textContent=msg||"✓ הועתק";};if(navigator.clipboard)navigator.clipboard.writeText(t).then(ok,()=>prompt("העתק:",t));else prompt("העתק:",t);}
@@ -90,6 +91,7 @@ html,body{margin:0;background:#FBF7F1}
       ${u?`<span class="lnk">${esc(u)}</span>`:""}
       <div class="row">${u?`<button type="button" id="cp">📋 העתקה</button><a href="https://wa.me/?text=${encodeURIComponent((trip.title||"")+" ✈️ "+u)}" target="_blank" rel="noopener">💬 וואטסאפ</a>`:""}
         <button type="button" id="tg" class="${on?"on":""}">${on?"✓ השיתוף פעיל":u?"השיתוף כבוי":"יצירת לינק"}</button></div>
+      ${u&&s.path?`<p style="margin:8px 0 0">🖼️ בוואטסאפ הלינק מגיע עם הבאנר של הטיול ועם אייקון משלו.</p>`:""}
       <div class="st" id="sst" aria-live="polite"></div>
       ${u?`<div class="row" style="margin-top:8px"><button type="button" id="rg">🔄 לינק חדש (הישן יפסיק לעבוד)</button></div>`:""}</div>
       ${u&&on?`<div class="pv">👀 ככה זה נראה בטלפון של מי שמקבל את הלינק</div><div class="frame"><iframe src="${esc(u)}" title="תצוגה מקדימה" loading="lazy" referrerpolicy="no-referrer"></iframe></div>`:""}`;

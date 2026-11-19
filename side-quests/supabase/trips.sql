@@ -54,8 +54,8 @@ begin
                 'hero_img','desc','stats','next_up','map','days','flights','nights_l','hotels','moves','weather','wx_tip',
                 'notes','photos','maps','wa_label','wa_sub','foot','updated_at']))
             || jsonb_build_object('wa', d->'share'->>'wa',
-                 'gfx', coalesce((select jsonb_object_agg(e.k, jsonb_build_object('id', e.v->>'id')) from jsonb_each(coalesce(d->'gfx','{}'::jsonb)) as e(k, v) where e.v ? 'id'), '{}'::jsonb)),
-    'gfx', coalesce((select jsonb_object_agg(g.id, jsonb_build_object('mime',g.mime,'data',g.data)) from sq_gfx g where g.id = any(coalesce(ids,'{}'))), '{}'::jsonb));
+                 'gfx', coalesce((select jsonb_object_agg(e.k, jsonb_build_object('id', e.v->>'id', 'banner', coalesce((e.v->>'banner')::boolean, false))) from jsonb_each(coalesce(d->'gfx','{}'::jsonb)) as e(k, v) where e.v ? 'id'), '{}'::jsonb)),
+    'gfx', coalesce((select jsonb_object_agg(g.id, jsonb_build_object('mime',g.mime,'data',g.data,'w',g.w,'h',g.h)) from sq_gfx g where g.id = any(coalesce(ids,'{}'))), '{}'::jsonb));
 end $$;
 
 revoke all on function sq_gfx_put(text,text,text,text,int,int,text) from public;

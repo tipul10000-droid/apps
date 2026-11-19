@@ -63,7 +63,7 @@
 
 /* 17.6 (Oren 16.11.2026): "📌 משימות פתוחות" first thing in the dashboard body, highlighted. The app sends the same tasks the
    dashboard tile counts (sq-tasks). Tap a task = it opens in the app over the dashboard (sq-task); the circle = done: green ✓
-   for 5 s with "בטל", then sq-done. Nothing open = a small "✓ הכול סגור". The news box (above) sits right under this one. */
+   for 5 s with "בטל", then sq-done. Nothing open = nothing shown (Oren 19.11.2026). The news box (above) sits right under this one. */
 (function(){if(window.self===window.top)return;
   var data=null,box=null,pend={};
   function el(t,c,txt){var e=document.createElement(t);if(c)e.className=c;if(txt!=null)e.textContent=txt;return e;}
@@ -98,10 +98,11 @@
     var un=el("button","un","בטל");un.type="button";un.onclick=function(){if(pend[t.id]){clearTimeout(pend[t.id]);delete pend[t.id];build();}};li.appendChild(un);
     li.appendChild(el("span","go","‹"));return li;}
   function build(){if(!data)return;css();var me=data.me||[],oth=data.oth||[];
+    /* 23.x (Oren 19.11.2026): nothing open = show nothing at all (no "all closed" line) */
+    if(!me.length&&!oth.length){if(box)box.remove();box=null;return;}
     var nb=el("section","sqtsk"+(!me.length&&!oth.length?" none":me.some(function(t){return t.urg;})?" urg":""));nb.setAttribute("aria-label","משימות פתוחות");
     var h=el("div","h");
-    if(!me.length&&!oth.length){h.appendChild(el("span","ok","✓"));h.appendChild(el("b",null,"הכול סגור"));nb.appendChild(h);}
-    else{h.appendChild(el("b",null,me.length?"📌 משימות פתוחות":"⏳ ממתין לאחרים"));h.appendChild(el("span","n",String(me.length||oth.length)));nb.appendChild(h);
+    {h.appendChild(el("b",null,me.length?"📌 משימות פתוחות":"⏳ ממתין לאחרים"));h.appendChild(el("span","n",String(me.length||oth.length)));nb.appendChild(h);
       if(me.length){var ul=el("ul");me.forEach(function(t){ul.appendChild(item(t,true));});nb.appendChild(ul);
         if(oth.length){var d=el("details");d.appendChild(el("summary",null,"⏳ ממתין לאחרים ("+oth.length+")"));var u2=el("ul");oth.forEach(function(t){u2.appendChild(item(t,false));});d.appendChild(u2);nb.appendChild(d);}}
       else{var u3=el("ul");oth.forEach(function(t){u3.appendChild(item(t,false));});nb.appendChild(u3);}}
@@ -118,7 +119,7 @@
     var nd={me:cl(e.data.me),oth:cl(e.data.oth)};
     /* a task marked done here stays (green, undo) until its 5 s pass, then the app's update drops it */
     Object.keys(pend).forEach(function(id){if(!nd.me.some(function(t){return t.id===id;})){var old=data&&data.me.find(function(t){return t.id===id;});if(old)nd.me.push(old);}});
-    var k=JSON.stringify(nd);if(data&&JSON.stringify(data)===k&&box&&box.isConnected)return;data=nd;build();
+    var k=JSON.stringify(nd);if(data&&JSON.stringify(data)===k&&(box?box.isConnected:!nd.me.length&&!nd.oth.length))return;data=nd;build();
     if(!obs){obs=new MutationObserver(function(){if(box&&(!box.isConnected||box.previousElementSibling&&!box.previousElementSibling.classList.contains("hero")&&box.previousElementSibling.tagName!=="HEADER"))place();});obs.observe(document.body,{childList:true});}});
 })();
 

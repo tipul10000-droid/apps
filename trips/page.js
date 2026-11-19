@@ -10,7 +10,7 @@
   function show(j) {
     var t = j.trip; document.title = (t.flag ? t.flag + " " : "") + (t.title || "הטיול שלנו");
     var tc = document.querySelector('meta[name="theme-color"]'); if (tc && t.theme && t.theme.c1) tc.content = t.theme.c1;
-    TripView.render(app, t, { mode: "view", img: "img/", gfx: j.gfx || {}, wa: t.wa });
+    TripView.render(app, t, { mode: "view", img: document.documentElement.getAttribute("data-img") || "img/", gfx: j.gfx || {}, wa: t.wa });
   }
   var cached = null; try { cached = JSON.parse(localStorage.getItem(CK) || "null"); } catch (e) {}
   if (cached && cached.trip) show(cached);
