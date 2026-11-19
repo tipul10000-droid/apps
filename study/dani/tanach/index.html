@@ -100,13 +100,43 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
 .hl{border-radius:4px;padding:0 3px}.hy{background:#fef08a}.hg{background:#bbf7d0}.hb{background:#bae6fd}
 @media (max-height:700px){.q{min-height:52px}.op{min-height:40px;font-size:15px;padding:4px 10px}.opts{gap:6px}.fb{min-height:66px;font-size:14px;margin-top:6px}.nx{height:44px;margin-top:6px}.card{padding:8px 10px 10px;margin-top:6px}.stg{margin-top:4px}}
 @media (max-height:640px){.fb{min-height:56px;font-size:13px;line-height:1.35;padding:4px 8px}.op{min-height:36px}.stg span{height:18px}.prog{padding:4px 10px 6px}}
+
+/* 🎨 שמח וצבעוני, במידה (אורן 19.11.2026: דני אמרה שזה קצת עצוב ומשעמם). צבע לכל פרק, קפיצה בתשובה נכונה, קונפטי קטן, סקווישים של יהושע × סטריי קידס */
+.prog,.card{border:2px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(90deg,#a78bfa,#f472b6,#fb923c,#facc15,#34d399,#38bdf8) border-box}
+.stg span:nth-child(1){--c:#7c3aed;--b:#f3e8ff}.stg span:nth-child(2){--c:#e11d48;--b:#ffe4e6}.stg span:nth-child(3){--c:#0284c7;--b:#e0f2fe}.stg span:nth-child(4){--c:#16a34a;--b:#dcfce7}.stg span:nth-child(5){--c:#d97706;--b:#fef3c7}
+.stg span{background:var(--b);color:var(--c)}.stg span i{background:var(--c);opacity:.22}.stg span.cur{background:var(--b);color:var(--c);outline:2px solid var(--c);animation:cb 2.6s ease-in-out infinite}.stg span.ok{background:var(--c);color:#fff}
+@keyframes cb{0%,100%{transform:none}50%{transform:translateY(-2px)}}
+.tag b{transition:background .3s}.tag b[data-s="0"]{background:#f3e8ff;color:#6d28d9}.tag b[data-s="1"]{background:#ffe4e6;color:#be123c}.tag b[data-s="2"]{background:#e0f2fe;color:#0369a1}.tag b[data-s="3"]{background:#dcfce7;color:#15803d}.tag b[data-s="4"]{background:#fef3c7;color:#b45309}
+.op.ok{animation:okb .55s cubic-bezier(.3,1.6,.5,1)}.op.no{animation:nob .4s}
+@keyframes okb{0%{transform:scale(1)}35%{transform:scale(1.04,.94)}65%{transform:scale(.98,1.04)}100%{transform:none}}
+@keyframes nob{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.fb.ok{background:linear-gradient(135deg,#dcfce7,#f0fdf4 60%,#fdf4ff)}
+.fb .fun{display:block;font-weight:800;margin-bottom:2px}
+.conf{position:fixed;top:-20px;width:9px;height:12px;border-radius:3px;z-index:45;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.stw{display:flex;gap:4px;align-items:flex-end}.stw .stg{flex:1;min-width:0}.sqc{flex:none;width:58px;height:22px;padding:0;border:1.5px solid #f9a8d4;border-radius:7px;font:700 12px system-ui,Arial,sans-serif;cursor:pointer;background:#fdf2f8;color:#9d174d;animation:gw 5s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
+@keyframes gw{0%,88%,100%{transform:none}91%{transform:rotate(-6deg)}94%{transform:rotate(6deg)}97%{transform:rotate(-3deg)}}
+#sqov .pop,#sqcol .pop{text-align:center}#sqcol .pop{display:flex;flex-direction:column;max-height:calc(100dvh - 90px)}
+#sqimg{width:140px;height:140px;margin:4px auto;display:block;cursor:pointer;animation:sqin .9s cubic-bezier(.2,1.6,.4,1)}#sqimg.squish{animation:squish .5s}
+@keyframes sqin{0%{transform:scale(.2) translateY(120px)}60%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1)}}
+@keyframes squish{30%{transform:scale(1.25,.7)}60%{transform:scale(.88,1.15)}100%{transform:scale(1)}}
+#sqtt{font-size:15px;color:#6d28d9;font-weight:800}#sqdesc{margin:2px 0 6px;font-size:14.5px;line-height:1.5;text-align:right;background:#faf5ff;border-radius:10px;padding:6px 10px}
+.sqg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px;overflow:auto;min-height:0}
+.sqg div{background:#faf7ff;border:1px solid #ece4fb;border-radius:10px;padding:2px}.sqg svg{width:100%;height:auto;display:block}.sqg .own{cursor:pointer}
+.sqg .sup{background:linear-gradient(160deg,#fff7d6,#fde7ff);border-color:#f5c542}.sqg .ult{background:linear-gradient(160deg,#ecfeff,#fce7f3,#ecfccb);border-color:#60a5fa}.sqg .trip{background:linear-gradient(160deg,#fdf2f8,#f5f3ff,#ecfeff);border-color:#f0abfc}
+.sqg .lock{background:#f3f4f6;border-style:dashed;border-color:#d1d5db}.sqg .lock svg{filter:brightness(0) invert(.62);opacity:.75}
+.sqg .sqhd{grid-column:1/-1;background:none;border:0;padding:0;font-size:13px;font-weight:700;color:#6d28d9;text-align:right;margin-top:4px}
+.sqpb{height:8px;border-radius:5px;background:#f3e8ff;overflow:hidden;margin:6px 0 2px}.sqpb i{display:block;height:100%;background:linear-gradient(90deg,#a78bfa,#f472b6);width:0;transition:width .4s}
+.sqf{display:flex;gap:8px;margin-top:10px;flex:none}.sqf button{height:42px;border-radius:12px;font:700 15px system-ui,Arial,sans-serif;cursor:pointer}.sqf .cl{flex:1;margin:0}.sqf .mu{width:52px;border:1.5px solid var(--bd);background:#fff}
+@media (max-height:640px){.sqc{height:18px}}
+@media(prefers-reduced-motion:reduce){.stg span.cur,.op.ok,.op.no,#sqimg,}
 </style>
 
 </head><body><main>
 <div class="nav"><a class="back" href="../" aria-label="חזרה לדני">→<span class="bn"> דני</span></a><span class="seg"><button id="prb" type="button">📚 תרגול</button><button id="mtb" type="button">🎯 מבחן</button></span><button class="ib" id="rules" type="button">📘 סיכום</button><button class="ib" id="tips" type="button">📋 מיקוד</button></div>
 <div class="prog">
  <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך <span id="nn">0</span></span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span> <button class="chip bt2" id="grb" type="button">📈 ציונים</button></span></div>
- <div class="stg" id="stg"></div>
+ <div class="stw"><div class="stg" id="stg"></div><button class="sqc" id="sqb" type="button" aria-label="הסקווישים שלי">💜 <span id="sqn" dir="ltr">0/6</span></button></div>
 </div>
 <div class="card" id="card">
  <div class="tag"><b id="tg"></b><span class="rt" id="rt">↺ שוב</span></div>
@@ -270,6 +300,11 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
  <div class="wf"><span id="wm" class="wm"></span><span id="wc" dir="ltr">0 / 1500</span></div>
  <button class="cl" id="ws" type="button">📤 לשלוח לבדיקה</button>
 </div></div>
+<div class="ov" id="sqov"><div class="pop"><div id="sqtt">סקווישי חדש! 🎉</div><div id="sqimg"></div><h3 id="sqname" style="margin:2px 0"></h3><p id="sqdesc"></p><p style="margin:0;color:var(--mut);font-size:13px">לחצי עליו כדי למעוך ולשמוע אותו 😆</p><button class="cl" id="sqok" type="button">לאוסף! 💜</button></div></div>
+<div class="ov" id="sqcol"><div class="pop"><h3>💜 הסקווישים שלי</h3><p id="sqtx" style="margin:4px 0 0;text-align:right"></p><div class="sqpb"><i id="sqpb"></i></div><p id="sqct" style="margin:0;color:var(--mut);font-size:13px"></p><div class="sqg" id="sqg"></div><div class="sqf"><button class="mu" id="mute" type="button" aria-label="צלילים">🔊</button><button class="cl" id="sqcx" type="button">סגירה</button></div></div></div>
+<script src="../squishies.js?v=4"></script>
+<script src="../../sqsound.js?v=16"></script>
+<script src="../../effort.js?v=1"></script>
 <script src="../../track.js?v=9"></script>
 <script src="../../guess.js?v=1"></script>
 <script>
@@ -406,7 +441,7 @@ function show(){answered=false;$('nx').disabled=true;$('nx').textContent='הבא
  if(S.mt){if(S.mt.i>=S.mt.q.length)return mtEnd();cur=S.mt.q[S.mt.i]}
  else{if(!Q.length)build();if(!Q.length)return finish();cur=Q.shift()}
  const q=QS[cur];
- $('tg').textContent=S.mt?'⚡ מבחן מהיר: '+(S.mt.i+1)+' מתוך '+S.mt.q.length:S.rv?'🔁 חזרה על טעויות':ST[q[0]]+': '+STN[q[0]]+(q[2]?'':' · 📋 מיקוד');
+ $('tg').dataset.s=S.mt||S.rv?'':q[0];$('tg').textContent=S.mt?'⚡ מבחן מהיר: '+(S.mt.i+1)+' מתוך '+S.mt.q.length:S.rv?'🔁 חזרה על טעויות':ST[q[0]]+': '+STN[q[0]]+(q[2]?'':' · 📋 מיקוד');
  $('rt').textContent='↺ שוב';$('rt').classList.toggle('on',!S.mt&&S.w[cur]>0&&!S.rv);
  $('q').innerHTML=qhtml(q[1]);
  if(q[2]){const os=shuf(q[2].map((t,i)=>({t,i})));$('opts').className='opts'+(q[2].length===2?' two':'');
@@ -433,7 +468,8 @@ $('opts').onclick=e=>{const b=e.target.closest('.op');if(!b)return;
   if(ok)S.mt.ok++;else S.mt.wr.push(cur);S.mt.i++;save();$('fb').className='fb';$('fb').textContent='נרשם. התשובות וההסברים בסוף.';$('nx').disabled=false;
   if(S.mt.i>=S.mt.q.length)$('nx').textContent='לציון 🎯';return}
  document.querySelectorAll('.op').forEach(x=>{if(x.dataset.i==='0')x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
- $('fb').className='fb '+(ok?'ok':'no');$('fb').innerHTML='<div>'+(ok?'✓ נכון! ':'✗ לא נכון. ')+q[3]+'</div>';mark(ok)};
+ $('fb').className='fb '+(ok?'ok':'no');$('fb').innerHTML='<div><span class="fun">'+funLine(ok)+'</span>'+q[3]+'</div>';mark(ok);fit();
+ if(ok){SND.ok();confetti(S.st.c&&S.st.c%5===0?36:10);award(1,900)}else SND.no()};
 // ✍️ תשובה פתוחה: מקלידים באפליקציה ← study_answer_add ← Claude בודק (ריצה מתוזמנת) ← הציון חוזר דרך study_answer_get. אורח / שרת חסר = בדיקה עצמית.
 const SB='https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
 const rpc=(f,b)=>fetch(SB+f,{method:'POST',headers:{'Content-Type':'application/json',apikey:SK,Authorization:'Bearer '+SK},body:JSON.stringify(b)}).then(r=>r.ok?r.json():{st:r.status});
@@ -451,7 +487,7 @@ function openWrite(i){wi=i;const q=ALLQ[i],k=q[5],p=q[1].split('||');
 function cnt(){const n=$('wt').value.trim().length;$('wc').textContent=n+' / 1500'}
 $('wt').oninput=()=>{S.dr[ALLQ[wi][5]]=$('wt').value;cnt();clearTimeout(cnt.t);cnt.t=setTimeout(save,800)};
 $('wx').onclick=()=>{save();$('ov3').classList.remove('on')};
-function sent(i,t,id){const k=ALLQ[i][5],o=S.oa[k]||{};S.oa[k]={id:id,at:new Date().toISOString(),txt:t,n:(o.n||0)+1,m:minute()};delete S.dr[k];
+function sent(i,t,id){const k=ALLQ[i][5],o=S.oa[k]||{};if(!isEx(i)&&!o.at)award(2);S.oa[k]={id:id,at:new Date().toISOString(),txt:t,n:(o.n||0)+1,m:minute()};delete S.dr[k];
  if(isEx(i)){const e=ALLQ[i][6];S.es[e]=S.es[e]||{};S.es[e].t1=Date.now()}save();$('ov3').classList.remove('on')}
 $('ws').onclick=()=>{const i=wi,q=ALLQ[i],k=q[5],t=$('wt').value.trim();
  if(t.length<15){$('wm').textContent='כתבי לפחות משפט אחד מלא 🙂';return}
@@ -469,7 +505,7 @@ function sentPop(i){const q=ALLQ[i],o=S.oa[q[5]]||{};pop(`<h3>${o.self?'✍️ �
 function selfCheck(){const q=QS[cur];pop(`<h3>✍️ תשובה לדוגמה</h3><div class="ma">${q[3]}</div><h4>מה היה בתשובה שלך? סמני:</h4><div class="ck">${q[4].map(t=>`<label><input type="checkbox"><span>${t}</span></label>`).join('')}</div><div class="two"><button class="y" type="button" id="oy">✓ היה לי כמעט הכול</button><button class="n" type="button" id="on">✗ עוד לא</button></div>`);
  $('oy').onclick=()=>selfDone(true);$('on').onclick=()=>selfDone(false)}
 function selfDone(ok){unpop();if(answered)return;answered=true;$('opts').innerHTML='';
- $('fb').className='fb '+(ok?'ok':'no');$('fb').textContent=ok?'✓ מעולה! השאלה נלמדה.':'השאלה תחזור עוד מעט. קראי שוב את התשובה לדוגמה, ונסי לכתוב אותה בעצמך.';mark(ok)}
+ $('fb').className='fb '+(ok?'ok':'no');$('fb').textContent=ok?'✓ מעולה! השאלה נלמדה.':'השאלה תחזור עוד מעט. קראי שוב את התשובה לדוגמה, ונסי לכתוב אותה בעצמך.';mark(ok);if(ok)SND.ok()}
 // ציון של בוחן לדוגמה = (סעיף א + סעיף ב) × 5, ברגע ששני הסעיפים נבדקו
 function exScore(e){const a=S.oa['e'+(e+1)+'a'],b=S.oa['e'+(e+1)+'b'],x=S.es[e]=S.es[e]||{};if(x.s!=null||!a||!b||a.sc==null||b.sc==null)return;
  x.s=(a.sc+b.sc)*5;const at=new Date().toISOString();S.mkh.push({s:x.s,m:minute(),at,k:'e'});if(S.mkh.length>40)S.mkh.shift();S.mk={best:Math.max(x.s,(S.mk&&S.mk.best)||0),last:x.s,n:((S.mk&&S.mk.n)||0)+1,at}}
@@ -512,7 +548,7 @@ function showEx(){const e=S.ex,x=EXS[e],es=S.es[e]||{},c=$('card');c.classList.r
 function secTap(k){const e=S.ex,s='ab'[k],key='e'+(e+1)+s,i=ALLQ.findIndex(q=>q[5]===key),o=S.oa[key];
  if(!o||(!o.id&&!o.self))return openWrite(i);if(o.sc!=null)return gradePop(key,false);sentPop(i)}
 function exRetry(){const e=S.ex;if(!confirm('לכתוב את המבחן הזה מחדש? הציון הקודם נשמר בגרף.'))return;['a','b'].forEach(s=>delete S.oa['e'+(e+1)+s]);S.es[e]={t0:Date.now()};save();show()}
-$('nx').onclick=()=>{if(S.tab==='t'&&!S.mt&&S.ex!=null){S.ex=null;save();show();return}if(answered)show()};
+$('nx').onclick=()=>{if(S.tab==='t'&&!S.mt&&S.ex!=null){S.ex=null;save();show();return}if(answered){show();if(S.sqp)setTimeout(squishy,250)}};
 // ⚡ בוחן מהיר: 15 שאלות אמריקאיות (3 מכל שלב), בלי הסברים עד הסוף.
 function mtStart(){if(S.mt)return;
  if(!confirm('⚡ מבחן מהיר: 15 שאלות אמריקאיות מכל החומר, בלי הסברים עד הסוף. מתחילים?'))return;
@@ -529,10 +565,53 @@ function finish(){bar();const f=Object.keys(S.f).length,wr=QS.map((q,i)=>i).filt
  '<button class="bt pr" id="mtg" type="button">🎯 למבחנים לדוגמה</button>'+(wr.length?'<button class="bt" id="rvb" type="button">🔁 חזרה על השאלות שטעיתי ('+wr.length+')</button>':'');
  $('mtg').onclick=()=>{S.tab='t';S.ex=null;save();show()};const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();Q=[];show()}}
 const inc=P=>{let z=-1;return P.map(p=>{z=Math.max(+p[0]||0,z+1);return[z,p[1]]})};
-function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1,mk:S.mk,
+function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),squishies:SQ.length,learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1,mk:S.mk,
  lv:1,lvn:'שאלות שנלמדו',prog:done(),pmax:N,oad:QS.map((q,i)=>!q[2]&&S.d[i]?q[5]:null).filter(Boolean),oa:{n:S.gr.length,avg:S.gr.length?+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1):null,pend:Object.values(S.oa).filter(o=>o.id&&o.sc==null).length},
  ex:EXS.map((x,e)=>(S.es[e]||{}).s==null?null:S.es[e].s),
  hist:[S.gr.length?{lv:2,name:'✍️ ציון בתשובות הפתוחות',u:'',max:10,pts:inc(S.gr.map(g=>[g[2],g[1]]))}:null,S.mkh.length?{lv:3,name:'🎯 ציון במבחנים',u:'',max:100,pts:inc(S.mkh.map(x=>[x.m||0,x.s]))}:null].filter(Boolean)})}
+// ---------- 🎨 צלילים, קונפטי ומשפטים שמחים (אורן 19.11.2026: לא מוגזם, הלימוד הוא העיקר) ----------
+let MUTE=!!LS.get('dani_sp_mute');
+let AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state!=='running'&&AC.state!=='closed')AC.resume();return AC}
+function tone(f,t0,d,type,vol){const a=ac();if(!a||MUTE)return;const T=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,T);g.gain.setValueAtTime(0,T);g.gain.linearRampToValueAtTime(vol||.14,T+.015);g.gain.exponentialRampToValueAtTime(.001,T+d);o.connect(g);g.connect(a.destination);o.start(T);o.stop(T+d+.05)}
+const SND={ok(){tone(1046,0,.12,'triangle');tone(1318,.08,.12,'triangle');tone(1568,.16,.2,'triangle')},no(){tone(392,0,.18,'sine',.1);tone(330,.12,.25,'sine',.1)},pop(){tone(523,0,.12,'triangle');tone(784,.1,.12,'triangle');tone(1047,.2,.25,'triangle')}};
+const pick=a=>a[Math.random()*a.length|0];
+function confetti(n){const c=['#a78bfa','#f472b6','#facc15','#60a5fa','#34d399','#ef4444'];for(let i=0;i<n;i++){const e=document.createElement('i');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(c);e.style.animationDuration=(1.4+Math.random()*1.4)+'s';e.style.animationDelay=Math.random()*.3+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3400)}}
+const FUN_OK=['✓ נכון! פליקס עושה לך לב עם הידיים 🫶','✓ נכון! האן כבר כותב על זה ראפ 🎤','✓ יש! לי נואו מרוצה, וזה לא קורה כל יום 😼','✓ בול! צ׳אנגבין סוחב לך עוד אבן לגלגל 🪨','✓ נכון! סונגמין שר לך תו גבוה 🎶','✓ מעולה! איי-אן עושה ריקוד ניצחון קטן 🕺','✓ נכון! הייונג׳ין מסתובב מרוב שמחה 💫','✓ נכון! צ׳אן אומר לך: חזקה ואמיצה! 💪','✓ נכון! שרביט ההופעה נדלק בשבילך 🎆','✓ נכון! יהושע היה גאה בך 📜'];
+const FUN_NO=['✗ לא נורא! גם יריחו לא נפלה בהקפה הראשונה 😉','✗ כמעט! גם סטריי קידס חוזרים על כוריאוגרפיה המון פעמים','✗ לא נורא, השאלה תחזור עוד מעט ותצליחי 💪','✗ אופס! בואי נקרא את ההסבר, ופעם הבאה זה שלך'];
+function funLine(ok){let l=pick(ok?FUN_OK:FUN_NO);if(ok&&S.st.c>=4&&(S.st.c+1)%5===0)l='🔥 '+(S.st.c+1)+' ברצף! כל הלהקה מריעה לך!';return l}
+// ---------- 💜 סקווישים: יהושע × סטריי קידס (DaniSquishies.list6, שורה שישית בלוח האחד של דני) ----------
+// כל 7 נקודות = סקווישי חדש. תשובה נכונה באמריקאית = נקודה, תשובה פתוחה שנשלחה = 2. לא במבחן, ולא כשהפרסים עצורים בגלל ניחושים.
+// אחרי ששת הסקווישים של יהושע ממשיכים לסקווישים שעוד חסרים בלוח של דני (כמו בהכתבה 2).
+const DS=window.DaniSquishies||{list:[],list2:[],list3:[],list6:[],all:[],rows:[],owned:()=>[],aura:'',uaura:'',orb:''},L6=DS.list6||[];
+let SQ=LS.get('dani_tn_sq')||[],CURSQ=null;
+if(S.cc==null){S.cc=Math.min(6,done()+Object.keys(S.oa).length);save()} // מי שכבר תרגלה מתחילה קרוב לסקווישי הראשון
+const own=()=>{const o=DS.owned();SQ.forEach(x=>{if(!o.includes(x))o.push(x)});return o};
+const NEXT=()=>{const o=own();for(const l of [L6,DS.list,DS.list2,DS.list3]){const x=(l||[]).find(y=>!o.includes(y.id));if(x)return x}return null};
+const sqEvery=()=>{const n=NEXT();return n&&n.ult?24:n&&n.sup?12:7};
+const sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`,sqSound=id=>{if(!window.SqSound||!SqSound.play(id,MUTE))SND.pop()};
+function sqCnt(){$('sqn').textContent=L6.filter(x=>own().includes(x.id)).length+'/6'}
+function award(n,delay){if(S.mt||(window.StudyGuess&&!StudyGuess.reward()))return;S.cc=(S.cc||0)+n;if(S.cc>=sqEvery()){S.cc-=sqEvery();S.sqp=1}save();if(S.sqp&&delay)setTimeout(squishy,delay)}
+function squishy(){if(!S.sqp||document.querySelector('.ov.on'))return;S.sqp=0;let s=NEXT();const nw=!!s;if(!s){const o=own(),c=DS.all.filter(x=>o.includes(x.id)&&x.id!==CURSQ);s=pick(c.length?c:L6)}
+ if(nw){SQ.push(s.id);LS.set('dani_tn_sq',SQ)}save();CURSQ=s.id;
+ $('sqtt').textContent=nw?(s.tn?'📜 סקווישי חדש: יהושע × סטריי קידס!':s.ult?'💎 אולטרה סקווישי חדש!':s.sup?'⭐ סופר סקווישי חדש!':'💜 סקווישי חדש ללהקה!'):'💜 ביקור מהלהקה!';
+ $('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(nw?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לאוסף! 💜';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
+ $('sqov').classList.add('on');SND.pop();confetti(40);sqCnt();report()}
+$('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
+$('sqok').onclick=()=>$('sqov').classList.remove('on');
+function sqRender(){const o=own(),ev=sqEvery(),l6=L6.filter(x=>o.includes(x.id)).length;
+ $('sqtx').innerHTML=l6<6?`כל סקווישי כאן מלמד משהו למבחן! על כל <b>7 נקודות</b> מצטרף סקווישי חדש לשורה <b>📜 יהושע × סטריי קידס</b>. תשובה נכונה = נקודה, ותשובה פתוחה ששלחת = 2 נקודות.`:(NEXT()?`כל 6 הסקווישים של יהושע אצלך! 📜 עכשיו ממשיכים לסקווישים שעוד חסרים בלוח שלך: כל <b>${ev} נקודות</b> אחד חדש.`:'כל הסקווישים אצלך! 🎉 מדי פעם אחד מהם בא לבקר.');
+ const left=Math.max(1,ev-(S.cc||0));$('sqct').textContent=`יהושע × סטריי קידס: ${l6} מתוך 6 · עוד ${left} ${left===1?'נקודה':'נקודות'} לסקווישי הבא`+(window.StudyGuess&&!StudyGuess.reward()?' · 🤔 הפרסים עצורים בגלל ניחושים':'');$('sqpb').style.width=Math.min(100,(S.cc||0)/ev*100)+'%';
+ const cl=s=>s.ult?' ult':s.sup?' sup':s.trip?' trip':'',tile=s=>o.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}</div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(DS.aura).join('').split(DS.uaura).join('').split(DS.orb).join('')})}</div>`;
+ const L=[L6,DS.list,DS.list2,DS.list3,DS.list4,DS.list5],R=[DS.rows[5],DS.rows[0],DS.rows[1],DS.rows[2],DS.rows[3],DS.rows[4]];
+ $('sqg').innerHTML=L.map((l,i)=>l&&l.length?`<div class="sqhd">${R[i]}</div>`+l.map(tile).join(''):'').join('')+(window.StudyEffort?StudyEffort.row('dani',{label:true}):'');$('mute').textContent=MUTE?'🔇':'🔊'}
+$('sqb').onclick=()=>{sqRender();$('sqcol').classList.add('on')};$('sqcx').onclick=()=>$('sqcol').classList.remove('on');
+$('sqcol').onclick=e=>{if(e.target===$('sqcol'))$('sqcol').classList.remove('on')};
+$('mute').onclick=()=>{MUTE=!MUTE;LS.set('dani_sp_mute',MUTE);$('mute').textContent=MUTE?'🔇':'🔊'};
+$('sqg').onclick=ev=>{const d=ev.target.closest('.own');if(!d)return;const s=DS.all.find(x=>x.id===d.dataset.id)||(window.StudyEffort&&StudyEffort.find(d.dataset.id));if(!s)return;CURSQ=s.id;sqSound(s.id);
+ $('sqtt').textContent=s.eff?'💝 פרס מאמץ מאבא ואמא':s.tn?'הסקווישי שלך מיהושע × סטריי קידס 📜':s.home?'הסקווישי שלך מהבית של הלהקה 🏠':s.trip?'הסקווישי שלך מסיבוב ההופעות 🎤':s.ult?'האולטרה סקווישי שלך 💎':s.sup?'הסופר סקווישי שלך ⭐':'הסקווישי שלך 💜';
+ $('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n;$('sqdesc').textContent=s.d;$('sqok').textContent='חזרה לאוסף';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('sqov').classList.add('on')};
+if(window.StudyEffort)StudyEffort.sync('dani',()=>{if($('sqcol').classList.contains('on'))sqRender()});
+if(window.DaniSquishies)DaniSquishies.sync(()=>{sqCnt();if($('sqcol').classList.contains('on'))sqRender()});
 $('mtb').onclick=toTest;$('prb').onclick=toPrac;$('grb').onclick=myGraph;
 // 📘 סיכום ו-📋 מיקוד: עמודים קצרים (אורן: לא קיר של טקסט). גובה קבוע, הכפתורים לא זזים.
 function pager(ov,body,dots,prev,next,x,onDone){const P=[...$(body).querySelectorAll('section')];let p=0;
@@ -546,13 +625,16 @@ $('tpb').innerHTML=FQ.map(()=>'<section></section>').join('');
 function fillQA(){const P=$('tpb').querySelectorAll('section');FQ.forEach((o,k)=>{const q=o.q,i=o.i,ok=i<0||REV||S.d[i]||OA(i);
  P[k].innerHTML=`<h4>${ST[q[0]]} · שאלה ${q[5].split('_')[1]}${i<0?'':' · ✍️ גם בתרגול'}</h4><p class="qq">${q[1]}</p>`+(ok?`<div class="ma">${q[3]}</div>`:'<div class="lk">🔒 את השאלה הזו כותבים קודם בעצמך ב📚 תרגול (המורה: "כתבו את התשובות לשאלות המיקוד"). אחרי שתשלחי, התשובה הטובה תופיע כאן, ואפשר לקרוא אותה שוב ושוב.</div>')})}
 const tpGo=pager('ovt','tpb','tpd','tpp','tpf','tpx',()=>{if(!S.tp){S.tp=1;if(!REV)save();bar()}}),tpOpen=()=>{fillQA();tpGo()};
-const smOpen=pager('ov','smb','smd','smp','smf','smx',()=>{if(!S.sm){S.sm=1;if(!REV)save()}});
+const smOpen=pager('ov','smb','smd','smp','smf','smx',()=>{if(!S.sm){S.sm=1;if(!REV)save();setTimeout(sqIntro,400)}});
 $('rules').onclick=smOpen;$('tips').onclick=tpOpen;
 if(window.StudyGuess)StudyGuess.init('dani','tanach',{fast:2500});
-if(window.StudyTrack)StudyTrack.init('dani','tanach',['dani_tn']);
+if(window.StudyTrack)StudyTrack.init('dani','tanach',['dani_tn','dani_tn_sq']);
 if(!S.sm&&!S.mt)setTimeout(smOpen,300); // הסיכום נפתח בכל כניסה עד שקוראים אותו עד הסוף
 if(S.tab==='t'&&!REV&&!pracDone()&&!S.mt)S.tab='p';
 addEventListener('resize',fit);
-show();poll();poll.go();setTimeout(grades,600);
+show();poll();poll.go();setTimeout(grades,600);sqCnt();
+// פעם אחת: מספרים לדני על הסקווישים החדשים (אחרי שהסיכום נקרא)
+function sqIntro(){if(S.sqi||REV||S.mt||document.querySelector('.ov.on'))return;S.sqi=1;save();pop(`<h3>📜 חדש: יהושע × סטריי קידס!</h3><p>מעכשיו, כל <b>7 נקודות</b> בתרגול מביאות סקווישי חדש. כל אחד מהם הוא חבר בלהקה שמלמד משהו למבחן: באנג צ׳אן וה"חזק ואמץ", לי נואו והאן המרגלים, פליקס וחוט השני, ועוד 3 הפתעות 🤫</p><p>תשובה נכונה = נקודה. תשובה פתוחה ששלחת = 2 נקודות. רואים את האוסף בכפתור 💜 למעלה.</p><button class="cl" type="button" onclick="unpop()">יאללה! 💜</button>`)}
+if(S.sm)setTimeout(sqIntro,900);
 </script>
 </body></html>

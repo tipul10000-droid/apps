@@ -17,7 +17,7 @@ const SQS4=[
  svg:`${stage}<path d="M34 28l4-14 8 9 4-11 4 11 8-9 4 14z" fill="#fde047" stroke="#ca8a04" stroke-width="1.5" stroke-linejoin="round"/><rect x="20" y="30" width="60" height="56" rx="14" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>${[[30,40],[44,36],[62,40],[70,54],[28,74],[66,78],[50,82]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="1.6" fill="#d97706" opacity=".7"/>`).join('')}<path d="M20 58h60M50 30v56" stroke="#fde68a" stroke-width="1.5"/>${face(50,60,.85)}<circle cx="36" cy="66" r="3.5" fill="#fda4af" opacity=".6"/><circle cx="64" cy="66" r="3.5" fill="#fda4af" opacity=".6"/>`}
 ];
 // כל הסקווישים של דני מכל התכנים (לוח אחד), גם מה שנשמר בשרת מכל המכשירים (study_family_board, קריאה בלבד), כמו אצל ליה.
-const KEYS=['dani_sp_sq','dani_m6_sq','dani_sp2_sq','dani_sq_srv'];
+const KEYS=['dani_sp_sq','dani_m6_sq','dani_sp2_sq','dani_tn_sq','dani_sq_srv'];
 function sync(cb){try{const K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
   fetch('https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/study_family_board',{method:'POST',headers:{'Content-Type':'application/json',apikey:K,Authorization:'Bearer '+K},body:'{}'})
     .then(r=>r.ok?r.json():null).then(j=>{const x=j&&j.items&&j.items.find(i=>i.kid==='dani');if(!x||!Array.isArray(x.sq))return;const v=JSON.stringify(x.sq);

@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <script src="../nozoom.js?v=1"></script>
 <script src="../guest.js?v=10"></script>
-<script src="../profiles.js?v=5"></script>
+<script src="../profiles.js?v=6"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Study Monster · לוח התקדמות משפחתי</title>
 <link rel="manifest" href="../manifest.json">
@@ -73,11 +73,11 @@ h1{margin:4px 0 8px;font-size:22px;flex:none}
 <p>כל ילד אוסף כוכבים מהלימוד שלו:</p><p>⭐ <b>כל 5 דקות</b> של לימוד אמיתי (עם תשובות, לא רק לפתוח את האפליקציה)</p><p>⭐ <b>כל 10 תשובות נכונות</b></p>
 <p>זה לא מרוץ. כל אחד לומד משהו אחר ובקצב שלו, וביחד אנחנו אוספים המון כוכבים 💛</p><p>אפשר ללחוץ על כל אחד ולראות את הסקווישים שאסף, ולמעוך אותם.</p>
 <button class="bt pr" id="hx" type="button">הבנתי</button></div></div>
-<script src="../dani/squishies.js?v=3"></script>
+<script src="../dani/squishies.js?v=4"></script>
 <script src="../lia/squishies.js?v=5"></script>
 <script src="../levi/squishies.js?v=1"></script>
 <script src="../shilo/squishies.js?v=3"></script>
-<script src="../sqsound.js?v=15"></script>
+<script src="../sqsound.js?v=16"></script>
 <script src="../effort.js?v=1"></script>
 <script>
 (function(){
@@ -115,7 +115,7 @@ function board(id){var k=P.kids[id],S=SQ(id),d=D[id]||{sq:[]},boy=k.boy;
   $('bs').innerHTML=own?(k.n+' '+(boy?'אסף':'אספה')+' <b>'+own+' מתוך '+S.all.length+'</b>. לוחצים על סקווישי צבעוני כדי למעוך אותו 😆'):(k.n+' עוד לא '+(boy?'אסף':'אספה')+' סקווישים. הם מחכים '+(boy?'לו':'לה')+' כאן בצללית 👀');
   var rows=S.rows||ROWS[id]||['רגילים','⭐ סופר סקווישים','💎 אולטרה סקווישים'],cl=function(s){return s.bug?' bug':s.ult?' ult':s.sup?' sup':s.trip?' trip':''};
   var tile=function(s){return d.sq.indexOf(s.id)>=0?'<div class="own'+cl(s)+'" data-id="'+s.id+'"><svg viewBox="0 0 100 100">'+s.svg+'</svg></div>':'<div class="lock'+cl(s)+'"><svg viewBox="0 0 100 100">'+s.svg.split(S.aura).join('').split(S.uaura).join('').split(S.orb||'\u0000').join('')+'</svg></div>'};
-  $('bg').innerHTML=[S.list,S.list2,S.list3,S.list4,S.list5].filter(Boolean).map(function(l,i){return '<div class="sqhd">'+rows[i]+'</div>'+l.map(tile).join('')}).join('')+(window.StudyEffort?StudyEffort.row(id):'');
+  $('bg').innerHTML=[S.list,S.list2,S.list3,S.list4,S.list5,S.list6].filter(Boolean).map(function(l,i){return '<div class="sqhd">'+rows[i]+'</div>'+l.map(tile).join('')}).join('')+(window.StudyEffort?StudyEffort.row(id):'');
   $('bg').onclick=function(e){var t=e.target.closest('.own');if(!t)return;var s=S.all.filter(function(x){return x.id===t.getAttribute('data-id')})[0]||(window.StudyEffort&&StudyEffort.find(t.getAttribute('data-id')));if(!s)return;CUR=s.id;
     $('qt').textContent=(s.eff?'💝 פרס מאמץ מאבא ואמא':s.trip?(/^dm_/.test(s.id)?'🎤 סקווישי מסיבוב ההופעות':'🚀 סקווישי מהמסע'):s.bug?'🐞 חרק חלל':s.ult?'💎 אולטרה סקווישי':s.sup?'⭐ סופר סקווישי':'סקווישי')+' של '+k.n;$('bigimg').innerHTML='<svg viewBox="0 0 100 100">'+s.svg+'</svg>';$('qn').textContent=s.n;$('qd').textContent=s.d;
     var im=$('bigimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';$('qov').classList.add('on');if(window.SqSound)SqSound.play(s.id,false)};
