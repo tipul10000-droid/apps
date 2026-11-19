@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<script src="../../guest.js?v=8"></script>
+<script src="../../content.js?v=15"></script><script>StudyContent.guard('dani/tanach')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Study Monster · תנ״ך: יהושע א׳-ו׳</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../icon-64.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Study Monster">
+<meta name="theme-color" content="#eef1f5">
+<link rel="stylesheet" href="../../theme.css?v=7">
+<style>
+:root{--ok:#15803d;--okb:#dcfce7;--no:#be123c;--nob:#ffe4e6;--pl:#e8eef7}
+main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;flex-direction:column}
+.nav{display:flex;align-items:center;gap:6px;height:32px;flex:none}.nav .back{margin:0;flex:1}
+.seg{display:flex;flex:none;height:30px;border:1px solid var(--bd);border-radius:20px;overflow:hidden;background:var(--card)}.seg button{font:inherit;font-size:13px;width:64px;padding:0;border:0;background:none;color:var(--fg);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}.seg button+button{border-right:1px solid var(--bd)}.seg button.on{background:#2f5d9e;color:#fff;font-weight:700}.seg button.lk{color:#9aa4b2}@media (max-width:400px){.nav .bn{display:none}}
+.ib{font:inherit;font-size:14px;height:30px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:6px 10px 8px;flex:none;box-shadow:var(--sh);margin-top:4px}
+.prog .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);gap:6px;height:22px}
+.prog .row b{color:var(--fg);font-size:16px}
+.chip{font-size:13px;background:var(--pl);color:#1e3a8a;border-radius:20px;padding:1px 8px;white-space:nowrap}.chip.hot{background:#fff1e6;color:#c2410c}
+.stg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:6px}
+.stg span{height:22px;border-radius:7px;background:#f1f3f7;color:var(--mut);font:600 11px system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;white-space:nowrap}
+.stg span i{position:absolute;inset:0 0 0 auto;background:rgba(47,93,158,.16);width:0}
+.stg span em{position:relative;font-style:normal}
+.stg span.cur{background:#dbe7f7;color:#1e3a8a;outline:2px solid #93b4e0}.stg span.ok{background:var(--okb);color:#166534}
+.card{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px 12px 12px;box-shadow:var(--sh);margin-top:8px;overflow:hidden}
+.tag{display:flex;justify-content:space-between;align-items:center;height:24px;flex:none;font-size:13px;color:var(--mut)}
+.tag b{font-weight:700;color:#1e3a8a;background:var(--pl);border-radius:20px;padding:2px 10px;white-space:nowrap}
+.tag .rt{color:#c2410c;background:#fff1e6;border-radius:20px;padding:2px 8px;font-weight:700;visibility:hidden}.tag .rt.on{visibility:visible}
+.q{flex:0 1 auto;min-height:64px;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:8px;text-align:center;font:600 19px/1.4 system-ui,Arial,sans-serif;padding:4px 2px;overflow:hidden}
+.q .ps{font-weight:500;text-align:right;background:#f6f8fb;border-right:3px solid #93b4e0;border-radius:10px;padding:6px 10px;font-size:.84em;line-height:1.45;color:#334155}
+.q u{text-decoration:none;display:inline-block;min-width:54px;border-bottom:2px solid #64748b;margin:0 2px}
+.opts{display:flex;flex-direction:column;gap:7px;flex:none}
+.opts.two{flex-direction:row}.opts.two .op{flex:1;justify-content:center}
+.op{font:600 16px/1.25 system-ui,Arial,sans-serif;text-align:right;min-height:46px;padding:6px 12px;border-radius:12px;border:1.5px solid var(--bd);background:#f8fafc;color:var(--fg);cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px}
+.op .k{flex:none;width:24px;height:24px;border-radius:50%;background:#e2e8f0;color:#475569;font:700 12px/24px system-ui,Arial,sans-serif;text-align:center}
+.op:active{background:#eef2f7}
+.op.ok{border-color:#22c55e;background:var(--okb);color:#14532d}.op.ok .k{background:#22c55e;color:#fff}
+.op.no{border-color:#fb7185;background:var(--nob);color:#881337}.op.no .k{background:#fb7185;color:#fff}
+.op.dim{opacity:.55}
+.op.sel{border-color:#2f5d9e;background:#dbe7f7;color:#1e3a8a}.op.sel .k{background:#2f5d9e;color:#fff}
+.op.wr{justify-content:center;background:var(--pl);border-color:#93b4e0;color:#1e3a8a}
+.fb{flex:1 1 0;min-height:84px;margin-top:8px;border-radius:12px;padding:8px 12px;font-size:15px;line-height:1.45;overflow:auto;background:#f1f5f9;color:var(--mut);display:flex;align-items:center;justify-content:center;text-align:center}
+.fb.ok{background:var(--okb);color:#14532d}.fb.no{background:var(--nob);color:#881337}
+.nx{flex:none;margin-top:8px;height:48px;border:0;border-radius:14px;font:700 17px system-ui,Arial,sans-serif;background:var(--ac);color:#fff;cursor:pointer}
+.nx:disabled{background:#cbd5e1;color:#f8fafc;cursor:default}
+.end{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
+.end .big{font-size:54px;line-height:1}.end h2{margin:0;font-size:22px}.end p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
+.end .bt{width:100%;max-width:320px;height:46px;border-radius:14px;border:1.5px solid var(--bd);background:var(--card);font:700 16px system-ui,Arial,sans-serif;color:var(--fg);cursor:pointer}
+.end .bt.pr{background:var(--ac);color:#fff;border:0}
+.card.fin .tag,.card.fin .q,.card.fin .opts,.card.fin .fb,.card.fin .nx{display:none}.card.fin .end{display:flex}
+.ov{position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.ov.on{display:flex}
+.pop{background:var(--card);border-radius:18px;max-width:440px;width:100%;max-height:calc(100dvh - 70px);overflow:auto;padding:12px 14px;box-shadow:0 10px 40px rgba(0,0,0,.3);font-size:14.5px;line-height:1.45}
+.pop h3{margin:0 0 4px;font-size:18px}.pop h4{margin:10px 0 2px;font-size:15px;color:#1e3a8a}.pop p{margin:2px 0}.pop ul{margin:2px 0;padding-right:18px}
+.pop table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}.pop td,.pop th{border:1px solid var(--bd);padding:3px 5px;vertical-align:top}.pop th{background:var(--pl);color:#1e3a8a}
+.pop .ax{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;background:linear-gradient(90deg,#fee2e2,#f1f5f9,#dbeafe);border-radius:8px;padding:4px 8px;margin-top:4px}
+.pop .cl{margin-top:10px;width:100%;height:42px;border:0;border-radius:12px;background:var(--ac);color:#fff;font:700 16px system-ui,Arial,sans-serif}
+.pop .ma{background:#f6f8fb;border-right:3px solid #22c55e;border-radius:10px;padding:6px 10px;margin:4px 0}
+.pop .ck label{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px solid #eef2f7}.pop .ck input{margin-top:3px;width:18px;height:18px;flex:none}
+.pop .two{display:flex;gap:8px;margin-top:10px}.pop .two button{flex:1;height:44px;border-radius:12px;font:700 15px system-ui,Arial,sans-serif;cursor:pointer}
+.pop .two .y{border:0;background:#16a34a;color:#fff}.pop .two .n{border:1.5px solid #fb7185;background:#fff;color:#be123c}
+.pop.sm{display:flex;flex-direction:column;height:min(520px,calc(100dvh - 90px));overflow:hidden;padding:12px 14px}
+.smh{display:flex;justify-content:space-between;align-items:center;flex:none}.smh h3{margin:0;font-size:17px}
+.smd{display:flex;gap:6px;justify-content:center;margin:8px 0 2px;flex:none}.smd i{width:8px;height:8px;border-radius:50%;background:#cbd5e1}.smd i.on{background:var(--ac);width:20px;border-radius:4px}
+.smb{flex:1;min-height:0;overflow:auto}.smb section{display:none;animation:smin .25s ease}.smb section.on{display:block}@keyframes smin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.smb h4{font-size:17px;margin:10px 0 6px}.smb p{margin:6px 0;font-size:15.5px;line-height:1.5}.smb .key{margin-top:10px;background:#eef4fb;border-right:3px solid var(--ac);border-radius:10px;padding:8px 10px;font-size:15px;line-height:1.5}
+.smn{display:flex;gap:8px;flex:none;margin-top:10px}.smn button{flex:1;height:46px;border-radius:12px;border:1.5px solid var(--bd);background:#fff;font:700 16px system-ui,Arial,sans-serif;color:var(--fg);cursor:pointer}.smn .pr{background:var(--ac);border:0;color:#fff}
+.ov.top{align-items:flex-start;padding-top:max(calc(env(safe-area-inset-top) + 6px),44px)}
+.wp{display:flex;flex-direction:column;gap:8px;max-height:none}.wh{display:flex;justify-content:space-between;align-items:center}.wh h3{margin:0}
+.wx{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:#f8fafc;font-size:16px;cursor:pointer}
+.wq{max-height:22dvh;overflow:auto;font-weight:600;font-size:15px}.wq .ps{font-weight:500;background:#f6f8fb;border-right:3px solid #93b4e0;border-radius:10px;padding:5px 9px;font-size:13.5px;margin-bottom:4px;color:#334155}
+#wt{width:100%;box-sizing:border-box;height:20dvh;min-height:110px;resize:none;border:1.5px solid #93b4e0;border-radius:12px;padding:8px 10px;font:16px/1.45 system-ui,Arial,sans-serif;color:var(--fg);background:#fff}
+.wf{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--mut);min-height:17px}.wm{color:#be123c;font-weight:600}.wp .cl{margin-top:0}.cl:disabled{background:#94a3b8}
+.scb{display:inline-block;border-radius:20px;padding:1px 9px;font-weight:800;white-space:nowrap}.scb.g{background:var(--okb);color:#166534}.scb.b{background:#fff1e6;color:#c2410c}.scb.p{background:#f1f5f9;color:#64748b}
+.pop .qq{font-weight:600;color:#334155}.pop .mine{background:#fffbea;border-right:3px solid #f59e0b;border-radius:10px;padding:6px 10px;white-space:pre-wrap}.pop .nt{color:var(--mut);font-size:13.5px;margin-top:8px}
+.pop details{margin-top:8px}.pop summary{color:#1e3a8a;font-weight:700;cursor:pointer}.gs{width:100%;height:auto;display:block}
+.lg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:#334155}.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:4px;vertical-align:-1px}
+.ol{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:12px;overflow:hidden}.oi{display:flex;gap:8px;align-items:center;text-align:right;font:inherit;font-size:13.5px;background:#fff;border:0;border-bottom:1px solid #eef2f7;padding:7px 9px;cursor:pointer;color:var(--fg)}.oi:last-child{border-bottom:0}
+
+/* תנ"ך: כפתורי ניווט, מבחן לדוגמה, סיכום ומיקוד */
+#tpd{gap:3px}#tpd i{width:6px;height:6px}#tpd i.on{width:14px}.smb .qq{font-weight:700;font-size:16px;line-height:1.45;margin:6px 0}.smb .lk{background:#f1f5f9;border-radius:10px;padding:10px;color:#475569;font-size:15px;line-height:1.5}.smb .ma{background:#f6f8fb;border-right:3px solid #22c55e;border-radius:10px;padding:6px 10px;font-size:15px;line-height:1.55}
+.nav .ib{padding:3px 8px}.ib.gl{border-color:#f59e0b;box-shadow:0 0 0 2px #fde68a}
+.chip.bt2{border:0;font:inherit;font-size:13px;cursor:pointer}
+.card.ex .q{flex:1 1 auto;justify-content:flex-start;text-align:right;font-weight:500;font-size:15px}
+.card.ex .q .ps{flex:1 1 auto;min-height:0;overflow:auto;font-size:14.5px;line-height:1.5}
+.card.ex .q .it{flex:none;font-size:13.5px;color:#334155;font-weight:600}
+.card.ex .fb{flex:none;min-height:0;height:auto;padding:6px 10px;font-size:13.5px}
+.op.sec{justify-content:space-between;text-align:right}.op.sec .scb{flex:none}
+.end .bt.ex{display:flex;justify-content:space-between;align-items:center;text-align:right;padding:0 12px;font-size:15px;height:auto;min-height:46px}
+.end .bt.ex .scb{font-size:13px}.end .tm{font-size:13px;color:var(--mut)}
+.wq details{margin-top:4px;font-weight:500}.wq summary{color:#1e3a8a;cursor:pointer;font-size:13.5px}
+#wt.lg{height:30dvh}
+.smb ul{margin:4px 0;padding-right:18px}.smb li{margin:4px 0;font-size:15px;line-height:1.45}
+.smb .qt{background:#fffbea;border-right:3px solid #f59e0b;border-radius:10px;padding:6px 10px;margin:6px 0;font-size:14.5px;line-height:1.5}
+.smb table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}.smb td,.smb th{border:1px solid var(--bd);padding:3px 4px;vertical-align:top}.smb th{background:var(--pl);color:#1e3a8a}
+.smb .mm{display:flex;flex-direction:column;gap:5px;margin:6px 0}.smb .mm div{display:flex;gap:10px;align-items:center;background:#f6f8fb;border-radius:12px;padding:5px 10px;font-size:15px;line-height:1.3}.smb .mm b{font-size:16px}.smb .mm span.e{font-size:22px}
+.hl{border-radius:4px;padding:0 3px}.hy{background:#fef08a}.hg{background:#bbf7d0}.hb{background:#bae6fd}
+@media (max-height:700px){.q{min-height:52px}.op{min-height:40px;font-size:15px;padding:4px 10px}.opts{gap:6px}.fb{min-height:66px;font-size:14px;margin-top:6px}.nx{height:44px;margin-top:6px}.card{padding:8px 10px 10px;margin-top:6px}.stg{margin-top:4px}}
+@media (max-height:640px){.fb{min-height:56px;font-size:13px;line-height:1.35;padding:4px 8px}.op{min-height:36px}.stg span{height:18px}.prog{padding:4px 10px 6px}}
+</style>
+
+</head><body><main>
+<div class="nav"><a class="back" href="../" aria-label="חזרה לדני">→<span class="bn"> דני</span></a><span class="seg"><button id="prb" type="button">📚 תרגול</button><button id="mtb" type="button">🎯 מבחן</button></span><button class="ib" id="rules" type="button">📘 סיכום</button><button class="ib" id="tips" type="button">📋 מיקוד</button></div>
+<div class="prog">
+ <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך <span id="nn">0</span></span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span> <button class="chip bt2" id="grb" type="button">📈 ציונים</button></span></div>
+ <div class="stg" id="stg"></div>
+</div>
+<div class="card" id="card">
+ <div class="tag"><b id="tg"></b><span class="rt" id="rt">↺ שוב</span></div>
+ <div class="q" id="q"></div>
+ <div class="opts" id="opts"></div>
+ <div class="fb" id="fb">בחרי את התשובה הנכונה</div>
+ <button class="nx" id="nx" type="button" disabled>הבא ›</button>
+ <div class="end" id="end"></div>
+</div>
+</main>
+<!-- 📘 סיכום: "המחברת", עמודים קצרים לפי הפרקים -->
+<div class="ov" id="ov"><div class="pop sm">
+ <div class="smh"><h3 id="smt">📘 סיכום: יהושע א׳-ו׳</h3><button class="wx" id="smx" type="button" aria-label="סגירה">✕</button></div>
+ <div class="smd" id="smd"></div>
+ <div class="smb" id="smb">
+ <section><h4>🗺️ התמונה הגדולה</h4>
+  <p>משה מת, ו<b>יהושע</b> מוביל את העם אל ארץ כנען. במבחן (<b>1.12</b>) יש 6 פרקים:</p>
+  <div class="mm"><div><span class="e">💪</span><span><b>פרק א׳</b>: ההכנה לכניסה לארץ</span></div>
+  <div><span class="e">🧵</span><span><b>פרק ב׳</b>: המרגלים ורחב</span></div>
+  <div><span class="e">🌊</span><span><b>פרקים ג׳-ד׳</b>: חציית הירדן ואבני הזיכרון</span></div>
+  <div><span class="e">⛺</span><span><b>פרק ה׳</b>: האירועים בגלגל</span></div>
+  <div><span class="e">📯</span><span><b>פרק ו׳</b>: כיבוש יריחו</span></div></div>
+  <div class="key">🧠 השאלה של כל הפרקים: <b>האם ה׳ עם יהושע כמו שהיה עם משה?</b></div></section>
+ <section><h4>📒 איך לומדים (מהמחברת)</h4>
+    <p>1️⃣ <b>קוראים את המחברת המון פעמים</b>, כדי לזכור את הפרטים הקטנים. כאן זה <b>📘 הסיכום</b> הזה.</p>
+  <p>2️⃣ <b>כותבים תשובות לשאלות המיקוד</b>. ב<b>📚 תרגול</b> יש את כל 23 השאלות. כותבים (או מקליטים 🎤), ו-Claude בודק.</p>
+  <p>3️⃣ <b>קוראים המון פעמים את השאלות והתשובות</b>. כאן זה <b>📋 מיקוד</b>: כל שאלה עם תשובה טובה.</p>
+  <div class="key">🎯 בסוף: <b>מבחנים לדוגמה</b>, עם פסוקים ושני סעיפים, כמו במבחן.</div></section>
+ <section><h4>💪 פרק א׳: ה׳ מדבר עם יהושע</h4>
+  <p>"משה עבדי מת, ועתה <b>קום עבור את הירדן הזה</b>, אתה וכל העם הזה" (א׳, ב).</p>
+  <p>ה׳ מבטיח: כל מקום שתדרוך עליו נתתי לכם, ואף אחד לא יעמוד מולך.</p>
+  <div class="qt">"<b>כאשר הייתי עם משה אהיה עמך</b>, לא ארפך ולא אעזבך" (א׳, ה)</div>
+  <div class="key">✍️ זו ההבטחה הכי חשובה בפרק. נראה אותה מתקיימת בירדן, בגלגל וביריחו.</div></section>
+ <section><h4>💪 שלוש פעמים "חזק ואמץ"</h4>
+  <p>1️⃣ "חזק ואמץ, כי אתה <b>תנחיל את העם הזה את הארץ</b>" (ו): להוביל את העם לרשת את הארץ.</p>
+  <p>2️⃣ "רק חזק ואמץ מאד <b>לשמר לעשות ככל התורה</b>" (ז): לשמור את התורה, בלי לסור ימין ושמאל. "לא ימוש ספר התורה הזה מפיך, והגית בו יומם ולילה" (ח).</p>
+  <p>3️⃣ "חזק ואמץ, <b>אל תערץ ואל תחת</b>, כי עמך ה׳ אלהיך" (ט): לא לפחד, כי ה׳ איתו.</p>
+  <div class="key">🔑 "חזק ואמץ" היא <b>מילה מנחה</b>. בפסוק יח גם העם אומר ליהושע: "רק חזק ואמץ".</div></section>
+ <section><h4>💪 יהושע נותן הוראות</h4>
+  <p>👮 ל<b>שוטרים</b>: תגידו לעם "הכינו לכם <b>צידה</b>, כי <b>בעוד שלשת ימים</b> אתם עברים את הירדן" (יא).</p>
+  <p>🤝 ל<b>ראובן, גד וחצי המנשה</b> (שניים וחצי השבטים): הנחלה שלכם <b>בעבר הירדן המזרחי</b>, כמו שמשה הבטיח. הנשים, הילדים והמקנה נשארים שם, אבל <b>כל גיבורי החיל עוברים חמושים לפני אחיכם</b> ועוזרים להם, עד שגם הם יקבלו נחלה. רק אז חוזרים הביתה.</p>
+  <div class="key">✅ בפרק ד׳ הם מקיימים את זה: <b>כארבעים אלף</b> לוחמים עוברים חמושים.</div></section>
+ <section><h4>💪 איך העם מגיב?</h4>
+  <p>העם <b>מקבל את יהושע בלב שלם</b>:</p>
+  <div class="qt">"כל אשר צויתנו נעשה, ואל כל אשר תשלחנו נלך. <b>ככל אשר שמענו אל משה כן נשמע אליך</b>" (טז-יז)</div>
+  <ul><li>מי שלא יקשיב לו ("ימרה את פיך"): <b>יומת</b></li>
+  <li>בקשה אחת: "רק יהיה ה׳ אלהיך עמך <b>כאשר היה עם משה</b>"</li>
+  <li>ועידוד: "<b>רק חזק ואמץ</b>"</li></ul></section>
+ <section><h4>🧵 פרק ב׳: המרגלים אצל רחב</h4>
+  <p>יהושע שולח <b>מהשיטים שני מרגלים, "חרש"</b> (בסתר): "לכו ראו את הארץ ואת יריחו".</p>
+  <p>הם באים לבית של <b>רחב</b>. מלך יריחו שומע ושולח אליה: "הוציאי האנשים... כי לחפר את כל הארץ באו".</p>
+  <p>🙈 רחב <b>מסתירה אותם על הגג, בפשתי העץ</b>.</p>
+  <p>🗣️ לשליחי המלך היא אומרת: "כן באו אלי האנשים", אבל יצאו כשנסגר השער בחושך, "<b>רדפו מהר אחריהם כי תשיגום</b>". הרודפים יוצאים לכיוון הירדן.</p>
+  <div class="key">✍️ היא מטעה אותם עם <b>חצי אמת</b>, כדי שיאמינו לה.</div></section>
+ <section><h4>🧵 מה רחב אומרת למרגלים?</h4>
+  <div class="qt">"<b>ידעתי כי נתן ה׳ לכם את הארץ</b>, וכי נפלה אימתכם עלינו" (ט)</div>
+  <p>👂 הם שמעו על <b>ים סוף</b> שה׳ ייבש, ועל <b>סיחון ועוג</b>, מלכי האמורי. "וימס לבבנו".</p>
+  <p>🙏 "כי ה׳ אלהיכם הוא אלהים בשמים ממעל ועל הארץ מתחת".</p>
+  <p>🤲 הבקשה: "<b>כי עשיתי עמכם חסד, ועשיתם גם אתם עם בית אבי חסד</b>": להשאיר בחיים את אבא, אמא, האחים והאחיות.</p>
+  <div class="key">💡 <b>חסד תמורת חסד</b>. המרגלים: "ועשינו עמך חסד ואמת".</div></section>
+ <section><h4>🧵 ההסכם וחוט השני</h4>
+  <p>🪢 רחב <b>מורידה אותם בחבל דרך החלון</b>, "כי ביתה בקיר החומה".</p>
+  <p>⛰️ העצה שלה: "<b>ההרה</b> לכו... ונחבתם שמה <b>שלשת ימים</b>".</p>
+  <p>🔴 התנאים של המרגלים: לקשור <b>את חוט השני בחלון</b>, לאסוף את כל המשפחה <b>לבית</b> (מי שיוצא החוצה, "דמו בראשו"), ו<b>לא לספר</b>.</p>
+  <p>📣 הדיווח ליהושע: "<b>כי נתן ה׳ בידנו את כל הארץ</b>, וגם נמוגו כל יושבי הארץ מפנינו".</p>
+  <div class="key">⚖️ דיווח <b>טוב</b>, הפוך מהמרגלים של משה ("עז העם").</div></section>
+ <section><h4>🌊 פרק ג׳: לפני החצייה</h4>
+  <p>⏳ אחרי <b>שלושה ימים</b> השוטרים אומרים: כשתראו את <b>ארון ברית ה׳</b> והכוהנים נושאים אותו, לכו אחריו.</p>
+  <div class="qt">"אך רחוק יהיה ביניכם וביניו <b>כאלפים אמה</b>, אל תקרבו אליו, למען אשר תדעו את הדרך... כי לא עברתם בדרך מתמול שלשום" (ג׳, ד)</div>
+  <p>🙏 יהושע: "<b>התקדשו</b>, כי מחר יעשה ה׳ בקרבכם נפלאות".</p>
+  <p>👑 ה׳: "היום הזה <b>אחל גדלך בעיני כל ישראל</b>".</p></section>
+ <section><h4>🌊 הנס בירדן</h4>
+  <p>🌾 ימי <b>קציר</b>: הירדן "<b>מלא על כל גדותיו</b>".</p>
+  <p>🦶 הכוהנים עם הארון הולכים <b>ראשונים</b>. כשרגליהם נוגעות במים:</p>
+  <ul><li>המים שיורדים מלמעלה "<b>קמו נד אחד</b>" (כמו חומה), ליד העיר אדם</li>
+  <li>המים שיורדים לים המלח "<b>תמו נכרתו</b>"</li></ul>
+  <p>🧍 הכוהנים <b>עומדים ביבשה ("בחרבה") בתוך הירדן</b> עד שכל העם עובר.</p>
+  <div class="key">🔁 כשהכוהנים יוצאים, <b>המים חוזרים</b>. הנס דומה ל<b>קריעת ים סוף</b>.</div></section>
+ <section><h4>🪨 פרק ד׳: אבני הזיכרון</h4>
+  <p>👥 <b>12 אנשים, אחד מכל שבט</b>, לוקחים כל אחד אבן מתוך הירדן, מהמקום שעמדו הכוהנים.</p>
+  <p>📍 יהושע מקים אותן <b>בגלגל</b>, ועוד 12 אבנים <b>בתוך הירדן</b>.</p>
+  <div class="qt">"כי ישאלון בניכם מחר לאמר: <b>מה האבנים האלה לכם?</b>" ואמרתם: נכרתו מימי הירדן מפני ארון ברית ה׳ (ד׳, ו-ז)</div>
+  <div class="key">🎯 התפקיד: <b>זיכרון לבני ישראל עד עולם</b>, ושכל עמי הארץ יידעו שיד ה׳ חזקה.</div></section>
+ <section><h4>🌊 פרק ד׳: עוד פרטים חשובים</h4>
+  <ul><li>⚔️ <b>כארבעים אלף</b> לוחמים מראובן, גד וחצי המנשה עברו חמושים לפני העם</li>
+  <li>👑 "ביום ההוא <b>גדל ה׳ את יהושע בעיני כל ישראל</b>, וייראו אתו <b>כאשר יראו את משה</b>" (ד׳, יד)</li>
+  <li>📅 עלו מהירדן <b>בעשרה לחודש הראשון</b> (ניסן), וחנו <b>בגלגל</b>, בקצה מזרח יריחו</li></ul>
+  <div class="key">✍️ ההבטחה מפרק א׳ ("כאשר הייתי עם משה") מתחילה להתקיים.</div></section>
+ <section><h4>⛺ פרק ה׳: ברית מילה ופסח</h4>
+  <p>😨 מלכי כנען שמעו על הירדן: "<b>וימס לבבם</b>".</p>
+  <p>✂️ ה׳: "שוב מל את בני ישראל". מי שיצא ממצרים היה נימול, אבל <b>מי שנולד במדבר לא נימול</b>.</p>
+  <p>🔄 "היום <b>גלותי את חרפת מצרים</b> מעליכם", ולכן המקום נקרא <b>גלגל</b>.</p>
+  <p>🍷 עשו <b>פסח</b> בארבעה עשר לחודש, בערב.</p>
+  <div class="key">💡 למה חשוב? ברית המילה היא <b>אות הברית</b> עם ה׳, ומי שאינו נימול <b>לא אוכל מקורבן הפסח</b>.</div></section>
+ <section><h4>⛺ המן פוסק</h4>
+  <p>🌾 ממחרת הפסח אכלו מ<b>תבואת הארץ</b>: "<b>מצות וקלוי</b>".</p>
+  <div class="qt">"<b>וישבת המן ממחרת</b>... ויאכלו מתבואת ארץ כנען בשנה ההיא" (ה׳, יב)</div>
+  <div class="key">🔄 השינוי: מ<b>חיים של נס במדבר</b> (מן מהשמיים) ל<b>חיים רגילים בארץ</b> (עובדים את האדמה ואוכלים מהיבול).</div></section>
+ <section><h4>⛺ שר צבא ה׳</h4>
+  <p>⚔️ ליד יריחו יהושע רואה <b>איש עומד מולו, וחרבו שלופה בידו</b>.</p>
+  <p>❓ יהושע: "<b>הלנו אתה אם לצרינו?</b>" (בצד שלנו או של האויבים?)</p>
+  <p>👼 "לא, כי אני <b>שר צבא ה׳</b>, עתה באתי". יהושע נופל על פניו ומשתחווה.</p>
+  <div class="qt">"<b>של נעלך מעל רגלך</b>, כי המקום אשר אתה עמד עליו קדש הוא" (ה׳, טו)</div>
+  <div class="key">🔥 בדיוק כמו <b>משה בסנה הבוער</b>: יהושע הוא הממשיך של משה.</div></section>
+ <section><h4>📯 פרק ו׳: איך כובשים את יריחו?</h4>
+  <p>🔒 יריחו "<b>סגרת ומסגרת</b>, אין יוצא ואין בא".</p>
+  <p>🚶 <b>סדר ההליכה</b>:</p>
+  <div class="mm"><div><span class="e">🛡️</span><span><b>החלוץ</b>: הלוחמים החמושים</span></div>
+  <div><span class="e">📯</span><span><b>7 כוהנים עם 7 שופרות</b>, תוקעים כל הזמן</span></div>
+  <div><span class="e">📦</span><span><b>ארון ה׳</b></span></div>
+  <div><span class="e">🛡️</span><span><b>המאסף</b>: הולכים אחרי הארון</span></div></div>
+  <div class="key">🤫 העם הולך <b>בשקט</b>, עד שיהושע אומר "הריעו".</div></section>
+ <section><h4>📯 שבעה ימים</h4>
+  <p>📅 ימים 1-6: מקיפים <b>פעם אחת</b> ביום, וחוזרים למחנה.</p>
+  <p>🌅 יום 7: משכימים בעלות השחר, ומקיפים <b>שבע פעמים</b>.</p>
+  <p>📯 בפעם השביעית הכוהנים תוקעים, ויהושע: "<b>הריעו, כי נתן ה׳ לכם את העיר</b>".</p>
+  <p>🧱 העם מריע תרועה גדולה, ו<b>החומה נופלת תחתיה</b>. כל אחד עולה ישר לפניו.</p>
+  <div class="key">7️⃣ המספר <b>שבע</b>: 7 כוהנים, 7 שופרות, 7 ימים, 7 הקפות.</div></section>
+ <section><h4>📯 החרם ורחב</h4>
+  <p>🚫 "והיתה העיר <b>חרם, היא וכל אשר בה, לה׳</b>". <b>אסור לקחת שלל</b>. מי שייקח, יביא צרה ("ועכרתם") על כל המחנה.</p>
+  <p>💰 כסף, זהב, וכלי נחושת וברזל: "<b>קדש לה׳, אוצר ה׳ יבוא</b>". העיר נשרפה.</p>
+  <p>🔴 <b>רחב ניצלת</b>: יהושע ציווה, ו<b>שני המרגלים</b> הוציאו אותה ואת כל משפחתה "כאשר נשבעתם לה", והושיבו אותם <b>מחוץ למחנה</b>. בהמשך "ותשב בקרב ישראל".</p>
+  <div class="key">⚠️ "<b>ארור האיש</b>... אשר יקום ובנה את העיר הזאת את יריחו".</div></section>
+ <section><h4>🔗 יהושע כמו משה</h4>
+  <table><tr><th>אצל משה</th><th>אצל יהושע</th></tr>
+  <tr><td>קריעת ים סוף</td><td>חציית הירדן (ג׳-ד׳)</td></tr>
+  <tr><td>הסנה: "של נעליך"</td><td>שר צבא ה׳: "של נעלך" (ה׳)</td></tr>
+  <tr><td>12 מרגלים, דיווח רע</td><td>2 מרגלים, דיווח טוב (ב׳)</td></tr>
+  <tr><td>פסח במצרים</td><td>פסח בגלגל (ה׳)</td></tr>
+  <tr><td>"ויאמינו בה׳ ובמשה"</td><td>"וייראו אתו כאשר יראו את משה" (ד׳)</td></tr></table>
+  <div class="key">✍️ שאלת "השווי" במבחן? זו הטבלה.</div></section>
+ <section><h4>🔢 מספרים ששווה לזכור</h4>
+  <ul><li><b>3</b> ימים: עד מעבר הירדן, וגם המרגלים בהר</li>
+  <li><b>2</b> מרגלים · <b>2.5</b> שבטים · <b>40,000</b> לוחמים</li>
+  <li><b>2,000 אמה</b>: המרחק מהארון</li>
+  <li><b>12</b> אנשים, <b>12</b> אבנים (בגלגל ובירדן)</li>
+  <li><b>10</b> בניסן: עלו מהירדן · <b>14</b> בניסן: פסח</li>
+  <li><b>7</b> כוהנים, <b>7</b> שופרות, <b>7</b> ימים, <b>7</b> הקפות</li></ul></section>
+ <section><h4>💡 איך עונים במבחן בתנ״ך</h4>
+  <p>1️⃣ מקיפים את <b>הפועל</b>: <b>תארי</b> (מה קרה), <b>הסבירי</b> (למה, מה זה אומר), <b>השווי</b> (מה דומה ומה שונה).</p>
+  <p>2️⃣ עונים ב<b>משפטים מלאים</b>, שמובנים גם בלי השאלה.</p>
+  <p>3️⃣ מביאים <b>ראיה מהפסוק</b>: ציטוט קצר במרכאות.</p>
+  <p>4️⃣ שאלה עם שני חלקים ("מה... ולמה")? עונים על <b>שניהם</b>.</p>
+  <div class="key">🍀 בהצלחה במבחן, דני! את יכולה! 💪</div></section>
+ </div>
+ <div class="smn"><button type="button" id="smp">→ הקודם</button><button type="button" class="pr" id="smf">הבא ←</button></div>
+</div></div>
+<!-- 📋 מיקוד: כל שאלות המיקוד של המורה עם תשובה טובה, לקריאה שוב ושוב (שלב 3 בשיטה של המורה). נבנה מ-QS. -->
+<div class="ov" id="ovt"><div class="pop sm">
+ <div class="smh"><h3>📋 שאלות המיקוד ותשובות</h3><button class="wx" id="tpx" type="button" aria-label="סגירה">✕</button></div>
+ <div class="smd" id="tpd"></div>
+ <div class="smb" id="tpb"></div>
+ <div class="smn"><button type="button" id="tpp">→ הקודם</button><button type="button" class="pr" id="tpf">הבא ←</button></div>
+</div></div>
+
+<div class="ov" id="ov2"><div class="pop"></div></div>
+<div class="ov top" id="ov3"><div class="pop wp">
+ <div class="wh"><h3>✍️ התשובה שלך</h3><button class="wx" id="wx" type="button" aria-label="סגירה">✕</button></div>
+ <div class="wq" id="wq"></div>
+ <textarea id="wt" maxlength="1500" placeholder="כתבי כאן במשפטים מלאים, כמו במבחן…"></textarea>
+ <div class="wf"><span id="wm" class="wm"></span><span id="wc" dir="ltr">0 / 1500</span></div>
+ <button class="cl" id="ws" type="button">📤 לשלוח לבדיקה</button>
+</div></div>
+<script src="../../track.js?v=9"></script>
+<script src="../../guess.js?v=1"></script>
+<script>
+// הכנה למבחן בתנ"ך של דני (אורן 18.11.2026; המבחן ביום שלישי 1.12.2026). כיתה ו׳, ספר יהושע פרקים א׳-ו׳.
+// המקור: המחברת של דני (2 תמונות, אורן אישר את התמלול 19.11.2026): איך לומדים + שאלות המיקוד של המורה. כל הפרטים נבדקו מול הפסוקים.
+// השיטה של המורה: 1. קוראים את המחברת הרבה פעמים כדי לזכור את הפרטים הקטנים, 2. כותבים תשובות לשאלות המיקוד, 3. קוראים שוב ושוב את השאלות והתשובות.
+// באפליקציה: 📘 סיכום (המחברת), 📚 תרגול (אמריקאיות + 23 שאלות המיקוד, כותבים ו-Claude בודק), 📋 מיקוד (שאלות ותשובות לקריאה חוזרת), 🎯 מבחן לדוגמה (קטע מהפסוקים + 2 סעיפים).
+// מפתח: dani_tn. שאלה = [שלב, שאלה, [נכונה, מסיחים...], הסבר]. פתוחה = [שלב, שאלה, null, תשובה לדוגמה, [מחוון], מזהה]. "קטע||שאלה" = קטע מעל השאלה.
+const ST=['פרק א׳','פרק ב׳','פרק ג׳-ד׳','פרק ה׳','פרק ו׳'];
+const STN=['ההכנה לכניסה','המרגלים ורחב','חציית הירדן','בגלגל','כיבוש יריחו'];
+const T1='"לא יתיצב איש לפניך כל ימי חייך, כאשר הייתי עם משה אהיה עמך, לא ארפך ולא אעזבך. חזק ואמץ, כי אתה תנחיל את העם הזה את הארץ אשר נשבעתי לאבותם לתת להם. רק חזק ואמץ מאד לשמר לעשות ככל התורה אשר צוך משה עבדי, אל תסור ממנו ימין ושמאול, למען תשכיל בכל אשר תלך. לא ימוש ספר התורה הזה מפיך והגית בו יומם ולילה, למען תשמר לעשות ככל הכתוב בו, כי אז תצליח את דרכך ואז תשכיל. הלוא צויתיך חזק ואמץ, אל תערץ ואל תחת, כי עמך ה׳ אלהיך בכל אשר תלך." <small>(יהושע א׳, ה-ט)</small>';
+const T2='"והמה טרם ישכבון, והיא עלתה עליהם על הגג. ותאמר אל האנשים: ידעתי כי נתן ה׳ לכם את הארץ, וכי נפלה אימתכם עלינו, וכי נמגו כל ישבי הארץ מפניכם. כי שמענו את אשר הוביש ה׳ את מי ים סוף מפניכם בצאתכם ממצרים, ואשר עשיתם לשני מלכי האמרי אשר בעבר הירדן, לסיחן ולעוג, אשר החרמתם אותם. ונשמע וימס לבבנו, ולא קמה עוד רוח באיש מפניכם, כי ה׳ אלהיכם הוא אלהים בשמים ממעל ועל הארץ מתחת. ועתה הישבעו נא לי בה׳, כי עשיתי עמכם חסד, ועשיתם גם אתם עם בית אבי חסד, ונתתם לי אות אמת. והחיתם את אבי ואת אמי ואת אחי ואת אחותי ואת כל אשר להם, והצלתם את נפשתינו ממות." <small>(יהושע ב׳, ח-יג)</small>';
+const T3='"ויהי בנסע העם מאהליהם לעבר את הירדן, והכהנים נשאי הארון הברית לפני העם. וכבוא נשאי הארון עד הירדן, ורגלי הכהנים נשאי הארון נטבלו בקצה המים, והירדן מלא על כל גדותיו כל ימי קציר. ויעמדו המים הירדים מלמעלה, קמו נד אחד הרחק מאד באדם העיר אשר מצד צרתן, והירדים על ים הערבה ים המלח תמו נכרתו, והעם עברו נגד יריחו. ויעמדו הכהנים נשאי הארון ברית ה׳ בחרבה בתוך הירדן הכן, וכל ישראל עברים בחרבה, עד אשר תמו כל הגוי לעבר את הירדן." <small>(יהושע ג׳, יד-יז)</small>';
+const T4='"ויאמר ה׳ אל יהושע: ראה נתתי בידך את יריחו ואת מלכה, גבורי החיל. וסבתם את העיר, כל אנשי המלחמה, הקיף את העיר פעם אחת, כה תעשה ששת ימים. ושבעה כהנים ישאו שבעה שופרות היובלים לפני הארון, וביום השביעי תסבו את העיר שבע פעמים, והכהנים יתקעו בשופרות. והיה במשך בקרן היובל, בשמעכם את קול השופר, יריעו כל העם תרועה גדולה, ונפלה חומת העיר תחתיה, ועלו העם איש נגדו." <small>(יהושע ו׳, ב-ה)</small>';
+const QS=[
+// שלב 1: פרק א׳, ההכנה לכניסה לארץ כנען
+[0,'מה ה׳ אומר ליהושע לעשות בתחילת הספר, אחרי שמשה מת?',['לקום ולעבור את הירדן עם כל העם, אל הארץ שה׳ נותן לבני ישראל','לשלוח מרגלים לכל ערי כנען, כדי לבדוק אם אפשר לנצח את העמים','לחזור עם העם למדבר, עד שיגדל דור חדש של לוחמים צעירים','לבנות מזבח גדול בערבות מואב, ולהקריב עליו קורבן לזכר משה'],'"משה עבדי מת, ועתה <b>קום עבור את הירדן הזה</b>, אתה וכל העם הזה, אל הארץ אשר אנכי נותן להם" (א׳, ב).'],
+[0,'איזו הבטחה נותן ה׳ ליהושע על היחס שלו אליו?',['"כאשר הייתי עם משה אהיה עמך, לא ארפך ולא אעזבך"','"אם תשמע בקולי, תהיה מלך על כל יושבי הארץ"','"אתן לך בנים רבים, וכל צאצאיך ינהיגו את העם"','"אשלח מלאך לפניך, והוא יילחם במקומך בכל קרב"'],'ה׳ מבטיח ליהושע שיהיה איתו <b>כמו שהיה עם משה</b>: "כאשר הייתי עם משה אהיה עמך, לא ארפך ולא אעזבך" (א׳, ה). המשפט הזה חשוב לכל הפרקים הבאים.'],
+[0,'כמה פעמים ה׳ אומר ליהושע "חזק ואמץ" בפרק א׳?',['שלוש פעמים, ועוד פעם אחת העם אומר לו את זה בסוף הפרק','פעם אחת בלבד, בתחילת הדברים של ה׳ אל יהושע אחרי מות משה','שבע פעמים, כמו מספר הימים שבהם הקיפו אחר כך את יריחו','שתי פעמים, ובשתיהן ה׳ מדבר על המלחמה בעמי ארץ כנען'],'ה׳ אומר "חזק ואמץ" <b>שלוש פעמים</b> (פסוקים ו, ז, ט), ובפסוק יח גם העם אומר ליהושע "רק חזק ואמץ". זו <b>מילה מנחה</b> של הפרק.'],
+[0,'על מה ה׳ מדבר כשהוא אומר ליהושע "רק חזק ואמץ מאד"?',['על שמירת כל התורה שציווה משה, בלי לסור ממנה ימין ושמאל','על הלחימה בענקים הגבוהים שגרים בערים הבצורות של כנען','על ההליכה הארוכה במדבר, שבה העם עלול לחסור מים ומזון','על הוויכוחים עם השבטים שאולי לא ירצו לקבל את הנהגתו'],'"רק חזק ואמץ מאד <b>לשמר לעשות ככל התורה</b> אשר צוך משה עבדי, אל תסור ממנו ימין ושמאול" (א׳, ז).'],
+[0,'מה ה׳ אומר ליהושע לעשות עם ספר התורה?',['לא להפסיק לדבר בו, וללמוד אותו יומם ולילה','לשמור אותו בארון, ולפתוח אותו רק בחגים','לתת אותו לכוהנים, כדי שרק הם ילמדו אותו','לקרוא ממנו לעם, אבל רק לפני כל מלחמה'],'"לא ימוש ספר התורה הזה מפיך, <b>והגית בו יומם ולילה</b>" (א׳, ח). "לא ימוש מפיך" = לא תפסיק לדבר בו.'],
+[0,'מה יהושע מצווה את שוטרי העם להגיד לבני ישראל?',['להכין צידה, כי בעוד שלושה ימים הם עוברים את הירדן','לאסוף נשק, כי מחר בבוקר הם יוצאים למלחמה ביריחו','לארוז את האוהלים, כי הם חוזרים לחנות ליד הר סיני','לצום שלושה ימים, כי ה׳ כועס על העם בגלל המרגלים'],'"הכינו לכם <b>צידה</b>, כי <b>בעוד שלשת ימים</b> אתם עברים את הירדן הזה" (א׳, יא). צידה = אוכל לדרך.'],
+[0,'מה היה ההסכם של משה עם שבטי ראובן, גד וחצי שבט המנשה?',['הם נוחלים בעבר הירדן המזרחי, אבל הלוחמים שלהם עוברים חמושים ועוזרים לאחיהם לכבוש','הם נוחלים בעבר הירדן המערבי, אבל רק אחרי שכל שאר השבטים יקבלו את הנחלה שלהם קודם','הם נשארים במדבר עם הצאן והבקר, ושולחים לשאר השבטים אוכל ומים במשך כל המלחמה','הם נוחלים בעבר הירדן המזרחי, ובתמורה הם משלמים מס לשאר השבטים במשך שבע שנים'],'הנשים, הילדים והמקנה נשארים <b>בעבר הירדן המזרחי</b>, ו"אתם תעברו <b>חמשים</b> לפני אחיכם, כל גבורי החיל, ועזרתם אותם, עד אשר יניח ה׳ לאחיכם" (א׳, יד-טו).'],
+[0,'איך עונים לוחמי השבטים ליהושע?',['"כל אשר צויתנו נעשה, ואל כל אשר תשלחנו נלך"','"נעשה את מה שתבקש, רק אם הזקנים יסכימו לזה"','"נחשוב על הדברים, ונחזיר לך תשובה בעוד שבוע"','"נלך איתך, אבל לא נעבור את הירדן לפני כולם"'],'הם מקבלים את יהושע כמנהיג בלב שלם: "כל אשר צויתנו נעשה, ואל כל אשר תשלחנו נלך. <b>ככל אשר שמענו אל משה כן נשמע אליך</b>" (א׳, טז-יז).'],
+[0,'מה העם אומר שיקרה למי שלא יקשיב ליהושע?',['"כל איש אשר ימרה את פיך... יומת"','"כל איש אשר ימרה את פיך... יגורש"','"כל איש אשר ימרה את פיך... ייענש"','"כל איש אשר ימרה את פיך... יישפט"'],'"כל איש אשר ימרה את פיך ולא ישמע את דבריך לכל אשר תצונו <b>יומת</b>, רק חזק ואמץ" (א׳, יח). "ימרה את פיך" = לא יקשיב לך.'],
+[0,'כיצד מגיבים העם והמנהיגים להנהגה של יהושע לפני מעבר הירדן? כתבי לפחות שתי תגובות, ואם אפשר הביאי פסוק.',null,'העם והמנהיגים <b>מקבלים את ההנהגה של יהושע בלב שלם</b>. השוטרים עוברים במחנה ומעבירים לעם את ההוראה שלו להכין צידה. לוחמי ראובן, גד וחצי המנשה עונים לו: "<b>כל אשר צויתנו נעשה, ואל כל אשר תשלחנו נלך. ככל אשר שמענו אל משה כן נשמע אליך</b>" (א׳, טז-יז). הם מוסיפים שמי שלא יקשיב לו "יומת", ומעודדים אותו: "<b>רק חזק ואמץ</b>". הם רואים ביהושע את הממשיך של משה, ומבקשים רק דבר אחד: "רק יהיה ה׳ אלהיך עמך כאשר היה עם משה".',['מקבלים את ההנהגה שלו ומוכנים לעשות כל מה שיגיד','פסוק: "כל אשר צויתנו נעשה" או "כאשר שמענו אל משה כן נשמע אליך"','מי שלא יקשיב לו "יומת"','מעודדים אותו: "רק חזק ואמץ"','מבקשים שה׳ יהיה איתו כמו שהיה עם משה'],'f1_1'],
+[0,'מהו ההסכם של שניים וחצי השבטים עם משה ויהושע?',null,'שבטי <b>ראובן, גד וחצי שבט המנשה</b> ביקשו לקבל את הנחלה שלהם <b>בעבר הירדן המזרחי</b>. משה הסכים, בתנאי ש<b>הנשים, הילדים והמקנה יישארו שם</b>, אבל <b>כל גיבורי החיל יעברו חמושים לפני אחיהם</b> ויעזרו להם לכבוש את הארץ. רק אחרי שה׳ יניח גם לשאר השבטים והם יירשו את הארץ, הלוחמים יחזרו לנחלה שלהם (א׳, יב-טו). יהושע מזכיר להם את ההסכם, והם מסכימים. בפרק ד׳ רואים שהם קיימו אותו: <b>כארבעים אלף</b> לוחמים עברו חמושים לפני בני ישראל (ד׳, יב-יג).',['מי: ראובן, גד וחצי שבט המנשה','הנחלה שלהם בעבר הירדן המזרחי','הנשים, הילדים והמקנה נשארים שם','הלוחמים עוברים חמושים לפני אחיהם ועוזרים לכבוש','חוזרים לנחלה רק אחרי שכל השבטים קיבלו נחלה'],'f1_2'],
+[0,'על מה ה׳ אומר ליהושע "חזק ואמץ"? פרטי את שלוש הפעמים.',null,'ה׳ אומר ליהושע "חזק ואמץ" <b>שלוש פעמים</b>, וכל פעם על משהו אחר: <b>1.</b> "חזק ואמץ, כי אתה <b>תנחיל את העם הזה את הארץ</b> אשר נשבעתי לאבותם" (א׳, ו): על התפקיד להוביל את העם לרשת את הארץ. <b>2.</b> "רק חזק ואמץ מאד <b>לשמר לעשות ככל התורה</b>" (א׳, ז): על שמירת התורה, בלי לסור ממנה ימין ושמאל. <b>3.</b> "חזק ואמץ, <b>אל תערץ ואל תחת</b>, כי עמך ה׳ אלהיך בכל אשר תלך" (א׳, ט): לא לפחד, כי ה׳ איתו. בסוף הפרק גם העם אומר לו "רק חזק ואמץ".',['שלוש פעמים','1. להנחיל לעם את הארץ','2. לשמור ולעשות את כל התורה','3. לא לפחד (אל תערץ ואל תחת), כי ה׳ איתו','לפחות פסוק אחד'],'f1_3'],
+// שלב 2: פרק ב׳, המרגלים ורחב
+[1,'מאיפה שלח יהושע את שני המרגלים, ומה אמר להם לבדוק?',['מהשיטים, בסתר: "לכו ראו את הארץ ואת יריחו"','מהגלגל, בגלוי: "לכו ספרו את לוחמי יריחו"','מהר נבו, בלילה: "לכו מצאו מעבר בירדן"','מסיני, ביום: "לכו בדקו אם הארץ טובה"'],'"וישלח יהושע בן נון מן <b>השטים</b> שנים אנשים מרגלים <b>חרש</b> לאמר: לכו ראו את הארץ ואת יריחו" (ב׳, א). "חרש" = בסתר.'],
+[1,'מה ביקש מלך יריחו מרחב כששמע על המרגלים?',['שתוציא אליו את האנשים שבאו לביתה, כי הם באו לרגל את הארץ','שתשאיר את האנשים בביתה עד הבוקר, כדי שהחיילים יתפסו אותם','שתשאל את האנשים מה בני ישראל רוצים, ותבוא לספר לו הכול','שתבריח את האנשים מהעיר בשקט, כדי שלא תפרוץ מהומה בעיר'],'"הוציאי האנשים הבאים אליך... כי <b>לחפר את כל הארץ</b> באו" (ב׳, ג). "לחפור את הארץ" = לרגל, לחקור אותה.'],
+[1,'איפה רחב הסתירה את המרגלים?',['על הגג, מתחת לגבעולי הפשתן שסידרה שם','במרתף, מאחורי כדי היין הגדולים שלה','באורווה, בין הסוסים וערמות התבן','במערה מחוץ לחומה, ליד שער העיר'],'"והיא העלתם <b>הגגה</b>, ותטמנם <b>בפשתי העץ</b> הערכות לה על הגג" (ב׳, ו).'],
+[1,'איך רחב הטעתה את שליחי המלך?',['אמרה שהאנשים באו, שלא ידעה מאין הם, ושיצאו כשנסגר השער בחושך','אמרה שאף אחד לא בא אליה, ושהשליחים בטח מבלבלים עם בית אחר','אמרה שהאנשים עדיין ישנים, ושיחזרו בבוקר כדי לתפוס אותם','אמרה שהאנשים ברחו לכיוון המדבר, ושאי אפשר כבר להשיג אותם'],'היא <b>הודתה בחלק מהאמת</b> ("כן באו אלי האנשים") כדי שיאמינו לה, ואז שלחה אותם לרדוף: "<b>רדפו מהר אחריהם כי תשיגום</b>" (ב׳, ד-ה). הרודפים יצאו לכיוון הירדן.'],
+[1,'לפי רחב, למה יושבי הארץ פוחדים מבני ישראל?',['כי שמעו שה׳ ייבש את ים סוף, ומה שבני ישראל עשו לסיחון ולעוג','כי ראו מהחומה את הצבא הגדול של בני ישראל, עם הנשק והסוסים','כי המלך שלהם חלה, ואין מי שיוביל את הלוחמים לקרב נגדם','כי חלמו חלום שבו יריחו נשרפת, והחכמים פתרו אותו לרעה'],'"כי שמענו את אשר <b>הוביש ה׳ את מי ים סוף</b>... ואשר עשיתם לשני מלכי האמרי... <b>לסיחן ולעוג</b>" (ב׳, י).'],
+[1,'מה רחב ביקשה מהמרגלים בתמורה לחסד שעשתה איתם?',['שיישבעו להשאיר בחיים אותה ואת כל בית אביה','שייקחו אותה איתם למחנה לפני שהעיר תותקף','שייתנו לה חלק מהכסף והזהב שייקחו מיריחו','שידאגו שהיא תהיה המלכה של העיר אחרי המלחמה'],'"הישבעו נא לי בה׳, כי עשיתי עמכם חסד, <b>ועשיתם גם אתם עם בית אבי חסד</b>... והחיתם את אבי ואת אמי ואת אחי ואת אחותי" (ב׳, יב-יג).'],
+[1,'מה היה הסימן שרחב הייתה צריכה לשים כדי שביתה לא ייפגע?',['חוט השני (חוט אדום) קשור בחלון שדרכו הורידה את המרגלים','דגל לבן גדול, תלוי על הגג של הבית שבתוך חומת העיר','דם של כבש, מרוח על המשקוף ועל שתי המזוזות של הבית','נר דולק בחלון, שיראו אותו בלילה מכל מחנה ישראל'],'"את תקות <b>חוט השני</b> הזה תקשרי <b>בחלון</b> אשר הורדתנו בו" (ב׳, יח). הדם על המשקוף שייך ליציאת מצרים, לא לכאן.'],
+[1,'איך המרגלים יצאו מביתה של רחב?',['רחב הורידה אותם בחבל דרך החלון, כי ביתה היה בתוך חומת העיר','רחב הוציאה אותם דרך שער העיר, כשהם מחופשים לסוחרים מהעיר','המרגלים קפצו מהגג אל עץ גבוה, שעמד ממש ליד חומת העיר','המרגלים חפרו מנהרה מתחת לבית, שהובילה אל מחוץ לחומה'],'"ותורדם <b>בחבל בעד החלון</b>, כי ביתה בקיר החומה, ובחומה היא יושבת" (ב׳, טו).'],
+[1,'לאן רחב אמרה למרגלים ללכת אחרי שיצאו?',['להר, ולהתחבא שם שלושה ימים עד שהרודפים יחזרו','לירדן, ולחצות אותו מהר באותו לילה לפני הבוקר','למדבר, ולחכות שם שבעה ימים עד שהשער ייפתח','לעיר הסמוכה, ולהסתתר שם אצל קרובי משפחתה'],'"<b>ההרה</b> לכו, פן יפגעו בכם הרדפים, ונחבתם שמה <b>שלשת ימים</b> עד שוב הרדפים" (ב׳, טז).'],
+[1,'מה הדיווח שהמרגלים הביאו ליהושע?',['"כי נתן ה׳ בידנו את כל הארץ, וגם נמוגו כל יושבי הארץ מפנינו"','"הערים בצורות וגדולות מאוד, והעם שיושב בארץ חזק מאיתנו"','"הארץ טובה מאוד, אבל צריך לחכות עוד שנה לפני שתוקפים"','"מלך יריחו מוכן לעשות שלום, אם ניתן לו חלק מהארץ"'],'דיווח <b>טוב ומעודד</b> (ב׳, כד). הוא <b>הפוך</b> מהדיווח של רוב המרגלים של משה, שאמרו "עז העם" והפחידו את העם.'],
+[1,'מהו הסימן שעל רחב לשים כדי שביתה לא ייחרב? הסבירי גם מה עוד היא צריכה לעשות.',null,'הסימן הוא <b>חוט השני</b> (חוט אדום), שרחב צריכה לקשור <b>בחלון שדרכו הורידה את המרגלים</b>: "את תקות חוט השני הזה תקשרי בחלון אשר הורדתנו בו" (ב׳, יח). בנוסף היא צריכה <b>לאסוף אליה הביתה</b> את אביה, אמה, אחיה וכל בית אביה. מי שייצא מהבית החוצה, "דמו בראשו", והמרגלים לא אחראים לו. וגם אסור לה <b>לספר</b> על ההסכם. רחב קשרה את חוט השני מיד אחרי שהמרגלים הלכו (ב׳, כא).',['חוט השני (חוט אדום)','קשור בחלון שדרכו הורידה אותם','לאסוף את כל המשפחה לבית','מי שיוצא מהבית, "דמו בראשו"','לא לספר על ההסכם'],'f2_1'],
+[1,'כיצד רחב מטעה את שליחי המלך?',null,'רחב <b>מסתירה את המרגלים על הגג</b>, מתחת לפשתי העץ. לשליחי המלך היא אומרת <b>חלק מהאמת</b>: "כן באו אלי האנשים", כדי שיאמינו לה. אחר כך היא אומרת שלא ידעה מאין הם, ושהם <b>יצאו כשהשער נסגר בחושך</b>, ושהיא לא יודעת לאן הלכו. היא אפילו מאיצה בהם: "<b>רדפו מהר אחריהם כי תשיגום</b>" (ב׳, ד-ה). השליחים רודפים לכיוון הירדן, השער נסגר אחריהם, והמרגלים נשארים בטוחים בתוך העיר.',['הסתירה אותם על הגג, בפשתי העץ','הודתה שהאנשים באו, כדי שיאמינו לה','אמרה שיצאו כשהשער נסגר בחושך, ושאינה יודעת לאן','"רדפו מהר אחריהם כי תשיגום"','השליחים רדפו לכיוון הירדן'],'f2_2'],
+[1,'מה רחב אומרת לשני המרגלים?',null,'רחב אומרת למרגלים ש<b>היא יודעת שה׳ נתן להם את הארץ</b>, ושכל יושבי הארץ <b>פוחדים</b> מהם: "ידעתי כי נתן ה׳ לכם את הארץ, וכי נפלה אימתכם עלינו" (ב׳, ט). הם שמעו ש<b>ה׳ ייבש את מי ים סוף</b>, ומה שבני ישראל עשו ל<b>סיחון ועוג</b>, מלכי האמורי, ולכן "וימס לבבנו". היא אומרת: "<b>כי ה׳ אלהיכם הוא אלהים בשמים ממעל ועל הארץ מתחת</b>" (ב׳, יא). בסוף היא מבקשת שבועה שישאירו אותה ואת משפחתה בחיים.',['היא יודעת שה׳ נתן להם את הארץ','יושבי הארץ פוחדים (נמוגו, נמס לבבם)','שמעו על ים סוף ועל סיחון ועוג','ה׳ הוא אלוהים בשמיים ובארץ','מבקשת שבועה להציל את משפחתה'],'f2_3'],
+[1,'מהו החסד שרחב עושה עם המרגלים, ומה היא מקבלת בתמורה?',null,'ה<b>חסד</b> של רחב: היא <b>מסתירה את המרגלים</b>, מטעה את שליחי המלך ו<b>מצילה את חייהם</b>, ואחר כך מורידה אותם בחבל ומייעצת להם איך להימלט. בתמורה היא מבקשת: "ועשיתם גם אתם עם בית אבי חסד" (ב׳, יב). המרגלים <b>נשבעים</b> להשאיר אותה ואת כל משפחתה בחיים כשבני ישראל יכבשו את העיר: "ועשינו עמך חסד ואמת" (ב׳, יד), בתנאי שתקשור את חוט השני ותאסוף את המשפחה לבית. בפרק ו׳ ההבטחה מתקיימת: רחב ומשפחתה ניצלים. זה <b>חסד תמורת חסד</b>.',['החסד: הסתירה את המרגלים והצילה אותם','ביקשה חסד בחזרה לבית אביה','המרגלים נשבעו להשאיר אותה ואת משפחתה בחיים','התנאים: חוט השני, המשפחה בבית, לא לספר','חסד תמורת חסד, וזה מתקיים בפרק ו׳'],'f2_4'],
+[1,'מהו הדיווח שהמרגלים מביאים ליהושע? האם הדיווח היה טוב או רע, ולמה?',null,'המרגלים חוזרים ליהושע, מספרים לו את כל מה שקרה להם ואומרים: "<b>כי נתן ה׳ בידנו את כל הארץ, וגם נמוגו כל יושבי הארץ מפנינו</b>" (ב׳, כד). זה דיווח <b>טוב</b>: הם בטוחים שה׳ נתן להם את הארץ, ומספרים שתושבי הארץ פוחדים, כמו שאמרה רחב. הדיווח הזה <b>הפוך</b> מהדיווח של רוב המרגלים ששלח משה, שאמרו "עז העם" והפחידו את העם, ובגללם העם נשאר 40 שנה במדבר.',['הציטוט או התוכן: ה׳ נתן בידנו את כל הארץ','יושבי הארץ פוחדים מבני ישראל (נמוגו)','הדיווח טוב ומעודד','השוואה למרגלים של משה, שהביאו דיווח רע'],'f2_5'],
+[1,'כיצד יצאו המרגלים מביתה של רחב, ומה עשו אחר כך?',null,'רחב <b>הורידה אותם בחבל דרך החלון</b>, כי ביתה היה בתוך חומת העיר: "ותורדם בחבל בעד החלון, כי ביתה בקיר החומה, ובחומה היא יושבת" (ב׳, טו). היא אמרה להם ללכת <b>להר</b> ולהתחבא שם <b>שלושה ימים</b>, עד שהרודפים יחזרו. הם עשו כך. הרודפים חיפשו בכל הדרך ולא מצאו אותם, ואז המרגלים ירדו מההר, עברו את הירדן וחזרו ליהושע.',['בחבל, דרך החלון','הבית היה בתוך החומה','הלכו להר','התחבאו שם שלושה ימים','חזרו ליהושע אחרי שהרודפים לא מצאו אותם'],'f2_6'],
+// שלב 3: פרקים ג׳-ד׳, חציית הירדן ואבני הזיכרון
+[2,'מה יהושע אמר לעם לעשות יום לפני מעבר הירדן?',['"התקדשו, כי מחר יעשה ה׳ בקרבכם נפלאות"','"צומו, כי מחר תעמדו לפני מלך יריחו"','"שירו, כי מחר תיכנסו לארץ בשמחה רבה"','"נוחו, כי מחר תלכו דרך ארוכה וקשה"'],'"ויאמר יהושע אל העם: <b>התקדשו, כי מחר יעשה ה׳ בקרבכם נפלאות</b>" (ג׳, ה).'],
+[2,'מה היה המרחק שהעם היה צריך לשמור מארון הברית?',['כאלפיים אמה, ואסור היה להתקרב אל הארון','כמאה אמה, כדי שכולם יוכלו לראות את הכוהנים','כשבע אמות, כדי לשמוע היטב את קול הכוהנים','בלי מרחק בכלל, כי העם הלך צמוד ממש לארון'],'"אך רחוק יהיה ביניכם וביניו <b>כאלפים אמה</b> במדה, <b>אל תקרבו אליו</b>" (ג׳, ד).'],
+[2,'למה העם היה צריך ללכת אחרי ארון הברית?',['"למען אשר תדעו את הדרך אשר תלכו בה, כי לא עברתם בדרך מתמול שלשום"','"למען אשר תשמעו את קול הכוהנים, כי הם יקראו לכם לפי השבטים שלכם"','"למען אשר תשמרו על הארון, כי האויבים ירצו לקחת אותו מכם בדרך"','"למען אשר תהיו קרובים אל המים, כי הדרך ארוכה והחום כבד מאוד"'],'הארון <b>מראה את הדרך</b>: "למען אשר תדעו את הדרך אשר תלכו בה, כי לא עברתם בדרך מתמול שלשום" (ג׳, ד). כלומר, זו דרך שעוד לא הלכו בה.'],
+[2,'מי נכנס ראשון אל תוך מי הירדן?',['הכוהנים שנשאו את ארון הברית','יהושע לבד, עם מטה בידו','שנים עשר האנשים, אחד מכל שבט','הלוחמים של ראובן, גד וחצי המנשה'],'<b>הכוהנים נושאי הארון</b> הלכו לפני העם, ו"רגלי הכהנים נשאי הארון <b>נטבלו בקצה המים</b>" (ג׳, טו).'],
+[2,'מה קרה למי הירדן כשרגלי הכוהנים נגעו במים?',['המים שירדו מלמעלה עמדו כמו חומה, והמים שירדו לים המלח נעלמו','המים קפאו ונעשו קרח, והעם הלך עליהם בזהירות עד הצד השני','המים ירדו לאט במשך שלושה ימים, עד שאפשר היה ללכת בבוץ','רוח חזקה נשבה כל הלילה, ופתחה בנהר שביל רחב של יבשה'],'"ויעמדו המים הירדים מלמעלה, <b>קמו נד אחד</b>... והירדים על ים הערבה, ים המלח, <b>תמו נכרתו</b>" (ג׳, טז). "נד אחד" = כמו חומה אחת. הרוח החזקה שייכת לקריעת ים סוף.'],
+[2,'מה היה מיוחד במצב של הירדן בזמן שבני ישראל חצו אותו?',['הירדן היה מלא על כל גדותיו, כי זה היה בימי הקציר','הירדן היה כמעט יבש לגמרי, כי זה היה בסוף הקיץ','הירדן היה קפוא בחלקו, כי זה היה באמצע החורף','הירדן היה עכור ובוצי, כי ירד גשם כבד יום לפני'],'"<b>והירדן מלא על כל גדותיו כל ימי קציר</b>" (ג׳, טו). כך הנס היה גדול עוד יותר.'],
+[2,'מה עשו עם שתים עשרה האבנים שהאנשים לקחו מתוך הירדן?',['הקימו אותן בגלגל, לזיכרון לבני ישראל עד עולם','בנו מהן מזבח, והקריבו עליו קורבן תודה לה׳','זרקו אותן לעבר חומת יריחו, כדי להפחיד אותה','חילקו אותן לשבטים, וכל שבט שמר אבן בנחלתו'],'"ואת שתים עשרה האבנים האלה... <b>הקים יהושע בגלגל</b>" (ד׳, כ), "והיו האבנים האלה <b>לזכרון לבני ישראל עד עולם</b>" (ד׳, ז). יהושע הקים עוד 12 אבנים בתוך הירדן, במקום שעמדו הכוהנים (ד׳, ט).'],
+[2,'מה ההורים יענו לילדים שישאלו "מה האבנים האלה לכם"?',['שמי הירדן נכרתו מפני ארון ברית ה׳, ובני ישראל עברו ביבשה','שהאבנים נפלו מחומת יריחו, כשהעם הריע בקול גדול מאוד','שאלה האבנים מהבית של רחב, שהצילה את המרגלים בחוכמה','שעל האבנים נכתבו עשרת הדיברות, שנתן משה לכל העם'],'"ואמרתם להם: אשר <b>נכרתו מימי הירדן מפני ארון ברית ה׳</b>" (ד׳, ז), "<b>ביבשה</b> עבר ישראל את הירדן הזה" (ד׳, כב).'],
+[2,'מה קרה ליהושע "ביום ההוא", אחרי מעבר הירדן?',['ה׳ גידל אותו בעיני כל ישראל, והם יראו ממנו כמו שיראו ממשה','העם ביקש למנות במקומו מנהיג אחר, כי פחד מהמלחמה ביריחו','יהושע חלה, והכוהנים הנהיגו את העם במשך שבעה ימים שלמים','יהושע עלה להר נבו, וה׳ הראה לו משם את כל ארץ כנען'],'"ביום ההוא <b>גדל ה׳ את יהושע בעיני כל ישראל</b>, וייראו אתו <b>כאשר יראו את משה</b> כל ימי חייו" (ד׳, יד). ה׳ הבטיח את זה כבר בפרק ג׳, פסוק ז.'],
+[2,'מתי בני ישראל עלו מן הירדן, ואיפה חנו?',['בעשרה לחודש הראשון, בגלגל שבקצה מזרח יריחו','בחמישה עשר לחודש הראשון, בשיטים מול הירדן','בראש החודש השביעי, בהר נבו שבערבות מואב','בעשרים לחודש השני, בתוך העיר יריחו עצמה'],'"והעם עלו מן הירדן <b>בעשור לחדש הראשון</b>, ויחנו <b>בגלגל</b> בקצה מזרח יריחו" (ד׳, יט). החודש הראשון = ניסן.'],
+[2,'כמה לוחמים חמושים משבטי ראובן, גד וחצי המנשה עברו לפני העם?',['כארבעים אלף חלוצי צבא','כשלושת אלפים לוחמים בלבד','כשש מאות אלף איש רגלי','כשנים עשר אלף, אלף מכל שבט'],'"<b>כארבעים אלף</b> חלוצי הצבא עברו לפני ה׳ למלחמה, אל ערבות יריחו" (ד׳, יג). כך קיימו את ההסכם מפרק א׳.'],
+[2,'מהו הסדר של מעבר הירדן, ומה קרה בתוך המעבר?',null,'<b>הסדר:</b> אחרי שלושה ימים השוטרים אמרו לעם ללכת אחרי ארון הברית. <b>הכוהנים נושאי הארון הלכו ראשונים</b>, והעם הלך אחריהם במרחק של <b>כאלפיים אמה</b>. כשרגלי הכוהנים נגעו במים, <b>המים נעצרו</b>. הכוהנים <b>עמדו ביבשה בתוך הירדן</b>, וכל העם עבר לידם. לוחמי ראובן, גד וחצי המנשה עברו חמושים לפני העם. <b>שנים עשר אנשים</b>, אחד מכל שבט, לקחו אבנים מתוך הירדן. <b>בסוף</b> הכוהנים עלו מהירדן, והמים חזרו למקומם. <b>מה קרה בתוך המעבר:</b> המים שירדו מלמעלה "קמו נד אחד", והמים שירדו לים המלח "תמו נכרתו", ובני ישראל עברו "בחרבה", ביבשה (ג׳, טז-יז).',['הכוהנים עם הארון ראשונים','העם אחריהם, במרחק של אלפיים אמה','הכוהנים עמדו בתוך הירדן עד שכולם עברו','שנים עשר אנשים לקחו אבנים','המים נעצרו והעם עבר ביבשה; בסוף המים חזרו'],'f3_1'],
+[2,'מהו התפקיד של ארון הברית, ומה היה המרחק בין העם לארון?',null,'ארון הברית <b>הוביל את העם</b> והראה להם את הדרך: "למען אשר תדעו את הדרך אשר תלכו בה, כי לא עברתם בדרך מתמול שלשום" (ג׳, ד). הארון מראה ש<b>ה׳ הולך לפני העם</b> ועושה את הנס: כשהכוהנים נושאי הארון נכנסו למים, מי הירדן נעצרו, והם עמדו בתוך הירדן עד שכל העם עבר. המים חזרו רק כשהארון יצא מהירדן. <b>המרחק</b> בין העם לארון היה <b>כאלפיים אמה</b>, ואסור היה להתקרב אליו: "אל תקרבו אליו".',['מוביל את העם ומראה את הדרך','מראה שה׳ הולך לפני העם ועושה את הנס','המים נעצרו כשהארון נכנס, וחזרו כשיצא','המרחק: כאלפיים אמה','אסור היה להתקרב לארון'],'f3_2'],
+[2,'מה עשו עם שתים עשרה האבנים, ומה היה תפקידן אחרי מעבר הירדן?',null,'שנים עשר אנשים, <b>אחד מכל שבט</b>, לקחו כל אחד אבן על הכתף <b>מתוך הירדן</b>, מהמקום שבו עמדו רגלי הכוהנים. הם הביאו אותן למקום שבו לנו, ויהושע <b>הקים אותן בגלגל</b> (ד׳, כ). יהושע הקים גם שתים עשרה אבנים <b>בתוך הירדן</b>, במקום שעמדו הכוהנים (ד׳, ט). התפקיד שלהן: <b>אבני זיכרון</b>. כשהילדים ישאלו "מה האבנים האלה לכם", ההורים יספרו שמי הירדן נכרתו מפני ארון ברית ה׳ ובני ישראל עברו ביבשה. "<b>והיו האבנים האלה לזכרון לבני ישראל עד עולם</b>" (ד׳, ז). וגם כדי ש<b>כל עמי הארץ יידעו שיד ה׳ חזקה</b> (ד׳, כד).',['אחד מכל שבט, מתוך הירדן, ממקום הכוהנים','הוקמו בגלגל (ועוד 12 בתוך הירדן)','זיכרון לבני ישראל לדורות','הילדים ישאלו, וההורים יספרו על הנס','שכל עמי הארץ יידעו שיד ה׳ חזקה'],'f3_3'],
+[2,'אילו חוקים והוראות קיבל עם ישראל מיהושע לפני מעבר הירדן ובזמן המעבר? מה הסיבה לכל אחד מהם?',null,'יהושע נתן לעם כמה הוראות: <b>1.</b> "<b>התקדשו</b>, כי מחר יעשה ה׳ בקרבכם נפלאות" (ג׳, ה): כדי להיות מוכנים לנס. <b>2.</b> <b>ללכת אחרי ארון הברית</b>, כי עוד לא הכירו את הדרך (ג׳, ג-ד). <b>3.</b> <b>לשמור מרחק של כאלפיים אמה</b> מהארון ולא להתקרב אליו, מתוך כבוד לקדושה שלו. <b>4.</b> <b>לבחור שנים עשר אנשים, אחד מכל שבט</b>, שייקחו אבנים מתוך הירדן (ג׳, יב; ד׳, ב-ה), כדי שיהיו לזיכרון. <b>5.</b> כשהילדים ישאלו על האבנים, <b>לספר להם על הנס</b> (ד׳, ו-ז, כא-כב). בזכות הנס "<b>גדל ה׳ את יהושע בעיני כל ישראל, וייראו אתו כאשר יראו את משה</b>" (ד׳, יד), ולכן העם הקשיב לו.',['"התקדשו", כי מחר ה׳ יעשה נפלאות','ללכת אחרי הארון, כי לא הכירו את הדרך','מרחק של אלפיים אמה, ולא להתקרב לארון','שנים עשר אנשים ואבנים, לזיכרון','לספר לילדים על הנס'],'f3_4'],
+[2,'מה קרה לנהר הירדן בזמן שעם ישראל חצה אותו?',null,'זה היה <b>בימי הקציר</b>, כשהירדן היה <b>מלא על כל גדותיו</b>. כשרגלי הכוהנים נושאי הארון נטבלו במים, <b>המים שירדו מלמעלה עמדו "נד אחד"</b>, כמו חומה, רחוק מאוד, ליד העיר אדם. <b>המים שירדו לים המלח "תמו נכרתו"</b> (ג׳, טו-טז). הכוהנים עמדו <b>ביבשה ("בחרבה")</b> בתוך הירדן, וכל ישראל עברו ביבשה. כשהכוהנים עלו מהירדן, <b>המים חזרו</b> למקומם וזרמו על כל גדותיו כמו קודם (ד׳, יח). הנס הזה מזכיר את <b>קריעת ים סוף</b> בימי משה (ד׳, כג).',['הירדן היה מלא, בימי הקציר','המים מלמעלה עמדו "נד אחד", כמו חומה','המים שירדו לים המלח נכרתו, והעם עבר ביבשה','המים חזרו כשהכוהנים יצאו','הנס דומה לקריעת ים סוף'],'f3_5'],
+// שלב 4: פרק ה׳, האירועים בגלגל
+[3,'מה קרה למלכי האמורי והכנעני כששמעו שה׳ ייבש את הירדן?',['"וימס לבבם, ולא היה בם עוד רוח מפני בני ישראל"','"ויתאספו כולם יחד להילחם בבני ישראל בגלגל"','"וישלחו שליחים לבקש שלום מיהושע ומכל העם"','"ויברחו מהארץ עם כל אנשיהם אל מעבר לים"'],'"<b>וימס לבבם, ולא היה בם עוד רוח</b> מפני בני ישראל" (ה׳, א). כלומר, הם פחדו מאוד. זה בדיוק מה שרחב סיפרה למרגלים.'],
+[3,'למה יהושע מל את בני ישראל בגלגל?',['כי מי שנולד במדבר, אחרי היציאה ממצרים, לא נימול','כי ה׳ רצה סימן חדש שיבדיל בינם ובין יושבי יריחו','כי העם שכח את המצווה, אחרי שעבר את הירדן בשמחה','כי המרגלים ביקשו את זה, כתנאי ליציאה למלחמה'],'"כי מלים היו כל העם היצאים, <b>וכל העם הילדים במדבר בדרך</b>... לא מלו" (ה׳, ה). במשך 40 שנה במדבר לא מלו את הילדים.'],
+[3,'מה פירוש השם "גלגל", לפי הפרק?',['"היום גלותי את חרפת מצרים מעליכם"','"היום גלגלתי את האבנים מתוך הירדן"','"היום גיליתי לכם את הדרך אל יריחו"','"היום גלגלתי את המים חזרה למקומם"'],'"ויאמר ה׳ אל יהושע: <b>היום גלותי את חרפת מצרים מעליכם</b>, ויקרא שם המקום ההוא גלגל" (ה׳, ט). "גלותי" = הסרתי, גלגלתי מעליכם.'],
+[3,'איזה חג חגגו בני ישראל בגלגל?',['פסח, בארבעה עשר לחודש בערב, בערבות יריחו','סוכות, בחמישה עשר לחודש השביעי, ליד הירדן','שבועות, חמישים יום אחרי מעבר הירדן, בגלגל','ראש השנה, באחד לחודש השביעי, מול חומת יריחו'],'"ויעשו את <b>הפסח</b> בארבעה עשר יום לחדש בערב, בערבות יריחו" (ה׳, י).'],
+[3,'מה קרה למן אחרי שבני ישראל נכנסו לארץ?',['המן פסק ממחרת, כשהתחילו לאכול מתבואת הארץ','המן המשיך לרדת, עד שכבשו את כל הארץ כולה','המן ירד כפול, ביום שלפני מעבר הירדן בלבד','המן פסק כבר ביום שבו משה מת בערבות מואב'],'"<b>וישבת המן ממחרת</b> באכלם מעבור הארץ, ולא היה עוד לבני ישראל מן" (ה׳, יב). "וישבת" = הפסיק.'],
+[3,'מה בני ישראל אכלו בגלגל, ממחרת הפסח?',['מצות וקלי מתבואת ארץ כנען','בשר שליו, שה׳ שלח להם מהשמיים','לחם, שקנו מסוחרים בעיר יריחו','פירות, שהביאו המרגלים מההר'],'"ויאכלו מעבור הארץ ממחרת הפסח, <b>מצות וקלוי</b>" (ה׳, יא). קלי = גרעינים קלויים.'],
+[3,'מה ראה יהושע כשהיה ליד יריחו?',['איש עומד מולו, וחרבו שלופה בידו','אש בוערת בסנה, והסנה לא נשרף','עמוד ענן גבוה, שעמד מעל החומה','מלאך יושב על אבן, ומטה בידו'],'"וישא עיניו וירא, והנה <b>איש עמד לנגדו, וחרבו שלופה בידו</b>" (ה׳, יג). הסנה הבוער שייך למשה.'],
+[3,'מה ענה האיש כשיהושע שאל "הלנו אתה אם לצרינו"?',['"לא, כי אני שר צבא ה׳, עתה באתי"','"אני מלך יריחו, באתי לעשות שלום"','"אני אחד המרגלים, באתי לספר לך"','"אני שליח של רחב, באתי להזהיר"'],'"ויאמר: לא, <b>כי אני שר צבא ה׳</b>, עתה באתי" (ה׳, יד). "הלנו אתה אם לצרינו" = אתה בצד שלנו או בצד של האויבים שלנו?'],
+[3,'מה ציווה שר צבא ה׳ על יהושע?',['"של נעלך מעל רגלך, כי המקום אשר אתה עומד עליו קדש הוא"','"קח את חרבך ולך עכשיו אל שער יריחו, כי היום תיפול העיר"','"בנה מזבח במקום הזה, והקרב עליו קורבן לפני המלחמה"','"קרא לכל זקני ישראל, וספר להם את כל מה שראית כאן"'],'"<b>של נעלך מעל רגלך, כי המקום אשר אתה עמד עליו קדש הוא</b>, ויעש יהושע כן" (ה׳, טו). "של" = תוריד.'],
+[3,'לאיזה אירוע בתורה דומה הפגישה של יהושע עם שר צבא ה׳?',['משה בסנה הבוער, כשה׳ אמר לו לחלוץ את נעליו','אברהם בעקדה, כשהמלאך עצר אותו ברגע האחרון','יעקב בחלום הסולם, כשראה מלאכים עולים ויורדים','משה על הר סיני, כשקיבל את לוחות הברית מה׳'],'גם למשה בסנה ה׳ אמר: "<b>של נעליך מעל רגליך, כי המקום אשר אתה עומד עליו אדמת קדש הוא</b>" (שמות ג׳, ה). זה מראה שיהושע הוא הממשיך של משה.'],
+[3,'מדוע היה חשוב לקיים את מצוות ברית המילה כשהעם נכנס לארץ?',null,'כל העם שיצא ממצרים היה נימול, אבל <b>כל מי שנולד במדבר בדרך לא נימול</b> במשך 40 שנה (ה׳, ה-ז). לפני שמתחילים לכבוש את הארץ היה חשוב לקיים את המצווה, כי: <b>1.</b> ברית המילה היא <b>האות של הברית בין ה׳ לעם</b>, והארץ ניתנת לעם בזכות הברית. <b>2.</b> העם עמד <b>לחגוג את פסח</b>, ומי שאינו נימול אסור לו לאכול מקורבן הפסח. <b>3.</b> ה׳ אמר: "<b>היום גלותי את חרפת מצרים מעליכם</b>" (ה׳, ט): זו התחלה חדשה, כעם חופשי בארץ שלו. לכן קראו למקום גלגל.',['מי שנולד במדבר לא נימול','אות הברית עם ה׳, לפני הכניסה לארץ','לפני פסח: מי שלא נימול לא אוכל מקורבן הפסח','"גלותי את חרפת מצרים", ולכן השם גלגל'],'f5_1'],
+[3,'איזה שינוי משמעותי היה באורח החיים של בני ישראל לגבי המזון?',null,'במדבר בני ישראל אכלו <b>מן</b>, לחם שירד מהשמיים בנס כל יום, במשך 40 שנה. בגלגל, ממחרת הפסח, הם אכלו <b>מתבואת הארץ</b>: "מצות וקלוי" (ה׳, יא). <b>ממחרת המן פסק</b>: "וישבת המן ממחרת באכלם מעבור הארץ, ולא היה עוד לבני ישראל מן, ויאכלו מתבואת ארץ כנען בשנה ההיא" (ה׳, יב). השינוי: מ<b>חיים של נס במדבר</b>, שבהם ה׳ נותן את האוכל, ל<b>חיים רגילים בארץ</b>, שבהם העם עובד את האדמה ואוכל מהיבול שלו.',['במדבר אכלו מן, בנס','בגלגל אכלו מצות וקלי מתבואת הארץ','המן פסק ממחרת','מעבר מחיים של נס לחיים רגילים ועבודת האדמה'],'f5_2'],
+[3,'תארי את הפגישה של יהושע עם הדמות. מי הדמות?',null,'יהושע היה <b>ליד יריחו</b>. הוא הרים את עיניו וראה <b>איש עומד מולו, וחרבו שלופה בידו</b>. יהושע הלך אליו ושאל: "<b>הלנו אתה אם לצרינו?</b>", כלומר: אתה בצד שלנו או בצד של האויבים? האיש ענה: "לא, כי אני <b>שר צבא ה׳</b>, עתה באתי" (ה׳, יג-יד). יהושע <b>נפל על פניו והשתחווה</b>, ושאל: "מה אדני מדבר אל עבדו?". הדמות היא <b>שר צבא ה׳</b>, מלאך של ה׳, שבא להראות ליהושע שה׳ הוא שמוביל את המלחמה.',['ליד יריחו, איש עם חרב שלופה','"הלנו אתה אם לצרינו?"','"כי אני שר צבא ה׳"','יהושע נפל על פניו והשתחווה','הדמות: מלאך, שר צבא ה׳'],'f5_3'],
+[3,'מה הדמות מצווה על יהושע, ולאיזה אירוע בתנ"ך זה דומה?',null,'שר צבא ה׳ אומר ליהושע: "<b>של נעלך מעל רגלך, כי המקום אשר אתה עומד עליו קדש הוא</b>", ויהושע עושה כך (ה׳, טו). זה דומה מאוד ל<b>משה בסנה הבוער</b> (שמות ג׳, ה), שם ה׳ אמר לו: "של נעליך מעל רגליך, כי המקום אשר אתה עומד עליו אדמת קדש הוא". הדמיון מראה ש<b>יהושע הוא הממשיך של משה</b>, וה׳ איתו כמו שהיה עם משה, כמו שה׳ הבטיח בפרק א׳: "<b>כאשר הייתי עם משה אהיה עמך</b>".',['"של נעלך מעל רגלך"','"כי המקום... קדש הוא"','דומה למשה בסנה הבוער','המשמעות: יהושע ממשיך את משה, וה׳ איתו'],'f5_4'],
+// שלב 5: פרק ו׳, כיבוש יריחו
+[4,'מה היה המצב של העיר יריחו לפני הכיבוש?',['"סגרת ומסגרת מפני בני ישראל, אין יוצא ואין בא"','"פתוחה לכל, וסוחרים נכנסו ויצאו בה כל היום"','"ריקה מאנשים, כי כל התושבים ברחו להרים"','"מלאה בלוחמים מכל הערים, שבאו לעזור לה"'],'"ויריחו <b>סגרת ומסגרת</b> מפני בני ישראל, <b>אין יוצא ואין בא</b>" (ו׳, א). כלומר, השערים נעולים לגמרי.'],
+[4,'מה היה סדר ההליכה סביב חומת יריחו?',['החלוץ, שבעה כוהנים עם שופרות, ארון ה׳, ואחריו המאסף','ארון ה׳, אחריו יהושע, ואחריו כל העם בשורה אחת ארוכה','שבעה כוהנים עם שופרות, אחריהם כל העם, ובסוף ארון ה׳','שנים עשר השבטים לפי הסדר, והכוהנים עם הארון באמצע'],'"<b>והחלוץ</b> הלך לפני <b>הכהנים תקעו השופרות</b>, <b>והמאסף</b> הלך אחרי <b>הארון</b>" (ו׳, ט). החלוץ = הלוחמים שהולכים ראשונים, המאסף = מי שהולך אחרון.'],
+[4,'כמה פעמים הקיפו את העיר בכל אחד מששת הימים הראשונים?',['פעם אחת ביום, ואז חזרו למחנה ולנו שם','שבע פעמים ביום, ואז נחו בצל החומה','שלוש פעמים ביום: בבוקר, בצהריים ובערב','פעמיים ביום, פעם עם הכוהנים ופעם בלי'],'"ויסבו את העיר ביום השני <b>פעם אחת</b>, וישבו המחנה, כה עשו <b>ששת ימים</b>" (ו׳, יד).'],
+[4,'מה קרה ביום השביעי?',['השכימו בעלות השחר, והקיפו את העיר שבע פעמים','נחו כל היום כי זה היה שבת, ותקפו רק בלילה','הקיפו פעם אחת, ואז פרצו את השער בכוח רב','שלחו שוב את המרגלים, לבדוק אם העיר מוכנה'],'"ויהי ביום השביעי וישכמו כעלות השחר, ויסבו את העיר... <b>שבע פעמים</b>" (ו׳, טו).'],
+[4,'מה יהושע ציווה את העם לעשות בזמן ההקפות?',['לא להריע ולא להשמיע את קולם, עד היום שבו יאמר להם "הריעו"','לשיר שירי תודה לה׳ בקול רם, כדי שאנשי יריחו יפחדו מהם','לספור בקול כל הקפה, כדי שלא יתבלבלו במספר ההקפות','לקרוא לאנשי יריחו להיכנע, ולהבטיח להם שלא ייפגעו'],'"<b>לא תריעו ולא תשמיעו את קולכם</b>, ולא יצא מפיכם דבר, עד יום אמרי אליכם הריעו, והריעתם" (ו׳, י).'],
+[4,'מה היה התפקיד של השופרות?',['הכוהנים תקעו בהם כל הזמן, ובתקיעה הארוכה העם הריע והחומה נפלה','הם היו הנשק של העם, וזרקו אותם בכוח על החומה כדי לשבור אותה','הם סימנו לאנשי יריחו שהגיע הזמן להיכנע ולפתוח את שער העיר','הם נתנו קצב לצעדים, כדי שכל העם ילך יחד באותה מהירות בדיוק'],'"והיה <b>במשך בקרן היובל, בשמעכם את קול השופר, יריעו כל העם תרועה גדולה, ונפלה חומת העיר תחתיה</b>" (ו׳, ה).'],
+[4,'מה קרה כשהעם הריע תרועה גדולה?',['החומה נפלה במקומה, והעם עלה לעיר כל אחד ישר לפניו','השער נפתח לבד, ומלך יריחו יצא החוצה כדי להיכנע','אנשי יריחו ברחו מהעיר דרך מנהרה סודית מתחת לחומה','רעידת אדמה הפילה רק את בית המלך שבמרכז העיר'],'"ויריעו העם תרועה גדולה, <b>ותפל החומה תחתיה</b>, ויעל העם העירה <b>איש נגדו</b>, וילכדו את העיר" (ו׳, כ). "איש נגדו" = כל אחד ישר לפניו.'],
+[4,'מה פירוש "החרם" שיהושע ציווה על יריחו?',['העיר וכל מה שבה שייכים לה׳: אסור לקחת ממנה שלל, והכסף והזהב הולכים לאוצר ה׳','העיר עוברת לשבט שהגיע ראשון לחומה, והוא מחלק את כל השלל בין כל הלוחמים שלו','אסור לדבר עם אנשי העיר לפני המלחמה, ואסור לקנות מהם אוכל, מים או בגדים','העיר הופכת לעיר מקלט, וכל מי שבורח אליה מוגן לגמרי מפני מי שרודף אחריו'],'"והיתה העיר <b>חרם, היא וכל אשר בה, לה׳</b>... וכל כסף וזהב וכלי נחשת וברזל קדש הוא לה׳, <b>אוצר ה׳ יבוא</b>" (ו׳, יז-יט).'],
+[4,'מה יקרה, לפי האזהרה של יהושע, אם מישהו ייקח מן החרם?',['הוא יביא חרם וצרה על כל מחנה ישראל','הוא יצטרך להחזיר את מה שלקח פי שניים','הוא לא יוכל להיכנס לעיר יריחו לעולם','הוא יקבל את הנחלה שלו רק בסוף הכיבוש'],'"רק אתם שמרו מן החרם... <b>ושמתם את מחנה ישראל לחרם, ועכרתם אותו</b>" (ו׳, יח). "עכרתם" = תביאו עליו צרה.'],
+[4,'מי הוציא את רחב ומשפחתה מהבית?',['שני המרגלים, לפי הציווי של יהושע','יהושע עצמו, עם שבעת הכוהנים','שר צבא ה׳, שבא אליה לפני המלחמה','שליחי מלך יריחו, שרצו להגן עליה'],'"ויבאו <b>הנערים המרגלים</b>, ויציאו את רחב ואת אביה ואת אמה ואת אחיה ואת כל אשר לה" (ו׳, כג). יהושע אמר להם לעשות כך, "כאשר נשבעתם לה".'],
+[4,'איפה הושיבו את רחב ומשפחתה אחרי שהוציאו אותם?',['מחוץ למחנה ישראל, ובהמשך רחב ישבה בקרב ישראל','בתוך העיר יריחו, בבית חדש שבנו במיוחד בשבילה','בעבר הירדן המזרחי, יחד עם שבטי ראובן וגד','בהר שבו התחבאו המרגלים שלושה ימים לפני כן'],'"ויניחום <b>מחוץ למחנה ישראל</b>" (ו׳, כג), ובהמשך "<b>ותשב בקרב ישראל</b> עד היום הזה" (ו׳, כה).'],
+[4,'מה יהושע אמר על מי שיבנה מחדש את העיר יריחו?',['"ארור האיש לפני ה׳ אשר יקום ובנה את העיר הזאת"','"ברוך האיש לפני ה׳ אשר יבנה את העיר הזאת"','"יבנה אותה רק מי שיקבל רשות מהכוהנים"','"יבנה אותה רק בעוד שבע שנים, ולא לפני"'],'"<b>ארור האיש לפני ה׳ אשר יקום ובנה את העיר הזאת את יריחו</b>, בבכרו ייסדנה ובצעירו יציב דלתיה" (ו׳, כו).'],
+[4,'מהו סדר ההליכה של העם כשהם מקיפים את חומות יריחו?',null,'בראש הלך <b>החלוץ</b>, הלוחמים החמושים. אחריהם הלכו <b>שבעה כוהנים</b> עם <b>שבעה שופרות היובלים</b>, ותקעו בשופרות. אחריהם <b>ארון ברית ה׳</b>, שנשאו הכוהנים, ובסוף <b>המאסף</b>, שהלך אחרי הארון (ו׳, ט, יג). העם הלך <b>בשקט</b>: יהושע ציווה לא להריע ולא להוציא מילה מהפה, עד היום שבו יאמר להם "הריעו" (ו׳, י).',['החלוץ ראשון','שבעה כוהנים עם שבעה שופרות','ארון ה׳','המאסף בסוף','העם בשקט עד שיהושע אומר "הריעו"'],'f6_1'],
+[4,'כמה ימים הקיפו את העיר יריחו, ומה היה ביום השביעי?',null,'הקיפו את העיר <b>שבעה ימים</b>. בכל אחד מ<b>ששת הימים הראשונים</b> הקיפו את העיר <b>פעם אחת</b>, וחזרו למחנה ללון (ו׳, יד). <b>ביום השביעי</b> השכימו בעלות השחר והקיפו את העיר <b>שבע פעמים</b>. בפעם השביעית הכוהנים תקעו בשופרות, ויהושע אמר: "<b>הריעו, כי נתן ה׳ לכם את העיר</b>". העם הריע תרועה גדולה, <b>החומה נפלה במקומה</b>, והעם עלה לעיר, כל אחד ישר לפניו, וכבשו אותה (ו׳, טו-כ). המספר <b>שבע</b> חוזר הרבה בפרק: 7 כוהנים, 7 שופרות, 7 ימים ו-7 הקפות.',['שבעה ימים','ימים 1-6: הקפה אחת בכל יום','יום 7: שבע הקפות','תקיעה, "הריעו", והחומה נפלה','המספר 7 חוזר בפרק'],'f6_2'],
+[4,'מה היה התפקיד של השופרות?',null,'<b>שבעה כוהנים</b> נשאו <b>שבעה שופרות היובלים</b> לפני ארון ה׳, ו<b>תקעו בהם כל הזמן</b> בזמן ההקפות. השופרות היו גם <b>הסימן לעם</b>: "והיה במשך בקרן היובל, בשמעכם את קול השופר, יריעו כל העם תרועה גדולה, ונפלה חומת העיר תחתיה" (ו׳, ה). ביום השביעי, בהקפה השביעית, הכוהנים תקעו, העם הריע והחומה נפלה. השופרות מראים שהניצחון בא <b>מה׳</b>, ולא מכוח הנשק.',['שבעה כוהנים, שבעה שופרות, לפני הארון','תקעו בהם כל הזמן בהקפות','סימן לעם מתי להריע','עם התקיעה והתרועה החומה נפלה','הניצחון מה׳, לא מכוח הנשק'],'f6_3'],
+[4,'מהו החרם שיהושע מצווה לעשות לאנשי יריחו ולעיר?',null,'יהושע מצווה: "<b>והיתה העיר חרם, היא וכל אשר בה, לה׳</b>" (ו׳, יז). כלומר, הכול שייך לה׳: את כל מי שבעיר הם הרגו, מאיש ועד אישה, מנער ועד זקן, וגם את הבהמות (ו׳, כא), ואת העיר שרפו באש. <b>אסור לקחת שלל</b> לעצמם: "רק אתם שמרו מן החרם", ומי שייקח מן החרם יביא צרה על כל מחנה ישראל (ו׳, יח). <b>הכסף, הזהב, וכלי הנחושת והברזל</b> הם "קדש לה׳", והולכים ל<b>אוצר ה׳</b> (ו׳, יט). רק <b>רחב ומשפחתה</b> לא נכללו בחרם, כי היא הסתירה את המרגלים.',['העיר וכל מה שבה שייכים לה׳','אסור לקחת שלל לעצמם','מי שלוקח מהחרם מביא צרה על כל המחנה','כסף, זהב, נחושת וברזל לאוצר ה׳','רחב ומשפחתה לא נכללו בחרם'],'f6_4'],
+[4,'מי מציל את רחב ומשפחתה? מי הוציא אותם מהבית?',null,'<b>יהושע</b> ציווה להציל אותה: "רק רחב הזונה תחיה, היא וכל אשר אתה בבית, <b>כי החבאתה את המלאכים אשר שלחנו</b>" (ו׳, יז). הוא אמר ל<b>שני המרגלים</b>: "באו בית האשה הזונה, והוציאו משם את האשה ואת כל אשר לה, <b>כאשר נשבעתם לה</b>" (ו׳, כב). <b>הנערים המרגלים</b> הוציאו את רחב, את אביה, אמה, אחיה וכל משפחתה, והושיבו אותם <b>מחוץ למחנה ישראל</b> (ו׳, כג). כך קוימה השבועה מפרק ב׳, ורחב "ישבה בקרב ישראל עד היום הזה" (ו׳, כה).',['יהושע ציווה להציל אותה','הסיבה: היא הסתירה את המרגלים','שני המרגלים הוציאו אותה ואת משפחתה','מחוץ למחנה, ובהמשך בקרב ישראל','קיום השבועה מפרק ב׳'],'f6_5']
+];
+// 🎯 מבחנים לדוגמה: קטע מהפסוקים ושני סעיפים, כמו במבחן. כל סעיף נשלח לבדיקה (0-10), והציון = (א+ב)×5.
+const EXS=[
+ {t:'"חזק ואמץ" (פרק א׳)',src:'קראי את הפסוקים, ועני על השאלות.<br><br>'+T1,
+  a:['א. כמה פעמים מופיע בקטע הביטוי "חזק ואמץ"? כתבי על מה ה׳ מחזק את יהושע בכל פעם.','<b>פתיחה:</b> בקטע ה׳ אומר ליהושע "חזק ואמץ" <b>שלוש פעמים</b>, וכל פעם על נושא אחר. <b>1.</b> "חזק ואמץ, כי אתה <b>תנחיל את העם הזה את הארץ</b>": ה׳ מחזק אותו לקראת התפקיד להוביל את העם ולחלק לו את הארץ. <b>2.</b> "רק חזק ואמץ מאד <b>לשמר לעשות ככל התורה</b>": ה׳ מחזק אותו לשמור את התורה בלי לסור ממנה ימין ושמאל, ולהגות בה יומם ולילה, ואז יצליח. <b>3.</b> "חזק ואמץ, <b>אל תערץ ואל תחת</b>, כי עמך ה׳ אלהיך": ה׳ מחזק אותו לא לפחד, כי ה׳ איתו בכל מקום. <b>סיום:</b> "חזק ואמץ" היא מילה מנחה בפרק, ובסופו גם העם אומר ליהושע "רק חזק ואמץ".',['שלוש פעמים','להנחיל לעם את הארץ','לשמור את התורה ולהגות בה','לא לפחד, כי ה׳ איתו','ציטוט מהקטע לכל אחת']],
+  b:['ב. ה׳ אומר ליהושע: "כאשר הייתי עם משה אהיה עמך". הביאי שתי דוגמאות מפרקים א׳-ו׳ שמראות שה׳ אכן היה עם יהושע כמו שהיה עם משה, והסבירי כל אחת.','<b>פתיחה:</b> בפרקים א׳-ו׳ יש כמה אירועים שמראים שה׳ היה עם יהושע כמו עם משה. <b>דוגמה 1: חציית הירדן.</b> מי הירדן עמדו "נד אחד" והעם עבר ביבשה, בדיוק כמו בקריעת ים סוף בימי משה. אחרי זה "גדל ה׳ את יהושע בעיני כל ישראל, וייראו אתו כאשר יראו את משה" (ד׳, יד). <b>דוגמה 2: שר צבא ה׳.</b> בגלגל שר צבא ה׳ אמר ליהושע "של נעלך מעל רגלך, כי המקום אשר אתה עומד עליו קדש הוא", כמו שה׳ אמר למשה בסנה הבוער. <b>דוגמה 3:</b> חומת יריחו נפלה בנס, כמו שה׳ עשה נסים לעם בימי משה. <b>סיום:</b> ההבטחה מפרק א׳ התקיימה: ה׳ היה עם יהושע, והעם קיבל אותו כממשיך של משה.',['דוגמה 1 מוסברת (למשל הירדן מול ים סוף)','דוגמה 2 מוסברת (למשל שר צבא ה׳ מול הסנה)','קישור להבטחה "כאשר הייתי עם משה"','"וייראו אתו כאשר יראו את משה" או פסוק אחר','מבנה: פתיחה, גוף, סיום']]},
+ {t:'רחב והמרגלים (פרק ב׳)',src:'קראי את הפסוקים, ועני על השאלות.<br><br>'+T2,
+  a:['א. על אילו שני אירועים שמעו יושבי הארץ, לפי רחב? ומה הייתה התוצאה של השמועות האלה? הביאי ציטוט מהקטע.','<b>פתיחה:</b> רחב מספרת למרגלים שיושבי הארץ שמעו על <b>שני אירועים</b>. <b>1.</b> "את אשר <b>הוביש ה׳ את מי ים סוף</b> מפניכם בצאתכם ממצרים": קריעת ים סוף. <b>2.</b> "ואשר עשיתם לשני מלכי האמרי... <b>לסיחן ולעוג</b>, אשר החרמתם אותם": הניצחון על מלכי עבר הירדן. <b>התוצאה:</b> יושבי הארץ פחדו מאוד: "נפלה אימתכם עלינו", "<b>וימס לבבנו, ולא קמה עוד רוח באיש מפניכם</b>". רחב עצמה הבינה מזה ש"ה׳ אלהיכם הוא אלהים בשמים ממעל ועל הארץ מתחת". <b>סיום:</b> בגלל השמועות רחב בטוחה שה׳ נתן לבני ישראל את הארץ.',['קריעת ים סוף','סיחון ועוג','התוצאה: פחד ("וימס לבבנו", "נפלה אימתכם")','רחב מבינה שה׳ הוא האלוהים','ציטוט מהקטע']],
+  b:['ב. רחב מבקשת "חסד" תמורת "חסד". הסבירי מה החסד שרחב עשתה, מה המרגלים הבטיחו לה, ואיך ההבטחה התקיימה בפרק ו׳.','<b>פתיחה:</b> בקטע רחב אומרת "כי עשיתי עמכם חסד, ועשיתם גם אתם עם בית אבי חסד". <b>החסד של רחב:</b> היא הסתירה את המרגלים על הגג בפשתי העץ, הטעתה את שליחי המלך ושלחה אותם לרדוף לכיוון הירדן, הורידה את המרגלים בחבל מהחלון וייעצה להם להתחבא בהר שלושה ימים. <b>ההבטחה:</b> המרגלים נשבעו להשאיר אותה ואת כל בית אביה בחיים, בתנאי שתקשור את חוט השני בחלון, תאסוף את המשפחה לבית ולא תספר על ההסכם. <b>בפרק ו׳:</b> יהושע ציווה "רק רחב הזונה תחיה", ושני המרגלים הוציאו אותה ואת כל משפחתה והושיבו אותם מחוץ למחנה. <b>סיום:</b> זה חסד תמורת חסד, וההבטחה התקיימה.',['החסד: הסתירה והצילה את המרגלים','ההבטחה: להשאיר אותה ומשפחתה בחיים','התנאים: חוט השני, המשפחה בבית, לא לספר','בפרק ו׳: המרגלים הוציאו אותה, יהושע ציווה','מבנה: פתיחה, גוף, סיום']]},
+ {t:'חציית הירדן (פרקים ג׳-ד׳)',src:'קראי את הפסוקים, ועני על השאלות.<br><br>'+T3,
+  a:['א. תארי לפי הקטע מה קרה למי הירדן, ומה היה התפקיד של הכוהנים נושאי הארון. הביאי ציטוט.','<b>פתיחה:</b> הקטע מתאר את הנס של חציית הירדן. <b>הכוהנים:</b> הכוהנים נושאי הארון הלכו "לפני העם". כשרגליהם "נטבלו בקצה המים", הנס התחיל, והם "עמדו... בחרבה בתוך הירדן הכן" עד שכל העם עבר. <b>המים:</b> זה היה בימי הקציר, כשהירדן "מלא על כל גדותיו". המים שירדו מלמעלה "<b>קמו נד אחד</b>" רחוק מאוד, ליד העיר אדם, והמים שירדו לים המלח "<b>תמו נכרתו</b>". כך "כל ישראל עברים בחרבה", ביבשה. <b>סיום:</b> הכוהנים עם הארון הובילו את העם ועמדו בתוך הירדן, והמים נעצרו עד שכולם עברו.',['הכוהנים הלכו לפני העם','הנס התחיל כשרגליהם נגעו במים','עמדו בחרבה בתוך הירדן עד שכולם עברו','המים מלמעלה עמדו נד אחד, ולמטה נכרתו','ציטוט מהקטע']],
+  b:['ב. אחרי החצייה נאמר: "ביום ההוא גדל ה׳ את יהושע בעיני כל ישראל". הסבירי מה המשמעות של המשפט, ולמה היה חשוב שהנס יקרה דווקא בתחילת ההנהגה של יהושע. הוסיפי מה היה התפקיד של אבני הזיכרון.','<b>פתיחה:</b> המשפט אומר שבזכות הנס העם התחיל <b>להעריך ולכבד את יהושע</b>: "וייראו אתו כאשר יראו את משה כל ימי חייו" (ד׳, יד). <b>למה דווקא בהתחלה:</b> יהושע היה מנהיג חדש אחרי משה, והעם ביקש "רק יהיה ה׳ אלהיך עמך כאשר היה עם משה". הנס, שדומה לקריעת ים סוף, הראה לכולם שה׳ עם יהושע כמו שהיה עם משה, ולכן יקשיבו לו בכיבוש הארץ. <b>אבני הזיכרון:</b> שנים עשר אנשים, אחד מכל שבט, לקחו אבנים מתוך הירדן, ויהושע הקים אותן בגלגל, "לזכרון לבני ישראל עד עולם". כשהילדים ישאלו "מה האבנים האלה לכם", ההורים יספרו על הנס. <b>סיום:</b> הנס חיזק את ההנהגה של יהושע, והאבנים שומרות את הזיכרון לדורות.',['העם העריך ופחד מיהושע כמו ממשה','הוא מנהיג חדש, והעם צריך לראות שה׳ איתו','הנס דומה לקריעת ים סוף','12 אבנים בגלגל לזיכרון, הילדים ישאלו','מבנה: פתיחה, גוף, סיום']]},
+ {t:'כיבוש יריחו (פרק ו׳)',src:'קראי את הפסוקים, ועני על השאלות.<br><br>'+T4,
+  a:['א. איזה מספר חוזר הרבה בקטע? כתבי את כל הדברים שבהם הוא מופיע, והסבירי מה היה התפקיד של השופרות.','<b>פתיחה:</b> המספר שחוזר בקטע הוא <b>שבע</b>. <b>איפה הוא מופיע:</b> <b>שבעה</b> כוהנים נושאים <b>שבעה</b> שופרות היובלים, ביום <b>השביעי</b> מקיפים את העיר <b>שבע</b> פעמים (ובששת הימים הראשונים פעם אחת ביום). <b>השופרות:</b> הכוהנים נשאו אותם לפני הארון ותקעו בהם בזמן ההקפות. הם היו גם הסימן לעם: "בשמעכם את קול השופר, יריעו כל העם תרועה גדולה, ונפלה חומת העיר תחתיה". <b>סיום:</b> המספר שבע והשופרות מראים שזה כיבוש של קדושה, שה׳ מוביל.',['המספר שבע','7 כוהנים ו-7 שופרות','היום השביעי ו-7 הקפות','השופרות: תקיעה, סימן לתרועה','החומה נפלה כשהעם הריע']],
+  b:['ב. יריחו נכבשה בדרך מיוחדת, בלי מלחמה רגילה. הסבירי מה הכיבוש בדרך הזו מלמד את העם, ומה היה החרם שיהושע ציווה על העיר.','<b>פתיחה:</b> יריחו לא נכבשה בכוח הנשק, אלא בהקפות, בשופרות ובתרועה. <b>מה זה מלמד:</b> הניצחון בא <b>מה׳</b>: "ראה נתתי בידך את יריחו". העם רק עשה בדיוק מה שה׳ ציווה, וה׳ הפיל את החומה. זה מחזק את האמונה ומלמד שצריך להקשיב לה׳ וליהושע, כמו ששר צבא ה׳ הראה ליהושע לפני כן. <b>החרם:</b> "והיתה העיר חרם, היא וכל אשר בה, לה׳". אסור היה לקחת שלל, ומי שייקח מן החרם יביא צרה על כל המחנה. הכסף, הזהב וכלי הנחושת והברזל הלכו לאוצר ה׳, והעיר נשרפה. רק רחב ומשפחתה ניצלו, כי הסתירה את המרגלים. <b>סיום:</b> כיוון שהניצחון היה של ה׳, גם כל מה שבעיר שייך לה׳.',['הכיבוש בלי נשק, בהקפות ובשופרות','הלקח: הניצחון מה׳, וצריך לציית לו','החרם: העיר וכל מה שבה לה׳, אסור לקחת שלל','כסף וזהב לאוצר ה׳; רחב ניצלה','מבנה: פתיחה, גוף, סיום']]}
+];
+
+const EXQ=[];EXS.forEach((x,e)=>['a','b'].forEach(s=>EXQ.push([-1,x.src+'||'+x[s][0],null,x[s][1],x[s][2],'e'+(e+1)+s,e])));
+const ALLQ=QS.concat(EXQ),N=QS.length,$=id=>document.getElementById(id),esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+// S.d[i]=1 נלמדה, S.w[i]=טעויות, S.f[i]=1 נכון בניסיון הראשון. S.rv = חזרה על טעויות. S.tab = 'p' תרגול / 't' בוחן. S.mt = בוחן מהיר (אמריקאיות) פעיל.
+// S.ex = בוחן לדוגמה פתוח (מספר), S.es[e] = {t0 התחלה, t1 שליחה אחרונה, s ציון}. S.oa[מזהה] = תשובה פתוחה {id, at, txt, n, m, sc, fb, seen}.
+// S.gr = [[מזהה, ציון, דקה, זמן]]. S.mkh = [{s, m, at, k}] ציוני הבחנים (k: e = בוחן לדוגמה, q = בוחן מהיר). S.sm = קרא את הסיכום, S.tp = קרא את הטיפים.
+function fresh(){return{v:1,d:{},w:{},f:{},att:0,okc:0,st:{c:0,b:0},rv:null,rvd:{},tab:'p',mt:null,ex:null,es:{},mk:null,oa:{},gr:[],mkh:[],dr:{},started:new Date().toISOString()}}
+let S=LS.get('dani_tn');if(!S||!S.d)S=fresh();['rvd','oa','dr','es'].forEach(k=>S[k]=S[k]||{});S.gr=S.gr||[];S.mkh=S.mkh||[];S.tab=S.tab||'p';
+const save=()=>LS.set('dani_tn',S);
+const done=()=>Object.keys(S.d).length;
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const MCQ=QS.map((q,i)=>i).filter(i=>QS[i][2]);
+let Q=[],cur=-1,answered=false,wi=-1;
+const OA=i=>S.oa[ALLQ[i][5]],pend=i=>{const o=OA(i);return!!(o&&o.id&&o.sc==null)};
+function stageOf(){for(let s=0;s<ST.length;s++)if(QS.some((q,i)=>q[0]===s&&q[2]&&!S.d[i]))return s;return -1}
+function build(){if(S.rv){Q=shuf(S.rv.filter(i=>!S.rvd[i]));return}const s=stageOf(),top=s<0?ST.length:s;
+ const L=MCQ.filter(i=>QS[i][0]===s&&!S.d[i]),O=QS.map((q,i)=>i).filter(i=>!QS[i][2]&&QS[i][0]<=top&&!S.d[i]&&!pend(i));
+ Q=shuf(L).concat(O)} // שאלות פתוחות בסוף השלב
+const pracDone=()=>QS.every((q,i)=>S.d[i]||pend(i));
+function bar(){$('nn').textContent=N;$('dn').textContent=done();$('acc').textContent='🎯 '+(S.att?Math.round(S.okc/S.att*100)+'%':'—');$('stk').textContent='🔥 '+S.st.c;
+ const sc=stageOf();$('stg').innerHTML=ST.map((n,s)=>{const t=QS.filter(q=>q[0]===s).length,d=QS.filter((q,i)=>q[0]===s&&S.d[i]).length;
+  return `<span class="${d===t?'ok':s===sc?'cur':''}"><i style="width:${d/t*100}%"></i><em>${d===t?'✓':n}</em></span>`}).join('');
+ const lk=S.tab!=='t'&&!REV&&!pracDone();$('mtb').textContent=S.mt?'🎯 '+(S.mt.i+1)+'/'+S.mt.q.length:lk?'🔒 מבחן':'🎯 מבחן';$('mtb').classList.toggle('on',S.tab==='t');$('mtb').classList.toggle('lk',lk);$('prb').classList.toggle('on',S.tab!=='t');
+ $('tips').classList.toggle('gl',!S.tp&&QS.some((q,i)=>!q[2]&&(S.d[i]||OA(i))))}
+// תרגול ⇄ בוחן: הבוחן נפתח אחרי שמסיימים את כל התרגול (כמו בכלכלה, אורן 11.11.2026). בתצוגת בדיקה של הורה הכול פתוח.
+function toPrac(){if(S.tab!=='t')return;if(S.mt&&!confirm('לחזור לתרגול? המבחן המהיר הזה לא ייספר.'))return;S.mt=null;S.ex=null;S.tab='p';save();Q=[];show()}
+function toTest(){if(S.tab==='t')return;if(!REV&&!pracDone()){const n=QS.filter((q,i)=>!S.d[i]&&!pend(i)).length;pop(`<h3>🔒 המבחן עוד נעול</h3><p>המבחנים לדוגמה נפתחים אחרי שמסיימים את כל התרגול. נשארו עוד <b>${n}</b> שאלות. ממשיכים, את בדרך הנכונה! 💪</p><button class="cl" type="button" onclick="unpop()">להמשיך לתרגל</button>`);return}
+ S.tab='t';S.ex=null;save();show()}
+function fit(){const q=$('q'),c=$('card');q.style.fontSize='';document.querySelectorAll('.op').forEach(o=>o.style.fontSize='');if(c.classList.contains('ex'))return;let f=19;
+ while(f>12&&(q.scrollHeight>q.clientHeight+1||c.scrollHeight>c.clientHeight+1)){f--;q.style.fontSize=f+'px';if(f<16)document.querySelectorAll('.op').forEach(o=>o.style.fontSize=Math.max(12,f-1)+'px')}}
+function qhtml(t){const p=t.split('||');return p.length>1?'<div class="ps">'+p[0]+'</div><div>'+p[1]+'</div>':'<div>'+t+'</div>'}
+function show(){answered=false;$('nx').disabled=true;$('nx').textContent='הבא ›';$('card').classList.remove('ex','fin');clearInterval(show.t);
+ if(S.tab==='t'&&!S.mt){if(S.ex!=null)return showEx();return exPick()}
+ if(S.mt){if(S.mt.i>=S.mt.q.length)return mtEnd();cur=S.mt.q[S.mt.i]}
+ else{if(!Q.length)build();if(!Q.length)return finish();cur=Q.shift()}
+ const q=QS[cur];
+ $('tg').textContent=S.mt?'⚡ מבחן מהיר: '+(S.mt.i+1)+' מתוך '+S.mt.q.length:S.rv?'🔁 חזרה על טעויות':ST[q[0]]+': '+STN[q[0]]+(q[2]?'':' · 📋 מיקוד');
+ $('rt').textContent='↺ שוב';$('rt').classList.toggle('on',!S.mt&&S.w[cur]>0&&!S.rv);
+ $('q').innerHTML=qhtml(q[1]);
+ if(q[2]){const os=shuf(q[2].map((t,i)=>({t,i})));$('opts').className='opts'+(q[2].length===2?' two':'');
+  $('opts').innerHTML=os.map((o,k)=>`<button class="op" type="button" data-i="${o.i}"><span class="k">${'אבגד'[k]}</span><span>${o.t}</span></button>`).join('');
+  $('fb').className='fb';$('fb').textContent=S.mt?'מבחן: בלי הסברים עד הסוף. בהצלחה!':'בחרי את התשובה הנכונה'}
+ else{const o=OA(cur);$('opts').className='opts';$('opts').innerHTML='<button class="op wr" type="button" id="wrb">✍️ לכתוב תשובה</button>';
+  $('fb').className='fb';if(o&&o.sc!=null)$('fb').innerHTML='<div>בפעם הקודמת: <b>'+o.sc+'/10</b>. '+esc(o.fb||'')+'</div>';else $('fb').textContent='שאלת מיקוד של המורה: כותבים כמה משפטים מלאים, ואם אפשר עם פסוק. Claude בודק ומחזיר ציון והערה.'}
+ bar();fit();if(window.StudyGuess&&q[2])StudyGuess.q()}
+function mark(ok){const q=QS[cur];S.att++;
+ if(ok){S.okc++;S.st.c++;S.st.b=Math.max(S.st.b,S.st.c);if(S.rv)S.rvd[cur]=1;else{S.d[cur]=1;if(!(S.w[cur]>0))S.f[cur]=1}}
+ else{S.st.c=0;S.w[cur]=(S.w[cur]||0)+1;Q.splice(Math.min(3,Q.length),0,cur)} // חוזרת אחרי 3 שאלות
+ if(S.rv&&!Q.length&&ok){S.rv=null;S.rvd={}}
+ save();bar();$('nx').disabled=false;if(!Q.length&&(S.rv?false:stageOf()!==q[0]))$('nx').textContent=stageOf()<0?'לסיום 🎉':'לשלב הבא ›';report()}
+$('opts').onclick=e=>{const b=e.target.closest('.op');if(!b)return;
+ if(b.dataset.s!=null){secTap(+b.dataset.s);return}
+ if(b.id==='exr'){exRetry();return}
+ if(answered&&b.id!=='mab')return;
+ if(b.id==='wrb'){openWrite(cur);return}
+ if(b.id==='mab'){sentPop(cur);return}
+ // זיהוי ניחושים (אורן 13.11.2026): טעויות מהירות מדי = ההודעה של הילה, והתשובה לא מתקבלת
+ if(window.StudyGuess&&StudyGuess.chk(b.dataset.i==='0'))return;
+ answered=true;const ok=b.dataset.i==='0',q=QS[cur];
+ if(S.mt){b.classList.add('sel');document.querySelectorAll('.op').forEach(x=>{if(x!==b)x.classList.add('dim')});
+  if(ok)S.mt.ok++;else S.mt.wr.push(cur);S.mt.i++;save();$('fb').className='fb';$('fb').textContent='נרשם. התשובות וההסברים בסוף.';$('nx').disabled=false;
+  if(S.mt.i>=S.mt.q.length)$('nx').textContent='לציון 🎯';return}
+ document.querySelectorAll('.op').forEach(x=>{if(x.dataset.i==='0')x.classList.add('ok');else if(x===b)x.classList.add('no');else x.classList.add('dim')});
+ $('fb').className='fb '+(ok?'ok':'no');$('fb').innerHTML='<div>'+(ok?'✓ נכון! ':'✗ לא נכון. ')+q[3]+'</div>';mark(ok)};
+// ✍️ תשובה פתוחה: מקלידים באפליקציה ← study_answer_add ← Claude בודק (ריצה מתוזמנת) ← הציון חוזר דרך study_answer_get. אורח / שרת חסר = בדיקה עצמית.
+const SB='https://emgtyfksnofzzlutngbf.supabase.co/rest/v1/rpc/',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZ3R5Zmtzbm9menpsdXRuZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDI0MTMsImV4cCI6MjEwNjgxODQxM30.b7XE-gbCUlXMqpza1Bn9GvMKQsmu3jKP2eqZ0r4-k2k';
+const rpc=(f,b)=>fetch(SB+f,{method:'POST',headers:{'Content-Type':'application/json',apikey:SK,Authorization:'Bearer '+SK},body:JSON.stringify(b)}).then(r=>r.ok?r.json():{st:r.status});
+const GUEST=!!window.STUDY_GUEST,REV=!!window.STUDY_REVIEW;
+const plain=h=>String(h).replace(/<br>/g,'\n').replace(/<[^>]+>/g,'').replace(/\|\|/g,'\n\n');
+const qOnly=t=>{const p=t.split('||');return p[p.length-1]};
+function minute(){try{const t=JSON.parse(localStorage.getItem('study_t_dani_tanach'));return Math.round(((t&&t.sec)||0)/60)}catch(e){return 0}}
+function pop(h){const v=$('ov2');v.querySelector('.pop').innerHTML=h;v.classList.add('on');v.querySelector('.pop').scrollTop=0}
+function unpop(){$('ov2').classList.remove('on')}
+$('ov2').onclick=e=>{if(e.target===$('ov2'))unpop()};
+const isEx=i=>i>=N;
+function openWrite(i){wi=i;const q=ALLQ[i],k=q[5],p=q[1].split('||');
+ $('wq').innerHTML=isEx(i)?'<div>'+p[1]+'</div><details><summary>📄 הקטע</summary><div class="ps">'+p[0]+'</div></details>':qhtml(q[1]);
+ $('wt').classList.toggle('lg',isEx(i));$('wt').value=S.dr[k]||'';$('wm').textContent='';$('ws').disabled=false;$('ws').textContent=GUEST?'✓ סיימתי, להראות תשובה לדוגמה':'📤 לשלוח לבדיקה';cnt();$('ov3').classList.add('on');setTimeout(()=>$('wt').focus(),50)}
+function cnt(){const n=$('wt').value.trim().length;$('wc').textContent=n+' / 1500'}
+$('wt').oninput=()=>{S.dr[ALLQ[wi][5]]=$('wt').value;cnt();clearTimeout(cnt.t);cnt.t=setTimeout(save,800)};
+$('wx').onclick=()=>{save();$('ov3').classList.remove('on')};
+function sent(i,t,id){const k=ALLQ[i][5],o=S.oa[k]||{};S.oa[k]={id:id,at:new Date().toISOString(),txt:t,n:(o.n||0)+1,m:minute()};delete S.dr[k];
+ if(isEx(i)){const e=ALLQ[i][6];S.es[e]=S.es[e]||{};S.es[e].t1=Date.now()}save();$('ov3').classList.remove('on')}
+$('ws').onclick=()=>{const i=wi,q=ALLQ[i],k=q[5],t=$('wt').value.trim();
+ if(t.length<15){$('wm').textContent='כתבי לפחות משפט אחד מלא 🙂';return}
+ if(GUEST){$('ov3').classList.remove('on');if(isEx(i)){sent(i,t,null);S.oa[k].self=1;save();showEx();sentPop(i)}else selfCheck();return}
+ $('ws').disabled=true;$('ws').textContent='שולח…';$('wm').textContent='';
+ rpc('study_answer_add',{p_kid:'dani',p_app:REV?'tanach-rv':'tanach',p_qid:k,p_q:plain(q[1]),p_model:plain(q[3]),p_pts:q[4],p_txt:t}).then(j=>{
+  if(j&&j.st===404){$('ov3').classList.remove('on');if(isEx(i)){sent(i,t,null);S.oa[k].self=1;save();showEx();sentPop(i)}else selfCheck();return}
+  if(!j||!j.ok){$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent=j&&j.err==='rate'?'שלחת הרבה תשובות בשעה האחרונה. נסי שוב עוד מעט.':'לא נשלח. בדקי את האינטרנט ונסי שוב (התשובה שמורה).';return}
+  sent(i,t,j.id);report();poll.go();
+  if(isEx(i)){showEx();sentPop(i);return}
+  answered=true;$('opts').innerHTML='<button class="op wr" type="button" id="mab">👀 התשובה לדוגמה</button>';
+  $('fb').className='fb';$('fb').textContent='⏳ נשלח לבדיקה! הציון וההערה יגיעו בשעה הקרובה. ממשיכים.';
+  $('nx').disabled=false;bar();sentPop(i)}).catch(()=>{$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent='לא נשלח. בדקי את האינטרנט ונסי שוב (התשובה שמורה).'})};
+function sentPop(i){const q=ALLQ[i],o=S.oa[q[5]]||{};pop(`<h3>${o.self?'✍️ תשובה לדוגמה':'📤 נשלח לבדיקה'}</h3><p>${o.self?'השווי לתשובה שלך: מה היה, ומה חסר?':'Claude יקרא את התשובה שלך וייתן ציון מ-0 עד 10 עם הערה (התוצאה תגיע בשעה הקרובה). בינתיים, תשובה לדוגמה:'}</p><div class="ma">${q[3]}</div><h4>מה בודקים בתשובה</h4><ul>${q[4].map(t=>'<li>'+t+'</li>').join('')}</ul><button class="cl" type="button" onclick="unpop()">המשך ›</button>`)}
+function selfCheck(){const q=QS[cur];pop(`<h3>✍️ תשובה לדוגמה</h3><div class="ma">${q[3]}</div><h4>מה היה בתשובה שלך? סמני:</h4><div class="ck">${q[4].map(t=>`<label><input type="checkbox"><span>${t}</span></label>`).join('')}</div><div class="two"><button class="y" type="button" id="oy">✓ היה לי כמעט הכול</button><button class="n" type="button" id="on">✗ עוד לא</button></div>`);
+ $('oy').onclick=()=>selfDone(true);$('on').onclick=()=>selfDone(false)}
+function selfDone(ok){unpop();if(answered)return;answered=true;$('opts').innerHTML='';
+ $('fb').className='fb '+(ok?'ok':'no');$('fb').textContent=ok?'✓ מעולה! השאלה נלמדה.':'השאלה תחזור עוד מעט. קראי שוב את התשובה לדוגמה, ונסי לכתוב אותה בעצמך.';mark(ok)}
+// ציון של בוחן לדוגמה = (סעיף א + סעיף ב) × 5, ברגע ששני הסעיפים נבדקו
+function exScore(e){const a=S.oa['e'+(e+1)+'a'],b=S.oa['e'+(e+1)+'b'],x=S.es[e]=S.es[e]||{};if(x.s!=null||!a||!b||a.sc==null||b.sc==null)return;
+ x.s=(a.sc+b.sc)*5;const at=new Date().toISOString();S.mkh.push({s:x.s,m:minute(),at,k:'e'});if(S.mkh.length>40)S.mkh.shift();S.mk={best:Math.max(x.s,(S.mk&&S.mk.best)||0),last:x.s,n:((S.mk&&S.mk.n)||0)+1,at}}
+function poll(){const ids=Object.values(S.oa).filter(o=>o.id&&o.sc==null).map(o=>o.id);if(!ids.length||GUEST)return;
+ rpc('study_answer_get',{p_ids:ids}).then(j=>{if(!j||!j.items)return;let ch=0;
+  j.items.forEach(x=>{if(x.score==null)return;const k=Object.keys(S.oa).find(q=>S.oa[q].id===x.id);if(!k)return;const o=S.oa[k];if(o.sc!=null)return;
+   o.sc=+x.score;o.fb=x.fb||'';o.ga=x.graded_at;ch=1;const i=ALLQ.findIndex(q=>q[5]===k);S.gr.push([k,o.sc,o.m||0,Date.now()]);
+   if(isEx(i)){exScore(ALLQ[i][6]);return}
+   if(o.sc>=7){S.d[i]=1;if(o.n===1)S.f[i]=1}else{S.w[i]=(S.w[i]||0)+1;if(!S.rv&&!Q.includes(i)&&i!==cur)Q.splice(Math.min(2,Q.length),0,i)}});
+  if(ch){save();bar();report();if(S.tab==='t'&&!S.mt)show();else if($('card').classList.contains('fin')&&!S.mt){Q=[];show()}grades()}}).catch(()=>{})}
+poll.go=()=>{clearTimeout(poll.t);poll.t=setTimeout(function L(){if(document.visibilityState==='visible')poll();if(Object.values(S.oa).some(o=>o.id&&o.sc==null))poll.t=setTimeout(L,45000)},45000)};
+addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){poll();grades()}});
+function grades(){if(S.mt||document.querySelector('.ov.on'))return;const k=Object.keys(S.oa).find(q=>S.oa[q].sc!=null&&!S.oa[q].seen);if(!k)return;gradePop(k,true)}
+function gradePop(k,nw){const o=S.oa[k],i=ALLQ.findIndex(x=>x[5]===k),q=ALLQ[i];if(!o||!q)return;if(nw){o.seen=1;save()}const g=o.sc>=7,ex=isEx(i),x=ex?S.es[q[6]]||{}:{};
+ pop(`<h3>${o.sc>=9?'🏆':g?'💪':'📚'} הציון שלך: <span class="scb ${g?'g':'b'}">${o.sc}/10</span></h3>${ex?'<p class="nt">🎯 מבחן לדוגמה '+(q[6]+1)+(x.s!=null?' · ציון המבחן: <b>'+x.s+'</b>':'')+'</p>':''}<p class="qq">${qOnly(q[1])}</p><h4>💬 הערה</h4><p>${esc(o.fb||'')}</p><h4>✍️ מה כתבת</h4><div class="mine">${esc(o.txt||'')}</div><details><summary>תשובה לדוגמה</summary><div class="ma">${q[3]}</div></details><p class="nt">${ex?'':g?'✓ השאלה נלמדה.':'השאלה תחזור עוד מעט לניסיון נוסף.'}</p><button class="cl" type="button" onclick="unpop();grades()">${g?'מעולה ›':'הבנתי ›'}</button>`)}
+function myGraph(){const E=S.gr.map(g=>({t:g[3],v:g[1]*10,k:'g'})).concat(S.mkh.map(x=>({t:new Date(x.at).getTime(),v:x.s,k:'m'}))).sort((a,b)=>a.t-b.t);E.forEach((e,i)=>e.m=i+1);
+ const G=E.filter(e=>e.k==='g'),M=E.filter(e=>e.k==='m'),A=E;
+ let svg='<p class="nt">עוד אין ציונים. עני על שאלת מיקוד או עשי מבחן, והגרף יתחיל.</p>';
+ if(A.length){const W=320,H=160,l=30,r=10,t=12,b=26,pw=W-l-r,ph=H-t-b,m0=Math.min(...A.map(p=>p.m)),sp=Math.max(1,Math.max(...A.map(p=>p.m))-m0),X=m=>l+(m-m0)/sp*pw,Y=v=>t+ph-v/100*ph;
+  const ln=(P,c)=>{P=P.slice().sort((a,b)=>a.m-b.m);return`<path d="${P.map((p,i)=>(i?'L':'M')+X(p.m).toFixed(1)+','+Y(p.v).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"/>`+P.map(p=>`<circle cx="${X(p.m).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="3.4" fill="${c}"/>`).join('')};
+  svg=`<svg viewBox="0 0 ${W} ${H}" class="gs">${[0,25,50,75,100].map(v=>`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2e8f0"/><text x="${l-5}" y="${Y(v)+3.5}" text-anchor="end" font-size="10" fill="#64748b">${v}%</text>`).join('')}<text x="${l+pw/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#64748b">← מהציון הראשון לאחרון</text>${ln(G,'#2f5d9e')}${ln(M,'#ea580c')}</svg>
+  <div class="lg"><span><i style="background:#2f5d9e"></i>✍️ תשובות פתוחות${G.length?' · ממוצע '+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1)+'/10':''}</span><span><i style="background:#ea580c"></i>🎯 מבחנים${M.length?' · אחרון '+M[M.length-1].v:''}</span></div>`}
+ const L=Object.keys(S.oa).filter(k=>S.oa[k].id).sort((a,b)=>String(S.oa[b].at).localeCompare(String(S.oa[a].at)));
+ pop(`<h3>📈 הציונים שלי</h3>${svg}<h4>✍️ התשובות שלי</h4>${L.length?'<div class="ol">'+L.map(k=>{const o=S.oa[k],q=ALLQ.find(x=>x[5]===k);return`<button type="button" class="oi" data-k="${k}"><span class="scb ${o.sc==null?'p':o.sc>=7?'g':'b'}">${o.sc==null?'⏳':o.sc+'/10'}</span><span>${q[6]!=null?'🎯 ':''}${qOnly(q[1])}</span></button>`}).join('')+'</div>'+(L.some(k=>S.oa[k].sc==null)?'<p class="nt">⏳ = בבדיקה. התוצאה תגיע בשעה הקרובה.</p>':''):'<p class="nt">עוד לא נשלחו תשובות.</p>'}<button class="cl" type="button" onclick="unpop()">סגירה</button>`);
+ document.querySelectorAll('.oi').forEach(b=>b.onclick=()=>{const o=S.oa[b.dataset.k];if(o.sc!=null)gradePop(b.dataset.k,false)})}
+// 🎯 הבחנים לדוגמה: רשימה ← בוחן (קטע + סעיף א + סעיף ב). כמו בכיתה: 60 דקות לשני הסעיפים, הספר פתוח לידך.
+function secSt(e,s){const o=S.oa['e'+(e+1)+s];if(!o||(!o.id&&!o.self))return S.dr['e'+(e+1)+s]?{c:'p',t:'טיוטה'}:{c:'p',t:'לכתוב'};if(o.self)return{c:'g',t:'✓ נכתב'};if(o.sc==null)return{c:'p',t:'⏳ בבדיקה'};return{c:o.sc>=7?'g':'b',t:o.sc+'/10'}}
+function exPick(){bar();$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">🎯</div><h2>מבחנים לדוגמה</h2><p>כמו במבחן: פסוקים ו-2 סעיפים.<br>📕 בלי מחברת ובלי תנ״ך. ⏱️ נסי לסיים בכ-20 דקות.</p>`+
+  EXS.map((x,e)=>{const s=(S.es[e]||{}).s,a=secSt(e,'a'),b=secSt(e,'b');return`<button class="bt ex" type="button" data-e="${e}"><span>${e+1}. ${x.t}</span><span class="scb ${s!=null?(s>=70?'g':'b'):'p'}">${s!=null?'ציון '+s:a.t==='לכתוב'&&b.t==='לכתוב'?'להתחיל ›':'א: '+a.t+' · ב: '+b.t}</span></button>`}).join('')+
+  '<button class="bt" type="button" id="qkb">⚡ מבחן מהיר: 15 שאלות אמריקאיות</button>'+(S.mk&&S.mk.best!=null?'<p class="tm">הציון הכי טוב שלך עד עכשיו: <b>'+S.mk.best+'</b></p>':'');
+ document.querySelectorAll('.bt.ex').forEach(b=>b.onclick=()=>{const e=+b.dataset.e;S.ex=e;S.es[e]=S.es[e]||{};if(!S.es[e].t0)S.es[e].t0=Date.now();save();show()});$('qkb').onclick=mtStart}
+function showEx(){const e=S.ex,x=EXS[e],es=S.es[e]||{},c=$('card');c.classList.remove('fin');c.classList.add('ex');
+ $('tg').textContent='🎯 מבחן '+(e+1)+': '+x.t;
+ const tm=()=>{const m=Math.round(((es.s!=null||secSt(e,'a').t!=='לכתוב'&&secSt(e,'b').t!=='לכתוב'?(es.t1||Date.now()):Date.now())-(es.t0||Date.now()))/60000);$('rt').textContent='⏱️ '+m+' דק׳';$('rt').classList.toggle('on',true)};tm();show.t=setInterval(tm,30000);
+ $('q').innerHTML='<div class="ps">'+x.src+'</div><div class="it">📕 עונים בלי מחברת. לחצי על סעיף כדי לכתוב.</div>';
+ $('opts').className='opts';$('opts').innerHTML=['a','b'].map((s,k)=>{const st=secSt(e,s),qt=x[s][0].replace(/^[אב]\. /,'');return`<button class="op sec" type="button" data-s="${k}"><span>${'אב'[k]}. ${qt.length>70?qt.slice(0,68)+'…':qt}</span><span class="scb ${st.c}">${st.t}</span></button>`}).join('')+(es.s!=null?'<button class="op wr" type="button" id="exr">🔁 לכתוב את המבחן מחדש</button>':'');
+ $('fb').className='fb'+(es.s!=null?(es.s>=70?' ok':' no'):'');$('fb').innerHTML=es.s!=null?'<div>ציון המבחן: <b>'+es.s+'</b>. '+(es.s>=85?'מוכנה למבחן! 🔥':es.s>=70?'טוב מאוד! קראי את ההערות כדי לשפר עוד.':'קראי את ההערות ואת התשובות לדוגמה, ונסי מבחן נוסף.')+'</div>':secSt(e,'a').t.includes('⏳')||secSt(e,'b').t.includes('⏳')?'⏳ התשובות בבדיקה. הציון יגיע בשעה הקרובה.':'קראי את הפסוקים, ועני על שני הסעיפים.';
+ $('nx').disabled=false;$('nx').textContent='→ לרשימת המבחנים';bar()}
+function secTap(k){const e=S.ex,s='ab'[k],key='e'+(e+1)+s,i=ALLQ.findIndex(q=>q[5]===key),o=S.oa[key];
+ if(!o||(!o.id&&!o.self))return openWrite(i);if(o.sc!=null)return gradePop(key,false);sentPop(i)}
+function exRetry(){const e=S.ex;if(!confirm('לכתוב את המבחן הזה מחדש? הציון הקודם נשמר בגרף.'))return;['a','b'].forEach(s=>delete S.oa['e'+(e+1)+s]);S.es[e]={t0:Date.now()};save();show()}
+$('nx').onclick=()=>{if(S.tab==='t'&&!S.mt&&S.ex!=null){S.ex=null;save();show();return}if(answered)show()};
+// ⚡ בוחן מהיר: 15 שאלות אמריקאיות (3 מכל שלב), בלי הסברים עד הסוף.
+function mtStart(){if(S.mt)return;
+ if(!confirm('⚡ מבחן מהיר: 15 שאלות אמריקאיות מכל החומר, בלי הסברים עד הסוף. מתחילים?'))return;
+ let p=[];for(let s=0;s<ST.length;s++)p=p.concat(shuf(MCQ.filter(i=>QS[i][0]===s)).slice(0,3));
+ S.mt={q:shuf(p).slice(0,15),i:0,ok:0,wr:[]};S.tab='t';save();show()}
+function mtEnd(){const m=S.mt,n=m.q.length,sc=Math.round(m.ok/n*100),at=new Date().toISOString();S.mk={best:Math.max(sc,(S.mk&&S.mk.best)||0),last:sc,n:((S.mk&&S.mk.n)||0)+1,at};S.mkh.push({s:sc,m:minute(),at,k:'q'});if(S.mkh.length>40)S.mkh.shift();
+ const wr=m.wr;S.mt=null;save();report();bar();$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">${sc>=85?'🏆':sc>=70?'💪':'📚'}</div><h2>ציון: ${sc}</h2><p><b>${m.ok}</b> נכונות מתוך ${n}.<br>${sc>=85?'יופי! עכשיו מבחן לדוגמה עם כתיבה. 🔥':sc>=70?'טוב! עוד סבב קטן על הטעויות.':'שווה לעבור על הטעויות ועל הסיכום, ולנסות שוב.'}</p>`+
+ (wr.length?'<button class="bt pr" id="rvb" type="button">🔁 תרגול השאלות שטעיתי ('+wr.length+')</button>':'')+'<button class="bt" id="bkb" type="button">🎯 למבחנים לדוגמה</button>';
+ const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};S.tab='p';save();Q=[];show()};
+ $('bkb').onclick=()=>show()}
+function finish(){bar();const f=Object.keys(S.f).length,wr=QS.map((q,i)=>i).filter(i=>S.w[i]>0);$('card').classList.add('fin');
+ $('end').innerHTML=`<div class="big">🏆</div><h2>סיימת את כל ${N} שאלות התרגול!</h2><p><b>${f}</b> מתוך ${N} נכונות בניסיון הראשון.${(()=>{const p=Object.values(S.oa).filter(o=>o.id&&o.sc==null).length;return p?'<br>⏳ '+p+' תשובות פתוחות עוד בבדיקה.':''})()}<br>עכשיו מבחן לדוגמה, כמו בכיתה.</p>`+
+ '<button class="bt pr" id="mtg" type="button">🎯 למבחנים לדוגמה</button>'+(wr.length?'<button class="bt" id="rvb" type="button">🔁 חזרה על השאלות שטעיתי ('+wr.length+')</button>':'');
+ $('mtg').onclick=()=>{S.tab='t';S.ex=null;save();show()};const r=$('rvb');if(r)r.onclick=()=>{S.rv=wr;S.rvd={};save();Q=[];show()}}
+const inc=P=>{let z=-1;return P.map(p=>{z=Math.max(+p[0]||0,z+1);return[z,p[1]]})};
+function report(){if(window.StudyTrack)StudyTrack.report({total:N,done:done(),learning:QS.filter((q,i)=>S.w[i]>0&&!S.d[i]).length,att:S.att,ok:S.okc,streak:S.st.c,best:S.st.b,first:Object.keys(S.f).length,stage:Math.max(0,stageOf())+1,mk:S.mk,
+ lv:1,lvn:'שאלות שנלמדו',prog:done(),pmax:N,oad:QS.map((q,i)=>!q[2]&&S.d[i]?q[5]:null).filter(Boolean),oa:{n:S.gr.length,avg:S.gr.length?+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1):null,pend:Object.values(S.oa).filter(o=>o.id&&o.sc==null).length},
+ ex:EXS.map((x,e)=>(S.es[e]||{}).s==null?null:S.es[e].s),
+ hist:[S.gr.length?{lv:2,name:'✍️ ציון בתשובות הפתוחות',u:'',max:10,pts:inc(S.gr.map(g=>[g[2],g[1]]))}:null,S.mkh.length?{lv:3,name:'🎯 ציון במבחנים',u:'',max:100,pts:inc(S.mkh.map(x=>[x.m||0,x.s]))}:null].filter(Boolean)})}
+$('mtb').onclick=toTest;$('prb').onclick=toPrac;$('grb').onclick=myGraph;
+// 📘 סיכום ו-📋 מיקוד: עמודים קצרים (אורן: לא קיר של טקסט). גובה קבוע, הכפתורים לא זזים.
+function pager(ov,body,dots,prev,next,x,onDone){const P=[...$(body).querySelectorAll('section')];let p=0;
+ function go(i){p=Math.max(0,Math.min(P.length-1,i));P.forEach((s,k)=>s.classList.toggle('on',k===p));$(dots).innerHTML=P.map((s,k)=>`<i class="${k===p?'on':''}"></i>`).join('');
+  $(prev).style.visibility=p?'visible':'hidden';$(next).textContent=p<P.length-1?'הבא ←':'סיימתי ✓';$(body).scrollTop=0}
+ $(x).onclick=()=>$(ov).classList.remove('on');$(prev).onclick=()=>go(p-1);$(next).onclick=()=>{if(p<P.length-1)go(p+1);else{$(ov).classList.remove('on');onDone()}};
+ $(ov).onclick=e=>{if(e.target===$(ov))$(ov).classList.remove('on')};return()=>{go(0);$(ov).classList.add('on')}}
+// 📋 מיקוד (שלב 3 בשיטה של המורה): כל שאלת מיקוד עם תשובה טובה, לקריאה שוב ושוב. התשובה נפתחת אחרי שדני כתבה תשובה משלה בתרגול (שלב 2).
+const FQ=QS.map((q,i)=>i).filter(i=>!QS[i][2]);
+$('tpb').innerHTML=FQ.map(()=>'<section></section>').join('');
+function fillQA(){const P=$('tpb').querySelectorAll('section');FQ.forEach((i,k)=>{const q=QS[i],ok=REV||S.d[i]||OA(i);
+ P[k].innerHTML=`<h4>${ST[q[0]]} · שאלה ${FQ.filter(j=>QS[j][0]===q[0]).indexOf(i)+1}</h4><p class="qq">${q[1]}</p>`+(ok?`<div class="ma">${q[3]}</div>`:'<div class="lk">🔒 קודם כותבים תשובה משלך לשאלה הזו ב📚 תרגול (המורה: "כתבו את התשובות לשאלות המיקוד"). אחרי שתשלחי, התשובה הטובה תופיע כאן, ואפשר לקרוא אותה שוב ושוב.</div>')})}
+const tpGo=pager('ovt','tpb','tpd','tpp','tpf','tpx',()=>{if(!S.tp){S.tp=1;if(!REV)save();bar()}}),tpOpen=()=>{fillQA();tpGo()};
+const smOpen=pager('ov','smb','smd','smp','smf','smx',()=>{if(!S.sm){S.sm=1;if(!REV)save()}});
+$('rules').onclick=smOpen;$('tips').onclick=tpOpen;
+if(window.StudyGuess)StudyGuess.init('dani','tanach',{fast:2500});
+if(window.StudyTrack)StudyTrack.init('dani','tanach',['dani_tn']);
+if(!S.sm&&!S.mt)setTimeout(smOpen,300); // הסיכום נפתח בכל כניסה עד שקוראים אותו עד הסוף
+if(S.tab==='t'&&!REV&&!pracDone()&&!S.mt)S.tab='p';
+addEventListener('resize',fit);
+show();poll();poll.go();setTimeout(grades,600);
+</script>
+</body></html>
