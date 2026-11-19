@@ -44,9 +44,12 @@ const HELPERS: Record<string, { id: string; n: string; kid?: boolean; boy?: bool
   b: [{ id: "yehuda", n: "אבא", boy: true }],
 };
 // כללי זמינות (שעון ישראל). dow: 0 = ראשון. [מ-דקה, עד-דקה) = לא זמין.
-const HELP_RULES: Record<string, { off: [number, number]; dow?: number[]; why: string }[]> = {
-  lior: [{ off: [60, 210], why: "ישנה" }],
-  evyatar: [{ off: [480, 840], dow: [0, 1, 2, 3, 4, 5], why: "בבית הספר" }],
+// לילה (אורן 19.11.2026: בשעות הלילה המאוחרות אף אחד לא זמין): מבוגרים 23:00-07:00, ילדים 22:00-07:00.
+const NIGHT = (from: number) => [{ off: [from, 1440] as [number, number], why: "לילה", u: "07:00" }, { off: [0, 420] as [number, number], why: "לילה" }];
+const HELP_RULES: Record<string, { off: [number, number]; dow?: number[]; why: string; u?: string }[]> = {
+  oren: NIGHT(1380), yehuda: NIGHT(1380), dani: NIGHT(1320), lia: NIGHT(1320),
+  lior: [...NIGHT(1380), { off: [780, 930], why: "לא זמינה" }],
+  evyatar: [...NIGHT(1320), { off: [480, 840], dow: [0, 1, 2, 3, 4, 5], why: "בבית הספר" }],
 };
 function ilNow(ms: number) {
   const p = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Jerusalem", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date(ms));
@@ -124,8 +127,8 @@ async function helpApi(action: string, url: URL, sb: any, FAM: Record<string, st
     for (const h of H) {
       if (h.id === kid) continue;
       let ok = true, why = "", until = "";
-      for (const r of HELP_RULES[h.id] || []) if ((!r.dow || r.dow.includes(t.dow)) && t.min >= r.off[0] && t.min < r.off[1]) { ok = false; why = r.why; until = hhmm(r.off[1]); }
-      if (h.id === "oren") { try { const o = await orenBusy(sb, now); ok = o.ok; why = o.why; until = (o as any).until || ""; } catch (_) { /* בלי לו״ז = זמין */ } }
+      for (const r of HELP_RULES[h.id] || []) if ((!r.dow || r.dow.includes(t.dow)) && t.min >= r.off[0] && t.min < r.off[1]) { ok = false; why = r.why; until = r.u || hhmm(r.off[1]); }
+      if (ok && h.id === "oren") { try { const o = await orenBusy(sb, now); ok = o.ok; why = o.why; until = (o as any).until || ""; } catch (_) { /* בלי לו״ז = זמין */ } }
       list.push({ id: h.id, n: h.n, kid: !!h.kid, boy: !!h.boy, ok, why, until, dev: devsOf(h).length, wa: PH.has(h.id) });
     }
     return json({ ok: true, list });
