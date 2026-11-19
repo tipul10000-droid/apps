@@ -40,9 +40,11 @@
   for (const el of document.querySelectorAll(".ic[data-i]")) el.innerHTML = icHTML(el.dataset.i);
   // genres = TMDB's own genres, the 12 with the most titles on Netflix Israel, separately for movies and series,
   // most titles first (Oren 18.11.2026; counted 18.11.2026). TMDB has no Romance/Horror for series at all.
+  // 19.11.2026 (Oren): the smallest movie genre, Horror (27, 277 titles), was replaced by Stand-up = 9716 (296 titles),
+  // a virtual genre that nf-catalog adds (TMDB keyword "stand-up comedy" + same comedian / title match).
   const GEN = {
     m: [[35, "קומדיה"], [18, "דרמה"], [10749, "רומנטי"], [53, "מותחן"], [28, "אקשן"], [99, "דוקומנטרי"], [80, "פשע"],
-      [10751, "משפחה"], [12, "הרפתקאות"], [16, "אנימציה"], [14, "פנטזיה"], [27, "אימה"]],
+      [10751, "משפחה"], [12, "הרפתקאות"], [16, "אנימציה"], [9716, "סטנדאפ"], [14, "פנטזיה"]],
     s: [[18, "דרמה"], [35, "קומדיה"], [80, "פשע"], [99, "דוקומנטרי"], [16, "אנימציה"], [10765, "מד״ב ופנטזיה"], [9648, "מסתורין"],
       [10764, "ריאליטי"], [10759, "אקשן והרפתקה"], [10762, "ילדים"], [10751, "משפחה"], [10767, "אירוח"]],
   };

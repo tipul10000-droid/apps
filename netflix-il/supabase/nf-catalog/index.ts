@@ -16,6 +16,9 @@ const PROVIDERS = '8|1796'
 const DAY = 86_400_000
 
 // Genres = TMDB's own genre ids, exactly as TMDB tags each title (Oren 18.11.2026); names live in netflix-il/app.js.
+// Plus one virtual genre: Stand-up (Oren 19.11.2026). TMDB has no stand-up genre, so titles with TMDB keyword
+// 9716 "stand-up comedy" get the id SU added to their genre list (9716 is not a TMDB genre id).
+const SU = 9716
 
 async function sha(s: string) {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s))
@@ -110,6 +113,23 @@ Deno.serve(async (req) => {
           })
         }
         log[kind] = { pages, items: seen.size }
+        // stand-up specials (keyword 9716) on Netflix IL -> virtual genre SU
+        const qs = `/discover/${kind}?watch_region=IL&with_watch_providers=${encodeURIComponent(PROVIDERS)}&with_keywords=${SU}&include_adult=false&language=en-US&sort_by=popularity.desc`
+        const s1 = await tmdb(qs + '&page=1')
+        const sus: J[] = [...(s1.results || [])]
+        await pool(Array.from({ length: Math.min(50, Number(s1.total_pages || 1)) - 1 }, (_, i) => i + 2), 10, async (p) => { const r = await tmdb(qs + '&page=' + p); sus.push(...(r.results || [])) })
+        const suIds = new Set(sus.map((x) => (kind === 'movie' ? 'm' : 's') + x.id))
+        // TMDB misses the keyword on many specials: also tag comedy titles by the same comedian ("Name: Title")
+        // or with stand-up / comedy special in the title
+        const pre = (n: string) => { const i = String(n || '').indexOf(':'); return i > 2 ? norm(n.slice(0, i)) : '' }
+        const who = new Set(list.filter((x) => suIds.has(x.k)).map((x) => pre(x.n)).filter(Boolean))
+        let su = 0
+        for (const x of list) {
+          if (!x.k.startsWith(kind === 'movie' ? 'm' : 's')) continue
+          const hit = suIds.has(x.k) || (x.gi.includes(35) && (who.has(pre(x.n)) || /stand.?up|comedy special/i.test(x.n)))
+          if (hit) { su++; if (!x.gi.includes(SU)) x.gi.push(SU) }
+        }
+        log[kind].standup = [suIds.size, su]
       }
       if (list.length < 300) throw new Error('DISCOVER_TOO_SMALL ' + list.length)
       st.list = list; st.disc_at = new Date().toISOString()
