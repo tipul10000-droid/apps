@@ -61,7 +61,7 @@
 (function(){try{var me=document.currentScript&&document.currentScript.src;if(!me||window.StudyVoice)return;var v=document.createElement('script');v.src=me.replace(/guest\.js(\?.*)?$/,'voice.js?v=1');v.defer=true;(document.head||document.documentElement).appendChild(v)}catch(e){}})();
 
 // 🙋 תמיכת הורה בזמן אמת (help.js, אורן 19.11.2026): כפתור "עזרה" בפס העליון בכל דף תוכן, וההורה רואה את אותו מסך בדיוק
-(function(){try{var me=document.currentScript&&document.currentScript.src;if(!me||window.StudyHelp)return;var v=document.createElement('script');v.src=me.replace(/guest\.js(\?.*)?$/,'help.js?v=4');v.defer=true;(document.head||document.documentElement).appendChild(v)}catch(e){}})();
+(function(){try{var me=document.currentScript&&document.currentScript.src;if(!me||window.StudyHelp)return;var v=document.createElement('script');v.src=me.replace(/guest\.js(\?.*)?$/,'help.js?v=5');v.defer=true;(document.head||document.documentElement).appendChild(v)}catch(e){}})();
 
 // 📊 סטטיסטיקת שימוש (appstat.js, אורן 18.11.2026): נטען אוטומטית בכל דף study. משתמש = הילד לפי הכתובת; אורח בלי משתמש; תצוגת בדיקה של הורה לא נספרת
 (function(){try{var me=document.currentScript&&document.currentScript.src;if(!me)return;var v=document.createElement('script');v.src=me.replace(/study\/guest\.js(\?.*)?$/,'appstat.js?v=1');v.defer=true;

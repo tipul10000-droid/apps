@@ -66,7 +66,7 @@
     // שיחה קולית בוואטסאפ עם מי שעוזר (אורן 19.11.2026): מופיע וזוהר כשהעוזר כבר רואה את המסך
     callB=document.createElement('button');callB.type='button';callB.id='hlpT';callB.setAttribute('aria-label','שיחה בוואטסאפ');
     callB.innerHTML=WA.replace('fill="#25D366"','fill="#fff"').replace('fill="#fff" d="M17','fill="#25D366" d="M17');bar.insertBefore(callB,btn);callB.onclick=function(){var w=anySeen();if(w)call(w)};
-    btn.onclick=panel;chip.onclick=function(){if(PARK.length&&anySeen())back();else panel()};
+    btn.onclick=function(){if(S)panel();else think()};chip.onclick=function(){if(PARK.length&&anySeen())back();else panel()};
     ov=document.createElement('div');ov.id='hlpO';document.body.appendChild(ov);
     ov.addEventListener('click',function(e){if(e.target===ov)close()});
     paint();if(S)start(true)}
@@ -100,6 +100,8 @@
   function noNotif(id){var b=hb(id);NOTE[id]=hn(id)+' עוד לא '+(b?'אישר':'אישרה')+' התראות באפליקציה, אז ההתראה לא '+(b?'תגיע אליו':'תגיע אליה')+'. '+g('שלחי','שלח')+' '+(b?'לו':'לה')+' הודעה בוואטסאפ 👇'}
   function redraw(){var L=ov.querySelector('.hl');if(ov.classList.contains('on')&&L){L.innerHTML=rows();L.querySelectorAll('[data-a]').forEach(function(x){x.addEventListener('click',function(e){act1(x.getAttribute('data-a'),x.getAttribute('data-id'),e)})})}}
   // החלון הראשי: ממי לבקש עזרה + (בזמן עזרה) מצב כל אחד, דילוג על השאלה, חזרה לשאלה, סיום
+  // לפני שמבקשים עזרה (אורן 19.11.2026): קודם לחשוב לבד, אחר כך לנסות ולקרוא את ההסבר, ורק אז לבקש. חלונית אחת קצרה, ואז הבחירה הרגילה.
+  function think(){show('<div class="em">🧠</div><h2>רגע לפני שמבקשים עזרה</h2><p style="text-align:right">'+'1. '+g('תחשבי','תחשוב')+' חזק לבד. ככה באמת לומדים.<br>'+'2. מותר לטעות! אחרי תשובה לא נכונה האפליקציה מסבירה, ומההסבר אפשר להבין.<br>'+'3. לא עזר? אז '+g('בקשי','בקש')+' עזרה '+(HL.length>1?'מאבא, מאמא או מהאחים':'מאבא')+'.</p>'+'<button class="bt" data-a="go">הבנתי, '+g('רוצה','רוצה')+' עזרה 🙋</button><button class="bt s" data-a="x">'+g('אנסה','אנסה')+' לבד קודם 💪</button>',function(a){if(a==='go')panel();else close()})}
   function panel(){
     var h='<div class="em">🙋</div><h2>'+(S?'עזרה מהמשפחה':'ממי לבקש עזרה?')+'</h2><p>'+(S?'מי שפותח את ההודעה רואה בדיוק את המסך שלך. אפשר לבקש גם ממישהו נוסף.':'מי ש'+g('תבחרי','תבחר')+' יקבל הודעה ויראה בטלפון שלו בדיוק את המסך שלך, כולל השאלה הזאת. אפשר לדבר בטלפון בזמן הזה.')+'</p>'+
       '<div class="hl">'+rows()+'</div>';
