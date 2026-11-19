@@ -9,6 +9,10 @@
 // 8. תזכורת יומית לתוכן חדש שעוד לא התחילו (אורן 19.11.2026, כלל לכל הילדים ולכל תוכן): תוכן שאושר באזור ההורים (study_content)
 //    ואין לו אף שורת התקדמות (study_progress) יום אחרי האישור = תזכורת אחת ביום לילד (מ-16:00), עם עידוד והסיבה (NUDGE.why).
 //    אחת ביום לכל ילד גם כשמחכים כמה תכנים. עד 14 ימים מהאישור; לא אחרי שהמבחן של התוכן עבר או קיבל ציון. ?action=nudge_preview = מה יישלח, בלי לשלוח.
+// 9. ילד התחיל תוכן חדש (אורן 19.11.2026, כלל קבוע לכל הילדים ולכל תוכן חדש): השורה הראשונה ב-study_progress של תוכן שאושר (study_content)
+//    = התראה להורים "X התחיל/ה את Y" (בסבב הקרוב, עד 5 דק׳). כשהסשן הראשון נגמר (האפליקציה נסגרה: 5 דק׳ בלי דיווח מאותו מכשיר)
+//    = התראה שנייה עם כמה זמן היה/הייתה באפליקציה, זמן לימוד פעיל ותשובות. יומן: start:<kid>/<app>, firstend:<kid>/<app>.
+//    רק התחלות מאז START (לא על תכנים שכבר התחילו לפני הכלל). ?action=start_preview = מה יישלח, בלי לשלוח.
 // הורים מקבלים רק על ילדי המשפחה שלהם (9.11.2026): ב-study_push להורה kid = '' (משפחה a) או מזהה המשפחה ('b'), והמשפחה של כל ילד מ-study_kids.
 // שעות שקט: ילדים 21:00-07:00, הורים 22:00-07:00 (מה שלא נשלח נשלח אחר כך).
 import webpush from "npm:web-push@3.6.7";
@@ -34,7 +38,10 @@ const NUDGE: Record<string, { n: string; why: string }> = {
   "evyatar/econ": { n: "הבוחן בכלכלה", why: "ככה תגיע{י} לבוחן מוכן{ה} ורגוע{ה}." },
   "evyatar/hist": { n: "הבוחן בהיסטוריה", why: "ככה תגיע{י} לבוחן מוכן{ה} ורגוע{ה}." },
   "shilo/numbers": { n: "המספרים של שילה", why: "ככה תכיר{י} את כל המספרים עד 10." },
+  "dani/tanach": { n: "ההכנה למבחן בתנ״ך (יהושע א׳-ו׳)", why: "ככה תגיע{י} למבחן מוכן{ה} ורגוע{ה}, כש{את|אתה} כבר יודע{ת} את כל הפרקים." },
 };
+// שלב 9: מתחילים לספור מרגע הכלל (19.11.2026), כדי שלא תצא התראה על תכנים שכבר התחילו קודם.
+const START = Date.parse("2026-11-19T13:45:00Z");
 const KN: Record<string, string> = { evyatar: "אביתר", dani: "דני", lia: "ליה", levi: "לביא", shilo: "שילה" };
 const BOY: Record<string, boolean> = { evyatar: true, levi: true, shilo: true };
 // {י} = "י" לבת, ריק לבן; {ה} / {ת} כנ"ל; {את|אתה} = בת|בן
@@ -72,8 +79,8 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   const url = new URL(req.url);
   const action = url.searchParams.get("action");
-  if (action !== "tick" && action !== "nudge_preview") return json({ ok: false, err: "action" }, 400);
-  const preview = action === "nudge_preview";
+  if (action !== "tick" && action !== "nudge_preview" && action !== "start_preview") return json({ ok: false, err: "action" }, 400);
+  const preview = action !== "tick";
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const keys = await getKeys(sb);
   webpush.setVapidDetails(BASE, keys.pub, keys.priv);
@@ -104,7 +111,7 @@ Deno.serve(async (req) => {
     return !error;
   }
 
-  const { data: prog } = await sb.from("study_progress").select("device,kid,app,data,updated_at");
+  const { data: prog } = await sb.from("study_progress").select("device,kid,app,data,first_at,updated_at");
   const { data: snaps } = await sb.from("study_sess").select("*");
   const snap = (r: any) => (snaps || []).find((s: any) => s.device === r.device && s.kid === r.kid && s.app === r.app);
 
@@ -261,5 +268,59 @@ Deno.serve(async (req) => {
       if (await once(`nudge:${kid}:${il.date}`, { items: L.map((x) => x.id) })) await push("kid", kid, msg);
     }
   }
-  return json({ ok: true, il, out, nudge: plan });
+  // 9. הילד התחיל תוכן חדש + סוף הסשן הראשון → להורים
+  const starts: any[] = [];
+  {
+    const { data: cnt } = await sb.from("study_content").select("id,approved_at").not("approved_at", "is", null);
+    // בדיקה בלי שליחה: ?action=start_preview&since=<ISO> מראה גם התחלות ישנות יותר, כולל הודעת הסיום
+    const since = action === "start_preview" && url.searchParams.get("since") ? Date.parse(url.searchParams.get("since")!) : START;
+    const LOG: Record<string, any> = {};
+    for (const p of ["start:%", "firstend:%"]) {
+      const { data: lg } = await sb.from("study_push_log").select("key,info").like("key", p);
+      (lg || []).forEach((x: any) => (LOG[x.key] = x.info || {}));
+    }
+    for (const c of cnt || []) {
+      const [kid, app] = String(c.id).split("/");
+      if (!kid || !app) continue;
+      const rows = (prog || []).filter((r: any) => r.kid === kid && r.app === app && r.first_at);
+      if (!rows.length) continue;
+      const r0 = rows.reduce((a: any, b: any) => (Date.parse(b.first_at) < Date.parse(a.first_at) ? b : a));
+      const t0 = Date.parse(r0.first_at);
+      if (t0 < since || now - t0 > 3 * 864e5) continue; // רק התחלות חדשות, ולא התראה ישנה מדי
+      const boy = !!BOY[kid], name = KN[kid] || kid, cn = NUDGE[c.id]?.n || "התוכן החדש";
+      const sk = `start:${c.id}`, ek = `firstend:${c.id}`;
+      const hm = new Intl.DateTimeFormat("he-IL", { timeZone: "Asia/Jerusalem", hour: "2-digit", minute: "2-digit" }).format(new Date(t0));
+      if (!(sk in LOG)) {
+        const msg = {
+          title: `🚀 ${name} ${boy ? "התחיל" : "התחילה"} את ${cn}`,
+          body: `${boy ? "נכנס והתחיל" : "נכנסה והתחילה"} להתאמן בפעם הראשונה (${hm}). אחרי הסשן הראשון תגיע הודעה נוספת עם כמה זמן ${boy ? "היה" : "הייתה"} באפליקציה.`,
+          tag: `start-${kid}-${app}`, url: BASE + "parents/",
+        };
+        starts.push({ id: c.id, kind: "start", msg });
+        if (!preview) {
+          if (parQuiet) continue;
+          if (await once(sk, { device: r0.device, first_at: r0.first_at })) await push("parent", kid, msg);
+          continue; // סוף הסשן רק בסבב הבא, אחרי שההתחלה נשלחה
+        }
+      }
+      if (ek in LOG) continue;
+      const dv = LOG[sk]?.device || r0.device;
+      const r = rows.find((x: any) => x.device === dv) || r0;
+      const idle = now - Date.parse(r.updated_at);
+      if (idle < 5 * 60e3) continue; // עוד בפנים (דיווח כל דקה בזמן לימוד, ובסגירה)
+      const d = r.data || {};
+      const wall = Math.max(0, (Date.parse(r.updated_at) - Date.parse(r.first_at)) / 1e3), act = Math.min(+d.sec || 0, wall + 60);
+      const att = +d.att, ok = +d.ok;
+      const ans = isFinite(att) && att > 0 ? ` · ${att} תשובות, ${isFinite(ok) ? ok : 0} נכונות (${Math.round(((isFinite(ok) ? ok : 0) / att) * 100)}%)` : "";
+      const msg = {
+        title: `⏱️ ${name} ${boy ? "סיים" : "סיימה"} סשן ראשון: ${cn}`,
+        body: `${boy ? "היה" : "הייתה"} באפליקציה ${mins(Math.max(wall, act))}, מתוכן ${mins(act)} לימוד פעיל${ans}.`,
+        tag: `firstend-${kid}-${app}`, url: BASE + "parents/",
+      };
+      starts.push({ id: c.id, kind: "end", msg });
+      if (preview || parQuiet) continue;
+      if (await once(ek, { device: r.device, sec: act, wall })) await push("parent", kid, msg);
+    }
+  }
+  return json({ ok: true, il, out, nudge: plan, starts });
 });
