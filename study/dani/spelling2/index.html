@@ -216,7 +216,9 @@ function speak(t){if(MUTE||!('speechSynthesis' in window))return;try{speechSynth
 const DS=window.DaniSquishies,L5=DS.list5,ALLSQ=DS.all,aura=DS.aura,uaura=DS.uaura;
 const own=()=>{const o=DS.owned();SQ.forEach(x=>{if(!o.includes(x))o.push(x)});return o};
 const l5Done=()=>L5.every(x=>SQ.includes(x.id)),l5N=()=>L5.filter(x=>SQ.includes(x.id)).length;
-const sqEvery=()=>8;
+// אחרי שכל 6 של הבית נאספו ממשיכים לסקווישים שעוד חסרים בלוח של דני (אורן 19.11.2026: אחרת היא קיבלה כל פעם ביקור של אותם 6)
+const NEXT=()=>{const o=own();for(const l of [L5,DS.list,DS.list2,DS.list3]){const x=l.find(y=>!o.includes(y.id));if(x)return x}return null};
+const sqEvery=()=>{const n=NEXT();return n&&n.ult?24:n&&n.sup?12:8};
 const sqN=()=>ALLSQ.filter(x=>own().includes(x.id)).length,sqT=()=>ALLSQ.length;
 const sqSvg=s=>`<svg viewBox="0 0 100 100">${s.svg}</svg>`;
 
@@ -378,14 +380,14 @@ function startBonus(){PRAC=shuf(BONUS.map(w=>w[0]));SND.click();mon('hop','בו�
 function startPrac(){const l=WORDS.map(w=>w[0]).filter(e=>ADV()?S.adv.w[e].err>0:S.w[e].err>0);if(!l.length){mon('hop','עוד אין מילים שטעית בהן 😎');return}PRAC=shuf(l);next()}
 
 // ---------- סקווישי ----------
-function squishy(){let s=L5.find(x=>!SQ.includes(x.id));const isNew=!!s;if(!s)s=pick(L5);$('sqtt').textContent=isNew?'🏠 סקווישי חדש בבית של הלהקה!':'🏠 ביקור מהבית של הלהקה!';if(isNew){SQ.push(s.id);LS.set('dani_sp2_sq',SQ)}
+function squishy(){let s=NEXT();const isNew=!!s;if(!s){const o=own(),c=ALLSQ.filter(x=>o.includes(x.id)&&x.id!==CURSQ);s=pick(c.length?c:L5)}$('sqtt').textContent=isNew?(s.home?'🏠 סקווישי חדש בבית של הלהקה!':s.ult?'💎 אולטרה סקווישי חדש!':s.sup?'⭐ סופר סקווישי חדש!':'💜 סקווישי חדש ללהקה!'):'💜 ביקור מהלהקה!';if(isNew){SQ.push(s.id);LS.set('dani_sp2_sq',SQ)}
   CURSQ=s.id;$('sqimg').innerHTML=sqSvg(s);$('sqname').textContent=s.n+(isNew?'':' (שוב!)');$('sqdesc').textContent=s.d;$('sqok').textContent='לאוסף! 💜';const im=$('sqimg');im.style.animation='none';void im.offsetWidth;im.style.animation='';
   $('sqov').classList.add('on');SND.pop();upd()}
 $('sqimg').onclick=()=>{const im=$('sqimg');im.classList.remove('squish');void im.offsetWidth;im.classList.add('squish');sqSound(CURSQ)};
 $('sqok').onclick=()=>{$('sqov').classList.remove('on');$('sqtt').textContent='סקווישי חדש! 🎉';SND.click()};
 function sqRender(){const ev=sqEvery(),left=ev-(S.cc||0),o=own();
-  $('sqtx').innerHTML=l5Done()?'כל 6 הסקווישים של <b>הבית של הלהקה</b> אצלך! 🏠 כל 8 תשובות נכונות אחד מהם בא לבקר.':'על כל <b>8 תשובות נכונות</b> מצטרף סקווישי חדש לשורה <b>🏠 הבית של הלהקה</b>. כל אחד מהם הוא מילה מההכתבה!';
-  $('sqct').textContent=`בבית של הלהקה: ${l5N()} מתוך 6 · עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} לסקווישי הבא`+(window.StudyGuess&&!StudyGuess.reward()?` · 🤔 הפרסים עצורים בגלל ניחושים: עוד ${StudyGuess.stat().need} תשובות נכונות במחשבה`:'');$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
+  $('sqtx').innerHTML=l5Done()?(NEXT()?`כל 6 הסקווישים של <b>הבית של הלהקה</b> אצלך! 🏠 עכשיו ממשיכים לסקווישים שעוד חסרים בלוח שלך: כל <b>${ev} תשובות נכונות</b> אחד חדש.`:'כל הסקווישים אצלך! 🎉 כל 8 תשובות נכונות אחד מהם בא לבקר.'):'על כל <b>8 תשובות נכונות</b> מצטרף סקווישי חדש לשורה <b>🏠 הבית של הלהקה</b>. כל אחד מהם הוא מילה מההכתבה!';
+  $('sqct').textContent=(l5Done()?`באוסף: ${sqN()} מתוך ${sqT()} ·`:`בבית של הלהקה: ${l5N()} מתוך 6 ·`)+` עוד ${left} ${left===1?'תשובה נכונה':'תשובות נכונות'} לסקווישי הבא`+(window.StudyGuess&&!StudyGuess.reward()?` · 🤔 הפרסים עצורים בגלל ניחושים: עוד ${StudyGuess.stat().need} תשובות נכונות במחשבה`:'');$('sqpb').style.width=((S.cc||0)/ev*100)+'%';
   const cl=s=>s.ult?' ult':s.sup?' sup':s.trip?' trip':'',tile=s=>o.includes(s.id)?`<div class="own${cl(s)}" data-id="${s.id}">${sqSvg(s)}<span>${esc(s.n)}</span></div>`:`<div class="lock${cl(s)}">${sqSvg({svg:s.svg.split(aura).join('').split(uaura).join('').split(DS.orb).join('')})}<span>???</span></div>`;
   // השורה החדשה למעלה, ואחריה כל הלוח של דני
   const L=[DS.list5,DS.list,DS.list2,DS.list3,DS.list4],RW=[DS.rows[4],DS.rows[0],DS.rows[1],DS.rows[2],DS.rows[3]];
