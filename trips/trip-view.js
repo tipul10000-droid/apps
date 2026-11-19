@@ -139,7 +139,7 @@
     // ---- map ----
     if (t.map) {
       H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">🗺️</span><h2>המסלול</h2><small>' + esc(t.map.note || "") + '</small></div><div class="tp-card tp-map">' + mapSvg(t.map) +
-        '<div class="tp-legend"><span style="color:var(--c1)"><u style="border-top-style:dashed"></u>טיסה</span><span style="color:var(--c2)"><u></u>רכבת</span>' + (t.map.legend || []).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("") + "</div></div></section>");
+        '<div class="tp-legend"><span style="color:var(--acc)"><u style="border-top-style:dashed"></u>טיסה</span><span style="color:var(--acc2)"><u></u>רכבת</span>' + (t.map.legend || []).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("") + "</div></div></section>");
     }
 
     // ---- days ----
