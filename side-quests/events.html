@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#1B0B33">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EV_BUILD="1.0";window.SQ_DASH="events";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.EV_BUILD="1.1";window.SQ_DASH="events";</script>
 <script src="sq-db.js?v=10"></script>
 <title>הופעות ואירועים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,6 +91,7 @@ section{margin-bottom:22px}
 .who .opts button{border:0;background:var(--surface);padding:9px 2px;font-weight:700;font-size:13.5px;cursor:pointer;white-space:nowrap}
 .who .opts button.on{background:var(--hi);color:var(--bg)}
 .note{font-size:13px;color:var(--muted);line-height:1.5;margin:10px 0 0}
+.awx{margin:0 0 10px;padding:9px 11px;border-radius:10px;background:var(--bad-soft);color:var(--bad);font-size:13.5px;font-weight:700;line-height:1.45}
 .mon{font-family:var(--f-display);font-weight:800;font-size:14px;color:var(--muted);margin:14px 4px 6px}
 /* artists */
 .ar{display:flex;align-items:center;gap:12px;padding:12px 14px}
@@ -142,7 +143,9 @@ const inDays=n=>n==null?"":n<0?"עבר":n===0?"היום!":n===1?"מחר":"בעו
 /* status of ticket sales */
 const ST={on_sale:["בקופות","p-good"],few:["כרטיסים אחרונים","p-warn"],sold_out:["סולד אאוט","p-bad"],soon:["המכירה בקרוב","p-hi"],unknown:["",""]};
 const GO={lior:"💑 עם ליאור",friends:"👥 עם חברים",maybe:"🤔 אולי",no:"✕ לא הפעם"};
-let meta=null,artists=[],shows=[],db=null;
+let meta=null,artists=[],shows=[],db=null,AW=[],TR=[];
+/* trips abroad: settings/away + trips collection. A show during a trip = Oren is not in Israel */
+const awayOf=d=>d?[...AW,...TR].find(t=>t.from&&t.to&&d>=t.from&&d<=t.to)||null:null;
 const UI="sq_ev_ui";let ui={tab:"shows",art:"all",open:{}};try{Object.assign(ui,JSON.parse(localStorage.getItem(UI)||"{}"));}catch(e){}
 function save(){try{localStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200);}
@@ -167,13 +170,14 @@ function bar(){const T=[["shows","🎤 הופעות"],["artists","⭐ אמנים
 function showRow(s){const d=pd(s.d),n=daysTo(s.d),A=art(s.artist)||{},st=ST[s.status]||ST.unknown,o=ui.open[s.id],pr=price(s);
   const withs=arr(s.artists).map(id=>(art(id)||{}).name).filter(Boolean),wl=s.with||withs.join(", ");
   const title=s.title||A.name||"הופעה";
-  const tk=safe(s.url),mq=s.maps_q||[s.venue,s.city].filter(Boolean).join(", ");
+  const aw=awayOf(s.d),tk=safe(s.url),mq=s.maps_q||[s.venue,s.city].filter(Boolean).join(", ");
   return `<div class="sw${o?" open":""}" data-sq-item="${esc(s.id)}">
   <button class="row" data-x="${esc(s.id)}"><span class="dt">${d?`<span>${DOW[d.getDay()]}</span><b>${d.getDate()}</b><span>${MON[d.getMonth()].slice(0,3)}</span>`:"?"}</span>
    <span class="b"><span class="t">${esc(title)}</span><span class="s">${esc([s.venue,s.city].filter(Boolean).join(" · "))}${s.t?" · "+esc(s.t):""}</span>
-   <span class="tg">${n!=null&&n>=0?`<span class="pill ${n<=14?"p-warn":"p-mut"}">${inDays(n)}</span>`:""}${wl?`<span class="pill p-hi">🤝 עם ${esc(wl)}</span>`:""}${pr?`<span class="pill p-mut" dir="ltr">${esc(pr)}</span>`:""}${st[0]?`<span class="pill ${st[1]}">${st[0]}</span>`:""}${arr(s.deals).length?'<span class="pill p-warn">🏷️ מבצע</span>':""}${s.go&&GO[s.go]&&s.go!=="no"?`<span class="pill p-go">${GO[s.go]}</span>`:""}</span></span>
+   <span class="tg">${aw?`<span class="pill p-bad">✈️ אתה ב${esc(aw.place||"חו״ל")}</span>`:""}${n!=null&&n>=0?`<span class="pill ${n<=14?"p-warn":"p-mut"}">${inDays(n)}</span>`:""}${wl?`<span class="pill p-hi">🤝 עם ${esc(wl)}</span>`:""}${pr?`<span class="pill p-mut" dir="ltr">${esc(pr)}</span>`:""}${st[0]?`<span class="pill ${st[1]}">${st[0]}</span>`:""}${arr(s.deals).length?'<span class="pill p-warn">🏷️ מבצע</span>':""}${s.go&&GO[s.go]&&s.go!=="no"?`<span class="pill p-go">${GO[s.go]}</span>`:""}</span></span>
    <span class="ch">▾</span></button>
   <div class="det"><div><div class="in">
+   ${aw?`<p class="awx">✈️ ביום הזה אתה ב${esc(aw.place||"חו״ל")} (${esc(d6(aw.from))} עד ${esc(d6(aw.to))}). לא להזמין כרטיסים.</p>`:""}
    <dl class="kv"><dt>אמן</dt><dd>${esc(A.name||"")}${wl?" + "+esc(wl):""}</dd><dt>מתי</dt><dd>${esc(d6(s.d))}${d?" (יום "+DOW[d.getDay()]+")":""}${s.t?" · "+esc(s.t):""}${s.doors?" · פתיחת דלתות "+esc(s.doors):""}</dd><dt>איפה</dt><dd>${esc([s.venue,s.city].filter(Boolean).join(", "))}</dd>${pr?`<dt>מחיר</dt><dd>${esc(pr)}</dd>`:""}${s.seller?`<dt>קופה</dt><dd>${esc(s.seller)}</dd>`:""}</dl>
    ${arr(s.deals).length?`<ul class="deals">${arr(s.deals).map(x=>`<li>🏷️ ${esc(x)}</li>`).join("")}</ul>`:""}
    <div class="acts">${tk?`<a class="tk" href="${esc(tk)}" target="_blank" rel="noopener">🎟️ לכרטיסים</a>`:""}${mq?`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mq)}" target="_blank" rel="noopener">📍 Google Maps</a>`:""}${arr(s.links).map(l=>safe(l.u)?`<a href="${esc(l.u)}" target="_blank" rel="noopener">${esc(l.l||"לינק")}</a>`:"").join("")}</div>
@@ -212,6 +216,8 @@ document.addEventListener("click",e=>{
   const xb=e.target.closest("[data-x]");if(xb){const k=xb.dataset.x;ui.open[k]=!ui.open[k];save();xb.parentElement.classList.toggle("open",!!ui.open[k]);}
 });
 window.claude.use("db").then(d=>{db=d;if(!db)return;
+  db.doc("settings/away").onSnapshot(x=>{const v=x&&x.exists?x.data():{};AW=arr(v&&v.trips).map(t=>({from:t.from,to:t.to,place:t.place}));if(meta)render();},()=>{});
+  db.collection("trips").onSnapshot(q=>{TR=[];q.docs.forEach(x=>{const v=x.data();if(v&&!v._deleted&&v.from&&v.to)TR.push({from:v.from,to:v.to,place:v.short||v.place||v.title});});if(meta)render();},()=>{});
   db.collection("events").onSnapshot(s=>{artists=[];shows=[];meta=null;s.docs.forEach(x=>{const v=x.data();if(x.id==="_meta")meta=v;else if(!v._deleted){const o=Object.assign({id:x.id},v);if(v.kind==="artist")artists.push(o);else if(v.kind==="show")shows.push(o);}});
     if(!meta){$("app").innerHTML='<div class="empty">אין נתונים</div>';return;}render();},()=>{});});
 })();
