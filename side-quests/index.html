@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="24.9";window.SQ_BUILD_AT="19.11.2026 22:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.0";window.SQ_BUILD_AT="20.11.2026 09:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2465,6 +2465,47 @@ html.desk .co-mark{font-size:2.4cqi}
 @keyframes nftap{0%,70%,100%{transform:translateY(0)}80%{transform:translateY(2px) scale(.92)}}
 @media (prefers-reduced-motion:reduce){.nfgo svg{animation:none}}
 .cmk{display:inline-block;width:1em;height:1em;vertical-align:-.12em;line-height:0}.cmk svg{width:100%;height:100%;display:block}
+/* ===== 25.0 (Oren 20.11.2026): minimal first glance. Titles, categories and closed drawers; only urgent things open, in one line.
+   More air between blocks, slightly larger text, lighter and larger dashboard tiles (2 per row). Nothing removed: one tap opens it. */
+#tgate .tg-s{display:none}
+#tgate .tg{padding:13px 14px}
+#tgate:not(.open) .tg.tgx{display:none}
+#tgate .tgmore{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0 14px;background:none;border:0;border-top:1px solid var(--line);font:inherit;font-size:14.5px;font-weight:700;color:var(--muted);cursor:pointer;text-align:start}
+#tgate .tgmore span:first-child{flex:1}
+#tgate .tgmore .fc{transition:transform .2s;font-size:18px}
+#tgate.open .tgmore .fc{transform:rotate(-90deg)}
+#tgate.open .tg.tgx{animation:moreIn .22s ease-out}
+@keyframes moreIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+details.wmore{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+details.wmore>summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:54px;padding:0 16px;cursor:pointer;font-size:16.5px;font-weight:700;color:var(--ink);-webkit-tap-highlight-color:transparent}
+details.wmore>summary::-webkit-details-marker{display:none}
+details.wmore .wm-ic{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:var(--sunk,rgba(127,127,127,.12));color:var(--muted);font-size:15px;flex:none}
+details.wmore .wm-t{flex:1;min-width:0}
+details.wmore .fc,.fold .fc{transition:transform .2s}
+details.wmore[open]>summary .fc{transform:rotate(-90deg)}
+details.wmore>.glist{border:0;border-top:1px solid var(--line);border-radius:0;animation:moreIn .22s ease-out}
+.wm-nw{flex:none;width:10px;height:10px;border-radius:50%;background:#2F7BEA;box-shadow:0 0 0 3px rgba(47,123,234,.22);animation:sqbeat 2.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.wm-nw{animation:none}}
+/* air: blocks breathe, headings a bit larger */
+#mainSec .wcard{gap:12px}
+#mainSec>#list>*+*,#tail #more>*+*{margin-top:14px}
+#tail{margin-top:18px}
+.wc-head b{font-size:20px}
+.wc-head small{font-size:14px}
+.fold>summary{min-height:56px;font-size:16px}
+/* dashboards: 2 per row, larger, light (tinted card instead of a full color block), title only */
+.dz-grid,.dz-grid.c2{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dz-tile{min-height:92px;padding:14px 14px 13px;border-radius:18px;gap:10px;color:var(--ink);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--c1) 26%,var(--surface)) 0%,color-mix(in srgb,var(--c2) 12%,var(--surface)) 100%);
+  border:1px solid color-mix(in srgb,var(--c1) 40%,transparent);box-shadow:none}
+.dz-tile b{font-size:17px;gap:8px;line-height:1.2}
+.dz-tile b .ti{font-size:24px;color:color-mix(in srgb,var(--c1) 75%,var(--ink))}
+.dz-tile span.s:not(:empty){display:none}
+.dz-tile .bd{background:color-mix(in srgb,var(--c1) 30%,transparent);color:var(--ink);font-size:12px;padding:1px 8px}
+.dz-tile .bd.hot{background:var(--c1);color:#fff}
+.dz-tile .bd.soft{background:color-mix(in srgb,var(--c1) 16%,transparent)}
+.dz-grp{margin-top:18px}
+html.desk .hero .dz-grid{display:flex!important}
 </style>
 <script>window.SQI_SKIP=".sbar,#cnM,.r-title,.r-upd,.d-line,.d-story,.f-log,.dd-t,.bp-q,.up-t b,.lt b,.ft b";</script><script src="sq-icons.js?v=1"></script>
 <style>/* 23.7 (Oren 19.11.2026): splash screen + loading bar. A = the trail illustration (sq_gfx "sq-splash", cached on the device in
@@ -3627,7 +3668,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const sec=$("askSec");sec.hidden=false;
     // 18.4: open questions first (above the window), all closed = last (after the folded categories, before the dashboards).
     {const anchor=cards.length?$("mainSec"):$("dashSec");if(anchor&&anchor.parentNode&&sec.nextElementSibling!==anchor)anchor.parentNode.insertBefore(sec,anchor);}
-    if(!cards.length){sec.replaceChildren(h("div",{class:"fold ask noask"},h("div",{class:"fe"},h("span",{class:"ft"},"שאלות והחלטות"),h("span",{class:"fok"},"✓ אין כרגע, נהדר"))));return;}
+    if(!cards.length){sec.hidden=true;sec.replaceChildren();return;} // 25.0: nothing to decide = nothing on screen
     sec.replaceChildren(foldBox("asks","שאלות והחלטות",cards.length,[h("div",{class:"inbox"},cards)],{ask:true}));
   }
   function jumpTo(id){const e=$(id);if(e&&!e.hidden&&e.offsetParent)e.scrollIntoView({behavior:"smooth",block:"start"});else toast("אין כרגע מה להציג כאן");}
@@ -3832,7 +3873,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     pg.replaceChildren(...kids);}
   function pjFold(key,title,count,body){if(!count)return null;const k="pj:"+key;const d=h("details",{class:"fold",open:folded[k]===true?"":null},
       h("summary",null,h("span",{class:"ft"},title),h("span",{class:"fn"},count),h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"fbody"},body));
-    d.addEventListener("toggle",()=>{folded[k]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
+    d.addEventListener("toggle",()=>{folded[k]=d.open;try{sessionStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
   // ===== 23.0 (Oren 18.11): a mini statistics dashboard for every app in AI Projects =====
   // dev data = ../app-stats.json (GitHub Action after every merge: created, releases, version); external apps write projects/<id>.stats_meta.
   // usage = appstat_ping from each app (../appstat.js) -> appstat_get (needs the Side Quests code). Nothing here is personal.
@@ -4203,16 +4244,17 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function centerOpen(id){if(deskOn)return;requestAnimationFrame(()=>{const r=document.querySelector('.row.is-open[data-id="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');if(!r)return;
     const b=r.getBoundingClientRect(),vh=window.innerHeight,top=b.height>vh-80?b.top-60:b.top-(vh-b.height)/2;
     if(Math.abs(top)<8)return;window.scrollTo({top:window.scrollY+top,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});});}
-  const folded={};try{Object.assign(folded,JSON.parse(localStorage.getItem("sq_fold")||"{}"));}catch(e){}
+  // 25.0 (Oren 20.11.2026): every list opens closed. An opened drawer stays open only for this visit (sessionStorage), never across launches.
+  const folded={};try{localStorage.removeItem("sq_fold");Object.assign(folded,JSON.parse(sessionStorage.getItem("sq_fold")||"{}"));}catch(e){}
   // a titled card of rows (iOS-like grouped list)
   function group(title,items,hot,gid){if(!items.length)return null;
     return h("div",{class:"gwrap",id:gid?"g-"+gid:null},title?h("div",{class:"g-head"+(hot?" hot":"")},title,h("span",{class:"n"},items.length)):null,h("div",{class:"glist"},items.map(row)));}
   // a folded row that opens to its content; remembers open/closed per quest (sq_fold)
   function foldBox(key,title,count,body,o){o=o||{};const k=quest+":"+key;const op=folded[k]===true||!!o.force;
     const d=h("details",{class:"fold"+(o.hot?" hot":"")+(o.ask?" ask":""),id:"g-"+key,open:op?"":null},
-      h("summary",null,h("span",{class:"ft"},title),h("span",{class:"fn"},count),h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"fbody"},body));
-    d.addEventListener("toggle",()=>{folded[k]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
-  function foldRows(key,title,items,o){if(!items.length)return null;return foldBox(key,title,items.length,[h("div",{class:"glist"},items.map(row))],{...(o||{}),force:items.some(t=>t.id===openId)});}
+      h("summary",null,h("span",{class:"ft"},title),o.nw?h("span",{class:"wm-nw","aria-label":"יש משהו חדש"}):null,h("span",{class:"fn"},count),h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"fbody"},body));
+    d.addEventListener("toggle",()=>{folded[k]=d.open;try{sessionStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
+  function foldRows(key,title,items,o){if(!items.length)return null;return foldBox(key,title,items.length,[h("div",{class:"glist"},items.map(row))],{...(o||{}),force:items.some(t=>t.id===openId),nw:!/done/.test(key)&&items.some(t=>isFresh(t))});}
   function renderViews(){}
   // 8.3 (Oren 6.11): order inside every window. First what is done at home, then calls (also on the way), then going out:
   // tasks bound to a place grouped by area, nearest area first (fit.area, fit.km from home). Tasks that can be done anywhere
@@ -4276,11 +4318,21 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     return [...u,...n,...winSections(rt).flatMap(s=>s.items),...rr];}
   function runItems(run,pool){const L=[],seen=new Set();for(const sg of run.segs){if(seen.has(sg.id))continue;seen.add(sg.id);
     const at={d:(ilNow().d+sg.k)%7,s:sg.s,e:sg.e};L.push(...pool.filter(t=>!L.includes(t)&&fitsWin(t,sg.id,at)));}return L;}
-  function winBox(e,l,tag,L,empty,o){o=o||{};const list=L.length?h("div",{class:"glist"},orderL(L).map(row)):h("div",{class:"wc-empty"},empty);
-    if(!o.next)return h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},e),h("b",null,l),tag?h("small",null,tag):null),list);
-    const k=quest+":nx:"+o.key,op=folded[k]!=null?folded[k]===true:!!o.auto||L.some(t=>t.id===openId);
+  // 25.0 (Oren 20.11.2026, minimal UI): only what is urgent shows open. Everything else in the window sits in one closed drawer
+  // ("עוד N משימות לחלון הזה"); something new inside keeps it closed and lights a blue dot on the drawer.
+  function urgNow(t){if(!t||!isOpen(t)||t.status==="paused")return false;if(isUrgent(t)||isHot(t)||t.critical)return true;
+    const dl=t.deadline&&(t.deadline.d||t.deadline),n=dl?daysUntil(String(dl).slice(0,10)):null;return n!=null&&n<=3;}
+  function winRest(key,R){const k=quest+":wm:"+key,op=folded[k]===true||R.some(t=>t.id===openId),nw=R.some(t=>isFresh(t));
+    const d=h("details",{class:"wmore",open:op?"":null},h("summary",null,h("span",{class:"wm-ic","aria-hidden":"true"},"≡"),h("span",{class:"wm-t"},R.length===1?"עוד משימה אחת לחלון הזה":`עוד ${R.length} משימות לחלון הזה`),nw?h("span",{class:"wm-nw","aria-label":"יש משהו חדש"}):null,h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"glist"},orderL(R).map(row)));
+    d.addEventListener("toggle",()=>{folded[k]=d.open;try{sessionStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
+  function winBox(e,l,tag,L,empty,o){o=o||{};
+    if(!o.next){const U=orderL(L.filter(urgNow)),R=L.filter(t=>!U.includes(t));
+      return h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},e),h("b",null,l),tag?h("small",null,tag):null),
+        U.length?h("div",{class:"glist"},U.map(row)):(L.length?null:h("div",{class:"wc-empty"},empty)),R.length?winRest(l,R):null);}
+    const list=L.length?h("div",{class:"glist"},orderL(L).map(row)):h("div",{class:"wc-empty"},empty);
+    const k=quest+":nx:"+o.key,op=folded[k]!=null?folded[k]===true:L.some(t=>t.id===openId);
     const d=h("details",{class:"wcard next nxf",open:op?"":null},h("summary",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},e),h("b",null,l),h("small",null,tag,L.length?" · "+L.length:""),h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"nxb"},list));
-    d.addEventListener("toggle",()=>{folded[k]=d.open;try{localStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
+    d.addEventListener("toggle",()=>{folded[k]=d.open;try{sessionStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
   function renderList(){deskShown=null;if(deskOn){const L=document.querySelector("#dtop .dlogo"),Q=QUESTS[quest]||QUESTS.side;if(L)L.replaceChildren((Q.a||"").toUpperCase()+" ",h("i",{},(Q.b||"").toUpperCase()));}renderMain();renderStrip();renderDash();if(nav.lvl>=2)renderNav();if(nav.dash&&!dashPg.frame)renderDashPg();if(nav.dash){dzSend();dzTaskRefresh();}deskEmpty();updUpdBtn();}
   function renderMain(){
     {const tv=$("tvSec");if(tv)tv.classList.toggle("updhide",updOn);}
@@ -4964,12 +5016,15 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   window.addEventListener("hashchange",()=>{if(location.hash.startsWith("#/"))return;const q=questFromHash();if(qHidden(q)){setMode("home","🏠 עברתי לבית כדי לפתוח את "+QUESTS[q].name);return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
   applyQuest();
   // 9.9 (Oren 6.11.2026): "צא עד Y, סוגרים ב-X" for today's tasks that depend on opening hours (timegate.js; same math as the push)
+  let gateOpen=false;
   function renderGate(){const el=document.getElementById("tgate");if(!el||!window.SQGate)return;
     const n=ilNow(),G=window.SQGate,today=ilDate(),esc=v=>String(v==null?"":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
     updLocBtn();const L=G.list([...allTopics.map(hereFit),...calTasks(today)],today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past"&&(!String(g.id).startsWith("cal:")||g.by-n.m<=240));
     if(!L.length){el.hidden=true;el.innerHTML="";return;}
     const left=g=>{const m=g.by-n.m;return m<=0?"עכשיו!":m<60?`עוד ${m} דק׳`:`עוד ${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} ש׳`;};
-    el.innerHTML=L.slice(0,4).map(g=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`;}).join("");
+    const L4=L.slice(0,4);el.innerHTML=L4.map((g,i)=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}${i?" tgx":""}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`+(i===0&&L4.length>1?`<button type="button" class="tgmore" aria-expanded="${gateOpen}"><span>${gateOpen?"פחות":"עוד "+(L4.length-1)+" היום"}</span><span class="fc" aria-hidden="true">‹</span></button>`:"");}).join("");
+    // 25.0 (Oren 20.11.2026): only the nearest "צא עד" shows; the others wait behind "עוד N היום", which opens below itself
+    el.classList.toggle("open",gateOpen);{const mb=el.querySelector(".tgmore");if(mb)mb.onclick=()=>{gateOpen=!gateOpen;renderGate();};}
     el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>{if(String(b.dataset.id).startsWith("cal:")){toast("אירוע פרטי מהיומן. ההתראות על היציאה מגיעות לבד");return;}openTask(b.dataset.id);});}
   function renderAll(){renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();statKpi();renderQNew();}
 
