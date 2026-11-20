@@ -14,7 +14,7 @@
    A page can opt a section out with class "calm-off" (always open) or force-close with "calm-closed". */
 (function(){
   if(window.SQCalm)return;
-  var URG=/דחוף|לעשות עכשיו|משימות פתוחות|פעולות פתוחות|מחכה להחלטה|מחכה לך|ממתין להחלטה|לטפל עכשיו/;
+  var URG=/דחוף|לעשות עכשיו|משימות פתוחות|פעולות פתוחות|מחכה להחלטה|מחכה לך|ממתין להחלטה|לטפל עכשיו|תשומת לב|^[^֐-׿a-zA-Z]*משימות[^֐-׿a-zA-Z]*$/;
   var OPEN={};      // key -> true/false, this visit only
   var kpOpen=false; // hero numbers
   var nwOpen=false; // "מה חדש" list
