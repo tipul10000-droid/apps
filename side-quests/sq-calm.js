@@ -39,9 +39,9 @@
     ".hero .calm-kpb .calm-c{transition:transform .2s;font-size:15px}html.calm-kp .hero .calm-kpb .calm-c{transform:rotate(-90deg)}"+
     "html.calm-kp .hero .kpis,html.calm-kp .hero .stages{animation:calmIn .22s ease-out}"+
     /* "מה חדש": one line until tapped */
-    ".sqnws.calm:not(.calm-open) ul,.sqnws.calm:not(.calm-open) .m{display:none}"+
-    ".sqnws.calm .h{cursor:pointer;margin-bottom:0}.sqnws.calm.calm-open .h{margin-bottom:6px}"+
-    ".sqnws.calm .h .calm-c{order:9;font-size:18px;transition:transform .2s}.sqnws.calm.calm-open .h .calm-c{transform:rotate(-90deg)}"+
+    ".sqnws.calmn:not(.calm-open) ul,.sqnws.calmn:not(.calm-open) .m{display:none}"+
+    ".sqnws.calmn .h{cursor:pointer;margin-bottom:0}.sqnws.calmn.calm-open .h{margin-bottom:6px}"+
+    ".sqnws.calmn .h .calm-c{order:9;font-size:18px;transition:transform .2s}.sqnws.calmn.calm-open .h .calm-c{transform:rotate(-90deg)}"+
     /* air and a slightly larger base text */
     "html.calm-on body{line-height:1.5}"+
     "html.calm-on .card,html.calm-on .row,html.calm-on li{font-size:max(1em,15px)}"+
@@ -90,14 +90,14 @@
       if(pill)pill.setAttribute("aria-expanded",kpOpen?"true":"false");}
     document.documentElement.classList.toggle("calm-kp",kpOpen);
     var nb=document.querySelector(".sqnws");
-    if(nb){if(!nb.classList.contains("calm")){nb.classList.add("calm");var hh=nb.querySelector(".h");if(hh){var c2=document.createElement("span");c2.className="calm-c";c2.setAttribute("aria-hidden","true");c2.textContent="‹";hh.appendChild(c2);hh.setAttribute("role","button");}}
+    if(nb){if(!nb.classList.contains("calmn")){nb.classList.add("calmn");var hh=nb.querySelector(".h");if(hh){var c2=document.createElement("span");c2.className="calm-c";c2.setAttribute("aria-hidden","true");c2.textContent="‹";hh.appendChild(c2);hh.setAttribute("role","button");}}
       nb.classList.toggle("calm-open",nwOpen);}
   }
   var t=null,busy=false;function later(){if(busy)return;clearTimeout(t);t=setTimeout(run,30);}
   function run(){busy=true;try{apply();}finally{setTimeout(function(){busy=false;},0);}}
   document.addEventListener("click",function(e){
     var p=e.target.closest&&e.target.closest(".calm-kpb");if(p){kpOpen=!kpOpen;run();return;}
-    var nh=e.target.closest&&e.target.closest(".sqnws.calm .h");if(nh&&!e.target.closest("button")){nwOpen=!nwOpen;run();return;}
+    var nh=e.target.closest&&e.target.closest(".sqnws.calmn .h");if(nh&&!e.target.closest("button")){nwOpen=!nwOpen;run();return;}
     if(e.target.closest&&e.target.closest("a,button,input,select,textarea,label,summary"))return;
     var sh=e.target.closest&&e.target.closest("section.calm>.sh");if(!sh)return;
     var sec=sh.parentNode,on=!sec.classList.contains("calm-open");OPEN[keyOf(sec)]=on;setOpen(sec,on);
