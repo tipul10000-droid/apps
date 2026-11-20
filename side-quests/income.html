@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2D4A2B">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IN_BUILD="1.3";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IN_BUILD="1.4";</script>
 <script src="sq-db.js?v=10"></script>
 <script src="sq-fid.js?v=1"></script>
 <script src="dash-lock.js?v=2"></script>
@@ -117,6 +117,8 @@ details.fd>.x .nx{margin-top:6px;font-weight:700;color:var(--link)}
 .lk div{background:var(--surface);padding:10px 8px;text-align:center}.lk b{display:block;font-family:var(--f-display);font-size:19px}.lk span{font-size:12.5px;color:var(--muted)}
 .q+.q{border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
 .opts button.on{background:var(--hi-soft);color:var(--hi)}
+details.sqarch.na>.ab{animation:none}
+.qr{margin-top:8px;font-size:14px;color:var(--muted)}
 .mchart{display:flex;align-items:flex-end;gap:1px;height:110px;direction:ltr}
 .mchart i{flex:1;background:var(--hi);min-height:1px;border-radius:1px 1px 0 0}.mchart i.d{background:var(--warn)}.mchart i.z{background:var(--bad)}
 .mchl{display:flex;justify-content:space-between;direction:ltr;font-size:11px;color:var(--muted);margin-top:4px}
@@ -193,6 +195,7 @@ function returnsBlock(){const R=arr(meta.returns).slice().sort((a,b)=>(+b.y||0)-
   return `<section><div class="sh"><h2>📑 דוחות שנתיים</h2><small>${esc(meta.returns_note||"")}</small></div><div class="list">${R.map(x=>row({who:x.who||"family",l:"דוח "+x.y+(x.when?" · "+x.when:""),note:x.note,v:x.v,pill:RS[x.s]},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
 function tabTax(){const T=arr(meta.tax);const ST={urgent:["דחוף","p-bad"],check:["לבדוק","p-warn"],plan:["מתוכנן","p-hi"]};
   return returnsBlock()+`<section><div class="sh"><h2>מס, זיכויים והחזרים</h2></div><div class="list">${T.map(x=>row({...x,pill:ST[x.s]},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
+const hold={};
 function tabLior(){const L=lior;if(!L)return '<div class="empty">אין עדיין נתונים</div>';
   const FS={open:["לדרוש","p-bad"],check:["לבדוק","p-warn"],ask:["שאלה","p-hi"],ok:["תקין","p-good"],info:["מידע",""],plan:["מתוכנן","p-hi"]};
   const k=L.kpis||{};let o="";
@@ -201,7 +204,10 @@ function tabLior(){const L=lior;if(!L)return '<div class="empty">אין עדיי
   const F=arr(L.findings),ord={open:0,check:1,ask:2,info:3,ok:4};
   o+=`<section><div class="sh"><h2>🔎 ממצאים</h2><small>עדכון ${esc(L.updated||"")}</small></div><div class="list">${F.slice().sort((a,b)=>(ord[a.s]??5)-(ord[b.s]??5)).map(f=>`<details class="fd" data-sq-item="${esc(f.id)}"><summary class="row"><span class="b"><span class="t">${esc(f.h)}${FS[f.s]&&FS[f.s][1]?`<span class="pill ${FS[f.s][1]}">${FS[f.s][0]}</span>`:""}</span></span>${f.v?`<span class="v">${ils(f.v)}${f.per==="month"?"<small>בחודש</small>":"<small>הערכה</small>"}</span>`:""}</summary><div class="x">${esc(f.t)}${f.next?`<div class="nx">▶️ ${esc(f.next)}</div>`:""}</div></details>`).join("")}</div></section>`;
   const Q=arr(L.questions),A=L.ans||{};
-  if(Q.length)o+=`<section><div class="sh"><h2>❓ שאלות אליך</h2><small>${Q.filter(q=>!A[q.id]).length} פתוחות</small></div><div class="card">${Q.map(q=>`<div class="q"><h3>${esc(q.q)}</h3><div class="opts">${arr(q.opts).map(x=>`<button data-qa="${esc(q.id)}" data-v="${esc(x)}" class="${(A[q.id]||{}).a===x?"on":""}">${(A[q.id]||{}).a===x?"✓ ":""}${esc(x)}</button>`).join("")}</div></div>`).join("")}</div></section>`;
+  const qBox=q=>`<div class="q"><h3>${esc(q.q)}</h3><div class="opts">${arr(q.opts).map(x=>`<button data-qa="${esc(q.id)}" data-v="${esc(x)}" class="${(A[q.id]||{}).a===x?"on":""}">${(A[q.id]||{}).a===x?"✓ ":""}${esc(x)}</button>`).join("")}</div>${A[q.id]&&q.r?`<p class="qr">${esc(q.r)}</p>`:""}</div>`;
+  const QO=Q.filter(q=>!A[q.id]||hold[q.id]),QA=Q.filter(q=>A[q.id]&&!hold[q.id]);
+  if(QO.length)o+=`<section><div class="sh"><h2>❓ שאלות אליך</h2><small>${QO.filter(q=>!A[q.id]).length} פתוחות</small></div><div class="card">${QO.map(qBox).join("")}</div></section>`;
+  if(QA.length)o+=`<details class="sqarch${hold._q?" na":""}" data-k="lior-ans"><summary>✓ שאלות שנענו · ${QA.length}</summary><div class="ab"><div class="card">${QA.map(qBox).join("")}</div></div></details>`;
   const N=arr(L.need);
   if(N.length)o+=`<section><div class="sh"><h2>📥 מה עוד חסר לי</h2><small>שלח בצ׳אט</small></div><div class="list">${N.map(x=>`<div class="row"><span class="b"><span class="t">${esc(x.t)}</span><span class="s">${esc(x.why)}</span></span></div>`).join("")}</div></section>`;
   const R=arr(L.rights);
@@ -223,8 +229,9 @@ function render(){if(!meta){return;}
   $("app").innerHTML=ui.tab==="year"?tabYear():ui.tab==="mil"?tabMil():ui.tab==="tax"?tabTax():ui.tab==="lior"?tabLior():tabMonth();
   $("foot").innerHTML=`שכר ${esc(window.IN_BUILD)}`;}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b){ui.tab=b.dataset.tab;save();render();return;}
-  const q=e.target.closest("[data-qa]");if(q&&lior&&dbr){const A=Object.assign({},lior.ans||{});A[q.dataset.qa]={a:q.dataset.v,at:new Date().toISOString()};lior.ans=A;
-    const y=window.scrollY;render();window.scrollTo(0,y);dbr.collection("income").doc("lior").update({ans:A});}});
+  const q=e.target.closest("[data-qa]");if(q&&lior&&dbr){const A=Object.assign({},lior.ans||{});const id=q.dataset.qa,was=(lior.ans||{})[id];A[id]={a:q.dataset.v,at:new Date().toISOString()};lior.ans=A;
+    if(!was||hold[id]){clearTimeout(hold[id]);hold[id]=setTimeout(()=>{delete hold[id];if(ui.tab==="lior"){const y2=window.scrollY;hold._q=1;render();hold._q=0;window.scrollTo(0,y2);}},5000);}
+    const y=window.scrollY;hold._q=1;render();hold._q=0;window.scrollTo(0,y);dbr.collection("income").doc("lior").update({ans:A});}});
 window.claude.use("db").then(db=>{if(!db)return;dbr=db;
   db.collection("income").onSnapshot(s=>{s.docs.forEach(x=>{if(x.id==="_meta")meta=x.data();if(x.id==="lior")lior=x.data();});if(!meta)$("app").innerHTML='<div class="empty">אין נתונים</div>';render();},()=>{});});
 })();
