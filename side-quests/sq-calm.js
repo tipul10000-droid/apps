@@ -76,7 +76,7 @@
       if(n&&!ce){ce=document.createElement("span");ce.className="calm-n";sh.insertBefore(ce,sh.querySelector(".calm-c"));}
       if(ce){if(n)ce.textContent=String(n);else ce.remove();}
       // new inside a closed drawer = dot on the title (the drawer stays closed)
-      var nw=!on&&!!sec.querySelector(":scope>:not(.sh) .sqnew,:scope>.sqnew:not(.sh)"),d=sh.querySelector(".calm-nw");
+      var nw=!on&&!sh.querySelector(".sqnew")&&!!sec.querySelector(":scope>:not(.sh) .sqnew,:scope>.sqnew:not(.sh)"),d=sh.querySelector(".calm-nw");
       if(nw&&!d){d=document.createElement("span");d.className="calm-nw";d.setAttribute("aria-label","יש כאן משהו חדש");sh.insertBefore(d,sh.querySelector(".calm-c"));}
       else if(!nw&&d)d.remove();
     });
