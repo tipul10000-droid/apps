@@ -3989,7 +3989,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       ...(plog.length?[h("div",{class:"pjsub"},"היסטוריה"),h("div",{class:"pjlog"},plog.map(x=>h("div",null,x.text,x.at?h("small",null,relAgo(x.at)):null)))]:[])];
     const y=pg.scrollTop;
     pg.replaceChildren(bar,h("div",{class:"pgbody"},head,
-      sec("me","מחכה לך",me),sec("rm","⏰ תזכורות להיום",rmd),sec("cl","אצל Claude",cl),sec("oth","מחכה לאחרים",oth),none,
+      sec("me","מחכה לך",me),sec("rm","◷ תזכורות להיום",rmd),sec("cl","אצל Claude",cl),sec("oth","מחכה לאחרים",oth),none,
       pjFold("paused","בהקפאה",pa.length,[h("div",{class:"glist"},pa.map(row))]),
       pjFold("dorm","💤 משימות עתידיות",dormP.length,[h("div",{class:"glist"},dormP.map(row))]),
       pjFold("hist","היסטוריה ובוצעו",hist.length+plog.length,histBody)));
@@ -4327,7 +4327,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // lives only in its own drawer "⏰ תזכורות", which appears on its day (next_date today or past, not snoozed), and is never
   // counted as a task or in "מחכות לך". Until its day it waits folded in "⏰ תזכורות בהמשך".
   function isRem(t){return !!t&&t.kind==="reminder";}
-  function remToday(t){if(!isRem(t)||!isOpen(t)||t.status==="paused"||snoozed(t))return false;const n=daysUntil(t.next_date);return n==null||n<=0;}
+  function remToday(t){if(!isRem(t)||!isOpen(t)||t.status==="paused"||snoozed(t))return false;const n=daysUntil(t.next_date);return n==null||(t.recur?n===0:n<=0);} // a weekly one is only for its own day, a one-time one stays until done
   function catOf(t){if(t.status==="done"||t.status==="promoted")return "done";if(!isOpen(t))return "arch";
     if(isRem(t))return remToday(t)?"rem":"remL";
     if(t.status==="waiting_other")return waitBack(t)?"task":"wait";
@@ -4386,9 +4386,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const wk=t=>String(t.sleep_until||(t.snooze_until==="someday"?"9999":t.snooze_until)||"9998");
     more.push(foldRows("wait",catT("wait"),C.wait.sort((a,b)=>byDate(a,b))),foldRows("dorm",catT("dorm"),C.dorm.sort((a,b)=>wk(a).localeCompare(wk(b)))));
     const doneL=C.done.sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")); // 16.2: no cap
-    if(C.rem.length)top.unshift(foldRows("rem",catT("rem","⏰ תזכורות להיום"),C.rem.sort(byDate)));
+    if(C.rem.length)top.unshift(foldRows("rem",catT("rem","תזכורות להיום"),C.rem.sort(byDate)));
     if(C.remL.length){const rk=t=>String(t.sleep_until||(t.snooze_until&&t.snooze_until!=="someday"?String(t.snooze_until).slice(0,10):"")||t.next_date||"9999");
-      more.push(foldRows("remL",catT("rem","⏰ תזכורות בהמשך"),C.remL.sort((a,b)=>rk(a).localeCompare(rk(b)))));}
+      more.push(foldRows("remL",catT("rem","תזכורות בהמשך"),C.remL.sort((a,b)=>rk(a).localeCompare(rk(b)))));}
     top.unshift(...qInfoBanners());
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
