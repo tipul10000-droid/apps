@@ -2,7 +2,7 @@
 // דני: peach cat avo(הפלוץ היחיד) panda donut mochi + s_kimbap s_tteok s_bingsu s_dalgona s_melona s_choco + אולטרה u_ramyeon u_hotteok u_bungeo u_corndog u_mandu u_banana
 // דני (אורן 14.11.2026): רק הצלילים המצוירים החמודים המקוריים, בלי ההקלטות מהאינטרנט (ממים, גרעפסים, פלוצים). גם לאולטרה שלה יש צליל מצויר משלה.
 // דני חיזוק מתמטיקה: dm_pepero dm_boba dm_hoppang dm_yakult dm_gyeran dm_injeolmi
-// דני הכתבה 2 (הבית של הלהקה, 19.11.2026): dh_towel dh_mug dh_spoon dh_soap dh_fridge dh_fork
+// דני הכתבה 2 (הבית של הלהקה, 19.11.2026): dh_towel dh_mug dh_spoon dh_soap dh_fridge dh_fork dh_plate dh_drawer dh_dishes dh_brush dh_bath dh_stove
 // דני תנ״ך (יהושע × סטריי קידס, 19.11.2026): tn_chan tn_spies tn_felix tn_seungmin tn_changbin tn_hyunjin
 // ליה: rocket pizza ufo moon toast comet + s_sun s_saturn s_alien s_taco s_galaxy s_sushi + חרקי חלל bg_lady bg_bee bg_ant bg_fire bg_fly bg_queen + מסע בין הכוכבים mt_cheese mt_shake mt_cookie mt_egg mt_jelly mt_berry
 // פרס מאמץ מההורים (14.11.2026): ef_l_* ליה, ef_d_* דני, ef_v_* לביא, ef_s_* שילה. תמיד הצליל המצויר שלהם.
@@ -81,6 +81,12 @@
   dh_soap:function(){for(var i=0;i<6;i++)osc('sine',i*.08,.07,[[0,900+i*150],[1,1300+i*170]],.15);noise(.5,.25,.06,'highpass',5000,7000)},// פּוֹפּ-פּוֹפּ של בועות סבון
   dh_fridge:function(){osc('sawtooth',0,.6,[[0,90],[1,95]],.08,400,[3,4]);osc('sine',.55,.3,[[0,700],[1,1400]],.15);beep(.85,1568,.15,.1,'triangle')},// זמזום של מקרר ו"ברררר קר!"
   dh_fork:function(){[0,.1,.2].forEach(function(t,i){beep(t,1047+i*262,.08,.12,'square')});osc('square',.35,.35,[[0,330],[.5,440],[1,392]],.09,1600,[5,12])},// טִינְג-טִינְג-טִינְג וריף רוק קטן
+  dh_plate:function(){beep(0,1319,.1,.1,'sine');beep(.1,1661,.1,.1,'sine');beep(.2,1976,.25,.12,'sine');osc('triangle',.45,.3,[[0,2400],[1,2600]],.06,0,[8,20])},// צְלִיל כתר של צלחת: דִּינְג-דִּינְג-דִּיִּינג
+  dh_drawer:function(){noise(0,.35,.1,'lowpass',600,300,1);osc('sine',.35,.25,[[0,500],[1,1100]],.15);beep(.62,1568,.12,.1,'triangle');beep(.72,2093,.18,.1,'triangle')},// שְׁרְררר של מגירה שנפתחת וטָה-דָה
+  dh_dishes:function(){[0,.09,.18,.27].forEach(function(t,i){beep(t,1760+i*220,.07,.08,'square')});osc('sine',.4,.35,[[0,300],[.5,600],[1,450]],.14,0,[4,10])},// קְלִינְק-קְלִינְק של כלים ובּוּם דיסקו
+  dh_brush:function(){noise(0,.5,.09,'bandpass',3000,4000,3);beep(.55,2349,.08,.1,'sine');beep(.62,3136,.15,.08,'sine')},// שְׁשְׁשְׁ של צחצוח וטִינְג של חיוך מבריק
+  dh_bath:function(){for(var i=0;i<5;i++)osc('sine',i*.1,.09,[[0,500+i*90],[1,900+i*120]],.14);osc('square',.55,.2,[[0,700],[1,520]],.06,1200)},// בּוּלְבּוּל של קצף וקְוָואק של ברווז
+  dh_stove:function(){noise(0,.45,.08,'highpass',3500,5000);osc('sawtooth',.1,.3,[[0,180],[1,220]],.05,900);beep(.5,1047,.1,.1,'triangle');beep(.6,1568,.2,.1,'triangle')},// טְשְׁשְׁשְׁ של מחבת ודִּינְג של מנה מוכנה
   // דני, יהושע × סטריי קידס (תנ״ך, 19.11.2026): tn_*, רק צלילים מצוירים
   tn_chan:function(){[0,.18,.36].forEach(function(t,i){osc('square',t,.14,[[0,392+i*131],[1,523+i*131]],.1,1800)});beep(.56,1047,.25,.12,'triangle')},// שלוש קריאות "חזק!" שעולות ופעמון
   tn_spies:function(){noise(0,.5,.09,'highpass',3000,5000,1,8);osc('sine',.45,.25,[[0,500],[1,350]],.12);osc('sine',.62,.2,[[0,700],[1,520]],.1)},// ששששש בלחש ו"אוּפּס" קטן
