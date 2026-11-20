@@ -4324,6 +4324,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function catT(k,l){return [catIc(k),h("span",null,l||CATS[k].l)];}
   function waitBack(t){if(t.status!=="waiting_other")return false;const r=freshOf(t);return !!r&&r.src!=="own"&&r.ms>visitBase;}
   // 25.1 (Oren 20.11.2026): reminders are not tasks. A topic with kind "reminder" (recurring or date-bound, nothing to decide)
+  // Definition (Oren 20.11.2026): a reminder is something that happens regardless of Oren (orchestra, football, a pilates class,
+  // a miluim training) that he may attend or act on. Anything that happens only if he does it (car test, flowers) is a task.
   // lives only in its own drawer "⏰ תזכורות", which appears on its day (next_date today or past, not snoozed), and is never
   // counted as a task or in "מחכות לך". Until its day it waits folded in "⏰ תזכורות בהמשך".
   function isRem(t){return !!t&&t.kind==="reminder";}
