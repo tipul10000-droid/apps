@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#25272D">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.4";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.5";</script>
 <script src="sq-db.js?v=10"></script>
 <title>קניות ורכישות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -155,6 +155,7 @@ table.cmp td.pk{background:var(--pick-soft)}
 .council p{margin:6px 0 10px;font-size:14px;opacity:.9}
 .council .btn{background:var(--accent);color:var(--accent-ink)}
 .council .res{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 12px;margin-top:10px;font-size:14px}
+.council .exp{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}.council .exp li{background:rgba(255,255,255,.07);border-radius:12px;padding:9px 12px;font-size:14px;line-height:1.5}.council .exp b{display:block;margin-bottom:2px}
 .links{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:14.5px}
 .guide h3{font-size:16px;margin:10px 0 4px}
 .guide h3:first-child{margin-top:0}
@@ -294,6 +295,7 @@ function councilPrompt(x){const o=(x.offers||[]).filter(y=>!y.no_cmp).map(y=>`- 
 function tabCouncil(x){const c=x.council||{};
   return `<section><div class="council"><h3 style="display:flex;align-items:center;justify-content:space-between;gap:8px">🧠 מועצת המומחים <button class="btn" data-council style="flex:none;padding:7px 14px;font-size:14px">▶ הרץ</button></h3>
     ${c.verdict?`<div class="res"><b>${esc(c.at?"הכרעת המועצה ("+c.at+")":"הכרעת המועצה")}:</b> ${esc(c.verdict)}${c.summary?`<div style="margin-top:6px;opacity:.9">${esc(c.summary)}</div>`:""}${safe(c.url)?`<div style="margin-top:6px"><a href="${esc(c.url)}" target="_blank" rel="noopener" style="color:#FFE3A3">הדוח המלא</a></div>`:""}</div>`:""}
+    ${(c.experts||[]).length?`<ul class="exp">${c.experts.map(e=>`<li><b>${esc(e.who||"")}</b>${esc(e.view||"")}${e.pick?`<div style="opacity:.8;margin-top:3px">בחירה: ${esc(e.pick)}</div>`:""}</li>`).join("")}</ul>`:""}
   </div></section>`;}
 function renderItem(id){const x={id,...(items[id]||{})};if(!x.title){$("app").innerHTML=`<div class="empty">${loaded?"הנושא לא נמצא":"טוען…"}</div>`;return;}
   $("hero").innerHTML=heroItem(x);
