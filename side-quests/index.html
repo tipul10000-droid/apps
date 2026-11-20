@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.0";window.SQ_BUILD_AT="20.11.2026 09:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.1";window.SQ_BUILD_AT="20.11.2026 15:00";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -3405,7 +3405,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // (📌 box in the page, dash-sub.js; or the in-app card). Same filter everywhere: open, not paused, not snoozed/dormant.
   // me = on Oren (urgent first), oth = waiting for others. Nothing open = no tag (Oren 19.11.2026).
   function dzOrd(a,b){const u=t=>isUrgent(t)?0:isHot(t)?1:2;return u(a)-u(b)||byDate(a,b);}
-  function dashShow(d){const o=dashTasks(d).filter(t=>isOpen(t)&&t.status!=="paused"&&!snoozed(t)&&!isFun(t));
+  function dashShow(d){const o=dashTasks(d).filter(t=>isOpen(t)&&t.status!=="paused"&&!snoozed(t)&&!isFun(t)&&(!isRem(t)||remToday(t)));
     const me=o.filter(t=>t.status!=="waiting_other").sort(dzOrd),oth=o.filter(t=>t.status==="waiting_other").sort(dzOrd);
     return {me,oth,urg:me.filter(t=>isUrgent(t)||isHot(t)),n:o.length};}
   function dzBadge(d){const s=dashShow(d),b=(c,t,full)=>h("span",{class:"bd"+c,title:full,"aria-label":full},t);
@@ -3839,8 +3839,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const under=navUnder(el);if(under){under.style.transition="transform .26s cubic-bezier(.2,.8,.2,1)";under.style.transform="none";}
     $("pgShade").style.transition="opacity .26s";$("pgShade").style.opacity="0";
     setTimeout(()=>{done&&done();},270);}
-  function projWaiting(pid){return allTopics.filter(t=>t.project===pid&&t.status==="waiting_me"&&!isBg(t)&&!isFun(t)).length;}
-  function projCounts(ts){const o=ts.filter(t=>isOpen(t)&&!isBg(t)&&!isFun(t));return {open:o.length,me:o.filter(t=>t.status==="waiting_me").length,asks:o.reduce((n,t)=>n+openAsks(t),0)};}
+  function projWaiting(pid){return allTopics.filter(t=>t.project===pid&&t.status==="waiting_me"&&!isBg(t)&&!isFun(t)&&!isRem(t)).length;}
+  function projCounts(ts){const o=ts.filter(t=>isOpen(t)&&!isBg(t)&&!isFun(t)&&!isRem(t));return {open:o.length,me:o.filter(t=>t.status==="waiting_me").length,asks:o.reduce((n,t)=>n+openAsks(t),0)};}
   function genTasks(){return allTopics.filter(t=>!isFun(t)&&questOf(t)==="ai"&&!isProjTask(t)&&!isBg(t));}
   function pgBack(back,fn){return h("button",{class:"pgback",type:"button","aria-label":"חזרה ל"+back,onclick:()=>fn?fn():navBack()},
     h("span",{class:"ar","aria-hidden":"true"},"→"),h("img",{src:"icon-192.png?v=2",alt:""}),h("span",{class:"em","aria-hidden":"true"}),h("span",{class:"lb"},back));}
@@ -3960,8 +3960,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(!gen&&!p){pg.replaceChildren(bar,h("div",{class:"pgbody"},h("div",{class:"empty"},projects.length?"הפרויקט לא נמצא.":"טוען…")));return;}
     const all=(gen?genTasks():allTopics.filter(t=>t.project===id&&!isFun(t))).filter(t=>!(isBg(t)&&isOpen(t)));
     const open=all.filter(isOpen),zz=t=>snoozed(t);
-    const me=open.filter(t=>t.status==="waiting_me"&&!zz(t)).sort(byDate);
-    const cl=open.filter(t=>t.status==="active"&&!zz(t)).sort(byDate);
+    const me=open.filter(t=>t.status==="waiting_me"&&!zz(t)&&!isRem(t)).sort(byDate);
+    const cl=open.filter(t=>t.status==="active"&&!zz(t)&&!isRem(t)).sort(byDate);
+    const rmd=open.filter(remToday).sort(byDate); // 25.1: reminders on their day, apart from the tasks
     const oth=open.filter(t=>!asleep(t)&&(t.status==="waiting_other"||(zz(t)&&t.status!=="paused"))).sort(byDate);
     const dormP=open.filter(asleep).sort((a,b)=>String(a.sleep_until).localeCompare(String(b.sleep_until)));
     const pa=open.filter(t=>t.status==="paused");
@@ -3988,7 +3989,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       ...(plog.length?[h("div",{class:"pjsub"},"היסטוריה"),h("div",{class:"pjlog"},plog.map(x=>h("div",null,x.text,x.at?h("small",null,relAgo(x.at)):null)))]:[])];
     const y=pg.scrollTop;
     pg.replaceChildren(bar,h("div",{class:"pgbody"},head,
-      sec("me","מחכה לך",me),sec("cl","אצל Claude",cl),sec("oth","מחכה לאחרים",oth),none,
+      sec("me","מחכה לך",me),sec("rm","⏰ תזכורות להיום",rmd),sec("cl","אצל Claude",cl),sec("oth","מחכה לאחרים",oth),none,
       pjFold("paused","בהקפאה",pa.length,[h("div",{class:"glist"},pa.map(row))]),
       pjFold("dorm","💤 משימות עתידיות",dormP.length,[h("div",{class:"glist"},dormP.map(row))]),
       pjFold("hist","היסטוריה ובוצעו",hist.length+plog.length,histBody)));
@@ -4318,11 +4319,17 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // The main screen shows only the tasks of the current window (time + place + means), urgent first, then new (blue dot),
   // then the rest; the next window sits folded under it (opens by itself when it is close, e.g. from 20:00 tomorrow morning).
   // Everything else is folded by category. No sub-groups inside the window.
-  const CATS={task:{g:"≡",l:"משימות",c:"#2F7BEA"},roll:{g:"↻",l:"מתגלגלות",c:"#8B5CF6"},wait:{g:"…",l:"ממתין לאחרים",c:"#E39B17"},dorm:{g:"z",l:"רדומות",c:"#7C8798"},done:{g:"✓",l:"בוצעו",c:"#22A35A"}};
+  const CATS={task:{g:"≡",l:"משימות",c:"#2F7BEA"},rem:{g:"◷",l:"תזכורות",c:"#E0613A"},roll:{g:"↻",l:"מתגלגלות",c:"#8B5CF6"},wait:{g:"…",l:"ממתין לאחרים",c:"#E39B17"},dorm:{g:"z",l:"רדומות",c:"#7C8798"},done:{g:"✓",l:"בוצעו",c:"#22A35A"}};
   function catIc(k){const C=CATS[k];return h("i",{class:"cat-ic",style:"--cc:"+C.c,"aria-hidden":"true"},C.g);}
   function catT(k,l){return [catIc(k),h("span",null,l||CATS[k].l)];}
   function waitBack(t){if(t.status!=="waiting_other")return false;const r=freshOf(t);return !!r&&r.src!=="own"&&r.ms>visitBase;}
+  // 25.1 (Oren 20.11.2026): reminders are not tasks. A topic with kind "reminder" (recurring or date-bound, nothing to decide)
+  // lives only in its own drawer "⏰ תזכורות", which appears on its day (next_date today or past, not snoozed), and is never
+  // counted as a task or in "מחכות לך". Until its day it waits folded in "⏰ תזכורות בהמשך".
+  function isRem(t){return !!t&&t.kind==="reminder";}
+  function remToday(t){if(!isRem(t)||!isOpen(t)||t.status==="paused"||snoozed(t))return false;const n=daysUntil(t.next_date);return n==null||n<=0;}
   function catOf(t){if(t.status==="done"||t.status==="promoted")return "done";if(!isOpen(t))return "arch";
+    if(isRem(t))return remToday(t)?"rem":"remL";
     if(t.status==="waiting_other")return waitBack(t)?"task":"wait";
     if(t.status==="paused"||snoozed(t))return "dorm";
     return t.rolling?"roll":"task";}
@@ -4354,7 +4361,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     {const tv=$("tvSec");if(tv)tv.classList.toggle("updhide",updOn);}
     if(updOn){renderUpd();return;}
     const side=WQ.includes(quest),w=curWin(),winOn=side&&(wMode!=="off"||w.manual);
-    const C={task:[],roll:[],wait:[],dorm:[],done:[]};for(const t of topics){if(inStrip(t))continue;const k=catOf(t);if(C[k])C[k].push(t);}
+    const C={task:[],roll:[],wait:[],dorm:[],done:[],rem:[],remL:[]};for(const t of topics){if(inStrip(t))continue;const k=catOf(t);if(C[k])C[k].push(t);}
     const act=[...C.task,...C.roll],top=[],more=[];let L=[],NL=[];
     if(winOn){
       const W=WINS[w.id];const pc=quest==="side"&&planCard(planAsk());if(pc)top.push(pc);
@@ -4379,6 +4386,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const wk=t=>String(t.sleep_until||(t.snooze_until==="someday"?"9999":t.snooze_until)||"9998");
     more.push(foldRows("wait",catT("wait"),C.wait.sort((a,b)=>byDate(a,b))),foldRows("dorm",catT("dorm"),C.dorm.sort((a,b)=>wk(a).localeCompare(wk(b)))));
     const doneL=C.done.sort((a,b)=>(b.done_at||b.updated_at||"").localeCompare(a.done_at||a.updated_at||"")); // 16.2: no cap
+    if(C.rem.length)top.unshift(foldRows("rem",catT("rem","⏰ תזכורות להיום"),C.rem.sort(byDate)));
+    if(C.remL.length){const rk=t=>String(t.sleep_until||(t.snooze_until&&t.snooze_until!=="someday"?String(t.snooze_until).slice(0,10):"")||t.next_date||"9999");
+      more.push(foldRows("remL",catT("rem","⏰ תזכורות בהמשך"),C.remL.sort((a,b)=>rk(a).localeCompare(rk(b)))));}
     top.unshift(...qInfoBanners());
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
