@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#16233A">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CARS_BUILD="1.4";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.CARS_BUILD="1.5";</script>
 <script src="sq-db.js?v=10"></script>
 <script src="cars-market.js?v=2"></script>
 <title>רכבים</title>
@@ -342,11 +342,15 @@ function carCard(c){
       ${links?`<div class="links">${links}</div>`:""}
     </div></article>`;
 }
-function questionsFor(c){const a=c.ans||{};
-  const keys=Object.keys(QO).filter(k2=>!(k2==="origin"&&c.bought_new));
-  const open=keys.filter(k2=>!a[k2]);
-  return `<div class="card" style="border-top:4px solid ${esc(c.color_css||"#888")}"><div class="sh" style="margin:0 0 4px"><h3 style="font-size:16px">${esc(c.emoji)} ${esc(c.name)}</h3><small>${open.length?open.length+" פתוחות":"הכל נענה ✓"}</small></div>
-    ${keys.map(k2=>`<div class="q"><div class="qt">${esc(QT[k2])}${QH[k2]?`<small>${esc(QH[k2])}</small>`:""}</div><div class="opts">${QO[k2].map(([v,l])=>`<button class="opt${a[k2]===v?" on":""}" data-ans="${esc(c.id)}|${k2}|${v}">${esc(l)}</button>`).join("")}</div></div>`).join("")}
+function qRow(c,a,k2){return `<div class="q"><div class="qt">${esc(QT[k2])}${QH[k2]?`<small>${esc(QH[k2])}</small>`:""}</div><div class="opts">${QO[k2].map(([v,l])=>`<button class="opt${a[k2]===v?" on":""}" data-ans="${esc(c.id)}|${k2}|${v}">${esc(l)}</button>`).join("")}</div></div>`;}
+function qKeys(c){return Object.keys(QO).filter(k2=>!(k2==="origin"&&c.bought_new));}
+function questionsFor(c,flat){const a=c.ans||{};
+  const keys=qKeys(c),open=keys.filter(k2=>!a[k2]),done=keys.filter(k2=>a[k2]);
+  const head=`<div class="sh" style="margin:0 0 4px"><h3 style="font-size:16px">${esc(c.emoji)} ${esc(c.name)}</h3><small>${open.length?open.length+" פתוחות":"הכל נענה ✓"}</small></div>`;
+  const doneH=done.map(k2=>qRow(c,a,k2)).join("");
+  return `<div class="card" style="border-top:4px solid ${esc(c.color_css||"#888")}">${head}
+    ${open.map(k2=>qRow(c,a,k2)).join("")}
+    ${done.length?(flat||!open.length?doneH:`<details class="sqarch" data-k="cars-q-${esc(c.id)}"><summary>📦 נענו · ${done.length}</summary><div class="ab">${doneH}</div></details>`):""}
   </div>`;}
 function chart(){
   const W=380,H=210,P={l:44,r:10,t:12,b:24},N=36;
@@ -375,11 +379,13 @@ function renderMine(){
     <div class="tl"><input type="range" min="0" max="36" step="1" value="${m}" id="slider" aria-label="חודשים מהיום"><span class="when" id="when">${esc(whenTxt(m))}</span></div>
     <div class="marks">${[[0,"היום"],[1,"חודש"],[6,"חצי שנה"],[12,"שנה"],[24,"שנתיים"],[36,"3 שנים"]].map(([v,l])=>`<button data-m="${v}">${l}</button>`).join("")}</div>
     <div id="mtop">${mineTop()}</div>
-    <div class="q" style="margin-top:8px"><div class="qt">איך תמכור?</div><div class="opts">${Object.entries(ROUTE).map(([v,o])=>`<button class="opt${((meta.ans||{}).route||"private")===v?" on":""}" data-route="${v}">${esc(o.l)}${o.f?" ("+Math.round(o.f*100)+"%)":""}</button>`).join("")}</div></div>
+    <details class="more" style="margin-top:8px"><summary>איך תמכור: ${esc((ROUTE[(meta.ans||{}).route]||ROUTE.private).l)} ✓</summary><div class="opts" style="margin-top:6px">${Object.entries(ROUTE).map(([v,o])=>`<button class="opt${((meta.ans||{}).route||"private")===v?" on":""}" data-route="${v}">${esc(o.l)}${o.f?" ("+Math.round(o.f*100)+"%)":""}</button>`).join("")}</div></details>
   </div></section>`;
   h+=`<section><div class="sh"><h2>🚙 הרכבים</h2></div><div style="display:grid;gap:14px" id="mcars">${mineCars()}</div></section>`;
-  const open=cars.reduce((s,c)=>s+Object.keys(QO).filter(k2=>!(k2==="origin"&&c.bought_new)&&!(c.ans||{})[k2]).length,0);
-  h+=`<section><div class="sh"><h2>🎯 לדייק את השווי המשוקלל</h2><small>${open?open+" שאלות פתוחות":"הכל נענה"}</small></div><div style="display:grid;gap:12px">${cars.map(questionsFor).join("")}</div></section>`;
+  const open=cars.reduce((s,c)=>s+qKeys(c).filter(k2=>!(c.ans||{})[k2]).length,0);
+  if(open)h+=`<section><div class="sh"><h2>🎯 לדייק את השווי המשוקלל</h2><small>${open} שאלות פתוחות</small></div><div style="display:grid;gap:12px">${cars.filter(c=>qKeys(c).some(k2=>!(c.ans||{})[k2])).map(c=>questionsFor(c)).join("")}</div></section>`;
+  const doneCars=cars.filter(c=>!qKeys(c).some(k2=>!(c.ans||{})[k2]));
+  if(doneCars.length)h+=`<section><details class="sqarch" data-k="cars-q"><summary>📦 ארכיון: שאלות השווי שנענו${open?"":" (הכל נענה)"} · ${doneCars.reduce((s,c)=>s+qKeys(c).length,0)}</summary><div class="ab" style="display:grid;gap:12px">${doneCars.map(c=>questionsFor(c,true)).join("")}</div></details></section>`;
   if((meta.links||[]).length)h+=`<section><div class="sh"><h2>🔗 איפה להתעדכן</h2></div><div class="card"><div class="links" style="margin:0">${meta.links.filter(l=>safe(l.url)).map(l=>`<a href="${esc(safe(l.url))}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div></div></section>`;
   return h;
 }
