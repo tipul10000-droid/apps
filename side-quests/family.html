@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0E5F56">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="2.0";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.FAM_BUILD="2.1";</script>
 <script src="sq-db.js?v=10"></script>
 <title>משפחה ולימודים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -120,6 +120,13 @@ section{margin-bottom:22px}
 .rt .w{color:var(--muted);font-size:13px}
 .rt .ride{display:inline-block;margin-inline-start:4px;padding:0 7px;border-radius:99px;background:var(--quiz-soft);color:var(--quiz);font-size:12px;font-weight:800}
 .rt.adult .tm{color:var(--muted)}
+.rt.sch{font-size:13.5px;color:var(--muted)}.rt.sch .tm{font-weight:600}
+.ttg{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:8px;font-size:11.5px;line-height:1.2;letter-spacing:-.2px}
+.ttg th,.ttg td{border:1px solid var(--line);padding:4px 1px;text-align:center;vertical-align:middle;word-break:keep-all}
+.ttg th{background:var(--sunk);font-size:12.5px}.ttg td.pn{width:30px;color:var(--muted);font-size:10.5px}.ttg .on{background:color-mix(in srgb,var(--kc,#888) 14%,transparent)}
+.ttg td i{display:block;font-style:normal;color:var(--muted);font-size:10px;margin-top:1px}.ttg td.nt{outline:1.5px dashed var(--quiz);outline-offset:-2px}
+.ttg tr.bk td{padding:2px;font-size:10px;color:var(--muted);background:var(--sunk)}
+.ttn{margin-top:6px;font-size:12.5px;color:var(--muted);line-height:1.45}
 .rtnone{color:var(--muted);font-size:14px;padding:4px 0}
 .kc{border-top:5px solid var(--kc,#888)}
 .kc h3{font-size:21px;display:flex;align-items:center;gap:8px}
@@ -195,10 +202,29 @@ function evRow(e,withKid){
   const [ic,lbl]=TYPE[e.type]||TYPE.event;
   const tags=(e.kids&&e.kids.length?e.kids.map(kidTag).join(""):withKid?kidTag(e.kid):"");
   const cls=e.maybe&&e.cls?`<span class="cls">רק כיתות ${esc(clsTxt(e.cls))}</span>`:"";
-  const sub=[e.sub,e.to&&("עד "+dm(e.to))].filter(Boolean).join(" · ");
+  const sub=[e.sub,e.to&&("עד "+dm(e.to)),ttSlot(e)].filter(Boolean).join(" · ");
   const link=safe(e.url)?` <a href="${esc(safe(e.url))}" target="_blank" rel="noopener">לינק</a>`:"";
   return `<div class="ev t-${esc(e.type)}${e.maybe?" maybe":""}${e.big?" big":""}"><span class="ic" title="${esc(lbl)}">${ic}</span><div class="tx"><div class="t">${tags}${esc(e.t)}${cls}</div>${sub||link?`<div class="s">${esc(sub)}${link}</div>`:""}${e.prep?`<div class="p">${esc(e.prep)}</div>`:""}</div></div>`;
 }
+// 2.1 (Oren 20.11.2026): timetable {per:[[n,from,to]], brk:[{after,t}], days:{"0".."5":[{s,w,n}|null]}, bring:{subj:text}}
+// on a kid doc (photo of the class timetable). Exams show which lesson they fall in; the weekly routine shows when school ends.
+const ttN=s=>String(s||"").replace(/[״"׳']/g,"").replace(/\s+/g," ").trim();
+function ttDay(k,dw){const T=k&&k.timetable;return T&&T.days?(T.days[String(dw)]||[]):[];}
+function ttEnd(k,dw){const L=ttDay(k,dw);let i=L.length-1;while(i>=0&&!L[i])i--;return i<0?"":((k.timetable.per||[])[i]||[])[2]||"";}
+function ttSlot(e){const k=e.kid||(e.kids&&e.kids.length===1?e.kids[0]:null);if(!k||!k.timetable||!(e.type==="exam"||e.type==="quiz"))return "";
+  const dw=new Date(e.d+"T12:00:00").getDay(),L=ttDay(k,dw),txt=ttN(e.t);const hit=[];
+  L.forEach((x,i)=>{if(x&&txt.includes(ttN(x.s)))hit.push(i);});
+  if(hit.length){const p=(k.timetable.per||[])[hit[0]]||[];return `בשיעור ${L[hit[0]].s}, שעה ${hit.map(i=>i+1).join("-")} (${p[1]||""})`;}
+  const subj=Object.keys((k.timetable.bring||{})).concat(...Object.values(k.timetable.days||{}).map(d=>(d||[]).filter(Boolean).map(x=>x.s))).find(x=>txt.includes(ttN(x)));
+  return subj?`⚠️ אין ${subj} ביום ${DOW[dw]} במערכת`:"";}
+function ttGrid(k){const T=k.timetable;let mx=0;for(let d=0;d<6;d++){const L=ttDay(k,d);for(let i=L.length-1;i>=0;i--)if(L[i]){mx=Math.max(mx,i+1);break;}}
+  const td=new Date().getDay();let h=`<table class="ttg"><tr><th></th>${[0,1,2,3,4,5].map(d=>`<th${d===td?' class="on"':""}>${DOW[d]}</th>`).join("")}</tr>`;
+  for(let i=0;i<mx;i++){const p=(T.per||[])[i]||[i+1,"",""];
+    h+=`<tr><td class="pn">${esc(p[0])}<i>${esc(p[1])}</i></td>${[0,1,2,3,4,5].map(d=>{const x=ttDay(k,d)[i];return `<td class="${d===td?"on":""}${x&&x.n?" nt":""}"${x&&x.n?` title="${esc(x.n)}"`:""}>${x?esc(x.s)+(x.w?`<i>${esc(x.w)}</i>`:""):""}</td>`;}).join("")}</tr>`;
+    for(const b of (T.brk||[]))if(b.after===i+1&&i<mx-1)h+=`<tr class="bk"><td colspan="7">${esc(b.t)}</td></tr>`;}
+  const notes=[...new Set([0,1,2,3,4,5].flatMap(d=>ttDay(k,d).filter(x=>x&&x.n).map(x=>`${DOW[d]} ${x.s}: ${x.n}`)))];
+  return h+`</table>${notes.length?`<div class="ttn">💡 ${notes.map(esc).join("<br>💡 ")}</div>`:""}${T.src?`<div class="ttn">מקור: ${esc(T.src)}</div>`:""}`;}
+function ttEnds(k){return [0,1,2,3,4,5].map(d=>{const e=ttEnd(k,d);return e?`<b>${DOW[d]}</b> <bdi dir="ltr">${esc((k.timetable.per[0]||[])[1]||"")}–${esc(e)}</bdi>`:"";}).filter(Boolean).join(" · ");}
 function timeline(evs){
   const by={};for(const e of evs)(by[e.d]=by[e.d]||[]).push(e);
   return Object.keys(by).sort().map(d=>`<div class="day"><div class="dl${diff(d)===0?" today":""}"><b>${dm(d)}</b>${dow(d)} · ${rel(d)}</div><div>${by[d].map(e=>evRow(e,fKid==="all")).join("")}</div></div>`).join("");
@@ -242,10 +268,12 @@ function actRow(x,arch){const n=x.d?diff(x.d):null;
 // routine [{dow: 0-6 or [..], from, to, t, where, ride}] on every person doc (kids and adults, e.g. lior)
 function rtList(p,dw){return (Array.isArray(p.routine)?p.routine:[]).filter(r=>r&&r.t&&(Array.isArray(r.dow)?r.dow.includes(dw):+r.dow===dw)).sort((a,b)=>String(a.from||"").localeCompare(String(b.from||"")));}
 function rtRow(p,r,withWho){const tm=r.from?(r.from+(r.to?"–"+r.to:"")):(r.to?"עד "+r.to:"");
+  if(r.sch)return `<div class="rt sch"><span class="tm">${esc(r.to)}</span><span>${withWho?kidTag(p)+" ":""}🏫 ${p.boy?"מסיים":"מסיימת"} בית ספר${r.subj?` <span class="w">· ${esc(r.subj)}</span>`:""}</span></div>`;
   return `<div class="rt${p.adult?" adult":""}"><span class="tm">${esc(tm)}</span><span>${withWho?kidTag(p)+" ":""}${esc(r.t)}${r.where?` <span class="w">· ${esc(r.where)}</span>`:""}${r.ride?`<span class="ride">🚗 מי לוקח?</span>`:""}</span></div>`;}
 function weekRoutine(){const t=todayStr(),ppl=[...kids,...adults].filter(p=>fKid==="all"||p.id===fKid);const out=[];
   for(let i=0;i<7;i++){const d=addDays(t,i),dw=new Date(d+"T12:00:00").getDay();const rows=[];
     for(const p of ppl)for(const r of rtList(p,dw))rows.push({p,r});
+    for(const p of ppl){const e=ttEnd(p,dw);if(e)rows.push({p,r:{to:e,t:"בית ספר",sch:1,subj:[...new Set(ttDay(p,dw).filter(Boolean).map(x=>x.s))].join(", ")}});}
     rows.sort((a,b)=>String(a.r.from||a.r.to||"").localeCompare(String(b.r.from||b.r.to||"")));
     if(rows.length)out.push(`<div class="day"><div class="dl${i===0?" today":""}"><b>${DOW[dw]}</b>${i===0?"היום":i===1?"מחר":dm(d)}</div><div>${rows.map(x=>rtRow(x.p,x.r,true)).join("")}</div></div>`);}
   return out.join("");}
@@ -268,7 +296,8 @@ function kidCard(k){
   return `<article class="card kc" style="--kc:${esc(k.color||"#888")}" id="kid-${esc(k.id)}">
     <h3><span>${esc(k.emoji||"🙂")}</span>${esc(k.name)}</h3>
     <div class="meta">${esc(k.class_label||k.grade)} · ${esc(k.school)}${clsSel}</div>
-    ${r("מחנך/ת",hr)}${r("מורים",teach)}${r("צוות",staff)}${r("קבוע בשבוע",weekly)}${r("חוגים",rtAll(k))}${r("מערכת",schTxt)}
+    ${r("מחנך/ת",hr)}${r("מורים",teach)}${r("צוות",staff)}${r("קבוע בשבוע",weekly)}${r("חוגים",rtAll(k))}${r("מערכת",k.timetable?ttEnds(k):schTxt)}
+    ${k.timetable?`<details><summary>🏫 מערכת השעות (${esc(k.timetable.label||"")})</summary>${ttGrid(k)}</details>`:""}
     ${(k.equipment||[]).length?`<details><summary>🎒 רשימת ציוד (${k.equipment.length})</summary><ul class="prep">${k.equipment.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`:""}
     ${fut.length?`<details><summary>📅 כל הלוח מהיום (${fut.length})</summary>${timeline(fut.map(e=>({...e,kid:k,maybe:applies(k,e)==="maybe"})))}</details>`:""}
     ${(k.unknown||[]).length?`<details class="more"><summary>עוד לא יודעים (${k.unknown.length})</summary><div><ul>${k.unknown.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></details>`:""}
