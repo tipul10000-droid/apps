@@ -2487,8 +2487,8 @@ details.wmore>.glist{border:0;border-top:1px solid var(--line);border-radius:0;a
 .wm-nw{flex:none;width:10px;height:10px;border-radius:50%;background:#2F7BEA;box-shadow:0 0 0 3px rgba(47,123,234,.22);animation:sqbeat 2.4s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.wm-nw{animation:none}}
 /* air: blocks breathe, headings a bit larger */
-#mainSec .wcard{gap:12px}
-#mainSec>#list>*+*,#tail #more>*+*{margin-top:14px}
+#mainSec .wcard:not(.nxf){gap:12px}
+#mainSec>#list>*+*{margin-top:14px}
 #tail{margin-top:18px}
 .wc-head b{font-size:20px}
 .wc-head small{font-size:14px}
@@ -4320,7 +4320,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const at={d:(ilNow().d+sg.k)%7,s:sg.s,e:sg.e};L.push(...pool.filter(t=>!L.includes(t)&&fitsWin(t,sg.id,at)));}return L;}
   // 25.0 (Oren 20.11.2026, minimal UI): only what is urgent shows open. Everything else in the window sits in one closed drawer
   // ("עוד N משימות לחלון הזה"); something new inside keeps it closed and lights a blue dot on the drawer.
-  function urgNow(t){if(!t||!isOpen(t)||t.status==="paused")return false;if(isUrgent(t)||isHot(t)||t.critical)return true;
+  function urgNow(t){if(!t||!isOpen(t)||t.status==="paused")return false;if(isUrgent(t)||t.critical)return true;const nd=daysUntil(t.next_date);if(nd!=null&&nd<=0)return true;
     const dl=t.deadline&&(t.deadline.d||t.deadline),n=dl?daysUntil(String(dl).slice(0,10)):null;return n!=null&&n<=3;}
   function winRest(key,R){const k=quest+":wm:"+key,op=folded[k]===true||R.some(t=>t.id===openId),nw=R.some(t=>isFresh(t));
     const d=h("details",{class:"wmore",open:op?"":null},h("summary",null,h("span",{class:"wm-ic","aria-hidden":"true"},"≡"),h("span",{class:"wm-t"},R.length===1?"עוד משימה אחת לחלון הזה":`עוד ${R.length} משימות לחלון הזה`),nw?h("span",{class:"wm-nw","aria-label":"יש משהו חדש"}):null,h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"glist"},orderL(R).map(row)));

@@ -14,7 +14,7 @@
    A page can opt a section out with class "calm-off" (always open) or force-close with "calm-closed". */
 (function(){
   if(window.SQCalm)return;
-  var URG=/דחוף|לעשות עכשיו|משימות פתוחות|פעולות פתוחות|מחכה להחלטה|מחכה לך|ממתין להחלטה|לטפל עכשיו|חשוב השבוע/;
+  var URG=/דחוף|לעשות עכשיו|משימות פתוחות|פעולות פתוחות|מחכה להחלטה|מחכה לך|ממתין להחלטה|לטפל עכשיו/;
   var OPEN={};      // key -> true/false, this visit only
   var kpOpen=false; // hero numbers
   var nwOpen=false; // "מה חדש" list
@@ -22,7 +22,7 @@
   function css(){if(document.getElementById("sqcalm-css"))return;var st=document.createElement("style");st.id="sqcalm-css";st.textContent=
     "section.calm>.sh{cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;min-height:48px;display:flex;align-items:center;gap:8px;flex-wrap:nowrap;user-select:none}"+
     "section.calm>.sh h2{flex:1;min-width:0;margin:0;font-size:19px;line-height:1.3}"+
-    "section.calm>.sh small{display:none}"+
+    "section.calm>.sh small{display:none}"+"section.calm>.sh .calm-n{flex:none;min-width:26px;height:24px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted,#888);background:color-mix(in srgb,var(--muted,#888) 14%,transparent);font-variant-numeric:tabular-nums}"+
     "section.calm>.sh .calm-c{flex:none;font-size:20px;line-height:1;color:var(--muted,#888);transition:transform .2s;padding-inline:6px}"+
     "section.calm.calm-open>.sh .calm-c{transform:rotate(-90deg)}"+
     "section.calm.calm-open>.sh small{display:inline}"+
@@ -56,6 +56,10 @@
     var t=txt(sec.querySelector(":scope>.sh h2"));if(URG.test(t))return true;
     if(subView()&&first)return true; // inside one item he tapped into: its first block shows, the rest fold
     return false;}
+  function countOf(sec){var c=sec.children[1];if(!c)return 0;if(c.children.length<2&&c.firstElementChild&&c.firstElementChild.children.length>=2)c=c.firstElementChild;
+    var k=[].slice.call(c.children).filter(function(x){return x.offsetParent!==null||!sec.classList.contains("calm-open");});if(k.length<2)return 0;
+    var sig=function(x){return x.tagName+"."+(x.className||"").toString().split(" ")[0];},s0=sig(k[0]),same=k.filter(function(x){return sig(x)===s0;}).length;
+    return same>=k.length-1&&same>=2?same:0;}
   function setOpen(sec,on){sec.classList.toggle("calm-open",on);var sh=sec.firstElementChild;if(sh)sh.setAttribute("aria-expanded",on?"true":"false");}
   function apply(){
     css();document.documentElement.classList.add("calm-on");
@@ -67,6 +71,10 @@
       var on=k in OPEN?OPEN[k]:defOpen(sec,i,first);first=false;
       if(sec.contains(document.querySelector(":target")))on=true;
       if(sec.classList.contains("calm-open")!==on)setOpen(sec,on);else sh.setAttribute("aria-expanded",on?"true":"false");
+      // a list inside = its size next to the title ("לו״ז קבוע 6"), only when the rows look alike (not a chart or a form)
+      var n=countOf(sec),ce=sh.querySelector(".calm-n");
+      if(n&&!ce){ce=document.createElement("span");ce.className="calm-n";sh.insertBefore(ce,sh.querySelector(".calm-c"));}
+      if(ce){if(n)ce.textContent=String(n);else ce.remove();}
       // new inside a closed drawer = dot on the title (the drawer stays closed)
       var nw=!on&&!!sec.querySelector(":scope>:not(.sh) .sqnew,:scope>.sqnew:not(.sh)"),d=sh.querySelector(".calm-nw");
       if(nw&&!d){d=document.createElement("span");d.className="calm-nw";d.setAttribute("aria-label","יש כאן משהו חדש");sh.insertBefore(d,sh.querySelector(".calm-c"));}
