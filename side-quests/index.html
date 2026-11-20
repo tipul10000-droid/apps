@@ -2506,6 +2506,17 @@ details.wmore>.glist{border:0;border-top:1px solid var(--line);border-radius:0;a
 .dz-tile .bd.soft{background:color-mix(in srgb,var(--c1) 16%,transparent)}
 .dz-grp{margin-top:18px}
 html.desk .hero .dz-grid{display:flex!important}
+/* 25.0: Fun zones closed to the title row; "מה חדש" as one line; the events card without its numbers */
+.fcard.zc:not(.zopen)>:not(.zhead):not(.nfapp){display:none!important}
+.fcard.zc>.zhead{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.fcard.zc .zc-c{margin-inline-start:6px;font-size:22px;opacity:.6;transition:transform .2s}
+.fcard.zc.zopen .zc-c{transform:rotate(-90deg)}
+.fcard.zc.zopen>:not(.zhead){animation:moreIn .22s ease-out}
+.fcard.fdash .fdk,.fcard.fdash .fdwhy{display:none}
+#qNew .qn-line{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;font-size:16.5px;cursor:pointer;text-align:start}
+#qNew .qn-line b{flex:1}
+#qNew .qn-line small{color:var(--muted);font-weight:700}
+#qNew .qn-line .fc{opacity:.6;font-size:20px}
 </style>
 <script>window.SQI_SKIP=".sbar,#cnM,.r-title,.r-upd,.d-line,.d-story,.f-log,.dd-t,.bp-q,.up-t b,.lt b,.ft b";</script><script src="sq-icons.js?v=1"></script>
 <style>/* 23.7 (Oren 19.11.2026): splash screen + loading bar. A = the trail illustration (sq_gfx "sq-splash", cached on the device in
@@ -4402,7 +4413,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q],F=q!==quest?questFresh(q):[],T=q!==quest?questTasksNew(q).length+nwQuest(q).length:0,any=F.length+T>0;
       return h("button",{class:"qbtn q-"+q+(any?" hasnw":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":any?Q.a+" "+Q.b+": יש תוכן חדש":null,
         onclick:()=>{const G=q!==quest?questFresh(q):[],A0=q!==quest?nwQuest(q):[],L0=q!==quest?questTasksNew(q).map(t=>({t,r:freshOf(t)})).filter(x=>x.r):[],TT=A0.length+L0.length;setQuest(q);
-          if(TT&&WQ.includes(q)){if(!updOn)toggleUpd(true);return;}
+          if(TT&&WQ.includes(q))return; // 25.0 (Oren 20.11.2026): new stays closed; the 🔔 עדכונים button carries the count, he taps it
           // 22.5 (Oren 18.11.2026): Fun / AI have no "🔔 עדכונים" list, so a tap shows "🆕 מה חדש" at the top and the dot clears
           if(!WQ.includes(q)&&(TT||G.length)){qNewOpen(q,A0,L0,G);return;}
           // Oren 19.11.2026: never open a dashboard by itself; scroll to the tiles, the new one blinks, he taps it
@@ -4414,15 +4425,18 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // Tapping such a quest with a blue dot lists what is new there (app features, its tasks, its dashboards) and marks it seen,
   // so the dot clears. The box stays for this visit to the quest, until ✕ or another quest.
   let qNewShow=null;
-  function qNewOpen(q,A,L,D){qNewShow={q,D:D||[]};renderQNew();}
+  let qnExp=false;
+  function qNewOpen(q,A,L,D){qNewShow={q,D:D||[]};qnExp=false;renderQNew();}
   function funJump(id){const go=()=>{const c=document.querySelector(`#funSec [data-id="${CSS.escape(id)}"]`);if(!c)return false;qtStop();
       c.scrollIntoView({behavior:"smooth",block:"start"});c.classList.remove("jump");void c.offsetWidth;c.classList.add("jump");return true;};
     if(!go())jumpTask(id);}
   function renderQNew(){const el=$("qNew");if(!el)return;const S=qNewShow;
     const U=S&&S.q===quest?updSet(quest):null,D=S?S.D.filter(d=>dashFresh(d)):[];
     if(!U||!(U.A.length+U.L.length+D.length)){el.hidden=true;el.replaceChildren();return;}
-    upOnScreen={items:[...U.A,...U.L],old:U.old};
     const n=U.A.length+U.L.length+D.length,G=[];
+    // 25.0 (Oren 20.11.2026): "מה חדש" is one closed line with a blue dot; the list (and "seen") only after he taps it
+    if(!qnExp){el.replaceChildren(h("button",{type:"button",class:"qn-line",onclick:()=>{qnExp=true;renderQNew();}},h("span",{class:"wm-nw","aria-hidden":"true"}),h("b",null,"מה חדש"),h("small",null,String(n)),h("span",{class:"fc","aria-hidden":"true"},"‹")));el.hidden=false;return;}
+    upOnScreen={items:[...U.A,...U.L],old:U.old};
     for(const x of U.A)G.push(ackWrap(x,nwRow("✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
     for(const d of D)G.push(nwRow(d.icon||"📊",d.title||d.short||d.id,dashWhy(d)+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id)));
     for(const x of U.L){const t=x.t;G.push(ackWrap(x,nwRow(t.icon||"📌",t.title||"(ללא כותרת)",updLine(x.r),()=>isFun(t)?funJump(t.id):jumpTask(t.id))));}
@@ -4770,7 +4784,16 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     cards.splice(1,0,...fd.map(funDashCard));
     cards.push(...tail);
     $("funGrid").replaceChildren(...(cards.length?cards:[h("div",{class:"empty"},"עוד אין")]));
+    calmZones($("funGrid"));
   }
+  // 25.0 (Oren 20.11.2026): every Fun zone (series, movies, music, games) shows only its title row; a tap opens it below
+  // the title (the title never moves). Open/closed is kept for this visit only.
+  const ZOPEN={};
+  function calmZones(root){if(!root)return;root.querySelectorAll("article.fcard").forEach(c=>{const z=c.querySelector(":scope>.zhead");if(!z)return;
+    const k=String(c.className).replace(/\bfcard\b|\bzc\b|\bzopen\b/g,"").trim()||"z";c.classList.add("zc");c.classList.toggle("zopen",!!ZOPEN[k]);
+    if(!z.querySelector(".zc-c")){const ch=h("span",{class:"zc-c fc","aria-hidden":"true"},"‹");z.appendChild(ch);z.setAttribute("role","button");z.tabIndex=0;
+      z.addEventListener("click",e=>{if(e.target.closest("a,button:not(.zhead),input"))return;ZOPEN[k]=!ZOPEN[k];c.classList.toggle("zopen",ZOPEN[k]);z.setAttribute("aria-expanded",ZOPEN[k]?"true":"false");});}
+    z.setAttribute("aria-expanded",ZOPEN[k]?"true":"false");});}
 
   // 4.7 Travel zone: data lives in the private doc settings/travel_hub (never in this public repo).
   // {upcoming:[{topic,title,flag,from,to,note}], israel:{visits,places,per_year,since,as_of,regions:[{name,n,icon}],recent:[{name,date}],next,report_img,report_at,links:[{label,url,main,pending}]},
