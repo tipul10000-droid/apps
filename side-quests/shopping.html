@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#25272D">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.5";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.6";</script>
 <script src="sq-db.js?v=10"></script>
 <title>קניות ורכישות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -261,7 +261,7 @@ function tabOver(x){const p=pickOf(x),v=x.verdict||{};let h="";
   const qRow=q=>`<div class="q"><div class="qt">${esc(q.q)}</div><div class="opts">${(q.options||[]).map(o=>`<button class="opt ${q.answer===o?"on":""}" data-ans="${esc(q.id)}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div></div>`;
   if(qOpen.length)h+=`<section><div class="sh"><h2>❓ שאלות אליך</h2></div><div class="card">${qOpen.map(qRow).join("")}</div></section>`;
   if(qDone.length)h+=`<details class="more qdone"${ui.qdone?" open":""}><summary>✓ ענית על ${qDone.length===1?"שאלה אחת":qDone.length+" שאלות"} (אפשר לשנות)</summary><div class="card">${qDone.map(qRow).join("")}</div></details>`;
-  if((x.insights||[]).length)h+=`<section><div class="sh"><h2>💡 מה חשוב לדעת</h2></div><ul class="ins">${x.insights.map(i=>`<li class="${esc(i.lvl||"")}">${i.h?`<b>${esc(i.h)}: </b>`:""}${esc(i.text)}</li>`).join("")}</ul></section>`;
+  if((x.insights||[]).length)h+=`<section><div class="sh"><h2>💡 מה חשוב לדעת</h2></div><ul class="ins">${x.insights.map(i=>`<li class="${esc(i.lvl||"")}">${i.h?`<b>${esc(i.h)}: </b>`:""}${esc(i.text)}${i.more?`<details class="more" style="margin-top:4px"><summary>פירוט</summary><div>${esc(i.more)}</div></details>`:""}</li>`).join("")}</ul></section>`;
   if((x.need||[]).length)h+=`<section><div class="sh"><h2>🎯 מה אני מחפש</h2></div><div class="card"><ul class="req">${x.need.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div></section>`;
   if((x.links||[]).length)h+=`<section><div class="sh"><h2>🔗 קישורים</h2></div><div class="card links">${x.links.filter(l=>safe(l.url)).map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div></section>`;
   return h;}
