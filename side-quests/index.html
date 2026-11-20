@@ -2517,6 +2517,11 @@ html.desk .hero .dz-grid{display:flex!important}
 #qNew .qn-line b{flex:1}
 #qNew .qn-line small{color:var(--muted);font-weight:700}
 #qNew .qn-line .fc{opacity:.6;font-size:20px}
+.tv-fold>summary{font-size:14px;padding:8px 0;margin-bottom:2px}
+.tv-ideas{margin-top:14px}
+/* slightly larger task text, a bit more height per row */
+.r-title{font-size:17.5px}
+.glist>.row{min-height:56px}
 </style>
 <script>window.SQI_SKIP=".sbar,#cnM,.r-title,.r-upd,.d-line,.d-story,.f-log,.dd-t,.bp-q,.up-t b,.lt b,.ft b";</script><script src="sq-icons.js?v=1"></script>
 <style>/* 23.7 (Oren 19.11.2026): splash screen + loading bar. A = the trail illustration (sq_gfx "sq-splash", cached on the device in
@@ -5005,12 +5010,12 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
           h("div",{class:"tv-kpi"},h("b",null,I.visits!=null?String(I.visits):"—"),h("span",null,"טיולים")),
           h("div",{class:"tv-kpi"},h("b",null,I.places!=null?String(I.places):"—"),h("span",null,"מקומות")),
           h("div",{class:"tv-kpi"},h("b",null,I.per_year!=null?String(I.per_year):"—"),h("span",null,"בשנה"))),
-        regs.length?h("details",{class:"tv-fold",open:true},h("summary",null,"לפי אזורים"+(I.as_of?` · נכון ל-${I.as_of}`:"")),h("ul",{class:"tv-regs"},regs.map(r=>h("li",{class:"tv-reg"},h("i",{"aria-hidden":"true"},r.icon||"📍"),h("span",{class:"nm"},r.name),
+        regs.length?h("details",{class:"tv-fold"},h("summary",null,"לפי אזורים"+(I.as_of?` · נכון ל-${I.as_of}`:"")),h("ul",{class:"tv-regs"},regs.map(r=>h("li",{class:"tv-reg"},h("i",{"aria-hidden":"true"},r.icon||"📍"),h("span",{class:"nm"},r.name),
           h("span",{class:"tv-bar"},h("u",{style:`width:${Math.round((+r.n||0)/max*100)}%`})),h("span",{class:"n",html:`<b>${+r.n||0}</b> טיולים`}))))):null,
         Array.isArray(I.trips)&&I.trips.length?h("button",{class:"tv-btn tv-all",type:"button",onclick:showIlTrips},`📋 כל הטיולים לפי אזורים (${I.trips.length})`):null,
         tvIdeas(I.ideas),
-        Array.isArray(I.recent)&&I.recent.length?h("p",{class:"tv-sub"},"חדשים לאחרונה"):null,
-        Array.isArray(I.recent)&&I.recent.length?h("div",{class:"tv-new"},I.recent.map(x=>h("span",null,"🌿 "+x.name,x.date?h("small",null,x.date):null))):null,
+        // 25.0: recent trips fold like the regions (closed)
+        Array.isArray(I.recent)&&I.recent.length?h("details",{class:"tv-fold"},h("summary",null,"חדשים לאחרונה · "+I.recent.length),h("div",{class:"tv-new"},I.recent.map(x=>h("span",null,"🌿 "+x.name,x.date?h("small",null,x.date):null)))):null,
         I.next?h("div",{class:"tv-next"},I.next):null,
         zoneDash("il"),
         tvLinks(noDup(I.links,"il")),
@@ -5027,10 +5032,10 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       ...(abTab==="work"?workTrips(true):[
       tdocs.length?h("div",{class:"tp-minis"},tdocs.map(x=>x.el)):null,
       onCal.length?h("div",{class:"tv-sec-h"},"✈️ בלוח: טיסות הוזמנו"):null,onCal.length?h("div",{class:"tv-trips"},onCal.map(x=>x.el)):null,
-      ideas.length?h("div",{class:"tv-sec-h"},"💭 בקונספט: עוד בלי טיסות"):null,ideas.length?h("div",{class:"tv-trips"},ideas.map(x=>x.el)):null,
+      ideas.length?h("details",{class:"tv-fold tv-ideas"},h("summary",null,"💭 בקונספט, עוד בלי טיסות · "+ideas.length),h("div",{class:"tv-trips"},ideas.map(x=>x.el))):null,
       h("article",{class:"tv-card tv-ab"},
         apu?h("a",{class:"tv-app",href:apu,target:"_blank",rel:"noopener"},ap.icon?h("img",{src:ap.icon,alt:"",width:"44",height:"44"}):null,h("div",null,h("b",null,ap.name||""),ap.tag?h("span",null,ap.tag):null)):null,
-        Array.isArray(A.highlights)&&A.highlights.length?h("ul",{class:"tv-hl"},A.highlights.map(x=>h("li",null,h("i",{"aria-hidden":"true"},x.icon||"•"),h("span",null,x.text)))):null,
+        Array.isArray(A.highlights)&&A.highlights.length?h("details",{class:"tv-fold"},h("summary",null,"מה יש שם"),h("ul",{class:"tv-hl"},A.highlights.map(x=>h("li",null,h("i",{"aria-hidden":"true"},x.icon||"•"),h("span",null,x.text))))):null,
         zoneDash("abroad"),
         tvLinks(noDup(A.links,"abroad").filter(l=>safeUrl(l.url||"")!==apu)),
         secChat(secUrl("travel_abroad",...(A.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),(projById("holiday-optimizer")||{}).claude_url),"טיולים בחו״ל","שיחה: טיולים בחו״ל"))]));
