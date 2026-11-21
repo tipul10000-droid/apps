@@ -145,18 +145,24 @@
     euro: '<path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>',
     phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
     chat: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
-    app: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>'
+    app: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
+    box: '<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="m7.5 4.27 9 5.15"/>',
+    truck: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+    list: '<path d="M11 6h10"/><path d="M11 12h10"/><path d="M11 18h10"/><path d="m3 6 1 1 2-2"/><path d="m3 12 1 1 2-2"/><path d="m3 18 1 1 2-2"/>',
+    gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>'
   };
   // אימוג׳י שמגיע מהנתונים (תובנות הליסט) -> אייקון נקי
   var EMO = { "🏛️": "sight", "🏛": "sight", "🌅": "view", "🍝": "food", "🥪": "food", "🍕": "food", "☕": "coffee", "🍦": "sweet", "🍰": "sweet", "🍸": "bar", "🍷": "bar", "🛍️": "shop", "🛍": "shop", "🏨": "hotel", "🧭": "compass", "📅": "cal", "🗓️": "cal", "💡": "bulb", "🗺️": "map", "📍": "pin", "✈️": "plane", "🚆": "train", "📸": "cam", "⭐": "star",
     "🎤": "mic", "🎙️": "mic", "💸": "cash", "💰": "cash", "💵": "cash", "🏫": "school", "🎓": "school", "🧳": "bag", "🎯": "target",
-    "🌡️": "thermo", "🌡": "thermo", "🏔️": "mountain", "⛰️": "mountain", "🌑": "moon", "🌙": "moon", "🎫": "ticket", "🎟️": "ticket", "🏟️": "ticket", "ℹ️": "info", "📌": "pin" };
+    "🌡️": "thermo", "🌡": "thermo", "🏔️": "mountain", "⛰️": "mountain", "🌑": "moon", "🌙": "moon", "🎫": "ticket", "🎟️": "ticket", "🏟️": "ticket", "ℹ️": "info", "📌": "pin", "🎒": "bag", "📦": "box", "🚚": "truck", "🎁": "gift", "📋": "list" };
   // an emoji from the data: a known one becomes a clean icon, anything else (e.g. a country flag) stays as it is (Oren 21.11.2026)
   function em(e, cls) { e = e == null ? "" : String(e); return ICP[e] || EMO[e] ? ic(e, cls) : esc(e); }
   function ic(k, cls) { var d = ICP[k] || ICP[EMO[k]] || ICP.bulb; return '<svg class="tp-ic' + (cls ? " " + cls : "") + '" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + d + "</svg>"; }
   // section that opens and closes; closed by default (Oren 19.11.2026: a lot of knowledge, less scrolling)
   function sx(k, title, small, body, open, sub) {
-    return '<section class="tp-sec"><details class="tp-sx"' + (open ? " open" : "") + '><summary class="tp-sh">' + ic(k, "e") + '<span class="tp-sht"><h2>' + title + "</h2>" + (sub || "") + "</span>" + (small ? "<small>" + small + "</small>" : "") + chev() + '</summary><div class="tp-sxb">' + body + "</div></details></section>";
+    return '<section class="tp-sec"><details class="tp-sx" data-k="' + esc(k) + '"' + (open ? " open" : "") + '><summary class="tp-sh">' + ic(k, "e") + '<span class="tp-sht"><h2>' + title + "</h2>" + (sub || "") + "</span>" + (small ? "<small>" + small + "</small>" : "") + chev() + '</summary><div class="tp-sxb">' + body + "</div></details></section>";
   }
   function chev() { return '<span class="tp-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'; }
   // כל מקום בטיול = קישור קטן ושקט לגוגל מפס עם סיכה וכיתוב "Google Maps" (אורן 19.11.2026).
@@ -166,6 +172,70 @@
   function img(base, k) { return k ? (/^(data:|https?:)/.test(k) ? k : base + k + (/\.(png|webp|svg|jpg)$/.test(k) ? "" : ".webp")) : ""; }
   // brand logo next to a name (Oren 19.11.2026): hotel, airline, chain. k = "logo-citizenm.png"
   function logo(base, k) { return k ? '<img class="tp-logo" src="' + esc(img(base, k)) + '" alt="" loading="lazy">' : ""; }
+
+
+  // ---- gear & preparations (Oren 21.11.2026, a fixed part of every trip ticket abroad) ----
+  // t.gear  = gear bought for this trip [{id, h, s, e, art, for, st: ordered|shipped|arrived|packed, eta, qty, price, ccy}]
+  //           price/ccy are the owner's only (stripped from the shared page).
+  // t.pack  = packing list per person {wa, people:[{id, n, to, self, items:[{id, t, done}]}]}; self = the owner's own list,
+  //           folded small at the end. Everyone adds and ticks on the shared page too (sq_trip_pack), or sends Dad a screenshot.
+  // Small original drawings for gear (no product photos). Unknown art = the item's icon.
+  var ART = {
+    lightstick: '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="21" r="15.5" fill="#EEF2F7" stroke="#9AA4B0" stroke-width="2"/><ellipse cx="26" cy="14" rx="4.5" ry="2.6" fill="#fff" opacity=".9" transform="rotate(-30 26 14)"/><rect x="27.5" y="15" width="9" height="15" rx="3" fill="#F6C1D3" stroke="#C8577D" stroke-width="1.5"/><path d="M23 35h18l-2.5 4h-13z" fill="#6E747C"/><rect x="27" y="39" width="10" height="21" rx="3.5" fill="#4F555C"/><rect x="29.5" y="43" width="5" height="6" rx="1.4" fill="#8A9199"/><path d="M50 9l1.3 3 3 1.3-3 1.3L50 17.6l-1.3-3-3-1.3 3-1.3zM13 30l1 2.2 2.2 1-2.2 1-1 2.2-1-2.2-2.2-1 2.2-1z" fill="#E8B54A"/></svg>',
+    strap: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 10c-6 10-5 26 4 34" fill="none" stroke="#F4F1EA" stroke-width="6" stroke-linecap="round"/><path d="M14 10c-6 10-5 26 4 34" fill="none" stroke="#B9B2A6" stroke-width="7.5" stroke-linecap="round" opacity=".35"/><rect x="11" y="40" width="16" height="12" rx="4" fill="#F4F1EA" stroke="#B9B2A6" stroke-width="1.6"/><circle cx="19" cy="46" r="3.2" fill="#D9D3C8"/><path d="M44 8c8 9 8 27-2 36" fill="none" stroke="#2B2E33" stroke-width="6" stroke-linecap="round"/><rect x="34" y="40" width="16" height="12" rx="4" fill="#2B2E33"/><circle cx="42" cy="46" r="3.2" fill="#5A5F66"/><path d="M30 14l1 2.3 2.3 1-2.3 1-1 2.3-1-2.3-2.3-1 2.3-1z" fill="#E8B54A"/></svg>',
+    plush: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 22c-3 6 0 12 8 12l2-8z" fill="#E86FA2"/><path d="M56 22c3 6 0 12-8 12l-2-8z" fill="#E86FA2"/><path d="M18 12l-2-7 8 4zM46 12l2-7-8 4z" fill="#E9852F"/><path d="M19 10.5l-1-3.5 3.6 2zM45 10.5l1-3.5-3.6 2z" fill="#8BC34A"/><rect x="14" y="9" width="36" height="42" rx="17" fill="#F08A35"/><rect x="17" y="46" width="30" height="9" rx="4.5" fill="#E2772A"/><circle cx="32" cy="31" r="10.5" fill="#EEF2F7" stroke="#C9692A" stroke-width="2"/><rect x="29.5" y="25" width="5" height="12" rx="2" fill="#D7DEE6"/><ellipse cx="32" cy="18.5" rx="6" ry="4" fill="#FFF3E6"/><rect x="29.4" y="20.5" width="2.2" height="3" rx=".6" fill="#fff" stroke="#C9692A" stroke-width=".6"/><rect x="32.4" y="20.5" width="2.2" height="3" rx=".6" fill="#fff" stroke="#C9692A" stroke-width=".6"/><circle cx="25" cy="17" r="1.6" fill="#2B2E33"/><circle cx="39" cy="17" r="1.6" fill="#2B2E33"/><path d="M22 11.5l.9 2 2 .9-2 .9-.9 2-.9-2-2-.9 2-.9z" fill="#C6E36B"/><rect x="29" y="55" width="6" height="7" rx="2" fill="#4F555C"/></svg>'
+  };
+  var GST = { ordered: ["box", "הוזמן"], shipped: ["truck", "בדרך"], arrived: ["check", "הגיע הביתה"], packed: ["bag", "ארוז"] };
+  function gearRow(g, own) {
+    var st = GST[g.st] || GST.ordered, art = ART[g.art] || '<span class="ico">' + em(g.e || "🎁") + "</span>";
+    var eta = g.st === "arrived" || g.st === "packed" ? "" : g.eta ? " · מגיע " + g.eta : "";
+    return '<div class="tp-gr" data-g="' + esc(g.id || "") + '"><div class="art">' + art + '</div><div class="x"><b>' + esc(g.h) + (g.qty > 1 ? ' <small dir="ltr">×' + esc(g.qty) + "</small>" : "") + "</b>" +
+      (g.s ? "<span>" + esc(g.s) + "</span>" : "") + '<div class="m"><span class="tp-pill' + (g.st === "arrived" || g.st === "packed" ? " g" : "") + '">' + ic(st[0]) + esc(st[1] + eta) + "</span>" +
+      (g.for ? '<span class="tp-pill">' + esc(g.for) + "</span>" : "") + (own && g.price != null ? '<span class="tp-pill pr" dir="ltr">' + esc((g.ccy || "₪") + g.price) + "</span>" : "") + "</div></div></div>";
+  }
+  function packCount(p) { var it = p.items || []; return { n: it.length, d: it.filter(function (x) { return x && x.done; }).length }; }
+  function packRow(p, t, own, wa) {
+    var c = packCount(p), title = p.h || (p.self && own ? "הרשימה שלי" : "הרשימה של " + (p.n || ""));
+    var waU = wa && !(own && p.self) ? "https://wa.me/" + wa + "?text=" + encodeURIComponent("היי" + (p.self ? "" : " " + (p.to_n || "אבא")) + ", הנה צילום של רשימת הציוד של " + (p.n || "") + " ל" + (t.short || t.title || "טיול") + " 📸") : "";
+    return '<details class="tp-pp' + (p.self ? " self" : "") + '" data-k="pp:' + esc(p.id) + '" data-p="' + esc(p.id) + '"><summary><span class="av">' + (p.e ? em(p.e) : esc(String(p.n || "?").slice(0, 1))) + "</span><b>" + esc(title) + '</b><small data-cnt>' + (c.n ? c.d + "/" + c.n + " מוכן" : "ריקה") + "</small>" + chev() + "</summary>" +
+      '<div class="tp-ppb"><ul class="tp-pl">' + (p.items || []).map(function (x) { return packLi(x); }).join("") + "</ul>" +
+      '<p class="tp-pe"' + (c.n ? " hidden" : "") + ">" + esc(p.empty || (p.self ? "עוד אין פריטים. כותבים כאן מה לא לשכוח." : "עוד אין פריטים. אפשר להוסיף כאן, או לשלוח צילום של רשימה (למשל מ-Keep) " + (p.to || "לאבא") + " בוואטסאפ.")) + "</p>" +
+      '<form class="tp-pa" autocomplete="off"><input type="text" maxlength="120" enterkeyhint="done" placeholder="להוסיף פריט…" aria-label="פריט חדש"><button type="submit">' + ic("plus") + "הוספה</button></form>" +
+      (waU ? '<a class="tp-pwa" href="' + esc(waU) + '" target="_blank" rel="noopener">' + WA_SVG + "<span>צילום של רשימה " + esc(p.to || "לאבא") + " בוואטסאפ</span></a>" : "") + "</div></details>";
+  }
+  function packLi(x) { return '<li data-i="' + esc(x.id) + '"' + (x.done ? ' class="on"' : "") + '><button type="button" class="ck" aria-label="מוכן">' + ic("check") + '</button><span>' + esc(x.t) + '</span><button type="button" class="dl" aria-label="מחיקה">×</button></li>'; }
+  // apply one list change to a pack object (owner page and the shared page share this)
+  function packApply(pk, op) {
+    var p = (pk.people || []).filter(function (x) { return x.id === op.p; })[0]; if (!p) return pk;
+    p.items = p.items || [];
+    if (op.a === "add") p.items.push({ id: op.id, t: op.t, done: false });
+    else if (op.a === "tog") p.items.forEach(function (x) { if (x.id === op.id) x.done = !!op.done; });
+    else if (op.a === "del") p.items = p.items.filter(function (x) { return x.id !== op.id; });
+    return pk;
+  }
+  var WA_SVG = '<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 5c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.2-.3-.2-.6-.4z"/></svg>';
+  function packWire(root, t, o) {
+    root.querySelectorAll(".tp-pp").forEach(function (box) {
+      var pid = box.getAttribute("data-p"), ul = box.querySelector(".tp-pl"), cnt = box.querySelector("[data-cnt]"), pe = box.querySelector(".tp-pe");
+      var send = function (op, undo) {
+        var p = o.onPack ? o.onPack(op) : null;
+        if (p && p.then) p.then(null, function () { undo(); });
+      };
+      var recount = function () { var n = ul.children.length, d = ul.querySelectorAll("li.on").length; cnt.textContent = n ? d + "/" + n + " מוכן" : "ריקה"; pe.hidden = !!n; };
+      ul.addEventListener("click", function (e) {
+        var b = e.target.closest("button"), li = e.target.closest("li"); if (!b || !li) return;
+        var id = li.getAttribute("data-i");
+        if (b.classList.contains("ck")) { var on = !li.classList.contains("on"); li.classList.toggle("on", on); recount(); send({ p: pid, a: "tog", id: id, done: on }, function () { li.classList.toggle("on", !on); recount(); }); }
+        else if (b.classList.contains("dl")) { var nx = li.nextSibling; li.remove(); recount(); send({ p: pid, a: "del", id: id }, function () { ul.insertBefore(li, nx); recount(); }); }
+      });
+      box.querySelector(".tp-pa").addEventListener("submit", function (e) {
+        e.preventDefault(); var inp = this.querySelector("input"), v = inp.value.trim().slice(0, 120); if (!v) return;
+        var id = "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+        var w = document.createElement("ul"); w.innerHTML = packLi({ id: id, t: v }); var li = w.firstChild; ul.appendChild(li); inp.value = ""; recount();
+        send({ p: pid, a: "add", id: id, t: v }, function () { li.remove(); recount(); });
+      });
+    });
+  }
 
   function render(root, t, o) {
     o = o || {};
@@ -469,6 +539,26 @@
     if (own && lk.length) SEC.links=(sx("link", "קישורים", String(lk.length), '<div class="tp-grid">' + lk.map(function (l) { return '<a class="tp-tile full tp-lk" href="' + esc(url(l.url)) + '" target="_blank" rel="noopener"><b>' + esc(l.label || "קישור") + "</b>" + (l.s ? "<span>" + esc(l.s) + "</span>" : "") + "</a>"; }).join("") + "</div>"));
     if (own && Array.isArray(t.gaps) && t.gaps.length) SEC.gaps=(sx("bulb", "עוד לתכנן", "רק אצלך", '<div class="tp-gaps" data-gaps></div>'));
 
+    // ---- 🎒 gear & preparations: what we bought for the trip + a packing list per person (Oren 21.11.2026) ----
+    var gear = (Array.isArray(t.gear) ? t.gear : []).filter(function (g) { return g && g.h; });
+    var ppl = t.pack && Array.isArray(t.pack.people) ? t.pack.people.filter(function (p) { return p && p.id; }) : [];
+    if (gear.length || ppl.length) {
+      var GB = [], waN = String((t.pack && t.pack.wa) || "").replace(/\D/g, "");
+      if (gear.length) {
+        var gtot = own ? gear.reduce(function (a, g) { return a + (+g.price || 0) * (g.ccy && g.ccy !== "₪" ? 0 : 1); }, 0) : 0;
+        GB.push('<div class="tp-sub">' + ic("gift") + "<b>" + esc(t.gear_h || "קנינו לטיול") + "</b><small>" + (gtot ? '<span dir="ltr">₪' + gtot.toFixed(2).replace(/\.00$/, "") + "</span> · " : "") + gear.length + "</small></div>");
+        GB.push('<div class="tp-gear">' + gear.map(function (g) { return gearRow(g, own); }).join("") + "</div>");
+      }
+      if (ppl.length) {
+        var mine = ppl.filter(function (p) { return p.self; }), rest = ppl.filter(function (p) { return !p.self; });
+        GB.push('<div class="tp-sub">' + ic("list") + "<b>רשימות ציוד</b><small>לכל אחד רשימה משלו</small></div>");
+        GB.push('<div class="tp-pps">' + rest.concat(mine).map(function (p) { return packRow(p, t, own, waN); }).join("") + "</div>");
+      }
+      var pc = ppl.reduce(function (a, p) { var c = packCount(p); a.n += c.n; a.d += c.d; return a; }, { n: 0, d: 0 });
+      var gIn = gear.filter(function (g) { return g.st !== "arrived" && g.st !== "packed"; }).length;
+      SEC.prep = sx("bag", "ציוד והכנות", esc(gIn ? gIn + " בדרך" : pc.n ? pc.d + "/" + pc.n + " מוכן" : ""), GB.join(""));
+    }
+
     // ---- WhatsApp to the owner (view) ----
     var wa = String(o.wa || "").replace(/\D/g, "");
     if (wa && o.mode !== "edit") {
@@ -477,12 +567,18 @@
         esc(t.wa_label || "יש לכם המלצה? שלחו לאורן") + "<small>" + esc(t.wa_sub || "מסעדה, מקום, טיפ או תמונה, ישר לוואטסאפ") + "</small></span></a>");
     }
     // ---- order by mode (Oren 21.11.2026): planning = anticipation (flights, hotel, the destination first); trip = what happens today first ----
-    var ORD = ph.k === "pre" || t.stage === "plan" ? ["flights", "hotels", "dest", "days", "places", "photos", "map", "moves", "wx", "notes", "ops", "costs", "links", "gaps"]
-      : ["days", "places", "photos", "moves", "wx", "map", "notes", "dest", "hotels", "flights", "ops", "costs", "links", "gaps"];
+    var ORD = ph.k === "pre" || t.stage === "plan" ? ["flights", "hotels", "prep", "dest", "days", "places", "photos", "map", "moves", "wx", "notes", "ops", "costs", "links", "gaps"]
+      : ["days", "places", "photos", "moves", "wx", "map", "notes", "prep", "dest", "hotels", "flights", "ops", "costs", "links", "gaps"];
     ORD.concat(["wa"]).forEach(function (k) { if (SEC[k]) H.push(SEC[k]); });
     if (DKH) H.push(DKH);
     H.push('<div class="tp-foot">' + esc(t.foot || "נבנה באהבה לטיול הזה") + '<div class="tp-credit">Side Quests</div></div></div>');
+    // a re-render (e.g. after a list change) keeps what was open and the add box in focus
+    var wasOpen = [].map.call(root.querySelectorAll("details[open][data-k]"), function (d) { return d.getAttribute("data-k"); });
+    var ae = document.activeElement, fk = ae && root.contains(ae) && ae.closest(".tp-pa") ? ae.closest(".tp-pp").getAttribute("data-k") : "";
     root.innerHTML = H.join("");
+    wasOpen.forEach(function (k) { var d = root.querySelector('details[data-k="' + k.replace(/["\\]/g, "") + '"]'); if (d) d.open = true; });
+    if (fk) { var fi = root.querySelector('details[data-k="' + fk.replace(/["\\]/g, "") + '"] .tp-pa input'); if (fi) fi.focus({ preventScroll: true }); }
+    packWire(root, t, o);
     var cdb = root.querySelector(".tp-cdg");
     if (cdb) {
       var cdq = {}; cdb.querySelectorAll("[data-cd]").forEach(function (b) { cdq[b.getAttribute("data-cd")] = b; });
@@ -519,5 +615,5 @@
     requestAnimationFrame(function () { if (at) go(at, 1); paint(); });
   }
 
-  window.TripView = { render: render, phase: phase, esc: esc };
+  window.TripView = { render: render, phase: phase, esc: esc, packApply: packApply };
 })();
