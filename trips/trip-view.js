@@ -217,12 +217,18 @@
       H.push('<section class="tp-sec"><div class="tp-sh">' + ic("plane", "e") + '<h2>טיסות</h2><small>לחיצה לפרטים</small></div>' +
         fl.map(function (f) {
           var A = f.from || {}, B = f.to || {};
-          return '<details class="tp-bp"><summary><div class="tp-bph"><span>' + esc(f.dir || "") + " · יום " + esc(dowOf(f.d)) + " " + esc(dShort(f.d)) + '</span><span dir="ltr">' + logo(base, f.logo) + esc((f.air || "") + " " + (f.no || "")) + "</span></div>" +
+          // collapsed = one compact row: airline logo, flight no., date, times and duration; the boarding pass and every detail open on tap (Oren 21.11.2026)
+          var mk = f.logo ? '<span class="tp-flg"><img src="' + esc(img(base, f.logo)) + '" alt="" loading="lazy"></span>' : '<span class="tp-flg">' + ic("plane") + "</span>";
+          return '<details class="tp-bp"><summary><div class="tp-fs">' + mk +
+            '<div class="tp-fsm"><b dir="ltr">' + esc(f.logo ? (f.no || f.air || "") : (f.air || "") + " " + (f.no || "")) + "</b><span>" + esc(f.dir || "") + " · " + esc(dShort(f.d)) + "</span></div>" +
+            '<div class="tp-fst" dir="ltr"><b>' + esc(f.dep || "") + " → " + esc(f.arr || "") + "</b><span>" + esc((A.c || "") + "→" + (B.c || "") + (f.dur ? " · " + f.dur : "")) + "</span></div>" +
+            '<span class="tp-chev">‹</span></div>' +
             (isT1(A) ? '<div class="tp-t1s">ממריאים מטרמינל 1, לא 3</div>' : "") +
+            "</summary><div class=\"tp-more tp-fmore\">" +
             '<div class="tp-bpm"><div class="tp-ap"><b>' + esc(A.c) + "</b><span>" + esc(A.n) + "</span><i>" + esc(f.dep) + '</i></div><div class="tp-fly">' + plane + esc(f.dur || "") + '</div><div class="tp-ap r"><b>' + esc(B.c) + "</b><span>" + esc(B.n) + "</span><i>" + esc(f.arr) + "</i></div></div>" +
             '<div class="tp-bpf"><span>טרמינל <b>' + esc(A.t || "?") + "</b> ← <b>" + esc(B.t || "?") + "</b></span>" + (f.seats ? "<span>מושבים <b dir=\"ltr\">" + esc(f.seats) + "</b></span>" : "") + "</div>" +
-            '<span class="tp-tap">▾ פרטים</span></summary><div class="tear"></div><div class="tp-more"><dl class="tp-kv">' +
-            (f.kv || []).map(function (x) { return "<dt>" + esc(x[0]) + "</dt><dd>" + esc(x[1]) + "</dd>"; }).join("") + "</dl>" +
+            '<div class="tear"></div><dl class="tp-kv">' +
+            [f.ac ? ["מטוס", f.ac] : null, f.dur ? ["משך טיסה", f.dur + " שעות"] : null].filter(Boolean).concat(f.kv || []).map(function (x) { return "<dt>" + esc(x[0]) + "</dt><dd>" + esc(x[1]) + "</dd>"; }).join("") + "</dl>" +
             '<div class="tp-gls">' + [A, B].map(function (p) { return p.c || p.n ? '<span>' + esc(p.n || p.c) + gml({ g: p.g, q: p.q || (p.c ? p.c + " Airport" + (p.t && p.t !== "?" ? " Terminal " + p.t : "") : p.n) }) + "</span>" : ""; }).join("") + "</div></div></details>";
         }).join("") + "</section>");
     }

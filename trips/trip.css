@@ -387,3 +387,18 @@ a.tp-mapsph{border-style:solid;color:var(--ink);text-decoration:none}
 .tp-dkb .d i.on{background:#fff}
 .tp-hero.ban.full>img{aspect-ratio:auto}
 .tp-hgal{margin-bottom:12px}
+/* flights: one compact collapsed row, logo first (21.11.2026) */
+.tp-fs{display:flex;align-items:center;gap:10px;padding:12px 14px;min-height:64px;border-top:3px solid var(--c1)}
+.tp-flg{flex:0 0 auto;width:52px;height:36px;border-radius:9px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--acc)}
+.tp-flg img{max-width:44px;max-height:26px;width:auto;height:auto;object-fit:contain}
+.tp-flg svg{width:20px;height:20px}
+.tp-fsm{flex:1 1 auto;min-width:0}
+.tp-fsm b{display:block;font-size:14.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
+.tp-fsm span,.tp-fst span{display:block;font-size:12.5px;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-fst{flex:0 0 auto;text-align:left}
+.tp-fst b{display:block;font-family:var(--f-d);font-size:16px;font-weight:800;white-space:nowrap}
+.tp-chev{flex:0 0 auto;color:var(--muted);font-weight:800;font-size:18px;transition:transform .2s;display:inline-block}
+.tp-bp[open] .tp-chev{transform:rotate(-90deg)}
+.tp-fmore{padding:0 0 12px}
+.tp-fmore .tp-kv,.tp-fmore .tp-gls{padding:10px 16px 0}
+.tp-fs+.tp-t1s{margin:0 14px 10px}
