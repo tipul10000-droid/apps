@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#14264A">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.RW_BUILD="1.1";window.SQ_DASH="hotel-clubs";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.RW_BUILD="1.2";window.SQ_DASH="hotel-clubs";</script>
 <script src="sq-db.js?v=10"></script>
 <title>מועדוני מלונות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -126,7 +126,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 @media (max-width:420px){.kpi b{font-size:16px}.hero h1{font-size:22px}.seg button{font-size:13px}.big b{font-size:19px}}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=9">
-<script src="dash-sub.js?v=9" defer></script>
+<script src="dash-sub.js?v=10" defer></script>
 <script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 <script src="sq-icons.js?v=2"></script>
 </head>
@@ -173,14 +173,14 @@ function dlRow(x){const n=daysTo(x.d),p=x.prog&&prog(x.prog);
 function tabSum(){let o="";const Q=openQs();
   const D=arr(meta.deadlines).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||""));
   if(D.length)o+=`<section><div class="sh"><h2>⏰ תאריכים שחשוב לזכור</h2></div><div class="list dl">${D.map(dlRow).join("")}</div></section>`;
-  o+=`<section><div class="sh"><h2>המצב שלי</h2></div><div class="list">${progs.map(p=>`<button class="row" data-tab="${esc(p.id)}"><span class="i">${LOGO[p.brand]||""}</span><span class="b"><span class="t">${esc(p.name)} · ${esc(p.tier||"")}</span><span class="s">${esc(p.line||"")}</span></span><span class="v">${p.cash?money(p.cash.v,p.cash.cur):p.saved?money(p.saved.v,p.saved.cur):""}<small>${p.cash?esc(p.cash.l||"יתרה"):p.saved?esc(p.saved.l||"נחסך"):""}</small></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
+  o+=`<section><div class="sh"><h2>המצב שלי</h2></div><div class="list">${progs.map(p=>`<button class="row" data-tab="${esc(p.id)}" data-sq-item="${esc(p.id)}"><span class="i">${LOGO[p.brand]||""}</span><span class="b"><span class="t">${esc(p.name)} · ${esc(p.tier||"")}</span><span class="s">${esc(p.line||"")}</span></span><span class="v">${p.cash?money(p.cash.v,p.cash.cur):p.saved?money(p.saved.v,p.saved.cur):""}<small>${p.cash?esc(p.cash.l||"יתרה"):p.saved?esc(p.saved.l||"נחסך"):""}</small></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
   if(Q.length)o+=`<section><div class="sh"><h2>❓ שאלות פתוחות</h2><small>${Q.length}</small></div><div class="list">${Q.map(q=>`<button class="row wr" data-tab="q"><span class="i">❓</span><span class="b"><span class="t">${esc(q.q)}</span></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
   if(arr(meta.tips).length)o+=`<section data-sq-path="tips"><div class="sh"><h2>💡 טיפים מעשיים</h2><small>לחיצה לפירוט</small></div><div class="list">${meta.tips.map((t,i)=>xr(t,"tip"+i)).join("")}</div></section>`;
   if(meta.connectors)o+=`<section><div class="sh"><h2>🔌 חיבורים</h2></div><div class="list"><div class="row" style="cursor:default"><span class="i">🔌</span><span class="b"><span class="s" style="color:var(--ink)">${esc(meta.connectors)}</span></span></div></div></section>`;
   return o;}
 function tabProg(p){const P=p.progress||{},have=+P.have||0,pend=+P.pending||0,max=+P.max||+P.goal||1;
   const pct=v=>Math.min(100,v/max*100);
-  let o=`<section><article class="pc" style="--c1:${esc(p.c1||"#333")};--c2:${esc(p.c2||p.c1||"#555")}"><div class="ph">${LOGO[p.brand]||""}<div class="n"><h3>${esc(p.name)}</h3><p>${esc(p.program||"")}${p.as_of?" · נכון ל-"+esc(p.as_of):""}</p></div><span class="tier${/gold/i.test(p.tier||"")?" gold":""}">${esc(p.tier||"")}</span></div><div class="bd">
+  let o=`<section><article class="pc" data-sq-item="${esc(p.id)}" style="--c1:${esc(p.c1||"#333")};--c2:${esc(p.c2||p.c1||"#555")}"><div class="ph">${LOGO[p.brand]||""}<div class="n"><h3>${esc(p.name)}</h3><p>${esc(p.program||"")}${p.as_of?" · נכון ל-"+esc(p.as_of):""}</p></div><span class="tier${/gold/i.test(p.tier||"")?" gold":""}">${esc(p.tier||"")}</span></div><div class="bd">
     <div class="big">${arr(p.big).map(b=>`<div><b>${esc(b.v)}</b><span>${esc(b.l)}</span></div>`).join("")}</div>
     ${P.goal?`<div class="meter" role="img" aria-label="${have} מתוך ${max}"><i class="pd" style="width:${pct(have+pend)}%"></i><i style="width:${pct(have)}%"></i>${arr(P.marks).map(m=>`<u style="inset-inline-start:${pct(m)}%"></u>`).join("")}</div>
     <div class="mm"><span><b>${have}</b> ${esc(P.unit||"")}${pend?` + ${pend} ממתינים`:""}</span><span>${esc(P.scale||"")}</span></div>`:""}
