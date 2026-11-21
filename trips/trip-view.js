@@ -270,7 +270,7 @@
     var fl0 = (Array.isArray(t.flights) ? t.flights : [])[0], cdAt = fl0 ? zEpoch(fl0.d, fl0.dep, "Asia/Jerusalem") : NaN;
     if (t.stage !== "plan" && ph.k === "pre" && !isNaN(cdAt) && cdAt > Date.now()) {
       H.push('<section class="tp-cd" aria-label="ספירה לאחור"><div class="h">' + ic("plane") + '<span>ההמראה בעוד</span></div><div class="tp-cdg" dir="ltr">' +
-        [["d", "ימים"], ["h", "שעות"], ["m", "דקות"], ["s", "שניות"]].map(function (x) { return '<div><b data-cd="' + x[0] + '">00</b><span>' + x[1] + "</span></div>"; }).reverse().join("") +
+        [["d", "ימים"], ["h", "שעות"], ["m", "דקות"], ["s", "שניות"]].map(function (x) { return '<div><b data-cd="' + x[0] + '">00</b><span>' + x[1] + "</span></div>"; }).join("") + // days on the left → seconds on the right, airport-board style (Oren 21.11.2026)
         '</div><div class="f">' + esc((fl0.no || "") + " · " + cityOf(fl0.from) + " ← " + cityOf(fl0.to) + " · יום " + dowOf(fl0.d) + " " + dShort(fl0.d) + " · " + (fl0.dep || "")) + "</div></section>");
     }
     // ---- stats strip ----
@@ -338,10 +338,16 @@
           // times, and the cities in Hebrew (airports only inside); everything else opens on tap (Oren 21.11.2026)
           var em1 = f.logo_s || f.logo;
           var mk = em1 ? '<span class="tp-flg"><img src="' + esc(img(base, em1)) + '" alt="' + esc(f.air || "") + '" loading="lazy"></span>' : '<span class="tp-flg">' + ic("planef") + "</span>";
-          var pk = [P.t ? ["מטוס", P.t + (P.wide ? " · רחב גוף" : " · צר גוף")] : f.ac ? ["מטוס", f.ac] : null,
+          // shared page = only the positive (Oren 21.11.2026): the plane is mentioned only when it is a plus (P.good, or a wide body);
+          // standard or negative facts (narrow body, "not a Dreamliner", "may change", seat layout, seat maps) stay on the owner's page
+          var pk = own ? [P.t ? ["מטוס", P.t + (P.wide ? " · רחב גוף" : " · צר גוף")] : f.ac ? ["מטוס", f.ac] : null,
             P.cfg ? ["תצורת ישיבה", P.cfg] : null, P.age ? ["כמה חדש", P.age] : null, P.note ? ["טוב לדעת", P.note] : null,
-            f.dur ? ["משך טיסה", f.dur + " שעות"] : null].filter(Boolean);
-          var maps = [P.map ? { u: P.map, l: "מפת מושבים" } : null, P.map2 ? { u: P.map2, l: P.map2_l || "עוד מפה" } : null].filter(function (x) { return x && url(x.u); });
+            f.dur ? ["משך טיסה", f.dur + " שעות"] : null].filter(Boolean)
+            : [P.good ? ["מטוס", (P.t ? P.t + ": " : "") + P.good] : P.wide && P.t ? ["מטוס", P.t + " · רחב גוף"] : null].filter(Boolean); // the duration already shows on the boarding pass
+          var tA = A.t && A.t !== "?" ? A.t : "", tB = B.t && B.t !== "?" ? B.t : "";
+          var trm = own ? "<span>טרמינל <b>" + esc(A.t || "?") + "</b> ← <b>" + esc(B.t || "?") + "</b></span>"
+            : tA || tB ? "<span>" + (tA ? "טרמינל <b>" + esc(tA) + "</b>" : "") + (tA && tB ? " ← " : "") + (tB ? (tA ? "" : "נחיתה בטרמינל ") + "<b>" + esc(tB) + "</b>" : "") + "</span>" : "";
+          var maps = !own ? [] : [P.map ? { u: P.map, l: "מפת מושבים" } : null, P.map2 ? { u: P.map2, l: P.map2_l || "עוד מפה" } : null].filter(function (x) { return x && url(x.u); });
           return '<details class="tp-bp"><summary><div class="tp-fs">' + mk +
             '<div class="tp-fsm"><b dir="ltr">' + esc(((f.air || "") + " " + (f.no || "")).trim()) + "</b><span>" + esc([f.dir, dShort(f.d)].filter(Boolean).join(" · ")) + "</span></div>" +
             '<div class="tp-fst"><b dir="ltr">' + esc(f.dep || "") + " → " + esc(f.arr || "") + "</b><span>" + esc(cityOf(A) + " ← " + cityOf(B)) + "</span></div>" +
@@ -350,7 +356,7 @@
             "</summary><div class=\"tp-more tp-fmore\">" +
             (f.logo ? '<div class="tp-fwm"><img src="' + esc(img(base, f.logo)) + '" alt="' + esc(f.air || "") + '" loading="lazy"></div>' : "") +
             '<div class="tp-bpm"><div class="tp-ap"><b>' + esc(A.c) + "</b><span>" + esc(A.n) + "</span><i>" + esc(f.dep) + '</i></div><div class="tp-fly">' + plane + esc(f.dur || "") + '</div><div class="tp-ap r"><b>' + esc(B.c) + "</b><span>" + esc(B.n) + "</span><i>" + esc(f.arr) + "</i></div></div>" +
-            '<div class="tp-bpf"><span>טרמינל <b>' + esc(A.t || "?") + "</b> ← <b>" + esc(B.t || "?") + "</b></span>" + (f.seats ? "<span>מושבים <b dir=\"ltr\">" + esc(f.seats) + "</b></span>" : "") + "</div>" +
+            '<div class="tp-bpf">' + trm + (f.seats ? "<span>מושבים <b dir=\"ltr\">" + esc(f.seats) + "</b></span>" : "") + "</div>" +
             (lg ? '<div class="tp-lng">' + (lg.logo ? '<img src="' + esc(img(base, lg.logo)) + '" alt="" loading="lazy">' : '<span class="i">' + ic("sofa") + "</span>") + '<div><b>' + esc(lg.h) + "</b><span>" + esc(lg.s) + "</span>" + gml(lg) + "</div></div>" : "") +
             '<div class="tear"></div><dl class="tp-kv">' +
             pk.concat(f.kv || []).map(function (x) { return "<dt>" + esc(x[0]) + "</dt><dd>" + esc(x[1]) + "</dd>"; }).join("") + "</dl>" +
