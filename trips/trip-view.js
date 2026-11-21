@@ -234,6 +234,61 @@
         }).join("") + "</section>");
     }
 
+    // ---- costs (owner only; never in the public page): paid, missing, vs the cashflow trip key, live spend (Oren 21.11.2026) ----
+    var C = t.costs;
+    if (own && C && Array.isArray(C.items) && C.items.length) {
+      var nis = function (v) { return "₪" + Math.round(+v || 0).toLocaleString("en-US"); };
+      var sum = function (f) { return C.items.filter(f).reduce(function (a, i) { return a + (+i.ils || 0); }, 0); };
+      var KL = (C.key && C.key.lines) || [], kTot = KL.reduce(function (a, l) { return a + (+l.ils || 0); }, 0);
+      var inK = function (i) { return i.line !== "extra" && !i.out; };
+      var fIn = sum(inK), fAll = sum(function () { return true; });
+      var paid = sum(function (i) { return i.st === "paid"; }), field = sum(function (i) { return i.field; });
+      var toPay = sum(function (i) { return i.st === "due" || i.st === "pending" || i.st === "missing"; });
+      var pct = kTot ? Math.round((fIn / kTot - 1) * 100) : 0;
+      var vk = !kTot ? "" : pct > 5 ? "over" : pct < -5 ? "under" : "on";
+      var vtx = vk === "over" ? "מעל המפתח ב-" + nis(fIn - kTot) + " (" + pct + "%)" : vk === "under" ? "מתחת למפתח ב-" + nis(kTot - fIn) + " (" + (-pct) + "%)" : vk ? "בתוך המפתח (" + (pct > 0 ? "+" : "") + pct + "%)" : "";
+      var ST = { paid: ["שולם", "g"], due: ["משלמים במקום", ""], pending: ["מחכה לאישור חיוב", "w"], missing: ["חסר", "r"], est: ["הערכה לשטח", "s"] };
+      var B = [];
+      B.push('<div class="tp-cs3"><div><span>שולם</span><b dir="ltr">' + nis(paid) + '</b></div><div><span>עוד לשלם או להזמין</span><b dir="ltr">' + nis(toPay) + '</b></div><div><span>הוצאות בשטח</span><b dir="ltr">' + nis(field) + "</b></div></div>");
+      B.push('<div class="tp-cv v-' + vk + '"><div><span>צפוי בסך הכול</span><b dir="ltr">' + nis(fAll) + "</b></div>" + (kTot ? '<div><span>מול המפתח</span><b>' + esc(vtx) + "</b></div>" : "") + "</div>");
+      // line by line against the key
+      var lines = KL.map(function (l) {
+        var f = sum(function (i) { return i.line === l.k && !i.out; }), d = f - (+l.ils || 0);
+        return '<details class="tp-cl"><summary><span class="x">' + esc(l.l) + '</span><span class="n" dir="ltr">' + nis(l.ils) + '</span><span class="n" dir="ltr">' + nis(f) + '</span><span class="n d ' + (d > 50 ? "up" : d < -50 ? "dn" : "") + '" dir="ltr">' + (d > 0 ? "+" : d < 0 ? "−" : "") + nis(Math.abs(d)).replace("₪-", "₪") + "</span></summary><p>" + esc(l.f || "") + "</p></details>";
+      }).join("");
+      var ext = C.items.filter(function (i) { return i.line === "extra" || i.out; });
+      B.push('<div class="tp-card tp-ctab"><div class="tp-clh"><span class="x"></span><span class="n">מפתח</span><span class="n">צפוי</span><span class="n">הפרש</span></div>' + lines +
+        '<div class="tp-clt"><span class="x">בתוך המפתח</span><span class="n" dir="ltr">' + nis(kTot) + '</span><span class="n" dir="ltr">' + nis(fIn) + '</span><span class="n d ' + (vk === "over" ? "up" : vk === "under" ? "dn" : "") + '" dir="ltr">' + (fIn >= kTot ? "+" : "−") + nis(Math.abs(fIn - kTot)) + "</span></div>" +
+        (ext.length ? '<div class="tp-cle"><span class="x">מחוץ למפתח: ' + esc(ext.map(function (i) { return i.l.replace(/ \(.*\)$/, ""); }).join(", ")) + '</span><span class="n" dir="ltr">' + nis(ext.reduce(function (a, i) { return a + (+i.ils || 0); }, 0)) + "</span></div>" : "") +
+        (C.key && C.key.alt ? '<div class="tp-cle"><span class="x">' + esc(C.key.alt.h) + ": מפתח " + nis(C.key.alt.ils) + '</span><span class="n" dir="ltr">' + ((fIn - C.key.alt.ils) >= 0 ? "+" : "−") + Math.abs(Math.round((fIn / C.key.alt.ils - 1) * 100)) + "%</span></div>" : "") + "</div>");
+      // every component with its state
+      B.push('<div class="tp-card tp-cits">' + C.items.map(function (i) {
+        var s = ST[i.st] || ST.est, tx = i.tx && i.tx.d ? " · חויב ב-" + dShort(i.tx.d) : "";
+        return '<details class="tp-ci"><summary><span class="tp-pill ' + s[1] + '">' + esc(s[0]) + '</span><span class="x">' + esc(i.l) + '</span><span class="n" dir="ltr">' + nis(i.ils) + "</span></summary><p>" + esc((i.s || "") + tx) + "</p></details>";
+      }).join("") + "</div>");
+      // live: card charges abroad during the trip vs the field budget
+      var L = C.live, fr = String(t.from || "");
+      if (ph.k === "pre" || !L) {
+        B.push('<div class="tp-clive">' + ic("cash", "e") + "<div><b>מעקב תוך כדי הטיול</b><span>מ-" + esc(dShort(fr)) + ", כל חיוב באשראי בחו״ל בימי הטיול נכנס לכאן לבד (פעם בשעה) מול תקציב השטח של " + esc(nis(field)) + ". מה ששולם מראש לא נספר פעמיים.</span></div></div>");
+      } else {
+        var ndays = Math.max(1, Math.round((ymd(t.to) - ymd(t.from)) / DAY) + 1), dn = ph.k === "trip" ? ph.n : ndays;
+        var exp = Math.round(field * dn / ndays), sp = +L.total || 0, ok = sp <= exp;
+        var w = field ? Math.min(100, Math.round(sp / field * 100)) : 0, we = field ? Math.min(100, Math.round(exp / field * 100)) : 0;
+        var KN = { food: "אוכל", transport: "תחבורה", shopping: "קניות", attractions: "אטרקציות", other: "אחר" };
+        B.push('<div class="tp-clive on ' + (ok ? "ok" : "bad") + '"><div class="h"><b>' + (ph.k === "trip" ? "עד עכשיו בטיול" : "בפועל בטיול") + '</b><span dir="ltr">' + nis(sp) + " / " + nis(field) + "</span></div>" +
+          '<div class="bar"><i style="width:' + w + '%"></i><u style="inset-inline-start:' + we + '%"></u></div>' +
+          "<p>" + esc(ok ? (ph.k === "trip" ? "בתקציב: עד יום " + dn + " צפוי עד " + nis(exp) + "." : "נשארתם בתקציב השטח.") : "מעל הקצב: עד יום " + dn + " צפוי עד " + nis(exp) + ", יצא " + nis(sp) + ".") + "</p>" +
+          '<div class="by">' + Object.keys(L.by || {}).map(function (k) { return "<span>" + esc(KN[k] || k) + ' <b dir="ltr">' + nis(L.by[k]) + "</b></span>"; }).join("") + "</div>" +
+          ((L.last || []).length ? '<details class="tp-cl"><summary><span class="x">' + L.n + " חיובים, האחרונים</span></summary>" + L.last.map(function (x) { return '<div class="tp-clr"><span>' + esc(dShort(x.d)) + '</span><span class="x" dir="ltr">' + esc(x.m) + '</span><span dir="ltr">' + nis(x.ils) + "</span></div>"; }).join("") + "</details>" : "") +
+          '<small>עודכן מהאשראי ' + esc((function () { try { return new Date(L.at).toLocaleString("he-IL", { timeZone: "Asia/Jerusalem", day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; } })()) + "</small></div>");
+      }
+      // insights: one line each, tap for the full text
+      var cn = Array.isArray(C.notes) ? C.notes : [];
+      if (cn.length) B.push('<div class="tp-card tp-cits">' + cn.map(function (n) { return '<details class="tp-ci"><summary>' + ic("bulb") + '<span class="x">' + esc(n.h) + "</span>" + chev() + "</summary><p>" + esc(n.t) + "</p></details>"; }).join("") + "</div>");
+      if (C.key) B.push('<p class="tp-csrc">' + esc(C.key.src + ": " + [C.key.region, C.key.season, C.key.style, C.key.pax + " נוסעים", C.key.nights + " לילות"].join(" · ") + (C.fx ? ". שער: $ " + C.fx.USD + ", € " + C.fx.EUR : "")) + "</p>");
+      H.push(sx("cash", "עלויות ותקציב", vk ? esc(vk === "over" ? "מעל המפתח" : vk === "under" ? "מתחת למפתח" : "במפתח") : "", B.join(""), false, '<span class="tp-shs" dir="ltr">' + nis(fAll) + "</span>"));
+    }
+
     // ---- getting around ----
     var mv = Array.isArray(t.moves) ? t.moves : [];
     if (mv.length) {
