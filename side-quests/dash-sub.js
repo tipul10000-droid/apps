@@ -137,7 +137,7 @@
     return L.filter(function(x){return x&&x.id&&(Date.parse(s[dash+":"+x.id]||"")||0)<(Date.parse(x.at||"")||1);});}
   function css(){if(document.getElementById("sqnew-css"))return;var st=document.createElement("style");st.id="sqnew-css";st.textContent=
     "[data-sq-item].sqnew{position:relative;box-shadow:inset 3px 0 0 #2F7BEA}"+
-    "[data-sq-item].sqnew::after{content:'חדש';position:absolute;bottom:9px;inset-inline-end:10px;background:#2F7BEA;color:#fff;font:800 11.5px/1 system-ui,sans-serif;padding:4px 8px;border-radius:999px;box-shadow:0 1px 4px rgba(47,123,234,.45);animation:sqbeat 2.4s ease-in-out infinite;pointer-events:none}"+
+    "[data-sq-item].sqnew::after{content:'חדש';position:absolute;bottom:9px;inset-inline-end:10px;background:#2F7BEA;color:#fff;font:800 11.5px/1 Assistant,system-ui,sans-serif;padding:4px 8px;border-radius:999px;box-shadow:0 1px 4px rgba(47,123,234,.45);animation:sqbeat 2.4s ease-in-out infinite;pointer-events:none}"+
     "[data-sq-path].sqnew::after{content:'';display:inline-block;width:9px;height:9px;border-radius:50%;background:#2F7BEA;margin-inline-start:6px;vertical-align:middle;box-shadow:0 0 0 2px rgba(255,255,255,.85);animation:sqbeat 2.4s ease-in-out infinite}"+
     "@keyframes sqbeat{0%,100%{opacity:1}50%{opacity:.5}}@media (prefers-reduced-motion:reduce){[data-sq-item].sqnew::after,[data-sq-path].sqnew::after{animation:none}}";
     (document.head||document.documentElement).appendChild(st);}
