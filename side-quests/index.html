@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.31";window.SQ_BUILD_AT="21.11.2026 19:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.32";window.SQ_BUILD_AT="22.11.2026 00:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -6706,6 +6706,11 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
   // and above all money: money_saved (₪ already saved or received) and money_expected (₪ still on the way) on each topic.
   // Merged children and fun items are not counted as closes; money is summed on every non-deleted topic (never put it on both parent and child).
   function fmtNis(v){v=Math.round(+v||0);return "₪"+v.toLocaleString("he-IL");}
+  // 25.x (Oren 21.11.2026): the money stats count only money Side Quests found or materially enabled. Routine expense
+  // reimbursements (Elbit expense submissions / work trips, miluim expense refunds, "paid for someone, get it back") are kept on
+  // the topic but marked money_excluded:true and left out of every money sum and the graph. Elbit expense topics are excluded
+  // even without the flag (area "עבודה · אלביט · הוצאות" or id elbit-trip-*), so new trip cards never leak into the stats.
+  function moneyOut(t){return t.money_excluded===true||t.money_excluded==="true"||/^elbit-trip-/.test(t.id||"")||/אלביט\s*·\s*הוצאות/.test(t.area||"");}
   let statOpen=null;
   // 17.9 (Oren 17.11.2026): "📈 ההתקדמות" graph in the stats. X axis: left edge = the day Side Quests started, the middle = today,
   // right edge = today + the chosen range (1M..5Y). Two panels on one time axis: money (received one-offs, saved = one-off savings +
@@ -6719,8 +6724,8 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     const cOf=t=>P(t.created_at),dOf=t=>P(t.done_at||t.updated_at);
     const op=T.filter(t=>!t.merged_into&&cOf(t)).map(t=>({at:cOf(t),t,k:"o"}));
     const cl=T.filter(t=>(t.status==="done"||t.status==="promoted")&&dOf(t)).map(t=>({at:dOf(t),t,k:"c"}));
-    const one=T.filter(t=>+t.money_saved>0).map(t=>({at:P(t.money_at)||dOf(t)||cOf(t),t,v:+t.money_saved,k:t.money_kind==="save"?"s":"i"}));
-    const rec=T.filter(t=>+t.money_monthly>0&&P(t.money_at)).map(t=>({a:P(t.money_at),m:+t.money_monthly,n:+t.money_months>0?+t.money_months:Infinity,t}));
+    const one=T.filter(t=>+t.money_saved>0&&!moneyOut(t)).map(t=>({at:P(t.money_at)||dOf(t)||cOf(t),t,v:+t.money_saved,k:t.money_kind==="save"?"s":"i"}));
+    const rec=T.filter(t=>+t.money_monthly>0&&P(t.money_at)&&!moneyOut(t)).map(t=>({a:P(t.money_at),m:+t.money_monthly,n:+t.money_months>0?+t.money_months:Infinity,t}));
     const now=Date.now(),d0=new Date(Math.min(now,...op.map(e=>e.at),...one.map(e=>e.at)));d0.setHours(0,0,0,0);
     return {op:op.sort((a,b)=>a.at-b.at),cl:cl.sort((a,b)=>a.at-b.at),one:one.sort((a,b)=>a.at-b.at),rec,x0:d0.getTime(),now};
   }
@@ -6809,14 +6814,15 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     const mon=t=>{const m=+t.money_monthly||0,a=Date.parse(t.money_at||"")||0;return m>0&&a&&a<=Date.now()?Math.floor((Date.now()-a)/(30.44*86400000)):0;};
     const real=t=>(+t.money_saved||0)+(+t.money_monthly||0)*mon(t);
     const closed=T.filter(t=>t.status==="done"||t.status==="promoted");
-    return {T,real,closed,S:T.reduce((n,t)=>n+real(t),0)};
+    const MT=T.filter(t=>!moneyOut(t));
+    return {T,MT,real,closed,S:MT.reduce((n,t)=>n+real(t),0)};
   }
   function statKpi(){const el=$("statKpi");if(!el)return;const D=statsData();
     el.replaceChildren(D.closed.length+" נסגרו · ",h("span",{class:"m"},"✅ "+fmtNis(D.S)));}
   function renderStats(){if(document.getElementById("statM"))showStats(true);}
   function showStats(keep){
     const sc=document.querySelector("#statM .sqpanel"),top=sc?sc.scrollTop:0;
-    const {T,real,closed,S}=statsData();
+    const {T,MT,real,closed,S}=statsData();
     const dOf=t=>Date.parse(t.done_at||t.updated_at||"")||0,cOf=t=>Date.parse(t.created_at||"")||0;
     const opened=T.filter(t=>!t.merged_into&&cOf(t));
     const now=new Date(),day0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
@@ -6826,9 +6832,9 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     const logs=t=>Array.isArray(t.log)?t.log:[];
     const touched=from=>T.filter(t=>logs(t).some(x=>(Date.parse(x.at||"")||0)>=from)||cOf(t)>=from||dOf(t)>=from&&(t.status==="done"||t.status==="promoted")).length;
     const steps=T.reduce((n,t)=>n+stepsOf(t).filter(x=>x.done).length,0);
-    const saved=T.filter(t=>+t.money_saved>0||+t.money_monthly>0),exp=T.filter(t=>+t.money_expected>0),pot=T.filter(t=>+t.money_potential>0);
+    const saved=MT.filter(t=>+t.money_saved>0||+t.money_monthly>0),exp=MT.filter(t=>+t.money_expected>0),pot=MT.filter(t=>+t.money_potential>0);
     const sum=(L,f)=>L.reduce((n,t)=>n+f(t),0);
-    const E=sum(exp,t=>+t.money_expected||0),P=sum(pot,t=>+t.money_potential||0),M=sum(T,t=>+t.money_monthly||0);
+    const E=sum(exp,t=>+t.money_expected||0),P=sum(pot,t=>+t.money_potential||0),M=sum(MT,t=>+t.money_monthly||0);
     // last 8 weeks (Sun-Sat): closed vs opened
     const nW=Math.min(8,Math.floor((wk0-first)/(7*86400000))+1),W=[];for(let i=nW-1;i>=0;i--){const a=wk0-i*7*86400000,b=a+7*86400000;W.push({a,c:closed.filter(t=>dOf(t)>=a&&dOf(t)<b).length,o:opened.filter(t=>cOf(t)>=a&&cOf(t)<b).length});}
     const mx=Math.max(1,...W.map(w=>Math.max(w.c,w.o)));

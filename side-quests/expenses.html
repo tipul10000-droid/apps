@@ -395,7 +395,7 @@ function tripPatch(t,st){const now=nowIso(),L=lv(st);let S=arr(t.steps).map(s=>(
   const need={scan:1,submit:2,paid:3};S=S.map(s=>need[s.id]?{...s,done:L>=need[s.id],done_at:L>=need[s.id]?(s.done_at||now):null}:s);
   const v=tripTot(t);
   return {steps:S,status:st==="received"?"done":st==="submitted"?"waiting_other":"waiting_me",waiting_for:st==="received"?"":st==="submitted"?"אלביט: העברת ההחזר":st==="scanned"?"אתה: להגיש באלביט":"אתה: לשלוח קבלות לצ׳אט",
-    money_potential:st==="received"?0:v,money_expected:0,money_saved:0,money_note:st==="received"?"החזר הוצאות + אש״ל התקבל (לא הכנסה)":"החזר הוצאות + אש״ל צפוי (לא הכנסה)",...(st==="received"?{done_at:now}:{})};}
+    money_potential:st==="received"?0:v,money_expected:0,money_saved:0,money_excluded:true,money_note:st==="received"?"החזר הוצאות + אש״ל התקבל (לא הכנסה)":"החזר הוצאות + אש״ל צפוי (לא הכנסה)",...(st==="received"?{done_at:now}:{})};}
 function setTripState(id,st){const t=topics.find(x=>x.id===id);if(!t||!db)return;const prev={steps:arr(t.steps),status:t.status,waiting_for:t.waiting_for};
   patchTopic(t,tripPatch(t,st),"סומן "+TS[st][0]);toast("✓ נשמר: "+TS[st][0],()=>{patchTopic(t,prev,"בוטל");});}
 function setDecision(id,tx,d){const t=topics.find(x=>x.id===id);if(!t||!db)return;const dec={...(t.decisions||{})};const was=dec[tx];dec[tx]={decision:d,at:nowIso()};
