@@ -78,6 +78,7 @@
 
   // אייקונים נקיים בקו אחד (Lucide, ISC) במקום אימוג׳ים, בצבע הטקסט (אורן 19.11.2026).
   var ICP = {
+    link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
     sight: '<path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2l8 5H4z"/>',
     view: '<path d="M12 10V2"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M16 18a4 4 0 0 0-8 0"/>',
     food: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
@@ -130,7 +131,7 @@
     // a ready-made banner (with its own title, e.g. 3:1 from ChatGPT) is shown whole, not cropped, with the chips under it
     var isBan = !!hban && (hdef.banner || (hg && hg.w && hg.h && hg.w / hg.h >= 2.2));
     var hero = hban || img(base, t.hero_img);
-    var cd = ph.k === "pre" ? (ph.n === 1 ? "מחר טסים!" : "עוד " + ph.n + " ימים") : ph.k === "trip" ? "יום " + ph.n + " מתוך " + ph.of : "היה מדהים";
+    var cd = t.stage === "plan" ? (t.when || "בתכנון") : ph.k === "pre" ? (ph.n === 1 ? "מחר טסים!" : "עוד " + ph.n + " ימים") : ph.k === "trip" ? "יום " + ph.n + " מתוך " + ph.of : "היה מדהים";
     var chips = '<div class="tp-chips"><span class="tp-chip big">' + esc(cd) + '</span><span class="tp-chip" dir="ltr">' + esc(dShort(t.from) + " – " + dShort(t.to) + "." + String(t.to || "").slice(2, 4)) + "</span>" +
       (t.who ? '<span class="tp-chip">' + esc(t.who) + "</span>" : "") + "</div>";
     if (isBan) H.push('<header class="tp-hero ban"><img src="' + esc(hero) + '" alt="' + esc(t.title) + '"><div class="in"><h1 class="tp-sr">' + esc(t.title) + "</h1>" + chips + "</div></header>");
@@ -234,7 +235,7 @@
 
     // ---- extra notes (Hanukkah etc.) ----
     var nt = Array.isArray(t.notes) ? t.notes : [];
-    if (nt.length) H.push(sx("info", "טוב לדעת", "", '<div class="tp-grid">' + nt.map(function (n) { return '<div class="tp-tile full"><span class="e">' + esc(n.e) + "</span><b>" + esc(n.h) + "</b><span>" + esc(n.s || "") + "</span>" + gml(n) + "</div>"; }).join("") + "</div>"));
+    if (nt.length) H.push(sx(t.notes_i || "info", esc(t.notes_h || "טוב לדעת"), t.notes_h ? String(nt.length) : "", '<div class="tp-grid">' + nt.map(function (n) { return '<div class="tp-tile full"><span class="e">' + esc(n.e) + "</span><b>" + esc(n.h) + "</b><span>" + esc(n.s || "") + "</span>" + gml(n) + "</div>"; }).join("") + "</div>"));
 
     // ---- our Google Maps list: insights + every place (short line, tap for the full insight) ----
     var mp = t.maps || null, pl = mp && Array.isArray(mp.places) ? mp.places : [];
@@ -281,6 +282,9 @@
     }
 
     // ---- owner: what's left to plan ----
+    // links (owner page only; a planned trip keeps its older planning pages here)
+    var lk = (Array.isArray(t.links) ? t.links : []).filter(function (l) { return l && url(l.url || ""); });
+    if (own && lk.length) H.push(sx("link", "קישורים", String(lk.length), '<div class="tp-grid">' + lk.map(function (l) { return '<a class="tp-tile full tp-lk" href="' + esc(url(l.url)) + '" target="_blank" rel="noopener"><b>' + esc(l.label || "קישור") + "</b>" + (l.s ? "<span>" + esc(l.s) + "</span>" : "") + "</a>"; }).join("") + "</div>"));
     if (own && Array.isArray(t.gaps) && t.gaps.length) H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">🧩</span><h2>עוד לתכנן</h2><small>רק אצלך</small></div><div class="tp-gaps" data-gaps></div></section>');
 
     // ---- WhatsApp to the owner (view) ----
