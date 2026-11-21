@@ -487,3 +487,14 @@ a.tp-mapsph{border-style:solid;color:var(--ink);text-decoration:none}
 .tp-pwa{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;min-height:40px;border-radius:12px;background:rgba(37,211,102,.12);color:#128C4A;font-weight:800;font-size:14px;text-decoration:none}
 .tp-pwa svg{width:18px;height:18px}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tp-pwa{color:#5CD88E}}
+
+/* countdown = airport departure board (Oren 21.11.2026): its own look, not the page theme; days left → seconds right */
+.tp-cd{background:#15171a;border:1px solid #000;border-top:0;color:#f5f5f0;box-shadow:0 10px 26px rgba(0,0,0,.28)}
+.tp-cd .h{color:#ffcc33;letter-spacing:.06em;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.tp-cdg{gap:6px}
+.tp-cdg div{background:transparent;padding:0}
+.tp-cdg b{position:relative;margin:0 auto;max-width:100%;background:linear-gradient(#2a2d31 0 49.4%,#0c0d0f 49.4% 50.6%,#222529 50.6%);color:#ffcc33;
+  border-radius:7px;padding:6px 4px 5px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:30px;font-weight:700;letter-spacing:.04em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 0 #000;text-shadow:0 0 6px rgba(255,204,51,.25)}
+.tp-cdg span{color:#9ea3a8;font-size:11.5px;margin-top:5px;letter-spacing:.04em}
+.tp-cd .f{color:#c9ccd0;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:12px}
