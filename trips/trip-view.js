@@ -266,7 +266,10 @@
       var whi = Math.max.apply(null, wx.map(function (w) { return +w.hi; }).filter(isFinite)), wlo = Math.min.apply(null, wx.map(function (w) { return +w.lo; }).filter(isFinite));
       WXC = '<button type="button" class="tp-chip tp-wxc" data-wxt aria-expanded="false">' + esc(wx[0].e || "⛅") + ' <span dir="ltr">' + (isFinite(wlo) ? wlo + "°–" : "") + (isFinite(whi) ? whi + "°" : "") + "</span></button>";
     }
-    var chips = '<div class="tp-chips"><span class="tp-chip big">' + esc(cd) + '</span><span class="tp-chip" dir="ltr">' + esc(dShort(t.from) + " – " + dShort(t.to) + "." + String(t.to || "").slice(2, 4)) + "</span>" +
+    // the live countdown already says how many days are left, so the "עוד N ימים" chip steps aside while it shows (Oren 21.11.2026: no duplicates)
+    var fl0 = (Array.isArray(t.flights) ? t.flights : [])[0], cdAt = fl0 ? zEpoch(fl0.d, fl0.dep, "Asia/Jerusalem") : NaN;
+    var cdOn = t.stage !== "plan" && ph.k === "pre" && !isNaN(cdAt) && cdAt > Date.now();
+    var chips = '<div class="tp-chips">' + (cdOn ? "" : '<span class="tp-chip big">' + esc(cd) + "</span>") + '<span class="tp-chip" dir="ltr">' + esc(dShort(t.from) + " – " + dShort(t.to) + "." + String(t.to || "").slice(2, 4)) + "</span>" +
       (t.who ? '<span class="tp-chip">' + esc(t.who) + "</span>" : "") + WXC + "</div>";
     if (isBan) H.push('<header class="tp-hero ban' + (hFull ? " full" : "") + '"><img src="' + esc(hero) + '" alt="' + esc(t.title) + '"><div class="in"><h1 class="tp-sr">' + esc(t.title) + "</h1>" + chips + "</div></header>");
     // no image yet (e.g. gfx.hero still waiting for its file) = a compact text header, no empty banner
@@ -279,17 +282,12 @@
       wx.map(function (w) { return '<div class="tp-tile"><div class="tp-wx"><span class="e">' + esc(w.e || "⛅") + '</span><div><b>' + esc(w.city) + '</b><span class="tmp">' + esc(w.hi) + "°<small> / " + esc(w.lo) + "°</small></span></div></div><span>" + esc(w.s || "") + "</span></div>"; }).join("") + "</div>" +
       (t.wx_tip ? '<div class="tp-tip">🧥 ' + esc(t.wx_tip) + "</div>" : "") + '<div class="tp-wxs">ממוצע לתאריכים</div></div></div></div>');
     // ---- live countdown to take-off, with seconds, at the top of the ticket (planning mode; Oren 21.11.2026) ----
-    var fl0 = (Array.isArray(t.flights) ? t.flights : [])[0], cdAt = fl0 ? zEpoch(fl0.d, fl0.dep, "Asia/Jerusalem") : NaN;
-    if (t.stage !== "plan" && ph.k === "pre" && !isNaN(cdAt) && cdAt > Date.now()) {
+    if (cdOn) {
       H.push('<section class="tp-cd" aria-label="ספירה לאחור"><div class="h">' + ic("plane") + '<span>ההמראה בעוד</span></div><div class="tp-cdg" dir="ltr">' +
         [["d", "ימים"], ["h", "שעות"], ["m", "דקות"], ["s", "שניות"]].map(function (x) { return '<div><b data-cd="' + x[0] + '">00</b><span>' + x[1] + "</span></div>"; }).join("") + // days on the left → seconds on the right, airport-board style (Oren 21.11.2026)
-        '</div><div class="f">' + esc((fl0.no || "") + " · " + cityOf(fl0.from) + " ← " + cityOf(fl0.to) + " · יום " + dowOf(fl0.d) + " " + dShort(fl0.d) + " · " + (fl0.dep || "")) + "</div></section>");
+        "</div></section>"); // the flight itself is right below in "טיסות", no repeat here
     }
-    // ---- stats strip ----
-    var st = t.stats || [];
-    st = st.slice(0, 4);
-    // exactly as many columns as stats, so no empty cells (Oren 21.11.2026)
-    if (st.length) H.push('<div class="tp-stats" style="grid-template-columns:repeat(' + st.length + ',minmax(0,1fr))">' + st.map(function (s) { return '<div class="tp-stat"><i>' + em(s.e) + "</i><b dir=\"ltr\">" + esc(s.v) + "</b><span>" + esc(s.l) + "</span></div>"; }).join("") + "</div>");
+    // (the stats strip is gone: every number in it was already in the chips, the flights or the hotels; Oren 21.11.2026)
 
     // ---- now / next ----
     var days = Array.isArray(t.days) ? t.days : [];
@@ -307,7 +305,9 @@
     var t1f = (Array.isArray(t.flights) ? t.flights : []).filter(function (f) { return isT1(f.from) && (!ph.today || f.d >= ph.today); })[0];
     var notes = [];
     if (t1f && ph.k !== "post") notes.push(t1Note(t1f));
-    (Array.isArray(t.alerts) ? t.alerts : []).forEach(function (a) { if (a && a.h) notes.push({ i: a.e || "•", h: a.h, s: a.s || "", g: a.g, q: a.q }); });
+    var seenT = {}; if (t.next_up && t.next_up.tid) seenT[t.next_up.tid] = 1;
+    if (own) (Array.isArray(t.gaps) ? t.gaps : []).forEach(function (g) { if (g && g.tid) seenT[g.tid] = 1; });
+    (Array.isArray(t.alerts) ? t.alerts : []).forEach(function (a) { if (a && a.h && !(a.tid && seenT[a.tid])) notes.push({ i: a.e || "•", h: a.h, s: a.s || "", g: a.g, q: a.q }); });
     // "good to know" lives here now, only what is critical (crit:true) (Oren 21.11.2026)
     (Array.isArray(t.notes) ? t.notes : []).forEach(function (n) { if (n && n.h && n.crit) notes.push({ i: n.e || "•", h: n.h, s: n.s || "", g: n.g, q: n.q }); });
     if (notes.length) H.push('<section class="tp-notes" aria-label="חשוב לזכור"><div class="h">' + ic("pin") + 'חשוב לזכור</div>' + notes.map(function (n) {
@@ -359,8 +359,7 @@
           // shared page = only the positive (Oren 21.11.2026): the plane is mentioned only when it is a plus (P.good, or a wide body);
           // standard or negative facts (narrow body, "not a Dreamliner", "may change", seat layout, seat maps) stay on the owner's page
           var pk = own ? [P.t ? ["מטוס", P.t + (P.wide ? " · רחב גוף" : " · צר גוף")] : f.ac ? ["מטוס", f.ac] : null,
-            P.cfg ? ["תצורת ישיבה", P.cfg] : null, P.age ? ["כמה חדש", P.age] : null, P.note ? ["טוב לדעת", P.note] : null,
-            f.dur ? ["משך טיסה", f.dur + " שעות"] : null].filter(Boolean)
+            P.cfg ? ["תצורת ישיבה", P.cfg] : null, P.age ? ["כמה חדש", P.age] : null, P.note ? ["טוב לדעת", P.note] : null].filter(Boolean) // the duration is on the boarding pass
             : [P.good ? ["מטוס", (P.t ? P.t + ": " : "") + P.good] : P.wide && P.t ? ["מטוס", P.t + " · רחב גוף"] : null].filter(Boolean); // the duration already shows on the boarding pass
           var tA = A.t && A.t !== "?" ? A.t : "", tB = B.t && B.t !== "?" ? B.t : "";
           var trm = own ? "<span>טרמינל <b>" + esc(A.t || "?") + "</b> ← <b>" + esc(B.t || "?") + "</b></span>"
@@ -370,7 +369,6 @@
             '<div class="tp-fsm"><b dir="ltr">' + esc(((f.air || "") + " " + (f.no || "")).trim()) + "</b><span>" + esc([f.dir, dShort(f.d)].filter(Boolean).join(" · ")) + "</span></div>" +
             '<div class="tp-fst"><b dir="ltr">' + esc(f.dep || "") + " → " + esc(f.arr || "") + "</b><span>" + esc(cityOf(A) + " ← " + cityOf(B)) + "</span></div>" +
             chev() + '</div>' +
-            (isT1(A) ? '<div class="tp-t1s">ממריאים מטרמינל 1, לא 3</div>' : "") +
             "</summary><div class=\"tp-more tp-fmore\">" +
             (f.logo ? '<div class="tp-fwm"><img src="' + esc(img(base, f.logo)) + '" alt="' + esc(f.air || "") + '" loading="lazy"></div>' : "") +
             '<div class="tp-bpm"><div class="tp-ap"><b>' + esc(A.c) + "</b><span>" + esc(A.n) + "</span><i>" + esc(f.dep) + '</i></div><div class="tp-fly">' + plane + esc(f.dur || "") + '</div><div class="tp-ap r"><b>' + esc(B.c) + "</b><span>" + esc(B.n) + "</span><i>" + esc(f.arr) + "</i></div></div>" +
@@ -386,7 +384,7 @@
     // ---- hotels ----
     var ho = Array.isArray(t.hotels) ? t.hotels : [];
     if (ho.length) {
-      SEC.hotels=('<section class="tp-sec"><div class="tp-sh">' + ic("hotel", "e") + '<h2>איפה ישנים</h2><small>' + esc(t.nights_l || "") + "</small></div>" +
+      SEC.hotels=('<section class="tp-sec"><div class="tp-sh">' + ic("hotel", "e") + '<h2>איפה ישנים</h2><small>' + esc(ho.length > 1 ? t.nights_l || "" : "") + "</small></div>" + // one hotel: its card already says the nights
         ho.map(function (x) {
           var mu = url(x.maps || "");
           return '<details class="tp-hotel"><summary><div class="tp-himg">' + (x.img ? '<img src="' + esc(img(base, x.img)) + '" alt="" loading="lazy">' : "") + '<span class="tp-hn">' + esc(x.city || "") + " · " + esc(x.nights_l || "") + "</span>" + (lgs(x).length ? '<span class="tp-hbadge">' + lgs(x).map(function (k) { return '<img src="' + esc(img(base, k)) + '" alt="" loading="lazy">'; }).join("") + "</span>" : "") + "</div>" +
@@ -463,7 +461,7 @@
     // ---- flight analysis per option (a trip still being planned, Oren 21.11.2026) ----
     // options[{e, h, sub, venue, q, miss, verdict, sky, fl:[{tag, l, pp, tot, bag, note, kiwi, out:{a, fn, fr, to, dep, arr, dur, sky}, back:{...}}]}]
     var ops = Array.isArray(t.options) ? t.options : [];
-    if (ops.length) {
+    if (ops.length && t.stage === "plan") { // only while still planning: after booking it is history (Oren 21.11.2026)
       var SKY = '<svg class="tp-sky" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21.5c-.6 0-1.1-.3-1.4-.8L8.4 17c-.3-.6-.1-1.4.5-1.7.6-.3 1.4-.1 1.7.5l1.4 2.4 1.4-2.4c.3-.6 1.1-.8 1.7-.5.6.3.8 1.1.5 1.7l-2.2 3.7c-.3.5-.8.8-1.4.8zM5.6 14.6c-.5 0-1-.3-1.2-.8-.3-.6 0-1.4.6-1.7L8.6 10c.6-.3 1.4 0 1.7.6.3.6 0 1.4-.6 1.7l-3.6 2.1c-.2.1-.3.2-.5.2zm12.8 0c-.2 0-.4-.1-.6-.2l-3.6-2.1c-.6-.3-.8-1.1-.5-1.7.3-.6 1.1-.8 1.7-.5l3.6 2.1c.6.3.8 1.1.5 1.7-.2.4-.7.7-1.1.7zM12 10.4c-.7 0-1.3-.6-1.3-1.3V4.2c0-.7.6-1.3 1.3-1.3s1.3.6 1.3 1.3v4.9c0 .7-.6 1.3-1.3 1.3z"/></svg>';
       var skyA = function (u, lbl) { u = url(u || ""); return u ? '<a class="tp-skyl" href="' + esc(u) + '" target="_blank" rel="noopener">' + SKY + '<span dir="ltr">' + esc(lbl || "Skyscanner") + "</span></a>" : ""; };
       var leg = function (k, x) {
@@ -504,7 +502,8 @@
 
     // ---- our Google Maps list: one direct link; every place is managed in Google Maps itself (Oren 21.11.2026) ----
     var mp = t.maps || null, lurl = mp && url(mp.url || "");
-    if (lurl) SEC.places = '<section class="tp-sec"><a class="tp-glist" href="' + esc(lurl) + '" target="_blank" rel="noopener">' + GMAPS + '<span class="x"><b dir="auto">' + esc(mp.name || "הרשימה שלנו ב-Google Maps") + "</b><small>" + esc(mp.label || "כל המקומות שלנו, ב-Google Maps") + '</small></span><span class="go">›</span></a></section>';
+    var lnm = mp && (mp.name || "הרשימה שלנו ב-Google Maps"), lsb = mp && (mp.label || "כל המקומות שלנו, ב-Google Maps");
+    if (lurl) SEC.places = '<section class="tp-sec"><a class="tp-glist" href="' + esc(lurl) + '" target="_blank" rel="noopener">' + GMAPS + '<span class="x"><b dir="auto">' + esc(lnm) + "</b>" + (lsb !== lnm ? "<small>" + esc(lsb) + "</small>" : "") + '</span><span class="go">›</span></a></section>';
     else if (mp) SEC.places = '<section class="tp-sec"><div class="tp-glist off">' + GMAPS + '<span class="x"><b>רשימת Google Maps</b><small>' + esc(mp.pending || "תגיע בקרוב") + "</small></span></div></section>";
 
     // ---- gallery ----
