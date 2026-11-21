@@ -170,7 +170,7 @@ document.addEventListener("input",e=>{if(e.target.id!=="q")return;ui.q=e.target.
 window.claude.use("db").then(db=>{if(!db)return;db.doc("settings/travel_hub").onSnapshot(x=>{const v=x&&x.exists?x.data():{};I=v.israel||{};render();},()=>{});});
 })();
 </script>
-<script src="sq-tel.js?v=2" defer></script>
+<script src="sq-tel.js?v=3" defer></script>
 <script src="sq-calm.js?v=2"></script>
 </body>
 </html>

@@ -400,8 +400,8 @@
           return '<details class="tp-hotel"><summary><div class="tp-himg">' + (x.img ? '<img src="' + esc(img(base, x.img)) + '" alt="" loading="lazy">' : "") + '<span class="tp-hn">' + esc(x.city || "") + " · " + esc(x.nights_l || "") + "</span>" + (lgs(x).length ? '<span class="tp-hbadge">' + lgs(x).map(function (k) { return '<img src="' + esc(img(base, k)) + '" alt="" loading="lazy">'; }).join("") + "</span>" : "") + "</div>" +
             '<div class="tp-hb"><b>' + logos(base, x) + esc(x.name) + "</b><span>" + esc(x.area || x.addr || "") + "</span></div>" +
             '<div class="tp-hrow"><span class="tp-pill" dir="rtl">📅 ' + esc(dShort(x.in) + " ← " + dShort(x.out)) + "</span>" + (x.pills || []).map(function (p) { return '<span class="tp-pill ' + esc(p.c || "") + '">' + esc(p.t) + "</span>"; }).join("") + "</div>" +
-            '<span class="tp-tap">▾ פרטים</span></summary><div class="tp-more">' + (Array.isArray(x.pics) && x.pics.length ? '<div class="tp-gal tp-hgal">' + x.pics.map(function (p) { return '<figure><img src="' + esc(img(base, p.img)) + '" alt="" loading="lazy">' + (p.cap ? "<figcaption>" + esc(p.cap) + "</figcaption>" : "") + "</figure>"; }).join("") + "</div>" : "") + '<dl class="tp-kv">' + (x.kv || []).map(function (k) { return "<dt>" + esc(k[0]) + "</dt><dd>" + esc(k[1]) + "</dd>"; }).join("") + "</dl>" +
-            (mu ? '<a class="tp-mapsph" style="margin-top:10px" href="' + esc(mu) + '" target="_blank" rel="noopener">' + GMAPS + "<span>פתיחה ב-Google Maps</span></a>" : "") + "</div></details>";
+            '<span class="tp-tap"></span></summary><div class="tp-more">' + (Array.isArray(x.pics) && x.pics.length ? '<div class="tp-gal tp-hgal">' + x.pics.map(function (p) { return '<figure><img src="' + esc(img(base, p.img)) + '" alt="" loading="lazy">' + (p.cap ? "<figcaption>" + esc(p.cap) + "</figcaption>" : "") + "</figure>"; }).join("") + "</div>" : "") + '<dl class="tp-kv">' + (x.kv || []).map(function (k) { return "<dt>" + esc(k[0]) + "</dt><dd>" + esc(k[1]) + "</dd>"; }).join("") + "</dl>" +
+            (mu ? '<a class="tp-mapsph" style="margin-top:10px" href="' + esc(mu) + '" target="_blank" rel="noopener">' + GMAPS + "<span>פתיחה ב-Google Maps</span></a>" : "") + '<button type="button" class="tp-hclose">▴ סגירת הפרטים</button></div></details>';
         }).join("") + "</section>");
     }
 
@@ -590,6 +590,8 @@
         setTimeout(function () { document.removeEventListener("visibilitychange", hid); if (!gone && !document.hidden) window.open(web, "_blank", "noopener"); }, 1400);
       };
     });
+    // hotel details = a drawer: the summary toggles, and a close button at the bottom (Oren 21.11.2026)
+    root.querySelectorAll(".tp-hclose").forEach(function (b) { b.onclick = function () { var d = b.closest("details"); if (!d) return; var sm = d.querySelector("summary"), y0 = sm.getBoundingClientRect().top; d.open = false; var y1 = sm.getBoundingClientRect().top; if (y1 < 0 || y1 !== y0) sm.scrollIntoView({ block: "nearest" }); }; });
     if (dk.length) root.querySelectorAll("[data-dk]").forEach(function (b) { b.onclick = function () { deckOpen(dk.map(function (x) { return { src: img(base, x.img), cap: x.cap || "" }; }), +b.getAttribute("data-dk") || 0, t.deck.h || ""); }; });
     if (own && o.slot) { var sl = root.querySelector('[data-slot="hero"]'); if (sl) o.slot(sl, "hero"); }
     if (own && o.gaps) { var g = root.querySelector("[data-gaps]"); if (g) o.gaps(g); }
