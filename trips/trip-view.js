@@ -97,10 +97,23 @@
     wx: '<path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/>',
     cam: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
     info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+    mic: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>',
+    cash: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+    school: '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
+    bag: '<path d="M6 20a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2"/><path d="M8 18V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v14"/><path d="M10 20h4"/><circle cx="16" cy="20" r="2"/><circle cx="8" cy="20" r="2"/>',
+    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    thermo: '<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
+    mountain: '<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>',
+    moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    ticket: '<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>',
     star: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>'
   };
   // אימוג׳י שמגיע מהנתונים (תובנות הליסט) -> אייקון נקי
-  var EMO = { "🏛️": "sight", "🏛": "sight", "🌅": "view", "🍝": "food", "🥪": "food", "🍕": "food", "☕": "coffee", "🍦": "sweet", "🍰": "sweet", "🍸": "bar", "🍷": "bar", "🛍️": "shop", "🛍": "shop", "🏨": "hotel", "🧭": "compass", "📅": "cal", "🗓️": "cal", "💡": "bulb", "🗺️": "map", "📍": "pin", "✈️": "plane", "🚆": "train", "📸": "cam", "⭐": "star" };
+  var EMO = { "🏛️": "sight", "🏛": "sight", "🌅": "view", "🍝": "food", "🥪": "food", "🍕": "food", "☕": "coffee", "🍦": "sweet", "🍰": "sweet", "🍸": "bar", "🍷": "bar", "🛍️": "shop", "🛍": "shop", "🏨": "hotel", "🧭": "compass", "📅": "cal", "🗓️": "cal", "💡": "bulb", "🗺️": "map", "📍": "pin", "✈️": "plane", "🚆": "train", "📸": "cam", "⭐": "star",
+    "🎤": "mic", "🎙️": "mic", "💸": "cash", "💰": "cash", "💵": "cash", "🏫": "school", "🎓": "school", "🧳": "bag", "🎯": "target",
+    "🌡️": "thermo", "🌡": "thermo", "🏔️": "mountain", "⛰️": "mountain", "🌑": "moon", "🌙": "moon", "🎫": "ticket", "🎟️": "ticket", "🏟️": "ticket", "ℹ️": "info", "📌": "pin" };
+  // an emoji from the data: a known one becomes a clean icon, anything else (e.g. a country flag) stays as it is (Oren 21.11.2026)
+  function em(e, cls) { e = e == null ? "" : String(e); return ICP[e] || EMO[e] ? ic(e, cls) : esc(e); }
   function ic(k, cls) { var d = ICP[k] || ICP[EMO[k]] || ICP.bulb; return '<svg class="tp-ic' + (cls ? " " + cls : "") + '" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + d + "</svg>"; }
   // section that opens and closes; closed by default (Oren 19.11.2026: a lot of knowledge, less scrolling)
   function sx(k, title, small, body, open, sub) {
@@ -135,14 +148,17 @@
     var chips = '<div class="tp-chips"><span class="tp-chip big">' + esc(cd) + '</span><span class="tp-chip" dir="ltr">' + esc(dShort(t.from) + " – " + dShort(t.to) + "." + String(t.to || "").slice(2, 4)) + "</span>" +
       (t.who ? '<span class="tp-chip">' + esc(t.who) + "</span>" : "") + "</div>";
     if (isBan) H.push('<header class="tp-hero ban"><img src="' + esc(hero) + '" alt="' + esc(t.title) + '"><div class="in"><h1 class="tp-sr">' + esc(t.title) + "</h1>" + chips + "</div></header>");
-    else H.push('<header class="tp-hero">' + (hero ? '<img src="' + esc(hero) + '" alt="">' : "") + (t.snow ? '<div class="tp-snow"></div>' : "") +
-      '<div class="in"><div class="tp-flag">' + esc(t.flag || "") + "</div><h1>" + esc(t.title) + '</h1><p class="sub">' + esc(t.tagline || "") + "</p>" + chips + "</div></header>");
+    // no image yet (e.g. gfx.hero still waiting for its file) = a compact text header, no empty banner
+    else H.push('<header class="tp-hero' + (hero ? "" : " noimg") + '">' + (hero ? '<img src="' + esc(hero) + '" alt="">' : "") + (t.snow ? '<div class="tp-snow"></div>' : "") +
+      '<div class="in">' + (t.flag ? '<div class="tp-flag">' + em(t.flag) + "</div>" : "") + "<h1>" + esc(t.title) + '</h1><p class="sub">' + esc(t.tagline || "") + "</p>" + chips + "</div></header>");
     if (own && o.slot) H.push('<div class="w"><div data-slot="hero" style="margin-top:12px"></div></div>');
 
     H.push('<div class="w">');
     // ---- stats strip ----
     var st = t.stats || [];
-    if (st.length) H.push('<div class="tp-stats">' + st.slice(0, 4).map(function (s) { return '<div class="tp-stat"><i>' + esc(s.e) + "</i><b dir=\"ltr\">" + esc(s.v) + "</b><span>" + esc(s.l) + "</span></div>"; }).join("") + "</div>");
+    st = st.slice(0, 4);
+    // exactly as many columns as stats, so no empty cells (Oren 21.11.2026)
+    if (st.length) H.push('<div class="tp-stats" style="grid-template-columns:repeat(' + st.length + ',minmax(0,1fr))">' + st.map(function (s) { return '<div class="tp-stat"><i>' + em(s.e) + "</i><b dir=\"ltr\">" + esc(s.v) + "</b><span>" + esc(s.l) + "</span></div>"; }).join("") + "</div>");
     if (t.desc) H.push('<p class="tp-desc">' + esc(t.desc) + "</p>");
 
     // ---- now / next ----
@@ -151,9 +167,9 @@
     if (ph.k === "trip") {
       var dd = days.filter(function (d) { return d.d === ph.today; })[0], hm = nowHM(t.tz);
       var nx = dd && (dd.items || []).filter(function (it) { return it.t && it.t >= hm; })[0];
-      nowBox = '<div class="tp-now"><span class="ic">' + esc(nx ? nx.e || "⭐" : "🌙") + "</span><div><b>" + esc(nx ? "הבא: " + nx.t + " · " + nx.h : (dd ? dd.title : "יום בטיול")) + "</b><span>" + esc(nx ? nx.s || "" : "תהנו מהערב") + "</span></div></div>";
+      nowBox = '<div class="tp-now"><span class="ic">' + em(nx ? nx.e || "⭐" : "🌙") + "</span><div><b>" + esc(nx ? "הבא: " + nx.t + " · " + nx.h : (dd ? dd.title : "יום בטיול")) + "</b><span>" + esc(nx ? nx.s || "" : "תהנו מהערב") + "</span></div></div>";
     } else if (ph.k === "pre" && t.next_up) {
-      nowBox = '<div class="tp-now"><span class="ic">' + esc(t.next_up.e || "🧳") + "</span><div><b>" + esc(t.next_up.h) + "</b><span>" + esc(t.next_up.s || "") + "</span>" + gml(t.next_up, "lt") + "</div></div>";
+      nowBox = '<div class="tp-now"><span class="ic">' + em(t.next_up.e || "🧳") + "</span><div><b>" + esc(t.next_up.h) + "</b><span>" + esc(t.next_up.s || "") + "</span>" + gml(t.next_up, "lt") + "</div></div>";
     }
     H.push(nowBox);
 
@@ -162,8 +178,8 @@
     var notes = [];
     if (t1f && ph.k !== "post") notes.push(t1Note(t1f));
     (Array.isArray(t.alerts) ? t.alerts : []).forEach(function (a) { if (a && a.h) notes.push({ i: a.e || "•", h: a.h, s: a.s || "", g: a.g, q: a.q }); });
-    if (notes.length) H.push('<section class="tp-notes" aria-label="חשוב לזכור"><div class="h">📌 חשוב לזכור</div>' + notes.map(function (n) {
-      return '<div class="it"><span class="ic">' + esc(n.i) + "</span><div><b>" + esc(n.h) + "</b>" + (n.s ? "<span>" + esc(n.s) + "</span>" : "") + gml(n) + "</div></div>";
+    if (notes.length) H.push('<section class="tp-notes" aria-label="חשוב לזכור"><div class="h">' + ic("pin") + 'חשוב לזכור</div>' + notes.map(function (n) {
+      return '<div class="it"><span class="ic">' + em(n.i) + "</span><div><b>" + esc(n.h) + "</b>" + (n.s ? "<span>" + esc(n.s) + "</span>" : "") + gml(n) + "</div></div>";
     }).join("") + "</section>");
 
     // ---- map ----
@@ -222,7 +238,7 @@
     var mv = Array.isArray(t.moves) ? t.moves : [];
     if (mv.length) {
       H.push(sx("train", "איך מתניידים", "", '<div class="tp-grid">' +
-        mv.map(function (m) { return '<div class="tp-tile' + (m.open ? " open" : "") + (m.full ? " full" : "") + '"><span class="e">' + esc(m.e) + "</span><b>" + esc(m.h) + "</b><span>" + esc(m.s || "") + "</span>" + gml(m) + "</div>"; }).join("") + "</div>"));
+        mv.map(function (m) { return '<div class="tp-tile' + (m.open ? " open" : "") + (m.full ? " full" : "") + '"><span class="e">' + em(m.e) + "</span><b>" + esc(m.h) + "</b><span>" + esc(m.s || "") + "</span>" + gml(m) + "</div>"; }).join("") + "</div>"));
     }
 
     // ---- weather ----
@@ -249,18 +265,18 @@
         var kw = url(f.kiwi || "");
         return '<div class="tp-fo t-' + esc(f.tag || "alt") + '"><div class="tp-foh"><span class="tp-pill' + (f.tag === "cheap" ? " g" : f.tag === "elal" ? "" : " w") + '">' + esc(f.l || "") + '</span><span class="pr"><b dir="ltr">$' + esc(f.pp) + '</b> לאדם<small dir="ltr">$' + esc(f.tot) + " ל-5</small></span></div>" +
           leg("הלוך", f.out) + leg("חזור", f.back) +
-          '<div class="tp-fof">' + (f.bag ? "<span>🧳 " + esc(f.bag) + "</span>" : "") + (f.note ? "<span>" + esc(f.note) + "</span>" : "") +
+          '<div class="tp-fof">' + (f.bag ? "<span>" + ic("bag") + esc(f.bag) + "</span>" : "") + (f.note ? "<span>" + esc(f.note) + "</span>" : "") +
           (kw ? '<a class="tp-gl" href="' + esc(kw) + '" target="_blank" rel="noopener"><span dir="ltr">Kiwi.com</span></a>' : "") + "</div></div>";
       };
       H.push(sx(t.options_i || "plane", esc(t.options_h || "ניתוח הטיסות לכל אפשרות"), ops.length + " אפשרויות",
         (t.options_note ? '<div class="tp-tip">' + esc(t.options_note) + "</div>" : "") +
         ops.map(function (op) {
           var lo = (op.fl || []).reduce(function (m, f) { return m == null || +f.pp < m ? +f.pp : m; }, null);
-          return '<details class="tp-card tp-plg tp-op"><summary><span class="tp-ope">' + esc(op.e || "🎫") + '</span><span class="x"><b>' + esc(op.h) + "</b><span>" + esc(op.sub || "") + "</span></span>" +
+          return '<details class="tp-card tp-plg tp-op"><summary><span class="tp-ope">' + em(op.e || "🎫") + '</span><span class="x"><b>' + esc(op.h) + "</b><span>" + esc(op.sub || "") + "</span></span>" +
             (lo != null ? '<span class="tp-opp" dir="ltr">$' + lo + "</span>" : "") + chev() + '</summary><div class="tp-plb tp-opb">' +
-            '<div class="tp-opi">' + (op.venue ? "<span>🏟️ " + esc(op.venue) + "</span>" : "") + (op.miss ? "<span>🏫 " + esc(op.miss) + "</span>" : "") + gml(op) + "</div>" +
+            '<div class="tp-opi">' + (op.venue ? "<span>" + ic("ticket") + esc(op.venue) + "</span>" : "") + (op.miss ? "<span>" + ic("school") + esc(op.miss) + "</span>" : "") + gml(op) + "</div>" +
             (op.fl || []).map(fcard).join("") +
-            (op.verdict ? '<p class="tp-opv">💡 ' + esc(op.verdict) + "</p>" : "") +
+            (op.verdict ? '<p class="tp-opv">' + ic("bulb") + esc(op.verdict) + "</p>" : "") +
             (op.sky ? '<div class="tp-oprt">' + skyA(op.sky, "Skyscanner: הלוך-חזור, ישיר, 5 נוסעים") + "</div>" : "") +
             "</div></details>";
         }).join("")));
@@ -268,7 +284,7 @@
 
     // ---- extra notes (Hanukkah etc.) ----
     var nt = Array.isArray(t.notes) ? t.notes : [];
-    if (nt.length) H.push(sx(t.notes_i || "info", esc(t.notes_h || "טוב לדעת"), t.notes_h ? String(nt.length) : "", '<div class="tp-grid">' + nt.map(function (n) { return '<div class="tp-tile full"><span class="e">' + esc(n.e) + "</span><b>" + esc(n.h) + "</b><span>" + esc(n.s || "") + "</span>" + gml(n) + "</div>"; }).join("") + "</div>"));
+    if (nt.length) H.push(sx(t.notes_i || "info", esc(t.notes_h || "טוב לדעת"), t.notes_h ? String(nt.length) : "", '<div class="tp-grid">' + nt.map(function (n) { return '<div class="tp-tile full"><span class="e">' + em(n.e) + "</span><b>" + esc(n.h) + "</b><span>" + esc(n.s || "") + "</span>" + gml(n) + "</div>"; }).join("") + "</div>"));
 
     // ---- our Google Maps list: insights + every place (short line, tap for the full insight) ----
     var mp = t.maps || null, pl = mp && Array.isArray(mp.places) ? mp.places : [];
