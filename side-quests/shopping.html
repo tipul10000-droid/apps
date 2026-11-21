@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#25272D">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.7";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.8";</script>
 <script src="sq-db.js?v=10"></script>
 <title>קניות ורכישות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -202,7 +202,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;lin
 .qdone{margin:0 0 18px}.qdone>.card{margin-top:8px}.qdone .q .opt:not(.on){opacity:.7}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=9">
-<script src="dash-sub.js?v=10" defer></script>
+<script src="dash-sub.js?v=11" defer></script>
 <script src="fold.js?v=1" defer></script>
 <script>/* 10.3: opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 <script src="sq-icons.js?v=2"></script>
@@ -325,7 +325,9 @@ function renderItem(id){const x={id,...(items[id]||{})};if(!x.title){$("app").in
   $("bar").innerHTML=`<div class="seg">${TABS.map(([k,l])=>`<button data-tab="${k}" class="${ui.tab===k?"on":""}">${l}</button>`).join("")}</div>`;
   const t=ui.tab;$("app").innerHTML=t==="opts"?tabOpts(x):t==="cmp"?tabCmp(x):t==="where"?tabWhere(x):t==="revs"?tabRevs(x):t==="council"?tabCouncil(x):tabOver(x);}
 
-function render(){const id=curId();if(id)renderItem(id);else renderHome();
+function setFocus(id){const x=id&&items[id];const f=x?{item:id,tasks:[x.topic,"shop-"+id].filter(Boolean)}:null;
+  if(JSON.stringify(f)===JSON.stringify(window.SQ_FOCUS||null))return;window.SQ_FOCUS=f;try{dispatchEvent(new Event("sq-focus"));}catch(e){}}
+function render(){const id=curId();setFocus(id);if(id)renderItem(id);else renderHome();
   $("foot").innerHTML=`${meta.sources?`<details class="more"><summary>מקורות</summary><div>${esc(meta.sources)}</div></details>`:""}קניות ${esc(window.SHOP_BUILD)}`;}
 let tt,undoFn=null;function toast(t,undo){const el=$("toast");el.innerHTML=`<span>${esc(t)}</span>${undo?'<button class="un" type="button" data-undo>ביטול</button>':""}`;undoFn=undo||null;el.className="toast on";clearTimeout(tt);tt=setTimeout(()=>{el.className="toast";undoFn=null;},undo?5000:3500);}
 async function copy(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e2){}a.remove();return ok;}}
