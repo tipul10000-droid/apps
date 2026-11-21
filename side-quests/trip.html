@@ -93,7 +93,7 @@ html.pvm .pvx{display:inline-flex}
   function copy(t,st,msg){const ok=()=>{if(st)st.textContent=msg||"✓ הועתק";};if(navigator.clipboard)navigator.clipboard.writeText(t).then(ok,()=>prompt("העתק:",t));else prompt("העתק:",t);}
 
   function gapsUI(el){
-    el.innerHTML=(trip.gaps||[]).map((g,i)=>{const q=g.q||g.h;const cq="https://claude.ai/new?q="+encodeURIComponent(q),gq="https://chatgpt.com/?q="+encodeURIComponent(q);
+    el.innerHTML=(live(trip).gaps||[]).map((g,i)=>{const q=g.q||g.h;const cq="https://claude.ai/new?q="+encodeURIComponent(q),gq="https://chatgpt.com/?q="+encodeURIComponent(q);
       return `<div class="tp-gap"><b>${esc(g.e||"•")} ${esc(g.h)}</b>${g.s?`<span>${esc(g.s)}</span>`:""}<div class="tp-ask"><a href="${cq}" target="_blank" rel="noopener">${CLAUDE}לתכנן עם Claude</a><a href="${gq}" target="_blank" rel="noopener">${SQGfx.GPT_LOGO}ChatGPT</a></div></div>`;}).join("");
   }
   function slotUI(el,key){const d=(trip.gfx||{})[key];if(!d){el.remove();return;}SQGfx.slot(el,d,{db,have:!!(gfx[d.id]&&gfx[d.id].data),onDone:loadGfx});}
@@ -150,17 +150,38 @@ html.pvm .pvx{display:inline-flex}
     $("ownTop").innerHTML="";$("ownBot").innerHTML="";
     if(mode==="share"){$("app").innerHTML="";drawShare();return;}
     if(mode==="view"){const t=pubTrip();TripView.render($("app"),t,{mode:"view",img:"../trips/img/",gfx,wa:t.wa,onPack});return;}
-    TripView.render($("app"),trip,{mode:"edit",img:"../trips/img/",gfx,wa:(trip.share||{}).wa,slot:slotUI,gaps:gapsUI,onPack});
+    TripView.render($("app"),live(trip),{mode:"edit",img:"../trips/img/",gfx,wa:(trip.share||{}).wa,slot:slotUI,gaps:gapsUI,onPack});
     if(mode==="edit")drawEditExtras();
   }
+  // 25.20 (Oren 21.11.2026: "tasks I closed stay stuck at the top"): an item in next_up / alerts / gaps may carry tid = "<topic>" or
+  // "<topic>:<step>". Once that task is closed (or that step is done) the item drops from the owner page at once.
+  let topics=null,autoDone=false;
+  const OPEN_ST=["active","waiting_me","waiting_other","paused"];
+  function tidOpen(tid){if(!tid||!topics)return true;const [id,st]=String(tid).split(":");const t=topics[id];if(!t||t._deleted)return true;
+    if(!OPEN_ST.includes(t.status||"active"))return false;if(st){const x=(t.steps||[]).find(z=>z&&z.id===st);if(x&&x.done)return false;}return true;}
+  function live(t){if(!topics)return t;const keep=a=>!a||tidOpen(a.tid);const o={...t};
+    if(o.next_up&&!keep(o.next_up))o.next_up=null;
+    ["alerts","gaps"].forEach(k=>{if(Array.isArray(o[k]))o[k]=o[k].filter(keep);});return o;}
+  // auto-close: a task or step that asks to book something the trip card already has (a hotel today) is marked done, with a log line
+  const AUTO=[{re:/מלון|hotel/i,has:t=>(t.hotels||[]).some(h=>h&&h.name)}];
+  function autoClose(){if(autoDone||!db||!topics||!trip)return;autoDone=true;const now=new Date().toISOString();
+    Object.entries(topics).forEach(([id,t])=>{if(!t||t._deleted||!(id===trip.topic||(trip.dash&&t.dash===trip.dash)))return;
+      const hit=txt=>AUTO.find(a=>a.re.test(txt||"")&&a.has(trip));const why="יש מלון בכרטיס הטיול";const upd={};
+      const st=(t.steps||[]).map(x=>x&&!x.done&&hit(x.text)?{...x,done:true}:x);
+      if(st.some((x,i)=>x!==(t.steps||[])[i]))upd.steps=st;
+      if(OPEN_ST.includes(t.status||"active")&&/(להזמין|הזמנת|לסגור|למצוא)\s+מלון/.test(t.title||"")&&hit(t.title)){upd.status="done";upd.done_at=now;}
+      if(!Object.keys(upd).length)return;
+      upd.log=[...(t.log||[]),{at:now,text:"Claude: "+(upd.status?"המשימה נסגרה":"שלב סומן בוצע")+" אוטומטית, כי "+why}];upd.updated_at=now;
+      db.collection("topics").doc(id).update(upd).catch(()=>{});});}
   function loadGfx(){const ids=Object.values(trip.gfx||{}).map(x=>x&&x.id).filter(Boolean);gfxIds=ids.join(",");
     SQGfx.get(ids).then(g=>{gfx=g;draw();});}
   window.claude.use("db").then(d=>{db=d;if(!db)return;
     db.collection("trips").onSnapshot(s=>{const x=s.docs.find(z=>z.id===ID);trip=x?x.data():null;
       if(!trip||trip._deleted){$("app").innerHTML='<div class="own" style="padding:60px 16px;text-align:center">הטיול לא נמצא</div>';return;}
       const ids=Object.values(trip.gfx||{}).map(x=>x&&x.id).filter(Boolean).join(",");
-      if(ids!==gfxIds)loadGfx();else draw();
+      if(ids!==gfxIds)loadGfx();else draw();autoClose();
     });
+    db.collection("topics").onSnapshot(s=>{const m={};s.docs.forEach(z=>{m[z.id]=z.data();});topics=m;autoClose();if(trip&&mode!=="share")draw();});
   });
   draw();
 })();

@@ -12,11 +12,11 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.19";window.SQ_BUILD_AT="21.11.2026 14:43";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.20";window.SQ_BUILD_AT="21.11.2026 17:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
-d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
-d.innerHTML='<b>קרתה תקלה באפליקציה</b><div style="font-size:12px;opacity:.9;margin:4px 0 8px;direction:ltr;text-align:left;word-break:break-word"></div><button type="button" style="background:#fff;color:#B3261E;border:0;border-radius:10px;padding:8px 14px;font:600 15px -apple-system,system-ui,sans-serif">טען מחדש</button>';
+d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
+d.innerHTML='<b>קרתה תקלה באפליקציה</b><div style="font-size:12px;opacity:.9;margin:4px 0 8px;direction:ltr;text-align:left;word-break:break-word"></div><button type="button" style="background:#fff;color:#B3261E;border:0;border-radius:10px;padding:8px 14px;font:600 15px var(--f-body)">טען מחדש</button>';
 d.querySelector("div").textContent=String(msg||"").slice(0,300)+" · v"+window.SQ_BUILD;d.querySelector("button").onclick=function(){location.replace(location.pathname+"?u="+Date.now()+location.hash);};document.body.appendChild(d);}
 window.sqShowErr=bar;
 window.addEventListener("error",function(e){bar((e.message||"error")+(e.lineno?" @"+e.lineno+":"+e.colno:""));});
@@ -35,7 +35,7 @@ window.addEventListener("load",function(){navigator.serviceWorker.register("sw.j
 <title>Side Quests</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=Space+Grotesk:wght@400;500;700&family=Bungee&family=Press+Start+2P&family=Black+Ops+One&family=Orbitron:wght@700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
 <style>
 /* בלי סימון טקסט ובלי תפריט לחיצה ארוכה (18.3, אורן 17.11.2026); שדות קלט נשארים לעריכה */
 html,body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -50,7 +50,7 @@ html,body,*{touch-action:manipulation}
   --k-research:#2C6BB5; --k-followup:#D08419; --k-admin:#2E8B57; --k-reminder:#C8414B; --k-idea:#7A52B3; --k-project:#245E73;
   --p4a:#16433C; --p4b:#245E73; --p4c:#8C3B2E; --p4d:#5B4A8A; --p3:#B66A12;
   --due:#C8414B; --due-soft:#FBE3E4; --soon:#B86A10; --soon-soft:#FBEBD3; --ok-soft:#E1F1E7;
-  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"Rubik","Assistant",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0F1513; --surface:#18201D; --sunk:#202A26; --ink:#E5ECE8; --muted:#97A69E; --line:#2B3732;
@@ -189,9 +189,9 @@ details.arch summary{cursor:pointer;color:var(--muted);font-weight:700;font-size
 #tgate .tg{display:flex;gap:10px;align-items:center;width:100%;text-align:right;background:none;border:0;border-top:1px solid var(--line);padding:10px 12px;font:inherit;color:var(--ink);cursor:pointer}
 #tgate .tg:first-child{border-top:0}
 #tgate .tg-t{flex:1;min-width:0}
-#tgate .tg-h{font-family:Rubik,sans-serif;font-weight:800;font-size:17px;line-height:1.25}
+#tgate .tg-h{font-family:var(--f-display);font-weight:800;font-size:17px;line-height:1.25}
 #tgate .tg-s{font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#tgate .tg-c{flex:none;font-family:Rubik,sans-serif;font-weight:700;font-size:13px;padding:3px 8px;border-radius:999px;background:var(--soon-soft);color:var(--soon)}
+#tgate .tg-c{flex:none;font-family:var(--f-display);font-weight:700;font-size:13px;padding:3px 8px;border-radius:999px;background:var(--soon-soft);color:var(--soon)}
 #tgate .tg.late,#tgate .tg.soon{background:var(--due-soft)}
 #tgate .tg.late .tg-c,#tgate .tg.soon .tg-c{background:var(--due);color:#fff}
 #tgate .tg.closed .tg-h{color:var(--muted)}
@@ -273,9 +273,9 @@ body.fun-on .tasks-only{display:none!important}
   animation:fzrun 1.4s linear infinite}
 @keyframes fzrun{to{background-position:0 0,0 22px}}
 .fz-title{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:right}
-.fz-press{font-family:"Press Start 2P",var(--f-mono);font-size:9px;letter-spacing:1px;color:#33E1FF;direction:ltr;animation:fzblink 1.2s steps(2,start) infinite;text-shadow:0 0 6px #33E1FF}
+.fz-press{font-family:var(--f-mono);font-size:9px;letter-spacing:1px;color:#33E1FF;direction:ltr;animation:fzblink 1.2s steps(2,start) infinite;text-shadow:0 0 6px #33E1FF}
 @keyframes fzblink{to{visibility:hidden}}
-.fz-head h2{font-family:"Bungee",var(--f-display);font-weight:400;font-size:46px;line-height:.95;direction:ltr;letter-spacing:1px;
+.fz-head h2{font-family:var(--f-display);font-weight:800;font-size:46px;line-height:.95;direction:ltr;letter-spacing:1px;
   background:linear-gradient(180deg,#FFF6B0 0%,#FFE66D 40%,#FF8A3D 62%,#FF3D7F 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 0 10px rgba(255,61,127,.55)) drop-shadow(0 3px 0 #3B0B5E)}
 .fz-head p{margin:4px 0 0;font-weight:700;font-size:14.5px;max-width:30ch;color:#E9D8FF;text-shadow:0 1px 4px #0B0322}
@@ -518,7 +518,7 @@ body.fun-on .tasks-only{display:none!important}
 .qbtn .qn{direction:ltr;flex:1;text-align:right}
 .qbtn .qn i{font-style:normal;color:var(--qa)}
 .qbtn .qc{flex:none;font-family:var(--f-mono);font-weight:500;font-size:12.5px;padding:1px 9px;border-radius:999px;background:rgba(0,0,0,.14);min-width:26px;text-align:center}
-.qbtn.q-fun{--qb:#1A0B33;--qi:#FFE66D;--qa:#FF3D7F;font-family:"Bungee",var(--f-display);font-weight:400;font-size:16px}
+.qbtn.q-fun{--qb:#1A0B33;--qi:#FFE66D;--qa:#FF3D7F;font-family:var(--f-display);font-weight:800;font-size:16px}
 .qbtn.q-fun .qn i{color:#33E1FF}
 .qbtn.q-army{--qb:#4A5D2E;--qi:#EEF2DF;--qa:#C9B866}
 .qbtn.q-work{--qb:#1D5B9E;--qi:#F1F6FD;--qa:#8CCBFF}
@@ -547,7 +547,7 @@ body.q-fun .qb-fun,body.q-army .qb-army,body.q-work .qb-work{display:block}
 .ab-radar i:nth-child(1){top:28%;left:62%}.ab-radar i:nth-child(2){top:64%;left:30%;animation-delay:-1.4s}.ab-radar i:nth-child(3){top:40%;left:22%;animation-delay:-2.3s}
 @keyframes abspin{to{transform:rotate(360deg)}}
 @keyframes abblip{0%,100%{opacity:.15}8%{opacity:1}40%{opacity:.25}}
-.qb-army h2{font-family:"Black Ops One",var(--f-display);font-weight:400;font-size:40px;line-height:.95;direction:ltr;letter-spacing:1px;color:#DCEBB0;text-shadow:0 2px 0 #121A0B,0 0 14px rgba(160,230,90,.35)}
+.qb-army h2{font-family:var(--f-display);font-weight:800;font-size:40px;line-height:.95;direction:ltr;letter-spacing:1px;color:#DCEBB0;text-shadow:0 2px 0 #121A0B,0 0 14px rgba(160,230,90,.35)}
 .qb-army h2 i{font-style:normal;color:#C9B866}
 .ab-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:#9EE05A;direction:ltr;animation:fzblink 1.4s steps(2,start) infinite}
 /* work: blueprint blue, grid, live chart */
@@ -559,7 +559,7 @@ body.q-fun .qb-fun,body.q-army .qb-army,body.q-work .qb-work{display:block}
 .wb-chart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .wb-chart path{fill:none;stroke:#FFD166;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:260;stroke-dashoffset:260;animation:wbline 3.2s ease-in-out infinite;filter:drop-shadow(0 0 4px rgba(255,209,102,.7))}
 @keyframes wbline{0%{stroke-dashoffset:260}60%,100%{stroke-dashoffset:0}}
-.qb-work h2{font-family:"Orbitron",var(--f-display);font-weight:900;font-size:34px;line-height:1;direction:ltr;letter-spacing:1px;color:#F2F8FF;text-shadow:0 0 14px rgba(110,190,255,.55)}
+.qb-work h2{font-family:var(--f-display);font-weight:900;font-size:34px;line-height:1;direction:ltr;letter-spacing:1px;color:#F2F8FF;text-shadow:0 0 14px rgba(110,190,255,.55)}
 .qb-work h2 i{font-style:normal;color:#8CD3FF}
 .wb-tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:1.5px;color:#8CD3FF;direction:ltr}
 .wb-tag::after{content:"_";animation:fzblink 1s steps(2,start) infinite}
@@ -1844,7 +1844,7 @@ body.q-side .ctxrow .toolrow .tfind{border-color:rgba(255,255,255,.34)}
 .toast.ud{max-width:min(92vw,460px);text-align:center}
 /* 21.4: ✓ in a brief: the row fades and the list closes the gap (no rebuild flicker) */
 .bp-row.gone,.bp-sec.gone{overflow:hidden;transition:opacity .2s ease,height .26s ease .12s,padding .26s ease .12s,margin .26s ease .12s;opacity:0;padding-top:0!important;padding-bottom:0!important;margin-top:0!important;margin-bottom:0!important;border-top-color:transparent!important}
-.tadd.fab{position:fixed;z-index:30;left:max(18px,env(safe-area-inset-left,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:500 34px/1 system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.4);border:0;padding:0}
+.tadd.fab{position:fixed;z-index:30;left:max(18px,env(safe-area-inset-left,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:500 34px/1 var(--f-body);box-shadow:0 6px 18px rgba(0,0,0,.4);border:0;padding:0}
 .tadd.fab:active{filter:brightness(.92)}
 main{padding-bottom:90px}
 .toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))!important}
@@ -1856,7 +1856,7 @@ main{padding-bottom:90px}
 .qnav .qbtn+.qbtn{border-inline-start:1.5px solid rgba(255,255,255,.25)!important}
 .qnav .qbtn::before,.qnav .qbtn::after{display:none!important}
 .qnav .qbtn .qe{font-size:19px!important;line-height:1!important;margin:0!important;filter:none!important;opacity:1!important}
-.qnav .qbtn .qn{font:700 11px/1 system-ui,sans-serif!important;letter-spacing:0!important;white-space:nowrap;color:inherit!important;text-shadow:none!important}
+.qnav .qbtn .qn{font:700 11px/1 var(--f-body)!important;letter-spacing:0!important;white-space:nowrap;color:inherit!important;text-shadow:none!important}
 .qnav .qbtn .qn i{display:none}
 .qnav .qbtn[aria-current="true"]{background:#fff!important;color:#111!important;opacity:1}
 .qnav .qbtn[aria-current="true"] .qn{color:#d9772b!important}
@@ -2043,29 +2043,29 @@ body.q-fun .topbtns>.tb:not(.tundo):not(.tset):not(.tchat),body.q-ai .topbtns>.t
 .imenu{display:grid;grid-template-rows:52px 52px;border-radius:16px;overflow:hidden;background:#232323;border:1.5px solid rgba(255,255,255,.3);box-shadow:0 6px 18px rgba(0,0,0,.45)}
 .imenu .im-r{display:grid;grid-template-columns:1fr 56px 56px;align-items:stretch}
 .imenu .im-r+.im-r{border-top:1.5px solid rgba(255,255,255,.25)}
-.imenu .im-l{display:flex;align-items:center;gap:7px;padding:0 12px;color:#fff;font:600 15px/1.2 -apple-system,system-ui,sans-serif;border-inline-start:4px solid var(--ik)}
+.imenu .im-l{display:flex;align-items:center;gap:7px;padding:0 12px;color:#fff;font:600 15px/1.2 var(--f-body);border-inline-start:4px solid var(--ik)}
 .imenu .k-quick{--ik:#F28C38}.imenu .k-ins{--ik:#9B7BFF}
 .ibar.k-quick{border-color:#F28C38}.ibar.k-ins{border-color:#9B7BFF}
 .ibar.k-ins .isend{background:#9B7BFF;color:#fff}.ibar.k-quick .iwave canvas{filter:hue-rotate(-110deg)}
 .ibar .ikind{flex:0 0 auto;align-self:center;padding:0 0 0 2px;margin-inline-start:12px;font-size:18px}
-.imenu button{all:unset;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;font:600 16px/1 -apple-system,system-ui,sans-serif;cursor:pointer}
+.imenu button{all:unset;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;font:600 16px/1 var(--f-body);cursor:pointer}
 .imenu button{border-inline-start:1.5px solid rgba(255,255,255,.25);font-size:22px}
 .imenu button:active{background:rgba(255,255,255,.14)}
 .imenu .e{font-size:20px}
 .ibar{display:flex;align-items:flex-end;gap:0;min-height:58px;border-radius:16px;overflow:hidden;background:#232323;border:1.5px solid rgba(255,255,255,.3);box-shadow:0 6px 18px rgba(0,0,0,.45)}
-.ibar textarea{flex:1;min-width:0;resize:none;border:0;outline:0;background:transparent;color:#fff;font:16px/1.35 -apple-system,system-ui,sans-serif;padding:17px 14px 16px;max-height:120px;direction:rtl}
+.ibar textarea{flex:1;min-width:0;resize:none;border:0;outline:0;background:transparent;color:#fff;font:16px/1.35 var(--f-body);padding:17px 14px 16px;max-height:120px;direction:rtl}
 .ibar textarea::placeholder{color:rgba(255,255,255,.55)}
 .ibar .isend,.ibar .istop{all:unset;box-sizing:border-box;flex:0 0 58px;align-self:stretch;min-height:58px;display:grid;place-items:center;cursor:pointer;border-inline-start:1.5px solid rgba(255,255,255,.25);color:#fff;font-size:22px}
 .ibar .isend{background:var(--accent);color:var(--accent-ink)}
 .ibar .isend:disabled{opacity:.45}
 .ibar .istop{background:#C62828}
 .ibar .istop .sq{width:18px;height:18px;border-radius:4px;background:#fff}
-.ibar .iwave{flex:1;min-width:0;height:58px;display:flex;align-items:center;gap:10px;padding:0 14px;color:rgba(255,255,255,.75);font:14px -apple-system,system-ui,sans-serif}
+.ibar .iwave{flex:1;min-width:0;height:58px;display:flex;align-items:center;gap:10px;padding:0 14px;color:rgba(255,255,255,.75);font:14px var(--f-body)}
 .ibar .iwave canvas{flex:1;min-width:0;height:40px}
 .ibar .iwave .dot{width:10px;height:10px;border-radius:50%;background:#FF5252;animation:ipulse 1s infinite}
 @keyframes ipulse{50%{opacity:.25}}
 .ibar.busy .iwave{justify-content:center}
-.ires{padding:12px 14px;border-radius:16px;background:#1d2b22;border:1.5px solid rgba(120,220,150,.45);color:#fff;font:15px/1.4 -apple-system,system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.45);max-height:46vh;overflow:auto}
+.ires{padding:12px 14px;border-radius:16px;background:#1d2b22;border:1.5px solid rgba(120,220,150,.45);color:#fff;font:15px/1.4 var(--f-body);box-shadow:0 6px 18px rgba(0,0,0,.45);max-height:46vh;overflow:auto}
 .ires.wait{background:#2b2618;border-color:rgba(246,181,60,.5)}
 .ires .ir-h{display:flex;align-items:flex-start;gap:8px}
 .ires .ir-h b{flex:1;font-weight:600}
@@ -2073,9 +2073,9 @@ body.q-fun .topbtns>.tb:not(.tundo):not(.tset):not(.tchat),body.q-ai .topbtns>.t
 .ires ul{margin:8px 0 0;padding:0 18px 0 0;font-size:14px;color:rgba(255,255,255,.85)}
 .ires ul li+li{margin-top:3px}
 .ires .ir-a{display:flex;margin-top:10px;border:1.5px solid rgba(255,255,255,.3);border-radius:11px;overflow:hidden;width:max-content}
-.ires .ir-a button{all:unset;cursor:pointer;padding:7px 14px;font:600 14px -apple-system,system-ui,sans-serif}
+.ires .ir-a button{all:unset;cursor:pointer;padding:7px 14px;font:600 14px var(--f-body)}
 .ires .ir-a button+button{border-inline-start:1.5px solid rgba(255,255,255,.3)}
-.tadd.fab .ipend{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;border-radius:9px;background:#F6B53C;color:#000;font:700 11px/18px system-ui,sans-serif;text-align:center;padding:0 4px}
+.tadd.fab .ipend{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;border-radius:9px;background:#F6B53C;color:#000;font:700 11px/18px var(--f-body);text-align:center;padding:0 4px}
 .tadd.fab{overflow:visible}
 body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none!important}
 /* 17.9 progress graph in stats */
@@ -2096,12 +2096,12 @@ body.q-fun .imenu,body.q-ai .imenu,body.q-fun .ibar,body.q-ai .ibar{display:none
 #statM .pgsvg .pb{stroke:var(--line);stroke-width:1}
 #statM .pgsvg .pf{fill:#7b4fd6;opacity:.05}
 #statM .pgsvg .ptd{stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3;opacity:.5}
-#statM .pgsvg .pt{font:11px -apple-system,system-ui,sans-serif;fill:var(--muted)}
+#statM .pgsvg .pt{font:11px var(--f-body);fill:var(--muted)}
 #statM .pgsvg .pt.tm{font-weight:700;fill:var(--ink)}
 #statM .pgsvg .pcur line{stroke:var(--ink);stroke-width:1.4}
 #statM .pgsvg .pcur circle{stroke:var(--surface);stroke-width:1.5}
 #statM .prng{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden;direction:ltr}
-#statM .prng button{all:unset;box-sizing:border-box;text-align:center;height:36px;line-height:36px;background:var(--surface);font:700 14px -apple-system,system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+#statM .prng button{all:unset;box-sizing:border-box;text-align:center;height:36px;line-height:36px;background:var(--surface);font:700 14px var(--f-body);cursor:pointer;color:var(--ink)}
 #statM .prng button[aria-pressed="true"]{background:#7b4fd6;color:#fff}
 #statM .plog{height:210px;overflow-y:auto;border-top:1px solid var(--line);overscroll-behavior:contain}
 #statM .plr{all:unset;direction:rtl;box-sizing:border-box;display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:6px;width:100%;padding:7px 2px;border-bottom:1px solid var(--line);cursor:pointer}
@@ -2214,7 +2214,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
   .pgback:hover{opacity:.85}
 }
 /* 17.5 (Oren 16.11.2026): five categories with a small colored icon, the window and its folded "next", 🔔 updates */
-.cat-ic{flex:none;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--cc);color:#fff;font-style:normal;font-size:12.5px;font-weight:800;line-height:1;font-family:system-ui,-apple-system,sans-serif}
+.cat-ic{flex:none;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--cc);color:#fff;font-style:normal;font-size:12.5px;font-weight:800;line-height:1;font-family:var(--f-body)}
 .fold .ft{display:flex;align-items:center;gap:8px}
 .wc-head .cat-ic{align-self:center}
 .wcard.nxf{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;gap:0}
@@ -2377,7 +2377,7 @@ main{padding-bottom:20px!important}
 .st-txt b i{font-style:normal;color:#EE8C4F;display:block}
 .st-kpi{font-size:13.5px;font-weight:700;color:#333;min-height:1.3em;white-space:nowrap}
 .st-kpi .m{color:#1f9d55}
-.st-go{position:absolute;z-index:1;left:max(14px,env(safe-area-inset-left,0px));top:14px;width:30px;height:30px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font:700 20px/1 system-ui,sans-serif}
+.st-go{position:absolute;z-index:1;left:max(14px,env(safe-area-inset-left,0px));top:14px;width:30px;height:30px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font:700 20px/1 var(--f-body)}
 .stbtn.img .st-txt,.stbtn.img .st-go{display:none}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stbtn{filter:brightness(.92)}}
 html.desk footer.ver{position:static!important;margin:0 var(--drail) 0 var(--dpane)!important;padding:10px 0 18px!important;pointer-events:auto;background:none}
@@ -2393,7 +2393,7 @@ html.desk .stbtn{max-height:none}
 #statM .sthead .tg{font-family:var(--f-mono);font-size:10px;letter-spacing:2px;color:#EE8C4F;direction:ltr;text-align:right;font-weight:500}
 #statM .sthead b{font-family:"Rubik",var(--f-display);font-weight:800;font-size:clamp(19px,5.6vw,24px);line-height:1;letter-spacing:-.3px;white-space:nowrap}
 #statM .sthead b i{font-style:normal;color:#EE8C4F}
-#statM .sthead .px{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#111;color:#fff;font:400 26px/1 system-ui,sans-serif;cursor:pointer;display:grid;place-items:center;padding:0}
+#statM .sthead .px{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#111;color:#fff;font:400 26px/1 var(--f-body);cursor:pointer;display:grid;place-items:center;padding:0}
 #statM .stbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:14px 16px calc(28px + env(safe-area-inset-bottom,0px));font-size:15px}
 #statM .sqhint{font-size:13px;color:var(--muted);line-height:1.45}
 #statM .sssub{display:flex;align-items:center;gap:8px;font-family:"Rubik",var(--f-display);font-weight:700;font-size:15.5px;margin:22px 0 8px}
@@ -2465,14 +2465,14 @@ footer.ver.colo{position:relative;overflow:hidden;container-type:inline-size;mar
 .colo .stbtn.img:active{filter:brightness(.9)}
 .co-txt{min-width:0;display:flex;flex-direction:column;gap:9px;text-align:left}
 .colo #ver{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:1px;width:100%;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.colo #ver b{font:700 20px/1 "Space Grotesk",var(--f-display);letter-spacing:-.4px;color:#fff}
+.colo #ver b{font:700 20px/1 var(--f-display);letter-spacing:-.4px;color:#fff}
 .colo #ver b::first-letter{color:#EE8C4F}
 .colo #ver span{font:500 10.5px/1.4 var(--f-mono);color:rgba(237,237,234,.55);letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .colo #ver:focus-visible{outline:2px solid #EE8C4F;outline-offset:3px;border-radius:4px}
 .co-cred{margin:0;display:flex;flex-direction:column;gap:6px;padding-top:9px;border-top:1px solid rgba(255,255,255,.12)}
 .co-cred div{display:flex;flex-direction:column;min-width:0}
 .co-cred dt{font:500 9.5px/1.3 var(--f-mono);letter-spacing:1.6px;text-transform:uppercase;color:#EE8C4F}
-.co-cred dd{margin:0;font:500 13px/1.3 "Space Grotesk",var(--f-body);color:#EDEDEA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-cred dd{margin:0;font:500 13px/1.3 var(--f-body);color:#EDEDEA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .co-mark{display:block;padding:8px 0 6px;direction:ltr;text-align:center;white-space:nowrap;
   font:800 3.8cqi/.9 "Rubik",var(--f-display);letter-spacing:.04em;color:transparent;-webkit-text-stroke:.8px rgba(15,32,58,.55);pointer-events:none;user-select:none}
 .co-mark i{font-style:normal;margin-left:.22em;-webkit-text-stroke-color:rgba(238,140,79,.85)}
@@ -2586,7 +2586,7 @@ html.desk .hero .dz-grid{display:flex!important}
 <style>/* 23.7 (Oren 19.11.2026): splash screen + loading bar. A = the trail illustration (sq_gfx "sq-splash", cached on the device in
    localStorage sq_splash so it shows with no network or code), B = built-in fallback (icon, 6 quest dots, thin bar). */
 #sqSplash{position:fixed;inset:0;z-index:100000;overflow:hidden;background:radial-gradient(circle at 50% 42%,#18302A 0%,#0F1513 62%);color:#fff;
-  font-family:"Space Grotesk","Assistant",-apple-system,system-ui,sans-serif;transition:opacity .35s ease,transform .35s ease;touch-action:none}
+  font-family:var(--f-display);transition:opacity .35s ease,transform .35s ease;touch-action:none}
 #sqSplash.out{opacity:0;transform:scale(1.03);pointer-events:none}
 #sqSplash .ssB{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding-bottom:6vh}
 /* 24.2 (Oren 19.11.2026): art = the ChatGPT illustration (with "Side Quests" drawn in it) in the upper two-thirds, on its own
@@ -2595,7 +2595,7 @@ html.desk .hero .dz-grid{display:flex!important}
 #sqSplash .ssB img.art{width:min(100vw,60vh,520px);height:auto;border-radius:0;box-shadow:none;margin-bottom:-14px;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 96%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
 #sqSplash.a .ssW{display:none}
-#sqSplash .ssS{font:500 13px/1 "Space Grotesk","Assistant",-apple-system,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(214,232,222,.62);direction:ltr;margin-top:-8px}
+#sqSplash .ssS{font:500 13px/1 var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:rgba(214,232,222,.62);direction:ltr;margin-top:-8px}
 #sqSplash.a .ssS{color:rgba(255,236,190,.72);margin-top:0}
 #sqSplash .ssB img{width:96px;height:96px;border-radius:22px;box-shadow:0 0 44px rgba(244,182,58,.28),0 8px 24px rgba(0,0,0,.4)}
 #sqSplash .ssW{font-weight:700;font-size:28px;letter-spacing:.01em;color:#E5ECE8;direction:ltr}
@@ -2747,7 +2747,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
     <div class="stats" id="stats"></div>
-    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><div class="sbar" role="group" aria-label="מצב העדכון והחיבורים"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="cx sqx" aria-hidden="true"><span class="ic">⟳</span></span><span class="scs"><span class="scl"><b dir="ltr">SC</b><span class="scw" id="scSt">…</span><i class="cl" id="clSq"></i></span><span class="sct" id="refrTxt"></span></span></button><button class="conn" id="connBtn" type="button" aria-label="מצב החיבורים: Gmail, יומן, מיקום, תזרים, וואטסאפ"><span class="cx" data-c="gm"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M2 6.2v11.3c0 .8.6 1.5 1.4 1.5h3.2V9.7z"/><path d="M17.4 19h3.2c.8 0 1.4-.7 1.4-1.5V6.2l-4.6 3.5z"/><path d="M17.4 5v4.7L22 6.2V5.3c0-1.7-1.9-2.6-3.2-1.6z"/><path d="M6.6 9.7V5l5.4 4.1L17.4 5v4.7L12 13.8z"/><path d="M2 5.3v.9l4.6 3.5V5L5.2 3.7C3.9 2.7 2 3.6 2 5.3z"/></svg><i class="cl" id="clGm"></i></span><span class="cx" data-c="cal"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkCal" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><rect x="3" y="9.2" width="18" height=".9" fill="#000"/><g fill="#000"><rect x="6.2" y="12" width="3" height="2.6" rx=".6"/><rect x="10.5" y="12" width="3" height="2.6" rx=".6"/><rect x="14.8" y="12" width="3" height="2.6" rx=".6"/><rect x="6.2" y="16" width="3" height="2.6" rx=".6"/><rect x="10.5" y="16" width="3" height="2.6" rx=".6"/></g><path d="M8 2.6v4M16 2.6v4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></mask></defs><g mask="url(#mkCal)" fill="currentColor"><rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.6v4M16 2.6v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></g></svg><i class="cl" id="clCal"></i></span><span class="cx" data-c="loc"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkLoc" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><circle cx="12" cy="10" r="2.8" fill="#000"/></mask></defs><g mask="url(#mkLoc)" fill="currentColor"><path d="M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12z"/></g></svg><i class="cl" id="clLoc"></i></span><span class="cx" data-c="cf"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkCf" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><text x="12" y="17.2" text-anchor="middle" font-size="14" font-weight="800" font-family="Arial,sans-serif" fill="#000">₪</text></mask></defs><g mask="url(#mkCf)" fill="currentColor"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/></g></svg><i class="cl" id="clCf"></i></span><span class="cx" data-c="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkWa" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><path fill="#000" d="M8.6 7.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.7 5.7 5 2.8 1.1 3.4.9 4 .8.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.3.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.5z"/></mask></defs><g mask="url(#mkWa)" fill="currentColor"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.2 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2z"/></g></svg><i class="cl" id="clWa"></i></span></button></div><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
+    <div class="ctxrow"><div class="avail" id="avail"></div><div class="toolrow"><div class="sbar" role="group" aria-label="מצב העדכון והחיבורים"><button class="refr" id="refr" type="button" aria-label="עדכון מלא"><span class="cx sqx" aria-hidden="true"><span class="ic">⟳</span></span><span class="scs"><span class="scl"><b dir="ltr">SC</b><span class="scw" id="scSt">…</span><i class="cl" id="clSq"></i></span><span class="sct" id="refrTxt"></span></span></button><button class="conn" id="connBtn" type="button" aria-label="מצב החיבורים: Gmail, יומן, מיקום, תזרים, וואטסאפ"><span class="cx" data-c="gm"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M2 6.2v11.3c0 .8.6 1.5 1.4 1.5h3.2V9.7z"/><path d="M17.4 19h3.2c.8 0 1.4-.7 1.4-1.5V6.2l-4.6 3.5z"/><path d="M17.4 5v4.7L22 6.2V5.3c0-1.7-1.9-2.6-3.2-1.6z"/><path d="M6.6 9.7V5l5.4 4.1L17.4 5v4.7L12 13.8z"/><path d="M2 5.3v.9l4.6 3.5V5L5.2 3.7C3.9 2.7 2 3.6 2 5.3z"/></svg><i class="cl" id="clGm"></i></span><span class="cx" data-c="cal"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkCal" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><rect x="3" y="9.2" width="18" height=".9" fill="#000"/><g fill="#000"><rect x="6.2" y="12" width="3" height="2.6" rx=".6"/><rect x="10.5" y="12" width="3" height="2.6" rx=".6"/><rect x="14.8" y="12" width="3" height="2.6" rx=".6"/><rect x="6.2" y="16" width="3" height="2.6" rx=".6"/><rect x="10.5" y="16" width="3" height="2.6" rx=".6"/></g><path d="M8 2.6v4M16 2.6v4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></mask></defs><g mask="url(#mkCal)" fill="currentColor"><rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.6v4M16 2.6v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></g></svg><i class="cl" id="clCal"></i></span><span class="cx" data-c="loc"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkLoc" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><circle cx="12" cy="10" r="2.8" fill="#000"/></mask></defs><g mask="url(#mkLoc)" fill="currentColor"><path d="M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12z"/></g></svg><i class="cl" id="clLoc"></i></span><span class="cx" data-c="cf"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkCf" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><text x="12" y="17.2" text-anchor="middle" font-size="14" font-weight="800" font-family="Rubik,Assistant,sans-serif" fill="#000">₪</text></mask></defs><g mask="url(#mkCf)" fill="currentColor"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/></g></svg><i class="cl" id="clCf"></i></span><span class="cx" data-c="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mkWa" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><path fill="#000" d="M8.6 7.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.3 3.7 5.7 5 2.8 1.1 3.4.9 4 .8.6-.1 2-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.3.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.5z"/></mask></defs><g mask="url(#mkWa)" fill="currentColor"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.2 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2z"/></g></svg><i class="cl" id="clWa"></i></span></button></div><button class="dzbtn updbtn" id="updbtn" type="button" aria-label="עדכונים" aria-pressed="false"><span aria-hidden="true">🔔</span><span>עדכונים</span><span class="n" id="updN"></span></button><button class="dzbtn" id="dzbtn" type="button" aria-label="לדשבורדים"><span aria-hidden="true">📊</span><span>דשבורדים</span><span class="n" id="dzN"></span></button></div></div>
     <form class="quick find" id="find" hidden role="search" onsubmit="return false"><div class="qin"><input id="fq" type="search" placeholder="חיפוש בכל הקווסטים…" aria-label="חיפוש" autocomplete="off" enterkeyhint="search"></div></form>
     <div class="fres" id="fres" hidden></div>
     <form class="quick" id="quick" hidden><div class="qin"><input id="qtitle" type="text" placeholder="משימה (נסח בכמה מילים)" aria-label="נושא חדש" autocomplete="off"><button class="mic" id="micBtn" type="button" aria-label="הקלטה קולית" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div><button id="qbtn" type="submit">הוסף</button></form>
@@ -2782,7 +2782,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   <div class="co-mark" aria-hidden="true">SIDE<i>QUESTS</i></div>
   <div class="co-band">
   <!-- 18.2 (Oren 17.11.2026): one dark edge-to-edge closing band in the Side theme: the stats banner and the colophon side by side,
-       all in English (Space Grotesk + IBM Plex Mono), and a large outlined SIDE QUESTS wordmark at the very bottom under the floating buttons. -->
+       all in English (Rubik + Assistant since 25.x, one uniform font), and a large outlined SIDE QUESTS wordmark at the very bottom under the floating buttons. -->
   <div class="co-row" dir="ltr">
     <button type="button" class="stbtn img" id="statBtn" aria-label="Side Quest Statistics">
       <img class="st-art" src="img/stats-banner.webp?v=1" srcset="img/stats-banner-900.webp?v=1 900w, img/stats-banner.webp?v=1 1800w" sizes="(min-width:1024px) 360px, 55vw" width="1800" height="600" alt="" decoding="async" loading="lazy">
@@ -5072,7 +5072,10 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
         h("button",{type:"button",class:"op",onclick:()=>openTask(t.id)},"פתח כמשימה"));}))];}
   function zoneHead(z,title,sub,svg){return h("div",{class:"tz-hero tz-"+z,id:tvZone[z]},h("div",{class:"tz-art",html:svg}),h("div",{class:"tz-txt"},h("h2",null,title),h("p",null,sub)));}
   // 25.7 (Oren 21.11.2026): smaller trip cards. Flag(s) up front, the dates big and in the reading line, a small › instead of a pill.
-  function tripMini(t){
+  // 25.20 (Oren 21.11.2026): a trip line tied to a task (tid "<topic>" or "<topic>:<step>") drops once that task/step is closed
+  function tidLive(x){if(!x||!x.tid)return x;const [id,st]=String(x.tid).split(":");const k=allTopics.find(z=>z.id===id);if(!k)return x;
+    if(!isOpen(k))return null;if(st&&(k.steps||[]).some(z=>z&&z.id===st&&z.done))return null;return x;}
+  function tripMini(t){t={...t,next_up:tidLive(t.next_up)};
     const n=daysUntil(t.from),e=daysUntil(t.to||t.from),plan=t.stage==="plan";if(!plan&&e!=null&&e<0)return null;
     const len=t.from&&t.to?daysUntil(t.to)-daysUntil(t.from)+1:0;
     const cd=plan?"":n==null?"":n>1?"עוד "+n+" ימים":n===1?"מחר טסים!":"יום "+(1-n)+" מתוך "+len;
