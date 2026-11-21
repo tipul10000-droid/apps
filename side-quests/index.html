@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.23";window.SQ_BUILD_AT="21.11.2026 18:28";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.24";window.SQ_BUILD_AT="21.11.2026 18:35";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -3515,6 +3515,45 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // analyzed) or when one of its tasks changed from outside (recentOf, same rule as 14.4). Unseen = newer than the last
   // time the dashboard was opened on this device (sq_dash_seen). Tile: blinking blue dot top right; top row: "📊 דשבורדים"
   // lights up with a count and always scrolls down to the dashboards; opening one shows "🆕 מה חדש" on top, then it is seen.
+  // ===== 25.24 (Oren 21.11.2026, iron rule): "read" lives on the SERVER, for every device =====
+  // "סמן כנקרא" kept coming back: the read state was only in this device's localStorage (the home-screen app and Safari
+  // each have their own), and it was keyed by the update's time, so a run that re-wrote upd.at / a news line brought it back.
+  // settings/upd_read {at: cutoff ISO (everything up to it is read, everywhere), t:{task:{at, w}}, d:{dash: at}, n:{item: at},
+  // x:[text hashes]}. Anything read = never shown again: not by time (≤ cutoff), not by id, and not by the same words with a
+  // new timestamp. Opening a dashboard, a task or a list = read (he saw it). Cached in sq_upd_read for the first paint.
+  let RD={at:"",t:{},d:{},n:{},x:[]};try{const c=JSON.parse(localStorage.getItem("sq_upd_read")||"null");if(c&&typeof c==="object")RD={...RD,...c};}catch(e){}
+  let rdX=new Set(RD.x||[]);
+  const rdNorm=s=>String(s||"").toLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").trim();
+  const rdH=s=>{s=rdNorm(s);if(s.length<4)return "";let a=5381,b=52711;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a=(a*33)^c;b=(b*33)^c;}return ((a>>>0).toString(36)+(b>>>0).toString(36)).slice(0,12);};
+  const rdCut=()=>Date.parse(RD.at||"")||0;
+  // read? ms = when it happened, txt = what it says, key = {t|d|n: id}
+  function rdIs(ms,txt,key){if(ms&&ms<=rdCut())return true;const h1=txt?rdH(txt):"";if(h1&&rdX.has(h1))return true;
+    if(key){if(key.t){const o=RD.t&&RD.t[key.t];if(o&&((Date.parse(o.at||"")||0)>=ms||(o.w&&o.w===h1)))return true;}
+      if(key.d){const a=Date.parse((RD.d||{})[key.d]||"")||0;if(a&&a>=ms)return true;}
+      if(key.n){const a=Date.parse((RD.n||{})[key.n]||"")||0;if(a&&a>=ms)return true;}}
+    return false;}
+  function rdLoad(doc){if(!doc||typeof doc!=="object")return;
+    const m=(a,b)=>{const o={...(a||{})};for(const k in (b||{})){const v=b[k],w=o[k];const va=typeof v==="object"&&v?v.at:v,wa=typeof w==="object"&&w?w.at:w;if(!w||String(va||"")>String(wa||""))o[k]=v;}return o;};
+    RD={at:String(doc.at||"")>String(RD.at||"")?doc.at:RD.at,t:m(RD.t,doc.t),d:m(RD.d,doc.d),n:m(RD.n,doc.n),x:[...new Set([...(doc.x||[]),...(RD.x||[])])].slice(0,800),seed:String(doc.seed||"")>String(RD.seed||"")?doc.seed:RD.seed};
+    rdX=new Set(RD.x);try{localStorage.setItem("sq_upd_read",JSON.stringify(RD));}catch(e){}}
+  // after a cutoff, everything up to it is frozen by its words too: a run that re-writes the same upd / news line /
+  // app item with a new time stays read (once per cutoff, on the first device that has all the data)
+  function rdSeed(){try{if(!RD.at||RD.seed===RD.at||!allTopics.length||!dashes.length)return;const cut=rdCut(),t=[],x=[];
+    for(const tp of allTopics){const u=tp.upd,ms=Date.parse(u&&u.at||"");if(ms&&ms<=cut&&u.what){const o=RD.t[tp.id];if(!o||!o.w)t.push({id:tp.id,at:u.at,w:rdH(u.what)});}}
+    for(const d of dashes)for(const n of (Array.isArray(d.news)?d.news:[])){const ms=Date.parse(n&&n.at||"");if(ms&&ms<=cut&&n.text)x.push(n.text);}
+    for(const n of newItems){const ms=Date.parse(n&&n.at||"");if(ms&&ms<=cut&&n.text)x.push(n.text);}
+    RD.seed=RD.at;rdPut({t,x});}catch(e){}}
+  let rdT=null;
+  function rdPut(f){const now=new Date().toISOString();
+    if(f.all){RD.at=now;}
+    for(const id of f.t||[]){const o=typeof id==="object"?id:{id};RD.t[o.id]={at:o.at||now,w:o.w||""};}
+    for(const id of f.d||[])RD.d[id]=now;
+    for(const id of f.n||[])RD.n[id]=now;
+    for(const s of f.x||[]){const h1=rdH(s);if(h1&&!rdX.has(h1)){rdX.add(h1);RD.x.unshift(h1);}}
+    const cap=(o,n)=>{const ks=Object.keys(o);if(ks.length>n)ks.sort((a,b)=>String((o[a]&&o[a].at)||o[a]).localeCompare(String((o[b]&&o[b].at)||o[b]))).slice(0,ks.length-n).forEach(k=>delete o[k]);};
+    cap(RD.t,500);cap(RD.d,200);cap(RD.n,500);RD.x=RD.x.slice(0,800);
+    try{localStorage.setItem("sq_upd_read",JSON.stringify(RD));}catch(e){}
+    clearTimeout(rdT);rdT=setTimeout(()=>{try{if(typeof db!=="undefined"&&db&&canWrite)db.collection("settings").doc("upd_read").set({...RD,updated_at:new Date().toISOString()}).catch(()=>{});}catch(e){}},400);}
   let dzSeen=null;try{dzSeen=JSON.parse(localStorage.getItem("sq_dash_seen")||"null");}catch(e){dzSeen=null;}
   if(!dzSeen||typeof dzSeen!=="object"){dzSeen={_base:new Date(Date.now()-72*36e5).toISOString()};try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}}
   // ===== 22.8 (Oren 18.11.2026): a real refresh = one line per subject, nothing closed, no decision already taken =====
@@ -3547,16 +3586,17 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       // tasks Oren asked for in a chat, or that are already closed, are not news (income showed "9 updates" of those).
       if(u&&now-u<wk&&u<=now+6e4){const w=clean(t.upd.what);out.push({ms:u,k:"upd",title:t.title||"",what:w&&w!==t.title?w:"",text:(t.title||"")+(w&&w!==t.title?": "+w:""),tid:t.id});}
       else if(c&&now-c<wk&&c<=now+6e4&&isOpen(t)&&EXT_NEW.test(t.source||""))out.push({ms:c,k:"new",title:t.title||"",what:"משימה חדשה",text:"משימה חדשה: "+(t.title||""),tid:t.id});}
-    return dgList(out,x=>x.text);}
+    return dgList(out.filter(x=>!rdIs(x.ms,x.k==="news"?x.text:"",{d:d.id,t:x.tid||""})),x=>x.text);}
   function dashUnseen(d){if(!d||d.archived||d._deleted)return [];const s=Math.max(Date.parse(dzSeen[d.id]||"")||0,Date.parse(dzSeen._base||"")||0);
     try{return dashNews(d).filter(x=>x.ms>s);}catch(e){return [];}}
   // 25.21 (Oren 21.11.2026): "סמן כנקרא" on a dashboard = its news, its new items and its app items are all read
   function dashRead(id){const d=dashById(id);if(!d)return;const now=new Date().toISOString();
     for(const x of dashItems(d))itSeen[d.id+":"+x.id]=now;try{localStorage.setItem("sq_item_seen",JSON.stringify(itSeen));}catch(e){}
     for(const x of newItems)if(x&&x.id&&(x.where==="dash:"+d.id||x.dash===d.id)){upAck[upKeyN(x)]=now;nwSeen[x.id]=now;}
+    rdPut({d:[d.id],n:newItems.filter(x=>x&&x.id&&(x.where==="dash:"+d.id||x.dash===d.id)).map(x=>x.id),x:dashUnseen(d).filter(x=>x.k==="news").map(x=>x.text)});
     try{upSave();localStorage.setItem("sq_new_seen",JSON.stringify(nwSeen));}catch(e){}
     syncItemNew();dashSeen(id);setTimeout(()=>{try{nwRender();renderQnav();}catch(e){}},0);}
-  function dashSeen(id){dzSeen[id]=new Date().toISOString();try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}setTimeout(()=>{updDzBtn();renderDash();},0);}
+  function dashSeen(id){rdPut({d:[id]});dzSeen[id]=new Date().toISOString();try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}setTimeout(()=>{updDzBtn();renderDash();},0);}
   // ===== 19.5 (Oren 17.11.2026): the "new content" path, a standing rule for every quest and dashboard =====
   // Something new inside a dashboard = a line in dashboards/<id>.news with `item` (the doc id inside the page) and optional
   // `path` (keys of the tabs/sections that lead to it). The path lights up step by step: the quest button blinks (renderQnav)
@@ -3566,7 +3606,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   let itSeen={};try{itSeen=JSON.parse(localStorage.getItem("sq_item_seen")||"{}")||{};}catch(e){itSeen={};}
   function dashItems(d){if(!d||d.archived||d._deleted)return [];const now=Date.now(),base=Date.parse(dzSeen._base||"")||0,out=[];
     for(const n of (Array.isArray(d.news)?d.news:[])){if(!n||!n.item)continue;const ms=Date.parse(n.at||"");if(!ms||now-ms>14*864e5||ms>now+6e4||ms<=base)continue;
-      if((Date.parse(itSeen[d.id+":"+n.item]||"")||0)>=ms)continue;
+      if((Date.parse(itSeen[d.id+":"+n.item]||"")||0)>=ms||rdIs(ms,n.text||"",{d:d.id}))continue;
       // 25.21 (Oren 21.11.2026): an item the page never shows (hotel-clubs "hotels") kept the dot forever. Opened the
       // dashboard after it and it is 3+ days old = read.
       if((Date.parse(dzSeen[d.id]||"")||0)>ms&&now-ms>3*864e5)continue;
@@ -3580,7 +3620,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     for(const d of dashes){if(d._deleted||d.archived)continue;const q=d.quest||"side",k=dzKnown[d.id];
       if(!k){dzKnown[d.id]={q,nw:first?null:now};ch=true;}else if(k.q!==q){dzKnown[d.id]={q,nw:now,from:k.q};ch=true;}}
     if(ch)try{localStorage.setItem("sq_dash_known",JSON.stringify(dzKnown));}catch(e){}}
-  function dashNewAt(d){const k=dzKnown&&dzKnown[d.id];const ms=k&&k.nw?Date.parse(k.nw):0;if(!ms)return 0;return (Date.parse(dzSeen[d.id]||"")||0)<ms?ms:0;}
+  function dashNewAt(d){const k=dzKnown&&dzKnown[d.id];const ms=k&&k.nw?Date.parse(k.nw):0;if(!ms||rdIs(ms,"",{d:d.id})||(RD.d&&RD.d[d.id]))return 0;return (Date.parse(dzSeen[d.id]||"")||0)<ms?ms:0;}
   function dashFresh(d){return dashUnseen(d).length>0||dashItems(d).length>0||dashNewAt(d)>0;}
   function freshMs(d){const a=dashUnseen(d),b=dashItems(d);return Math.max(a.length?a[0].ms:0,...b.map(x=>x.ms),dashNewAt(d),0);}
   function dashWhy(d){const n=dashNewAt(d),k=dzKnown&&dzKnown[d.id];if(n)return k&&k.from?"הדשבורד עבר לכאן":"דשבורד חדש";
@@ -3599,7 +3639,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // Seen per device: sq_new_seen {id: at}. "🔔 עדכונים" lists all of it for the quest on screen, in place, newest first.
   let newItems=[],nwSeen={};try{nwSeen=JSON.parse(localStorage.getItem("sq_new_seen")||"{}")||{};}catch(e){nwSeen={};}
   function nwList(pfx){const now=Date.now();return dgNw(newItems.filter(x=>x&&x.id&&!x.done&&(!pfx||String(x.where||"app").startsWith(pfx))).map(x=>({...x,ms:Date.parse(x.at||"")||0}))
-    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&(Date.parse(nwSeen[x.id]||"")||0)<x.ms).sort((a,b)=>b.ms-a.ms));}
+    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&(Date.parse(nwSeen[x.id]||"")||0)<x.ms&&!rdIs(x.ms,x.text,{n:x.id})).sort((a,b)=>b.ms-a.ms));}
   // ===== 20.3 (Oren 17.11.2026): a "מה חדש" item that is about a task jumps to that task =====
   // Explicit link: tid (or topic / task) on the item, or where "task:<id>". Without one, a task whose title (8+ chars)
   // appears in the item's text. Used by settings/new_items, dashboards/<id>.news and the in-dashboard "🆕 מה חדש" box.
@@ -3615,12 +3655,13 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(nav.dash&&isOpen(t)&&!isFun(t)){dzTaskOpen(t);return;}
     closeModal();const go=()=>{qtStop();if(updOn)upCommit();updOn=false;openTask(id);setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r){r.classList.remove("jump");void r.offsetWidth;r.classList.add("jump");}},420);};
     if(nav.dash||nav.lvl>1){navBack(true);setTimeout(go,330);}else go();}
-  function nwSee(ids){let ch=false;for(const id of [].concat(ids||[])){if(!id)continue;nwSeen[id]=new Date().toISOString();ch=true;}
+  function nwSee(ids){let ch=false;const L=[].concat(ids||[]).filter(Boolean);if(L.length)rdPut({n:L,x:L.map(id=>(newItems.find(z=>z&&z.id===id)||{}).text).filter(Boolean)});
+    for(const id of L){nwSeen[id]=new Date().toISOString();ch=true;}
     if(!ch)return;const ks=Object.keys(nwSeen);if(ks.length>400)ks.sort((a,b)=>String(nwSeen[a]).localeCompare(String(nwSeen[b]))).slice(0,ks.length-400).forEach(k=>delete nwSeen[k]);
     try{localStorage.setItem("sq_new_seen",JSON.stringify(nwSeen));}catch(e){}setTimeout(nwRender,0);}
   const nwSet=k=>nwList("settings:"+k);
   const nwQuest=q=>nwList("").filter(x=>{const w=String(x.where||"app");if(w.startsWith("task:")){const t=allTopics.find(z=>z.id===w.slice(5));return !!t&&(isFun(t)?"fun":questOf(t))===q;}return w==="quest:"+q||(q==="side"&&w==="app");});
-  function nwRender(){try{renderSetDot();renderQnav();updUpdBtn();const c=$("chatDot");if(c)c.hidden=!nwList("chat").length;if(updOn)renderList();}catch(e){}}
+  function nwRender(){try{rdSeed();renderSetDot();renderQnav();updUpdBtn();const c=$("chatDot");if(c)c.hidden=!nwList("chat").length;if(updOn)renderList();}catch(e){}}
   addEventListener("storage",e=>{if(e.key==="sq_new_seen"){try{nwSeen=JSON.parse(e.newValue||"{}")||{};}catch(x){nwSeen={};}if(db)nwRender();}});
   // a quest (not on screen) also blinks for its own task changes since this visit, until he enters it once this visit
   const qEnter={};
@@ -5666,10 +5707,12 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const add=(at,what,src)=>{const ms=Date.parse(at||"");if(!ms||ms>now+6e4)return;if(!best||ms>best.ms)best={ms,what:String(what||"").replace(/\s+/g," ").trim(),src:String(src||"")};};
     const L=Array.isArray(t.log)?t.log:[];
     if(t.upd&&t.upd.at)add(t.upd.at,t.upd.what,t.upd.src||"run");
-    if(t.sync&&t.sync.at){const lg=L.length?L[L.length-1]:null;add(t.sync.at,(lg&&lg.text)||t.stand||"עודכן",/gmail|מייל/i.test(t.sync.from||"")?"gmail":"sync");}
-    if(t.created_at&&!OWN_SRC.test(t.source||""))add(t.created_at,"משימה חדשה",/gmail|מייל/i.test(t.source||"")?"gmail":"new");
-    L.forEach(l=>{if(l&&l.at&&l.by!=="oren"&&EXT_LOG.test(l.text||""))add(l.at,l.text,/^(Gmail|ג׳ימייל|מייל)/.test(l.text)?"gmail":"log");});
-    return best;}
+    // 25.24 iron rule: only what came from outside and he does not know: upd (written only for real news), a task that
+    // arrived from outside (mail, school systems, a scan) and a mail log line. Syncs, Claude's bookkeeping and tasks he
+    // asked for are not news.
+    if(t.created_at&&EXT_NEW.test(t.source||"")&&!OWN_SRC.test(t.source||""))add(t.created_at,"משימה חדשה",/gmail|מייל/i.test(t.source||"")?"gmail":"new");
+    L.forEach(l=>{if(l&&l.at&&l.by!=="oren"&&/^(Gmail|ג׳ימייל|מייל)\s*[:：]/.test(l.text||""))add(l.at,l.text,"gmail");});
+    return best&&rdIs(best.ms,best.what,{t:t.id})?null:best;}
   let updSeen=null;try{updSeen=JSON.parse(localStorage.getItem("sq_upd_seen")||"null");}catch(e){updSeen=null;}
   if(!updSeen||typeof updSeen!=="object"){updSeen={_base:new Date(Date.now()-24*36e5).toISOString()};try{localStorage.setItem("sq_upd_seen",JSON.stringify(updSeen));}catch(e){}}
   const updBase=()=>Date.parse(updSeen._base||"")||0;
@@ -5680,8 +5723,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function newCount(){try{return updItems().length;}catch(e){return 0;}}
   function saveSeen(){const ks=Object.keys(updSeen).filter(k=>k!=="_base");if(ks.length>300)ks.sort((a,b)=>String(updSeen[a]).localeCompare(String(updSeen[b]))).slice(0,ks.length-300).forEach(k=>delete updSeen[k]);
     try{localStorage.setItem("sq_upd_seen",JSON.stringify(updSeen));}catch(e){}}
-  function seeUpd(id){const t=allTopics.find(x=>x.id===id),r=t&&recentOf(t);if(!r)return;if((Date.parse(updSeen[id]||"")||0)>=r.ms)return;updSeen[id]=new Date(r.ms).toISOString();saveSeen();setTimeout(()=>{renderCtx();updGmBtn();},0);}
-  function seeAll(){updSeen={_base:new Date().toISOString()};saveSeen();renderCtx();renderList();updGmBtn();toast("✓ הכול סומן כנקרא");}
+  function seeUpd(id){const t=allTopics.find(x=>x.id===id),r=t&&recentOf(t);if(!r)return;rdPut({t:[{id,at:new Date(r.ms).toISOString(),w:rdH(r.what)}]});if((Date.parse(updSeen[id]||"")||0)>=r.ms)return;updSeen[id]=new Date(r.ms).toISOString();saveSeen();setTimeout(()=>{renderCtx();updGmBtn();},0);}
+  function seeAll(){rdPut({all:1,t:allTopics.map(t=>{const r=recentOf(t);return r?{id:t.id,at:new Date(r.ms).toISOString(),w:rdH(r.what)}:null;}).filter(Boolean)});updSeen={_base:new Date().toISOString()};saveSeen();renderCtx();renderList();updGmBtn();toast("✓ הכול סומן כנקרא");}
   const SRC_E={gmail:"✉️",new:"🆕",own:"🆕",sync:"🔗",log:"↻",run:"↻",done:"✓"};
   function updLine(r){const w=r.what.replace(/^(סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור|All Arounder|Claude)\s*[:：]\s*/,"");return (SRC_E[r.src]||"↻")+" "+(w||"עודכן")+" · "+ago(r.ms);}
   // ===== 17.5 (Oren 16.11.2026): "🔔 עדכונים" next to the dashboards button =====
@@ -5700,9 +5743,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     hidAt=0;});
   window.addEventListener("pagehide",endVisit);
   // the latest change of a task, his own new tasks included (src "own")
-  function freshOf(t){const r=recentOf(t);let o=r;
-    if(t&&t.created_at&&OWN_SRC.test(t.source||"")){const ms=Date.parse(t.created_at);if(ms&&ms<=Date.now()+6e4&&(!o||ms>o.ms))o={ms,what:"משימה חדשה",src:"own"};}
-    return o;}
+  function freshOf(t){return recentOf(t);} // 25.24: his own new tasks are never "new" (he made them)
   function isFresh(t){if(!t||DONE_ST.includes(t.status))return false;const r=freshOf(t);return !!r&&r.ms>visitBase&&Date.now()-r.ms<7*864e5;}
   // ===== 22.5 (Oren 18.11.2026): two levels of "done with an update" =====
   // blue dot = not seen yet. Shown on screen and he left the list = the dot goes, the update stays in the list.
@@ -5720,7 +5761,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       .map(x=>{const k=upKeyT(x);if(upFirst&&x.r.ms<=visitBase)upAck[k]=new Date().toISOString();return x;}).filter(x=>!upIsAck(upKeyT(x)))
       .map(x=>({...x,k:upKeyT(x),nw:!upIsShown(upKeyT(x))&&(Date.parse(updSeen[x.t.id]||"")||0)<x.r.ms})).sort((a,b)=>b.r.ms-a.r.ms);}
   function nwListAll(pfx){const now=Date.now();return dgNw(newItems.filter(x=>x&&x.id&&!x.done&&(!pfx||String(x.where||"app").startsWith(pfx))).map(x=>({...x,ms:Date.parse(x.at||"")||0}))
-    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&!upIsAck(upKeyN(x))).map(x=>({...x,k:upKeyN(x),nw:(Date.parse(nwSeen[x.id]||"")||0)<x.ms})).sort((a,b)=>b.ms-a.ms));}
+    .filter(x=>x.ms&&x.ms<=now+6e4&&now-x.ms<14*864e5&&!upIsAck(upKeyN(x))&&!rdIs(x.ms,x.text,{n:x.id})).map(x=>({...x,k:upKeyN(x),nw:(Date.parse(nwSeen[x.id]||"")||0)<x.ms})).sort((a,b)=>b.ms-a.ms));}
   const nwQuestAll=q=>nwListAll("").filter(x=>{const w=String(x.where||"app");if(w.startsWith("task:")){const t=allTopics.find(z=>z.id===w.slice(5));return !!t&&(isFun(t)?"fun":questOf(t))===q;}return w==="quest:"+q||(q==="side"&&w==="app");});
   // everything that belongs in the updates list of quest q: {C chat, A app items, L tasks}; new ones replace the seen ones
   function updSet(q){q=q||quest;const C=nwListAll("chat"),A=[...nwQuestAll(q),...(q==="side"?nwListAll("settings:"):[]),...nwListAll("dash:").filter(x=>{const d=dashById(String(x.where).slice(5));return d&&(d.quest||"side")===q;})],L=updAllT(q);
@@ -5731,8 +5772,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     for(const x of S.items){if(!upShown[x.k]){upShown[x.k]=now;ch=true;}}
     for(const x of S.old){if(!upAck[x.k]){upAck[x.k]=now;ch=true;}} // brand new ones arrived: the seen ones go to the archive
     const ids=S.items.filter(x=>x.k.startsWith("n:")).map(x=>x.id);if(ids.length)nwSee(ids);
+    rdPut({t:[...S.items,...S.old].filter(x=>x.t&&x.r).map(x=>({id:x.t.id,at:new Date(x.r.ms).toISOString(),w:rdH(x.r.what)}))}); // 25.24: he saw it = read
     if(ch)upSave();setTimeout(()=>{try{updUpdBtn();renderQnav();}catch(e){}},0);}
-  function upAckOne(x,row){upAck[x.k]=new Date().toISOString();upShown[x.k]=upShown[x.k]||upAck[x.k];upSave();if(x.k.startsWith("n:"))nwSee(x.id);
+  function upAckOne(x,row){if(x.t&&x.r)rdPut({t:[{id:x.t.id,at:new Date(x.r.ms).toISOString(),w:rdH(x.r.what)}]});upAck[x.k]=new Date().toISOString();upShown[x.k]=upShown[x.k]||upAck[x.k];upSave();if(x.k.startsWith("n:"))nwSee(x.id);
     if(upOnScreen){upOnScreen.items=upOnScreen.items.filter(y=>y.k!==x.k);}
     if(row){row.classList.add("acked");setTimeout(()=>{row.classList.add("gone");setTimeout(()=>{if(updOn)renderList();else renderQNew();updUpdBtn();},280);},650);}}
   // a row + its "👍 קיבלתי" button side by side (the row itself is a button)
@@ -5746,6 +5788,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       h("span",{class:"ua-i","aria-hidden":"true"},"✓"),h("span",{class:"ua-t"},"נקרא")));return w;}
   // "✓ סמן הכל כנקרא": everything in the list goes to 📜 and every dashboard in it is read
   function readAll(U,D){const now=new Date().toISOString();upOnScreen=null;
+    // 25.24: "סמן הכל כנקרא" = everything up to now is read, in every quest and dashboard, on every device, and the same words never come back
+    rdPut({all:1,t:allTopics.map(t=>{const r=recentOf(t);return r?{id:t.id,at:new Date(r.ms).toISOString(),w:rdH(r.what)}:null;}).filter(Boolean),x:[...U.C,...U.A,...(U.old||[]).filter(x=>!x.t)].map(x=>x.text).concat(...(D||[]).map(d=>dashUnseen(d).filter(x=>x.k==="news").map(x=>x.text)))});
     for(const x of [...U.C,...U.A,...U.L,...(U.old||[])]){upAck[x.k]=now;upShown[x.k]=upShown[x.k]||now;}upSave();
     nwSee([...U.C,...U.A,...(U.old||[])].filter(x=>x.k&&x.k.startsWith("n:")).map(x=>x.id));
     for(const x of U.L)updSeen[x.t.id]=now;try{localStorage.setItem("sq_upd_seen",JSON.stringify(updSeen));}catch(e){}
@@ -5755,7 +5799,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   addEventListener("pagehide",()=>{try{upCommit();}catch(e){}});
   document.addEventListener("visibilitychange",()=>{if(document.hidden)try{upCommit();}catch(e){}});
   function updItems(){return updSet().L.filter(x=>x.nw);}
-  function updUpdBtn(){const b=document.getElementById("updbtn");if(!b)return;let n=0;try{n=updSet().n+questFresh(quest).length;}catch(e){}
+  function updUpdBtn(){rdSeed();const b=document.getElementById("updbtn");if(!b)return;let n=0;try{n=updSet().n+questFresh(quest).length;}catch(e){}
     b.classList.toggle("has",n>0&&!updOn);b.setAttribute("aria-pressed",updOn?"true":"false");$("updN").textContent=n||"";
     b.setAttribute("aria-label",n?`עדכונים: ${n} חדשים`:"עדכונים");}
   function toggleUpd(still){updOn=!updOn;openId=null;if(!updOn)upCommit();renderList();if(updOn&&!still&&(qtStop(),1))window.scrollTo({top:Math.max(0,$("mainSec").getBoundingClientRect().top+window.scrollY-120),behavior:"smooth"});}
@@ -6749,7 +6793,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     db.collection("topics").onSnapshot(s=>{const all=s.docs.map(d=>recurOpen({id:d.id,...d.data()}));allTopics=all;histSeed();splitTopics();renderAll();ctxRun(all);fsAuto();},()=>notice("החיבור לנתונים נותק. רענן את הדף."));
     // quest logos live in the private data (collection settings, doc quest_logos {army, work} as data:image URLs), never in this public repo
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
-      const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;const cp=s.docs.find(x=>x.id==="cashflow_ping");cfPing=cp?cp.data():null;const cr=s.docs.find(x=>x.id==="cashflow_refresh");cfReq=cr?cr.data():null;renderConn();const ni=s.docs.find(x=>x.id==="new_items"),nd=ni?ni.data():null;newItems=nd&&Array.isArray(nd.items)?nd.items:[];nwRender();
+      const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;const cp=s.docs.find(x=>x.id==="cashflow_ping");cfPing=cp?cp.data():null;const cr=s.docs.find(x=>x.id==="cashflow_refresh");cfReq=cr?cr.data():null;renderConn();{const ur=s.docs.find(x=>x.id==="upd_read");if(ur)rdLoad(ur.data());}const ni=s.docs.find(x=>x.id==="new_items"),nd=ni?ni.data():null;newItems=nd&&Array.isArray(nd.items)?nd.items:[];nwRender();try{syncItemNew();updDzBtn();renderDash();renderCtx();}catch(e){}
       const pc=s.docs.find(x=>x.id==="places");calPlaces=pc?pc.data():{};const ll=s.docs.find(x=>x.id==="loc_last");calLoc=ll?ll.data():null;
       const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const thx=s.docs.find(x=>x.id==="travel_history");travelHist=thx?thx.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};const qi=s.docs.find(x=>x.id==="quest_info");const qiN=qi?qi.data():{};if(JSON.stringify(qiN)!==JSON.stringify(questInfo)){questInfo=qiN;try{renderMain();}catch(e){}}renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
