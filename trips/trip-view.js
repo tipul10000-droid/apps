@@ -40,6 +40,30 @@
     return { k: "trip", n: Math.round((n - a) / DAY) + 1, of: Math.round((b - a) / DAY) + 1, today: td };
   }
 
+  // ms offset of a time zone at a moment, and the epoch of a local date+time there (for the live countdown)
+  function tzOff(ms, tz) {
+    try {
+      var o = {}; new Intl.DateTimeFormat("en-US", { timeZone: tz, hour12: false, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })
+        .formatToParts(new Date(ms)).forEach(function (x) { o[x.type] = +x.value; });
+      return Date.UTC(o.year, o.month - 1, o.day, o.hour % 24, o.minute, o.second) - Math.floor(ms / 1000) * 1000;
+    } catch (e) { return 7200000; }
+  }
+  function zEpoch(ds, hm, tz) {
+    var p = String(ds || "").split("-").map(Number), q = String(hm || "00:00").split(":").map(Number);
+    if (p.length !== 3) return NaN;
+    var g = Date.UTC(p[0], p[1] - 1, p[2], q[0] || 0, q[1] || 0), e = g - tzOff(g, tz);
+    return g - tzOff(e, tz);
+  }
+  // Hebrew city for an airport (the collapsed row shows cities, not codes; Oren 21.11.2026). Data wins: from/to.city
+  var CITY = { TLV: "תל אביב", MXP: "מילאנו", LIN: "מילאנו", BGY: "מילאנו", FCO: "רומא", CIA: "רומא", FLR: "פירנצה", PSA: "פיזה", VCE: "ונציה", NAP: "נאפולי", LHR: "לונדון", LGW: "לונדון", STN: "לונדון", LTN: "לונדון", CDG: "פריז", ORY: "פריז", AMS: "אמסטרדם", BCN: "ברצלונה", MAD: "מדריד", ATH: "אתונה", BER: "ברלין", MUC: "מינכן", VIE: "וינה", PRG: "פראג", BUD: "בודפשט", KEF: "רייקיאוויק", JFK: "ניו יורק", EWR: "ניו יורק", LCA: "לרנקה", PFO: "פאפוס" };
+  function cityOf(a) { a = a || {}; return a.city || CITY[a.c] || a.n || a.c || ""; }
+  // Dan Lounge at Ben Gurion is a fixed part of every departure from TLV (Oren 21.11.2026); t.lounge = false hides it, a string/object overrides
+  function loungeOf(t, A) {
+    if (t.lounge === false || (A.c && A.c !== "TLV")) return null;
+    var L = t.lounge && typeof t.lounge === "object" ? t.lounge : {};
+    return { h: L.h || (typeof t.lounge === "string" ? t.lounge : "טרקלין דן"), s: L.s || ("יש לנו כניסה. בנתב״ג" + (A.t && A.t !== "?" ? ", טרמינל " + A.t : "") + ", אחרי הבידוק והדרכונים. כדאי להגיע מוקדם וליהנות"), logo: L.logo || "", q: L.q || "Dan Lounge Ben Gurion Airport" + (A.t && A.t !== "?" ? " Terminal " + A.t : "") };
+  }
+
   var LAND = {
     italy: "M40 22 C70 6 140 6 162 20 C152 34 132 40 126 54 C146 84 176 108 200 128 C216 139 226 150 216 165 C206 160 200 151 190 151 C181 165 171 171 165 166 C170 151 160 136 140 126 C115 111 95 86 80 61 C70 46 52 40 40 22 Z",
     sicily: "M150 182 C165 176 186 176 196 180 C190 190 170 194 152 190 Z",
@@ -106,7 +130,18 @@
     mountain: '<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>',
     moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
     ticket: '<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>',
-    star: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>'
+    star: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+    planef: '<path fill="currentColor" stroke="none" d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+    sofa: '<path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"/><path d="M4 18v2"/><path d="M20 18v2"/><path d="M12 4v9"/>',
+    seat: '<path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0Z"/><path d="M5 18v2"/><path d="M19 18v2"/>',
+    globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+    book: '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    plug: '<path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>',
+    euro: '<path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>',
+    phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+    chat: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+    app: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>'
   };
   // אימוג׳י שמגיע מהנתונים (תובנות הליסט) -> אייקון נקי
   var EMO = { "🏛️": "sight", "🏛": "sight", "🌅": "view", "🍝": "food", "🥪": "food", "🍕": "food", "☕": "coffee", "🍦": "sweet", "🍰": "sweet", "🍸": "bar", "🍷": "bar", "🛍️": "shop", "🛍": "shop", "🏨": "hotel", "🧭": "compass", "📅": "cal", "🗓️": "cal", "💡": "bulb", "🗺️": "map", "📍": "pin", "✈️": "plane", "🚆": "train", "📸": "cam", "⭐": "star",
@@ -136,7 +171,8 @@
     if (th.c1) root.style.setProperty("--c1", th.c1);
     if (th.c2) root.style.setProperty("--c2", th.c2);
     if (th.gold) root.style.setProperty("--gold", th.gold);
-    var ph = phase(t), H = [];
+    var ph = phase(t), H = [], SEC = {};
+    if (root._cdT) { clearInterval(root._cdT); root._cdT = 0; }
     var gfxUrl = function (key) { var s = (t.gfx || {})[key], g = s && G[s.id]; return g && g.data ? "data:" + (g.mime || "image/webp") + ";base64," + g.data : ""; };
 
     // ---- hero ----
@@ -156,6 +192,13 @@
     if (own && o.slot) H.push('<div class="w"><div data-slot="hero" style="margin-top:12px"></div></div>');
 
     H.push('<div class="w">');
+    // ---- live countdown to take-off, with seconds, at the top of the ticket (planning mode; Oren 21.11.2026) ----
+    var fl0 = (Array.isArray(t.flights) ? t.flights : [])[0], cdAt = fl0 ? zEpoch(fl0.d, fl0.dep, "Asia/Jerusalem") : NaN;
+    if (t.stage !== "plan" && ph.k === "pre" && !isNaN(cdAt) && cdAt > Date.now()) {
+      H.push('<section class="tp-cd" aria-label="ספירה לאחור"><div class="h">' + ic("plane") + '<span>ההמראה בעוד</span></div><div class="tp-cdg" dir="ltr">' +
+        [["d", "ימים"], ["h", "שעות"], ["m", "דקות"], ["s", "שניות"]].map(function (x) { return '<div><b data-cd="' + x[0] + '">00</b><span>' + x[1] + "</span></div>"; }).reverse().join("") +
+        '</div><div class="f">' + esc((fl0.no || "") + " · " + cityOf(fl0.from) + " ← " + cityOf(fl0.to) + " · יום " + dowOf(fl0.d) + " " + dShort(fl0.d) + " · " + (fl0.dep || "")) + "</div></section>");
+    }
     // ---- stats strip ----
     var st = t.stats || [];
     st = st.slice(0, 4);
@@ -191,13 +234,13 @@
 
     // ---- map ----
     if (t.map) {
-      H.push(sx("map", "המסלול", esc(t.map.note || ""), '<div class="tp-card tp-map">' + mapSvg(t.map) +
+      SEC.map=(sx("map", "המסלול", esc(t.map.note || ""), '<div class="tp-card tp-map">' + mapSvg(t.map) +
         '<div class="tp-legend"><span style="color:var(--acc)"><u style="border-top-style:dashed"></u>טיסה</span><span style="color:var(--acc2)"><u></u>רכבת</span>' + (t.map.legend || []).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("") + "</div></div>"));
     }
 
     // ---- days ----
     if (days.length) {
-      H.push('<section class="tp-sec"><div class="tp-sh">' + ic("cal", "e") + '<h2>יום אחרי יום <span class="tp-h2s">(הצעת תכנון)</span></h2><small>לחיצה פותחת</small></div><div class="tp-days">' +
+      SEC.days=('<section class="tp-sec"><div class="tp-sh">' + ic("cal", "e") + '<h2>יום אחרי יום <span class="tp-h2s">(הצעת תכנון)</span></h2><small>לחיצה פותחת</small></div><div class="tp-days">' +
         days.map(function (d, i) {
           var isT = ph.k === "trip" && d.d === ph.today, hm = isT ? nowHM(t.tz) : "", nextDone = false;
           return '<details class="tp-day' + (isT ? " today" : "") + '"' + (isT || (ph.k === "pre" && i === 0 && o.openFirst) ? " open" : "") + "><summary>" +
@@ -214,21 +257,30 @@
     var fl = Array.isArray(t.flights) ? t.flights : [];
     if (fl.length) {
       var plane = '<svg viewBox="0 0 84 26" aria-hidden="true"><path d="M4 18 Q42 -2 80 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 4"/><g transform="translate(42 8)">' + PLANE + "</g></svg>";
-      H.push('<section class="tp-sec"><div class="tp-sh">' + ic("plane", "e") + '<h2>טיסות</h2><small>לחיצה לפרטים</small></div>' +
+      SEC.flights=('<section class="tp-sec"><div class="tp-sh">' + ic("planef", "e") + '<h2>טיסות</h2><small>לחיצה לפרטים</small></div>' +
         fl.map(function (f) {
-          var A = f.from || {}, B = f.to || {};
-          // collapsed = one compact row: airline logo, flight no., date, times and duration; the boarding pass and every detail open on tap (Oren 21.11.2026)
-          var mk = f.logo ? '<span class="tp-flg"><img src="' + esc(img(base, f.logo)) + '" alt="" loading="lazy"></span>' : '<span class="tp-flg">' + ic("plane") + "</span>";
+          var A = f.from || {}, B = f.to || {}, P = f.plane || {}, lg = loungeOf(t, A);
+          // collapsed = one compact row: airline logo (tail emblem when there is one), airline + flight no., direction and date,
+          // times, and the cities in Hebrew (airports only inside); everything else opens on tap (Oren 21.11.2026)
+          var em1 = f.logo_s || f.logo;
+          var mk = em1 ? '<span class="tp-flg"><img src="' + esc(img(base, em1)) + '" alt="' + esc(f.air || "") + '" loading="lazy"></span>' : '<span class="tp-flg">' + ic("planef") + "</span>";
+          var pk = [P.t ? ["מטוס", P.t + (P.wide ? " · רחב גוף" : " · צר גוף")] : f.ac ? ["מטוס", f.ac] : null,
+            P.cfg ? ["תצורת ישיבה", P.cfg] : null, P.age ? ["כמה חדש", P.age] : null, P.note ? ["טוב לדעת", P.note] : null,
+            f.dur ? ["משך טיסה", f.dur + " שעות"] : null].filter(Boolean);
+          var maps = [P.map ? { u: P.map, l: "מפת מושבים" } : null, P.map2 ? { u: P.map2, l: P.map2_l || "עוד מפה" } : null].filter(function (x) { return x && url(x.u); });
           return '<details class="tp-bp"><summary><div class="tp-fs">' + mk +
-            '<div class="tp-fsm"><b dir="ltr">' + esc(f.logo ? (f.no || f.air || "") : (f.air || "") + " " + (f.no || "")) + "</b><span>" + esc(f.dir || "") + " · " + esc(dShort(f.d)) + "</span></div>" +
-            '<div class="tp-fst" dir="ltr"><b>' + esc(f.dep || "") + " → " + esc(f.arr || "") + "</b><span>" + esc((A.c || "") + "→" + (B.c || "") + (f.dur ? " · " + f.dur : "")) + "</span></div>" +
+            '<div class="tp-fsm"><b dir="ltr">' + esc(((f.air || "") + " " + (f.no || "")).trim()) + "</b><span>" + esc([f.dir, dShort(f.d)].filter(Boolean).join(" · ")) + "</span></div>" +
+            '<div class="tp-fst"><b dir="ltr">' + esc(f.dep || "") + " → " + esc(f.arr || "") + "</b><span>" + esc(cityOf(A) + " ← " + cityOf(B)) + "</span></div>" +
             chev() + '</div>' +
             (isT1(A) ? '<div class="tp-t1s">ממריאים מטרמינל 1, לא 3</div>' : "") +
             "</summary><div class=\"tp-more tp-fmore\">" +
+            (f.logo ? '<div class="tp-fwm"><img src="' + esc(img(base, f.logo)) + '" alt="' + esc(f.air || "") + '" loading="lazy"></div>' : "") +
             '<div class="tp-bpm"><div class="tp-ap"><b>' + esc(A.c) + "</b><span>" + esc(A.n) + "</span><i>" + esc(f.dep) + '</i></div><div class="tp-fly">' + plane + esc(f.dur || "") + '</div><div class="tp-ap r"><b>' + esc(B.c) + "</b><span>" + esc(B.n) + "</span><i>" + esc(f.arr) + "</i></div></div>" +
             '<div class="tp-bpf"><span>טרמינל <b>' + esc(A.t || "?") + "</b> ← <b>" + esc(B.t || "?") + "</b></span>" + (f.seats ? "<span>מושבים <b dir=\"ltr\">" + esc(f.seats) + "</b></span>" : "") + "</div>" +
+            (lg ? '<div class="tp-lng">' + (lg.logo ? '<img src="' + esc(img(base, lg.logo)) + '" alt="" loading="lazy">' : '<span class="i">' + ic("sofa") + "</span>") + '<div><b>' + esc(lg.h) + "</b><span>" + esc(lg.s) + "</span>" + gml(lg) + "</div></div>" : "") +
             '<div class="tear"></div><dl class="tp-kv">' +
-            [f.ac ? ["מטוס", f.ac] : null, f.dur ? ["משך טיסה", f.dur + " שעות"] : null].filter(Boolean).concat(f.kv || []).map(function (x) { return "<dt>" + esc(x[0]) + "</dt><dd>" + esc(x[1]) + "</dd>"; }).join("") + "</dl>" +
+            pk.concat(f.kv || []).map(function (x) { return "<dt>" + esc(x[0]) + "</dt><dd>" + esc(x[1]) + "</dd>"; }).join("") + "</dl>" +
+            (maps.length ? '<div class="tp-gls tp-sm">' + maps.map(function (x) { return '<a class="tp-gl" href="' + esc(url(x.u)) + '" target="_blank" rel="noopener">' + ic("seat") + "<span>" + esc(x.l) + "</span></a>"; }).join("") + "</div>" : "") +
             '<div class="tp-gls">' + [A, B].map(function (p) { return p.c || p.n ? '<span>' + esc(p.n || p.c) + gml({ g: p.g, q: p.q || (p.c ? p.c + " Airport" + (p.t && p.t !== "?" ? " Terminal " + p.t : "") : p.n) }) + "</span>" : ""; }).join("") + "</div></div></details>";
         }).join("") + "</section>");
     }
@@ -236,7 +288,7 @@
     // ---- hotels ----
     var ho = Array.isArray(t.hotels) ? t.hotels : [];
     if (ho.length) {
-      H.push('<section class="tp-sec"><div class="tp-sh">' + ic("hotel", "e") + '<h2>איפה ישנים</h2><small>' + esc(t.nights_l || "") + "</small></div>" +
+      SEC.hotels=('<section class="tp-sec"><div class="tp-sh">' + ic("hotel", "e") + '<h2>איפה ישנים</h2><small>' + esc(t.nights_l || "") + "</small></div>" +
         ho.map(function (x) {
           var mu = url(x.maps || "");
           return '<details class="tp-hotel"><summary><div class="tp-himg">' + (x.img ? '<img src="' + esc(img(base, x.img)) + '" alt="" loading="lazy">' : "") + '<span class="tp-hn">' + esc(x.city || "") + " · " + esc(x.nights_l || "") + "</span></div>" +
@@ -299,20 +351,20 @@
       var cn = Array.isArray(C.notes) ? C.notes : [];
       if (cn.length) B.push('<div class="tp-card tp-cits">' + cn.map(function (n) { return '<details class="tp-ci"><summary>' + ic("bulb") + '<span class="x">' + esc(n.h) + "</span>" + chev() + "</summary><p>" + esc(n.t) + "</p></details>"; }).join("") + "</div>");
       if (C.key) B.push('<p class="tp-csrc">' + esc(C.key.src + ": " + [C.key.region, C.key.season, C.key.style, C.key.pax + " נוסעים", C.key.nights + " לילות"].join(" · ") + (C.fx ? ". שער: $ " + C.fx.USD + ", € " + C.fx.EUR : "")) + "</p>");
-      H.push(sx("cash", "עלויות ותקציב", vk ? esc(vk === "over" ? "מעל המפתח" : vk === "under" ? "מתחת למפתח" : "במפתח") : "", B.join(""), false, '<span class="tp-shs" dir="ltr">' + nis(fAll) + "</span>"));
+      SEC.costs=(sx("cash", "עלויות ותקציב", vk ? esc(vk === "over" ? "מעל המפתח" : vk === "under" ? "מתחת למפתח" : "במפתח") : "", B.join(""), false, '<span class="tp-shs" dir="ltr">' + nis(fAll) + "</span>"));
     }
 
     // ---- getting around ----
     var mv = Array.isArray(t.moves) ? t.moves : [];
     if (mv.length) {
-      H.push(sx("train", "איך מתניידים", "", '<div class="tp-grid">' +
+      SEC.moves=(sx("train", "איך מתניידים", "", '<div class="tp-grid">' +
         mv.map(function (m) { return '<div class="tp-tile' + (m.open ? " open" : "") + (m.full ? " full" : "") + '"><span class="e">' + em(m.e) + "</span><b>" + esc(m.h) + "</b><span>" + esc(m.s || "") + "</span>" + gml(m) + "</div>"; }).join("") + "</div>"));
     }
 
     // ---- weather ----
     var wx = Array.isArray(t.weather) ? t.weather : [];
     if (wx.length) {
-      H.push(sx("wx", "מזג אוויר", "ממוצע לתאריכים", '<div class="tp-grid">' +
+      SEC.wx=(sx("wx", "מזג אוויר", "ממוצע לתאריכים", '<div class="tp-grid">' +
         wx.map(function (w) { return '<div class="tp-tile"><div class="tp-wx"><span class="e">' + esc(w.e || "⛅") + '</span><div><b>' + esc(w.city) + '</b><span class="tmp">' + esc(w.hi) + "°<small> / " + esc(w.lo) + "°</small></span></div></div><span>" + esc(w.s || "") + "</span></div>"; }).join("") + "</div>" +
         (t.wx_tip ? '<div class="tp-tip">🧥 ' + esc(t.wx_tip) + "</div>" : "")));
     }
@@ -336,7 +388,7 @@
           '<div class="tp-fof">' + (f.bag ? "<span>" + ic("bag") + esc(f.bag) + "</span>" : "") + (f.note ? "<span>" + esc(f.note) + "</span>" : "") +
           (kw ? '<a class="tp-gl" href="' + esc(kw) + '" target="_blank" rel="noopener"><span dir="ltr">Kiwi.com</span></a>' : "") + "</div></div>";
       };
-      H.push(sx(t.options_i || "plane", esc(t.options_h || "ניתוח הטיסות לכל אפשרות"), ops.length + " אפשרויות",
+      SEC.ops=(sx(t.options_i || "plane", esc(t.options_h || "ניתוח הטיסות לכל אפשרות"), ops.length + " אפשרויות",
         (t.options_note ? '<div class="tp-tip">' + esc(t.options_note) + "</div>" : "") +
         ops.map(function (op) {
           var lo = (op.fl || []).reduce(function (m, f) { return m == null || +f.pp < m ? +f.pp : m; }, null);
@@ -352,7 +404,16 @@
 
     // ---- extra notes (Hanukkah etc.) ----
     var nt = Array.isArray(t.notes) ? t.notes : [];
-    if (nt.length) H.push(sx(t.notes_i || "info", esc(t.notes_h || "טוב לדעת"), t.notes_h ? String(nt.length) : "", '<div class="tp-grid">' + nt.map(function (n) { return '<div class="tp-tile full"><span class="e">' + em(n.e) + "</span><b>" + esc(n.h) + "</b><span>" + esc(n.s || "") + "</span>" + gml(n) + "</div>"; }).join("") + "</div>"));
+    if (nt.length) SEC.notes=(sx(t.notes_i || "info", esc(t.notes_h || "טוב לדעת"), t.notes_h ? String(nt.length) : "", '<div class="tp-grid">' + nt.map(function (n) { return '<div class="tp-tile full"><span class="e">' + em(n.e) + "</span><b>" + esc(n.h) + "</b><span>" + esc(n.s || "") + "</span>" + gml(n) + "</div>"; }).join("") + "</div>"));
+
+    // ---- about the destination (Oren 21.11.2026): Wikipedia + practical facts for whoever got the link ----
+    var ds = t.dest || null;
+    if (ds && ((ds.wiki && ds.wiki.length) || (ds.facts && ds.facts.length))) {
+      var wk = (ds.wiki || []).filter(function (w) { return url(w.u); });
+      SEC.dest = sx("globe", esc(ds.h || "על היעד"), "",
+        (wk.length ? '<div class="tp-wk">' + wk.map(function (w) { return '<a href="' + esc(url(w.u)) + '" target="_blank" rel="noopener">' + ic("book") + "<b>" + esc(w.n) + "</b><small>Wikipedia</small></a>"; }).join("") + "</div>" : "") +
+        ((ds.facts || []).length ? '<div class="tp-dfx">' + ds.facts.map(function (f) { return '<div class="tp-df">' + (f.i ? ic(f.i) : em(f.e)) + "<b>" + esc(f.h) + "</b><span>" + esc(f.s || "") + "</span></div>"; }).join("") + "</div>" : ""));
+    }
 
     // ---- our Google Maps list: insights + every place (short line, tap for the full insight) ----
     var mp = t.maps || null, pl = mp && Array.isArray(mp.places) ? mp.places : [];
@@ -373,7 +434,7 @@
       var lname = mp.name || "", lurl = url(mp.url || "");
       var lsub = lurl ? '<a class="tp-lnk" href="' + esc(lurl) + '" target="_blank" rel="noopener">' + GMAPS + '<span dir="auto">' + esc(lname || "Google Maps") + "</span></a>" : "";
       var grp = function (k, label, n, body) { return '<details class="tp-card tp-plg"><summary class="tp-insh">' + ic(k) + "<b>" + esc(label) + "</b><i>" + n + "</i>" + chev() + '</summary><div class="tp-plb">' + body + "</div></details>"; };
-      H.push(sx("pin", esc(mp.title || "הליסט שלנו"), pl.length + " מקומות",
+      SEC.places=(sx("pin", esc(mp.title || "הליסט שלנו"), pl.length + " מקומות",
         (tops.length ? grp("bulb", "תובנות מהליסט", tops.length, tops.map(function (x) {
           return '<details class="tp-pl"><summary><span class="rk">' + ic(x.e || "bulb") + '</span><span class="x"><b>' + esc(x.h) + "</b></span>" + chev() + '</summary><div class="tp-plm"><p>' + esc(x.t || "") + "</p></div></details>";
         }).join("")) : "") +
@@ -392,7 +453,7 @@
     var phs = Array.isArray(t.photos) ? t.photos : [];
     if (phs.length || (t.maps && !pl.length)) {
       var mu = t.maps && url(t.maps.url || "");
-      H.push(sx("cam", pl.length ? "תמונות" : "המקומות שלנו", "",
+      SEC.photos=(sx("cam", pl.length ? "תמונות" : "המקומות שלנו", "",
         (phs.length ? '<div class="tp-gal">' + phs.map(function (p) { return '<figure><img src="' + esc(img(base, p.img)) + '" alt="" loading="lazy"><figcaption>' + esc(p.cap) + "</figcaption></figure>"; }).join("") + "</div>" : "") +
         (pl.length ? "" : mu ? '<a class="tp-mapsph" href="' + esc(mu) + '" target="_blank" rel="noopener">' + GMAPS + "<span>" + esc(t.maps.label || "הרשימה שלנו ב-Google Maps") + "</span></a>"
           : t.maps ? '<div class="tp-mapsph">' + ic("pin", "e") + "<span>" + esc(t.maps.pending || "רשימת המקומות ב-Google Maps תגיע בקרוב") + "</span></div>" : "")));
@@ -401,19 +462,33 @@
     // ---- owner: what's left to plan ----
     // links (owner page only; a planned trip keeps its older planning pages here)
     var lk = (Array.isArray(t.links) ? t.links : []).filter(function (l) { return l && url(l.url || ""); });
-    if (own && lk.length) H.push(sx("link", "קישורים", String(lk.length), '<div class="tp-grid">' + lk.map(function (l) { return '<a class="tp-tile full tp-lk" href="' + esc(url(l.url)) + '" target="_blank" rel="noopener"><b>' + esc(l.label || "קישור") + "</b>" + (l.s ? "<span>" + esc(l.s) + "</span>" : "") + "</a>"; }).join("") + "</div>"));
-    if (own && Array.isArray(t.gaps) && t.gaps.length) H.push(sx("bulb", "עוד לתכנן", "רק אצלך", '<div class="tp-gaps" data-gaps></div>'));
+    if (own && lk.length) SEC.links=(sx("link", "קישורים", String(lk.length), '<div class="tp-grid">' + lk.map(function (l) { return '<a class="tp-tile full tp-lk" href="' + esc(url(l.url)) + '" target="_blank" rel="noopener"><b>' + esc(l.label || "קישור") + "</b>" + (l.s ? "<span>" + esc(l.s) + "</span>" : "") + "</a>"; }).join("") + "</div>"));
+    if (own && Array.isArray(t.gaps) && t.gaps.length) SEC.gaps=(sx("bulb", "עוד לתכנן", "רק אצלך", '<div class="tp-gaps" data-gaps></div>'));
 
     // ---- WhatsApp to the owner (view) ----
     var wa = String(o.wa || "").replace(/\D/g, "");
     if (wa && o.mode !== "edit") {
       var txt = (t.wa_text || ("היי, ראיתי את הדף של הטיול \"" + (t.title || "") + "\" ויש לי המלצה: "));
-      H.push('<a class="tp-wa" href="https://wa.me/' + wa + "?text=" + encodeURIComponent(txt) + '" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 5c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.2-.3-.2-.6-.4z"/></svg><span>' +
+      SEC.wa=('<a class="tp-wa" href="https://wa.me/' + wa + "?text=" + encodeURIComponent(txt) + '" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 5c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.2-.3-.2-.6-.4z"/></svg><span>' +
         esc(t.wa_label || "יש לכם המלצה? שלחו לאורן") + "<small>" + esc(t.wa_sub || "מסעדה, מקום, טיפ או תמונה, ישר לוואטסאפ") + "</small></span></a>");
     }
+    // ---- order by mode (Oren 21.11.2026): planning = anticipation (flights, hotel, the destination first); trip = what happens today first ----
+    var ORD = ph.k === "pre" || t.stage === "plan" ? ["flights", "hotels", "dest", "days", "places", "photos", "map", "moves", "wx", "notes", "ops", "costs", "links", "gaps"]
+      : ["days", "places", "photos", "moves", "wx", "map", "notes", "dest", "hotels", "flights", "ops", "costs", "links", "gaps"];
+    ORD.concat(["wa"]).forEach(function (k) { if (SEC[k]) H.push(SEC[k]); });
     if (DKH) H.push(DKH);
     H.push('<div class="tp-foot">' + esc(t.foot || "נבנה באהבה לטיול הזה") + '<div class="tp-credit">Side Quests</div></div></div>');
     root.innerHTML = H.join("");
+    var cdb = root.querySelector(".tp-cdg");
+    if (cdb) {
+      var cdq = {}; cdb.querySelectorAll("[data-cd]").forEach(function (b) { cdq[b.getAttribute("data-cd")] = b; });
+      var tick = function () {
+        if (!root.isConnected || !cdb.isConnected) { clearInterval(root._cdT); root._cdT = 0; return; }
+        var r = Math.max(0, Math.floor((cdAt - Date.now()) / 1000)), p2 = function (v) { return (v < 10 ? "0" : "") + v; };
+        cdq.d.textContent = String(Math.floor(r / 86400)); cdq.h.textContent = p2(Math.floor(r % 86400 / 3600)); cdq.m.textContent = p2(Math.floor(r % 3600 / 60)); cdq.s.textContent = p2(r % 60);
+      };
+      tick(); root._cdT = setInterval(tick, 1000);
+    }
 
     if (dk.length) root.querySelectorAll("[data-dk]").forEach(function (b) { b.onclick = function () { deckOpen(dk.map(function (x) { return { src: img(base, x.img), cap: x.cap || "" }; }), +b.getAttribute("data-dk") || 0, t.deck.h || ""); }; });
     if (own && o.slot) { var sl = root.querySelector('[data-slot="hero"]'); if (sl) o.slot(sl, "hero"); }
