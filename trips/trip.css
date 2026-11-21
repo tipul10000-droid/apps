@@ -103,7 +103,9 @@
 .tp-kv dt{color:var(--muted);font-weight:700}
 .tp-kv dd{margin:0;font-weight:700}
 .tp-tap{display:block;text-align:center;font-size:12.5px;color:var(--muted);font-weight:800;padding:0 0 10px}
-details[open]>summary .tp-tap{display:none}
+.tp-tap::after{content:"▾ פרטים"}
+details[open]>summary .tp-tap::after{content:"▴ סגירה"}
+.tp-hclose{display:block;width:100%;margin-top:12px;padding:10px;border:1px solid var(--line);border-radius:12px;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:800;cursor:pointer}
 
 /* hotels */
 .tp-hotel{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}

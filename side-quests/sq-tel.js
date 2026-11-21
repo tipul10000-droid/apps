@@ -5,7 +5,7 @@
    Skips existing links, buttons, inputs, code, svg and anything marked .notel / .nolink. */
 (function(){
   if(window.SQLinkify)return;
-  var PH=/(?<![\d.,\/:])(?:(?:\+972[\s-]?|0)(?:5\d|7\d|[23489])[\s-]?\d{3}[\s-]?\d{4}|1[\s-]?(?:700|800|599)[\s-]?\d{2,3}[\s-]?\d{3,4}|\*\d{4})(?![\d\/]|[.,]\d)/g;
+  var PH=/(?<![\d.,\/:])(?:(?:\+972[\s-]?|0)(?:5\d|7\d|[23489])[\s-]?\d{3}[\s-]?\d{4}|1[\s-]?(?:700|800|599)[\s-]?\d{2,3}[\s-]?\d{3,4}|\*\d{4}|\+(?!972)[1-9]\d{0,2}[\s-]?\(?\d{1,4}\)?(?:[\s-]?\d{2,5}){1,5})(?![\d\/]|[.,]\d)/g; // + international (Oren 21.11.2026: hotel abroad)
   var TLD="co\\.il|org\\.il|gov\\.il|ac\\.il|net\\.il|muni\\.il|co\\.uk|com|org|net|io|il|app|dev|ai|me|info|eu|it|uk|us|tv|ly|gl|gg";
   var LK=new RegExp(
     "(https?:\\/\\/[^\\s<>\"'\\u0590-\\u05FF]+)"+                                    // 1 full URL
@@ -27,7 +27,7 @@
     while((m=PH.exec(s))){if(m.index>i)f.appendChild(document.createTextNode(s.slice(i,m.index)));
       f.appendChild(mk("tel:"+m[0].replace(/[^\d+*]/g,"").replace("*","%2A"),m[0],"tel",false));i=m.index+m[0].length;}
     if(i<s.length)f.appendChild(document.createTextNode(s.slice(i)));}
-  function quick(s){return /[\/@]|www\.|\.[a-z]{2}|\d{4}|\*\d/i.test(s);}
+  function quick(s){return /\+\d|[\/@]|www\.|\.[a-z]{2}|\d{4}|\*\d/i.test(s);}
   function scanText(n){var p=n.parentElement;if(!p||p.closest(SKIP))return;var s=n.nodeValue;if(!s||s.length<5||!quick(s))return;
     LK.lastIndex=0;PH.lastIndex=0;var hasL=LK.test(s),hasP=PH.test(s);if(!hasL&&!hasP)return;
     var f=document.createDocumentFragment(),i=0,m;LK.lastIndex=0;
