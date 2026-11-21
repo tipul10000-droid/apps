@@ -8,6 +8,8 @@
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function url(u) { if (!u) return ""; try { var x = new URL(u, location.href); return /^https?:$/.test(x.protocol) ? x.href : ""; } catch (e) { return ""; } }
   // לוגו גוגל מפס (סיכה בארבעת הצבעים) ליד כל קישור לגוגל מפס (אורן 19.11.2026).
+  // Spotify logo (the green circle with three sound arcs)
+  var SPOT = '<svg class="tp-spl" viewBox="0 0 168 168" aria-hidden="true"><circle cx="84" cy="84" r="84" fill="#1ED760"/><path fill="#000" d="M122.7 74.5C102 62.2 67.9 61 48.2 67c-3.2 1-6.5-.8-7.5-4s.8-6.5 4-7.5c22.6-6.9 60.2-5.5 84 8.6 2.9 1.7 3.8 5.4 2.1 8.3-1.7 2.8-5.4 3.8-8.1 2.1zm-.7 18.2c-1.5 2.4-4.6 3.1-7 1.7-17.2-10.6-43.5-13.7-63.9-7.5-2.6.8-5.4-.7-6.2-3.3-.8-2.6.7-5.4 3.3-6.2 23.3-7.1 52.3-3.7 72.1 8.5 2.4 1.5 3.1 4.6 1.7 6.8zm-7.8 17.4c-1.2 2-3.8 2.6-5.8 1.4-15.1-9.2-34-11.3-56.3-6.2-2.2.5-4.3-.9-4.8-3-.5-2.2.9-4.3 3-4.8 24.4-5.6 45.4-3.2 62.4 7.2 1.9 1.2 2.6 3.8 1.5 5.4z"/></svg>';
   var GMAPS = '<svg class="tp-gm" viewBox="0 0 92 132" aria-hidden="true"><path d="M60.2 2.2C55.8.8 51 0 46.1 0 32 0 19.3 6.4 10.8 16.5l21.8 18.3L60.2 2.2z" fill="#1a73e8"/><path d="M10.8 16.5C4.1 24.5 0 34.9 0 46.1c0 8.7 1.7 15.7 4.6 22l28-33.3-21.8-18.3z" fill="#ea4335"/><path d="M46.2 28.5c9.8 0 17.7 7.9 17.7 17.7 0 4.3-1.6 8.3-4.2 11.4 0 0 13.9-16.6 27.5-32.7-5.6-10.8-15.3-19-27-22.7L32.6 34.8c3.3-3.8 8.1-6.3 13.6-6.3" fill="#4285f4"/><path d="M46.2 63.8c-9.8 0-17.7-7.9-17.7-17.7 0-4.3 1.5-8.3 4.1-11.3l-28 33.3c4.8 10.6 12.8 19.2 21 29.9l34.1-40.5c-3.3 3.9-8.1 6.3-13.5 6.3" fill="#fbbc04"/><path d="M59.1 109.2c15.4-24.1 33.3-35 33.3-63 0-7.7-1.9-14.9-5.2-21.3L25.6 98c2.6 3.4 5.3 7.3 7.9 11.3 9.4 14.5 6.8 23.1 12.8 23.1s3.4-8.7 12.8-23.2" fill="#34a853"/></svg>';
   function ymd(s) { var p = String(s || "").split("-").map(Number); return p.length === 3 ? Date.UTC(p[0], p[1] - 1, p[2]) : NaN; }
   function dShort(s) { var p = String(s || "").split("-").map(Number); return p.length === 3 ? p[2] + "." + p[1] : ""; }
@@ -318,8 +320,16 @@
     // t.deck {h, sub, pub, slides:[{img, cap}]}; the shared page gets it only when deck.pub is true
     var dk = t.deck && Array.isArray(t.deck.slides) ? t.deck.slides.filter(function (x) { return x && x.img; }) : [];
     var DKH = !dk.length ? "" : ('<section class="tp-sec"><button type="button" class="tp-dk" data-dk="0" aria-label="' + esc(t.deck.h || "מצגת") + '"><img src="' + esc(img(base, dk[0].img)) + '" alt="" loading="lazy"><span class="x"><b>' + ic(t.deck.i || "cam") + esc(t.deck.h || "מצגת") + "</b><span>" + esc(t.deck.sub || "") + '</span></span><span class="n" dir="ltr">' + dk.length + " ▸</span></button></section>");
-    // right after "important to remember", on the owner's page and (deck.pub) on the shared page too (Oren 21.11.2026)
-    if (DKH) H.push(DKH);
+    // the deck sits at the very end of the ticket (Oren 21.11.2026), on the owner's page and (deck.pub) on the shared page too
+    if (DKH) SEC.deck = DKH;
+
+    // ---- the trip playlist (Oren 21.11.2026): t.playlist {h, sub, id (Spotify playlist id) or url}
+    // one card with the Spotify logo; tap = opens the playlist inside the Spotify app (spotify: deep link), web link as fallback
+    var pl = t.playlist, plId = pl && (pl.id || (String(pl.url || "").match(/playlist[\/:]([A-Za-z0-9]{10,40})/) || [])[1]);
+    if (plId && /^[A-Za-z0-9]{10,40}$/.test(plId)) {
+      SEC.music = '<section class="tp-sec"><a class="tp-sp" data-sp="' + esc(plId) + '" href="https://open.spotify.com/playlist/' + esc(plId) + '" target="_blank" rel="noopener">' + SPOT +
+        '<span class="x"><b>' + esc(pl.h || "הפלייליסט של הטיול") + "</b><span>" + esc(pl.sub || "פותחים ב-Spotify ושומעים בדרך") + '</span></span><span class="go" dir="ltr">Spotify ▸</span></a></section>';
+    }
 
     // ---- map ----
     if (t.map) {
@@ -545,8 +555,8 @@
     }
     // ---- the Google Maps list always sits right under the hotels (Oren 21.11.2026)
     // ---- order by mode (Oren 21.11.2026): planning = anticipation (flights, hotel, the destination first); trip = what happens today first ----
-    var ORD = ph.k === "pre" || t.stage === "plan" ? ["flights", "hotels", "places", "prep", "days", "dest", "moves", "photos", "map", "ops", "costs", "links", "gaps"]
-      : ["days", "hotels", "places", "flights", "moves", "prep", "dest", "photos", "map", "ops", "costs", "links", "gaps"];
+    var ORD = ph.k === "pre" || t.stage === "plan" ? ["flights", "hotels", "places", "prep", "music", "days", "dest", "moves", "photos", "map", "ops", "costs", "links", "gaps", "deck"]
+      : ["days", "hotels", "places", "flights", "moves", "prep", "music", "dest", "photos", "map", "ops", "costs", "links", "gaps", "deck"];
     ORD.concat(["wa"]).forEach(function (k) { if (SEC[k]) H.push(SEC[k]); });
     H.push('<div class="tp-foot">' + esc(t.foot || "נבנה באהבה לטיול הזה") + '<div class="tp-credit">Side Quests</div></div></div>');
     // a re-render (e.g. after a list change) keeps what was open and the add box in focus
@@ -569,6 +579,17 @@
 
     var wxb = root.querySelector("[data-wxt]"), wxp = root.querySelector("[data-wxp]");
     if (wxb && wxp) wxb.onclick = function () { var on = !wxp.classList.contains("on"); wxp.classList.toggle("on", on); wxb.setAttribute("aria-expanded", on ? "true" : "false"); wxb.classList.toggle("on", on); };
+    root.querySelectorAll("[data-sp]").forEach(function (a) {
+      a.onclick = function (ev) {
+        // the app first (spotify:playlist:<id>); if the page is still visible after a moment, the web player opens
+        ev.preventDefault();
+        var id = a.getAttribute("data-sp"), web = a.href, gone = false;
+        var hid = function () { if (document.hidden) gone = true; };
+        document.addEventListener("visibilitychange", hid);
+        try { (window.top || window).location.href = "spotify:playlist:" + id; } catch (e) { location.href = "spotify:playlist:" + id; }
+        setTimeout(function () { document.removeEventListener("visibilitychange", hid); if (!gone && !document.hidden) window.open(web, "_blank", "noopener"); }, 1400);
+      };
+    });
     if (dk.length) root.querySelectorAll("[data-dk]").forEach(function (b) { b.onclick = function () { deckOpen(dk.map(function (x) { return { src: img(base, x.img), cap: x.cap || "" }; }), +b.getAttribute("data-dk") || 0, t.deck.h || ""); }; });
     if (own && o.slot) { var sl = root.querySelector('[data-slot="hero"]'); if (sl) o.slot(sl, "hero"); }
     if (own && o.gaps) { var g = root.querySelector("[data-gaps]"); if (g) o.gaps(g); }

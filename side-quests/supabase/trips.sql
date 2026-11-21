@@ -53,13 +53,13 @@ begin
   d := d || coalesce((select jsonb_object_agg(k, v) from jsonb_each(case when jsonb_typeof(d->'pub') = 'object' then d->'pub' else '{}'::jsonb end) as p(k, v)
                       where k = any(array['title','short','flag','who','tagline','when','hero_img','hero_full','desc','stats','next_up','alerts',
                         'map','days','flights','nights_l','hotels','moves','weather','wx_tip','notes','notes_h','notes_i','photos','maps',
-                        'wa_label','wa_sub','foot','dest','lounge','gear','gear_h','pack'])), '{}'::jsonb);
+                        'wa_label','wa_sub','foot','dest','lounge','gear','gear_h','pack','playlist'])), '{}'::jsonb);
   select array_agg(v->>'id') into ids from jsonb_each(coalesce(d->'gfx','{}'::jsonb)) as e(k, v) where v ? 'id';
   return jsonb_build_object(
     'trip', (select coalesce(jsonb_object_agg(k, v), '{}'::jsonb) from jsonb_each(d) as w(k, v)
               where k = any(array['kind','title','short','flag','who','tagline','from','to','tz','stage','snow','theme','when',
                 'hero_img','hero_full','desc','stats','next_up','alerts','map','days','days_full','flights','nights_l','hotels','moves','weather','wx_tip',
-                'notes','notes_h','notes_i','photos','maps','wa_label','wa_sub','foot','dest','lounge','gear_h','pack','updated_at']))
+                'notes','notes_h','notes_i','photos','maps','wa_label','wa_sub','foot','dest','lounge','gear_h','pack','playlist','updated_at']))
             -- the trip's slideshow, only when the owner marked it for sharing (deck.pub, 21.11.2026)
             || case when coalesce((d->'deck'->>'pub')::boolean, false) then jsonb_build_object('deck', d->'deck') else '{}'::jsonb end
             -- gear bought for the trip, without prices (21.11.2026)
