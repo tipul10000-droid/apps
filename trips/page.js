@@ -10,7 +10,13 @@
   function show(j) {
     var t = j.trip; document.title = (t.flag ? t.flag + " " : "") + (t.title || "הטיול שלנו");
     var tc = document.querySelector('meta[name="theme-color"]'); if (tc && t.theme && t.theme.c1) tc.content = t.theme.c1;
-    TripView.render(app, t, { mode: "view", img: document.documentElement.getAttribute("data-img") || "img/", gfx: j.gfx || {}, wa: t.wa });
+    TripView.render(app, t, { mode: "view", img: document.documentElement.getAttribute("data-img") || "img/", gfx: j.gfx || {}, wa: t.wa, onPack: function (op) { return pack(j, op); } });
+  }
+  // packing lists: everyone with the link adds and ticks (sq_trip_pack touches only trip.pack of this shared trip)
+  function pack(j, op) {
+    return fetch(URL_.replace("sq_trip_public", "sq_trip_pack"), { method: "POST", headers: { "Content-Type": "application/json", apikey: ANON }, body: JSON.stringify({ p_token: tok, p_op: op }), referrerPolicy: "no-referrer" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (pk) { if (!pk || !pk.people) throw new Error("no"); j.trip.pack = pk; try { localStorage.setItem(CK, JSON.stringify(j)); } catch (e) {} return pk; });
   }
   var cached = null; try { cached = JSON.parse(localStorage.getItem(CK) || "null"); } catch (e) {}
   if (cached && cached.trip) show(cached);
