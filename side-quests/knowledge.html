@@ -6,14 +6,14 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2E3A87">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="1.9";window.SQ_DASH=/[?&]w=1/.test(location.search)?"work_knowledge":"knowledge";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.KN_BUILD="2.0";window.SQ_DASH=/[?&]w=1/.test(location.search)?"work_knowledge":"knowledge";</script>
 <script src="sq-db.js?v=10"></script>
 <title>ידע ותחומי עניין</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
 <style>
-/* דשבורד ידע ותחומי עניין (Knowledge & Interests): פיסות ידע שאורן שולח (לינקים, כתבות, פוסטים) נשמרות כטיקטים לפי תחום,
-   עם הטקסט המלא באנגלית ובעברית, תובנות ומה לעשות עם זה. בלי דשבורדים פנימיים: רק פיסות, מסודרות לפי תחום (1.2).
+/* דשבורד ידע ותחומי עניין (Knowledge & Interests): טיקטי מידע שאורן שולח (לינקים, כתבות, פוסטים) נשמרות כטיקטים לפי תחום,
+   עם הטקסט המלא באנגלית ובעברית, תובנות ומה לעשות עם זה. בלי דשבורדים פנימיים: רק טיקטים, מסודרות לפי תחום (1.2).
    נתונים: sq_docs (app=sidequests, collection=knowledge): מסמך לכל טיקט + _meta. לא משימות. */
 :root{
   --bg:#F5F5FA; --surface:#FFFFFF; --sunk:#ECECF5; --ink:#1D1F2E; --muted:#5E6278; --line:#DDDEEA;
@@ -112,6 +112,16 @@ section{margin-bottom:22px}
 .srch{margin:6px -14px 0;padding:8px 14px;background:var(--hi-soft);color:var(--hi);font-weight:800;font-size:14px;font-family:var(--f-display)}
 .srch:first-child{margin-top:-12px;border-radius:16px 16px 0 0}
 .src+.src{margin-top:8px}
+/* 2.0: ticket banner (from sq_gfx, never in the repo) + deck card with send-to-work-mail */
+.kban{margin:12px 0 4px;aspect-ratio:3/1;border-radius:14px;overflow:hidden;background:#060B18}
+.kban img{width:100%;height:100%;object-fit:cover;display:block}
+.kdeck{margin:10px 0 4px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.1);color:var(--hero-ink)}
+.kdeck .dh{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--hero-ink)!important;font-weight:800}
+.kdeck .dh small{display:block;color:var(--hero-muted);font-weight:600;font-size:12.5px}
+.kdeck .dh .v{margin-inline-start:auto;flex-shrink:0;font-family:var(--f-display);font-size:13px;padding:3px 9px;border-radius:20px;background:var(--accent);color:var(--accent-ink)}
+.kdeck .send{display:block;width:100%;margin-top:10px;min-height:44px;border:0;border-radius:12px;background:#fff;color:#0F3B66;font:800 15px var(--f-body);cursor:pointer}
+.kdeck .send[disabled]{opacity:.75;cursor:default}
+.kdeck .st{margin-top:6px;min-height:18px;font-size:12.5px;color:var(--hero-muted);font-weight:600}
 .part .hd{font-family:var(--f-display);font-weight:800;font-size:13px;color:var(--hi);margin-bottom:4px}
 .part .he{font-size:16px;line-height:1.6;white-space:pre-line}
 .part .en{direction:ltr;text-align:left;font-size:15px;line-height:1.55;color:var(--en);white-space:pre-line;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -183,6 +193,7 @@ details.arch .ar button{width:96px;min-height:34px;border:1px solid var(--line);
 <script>if(/[?&]w=1(&|$)/.test(location.search)){document.documentElement.classList.add("work");document.title="ידע עבודה";}</script>
 <script>/* opened inside Side Quests (frame) = the app bar has the back button */if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
 <script src="sq-icons.js?v=2"></script>
+<script src="sq-gfx.js?v=1"></script>
 </head>
 <body>
 <header class="hero"><div class="in" id="hero"></div></header>
@@ -229,15 +240,28 @@ function heroHome(){const T=all("ticket"),tp=new Set(T.map(x=>x.topic||"other"))
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">${meta.updated?"עודכן "+esc(meta.updated):""}</span></div>
   <h1>${EMO} ${NAME}</h1>
   <a class="chatbtn" href="${esc(safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span>💬</span><span>צ׳אט</span></a>
-  <div class="kpis"><div class="kpi"><b>${T.length}</b><span>פיסות ידע</span></div><div class="kpi"><b>${tp.size}</b><span>תחומים</span></div><div class="kpi"><b>${T.filter(x=>x.fav).length}</b><span>מועדפים</span></div></div>`;}
+  <div class="kpis"><div class="kpi"><b>${T.length}</b><span>טיקטי מידע</span></div><div class="kpi"><b>${tp.size}</b><span>תחומים</span></div><div class="kpi"><b>${T.filter(x=>x.fav).length}</b><span>מועדפים</span></div></div>`;}
 function heroTicket(x){const tp=topicOf(x.topic),ch=chatOf(x);
   const back=`<button class="sqhome sqsub" type="button" data-home data-title="${esc((x.icon||"💡")+" "+(x.short||x.title))}" data-chat="${esc(ch)}"><span class="ar">→</span><span class="em">${EMO}</span><span>${W?"כל ידע העבודה":"כל הידע"}</span></button>`;
   return `<div class="top">${back}<span class="back">${tp[2]} ${esc(tp[1])}</span></div>
   <h1>${esc(x.icon||"💡")} ${esc(x.title)}</h1>
-  <a class="kchat" href="${esc(ch||safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span class="ic">💬</span><span>${ch?"השיחה על הפיסה הזו":"פתיחת שיחה על הפיסה"}<small>${ch?"לשאול, להעמיק ולהוסיף מקורות":"עוד אין שיחה משלה, נפתח בצ׳אט הכללי"}</small></span></a>
+  ${banner(x)}${deckCard(x)}
+  <a class="kchat" href="${esc(ch||safe(meta.chat_url)||CHAT_FALLBACK)}" target="_blank" rel="noopener"><span class="ic">💬</span><span>${ch?"השיחה על הטיקט הזה":"פתיחת שיחה על הטיקט"}<small>${ch?"לשאול, להעמיק ולהוסיף מקורות":"עוד אין שיחה משלה, נפתח בצ׳אט הכללי"}</small></span></a>
   <p class="sub">${esc(x.summary||"")}</p>
   ${srcs(x).map((s,i,a)=>{const u=safe(s.url),inner=`<span style="font-size:22px">${u?"🔗":"📚"}</span><span>${a.length>1?"מקור "+(i+1):"למקור"}${s.author?": "+esc(s.author):""}${s.handle?" "+esc(s.handle):""}<small>${esc([PLAT[plat(s)],s.date?fmtD(s.date):"",s.label].filter(Boolean).join(" · "))}</small></span>`;
     return u?`<a class="src" href="${esc(u)}" target="_blank" rel="noopener">${inner}</a>`:`<div class="src">${inner}</div>`;}).join("")}`;}
+
+// 2.0: banner image from sq_gfx (x.banner_gfx) + deck card (x.deck {title, url, ver, at, file, req{at,ver}, sent{at,ver}})
+const GFX={};let gfxAsk=new Set();
+function banner(x){const id=x.banner_gfx;if(!id)return "";const g=GFX[id];
+  if(!g&&!gfxAsk.has(id)&&window.SQGfx){gfxAsk.add(id);SQGfx.get([id]).then(r=>{if(r&&r[id]&&r[id].data){GFX[id]=r[id];const y=scrollY;render();scrollTo(0,y);}});}
+  return `<div class="kban">${g?`<img src="data:${esc(g.mime||"image/webp")};base64,${g.data}" alt="">`:""}</div>`;}
+function dmy(t){const d=new Date(t);return isNaN(d)?"":d.toLocaleString("he-IL",{timeZone:"Asia/Jerusalem",day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"});}
+function deckCard(x){const d=x.deck;if(!d||!safe(d.url))return "";
+  const sent=d.sent&&d.sent.at,req=d.req&&d.req.at,wait=req&&(!sent||req>sent);
+  const st=wait?`⏳ בדרך למייל העבודה (גרסה ${esc(d.req.ver||d.ver)}). נשלח בריצה הקרובה, עד שעה.`:sent?`✓ נשלח למייל העבודה ${esc(dmy(sent))} · גרסה ${esc(d.sent.ver||"")}`:"";
+  return `<div class="kdeck"><a class="dh" href="${esc(safe(d.url))}" target="_blank" rel="noopener"><span style="font-size:22px">📊</span><span>${esc(d.title||"המצגת")}<small>הגרסה האחרונה${d.at?" · עודכנה "+esc(dmy(d.at)):""}</small></span><span class="v">גרסה ${esc(d.ver||"?")}</span></a>
+  <button class="send" type="button" data-senddeck ${wait?"disabled":""}>${wait?"⏳ בתור לשליחה":"📧 לשלוח את גרסה "+esc(d.ver||"")+" למייל העבודה"}</button><div class="st">${st}</div></div>`;}
 
 // ---------- home ----------
 function renderHome(){$("hero").innerHTML=heroHome();
@@ -254,7 +278,7 @@ function renderList(){const T=all("ticket").filter(x=>(ui.topic==="all"||(x.topi
   if(!T.length)body=`<div class="card empty">${loaded?(ui.q?"לא נמצא":"עוד אין"):"טוען…"}</div>`;
   else if(ui.topic==="all")body=topics().map(tp=>{const L=T.filter(x=>(x.topic||"other")===tp[0]);return L.length?`<div class="grp">${tp[2]} ${esc(tp[1])} · ${L.length}</div><div class="tlist">${L.map(ticketRow).join("")}</div>`:"";}).join("");
   else body=`<div class="tlist">${T.map(ticketRow).join("")}</div>`;
-  return `<section><div class="sh"><h2>🎫 פיסות ידע</h2><small>${T.length}</small></div>${body}<button class="addrow" data-add>＋ מלינק</button></section>`;}
+  return `<section><div class="sh"><h2>🎫 טיקטי מידע</h2><small>${T.length}</small></div>${body}<button class="addrow" data-add>＋ מלינק</button></section>`;}
 
 // ---------- ticket ----------
 function tabIns(x){let h="";
@@ -321,14 +345,19 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
   if(b=g("[data-tab]")){const k=b.dataset.tab;keepPut(`[data-tab="${k}"]`,()=>{ui.tab=k;saveUi();render();});return;}
   if(b=g("[data-lang]")){const k=b.dataset.lang;keepPut(`[data-lang="${k}"]`,()=>{ui.lang=k;saveUi();render();});return;}
   const now=new Date().toISOString();
+  if(g("[data-senddeck]")){const id=route().id,x=items[id]||{},d=x.deck||{};if(!db){toast("אין חיבור");return;}
+    const iid="sd-"+Date.now().toString(36);
+    try{await db.collection("instructions").doc(iid).set({kind:"send_deck",via:"app",coll:COLL,ticket:id,ver:d.ver||"",file:d.file||"",text:"לשלוח את המצגת "+(d.title||"")+" (גרסה "+(d.ver||"")+") למייל העבודה",at:now,status:"pending"});}
+    catch(err){toast("לא נשלח, נסה שוב");return;}
+    keepPut("[data-senddeck]",()=>upd(id,{deck:Object.assign({},d,{req:{at:now,ver:d.ver||"",iid}})},"📧 בתור. יגיע למייל העבודה עד שעה"));return;}
   if(g("[data-fav]")){const id=route().id;upd(id,{fav:!(items[id]||{}).fav,updated_at:now});return;}
   if(g("[data-share]")){const id=route().id;const t=shareText({id,...items[id]});
     if(navigator.share){try{await navigator.share({text:t});return;}catch(err){if(err&&err.name==="AbortError")return;}}
     toast(await copy(t)?"הסיכום הועתק, אפשר להדביק בוואטסאפ":"לא הצלחתי להעתיק");return;}
   if(g("[data-add]")){const u=(prompt("הדבק לינק או טקסט (פוסט, כתבה, סרטון)")||"").trim();if(!u)return;if(!db){toast("אין חיבור");return;}
     const m=u.match(/https:\/\/\S+/);const url=m?m[0]:"";const id="k"+Date.now().toString(36);
-    try{await db.collection(COLL).doc(id).set({kind:"ticket",title:url?"פיסת ידע חדשה":u.slice(0,100),icon:"💡",topic:ui.topic==="all"?"other":ui.topic,status:"new",source:{url},parts:[],insights:[],created_at:now,updated_at:now,log:[{at:now,text:"נפתח מהדשבורד"}]});
-      const ok=await copy(`פיסת ידע חדשה בדשבורד ${NAME} (id ${id}): ${u}\nתקרא את כל המקור, תביא את הטקסט המלא באנגלית ובעברית בצורה סדורה, תסכם, תוציא תובנות ומה אפשר לעשות עם זה, ותמלא את הטיקט.`);
+    try{await db.collection(COLL).doc(id).set({kind:"ticket",title:url?"טיקט מידע חדש":u.slice(0,100),icon:"💡",topic:ui.topic==="all"?"other":ui.topic,status:"new",source:{url},parts:[],insights:[],created_at:now,updated_at:now,log:[{at:now,text:"נפתח מהדשבורד"}]});
+      const ok=await copy(`טיקט מידע חדש בדשבורד ${NAME} (id ${id}): ${u}\nתקרא את כל המקור, תביא את הטקסט המלא באנגלית ובעברית בצורה סדורה, תסכם, תוציא תובנות ומה אפשר לעשות עם זה, ותמלא את הטיקט.`);
       toast(ok?"נוסף. הבקשה הועתקה, הדבק בשיחה":"נוסף");setTimeout(()=>window.open(safe(meta.chat_url)||CHAT_FALLBACK,"_blank","noopener"),700);goHash("t="+encodeURIComponent(id));}catch(err){toast("לא נשמר");}return;}
 });
 if(W){document.querySelector('meta[name="theme-color"]').content="#0F3B66";}

@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.18";window.SQ_BUILD_AT="21.11.2026 14:35";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.19";window.SQ_BUILD_AT="21.11.2026 14:43";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -3414,14 +3414,14 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     }
     if(d.source==="knowledge"&&knowDocs.length){ // 12.3: knowledge & interests (knowledge.html)
       const T=knowDocs.filter(x=>x.id!=="_meta"&&x.title&&(x.kind||"ticket")==="ticket");
-      const kpis=[{v:String(T.length),l:"פיסות ידע"},{v:String(new Set(T.map(x=>x.topic||"other")).size),l:"תחומים"},{v:String(T.filter(x=>x.fav).length),l:"מועדפים"}];
+      const kpis=[{v:String(T.length),l:"טיקטי מידע"},{v:String(new Set(T.map(x=>x.topic||"other")).size),l:"תחומים"},{v:String(T.filter(x=>x.fav).length),l:"מועדפים"}];
       const L=[...T].sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")))[0];
       return {kpis,sugs:[],live:true,line:L?"אחרון: "+(L.short||L.title):""};
     }
     if(d.source==="work_knowledge"&&wknowDocs.length){ // 17.1: work knowledge (knowledge.html?w=1, Work Quest)
       const T=wknowDocs.filter(x=>x.id!=="_meta"&&x.title&&(x.kind||"ticket")==="ticket");
       const L=[...T].sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")))[0];
-      return {kpis:[{v:String(T.length),l:"פיסות ידע"},{v:String(new Set(T.map(x=>x.topic||"other")).size),l:"תחומים"},{v:String(T.filter(x=>x.fav).length),l:"מועדפים"}],sugs:[],live:true,line:L?"אחרון: "+(L.short||L.title):""};
+      return {kpis:[{v:String(T.length),l:"טיקטי מידע"},{v:String(new Set(T.map(x=>x.topic||"other")).size),l:"תחומים"},{v:String(T.filter(x=>x.fav).length),l:"מועדפים"}],sugs:[],live:true,line:L?"אחרון: "+(L.short||L.title):""};
     }
     if(d.source==="skills"&&skillDocs.length){ // 16.0: skills review (skills.html)
       const S=skillDocs.filter(x=>x.id!=="_meta"&&x.title&&(x.kind||"skill")==="skill"),on=S.filter(x=>((x.install||{}).s||"no")!=="no");
