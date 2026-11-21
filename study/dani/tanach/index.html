@@ -84,6 +84,9 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
 #tpd{gap:3px}#tpd i{width:6px;height:6px}#tpd i.on{width:14px}.smb .qq{font-weight:700;font-size:16px;line-height:1.45;margin:6px 0}.smb .lk{background:#f1f5f9;border-radius:10px;padding:10px;color:#475569;font-size:15px;line-height:1.5}.smb .ma{background:#f6f8fb;border-right:3px solid #22c55e;border-radius:10px;padding:6px 10px;font-size:15px;line-height:1.55}
 .nav .ib{padding:3px 8px}.ib.gl{border-color:#f59e0b;box-shadow:0 0 0 2px #fde68a}
 .chip.bt2{border:0;font:inherit;font-size:13px;cursor:pointer}
+.prog .row>span{white-space:nowrap}
+#gqb{display:inline-block;width:116px;height:20px;line-height:18px;text-align:center;padding:1px 4px;vertical-align:middle;overflow:hidden}#gqb .sgn{line-height:14px;font-size:10.5px}
+@media (max-width:359px){#acc{display:none}}
 .card.ex .q{flex:1 1 auto;justify-content:flex-start;text-align:right;font-weight:500;font-size:15px}
 .card.ex .q .ps{flex:1 1 auto;min-height:0;overflow:auto;font-size:14.5px;line-height:1.5}
 .card.ex .q .it{flex:none;font-size:13.5px;color:#334155;font-weight:600}
@@ -135,7 +138,7 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
 </head><body><main>
 <div class="nav"><a class="back" href="../" aria-label="חזרה לדני">→<span class="bn"> דני</span></a><span class="seg"><button id="prb" type="button">📚 תרגול</button><button id="mtb" type="button">🎯 מבחן</button></span><button class="ib" id="rules" type="button">📘 סיכום</button><button class="ib" id="tips" type="button">📋 מיקוד</button></div>
 <div class="prog">
- <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך <span id="nn">0</span></span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span> <button class="chip bt2" id="grb" type="button">📈 ציונים</button></span></div>
+ <div class="row"><span><b id="dn" dir="ltr">0</b> מתוך <span id="nn">0</span></span><span><span class="chip" id="acc">🎯 —</span> <span class="chip hot" id="stk">🔥 0</span> <button class="chip bt2" id="grb" type="button" aria-label="הציונים שלי">📈</button> <button class="chip bt2" id="gqb" type="button">✅ בדוק שאלות</button></span></div>
  <div class="stw"><div class="stg" id="stg"></div><button class="sqc" id="sqb" type="button" aria-label="הסקווישים שלי">💜 <span id="sqn" dir="ltr">0/6</span></button></div>
 </div>
 <div class="card" id="card">
@@ -307,6 +310,7 @@ main{padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
 <script src="../../effort.js?v=1"></script>
 <script src="../../track.js?v=9"></script>
 <script src="../../guess.js?v=1"></script>
+<script src="../../grade.js?v=1"></script>
 <script>
 // הכנה למבחן בתנ"ך של דני (אורן 18.11.2026; המבחן ביום שלישי 1.12.2026). כיתה ו׳, ספר יהושע פרקים א׳-ו׳.
 // המקור: המחברת של דני (2 תמונות, אורן אישר את התמלול 19.11.2026): איך לומדים + שאלות המיקוד של המורה. כל הפרטים נבדקו מול הפסוקים.
@@ -496,12 +500,12 @@ $('ws').onclick=()=>{const i=wi,q=ALLQ[i],k=q[5],t=$('wt').value.trim();
  rpc('study_answer_add',{p_kid:'dani',p_app:REV?'tanach-rv':'tanach',p_qid:k,p_q:plain(q[1]),p_model:plain(q[3]),p_pts:q[4],p_txt:t}).then(j=>{
   if(j&&j.st===404){$('ov3').classList.remove('on');if(isEx(i)){sent(i,t,null);S.oa[k].self=1;save();showEx();sentPop(i)}else selfCheck();return}
   if(!j||!j.ok){$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent=j&&j.err==='rate'?'שלחת הרבה תשובות בשעה האחרונה. נסי שוב עוד מעט.':'לא נשלח. בדקי את האינטרנט ונסי שוב (התשובה שמורה).';return}
-  sent(i,t,j.id);report();poll.go();
+  sent(i,t,j.id);report();poll.go();StudyGrade.refresh();
   if(isEx(i)){showEx();sentPop(i);return}
   answered=true;$('opts').innerHTML='<button class="op wr" type="button" id="mab">👀 התשובה לדוגמה</button>';
-  $('fb').className='fb';$('fb').textContent='⏳ נשלח לבדיקה! הציון וההערה יגיעו בשעה הקרובה. ממשיכים.';
+  $('fb').className='fb';$('fb').textContent='📤 נשלח! כשתסיימי לענות, לחצי למעלה על ✅ בדוק שאלות.';
   $('nx').disabled=false;bar();sentPop(i)}).catch(()=>{$('ws').disabled=false;$('ws').textContent='📤 לשלוח לבדיקה';$('wm').textContent='לא נשלח. בדקי את האינטרנט ונסי שוב (התשובה שמורה).'})};
-function sentPop(i){const q=ALLQ[i],o=S.oa[q[5]]||{};pop(`<h3>${o.self?'✍️ תשובה לדוגמה':'📤 נשלח לבדיקה'}</h3><p>${o.self?'השווי לתשובה שלך: מה היה, ומה חסר?':'Claude יקרא את התשובה שלך וייתן ציון מ-0 עד 10 עם הערה (התוצאה תגיע בשעה הקרובה). בינתיים, תשובה לדוגמה:'}</p><div class="ma">${q[3]}</div><h4>מה בודקים בתשובה</h4><ul>${q[4].map(t=>'<li>'+t+'</li>').join('')}</ul><button class="cl" type="button" onclick="unpop()">המשך ›</button>`)}
+function sentPop(i){const q=ALLQ[i],o=S.oa[q[5]]||{};pop(`<h3>${o.self?'✍️ תשובה לדוגמה':'📤 נשלח לבדיקה'}</h3><p>${o.self?'השווי לתשובה שלך: מה היה, ומה חסר?':'כשתסיימי לענות, לחצי על ✅ בדוק שאלות. Claude יקרא את כל התשובות ששלחת וייתן לכל אחת ציון מ-0 עד 10 עם הערה. בינתיים, תשובה לדוגמה:'}</p><div class="ma">${q[3]}</div><h4>מה בודקים בתשובה</h4><ul>${q[4].map(t=>'<li>'+t+'</li>').join('')}</ul>${o.self?'':StudyGrade.btn('✅ סיימתי, בדוק שאלות')}<button class="cl" type="button" onclick="unpop()">${o.self?'המשך ›':'אענה על עוד שאלות ›'}</button>`)}
 function selfCheck(){const q=QS[cur];pop(`<h3>✍️ תשובה לדוגמה</h3><div class="ma">${q[3]}</div><h4>מה היה בתשובה שלך? סמני:</h4><div class="ck">${q[4].map(t=>`<label><input type="checkbox"><span>${t}</span></label>`).join('')}</div><div class="two"><button class="y" type="button" id="oy">✓ היה לי כמעט הכול</button><button class="n" type="button" id="on">✗ עוד לא</button></div>`);
  $('oy').onclick=()=>selfDone(true);$('on').onclick=()=>selfDone(false)}
 function selfDone(ok){unpop();if(answered)return;answered=true;$('opts').innerHTML='';
@@ -515,7 +519,8 @@ function poll(){const ids=Object.values(S.oa).filter(o=>o.id&&o.sc==null).map(o=
    o.sc=+x.score;o.fb=x.fb||'';o.ga=x.graded_at;ch=1;const i=ALLQ.findIndex(q=>q[5]===k);S.gr.push([k,o.sc,o.m||0,Date.now()]);
    if(isEx(i)){exScore(ALLQ[i][6]);return}
    if(o.sc>=7){S.d[i]=1;if(o.n===1)S.f[i]=1}else{S.w[i]=(S.w[i]||0)+1;if(!S.rv&&!Q.includes(i)&&i!==cur)Q.splice(Math.min(2,Q.length),0,i)}});
-  if(ch){save();bar();report();if(S.tab==='t'&&!S.mt)show();else if($('card').classList.contains('fin')&&!S.mt){Q=[];show()}grades()}}).catch(()=>{})}
+  if(ch){save();bar();report();StudyGrade.refresh();if(S.tab==='t'&&!S.mt)show();else if($('card').classList.contains('fin')&&!S.mt){Q=[];show()}grades()}}).catch(()=>{})}
+poll.fast=()=>{clearTimeout(poll.f);let n=0;(function F(){poll();if(++n<45&&Object.values(S.oa).some(o=>o.id&&o.sc==null))poll.f=setTimeout(F,20000)})()};
 poll.go=()=>{clearTimeout(poll.t);poll.t=setTimeout(function L(){if(document.visibilityState==='visible')poll();if(Object.values(S.oa).some(o=>o.id&&o.sc==null))poll.t=setTimeout(L,45000)},45000)};
 addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){poll();grades()}});
 function grades(){if(S.mt||document.querySelector('.ov.on'))return;const k=Object.keys(S.oa).find(q=>S.oa[q].sc!=null&&!S.oa[q].seen);if(!k)return;gradePop(k,true)}
@@ -529,7 +534,7 @@ function myGraph(){const E=S.gr.map(g=>({t:g[3],v:g[1]*10,k:'g'})).concat(S.mkh.
   svg=`<svg viewBox="0 0 ${W} ${H}" class="gs">${[0,25,50,75,100].map(v=>`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2e8f0"/><text x="${l-5}" y="${Y(v)+3.5}" text-anchor="end" font-size="10" fill="#64748b">${v}%</text>`).join('')}<text x="${l+pw/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#64748b">← מהציון הראשון לאחרון</text>${ln(G,'#2f5d9e')}${ln(M,'#ea580c')}</svg>
   <div class="lg"><span><i style="background:#2f5d9e"></i>✍️ תשובות פתוחות${G.length?' · ממוצע '+(S.gr.reduce((a,g)=>a+g[1],0)/S.gr.length).toFixed(1)+'/10':''}</span><span><i style="background:#ea580c"></i>🎯 מבחנים${M.length?' · אחרון '+M[M.length-1].v:''}</span></div>`}
  const L=Object.keys(S.oa).filter(k=>S.oa[k].id).sort((a,b)=>String(S.oa[b].at).localeCompare(String(S.oa[a].at)));
- pop(`<h3>📈 הציונים שלי</h3>${svg}<h4>✍️ התשובות שלי</h4>${L.length?'<div class="ol">'+L.map(k=>{const o=S.oa[k],q=ALLQ.find(x=>x[5]===k);return`<button type="button" class="oi" data-k="${k}"><span class="scb ${o.sc==null?'p':o.sc>=7?'g':'b'}">${o.sc==null?'⏳':o.sc+'/10'}</span><span>${q[6]!=null?'🎯 ':''}${qOnly(q[1])}</span></button>`}).join('')+'</div>'+(L.some(k=>S.oa[k].sc==null)?'<p class="nt">⏳ = בבדיקה. התוצאה תגיע בשעה הקרובה.</p>':''):'<p class="nt">עוד לא נשלחו תשובות.</p>'}<button class="cl" type="button" onclick="unpop()">סגירה</button>`);
+ pop(`<h3>📈 הציונים שלי</h3>${svg}<h4>✍️ התשובות שלי</h4>${L.length?'<div class="ol">'+L.map(k=>{const o=S.oa[k],q=ALLQ.find(x=>x[5]===k);return`<button type="button" class="oi" data-k="${k}"><span class="scb ${o.sc==null?'p':o.sc>=7?'g':'b'}">${o.sc==null?'⏳':o.sc+'/10'}</span><span>${q[6]!=null?'🎯 ':''}${qOnly(q[1])}</span></button>`}).join('')+'</div>'+(L.some(k=>S.oa[k].sc==null)?(StudyGrade.waiting()?'<p class="nt">⏳ = מחכה לבדיקה. לחצי על ✅ בדוק שאלות, ו-Claude יבדוק תוך כמה דקות.</p>'+StudyGrade.btn():'<p class="nt">⏳ = Claude בודק. הציון יגיע בעוד כמה דקות.</p>'):''):'<p class="nt">עוד לא נשלחו תשובות.</p>'}<button class="cl" type="button" onclick="unpop()">סגירה</button>`);
  document.querySelectorAll('.oi').forEach(b=>b.onclick=()=>{const o=S.oa[b.dataset.k];if(o.sc!=null)gradePop(b.dataset.k,false)})}
 // 🎯 הבחנים לדוגמה: רשימה ← בוחן (קטע + סעיף א + סעיף ב). כמו בכיתה: 60 דקות לשני הסעיפים, הספר פתוח לידך.
 function secSt(e,s){const o=S.oa['e'+(e+1)+s];if(!o||(!o.id&&!o.self))return S.dr['e'+(e+1)+s]?{c:'p',t:'טיוטה'}:{c:'p',t:'לכתוב'};if(o.self)return{c:'g',t:'✓ נכתב'};if(o.sc==null)return{c:'p',t:'⏳ בבדיקה'};return{c:o.sc>=7?'g':'b',t:o.sc+'/10'}}
@@ -543,7 +548,7 @@ function showEx(){const e=S.ex,x=EXS[e],es=S.es[e]||{},c=$('card');c.classList.r
  const tm=()=>{const m=Math.round(((es.s!=null||secSt(e,'a').t!=='לכתוב'&&secSt(e,'b').t!=='לכתוב'?(es.t1||Date.now()):Date.now())-(es.t0||Date.now()))/60000);$('rt').textContent='⏱️ '+m+' דק׳';$('rt').classList.toggle('on',true)};tm();show.t=setInterval(tm,30000);
  $('q').innerHTML='<div class="ps">'+x.src+'</div><div class="it">📕 עונים בלי מחברת. לחצי על סעיף כדי לכתוב.</div>';
  $('opts').className='opts';$('opts').innerHTML=['a','b'].map((s,k)=>{const st=secSt(e,s),qt=x[s][0].replace(/^[אב]\. /,'');return`<button class="op sec" type="button" data-s="${k}"><span>${'אב'[k]}. ${qt.length>70?qt.slice(0,68)+'…':qt}</span><span class="scb ${st.c}">${st.t}</span></button>`}).join('')+(es.s!=null?'<button class="op wr" type="button" id="exr">🔁 לכתוב את המבחן מחדש</button>':'');
- $('fb').className='fb'+(es.s!=null?(es.s>=70?' ok':' no'):'');$('fb').innerHTML=es.s!=null?'<div>ציון המבחן: <b>'+es.s+'</b>. '+(es.s>=85?'מוכנה למבחן! 🔥':es.s>=70?'טוב מאוד! קראי את ההערות כדי לשפר עוד.':'קראי את ההערות ואת התשובות לדוגמה, ונסי מבחן נוסף.')+'</div>':secSt(e,'a').t.includes('⏳')||secSt(e,'b').t.includes('⏳')?'⏳ התשובות בבדיקה. הציון יגיע בשעה הקרובה.':'קראי את הפסוקים, ועני על שני הסעיפים.';
+ $('fb').className='fb'+(es.s!=null?(es.s>=70?' ok':' no'):'');$('fb').innerHTML=es.s!=null?'<div>ציון המבחן: <b>'+es.s+'</b>. '+(es.s>=85?'מוכנה למבחן! 🔥':es.s>=70?'טוב מאוד! קראי את ההערות כדי לשפר עוד.':'קראי את ההערות ואת התשובות לדוגמה, ונסי מבחן נוסף.')+'</div>':secSt(e,'a').t.includes('⏳')||secSt(e,'b').t.includes('⏳')?(StudyGrade.waiting()?'📤 התשובות נשלחו. לחצי למעלה על ✅ בדוק שאלות.':'⏳ Claude בודק. הציון יגיע בעוד כמה דקות.'):'קראי את הפסוקים, ועני על שני הסעיפים.';
  $('nx').disabled=false;$('nx').textContent='→ לרשימת המבחנים';bar()}
 function secTap(k){const e=S.ex,s='ab'[k],key='e'+(e+1)+s,i=ALLQ.findIndex(q=>q[5]===key),o=S.oa[key];
  if(!o||(!o.id&&!o.self))return openWrite(i);if(o.sc!=null)return gradePop(key,false);sentPop(i)}
@@ -633,6 +638,7 @@ if(!S.sm&&!S.mt)setTimeout(smOpen,300); // הסיכום נפתח בכל כניס
 if(S.tab==='t'&&!REV&&!pracDone()&&!S.mt)S.tab='p';
 addEventListener('resize',fit);
 show();poll();poll.go();setTimeout(grades,600);sqCnt();
+StudyGrade.mount({kid:'dani',app:'tanach',boy:false,el:$('gqb'),pending:()=>Object.values(S.oa).filter(o=>o.id&&o.sc==null),onFired:()=>setTimeout(poll.fast,60000),pop:pop});
 // פעם אחת: מספרים לדני על הסקווישים החדשים (אחרי שהסיכום נקרא)
 function sqIntro(){if(S.sqi||REV||S.mt||document.querySelector('.ov.on'))return;S.sqi=1;save();pop(`<h3>📜 חדש: יהושע × סטריי קידס!</h3><p>מעכשיו, כל <b>7 נקודות</b> בתרגול מביאות סקווישי חדש. כל אחד מהם הוא חבר בלהקה שמלמד משהו למבחן: באנג צ׳אן וה"חזק ואמץ", לי נואו והאן המרגלים, פליקס וחוט השני, ועוד 3 הפתעות 🤫</p><p>תשובה נכונה = נקודה. תשובה פתוחה ששלחת = 2 נקודות. רואים את האוסף בכפתור 💜 למעלה.</p><button class="cl" type="button" onclick="unpop()">יאללה! 💜</button>`)}
 if(S.sm)setTimeout(sqIntro,900);
