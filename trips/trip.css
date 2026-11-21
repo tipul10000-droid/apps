@@ -360,3 +360,28 @@ a.tp-mapsph{border-style:solid;color:var(--ink);text-decoration:none}
 .tp-clive .tp-cl{margin-top:6px;border-top:1px solid var(--line)}
 .tp-clr{padding:5px 12px;font-size:12.5px;cursor:default}
 .tp-csrc{margin:8px 2px 0;font-size:11.5px;color:var(--muted);line-height:1.45}
+
+/* deck: one cover card in the trip + full-screen swipe viewer (Oren 21.11.2026) */
+.tp-dk{display:block;width:100%;padding:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);color:inherit;font:inherit;text-align:start;cursor:pointer;position:relative}
+.tp-dk img{display:block;width:100%;aspect-ratio:16/8;object-fit:cover}
+.tp-dk .x{display:block;padding:10px 14px 12px}
+.tp-dk .x b{display:flex;align-items:center;gap:8px;font:800 15px/1.3 var(--f-d)}
+.tp-dk .x b .tp-ic{width:18px;height:18px;color:var(--acc)}
+.tp-dk .x span{display:block;margin-top:2px;font-size:12.5px;color:var(--muted)}
+.tp-dk .n{position:absolute;top:10px;left:10px;padding:3px 9px;border-radius:99px;background:rgba(0,0,0,.6);color:#fff;font:700 12px/1.4 var(--f-d)}
+.tp-dkv{position:fixed;inset:0;z-index:9999;background:#0b0b0f;display:flex;flex-direction:column;color:#fff;animation:tpdk .18s ease-out}
+@keyframes tpdk{from{opacity:0}to{opacity:1}}
+.tp-dkt{flex:0 0 auto;display:grid;grid-template-columns:44px 1fr 64px;align-items:center;gap:8px;padding:max(env(safe-area-inset-top),44px) 12px 8px}
+.tp-dkt .c{width:44px;height:44px;border-radius:99px;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:18px;cursor:pointer}
+.tp-dkt b{font:800 15px/1.3 var(--f-d,inherit);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-dkt .i{font:600 13px/1 var(--f-d,inherit);opacity:.75;text-align:end}
+.tp-dks{flex:1 1 auto;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain}
+.tp-dks::-webkit-scrollbar{display:none}
+.tp-dks figure{flex:0 0 100%;margin:0;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
+.tp-dks img{max-width:calc(100% - 16px);max-height:100%;object-fit:contain;border-radius:10px}
+.tp-dks figcaption{margin-top:8px;font-size:13px;opacity:.8}
+.tp-dkb{flex:0 0 auto;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;gap:8px;padding:10px 12px max(env(safe-area-inset-bottom),14px)}
+.tp-dkb button{width:52px;height:44px;border-radius:12px;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:20px;cursor:pointer}
+.tp-dkb .d{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.tp-dkb .d i{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.3)}
+.tp-dkb .d i.on{background:#fff}

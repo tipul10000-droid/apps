@@ -182,6 +182,11 @@
       return '<div class="it"><span class="ic">' + em(n.i) + "</span><div><b>" + esc(n.h) + "</b>" + (n.s ? "<span>" + esc(n.s) + "</span>" : "") + gml(n) + "</div></div>";
     }).join("") + "</section>");
 
+    // ---- a slideshow (deck) kept with the trip: one cover card, tap = full-screen swipe viewer (Oren 21.11.2026) ----
+    // t.deck {h, sub, slides:[{img, cap}]}; not in the public whitelist, so only the owner's page shows it
+    var dk = t.deck && Array.isArray(t.deck.slides) ? t.deck.slides.filter(function (x) { return x && x.img; }) : [];
+    if (dk.length) H.push('<section class="tp-sec"><button type="button" class="tp-dk" data-dk="0" aria-label="' + esc(t.deck.h || "מצגת") + '"><img src="' + esc(img(base, dk[0].img)) + '" alt="" loading="lazy"><span class="x"><b>' + ic(t.deck.i || "cam") + esc(t.deck.h || "מצגת") + "</b><span>" + esc(t.deck.sub || "") + '</span></span><span class="n" dir="ltr">' + dk.length + " ▸</span></button></section>");
+
     // ---- map ----
     if (t.map) {
       H.push(sx("map", "המסלול", esc(t.map.note || ""), '<div class="tp-card tp-map">' + mapSvg(t.map) +
@@ -401,8 +406,29 @@
     H.push('<div class="tp-foot">' + esc(t.foot || "נבנה באהבה לטיול הזה") + '<div class="tp-credit">Side Quests</div></div></div>');
     root.innerHTML = H.join("");
 
+    if (dk.length) root.querySelectorAll("[data-dk]").forEach(function (b) { b.onclick = function () { deckOpen(dk.map(function (x) { return { src: img(base, x.img), cap: x.cap || "" }; }), +b.getAttribute("data-dk") || 0, t.deck.h || ""); }; });
     if (own && o.slot) { var sl = root.querySelector('[data-slot="hero"]'); if (sl) o.slot(sl, "hero"); }
     if (own && o.gaps) { var g = root.querySelector("[data-gaps]"); if (g) o.gaps(g); }
+  }
+
+  // full-screen viewer: fixed height, close always visible, swipe (scroll-snap) + arrows + keys; the buttons never move
+  function deckOpen(sl, at, title) {
+    var ov = document.createElement("div"); ov.className = "tp-dkv"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", title);
+    ov.innerHTML = '<div class="tp-dkt"><button type="button" class="c" aria-label="סגירה">✕</button><b>' + esc(title) + '</b><span class="i" dir="ltr"></span></div>' +
+      '<div class="tp-dks">' + sl.map(function (x) { return '<figure><img src="' + esc(x.src) + '" alt="">' + (x.cap ? "<figcaption>" + esc(x.cap) + "</figcaption>" : "") + "</figure>"; }).join("") + "</div>" +
+      '<div class="tp-dkb"><button type="button" class="p" aria-label="הקודם">→</button><span class="d">' + sl.map(function () { return "<i></i>"; }).join("") + '</span><button type="button" class="nx" aria-label="הבא">←</button></div>';
+    document.body.appendChild(ov); var keep = document.body.style.overflow; document.body.style.overflow = "hidden";
+    var sc = ov.querySelector(".tp-dks"), ind = ov.querySelector(".i"), dots = ov.querySelectorAll(".d i");
+    var cur = function () { return Math.round(Math.abs(sc.scrollLeft) / (sc.clientWidth || 1)); };
+    var paint = function () { var k = cur(); ind.textContent = (k + 1) + " / " + sl.length; dots.forEach(function (d, j) { d.className = j === k ? "on" : ""; }); };
+    var rtl = getComputedStyle(sc).direction === "rtl";
+    var go = function (k, now) { k = Math.max(0, Math.min(sl.length - 1, k)); sc.scrollTo({ left: (rtl ? -1 : 1) * k * sc.clientWidth, behavior: now ? "auto" : "smooth" }); };
+    var close = function () { document.removeEventListener("keydown", key); document.body.style.overflow = keep; ov.remove(); };
+    var key = function (e) { if (e.key === "Escape") close(); else if (e.key === "ArrowLeft") go(cur() + 1); else if (e.key === "ArrowRight") go(cur() - 1); };
+    document.addEventListener("keydown", key);
+    ov.querySelector(".c").onclick = close; ov.querySelector(".p").onclick = function () { go(cur() - 1); }; ov.querySelector(".nx").onclick = function () { go(cur() + 1); };
+    sc.addEventListener("scroll", paint, { passive: true });
+    requestAnimationFrame(function () { if (at) go(at, 1); paint(); });
   }
 
   window.TripView = { render: render, phase: phase, esc: esc };
