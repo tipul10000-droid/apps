@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.32";window.SQ_BUILD_AT="22.11.2026 00:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.33";window.SQ_BUILD_AT="22.11.2026 00:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1572,6 +1572,25 @@ details.more[open]>summary{margin-bottom:10px}
 .wf-mail{justify-self:start}
 .wft a[href^="tel:"],.wft .wf-kv a[href*="wa.me"]:not(.wf-wa){direction:ltr;unicode-bidi:isolate;display:inline-block}
 .wf-qs{display:grid;gap:8px}
+/* 25.33 (Oren 22.11.2026): work flight = a boarding-pass banner, its own look, above everything in Work Quest */
+#wfTop{display:grid;gap:10px;margin-bottom:12px}
+#wfTop .wft{border:0;box-shadow:0 6px 22px rgba(10,40,110,.28);border-radius:18px;background:var(--surface)}
+#wfTop .wft>summary{position:relative;flex-wrap:wrap;row-gap:4px;padding:14px 14px 14px 16px;min-height:78px;color:#fff;
+  background:radial-gradient(120% 140% at 100% 0%,#3d8bff 0%,rgba(61,139,255,0) 55%),linear-gradient(135deg,#0a2a6b 0%,#0f4fb8 60%,#1a73e8 100%);overflow:hidden}
+#wfTop .wft>summary::after{content:"✈";position:absolute;inset-inline-start:38%;top:-18px;font-size:96px;line-height:1;opacity:.09;transform:rotate(-20deg);pointer-events:none}
+#wfTop .wft[open]>summary{border-radius:18px 18px 0 0}
+#wfTop .wf-ey{flex-basis:100%;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.82)}
+#wfTop .wf-tt b{font-size:17px;color:#fff}
+#wfTop .wf-tt small{color:rgba(255,255,255,.8)}
+#wfTop .wf-sl{width:40px;height:40px;border:0}
+#wfTop .wf-sln{background:rgba(255,255,255,.16)}
+#wfTop .wf-chip{position:relative;background:rgba(255,255,255,.16);color:#fff;border-inline-start:2px dashed rgba(255,255,255,.45);border-radius:12px;width:92px;min-height:48px}
+#wfTop .wf-chip small{color:rgba(255,255,255,.82)}
+#wfTop .wf-chip.taxi{background:#ffb020;color:#1a1200}#wfTop .wf-chip.taxi small{color:rgba(26,18,0,.75)}
+#wfTop .wft.air>summary{background:radial-gradient(120% 140% at 100% 0%,#7ab8ff 0%,rgba(122,184,255,0) 55%),linear-gradient(135deg,#0b3d91 0%,#1e88e5 100%)}
+#wfTop .wf-b{padding-top:10px}
+#qiSec{margin-top:18px}
+
 .qinfo{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
 .qinfo>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;min-height:44px}
 .qinfo>summary::-webkit-details-marker{display:none}
@@ -2822,6 +2841,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   <section class="tvzone" id="tvSec" aria-label="אזור הטיולים"></section>
   <section id="tgate" hidden aria-label="שעות סגירה היום"></section>
   <section id="aiTiles" class="ai-only" aria-label="AI Projects"></section>
+  <section id="wfTop" class="tasks-only" hidden aria-label="טיסת עבודה"></section>
   <section id="dzTop" class="tasks-only" hidden aria-label="דשבורד פתוח"></section>
   <section id="mainSec" class="tasks-only"><div id="list"><div class="empty">טוען…</div></div></section>
   <section id="askSec" class="tasks-only" hidden></section>
@@ -2831,6 +2851,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   </section>
   <section id="tail" class="tasks-only"><div id="more"></div><div id="doneSec"></div></section>
   <section class="dashzone tasks-only" id="dashSec" hidden></section>
+  <section id="qiSec" class="tasks-only" hidden aria-label="הפרויקט"></section>
   <div hidden><div id="urgSec"></div><div id="urgList"></div><div id="nowSec"></div><div id="nowList"></div><div id="quickSec"></div><div id="quickList"></div><div id="inbox"></div><div id="views"></div><div id="filters"></div></div>
 </div></main>
 <div id="pgShade" aria-hidden="true"></div>
@@ -4571,7 +4592,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(C.rem.length)top.unshift(foldRows("rem",catT("rem","תזכורות להיום"),C.rem.sort(byDate)));
     if(C.remL.length){const rk=t=>String(t.sleep_until||(t.snooze_until&&t.snooze_until!=="someday"?String(t.snooze_until).slice(0,10):"")||t.next_date||"9999");
       more.push(foldRows("remL",catT("rem","תזכורות בהמשך"),C.remL.sort((a,b)=>rk(a).localeCompare(rk(b)))));}
-    top.unshift(...wfTickets(),...qInfoBanners());
+    // 25.33 (Oren 22.11.2026): Work Quest order = work flight banner (from the trip mail until it lands back) > expenses > tasks ... > project capsule (RWMTC) at the very bottom
+    {const wf=wfTickets(),ws=$("wfTop");if(ws){ws.hidden=!wf.length;ws.replaceChildren(...wf);}
+     const qi=qInfoBanners(),qs=$("qiSec");if(qs){qs.hidden=!qi.length;qs.replaceChildren(...qi);}}
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
     $("doneSec").replaceChildren(...[foldRows("done",catT("done"),doneL)].filter(Boolean));
@@ -5131,7 +5154,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function wfTaxi(d,l){if(!l||(l.from&&l.from.code)!=="TLV")return null;const dep=wfMs(l.dep);if(dep==null)return null;return dep-(Number(d.taxi_min)||150)*60000;}
   function wfLive(){const now=Date.now();return wfDocs.filter(d=>!d._deleted&&Array.isArray(d.legs)&&d.legs.length).map(d=>{const legs=d.legs.slice().sort((a,b)=>(wfMs(a.dep)||0)-(wfMs(b.dep)||0));
       const first=wfMs(legs[0].dep),last=wfMs(legs[legs.length-1].arr)||wfMs(legs[legs.length-1].dep);return {d,legs,first,last};})
-    .filter(x=>x.first&&x.last&&now<x.last+6*3600000&&now>x.first-21*86400000).sort((a,b)=>a.first-b.first);}
+    .filter(x=>x.first&&x.last&&now<x.last+6*3600000).sort((a,b)=>a.first-b.first);}
   function wfSec(key,icon,title,sub,body){const k=key;const d=h("details",{class:"wf-s"},h("summary",null,h("span",{class:"wf-si","aria-hidden":"true"},icon),h("span",{class:"wf-st"},h("b",null,title),sub?h("small",null,sub):null),h("span",{class:"wf-ch","aria-hidden":"true"},"‹")),h("div",{class:"wf-sb"},...body));
     if(wfOpen[k])d.open=true;d.addEventListener("toggle",()=>{wfOpen[k]=d.open;});return d;}
   const wfKV=(k,v)=>v==null||v===""?null:h("div",{class:"wf-kv"},h("span",null,k),h("div",null,v));
@@ -5148,7 +5171,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function wfAnswer(d,q,op){if(!db||!canWrite)return;const ans={...(d.ans||{}),[q.id]:op};const now=new Date().toISOString();
     db.collection("work_flights").doc(d.id).update({ans,updated_at:now}).then(()=>toast("נשמר. Claude ימשיך מכאן"),()=>toast("השמירה נכשלה"));}
   function wfTickets(){if(quest!=="work")return [];const now=Date.now();
-    return wfLive().map(({d,legs})=>{
+    return wfLive().map(({d,legs,first})=>{
       const nx=legs.find(l=>(wfMs(l.arr)||wfMs(l.dep))>now)||legs[legs.length-1];
       const dep=wfMs(nx.dep),arr=wfMs(nx.arr),inAir=dep<=now&&arr>now,tx=wfTaxi(d,nx);
       const H=d.hotel||{},C=d.car||{};
@@ -5158,8 +5181,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       else chip=h("span",{class:"wf-chip"},h("small",null,"המראה"),h("b",null,wfHM(nx.dep)));
       const lg=String(nx.logo_s||nx.logo||"").replace(/[^a-z0-9._-]/gi,"");
       const cd=dep>now?"בעוד "+wfIn(dep-now):(inAir?"":"");
-      const det=h("details",{class:"wft","data-sq-item":"wf-"+d.id},
-        h("summary",null,lg?h("img",{class:"wf-sl",src:"../trips/img/"+lg,alt:nx.airline||""}):h("span",{class:"wf-sl wf-sln","aria-hidden":"true"},"✈️"),
+      const trip=now>=first,ey=inAir?"✈️ בטיסה עכשיו":trip?"💼 בנסיעת עבודה":"✈️ טיסת עבודה";
+      const det=h("details",{class:"wft"+(inAir?" air":""),"data-sq-item":"wf-"+d.id},
+        h("summary",null,h("span",{class:"wf-ey","aria-hidden":"true"},ey),lg?h("img",{class:"wf-sl",src:"../trips/img/"+lg,alt:nx.airline||""}):h("span",{class:"wf-sl wf-sln","aria-hidden":"true"},"✈️"),
           h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(d.title||"טיסת עבודה")),h("small",null,[nx.no,wfDay(nx.dep)+" "+wfHM(nx.dep),cd].filter(Boolean).join(" · "))),
           chip),
         h("div",{class:"wf-b"},
