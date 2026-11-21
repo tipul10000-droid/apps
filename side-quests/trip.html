@@ -47,6 +47,12 @@ html,body{margin:0;background:#FBF7F1}
 .fld{display:block;margin-bottom:10px;font-weight:800;font-size:13.5px}
 .fld input,.fld textarea{display:block;width:100%;box-sizing:border-box;margin-top:4px;font:inherit;font-weight:600;font-size:15px;border:1px solid rgba(127,127,127,.4);border-radius:10px;padding:8px 10px;background:transparent;color:inherit}
 .fld textarea{min-height:84px;resize:vertical}
+/* 👀 view = exactly what the person with the link sees (Oren 21.11.2026): no SQ header, no tasks/news boxes, no edit bits,
+   only the public fields, full screen (the app hides its own bar too, sq-full). One small exit pill, the only extra. */
+html.pvm .hero,html.pvm #ownTop,html.pvm #ownBot,html.pvm .sqnws,html.pvm .sqtsk{display:none!important}
+.pvx{position:fixed;z-index:50;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:14px;display:none;align-items:center;gap:6px;border:0;border-radius:999px;padding:8px 13px;
+  font:800 13px/1 Assistant,system-ui,sans-serif;background:rgba(20,18,16,.78);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+html.pvm .pvx{display:inline-flex}
 .pv{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:12px;background:rgba(232,181,74,.18);font-weight:800;font-size:13.5px;margin-top:14px}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=9">
@@ -58,11 +64,12 @@ html,body{margin:0;background:#FBF7F1}
 <header class="hero"><div class="in">
   <div class="top"><a class="sqhome" href="./#travel"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a></div>
   <h1 id="ttl">טיול</h1>
-  <div class="seg" role="tablist"><button type="button" data-m="edit" class="on">✏️ עריכה</button><button type="button" data-m="view">👀 תצוגה</button><button type="button" data-m="share">🔗 שיתוף</button></div>
+  <div class="seg" role="tablist"><button type="button" data-m="edit" class="on">✏️ עריכה</button><button type="button" data-m="view">👀 כמו שהם רואים</button><button type="button" data-m="share">🔗 שיתוף</button></div>
 </div></header>
 <div id="ownTop" class="own"></div>
 <div id="app"></div>
 <div id="ownBot" class="own" style="padding-bottom:40px"></div>
+<button type="button" class="pvx" id="pvx" aria-label="סיום התצוגה המקדימה">✕ סיום תצוגה</button>
 <script>
 (function(){
   "use strict";
@@ -112,14 +119,22 @@ html,body{margin:0;background:#FBF7F1}
     $("f_save").onclick=()=>save({title:$("f_title").value.trim(),tagline:$("f_tag").value.trim(),desc:$("f_desc").value.trim()}).then(()=>$("fst").textContent="✓ נשמר",e=>$("fst").textContent="✕ "+e.message);
     $("sp").onclick=()=>copy(sp||"",$("spst"),"✓ ההנחיה הועתקה");
   }
+  // the fields the public page gets (sq_trip_public whitelist in supabase/trips.sql; keep the two lists the same)
+  const PUB=["kind","title","short","flag","who","tagline","from","to","tz","stage","snow","theme","hero_img","desc","stats","next_up","map","days","flights","nights_l","hotels","moves","weather","wx_tip","notes","photos","maps","wa_label","wa_sub","foot","updated_at"];
+  function pubTrip(){const t={};PUB.forEach(k=>{if(trip[k]!==undefined)t[k]=trip[k];});t.wa=(trip.share||{}).wa;
+    t.gfx={};Object.keys(trip.gfx||{}).forEach(k=>{const g=trip.gfx[k];if(g&&g.id)t.gfx[k]={id:g.id,banner:!!g.banner};});return t;}
+  function full(on){document.documentElement.classList.toggle("pvm",on);try{if(window.parent!==window)parent.postMessage({type:"sq-full",on},location.origin);}catch(e){}}
+  $("pvx").onclick=()=>{mode="edit";try{sessionStorage.setItem("trip_m_"+ID,mode);}catch(e){}draw();scrollTo(0,0);};
   function draw(){
+    full(mode==="view"&&!!trip);
     document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.dataset.m===mode));
     if(!trip){$("app").innerHTML='<div class="own" style="padding:60px 16px;text-align:center">טוען…</div>';return;}
     $("ttl").textContent=(trip.flag?trip.flag+" ":"")+(trip.title||"טיול");document.title=trip.title||"טיול";
     const th=trip.theme||{};if(th.c1)document.documentElement.style.setProperty("--hero",th.c1);if(th.c2)document.documentElement.style.setProperty("--hero2",th.c2);
     $("ownTop").innerHTML="";$("ownBot").innerHTML="";
     if(mode==="share"){$("app").innerHTML="";drawShare();return;}
-    TripView.render($("app"),trip,{mode:mode==="edit"?"edit":"view",img:"../trips/img/",gfx,wa:(trip.share||{}).wa,slot:slotUI,gaps:gapsUI});
+    if(mode==="view"){const t=pubTrip();TripView.render($("app"),t,{mode:"view",img:"../trips/img/",gfx,wa:t.wa});return;}
+    TripView.render($("app"),trip,{mode:"edit",img:"../trips/img/",gfx,wa:(trip.share||{}).wa,slot:slotUI,gaps:gapsUI});
     if(mode==="edit")drawEditExtras();
   }
   function loadGfx(){const ids=Object.values(trip.gfx||{}).map(x=>x&&x.id).filter(Boolean);gfxIds=ids.join(",");
