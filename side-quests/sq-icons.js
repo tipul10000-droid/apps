@@ -1,6 +1,6 @@
 /* sq-icons.js (Side Quests 22.0, Oren 17.11.2026): UI emojis -> single-color line icons.
    Every mapped emoji in the page text becomes an inline SVG that takes the text color (currentColor).
-   Flags are dropped (a flag next to an icon read as noise). Kept as emoji: anything inside window.SQI_SKIP (connection ribbon, task titles and task text), inputs, unmapped emojis.
+   Flags stay as color emoji (Oren 21.11.2026: every country gets its flag, it catches the eye; was dropped in 22.0). Kept as emoji: anything inside window.SQI_SKIP (connection ribbon, task titles and task text), inputs, unmapped emojis.
    Icons: Lucide (ISC license, https://lucide.dev). */
 (function(){
   if(window.SQI)return;
@@ -11,7 +11,7 @@
   var RE=/(?:[\u{1F1E6}-\u{1F1FF}]{2}|\p{Extended_Pictographic}️?(?:[\u{1F3FB}-\u{1F3FF}])?(?:‍\p{Extended_Pictographic}️?)*)/gu;
   var have={},sprite=null;
   function pick(s){
-    if(/^[\u{1F1E6}-\u{1F1FF}]/u.test(s))return "-";
+    if(/^[\u{1F1E6}-\u{1F1FF}]/u.test(s))return null;
     var k=s.replace(/️/g,"").replace(/[\u{1F3FB}-\u{1F3FF}]/gu,"");
     if(M[k])return M[k];
     if(k.indexOf("‍")>0){var p=k.split("‍");if(p.every(function(x){return M[x]==="user";}))return "users";return M[p[0]]||null;}
