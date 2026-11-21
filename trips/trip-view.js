@@ -143,11 +143,13 @@
     var hdef = (t.gfx || {}).hero, hg = hdef && G[hdef.id], hban = gfxUrl("hero");
     // a ready-made banner (with its own title, e.g. 3:1 from ChatGPT) is shown whole, not cropped, with the chips under it
     var isBan = !!hban && (hdef.banner || (hg && hg.w && hg.h && hg.w / hg.h >= 2.2));
+    // a poster with its own text in hero_img (hero_full) = shown whole too, never cropped
+    var hFull = !hban && !!t.hero_img && !!t.hero_full; if (hFull) isBan = true;
     var hero = hban || img(base, t.hero_img);
     var cd = t.stage === "plan" ? (t.when || "בתכנון") : ph.k === "pre" ? (ph.n === 1 ? "מחר טסים!" : "עוד " + ph.n + " ימים") : ph.k === "trip" ? "יום " + ph.n + " מתוך " + ph.of : "היה מדהים";
     var chips = '<div class="tp-chips"><span class="tp-chip big">' + esc(cd) + '</span><span class="tp-chip" dir="ltr">' + esc(dShort(t.from) + " – " + dShort(t.to) + "." + String(t.to || "").slice(2, 4)) + "</span>" +
       (t.who ? '<span class="tp-chip">' + esc(t.who) + "</span>" : "") + "</div>";
-    if (isBan) H.push('<header class="tp-hero ban"><img src="' + esc(hero) + '" alt="' + esc(t.title) + '"><div class="in"><h1 class="tp-sr">' + esc(t.title) + "</h1>" + chips + "</div></header>");
+    if (isBan) H.push('<header class="tp-hero ban' + (hFull ? " full" : "") + '"><img src="' + esc(hero) + '" alt="' + esc(t.title) + '"><div class="in"><h1 class="tp-sr">' + esc(t.title) + "</h1>" + chips + "</div></header>");
     // no image yet (e.g. gfx.hero still waiting for its file) = a compact text header, no empty banner
     else H.push('<header class="tp-hero' + (hero ? "" : " noimg") + '">' + (hero ? '<img src="' + esc(hero) + '" alt="">' : "") + (t.snow ? '<div class="tp-snow"></div>' : "") +
       '<div class="in">' + (t.flag ? '<div class="tp-flag">' + em(t.flag) + "</div>" : "") + "<h1>" + esc(t.title) + '</h1><p class="sub">' + esc(t.tagline || "") + "</p>" + chips + "</div></header>");
