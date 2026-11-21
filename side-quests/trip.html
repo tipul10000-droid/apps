@@ -12,7 +12,7 @@
 <title>טיול</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
-<link rel="stylesheet" href="../trips/trip.css?v=17">
+<link rel="stylesheet" href="../trips/trip.css?v=18">
 <style>
 /* מיני דשבורד לטיול, הדף של אורן (19.11.2026). שלושה מצבים: ✏️ עריכה (פלייסהולדרים, מה עוד לתכנן, טקסטים),
    👀 תצוגה (בדיוק מה שמי שמקבל את הלינק רואה) ו-🔗 שיתוף (הלינק הקבוע, וואטסאפ, הפעלה/כיבוי ותצוגה מקדימה).
@@ -35,6 +35,12 @@ html,body{margin:0;background:#FBF7F1}
 .box{background:var(--card,#fff);border:1px solid #ECE3D6;border-radius:18px;padding:14px 16px;margin-top:16px}
 @media (prefers-color-scheme: dark){.box{background:#211D18;border-color:#3A332B}}
 .box h3{font-family:var(--f-display);font-size:17px;margin:0 0 4px}
+.edx{margin-top:18px;text-align:center}
+.edx>summary{display:inline-flex;align-items:center;gap:6px;list-style:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--muted,#7a6f63);padding:6px 12px;border:1px solid #ECE3D6;border-radius:999px}
+.edx>summary::-webkit-details-marker{display:none}
+.edx[open]>summary{color:var(--ink,#222)}
+.edx>.box{text-align:start;animation:tpgrow .22s ease-out}
+@media (prefers-color-scheme: dark){.edx>summary{border-color:#3A332B}}
 .box p{margin:0 0 10px;font-size:14px;opacity:.8}
 .lnk{display:block;direction:ltr;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:rgba(127,127,127,.12);border-radius:10px;padding:9px 10px;word-break:break-all;margin-bottom:10px}
 .row{display:flex;border:1px solid rgba(127,127,127,.35);border-radius:12px;overflow:hidden}
@@ -58,7 +64,7 @@ html.pvm .pvx{display:inline-flex}
 <link rel="stylesheet" href="dash-back.css?v=9">
 <script src="dash-sub.js?v=9" defer></script>
 <script src="sq-gfx.js?v=1"></script>
-<script src="../trips/trip-view.js?v=18"></script>
+<script src="../trips/trip-view.js?v=19"></script>
 </head>
 <body>
 <header class="hero"><div class="in">
@@ -76,7 +82,7 @@ html.pvm .pvx{display:inline-flex}
   const ID=new URLSearchParams(location.search).get("id")||"";
   const CLAUDE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.2 10.8 13.5 1.6M12.8 11.1 17.6 6.2M13.2 11.8 21.8 10.3M13.1 12.5 18.7 15.3M12.6 13.1 16.9 21.3M11.8 13.2 10.8 20.4M11.2 12.9 5.4 18.8M10.8 12.2 4.6 13.3M10.9 11.5 3.0 7.6M11.4 10.9 8.2 4.9" fill="none" stroke="#D97757" stroke-width="2.5" stroke-linecap="round"/></svg>';
   const esc=v=>TripView.esc(v);
-  let db=null,trip=null,gfx={},mode="edit",gfxIds="";
+  let db=null,trip=null,gfx={},mode="edit",gfxIds="",edOpen=false;
   try{const m=sessionStorage.getItem("trip_m_"+ID);if(m)mode=m;}catch(e){}
   const $=id=>document.getElementById(id);
   document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{mode=b.dataset.m;try{sessionStorage.setItem("trip_m_"+ID,mode);}catch(e){}draw();});
@@ -109,14 +115,16 @@ html.pvm .pvx{display:inline-flex}
   }
   function drawEditExtras(){
     const sp=trip.sync_prompt||"";
-    $("ownBot").innerHTML=`<div class="box"><h3>✏️ טקסטים</h3>
+    /* collapsed to one small button; opens below, closes again after a save (Oren 21.11.2026) */
+    $("ownBot").innerHTML=`<details class="edx"${edOpen?" open":""}><summary>✏️ עריכת פרטי הטיקט</summary><div class="box"><h3>✏️ טקסטים</h3>
       <label class="fld">כותרת<input id="f_title" value="${esc(trip.title||"")}"></label>
       <label class="fld">שורה מתחת לכותרת<input id="f_tag" value="${esc(trip.tagline||"")}"></label>
       <label class="fld">תיאור קצר<textarea id="f_desc">${esc(trip.desc||"")}</textarea></label>
       <div class="row"><button type="button" id="f_save">💾 שמירה</button></div><div class="st" id="fst"></div></div>
       <div class="box"><h3>🔄 סנכרון עם Holiday Optimizer</h3><p>אותו טיול באותם נתונים בשני המקומות. ההנחיה מסבירה ל-Holiday Optimizer לאן לכתוב ומה לקרוא.</p>
-      <div class="row"><button type="button" id="sp">📋 העתק הנחיה</button>${trip.ho_url?`<a href="${esc(trip.ho_url)}" target="_blank" rel="noopener">${CLAUDE}לשיחה</a>`:""}</div><div class="st" id="spst"></div></div>`;
-    $("f_save").onclick=()=>save({title:$("f_title").value.trim(),tagline:$("f_tag").value.trim(),desc:$("f_desc").value.trim()}).then(()=>$("fst").textContent="✓ נשמר",e=>$("fst").textContent="✕ "+e.message);
+      <div class="row"><button type="button" id="sp">📋 העתק הנחיה</button>${trip.ho_url?`<a href="${esc(trip.ho_url)}" target="_blank" rel="noopener">${CLAUDE}לשיחה</a>`:""}</div><div class="st" id="spst"></div></div></details>`;
+    const ed=$("ownBot").querySelector(".edx");ed.ontoggle=()=>{edOpen=ed.open;};
+    $("f_save").onclick=()=>save({title:$("f_title").value.trim(),tagline:$("f_tag").value.trim(),desc:$("f_desc").value.trim()}).then(()=>{$("fst").textContent="✓ נשמר";setTimeout(()=>{edOpen=false;const d=$("ownBot").querySelector(".edx");if(d)d.open=false;},900);},e=>$("fst").textContent="✕ "+e.message);
     $("sp").onclick=()=>copy(sp||"",$("spst"),"✓ ההנחיה הועתקה");
   }
   // the fields the public page gets (sq_trip_public in supabase/trips.sql; keep the lists the same). The shared page is clean
