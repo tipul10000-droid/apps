@@ -233,6 +233,39 @@
         (t.wx_tip ? '<div class="tp-tip">🧥 ' + esc(t.wx_tip) + "</div>" : "")));
     }
 
+    // ---- flight analysis per option (a trip still being planned, Oren 21.11.2026) ----
+    // options[{e, h, sub, venue, q, miss, verdict, sky, fl:[{tag, l, pp, tot, bag, note, kiwi, out:{a, fn, fr, to, dep, arr, dur, sky}, back:{...}}]}]
+    var ops = Array.isArray(t.options) ? t.options : [];
+    if (ops.length) {
+      var SKY = '<svg class="tp-sky" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21.5c-.6 0-1.1-.3-1.4-.8L8.4 17c-.3-.6-.1-1.4.5-1.7.6-.3 1.4-.1 1.7.5l1.4 2.4 1.4-2.4c.3-.6 1.1-.8 1.7-.5.6.3.8 1.1.5 1.7l-2.2 3.7c-.3.5-.8.8-1.4.8zM5.6 14.6c-.5 0-1-.3-1.2-.8-.3-.6 0-1.4.6-1.7L8.6 10c.6-.3 1.4 0 1.7.6.3.6 0 1.4-.6 1.7l-3.6 2.1c-.2.1-.3.2-.5.2zm12.8 0c-.2 0-.4-.1-.6-.2l-3.6-2.1c-.6-.3-.8-1.1-.5-1.7.3-.6 1.1-.8 1.7-.5l3.6 2.1c.6.3.8 1.1.5 1.7-.2.4-.7.7-1.1.7zM12 10.4c-.7 0-1.3-.6-1.3-1.3V4.2c0-.7.6-1.3 1.3-1.3s1.3.6 1.3 1.3v4.9c0 .7-.6 1.3-1.3 1.3z"/></svg>';
+      var skyA = function (u, lbl) { u = url(u || ""); return u ? '<a class="tp-skyl" href="' + esc(u) + '" target="_blank" rel="noopener">' + SKY + '<span dir="ltr">' + esc(lbl || "Skyscanner") + "</span></a>" : ""; };
+      var leg = function (k, x) {
+        if (!x) return "";
+        return '<div class="tp-leg"><span class="k">' + esc(k) + '</span><div class="x"><span class="fn"><b><bdi dir="ltr">' + esc(x.fn || "") + "</bdi></b> · " + esc(x.a || "") + "</span>" +
+          '<span class="tm"><bdi dir="ltr">' + esc((x.fr || "") + " " + (x.dep || "") + " → " + (x.to || "") + " " + (x.arr || "")) + "</bdi>" + (x.dur ? " · " + esc(x.dur) : "") + "</span>" +
+          (x.d ? '<span class="d">' + esc(x.d) + "</span>" : "") + skyA(x.sky, "Skyscanner") + "</div></div>";
+      };
+      var fcard = function (f) {
+        var kw = url(f.kiwi || "");
+        return '<div class="tp-fo t-' + esc(f.tag || "alt") + '"><div class="tp-foh"><span class="tp-pill' + (f.tag === "cheap" ? " g" : f.tag === "elal" ? "" : " w") + '">' + esc(f.l || "") + '</span><span class="pr"><b dir="ltr">$' + esc(f.pp) + '</b> לאדם<small dir="ltr">$' + esc(f.tot) + " ל-5</small></span></div>" +
+          leg("הלוך", f.out) + leg("חזור", f.back) +
+          '<div class="tp-fof">' + (f.bag ? "<span>🧳 " + esc(f.bag) + "</span>" : "") + (f.note ? "<span>" + esc(f.note) + "</span>" : "") +
+          (kw ? '<a class="tp-gl" href="' + esc(kw) + '" target="_blank" rel="noopener"><span dir="ltr">Kiwi.com</span></a>' : "") + "</div></div>";
+      };
+      H.push(sx(t.options_i || "plane", esc(t.options_h || "ניתוח הטיסות לכל אפשרות"), ops.length + " אפשרויות",
+        (t.options_note ? '<div class="tp-tip">' + esc(t.options_note) + "</div>" : "") +
+        ops.map(function (op) {
+          var lo = (op.fl || []).reduce(function (m, f) { return m == null || +f.pp < m ? +f.pp : m; }, null);
+          return '<details class="tp-card tp-plg tp-op"><summary><span class="tp-ope">' + esc(op.e || "🎫") + '</span><span class="x"><b>' + esc(op.h) + "</b><span>" + esc(op.sub || "") + "</span></span>" +
+            (lo != null ? '<span class="tp-opp" dir="ltr">$' + lo + "</span>" : "") + chev() + '</summary><div class="tp-plb tp-opb">' +
+            '<div class="tp-opi">' + (op.venue ? "<span>🏟️ " + esc(op.venue) + "</span>" : "") + (op.miss ? "<span>🏫 " + esc(op.miss) + "</span>" : "") + gml(op) + "</div>" +
+            (op.fl || []).map(fcard).join("") +
+            (op.verdict ? '<p class="tp-opv">💡 ' + esc(op.verdict) + "</p>" : "") +
+            (op.sky ? '<div class="tp-oprt">' + skyA(op.sky, "Skyscanner: הלוך-חזור, ישיר, 5 נוסעים") + "</div>" : "") +
+            "</div></details>";
+        }).join("")));
+    }
+
     // ---- extra notes (Hanukkah etc.) ----
     var nt = Array.isArray(t.notes) ? t.notes : [];
     if (nt.length) H.push(sx(t.notes_i || "info", esc(t.notes_h || "טוב לדעת"), t.notes_h ? String(nt.length) : "", '<div class="tp-grid">' + nt.map(function (n) { return '<div class="tp-tile full"><span class="e">' + esc(n.e) + "</span><b>" + esc(n.h) + "</b><span>" + esc(n.s || "") + "</span>" + gml(n) + "</div>"; }).join("") + "</div>"));
