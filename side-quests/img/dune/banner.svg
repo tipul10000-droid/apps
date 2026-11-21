@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 260" width="780" height="260">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A0F06"/>
+      <stop offset=".45" stop-color="#8A3510"/>
+      <stop offset=".78" stop-color="#E0782A"/>
+      <stop offset="1" stop-color="#F6B25C"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF1CF"/>
+      <stop offset=".55" stop-color="#FFD58A" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#FFB45A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9692A"/><stop offset="1" stop-color="#8E3F15"/></linearGradient>
+    <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9C4719"/><stop offset="1" stop-color="#5E260C"/></linearGradient>
+    <linearGradient id="d3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A220B"/><stop offset="1" stop-color="#2A0E04"/></linearGradient>
+    <linearGradient id="worm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3B1707"/><stop offset=".5" stop-color="#6E3313"/><stop offset="1" stop-color="#3B1707"/></linearGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .09 0"/></filter>
+  </defs>
+  <rect width="780" height="260" fill="url(#sky)"/>
+  <!-- two moons of Arrakis -->
+  <circle cx="612" cy="54" r="22" fill="#F3E4C6" opacity=".85"/>
+  <circle cx="604" cy="48" r="22" fill="#5C2A12" opacity=".35"/>
+  <circle cx="668" cy="34" r="9" fill="#F3E4C6" opacity=".75"/>
+  <!-- low sun -->
+  <circle cx="250" cy="168" r="70" fill="url(#sun)"/>
+  <circle cx="250" cy="168" r="26" fill="#FFF3D6"/>
+  <!-- far dunes -->
+  <path d="M0 170 C90 150 150 160 230 172 C320 186 380 150 470 152 C560 154 620 176 780 160 L780 260 L0 260 Z" fill="url(#d1)" opacity=".9"/>
+  <!-- sandworm rising -->
+  <g transform="translate(520 120)">
+    <path d="M-40 110 C-46 60 -30 20 6 0 C40 -16 78 -4 96 20 L72 40 C60 24 40 20 24 30 C6 42 0 74 6 110 Z" fill="url(#worm)"/>
+    <ellipse cx="84" cy="30" rx="16" ry="22" transform="rotate(-38 84 30)" fill="#1A0803"/>
+    <g stroke="#E9C79A" stroke-width="1.6" opacity=".55">
+      <path d="M-24 92 L-8 90"/><path d="M-26 72 L-8 72"/><path d="M-22 52 L-4 54"/><path d="M-12 34 L4 38"/><path d="M4 18 L16 26"/><path d="M24 8 L30 20"/><path d="M46 4 L46 18"/>
+    </g>
+    <path d="M-60 112 C-40 100 -20 104 0 98 C20 92 40 104 70 110 Z" fill="#B65A22" opacity=".8"/>
+  </g>
+  <!-- mid dunes -->
+  <path d="M0 200 C80 182 170 186 260 204 C340 220 420 192 520 196 C610 200 690 214 780 202 L780 260 L0 260 Z" fill="url(#d2)"/>
+  <!-- ornithopter -->
+  <g transform="translate(118 78) rotate(-6)" fill="#2A0F06" opacity=".9">
+    <ellipse cx="0" cy="0" rx="22" ry="6"/>
+    <path d="M-30 2 L-22 0 L-22 4 Z"/>
+    <path d="M-8 -3 L-46 -16 L-10 -6 Z"/><path d="M-2 -3 L-34 -24 L-2 -6 Z"/>
+    <path d="M8 -3 L46 -16 L10 -6 Z"/><path d="M2 -3 L34 -24 L2 -6 Z"/>
+  </g>
+  <!-- near dune + walker -->
+  <path d="M0 236 C110 214 220 220 330 232 C420 242 520 222 620 224 C690 226 740 236 780 232 L780 260 L0 260 Z" fill="url(#d3)"/>
+  <g transform="translate(372 214)" fill="#160602">
+    <circle cx="0" cy="-17" r="3"/>
+    <path d="M-3 -14 L3 -14 L4 -2 L2 10 L0 10 L0 0 L-1 10 L-3 10 L-4 -2 Z"/>
+    <path d="M4 -12 L9 6" stroke="#160602" stroke-width="1.5"/>
+  </g>
+  <rect width="780" height="260" filter="url(#grain)"/>
+</svg>
