@@ -58,11 +58,15 @@
   var CITY = { TLV: "תל אביב", MXP: "מילאנו", LIN: "מילאנו", BGY: "מילאנו", FCO: "רומא", CIA: "רומא", FLR: "פירנצה", PSA: "פיזה", VCE: "ונציה", NAP: "נאפולי", LHR: "לונדון", LGW: "לונדון", STN: "לונדון", LTN: "לונדון", CDG: "פריז", ORY: "פריז", AMS: "אמסטרדם", BCN: "ברצלונה", MAD: "מדריד", ATH: "אתונה", BER: "ברלין", MUC: "מינכן", VIE: "וינה", PRG: "פראג", BUD: "בודפשט", KEF: "רייקיאוויק", JFK: "ניו יורק", EWR: "ניו יורק", LCA: "לרנקה", PFO: "פאפוס" };
   function cityOf(a) { a = a || {}; return a.city || CITY[a.c] || a.n || a.c || ""; }
   // Dan Lounge at Ben Gurion is a fixed part of every departure from TLV (Oren 21.11.2026); t.lounge = false hides it, a string/object overrides
-  function loungeOf(t, A) {
+  // El Al's King David Lounge (Oren 21.11.2026): a fixed part of every El Al departure from Ben Gurion.
+  // Other airlines get no lounge unless t.lounge says otherwise (string = name, object = {h, s, logo, q}, false = hide).
+  function loungeOf(t, A, f) {
     if (t.lounge === false || (A.c && A.c !== "TLV")) return null;
-    var L = t.lounge && typeof t.lounge === "object" ? t.lounge : {};
-    return { h: L.h || (typeof t.lounge === "string" ? t.lounge : "טרקלין דן"), s: L.s || ("יש לנו כניסה. בנתב״ג" + (A.t && A.t !== "?" ? ", טרמינל " + A.t : "") + ", אחרי הבידוק והדרכונים. כדאי להגיע מוקדם וליהנות"), logo: L.logo || "", q: L.q || "Dan Lounge Ben Gurion Airport" + (A.t && A.t !== "?" ? " Terminal " + A.t : "") };
+    var L = t.lounge && typeof t.lounge === "object" ? t.lounge : {}, own = !!t.lounge, ly = /el ?al|אל על/i.test((f && f.air) || "") || /^LY/i.test((f && f.no) || "");
+    if (!own && !ly) return null;
+    return { h: L.h || (typeof t.lounge === "string" ? t.lounge : "טרקלין המלך דוד של אל על"), s: L.s || ("יש לנו כניסה. בנתב״ג" + (A.t && A.t !== "?" ? ", טרמינל " + A.t : "") + ", אחרי הבידוק והדרכונים. כדאי להגיע מוקדם וליהנות"), logo: L.logo || "", q: L.q || "El Al King David Lounge Ben Gurion Airport" + (A.t && A.t !== "?" ? " Terminal " + A.t : "") };
   }
+
 
   var LAND = {
     italy: "M40 22 C70 6 140 6 162 20 C152 34 132 40 126 54 C146 84 176 108 200 128 C216 139 226 150 216 165 C206 160 200 151 190 151 C181 165 171 171 165 166 C170 151 160 136 140 126 C115 111 95 86 80 61 C70 46 52 40 40 22 Z",
@@ -259,7 +263,7 @@
       var plane = '<svg viewBox="0 0 84 26" aria-hidden="true"><path d="M4 18 Q42 -2 80 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 4"/><g transform="translate(42 8)">' + PLANE + "</g></svg>";
       SEC.flights=('<section class="tp-sec"><div class="tp-sh">' + ic("planef", "e") + '<h2>טיסות</h2><small>לחיצה לפרטים</small></div>' +
         fl.map(function (f) {
-          var A = f.from || {}, B = f.to || {}, P = f.plane || {}, lg = loungeOf(t, A);
+          var A = f.from || {}, B = f.to || {}, P = f.plane || {}, lg = loungeOf(t, A, f);
           // collapsed = one compact row: airline logo (tail emblem when there is one), airline + flight no., direction and date,
           // times, and the cities in Hebrew (airports only inside); everything else opens on tap (Oren 21.11.2026)
           var em1 = f.logo_s || f.logo;
