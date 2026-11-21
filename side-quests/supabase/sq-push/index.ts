@@ -119,9 +119,13 @@ function buildBrief(all: any[]) {
     for (const v of [t.updated_at, t.sync?.at, ...(Array.isArray(t.log) ? t.log.map((e: any) => e?.at) : [])]) { const x = v ? Date.parse(v) : NaN; if (x > best) best = x; }
     return best;
   };
-  const added = all.filter((t) => isTask(t) && t.created_at && Date.parse(t.created_at) > since);
-  const done = all.filter((t) => isTask(t) && t.status === "done" && t.done_at && Date.parse(t.done_at) > since);
-  const upd = tasks.filter((t) => touched(t) > since && !added.includes(t));
+  // 25.24 iron rule (Oren 21.11.2026): only what he does not know. A task he asked for, a task he closed, a sync or a run's
+  // bookkeeping is not news; only a task that came from outside (mail, school systems, a scan) or an upd written for real news.
+  const EXT = /gmail|ג׳?ימייל|מייל|mail|סריקה|smart|סמארט|משו״?ב|mashov|אתר|portal/i;
+  const added = all.filter((t) => isTask(t) && t.created_at && Date.parse(t.created_at) > since && EXT.test(t.source || "") && OPEN.includes(t.status || "active"));
+  const done: any[] = [];
+  const upd = tasks.filter((t) => t.upd?.at && Date.parse(t.upd.at) > since && !added.includes(t));
+  void touched;
   const score = (t: any) => (t.urgent || t.critical ? 0 : 100) + (due(t) == null ? 50 : Math.max(-20, Math.min(40, due(t)!))) + (t.priority === "high" ? 0 : 20) + (t.status === "waiting_me" ? 0 : 10);
   const pick = [...live].filter((t) => t.status !== "waiting_other").sort((a, b) => score(a) - score(b))[0];
 
