@@ -18,11 +18,20 @@
   addEventListener("hashchange",function(){setTimeout(send,0);});
 })();
 
+/* 25.22 (Oren 21.11.2026, standing rule for every dashboard): inside an item's own page (a mini dashboard: one product, one
+   trip, one asset) the 📌 tasks box and the 🆕 news box show ONLY what belongs to that item. The page declares it with
+   window.SQ_FOCUS={item:"<doc id>",tasks:["<topic id>",...]} (null on the dashboard home) and fires window "sq-focus". */
+window.SQFocus=window.SQFocus||{get:function(){var f=window.SQ_FOCUS;return f&&f.item?f:null;},
+  task:function(id){var f=this.get();return !f||(f.tasks||[]).indexOf(String(id))>=0;},
+  news:function(n){var f=this.get();return !f||(n.item&&n.item===f.item)||(n.tid&&(f.tasks||[]).indexOf(n.tid)>=0);}};
 /* 15.3 (Oren 11.11.2026): "🆕 מה חדש" inside the dashboard body, right under the title (header.hero), one clear summary box.
    The app sends the items (sq-news) when it opens the dashboard; standalone nothing shows. Kept in place if the page re-renders. */
 (function(){if(window.self===window.top)return;
-  var data=null,box=null;
+  var data=null,box=null,all=null,gone=false;
   function el(t,c,txt){var e=document.createElement(t);if(c)e.className=c;if(txt!=null)e.textContent=txt;return e;}
+  function pick(){if(box)box.remove();box=null;data=null;if(!all||gone)return;var L=all.items.filter(function(i){return SQFocus.news(i);});
+    if(!L.length)return;data={items:L,more:SQFocus.get()?0:all.more};place();}
+  addEventListener("sq-focus",pick);
   function css(){if(document.getElementById("sqnws-css"))return;var st=el("style");st.id="sqnws-css";st.textContent=
     ".sqnws{--nb:#2F7BEA;box-sizing:border-box;width:calc(100% - 28px);max-width:860px;margin:14px auto 4px;background:#EEF4FE;color:#14213A;border:1.5px solid #9DBDF3;border-radius:16px;padding:12px 14px 10px;box-shadow:0 2px 10px rgba(47,123,234,.14);font-family:inherit;direction:rtl;text-align:right;animation:sqnwsIn .25s ease-out;position:relative;z-index:2}"+
     "@keyframes sqnwsIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}"+
@@ -36,7 +45,7 @@
     document.head.appendChild(st);}
   function build(){box=el("section","sqnws");box.setAttribute("role","status");var h=el("div","h");h.appendChild(el("b",null,"🆕 מה חדש"));
     var n=data.items.length+(data.more||0);h.appendChild(el("small",null,(n===1?"עדכון אחד":n+" עדכונים")+" מאז הפעם הקודמת"));
-    var x=el("button",null,"✓ סמן הכל כנקרא");x.type="button";x.onclick=function(){data=null;if(box)box.remove();box=null;
+    var x=el("button",null,"✓ סמן הכל כנקרא");x.type="button";x.onclick=function(){data=null;gone=true;if(box)box.remove();box=null;
       /* 25.21 (Oren 21.11.2026): marks the dashboard's news and new items read in the app too */
       try{parent.postMessage({type:"sq-dash-read"},"*");}catch(e){}};h.appendChild(x);box.appendChild(h);
     var ul=el("ul");data.items.forEach(function(it){var li=el("li");
@@ -50,8 +59,8 @@
     if(hero&&hero.parentNode){if(hero.nextSibling!==box)hero.parentNode.insertBefore(box,hero.nextSibling);}
     else if(box.parentNode!==document.body||document.body.firstChild!==box)document.body.insertBefore(box,document.body.firstChild);}
   addEventListener("message",function(e){if(e.source!==parent||!e.data||e.data.type!=="sq-news"||!Array.isArray(e.data.items))return;
-    if(data)return;data={items:e.data.items.slice(0,10).map(function(i){return{title:String(i.title||"").slice(0,140),what:String(i.what||"").slice(0,240),ago:String(i.ago||"").slice(0,30),tid:String(i.tid||"").slice(0,120)};}),more:+e.data.more||0};
-    place();new MutationObserver(function(){if(data&&box&&!box.isConnected||data&&box&&box.previousElementSibling&&!box.previousElementSibling.classList.contains("hero")&&!box.previousElementSibling.classList.contains("sqtsk"))place();}).observe(document.body,{childList:true});});
+    if(all)return;all={items:e.data.items.slice(0,10).map(function(i){return{title:String(i.title||"").slice(0,140),what:String(i.what||"").slice(0,240),ago:String(i.ago||"").slice(0,30),tid:String(i.tid||"").slice(0,120),item:String(i.item||"").slice(0,120)};}),more:+e.data.more||0};
+    pick();new MutationObserver(function(){if(data&&box&&!box.isConnected||data&&box&&box.previousElementSibling&&!box.previousElementSibling.classList.contains("hero")&&!box.previousElementSibling.classList.contains("sqtsk"))place();}).observe(document.body,{childList:true});});
 })();
 /* 📦 archive folds (details.sqarch[data-k]): remember open/closed per page, restore after every re-render */
 (function(){var P="sq_arch:"+location.pathname.split("/").pop()+":";
@@ -99,7 +108,7 @@
     li.appendChild(tx);if(t.chip)li.appendChild(el("span","cp"+(t.urg?" u":""),t.chip));
     var un=el("button","un","בטל");un.type="button";un.onclick=function(){if(pend[t.id]){clearTimeout(pend[t.id]);delete pend[t.id];build();}};li.appendChild(un);
     li.appendChild(el("span","go","‹"));return li;}
-  function build(){if(!data)return;css();var me=data.me||[],oth=data.oth||[];
+  function build(){if(!data)return;css();var ok=function(t){return SQFocus.task(t.id);},me=(data.me||[]).filter(ok),oth=(data.oth||[]).filter(ok);
     /* 23.x (Oren 19.11.2026): nothing open = show nothing at all (no "all closed" line) */
     if(!me.length&&!oth.length){if(box)box.remove();box=null;return;}
     var nb=el("section","sqtsk"+(!me.length&&!oth.length?" none":me.some(function(t){return t.urg;})?" urg":""));nb.setAttribute("aria-label","משימות פתוחות");
@@ -115,6 +124,7 @@
     else if(document.body.firstChild!==box)document.body.insertBefore(box,document.body.firstChild);
     var nw=document.querySelector(".sqnws");if(nw&&box.nextSibling!==nw&&box.parentNode)box.parentNode.insertBefore(nw,box.nextSibling);}
   var obs=null;
+  addEventListener("sq-focus",function(){if(data)build();});
   addEventListener("message",function(e){if(e.source!==parent||!e.data||e.data.type!=="sq-tasks")return;
     if(e.data.skip){data=null;if(box)box.remove();box=null;return;}
     var cl=function(L){return (Array.isArray(L)?L:[]).slice(0,30).map(function(t){return{id:String(t.id||""),title:String(t.title||"").slice(0,140),line:String(t.line||"").slice(0,160),chip:String(t.chip||"").slice(0,24),urg:!!t.urg};});};
