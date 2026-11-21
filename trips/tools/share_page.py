@@ -75,6 +75,21 @@ def glyph(kind, size, col=(255, 255, 255)):
     return im.resize((size, size), Image.LANCZOS)
 
 
+def mark_img(spec, mw, mh):
+    """spec = path:x0,y0,x1,y1 - a light drawing on a dark background, cut out as a white glyph."""
+    path, box = spec.rsplit(":", 1)
+    im = Image.open(path).convert("L").crop(tuple(int(v) for v in box.split(",")))
+    lo, hi = 70, 200
+    al = im.point(lambda v: 0 if v <= lo else 255 if v >= hi else round((v - lo) * 255 / (hi - lo)))
+    bb = al.getbbox()
+    al = al.crop(bb)
+    r = min(mw / al.width, mh / al.height)
+    al = al.resize((round(al.width * r), round(al.height * r)), Image.LANCZOS)
+    g = Image.new("RGBA", al.size, (255, 255, 255, 0))
+    g.putalpha(al)
+    return g
+
+
 def make_icon(a, size):
     S = size
     # one-colour background: the trip colour, a bit darker towards the bottom corner (mixing c1 and c2 turned brown)
@@ -93,9 +108,14 @@ def make_icon(a, size):
     ImageDraw.Draw(sh).rounded_rectangle([fx, fy + S * .015, fx + fw, fy + fh + S * .015], round(S * .07), fill=(0, 0, 0, 70))
     bg = Image.alpha_composite(bg.convert("RGBA"), sh)
     bg.paste(fl, (fx, fy), rr_mask((fw, fh), round(S * .07)))
-    # the trip type: a white one-colour glyph under the flag
-    g = glyph(a.type, round(S * .40))
-    bg.alpha_composite(g, ((S - g.width) // 2, round(S * .56)))
+    if a.mark:
+        # a white wordmark (e.g. the band name drawn on the cover) instead of the trip-type glyph
+        g = mark_img(a.mark, round(S * .80), round(S * .26))
+        bg.alpha_composite(g, ((S - g.width) // 2, round(S * .60 + (S * .26 - g.height) / 2)))
+    else:
+        # the trip type: a white one-colour glyph under the flag
+        g = glyph(a.type, round(S * .40))
+        bg.alpha_composite(g, ((S - g.width) // 2, round(S * .56)))
     return bg.convert("RGB")
 
 
@@ -114,6 +134,8 @@ def main():
     ap.add_argument("--type", default="couple", choices=["couple", "family", "friends"])
     ap.add_argument("--c1", default="#8E1B2C")
     ap.add_argument("--c2", default="#1E5B43")
+    ap.add_argument("--site", default="הטיול שלנו", help="og:site_name, the small line above the title in WhatsApp")
+    ap.add_argument("--mark", default="", help="path:x0,y0,x1,y1 - wordmark under the flag instead of the type glyph")
     a = ap.parse_args()
     assert re.fullmatch(r"[a-z0-9-]+", a.slug)
     out = os.path.join(ROOT, a.slug)
@@ -128,7 +150,7 @@ def main():
     base = SITE + a.slug + "/"
     T, D = html.escape(a.title, quote=True), html.escape(a.desc, quote=True)
     tags = ("<meta property=\"og:type\" content=\"website\">\n"
-            "<meta property=\"og:site_name\" content=\"הטיול שלנו\">\n"
+            f"<meta property=\"og:site_name\" content=\"{html.escape(a.site, quote=True)}\">\n"
             f"<meta property=\"og:title\" content=\"{T}\">\n"
             f"<meta property=\"og:description\" content=\"{D}\">\n"
             f"<meta property=\"og:image\" content=\"{base}og.jpg\">\n"
