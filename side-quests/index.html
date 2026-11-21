@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.6";window.SQ_BUILD_AT="21.11.2026 12:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.7";window.SQ_BUILD_AT="21.11.2026 12:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1059,15 +1059,58 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
 .tvzone{display:none}
 body.q-travel .tvzone.updhide{display:none}body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:6px}
 .tv-sec-h{display:flex;align-items:center;gap:8px;margin:2px 2px -4px;font-size:12.5px;font-weight:800;letter-spacing:.4px;color:var(--muted)}
-.tp-mini{display:block;width:100%;position:relative;border:0;padding:0;border-radius:18px;overflow:hidden;cursor:pointer;text-align:start;font:inherit;color:#fff;background:#3a1218;box-shadow:0 4px 16px rgba(60,10,20,.28);aspect-ratio:2/1;min-height:168px;margin:0 0 12px}
-.tp-mini .tm-t1{position:absolute;z-index:1;top:44px;inset-inline-start:10px;background:rgba(20,16,12,.62);color:#fff;border:1px solid rgba(232,181,74,.8);border-radius:10px;padding:3px 9px;font-weight:700;font-size:13px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+/* 25.7 (Oren 21.11.2026): compact trip cards: flags, countdown and › on top; title, then dates big in the reading line */
+.tp-mini{display:flex;flex-direction:column;justify-content:flex-end;width:100%;position:relative;border:0;padding:0;border-radius:16px;overflow:hidden;cursor:pointer;text-align:start;font:inherit;color:#fff;background:linear-gradient(135deg,var(--tc,#3a1218),#1a0a0e);box-shadow:0 3px 12px rgba(60,10,20,.22);min-height:150px;margin:0 0 10px}
 .tp-mini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.tp-mini::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 25%,rgba(20,4,8,.82))}
-.tp-mini .tm-in{position:absolute;inset:auto 0 0 0;z-index:1;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
-.tp-mini .tm-cd{position:absolute;z-index:1;top:10px;inset-inline-start:10px;background:var(--tc,#8E1B2C);color:#fff;border-radius:999px;padding:4px 11px;font-weight:800;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
-.tp-mini .tm-go{position:absolute;z-index:1;top:10px;inset-inline-end:10px;background:rgba(255,255,255,.92);color:#2a0a10;border-radius:999px;padding:4px 10px;font-weight:800;font-size:12.5px}
-.tp-mini b{font-size:19px;line-height:1.2}.tp-mini .tm-dt{font-size:13px;opacity:.9}
-.tp-mini .tm-ch{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.tp-mini .tm-ch span{background:rgba(255,255,255,.18);backdrop-filter:blur(4px);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap}
+.tp-mini::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,.05) 35%,rgba(12,4,8,.86) 100%)}
+.tp-mini .tm-top{position:absolute;z-index:1;top:10px;inset-inline:12px;display:flex;align-items:center;gap:8px}
+.tp-mini .tm-fl{font-size:22px;line-height:1;letter-spacing:2px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
+.tp-mini .tm-cd{background:var(--tc,#8E1B2C);color:#fff;border-radius:999px;padding:3px 10px;font-weight:800;font-size:12.5px;box-shadow:0 2px 6px rgba(0,0,0,.3);white-space:nowrap}
+.tp-mini .tm-go{margin-inline-start:auto;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.9);color:#2a0a10;font-weight:800;font-size:18px;line-height:1}
+.tp-mini .tm-in{position:relative;z-index:1;display:flex;flex-direction:column;gap:3px;padding:52px 14px 12px}
+.tp-mini b{font-size:17px;line-height:1.25;font-family:"Rubik",var(--f-display)}
+.tp-mini .tm-dt{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-size:13px;opacity:.95}
+.tp-mini .tm-dt .tm-d{font-size:15px;font-weight:800;letter-spacing:.2px}
+.tp-mini .tm-dt>span+span::before,.tp-mini .tm-dt .tm-d+span::before{content:"·";margin-inline-end:10px;opacity:.7}
+.tp-mini .tm-nx{font-size:13px;opacity:.9}
+.tp-mini .tm-ch{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.tp-mini .tm-ch span{background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);border-radius:999px;padding:2px 8px;font-size:12px;font-weight:700;white-space:nowrap}
+/* 25.7: history mini dashboards (Israel / abroad), one compact line card */
+.hx-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;width:100%;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);padding:12px 14px;font:inherit;text-align:start;cursor:pointer;margin:0 0 10px}
+.hx-card .hx-art{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--sunk);color:#0E6E78}
+.hx-card .hx-art svg{width:24px;height:auto}
+.hx-card.hx-travel-israel .hx-art{background:#E8EEFB}
+.hx-card b{display:block;font-size:15.5px;font-family:"Rubik",var(--f-display)}
+.hx-card .hx-k{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12.5px;color:var(--muted)}
+.hx-card .hx-k strong{color:var(--ink);font-size:14px;margin-inline-end:3px}
+.hx-card .hx-go{font-size:20px;color:var(--muted);font-weight:800}
+.tz-nav .zic{display:inline-flex;vertical-align:-3px;margin-inline-end:7px}
+.tz-nav .zic svg{display:block}
+.tv-chat{display:flex;justify-content:flex-start}
+/* 25.7: the stops bank is one closed frame */
+.ws.ws-c,.ws.ws-o{padding:0;gap:0}
+.ws-hd{display:flex;align-items:center;gap:10px;width:100%;min-height:58px;padding:10px 14px;border:0;background:none;font:inherit;color:var(--ink);text-align:start;cursor:pointer}
+.ws-ht{flex:1;min-width:0;display:flex;flex-direction:column}.ws-ht b{font-size:15px}.ws-ht small{font-size:12.5px;color:var(--muted)}
+.ws-chev{font-size:20px;font-weight:800;color:var(--muted);transition:transform .2s}
+.ws-hd[aria-expanded="true"] .ws-chev{transform:rotate(-90deg)}
+.ws-body{display:grid;gap:10px;padding:0 14px 14px}
+.ws-flt>summary{list-style:none;cursor:pointer;font-size:13px;font-weight:800;color:var(--qlead);padding:4px 0}
+.ws-flt>summary::-webkit-details-marker{display:none}.ws-flt>summary::after{content:" ▾"}
+.ws-fb{display:grid;gap:8px;margin-top:6px}
+.ws-row{display:flex;align-items:center;gap:8px;min-width:0;border:0;background:none;font:inherit;color:var(--ink);text-align:start;padding:2px 0;cursor:pointer}
+.ws-row .nm{flex:1;min-width:0;font-weight:800;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ws-row .sc{font-size:12px;font-weight:800;background:#FFC857;color:#3A2600;border-radius:7px;padding:1px 6px;white-space:nowrap}
+.ws-row .dl{font-size:12.5px;color:var(--muted);font-weight:700;white-space:nowrap}
+.ws-it{grid-template-columns:auto 1fr;align-items:center}
+.ws-it .ck{grid-row:auto;width:26px;height:26px}
+.ws-x{grid-column:2;display:grid;gap:6px}
+.ws-x .en{color:var(--muted)}
+.ws-x .tm{font-size:12.5px;color:var(--muted)}
+.ws-chat{justify-self:start;font-size:13px;font-weight:700;color:var(--qlead);text-decoration:none}
+details.tv-wkc>summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+details.tv-wkc>summary::-webkit-details-marker{display:none}
+details.tv-wkc>summary b{font-size:15px}details.tv-wkc>summary small{font-size:12.5px;color:var(--muted)}
+details.tv-wkc:not([open])>summary small{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+details.tv-wkc:not([open]){gap:0}
 .tv-trips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:10px}
 .tv-wk{display:grid;gap:10px}
 .tv-wkc,.ws{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-top:4px solid #1FB3AE;border-radius:18px;padding:14px;display:grid;gap:10px;min-width:0}
@@ -1206,9 +1249,9 @@ body.q-travel .tvzone.updhide{display:none}body.q-travel .tvzone{display:flex;fl
 .tz-nav button.z-il.on{background:#1F4FC2}.tz-nav button.z-abroad.on{background:#0E6E78}
 .tv-sec-h .n{font-size:11.5px;font-weight:800;background:var(--line);color:var(--ink);border-radius:999px;padding:1px 7px;letter-spacing:0}
 .tv-empty{margin:0;font-size:13px;color:var(--muted)}
-.tp-mini.plan{aspect-ratio:auto;min-height:132px;background:linear-gradient(135deg,var(--tc),var(--tc2));box-shadow:0 4px 14px rgba(30,20,60,.22)}
-.tp-mini.plan::after{background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.35))}
-.tp-mini.plan .tm-cd{background:rgba(255,255,255,.22);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.tp-mini.plan{min-height:118px;background:linear-gradient(135deg,var(--tc),var(--tc2));box-shadow:0 3px 12px rgba(30,20,60,.2)}
+.tp-mini.plan::after{background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.3))}
+.tp-mini.noimg .tm-in{padding-top:48px}
 .tz{display:flex;flex-direction:column;gap:12px;scroll-margin-top:64px}
 .tz-hero{position:relative;height:118px;border-radius:18px;overflow:hidden;scroll-margin-top:64px;box-shadow:0 3px 14px rgba(0,0,0,.12)}
 .tz-art,.tz-art svg{position:absolute;inset:0;width:100%;height:100%}
@@ -2527,7 +2570,7 @@ html.desk .hero .dz-grid{display:flex!important}
 .r-title{font-size:17.5px}
 .glist>.row{min-height:56px}
 </style>
-<script>window.SQI_SKIP=".sbar,#cnM,.r-title,.r-upd,.d-line,.d-story,.f-log,.dd-t,.bp-q,.up-t b,.lt b,.ft b";</script><script src="sq-icons.js?v=1"></script>
+<script>window.SQI_SKIP=".sbar,#cnM,.r-title,.r-upd,.d-line,.d-story,.f-log,.dd-t,.bp-q,.up-t b,.lt b,.ft b";</script><script src="sq-icons.js?v=2"></script>
 <style>/* 23.7 (Oren 19.11.2026): splash screen + loading bar. A = the trail illustration (sq_gfx "sq-splash", cached on the device in
    localStorage sq_splash so it shows with no network or code), B = built-in fallback (icon, 6 quest dots, thin bar). */
 #sqSplash{position:fixed;inset:0;z-index:100000;overflow:hidden;background:radial-gradient(circle at 50% 42%,#18302A 0%,#0F1513 62%);color:#fff;
@@ -4425,7 +4468,11 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // 9.2: recurring task. recur {dow: 0-6 (5 = Friday)}: a done task reopens on its next day (closed before that day's 00:00 = open again)
   function recurOpen(t){if(window.SQGate&&window.SQGate.recurOpen)return window.SQGate.recurOpen(t);const r=t.recur;if(!r||r.dow==null||t.status!=="done")return t;const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()-r.dow+7)%7));
     return new Date(t.done_at||0)<d?{...t,status:"active",done_at:"",next_date:d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}:t;}
-  function splitTopics(){const tq=quest==="fun"?"side":quest;topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t))&&!(absorbed(t)&&isOpen(t)));funTopics=allTopics.filter(isFun);}
+  // 25.7 (Oren 21.11.2026): in Travel the tasks under the zones follow the chosen zone (🇮🇱 בארץ / 🌍 בחו״ל). t.tzone wins, then its dashboard's tzone, then words.
+  function tzOf(t){if(t.tzone==="il"||t.tzone==="abroad")return t.tzone;const d=t.dash&&dashes.find(x=>x.id===t.dash);if(d)return d.tzone==="il"?"il":"abroad";
+    return /בארץ|ישראל|שביל ישראל|טיולים משפחתיים/.test((t.title||"")+" "+(t.area||""))?"il":"abroad";}
+  function tvZoneNow(){try{return tvZ;}catch(e){return "abroad";}}
+  function splitTopics(){const tq=quest==="fun"?"side":quest;const zz=tq==="travel"?tvZoneNow():"";topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t))&&!(absorbed(t)&&isOpen(t))&&(!zz||tzOf(t)===zz));funTopics=allTopics.filter(isFun);}
   function renderQnav(){
     const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)&&!isBg(t)&&!absorbed(t)).length;
     const vis=Object.keys(QUESTS).filter(q=>!qHidden(q));$("qnav").dataset.n=vis.length;
@@ -4819,7 +4866,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // 4.7 Travel zone: data lives in the private doc settings/travel_hub (never in this public repo).
   // {upcoming:[{topic,title,flag,from,to,note}], israel:{visits,places,per_year,since,as_of,regions:[{name,n,icon}],recent:[{name,date}],next,report_img,report_at,links:[{label,url,main,pending}]},
   //  abroad:{app:{name,url,icon,tag},highlights:[{icon,text}],links:[...]}}. A link with no url and a `pending` note shows as a dashed placeholder.
-  let travelHub=null;
+  let travelHub=null,travelHist=null;
   // 23.1 (Oren 19.11.2026): booked trips with their own mini dashboard (collection trips; page trip.html, public share page /trips/?t=)
   let tripDocs=[];
   const TRAIL_SVG='<svg viewBox="0 0 30 30" aria-hidden="true"><path d="M4 5 Q6 4 9 5 L9.5 25 Q7 26 4.5 25 Z" fill="#F08A24"/><path d="M11.5 4.6 Q14.5 4 18 4.8 L18.4 25.2 Q15 26 11.8 25.3 Z" fill="#2F6FD6"/><path d="M20.5 5 Q23 4.2 26 5 L25.6 25 Q23 25.8 20.8 25 Z" fill="#fff"/></svg>';
@@ -4883,8 +4930,12 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     +'<path d="M272 110 L272 70 L292 70 L292 110 Z M276 64 L288 64 L288 70 L276 70 Z"/><path d="M296 110 L296 82 L318 82 L318 110 Z"/><path d="M322 110 L322 62 Q330 52 338 62 L338 110 Z"/>'
     +'</g></svg>';
   const tvZone={il:"tvZil",abroad:"tvZab"};
+  // 25.7: drawn marks for the zone toggle (sq-icons turns emoji into line icons, so these are SVG)
+  const IL_FLAG='<svg viewBox="0 0 22 16" width="22" height="16"><rect width="22" height="16" rx="2.5" fill="#fff" stroke="rgba(0,0,0,.18)"/><rect y="2" width="22" height="2.2" fill="#0038B8"/><rect y="11.8" width="22" height="2.2" fill="#0038B8"/><path d="M11 5.2l2.6 4.5H8.4zM11 10.8L8.4 6.3h5.2z" fill="none" stroke="#0038B8" stroke-width=".9"/></svg>';
+  const GLOBE_IC='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>';
+  const HX_DASH=["travel-israel","travel-abroad"];
   function travelDashes(z){return dashes.filter(d=>!d._deleted&&d.quest==="travel"&&(d.tzone==="il"?"il":"abroad")===z);}
-  function zoneDash(z,title){const tD=tripDocs.filter(t=>!t._deleted&&(t.stage==="plan"||!(daysUntil(t.to||t.from)<0))).map(t=>t.dash),all=travelDashes(z).filter(d=>!tD.includes(d.id)),act=all.filter(d=>!d.archived).sort((a,b)=>(a.order||99)-(b.order||99));
+  function zoneDash(z,title){const tD=tripDocs.filter(t=>!t._deleted&&(t.stage==="plan"||!(daysUntil(t.to||t.from)<0))).map(t=>t.dash),all=travelDashes(z).filter(d=>!tD.includes(d.id)&&!HX_DASH.includes(d.id)),act=all.filter(d=>!d.archived).sort((a,b)=>(a.order||99)-(b.order||99));
     if(!act.length)return null;
     return h("div",{class:"tv-dash"},title===false?null:h("p",{class:"tv-sub"},title||"דשבורדים"),act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null);}
   // 11.9: the full list of Israel trips (settings/travel_hub israel.trips [{n, r (region name as in israel.regions), v visits, d last date}])
@@ -4966,53 +5017,70 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const mapsUrl=p=>"https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(ui.here&&ui.pos?ui.pos.lat+","+ui.pos.lng:(back?rt.maps_b:rt.maps_a)||A.lat+","+A.lng)
       +"&destination="+encodeURIComponent((back?rt.maps_a:rt.maps_b)||B.lat+","+B.lng)+"&waypoints="+encodeURIComponent(p.park||p.maps||(p.name+", Italy"))+"&travelmode=driving";
     const u=safeUrl(rt.chat||"");
-    return h("article",{class:"ws"},
-      h("h3",null,h("span",null,"🧭 "+(rt.title||"בנק עצירות")),u?h("a",{href:u,target:"_blank",rel:"noopener"},"💬 שיחה"):null),
-      seg("dir",[["go",`${rt.a.he} ← ${rt.b.he}`],["back",`${rt.b.he} ← ${rt.a.he}`]]),
-      h("div",{class:"ws-seg"},hereBtn),
-      h("div",{class:"ws-base"},C&&C.base!=null?h("span",null,"הדרך הקצרה ביותר: ",h("b",null,wsFmt(C.base)),` (${ui.here&&ui.pos?"מהמיקום שלך":A.he} ← ${B.he})`,C.live?" · חישוב חי בלי פקקים":" · הערכה גסה (אין חיבור לחישוב)"):"מחשב זמנים…",
-        h("div",{class:"ws-note"},"🚗 = כמה דקות נסיעה העצירה מוסיפה לדרך הקצרה (רק נוסע דרכה). ⏱ = כולל עצירה מינימלית מומלצת.")),
-      seg("bud",[[0,"כל זמן"],[30,"עד +30 דק׳"],[60,"עד +שעה"],[90,"עד +1.5 ש׳"],[120,"עד +2 ש׳"]]),
-      seg("ax",[["all","כל הצירים"],["west",WS_AX.west],["mid",WS_AX.mid],["east",WS_AX.east]]),
-      seg("vis",[["all",`הכל (${tot})`],["new",`לא הייתי (${tot-seen})`],["seen",`הייתי (${seen})`]]),
-      seg("sort",[["route","↕️ לפי הדרך"],["score","⭐ לפי ציון"],["time","⏱ לפי עיכוב"]]),
-      L.length?h("ul",{class:"ws-list"},L.map(p=>{const d=det(p),st=+p.stop||0;
-        return h("li",{class:"ws-it"+(p.visited?" vis":"")},
-          h("button",{type:"button",class:"ck","aria-label":p.visited?"הייתי שם, לחץ לביטול":"סמן שהייתי שם",title:"הייתי שם",onclick:()=>wsToggle(p)},p.visited?"✓":""),
-          h("div",{class:"nm"},+p.score?h("b",{class:"sc",title:"ציון שלי: כמה שווה לעצור"},"⭐ "+p.score):null,p.he||p.name,h("small",{dir:"ltr"},p.name||""),h("small",null,WS_AX[p.axis]||""),p.night?h("small",null,"🌙 גם בערב"):null),
-          p.what?h("div",{class:"wh"},p.what):null,
-          h("div",{class:"tm"},h("span",null,"🚗 +"+(d==null?"…":wsFmt(Math.max(0,d)))),h("span",{class:"tot"},"⏱ +"+(d==null?"…":wsFmt(Math.max(0,d)+st))+(st?` (עצירה ${st} דק׳${p.stop_note?": "+p.stop_note:""})`:"")),
-),
-          h("div",{class:"ac"},h("a",{href:wsPlan(p,rt,back,d,st),target:"_blank",rel:"noopener"},"🧠 תכנון עצירה"),h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"🅿️ ניווט לחנייה"),h("a",{href:picsUrl([p.name||p.he,p.region||rt.region||"Lazio",p.country||rt.country||"Italy"].join(", ")),target:"_blank",rel:"noopener"},"📷 תמונות")));})):h("p",{class:"ws-note"},"אין עצירות שמתאימות לסינון."),
-      h("p",{class:"ws-note"},"מקומות שהייתי בהם יורדים לסוף הרשימה. ⭐ = הציון שלי (1-10) לכמה שווה לעצור: יופי, כמה יש לעשות וכמה ייחודי. ״ניווט לחנייה״ = הדרך עם החנייה כעצירה (חיפוש בגוגל, כדאי להציץ). ״תכנון״ פותח את קלוד עם פרומפט מוכן. 📷 = התמונות הכי יפות מהמקום בגוגל. זמני הנסיעה מ-OSRM, בלי פקקים."));}
+    // 25.7 (Oren 21.11.2026): the whole bank is one closed frame (title + one line). Inside: direction, the shortest drive,
+    //  filters behind one more fold, and each stop is one line (name, ⭐, +minutes) that opens to its text and buttons.
+    const tg=()=>{ui.open=!ui.open;renderTravel();};
+    const head=h("button",{type:"button",class:"ws-hd","aria-expanded":ui.open?"true":"false",onclick:tg},
+      h("span",{class:"ws-ht"},h("b",null,"🇮🇹 "+(rt.title||"בנק עצירות")),h("small",null,`${tot} עצירות · הייתי ב-${seen}`)),h("span",{class:"ws-chev","aria-hidden":"true"},"‹"));
+    if(!ui.open)return h("article",{class:"ws ws-c"},head);
+    const nf=(ui.bud?1:0)+(ui.ax!=="all"?1:0)+(ui.vis!=="all"?1:0)+(ui.sort!=="route"?1:0);
+    return h("article",{class:"ws ws-o"},head,
+      h("div",{class:"ws-body sqgrow"},
+        seg("dir",[["go",`${rt.a.he} ← ${rt.b.he}`],["back",`${rt.b.he} ← ${rt.a.he}`]]),
+        h("div",{class:"ws-base"},C&&C.base!=null?h("span",null,"הדרך הקצרה: ",h("b",null,wsFmt(C.base)),ui.here&&ui.pos?" · מהמיקום שלך":""):"מחשב זמנים…"),
+        h("details",{class:"ws-flt"},h("summary",null,"סינון ומיון"+(nf?` (${nf})`:"")),
+          h("div",{class:"ws-fb"},h("div",{class:"ws-seg"},hereBtn),
+            seg("bud",[[0,"כל זמן"],[30,"+30 דק׳"],[60,"+שעה"],[90,"+1.5 ש׳"],[120,"+2 ש׳"]]),
+            seg("ax",[["all","כל הצירים"],["west",WS_AX.west],["mid",WS_AX.mid],["east",WS_AX.east]]),
+            seg("vis",[["all",`הכל (${tot})`],["new",`לא הייתי (${tot-seen})`],["seen",`הייתי (${seen})`]]),
+            seg("sort",[["route","לפי הדרך"],["score","לפי ציון"],["time","לפי עיכוב"]]),
+            h("p",{class:"ws-note"},"🚗 = כמה דקות העצירה מוסיפה לדרך. ⭐ = כמה שווה לעצור (1-10). זמנים בלי פקקים."))),
+        L.length?h("ul",{class:"ws-list"},L.map(p=>{const d=det(p),st=+p.stop||0,op=!!(ui.it&&ui.it[p.id]);
+          return h("li",{class:"ws-it"+(p.visited?" vis":"")+(op?" op":"")},
+            h("button",{type:"button",class:"ck","aria-label":p.visited?"הייתי שם, לחץ לביטול":"סמן שהייתי שם",onclick:()=>wsToggle(p)},p.visited?"✓":""),
+            h("button",{type:"button",class:"ws-row","aria-expanded":op?"true":"false",onclick:()=>{ui.it=ui.it||{};ui.it[p.id]=!op;renderTravel();}},
+              h("span",{class:"nm"},p.he||p.name),+p.score?h("span",{class:"sc"},"⭐ "+p.score):null,h("span",{class:"dl",dir:"ltr"},d==null?"…":"+"+wsFmt(Math.max(0,d)))),
+            op?h("div",{class:"ws-x sqgrow"},
+              p.name&&p.name!==p.he?h("small",{class:"en",dir:"ltr"},p.name):null,
+              p.what?h("div",{class:"wh"},p.what):null,
+              h("div",{class:"tm"},(st?`עם עצירה של ${st} דק׳: `:"סה״כ: ")+"+"+(d==null?"…":wsFmt(Math.max(0,d)+st))+(p.stop_note?" · "+p.stop_note:"")+(p.night?" · 🌙 גם בערב":"")),
+              h("div",{class:"ac"},h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"🅿️ ניווט"),h("a",{href:picsUrl([p.name||p.he,p.region||rt.region||"Lazio",p.country||rt.country||"Italy"].join(", ")),target:"_blank",rel:"noopener"},"📷 תמונות"),h("a",{href:wsPlan(p,rt,back,d,st),target:"_blank",rel:"noopener"},"🧠 תכנון"))):null);})):h("p",{class:"ws-note"},"אין עצירות שמתאימות לסינון."),
+        u?h("a",{class:"ws-chat",href:u,target:"_blank",rel:"noopener"},"💬 שיחה על העצירות"):null));}
   // 13.x (Oren 10.11.2026): work trips abroad = the experience side (stops on the way, not the work). Topics with area "נסיעות עבודה", open ones first.
   function workTrips(){const L=allTopics.filter(t=>!t._deleted&&t.area==="נסיעות עבודה"&&!["archived","promoted"].includes(t.status)).sort((a,b)=>(a.status==="done")-(b.status==="done")||(b.priority==="high")-(a.priority==="high"));
     const R=wsDocs.filter(d=>d.type==="route"&&!d._deleted&&d.a&&d.b);
     if(!L.length&&!R.length)return [h("p",{class:"ws-note"},"עוד אין כאן כלום. כל נסיעת עבודה חדשה תקבל כאן כרטיס.")];
     return [h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank),h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
-      return h("article",{class:"tv-wkc"},h("h3",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("div",{class:"st"},t.stand):null,
-        t.summary?h("details",{class:"tv-fold",open:t.status!=="done"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
+      return h("details",{class:"tv-wkc"},h("summary",null,h("b",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("small",null,t.stand):null),
+        t.summary?h("details",{class:"tv-fold"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
         ls.length?h("div",{class:"lk"},ls.map((l,i)=>h("a",{class:/⭐/.test(l.label||"")?"main":"",href:safeUrl(l.url),target:"_blank",rel:"noopener"},"📍 "+(l.label||"מפה")))):null,
         h("button",{type:"button",class:"op",onclick:()=>openTask(t.id)},"פתח כמשימה"));}))];}
   function zoneHead(z,title,sub,svg){return h("div",{class:"tz-hero tz-"+z,id:tvZone[z]},h("div",{class:"tz-art",html:svg}),h("div",{class:"tz-txt"},h("h2",null,title),h("p",null,sub)));}
+  // 25.7 (Oren 21.11.2026): smaller trip cards. Flag(s) up front, the dates big and in the reading line, a small › instead of a pill.
   function tripMini(t){
     const n=daysUntil(t.from),e=daysUntil(t.to||t.from),plan=t.stage==="plan";if(!plan&&e!=null&&e<0)return null;
     const len=t.from&&t.to?daysUntil(t.to)-daysUntil(t.from)+1:0;
-    const cd=plan?(t.when||"בתכנון"):n==null?"":n>1?"עוד "+n+" ימים":n===1?"מחר טסים!":"יום "+(1-n)+" מתוך "+len;
+    const cd=plan?"":n==null?"":n>1?"עוד "+n+" ימים":n===1?"מחר טסים!":"יום "+(1-n)+" מתוך "+len;
     const fl=(t.flights||[])[0],st=(t.stats||[]).find(x=>/°/.test(x.v||""));
-    const ch=[fl&&n>0?"✈️ "+fl.dep:"",(t.hotels||[]).length?"🏨 "+heN(t.hotels.length,"מלון אחד","מלונות"):"",st?"🌡️ \u2066"+st.v+"\u2069":"",n<=0&&t.next_up?(t.next_up.e||"")+" "+t.next_up.h:""].filter(Boolean);
     const t1=(t.flights||[]).some(f=>f&&f.from&&(f.from.c==="TLV"||/נתב/.test(f.from.n||""))&&/^\s*1\b/.test(String(f.from.t||""))&&!/\?/.test(String(f.from.t||""))&&(n==null||n>=0));
+    const ch=plan?[]:[fl&&n>0?"✈️ "+fl.dep:"",(t.hotels||[]).length?"🏨 "+heN(t.hotels.length,"מלון אחד","מלונות"):"",st?"🌡️ \u2066"+st.v+"\u2069":"",t1?"טרמינל 1":"",n<=0&&t.next_up?(t.next_up.e||"")+" "+t.next_up.h:""].filter(Boolean);
     const img=/^[a-z0-9-]+$/.test(t.hero_img||"")?"../trips/img/"+t.hero_img+".webp":"";
     const go=()=>{if(t.dash&&dashById(t.dash))openDash(t.dash);else location.href="trip.html?id="+encodeURIComponent(t.id);};
     const hx=v=>/^#[0-9a-fA-F]{6}$/.test(v||"");const th=t.theme||{};
-    if(plan)return h("button",{type:"button",class:"tp-mini plan",style:"--tc:"+(hx(th.c1)?th.c1:"#5B3A8E")+";--tc2:"+(hx(th.c2)?th.c2:hx(th.c1)?th.c1:"#2B6CB0"),onclick:go,"aria-label":"דשבורד התכנון "+(t.title||"")},
-      img?h("img",{src:img,alt:"",loading:"lazy"}):null,h("span",{class:"tm-cd"},cd),h("span",{class:"tm-go"},"לדשבורד ›"),
-      h("span",{class:"tm-in"},h("b",null,(t.flag?t.flag+" ":"")+(t.title||"")),t.who?h("span",{class:"tm-dt"},t.who):null,t.next_up&&t.next_up.h?h("span",{class:"tm-dt"},"הבא: "+t.next_up.h):null));
-    return h("button",{type:"button",class:"tp-mini",style:"--tc:"+(hx(th.c1)?th.c1:"#8E1B2C"),onclick:go,"aria-label":"דשבורד הטיול "+(t.title||"")},
-      img?h("img",{src:img,alt:"",loading:"lazy"}):null,cd?h("span",{class:"tm-cd"},cd):null,t1?h("span",{class:"tm-t1",role:"note"},"טרמינל 1"):null,h("span",{class:"tm-go"},"לדשבורד ›"),
-      h("span",{class:"tm-in"},h("b",null,(t.flag?t.flag+" ":"")+(t.title||"")),h("span",{class:"tm-dt",dir:"ltr"},tvRange(t.from,t.to)),t.who?h("span",{class:"tm-dt"},t.who):null,
+    const flags=String(t.flag||"").match(/(?:[\u{1F1E6}-\u{1F1FF}]{2})/gu)||[];
+    const when=plan?(t.when||"בתכנון"):tvRange(t.from,t.to);
+    return h("button",{type:"button",class:"tp-mini"+(plan?" plan":"")+(img?"":" noimg"),style:"--tc:"+(hx(th.c1)?th.c1:plan?"#5B3A8E":"#8E1B2C")+";--tc2:"+(hx(th.c2)?th.c2:hx(th.c1)?th.c1:"#2B6CB0"),onclick:go,"aria-label":"דשבורד "+(t.title||"")},
+      img?h("img",{src:img,alt:"",loading:"lazy"}):null,
+      h("span",{class:"tm-top"},flags.length?h("span",{class:"tm-fl"},flags.join(" ")):null,cd?h("span",{class:"tm-cd"},cd):null,h("span",{class:"tm-go","aria-hidden":"true"},"‹")),
+      h("span",{class:"tm-in"},h("b",null,t.title||""),
+        h("span",{class:"tm-dt"},h("bdi",{class:"tm-d",dir:"ltr"},when),!plan&&len>0?h("span",null,heN(len,"יום אחד","ימים")):null,t.who?h("span",null,t.who):null),
+        plan&&t.next_up&&t.next_up.h?h("span",{class:"tm-nx"},"הבא: "+t.next_up.h):null,
         ch.length?h("span",{class:"tm-ch"},ch.map(x=>h("span",null,x))):null));
   }
+  // 25.7: the two history mini dashboards (all trips abroad since 1985, all trips in Israel), one compact card each
+  function hxCard(id,title,kp,art){const d=dashById(id);if(!d)return null;
+    return h("button",{type:"button",class:"hx-card hx-"+id,onclick:()=>openDash(id)},h("span",{class:"hx-art noico","aria-hidden":"true",html:art}),
+      h("span",{class:"hx-tx"},h("b",null,title),h("span",{class:"hx-k"},kp.filter(Boolean).map(([v,l])=>h("span",null,h("strong",null,String(v)),l)))),h("span",{class:"hx-go","aria-hidden":"true"},"‹"));}
   function renderTravel(){
     const sec=$("tvSec");if(!sec)return;
     if(quest!=="travel"||!travelHub){sec.replaceChildren();return;}
@@ -5022,28 +5090,17 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     // 25.2 (Oren 21.11.2026): one clear hierarchy. Level 1: 🇮🇱 בארץ | 🌍 בחו״ל (only the chosen zone shows).
     //  Abroad level 2: ✈️ פרטי | 💼 עבודה. Private = (1) flights booked → trip mini dashboards, (2) planned, no flights yet →
     //  planned mini dashboards (trips docs with stage "plan") + Holiday Optimizer, (3) every other abroad dashboard.
-    const zSet=v=>()=>{if(tvZ===v)return;tvZ=v;try{localStorage.setItem("sq_tv_z",v);}catch(e){}renderTravel();};
+    const zSet=v=>()=>{if(tvZ===v)return;tvZ=v;try{localStorage.setItem("sq_tv_z",v);}catch(e){}splitTopics();renderAll();};
     const jump=h("nav",{class:"ab-seg tz-nav","aria-label":"אזורי הטיולים",role:"tablist"},
-      [["il","🇮🇱 בארץ"],["abroad","🌍 בחו״ל"]].map(([v,l])=>h("button",{type:"button",role:"tab","aria-selected":tvZ===v?"true":"false",class:(tvZ===v?"on ":"")+"z-"+v,onclick:zSet(v)},l)));
+      [["il","בארץ",IL_FLAG],["abroad","בחו״ל",GLOBE_IC]].map(([v,l,ic])=>h("button",{type:"button",role:"tab","aria-selected":tvZ===v?"true":"false",class:(tvZ===v?"on ":"")+"z-"+v,onclick:zSet(v)},h("span",{class:"zic noico","aria-hidden":"true",html:ic}),l)));
     // Israel zone
     const regs=(Array.isArray(I.regions)?I.regions:[]).filter(r=>r&&r.name);const max=Math.max(1,...regs.map(r=>+r.n||0));
+    const ilVis=I.visits!=null?I.visits:null,ilPl=I.places!=null?I.places:(Array.isArray(I.trips)?I.trips.length:null);
     const il=h("section",{class:"tz tz-il-z"},
-      zoneHead("il","טיולים בארץ",`${I.visits!=null?I.visits+" טיולים · ":""}מאז ${I.since||"12/2017"}`,IL_BANNER),
-      h("article",{class:"tv-card tv-il"},
-        h("div",{class:"tv-kpis"},
-          h("div",{class:"tv-kpi"},h("b",null,I.visits!=null?String(I.visits):"—"),h("span",null,"טיולים")),
-          h("div",{class:"tv-kpi"},h("b",null,I.places!=null?String(I.places):"—"),h("span",null,"מקומות")),
-          h("div",{class:"tv-kpi"},h("b",null,I.per_year!=null?String(I.per_year):"—"),h("span",null,"בשנה"))),
-        regs.length?h("details",{class:"tv-fold"},h("summary",null,"לפי אזורים"+(I.as_of?` · נכון ל-${I.as_of}`:"")),h("ul",{class:"tv-regs"},regs.map(r=>h("li",{class:"tv-reg"},h("i",{"aria-hidden":"true"},r.icon||"📍"),h("span",{class:"nm"},r.name),
-          h("span",{class:"tv-bar"},h("u",{style:`width:${Math.round((+r.n||0)/max*100)}%`})),h("span",{class:"n",html:`<b>${+r.n||0}</b> טיולים`}))))):null,
-        Array.isArray(I.trips)&&I.trips.length?h("button",{class:"tv-btn tv-all",type:"button",onclick:showIlTrips},`📋 כל הטיולים לפי אזורים (${I.trips.length})`):null,
-        tvIdeas(I.ideas),
-        // 25.0: recent trips fold like the regions (closed)
-        Array.isArray(I.recent)&&I.recent.length?h("details",{class:"tv-fold"},h("summary",null,"חדשים לאחרונה · "+I.recent.length),h("div",{class:"tv-new"},I.recent.map(x=>h("span",null,"🌿 "+x.name,x.date?h("small",null,x.date):null)))):null,
-        I.next?h("div",{class:"tv-next"},I.next):null,
-        zoneDash("il"),
-        tvLinks(noDup(I.links,"il")),
-        secChat(secUrl("travel_il",...(I.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),chatOf(allTopics.find(x=>x.id==="family-trips")||{})),"טיולים בארץ","שיחה: טיולים בארץ")));
+      zoneHead("il","טיולים בארץ",`${ilVis!=null?ilVis+" טיולים · ":""}מאז ${I.since||"12/2017"}`,IL_BANNER),
+      hxCard("travel-israel","כל הטיולים בארץ",[[ilVis!=null?ilVis:"—"," טיולים"],[ilPl!=null?ilPl:"—"," מקומות"],[regs.length?regs.length+"/10":""," אזורים"]],IL_FLAG),
+      zoneDash("il"),
+      h("div",{class:"tv-chat"},secChat(secUrl("travel_il",...(I.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),chatOf(allTopics.find(x=>x.id==="family-trips")||{})),"טיולים בארץ","שיחה: טיולים בארץ")));
     // abroad zone
     const liveT=tripDocs.filter(t=>!t._deleted&&(t.stage==="plan"||t.stage==="booked"));
     const tIds=liveT.map(t=>t.id),tTop=liveT.map(t=>t.topic).filter(Boolean);
@@ -5061,15 +5118,18 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       h("div",{class:"ab-seg",role:"tablist"},[["trip","✈️ פרטי"],["work","💼 עבודה"]].map(([v,l])=>h("button",{type:"button",role:"tab","aria-selected":abTab===v?"true":"false",class:abTab===v?"on":"",onclick:()=>{if(abTab===v)return;abTab=v;try{localStorage.setItem("sq_tv_ab",v);}catch(e){}renderTravel();}},l))),
       ...(abTab==="work"?workTrips(true):[
       // (1) flights booked
-      hd("✈️ טיסות הוזמנו",nB),
+      hd("✈️ נסיעות שקורות · הטיסות הוזמנו",nB),
       booked.length?h("div",{class:"tp-minis"},booked):null,onCal.length?h("div",{class:"tv-trips"},onCal.map(x=>x.el)):null,
       nB?null:h("p",{class:"tv-empty"},"אין כרגע"),
       // (2) planned, no flights yet + Holiday Optimizer
-      hd("🗓️ בתכנון, עוד בלי טיסות",nP),
+      hd("🗓️ נסיעות בתכנון · עוד בלי טיסות",nP),
       planned.length?h("div",{class:"tp-minis"},planned):null,ideas.length?h("div",{class:"tv-trips"},ideas.map(x=>x.el)):null,
       apu?h("a",{class:"tv-app",href:apu,target:"_blank",rel:"noopener"},ap.icon?h("img",{src:ap.icon,alt:"",width:"44",height:"44"}):null,h("div",null,h("b",null,ap.name||""),ap.tag?h("span",null,ap.tag):null)):null,
       // (3) everything else
       hd("📊 עוד דשבורדים"),
+      (()=>{const T=(travelHist&&Array.isArray(travelHist.trips)?travelHist.trips:[]).filter(x=>x&&x.countries);const yrs=T.length?new Date().getFullYear()-(+String(T[0].from||"").slice(0,4)||1985):0;
+        const cc=new Set();T.forEach(x=>String(x.countries).split(/[,،]/).map(c=>c.replace(/\(.*\)/,"").trim()).filter(Boolean).forEach(c=>cc.add(c)));
+        return hxCard("travel-abroad","כל הנסיעות לחו״ל",[[T.length||"—"," נסיעות"],[cc.size||"—"," מדינות"],[T.length?T.reduce((a,x)=>a+(+x.days||0),0):""," ימים"]],GLOBE_IC);})(),
       h("article",{class:"tv-card tv-ab"},
         other,
         Array.isArray(A.highlights)&&A.highlights.length?h("details",{class:"tv-fold"},h("summary",null,"Holiday Optimizer: מה יש שם"),h("ul",{class:"tv-hl"},A.highlights.map(x=>h("li",null,h("i",{"aria-hidden":"true"},x.icon||"•"),h("span",null,x.text))))):null,
@@ -6641,7 +6701,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;const cp=s.docs.find(x=>x.id==="cashflow_ping");cfPing=cp?cp.data():null;const cr=s.docs.find(x=>x.id==="cashflow_refresh");cfReq=cr?cr.data():null;renderConn();const ni=s.docs.find(x=>x.id==="new_items"),nd=ni?ni.data():null;newItems=nd&&Array.isArray(nd.items)?nd.items:[];nwRender();
       const pc=s.docs.find(x=>x.id==="places");calPlaces=pc?pc.data():{};const ll=s.docs.find(x=>x.id==="loc_last");calLoc=ll?ll.data():null;
-      const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};const qi=s.docs.find(x=>x.id==="quest_info");const qiN=qi?qi.data():{};if(JSON.stringify(qiN)!==JSON.stringify(questInfo)){questInfo=qiN;try{renderMain();}catch(e){}}renderTravel();renderFun();renderDash();
+      const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const thx=s.docs.find(x=>x.id==="travel_history");travelHist=thx?thx.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};const qi=s.docs.find(x=>x.id==="quest_info");const qiN=qi?qi.data():{};if(JSON.stringify(qiN)!==JSON.stringify(questInfo)){questInfo=qiN;try{renderMain();}catch(e){}}renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     // 18.7: the work calendar shapes the automatic windows (never shown here; the details page is in settings)
     db.collection("work_calendar").onSnapshot(s=>{const ev=[];let pr={};s.docs.forEach(d=>{const v=d.data();if(d.id==="_profile")pr=v;else if(d.id==="_meta")wcMeta=v;else ev.push({...v,_id:d.id});});renderConn();

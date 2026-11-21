@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=3"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1F4FC2">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IL_BUILD="1.0";window.SQ_DASH="travel-israel";</script>
+<script src="sq-db.js?v=10"></script>
+<title>כל הטיולים בארץ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* כל הטיולים בארץ (Travel Quest, 25.7, אורן 21.11.2026). הנתונים: sq_docs settings/travel_hub.israel
+   (מקור: מאגר הביקורים בנושן, מסונכרן). שום מידע אישי בקוד, הכול מהמסד. */
+:root{
+  --bg:#EEF6F5; --surface:#FFFFFF; --sunk:#E2EFED; --ink:#10282B; --muted:#557074; --line:#CFE2DF;
+  --hero:#173A8A; --hero2:#2E6BD9; --hero-ink:#F0FAF9; --hero-muted:#A9D3D2; --accent:#FFC857; --accent-ink:#3A2600;
+  --link:#1F4FC2; --hi:#1F4FC2; --hi-soft:#E3EBFB;
+  --c-fam:#E0703C; --c-cpl:#D6457A; --c-fr:#7B5CD6; --c-ext:#C49A1F; --c-work:#2F80C9; --c-army:#5E8C3A;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A1415; --surface:#122022; --sunk:#1A2C2E; --ink:#E6F2F1; --muted:#9DB8B6; --line:#28403F; --hero:#08363B; --hero2:#0B5A61; --link:#7FD3CF; --hi:#7FD3CF; --hi-soft:#173634; color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0A1415; --surface:#122022; --sunk:#1A2C2E; --ink:#E6F2F1; --muted:#9DB8B6; --line:#28403F; --hero:#08363B; --hero2:#0B5A61; --link:#7FD3CF; --hi:#7FD3CF; --hi-soft:#173634; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+a{color:var(--link);text-decoration:none;font-weight:700}
+button{font:inherit;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:14px 16px 64px}
+.hero{position:relative;overflow:hidden;background:radial-gradient(110% 90% at 90% 0%,rgba(255,200,87,.28),transparent 55%),linear-gradient(160deg,var(--hero2),var(--hero));color:var(--hero-ink);padding:16px 16px 18px;padding-top:max(16px,env(safe-area-inset-top))}
+.hero .in{max-width:880px;margin:0 auto;position:relative}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero h1{font-size:25px;margin:10px 0 2px}
+.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.1);border-radius:14px;padding:9px 10px;min-width:0}
+.kpi b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.2}
+.kpi span{color:var(--hero-muted);font-size:12px;display:block;line-height:1.3}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.chips button.on{background:var(--hi);border-color:var(--hi);color:var(--bg)}
+.chips button i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:6px;vertical-align:1px}
+.flt{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13.5px;font-weight:700}
+.flt button{border:0;background:var(--sunk);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:800;cursor:pointer}
+section{margin-bottom:18px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.sh h2{font-size:18px}.sh small{color:var(--muted);font-size:13px}
+.empty{color:var(--muted);text-align:center;padding:18px 12px;font-size:14.5px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.list>*+*{border-top:1px solid var(--line)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+/* regions north to south */
+.rg .row{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:none;border:0;padding:10px 14px;cursor:pointer}
+.rg .ic{flex:none;width:34px;height:34px;border-radius:10px;background:var(--hi-soft);display:grid;place-items:center;font-size:18px}
+.rg .b{flex:1;min-width:0}.rg .b b{display:block;font-size:15px;font-family:var(--f-display)}
+.rg .bar2{display:block;height:7px;border-radius:4px;background:var(--sunk);margin-top:4px;overflow:hidden}.rg .bar2 u{display:block;height:100%;background:linear-gradient(90deg,#2E6BD9,#5FA8F5);border-radius:4px}
+.rg .n{flex:none;font-family:var(--f-display);font-weight:800;font-size:17px;min-width:34px;text-align:left}
+.rg .n small{display:block;font-family:var(--f-body);font-size:11.5px;color:var(--muted);font-weight:600}
+.rg .ch{flex:none;color:var(--muted);transition:transform .2s}.rg.open .ch{transform:rotate(-90deg)}
+.rg.open .det{grid-template-rows:1fr}
+.pl{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:14.5px;border-top:1px solid var(--line)}
+.pl .nm{flex:1;min-width:0}.pl .x{font-size:12px;font-weight:800;background:var(--hi-soft);color:var(--hi);border-radius:999px;padding:0 7px}
+.pl .dt{font-size:12.5px;color:var(--muted)}
+.pl a{flex:none;font-size:15px;opacity:.85}
+.srch{width:100%;border:1px solid var(--line);border-radius:12px;padding:9px 12px;font:inherit;font-size:15px;background:var(--surface);color:var(--ink);margin-bottom:8px}
+.nx{font-size:14.5px;font-weight:700}
+/* countries */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:6px}
+.cg{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 6px;text-align:center;cursor:pointer;min-width:0}
+.cg.on{border-color:var(--hi);background:var(--hi-soft)}
+.cg .f{display:block;font-size:28px;line-height:1.15}
+.cg .n{display:block;font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cg .c{display:block;font-size:12px;color:var(--muted)}
+/* years chart */
+.yc{display:flex;align-items:flex-end;gap:2px;height:150px;padding-top:8px;direction:ltr}
+.yc .y{flex:1;min-width:0;display:flex;flex-direction:column-reverse;gap:1px;cursor:pointer;height:100%;justify-content:flex-start;position:relative}
+.yc .y u{display:block;border-radius:2px}
+.yc .y.on{outline:2px solid var(--hi);outline-offset:1px;border-radius:3px}
+.yx{display:flex;justify-content:space-between;direction:ltr;font-size:11.5px;color:var(--muted);margin-top:4px}
+.ytip{margin-top:8px;font-size:13.5px;min-height:21px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-inline-end:5px}
+/* trip rows */
+.yr{font-family:var(--f-display);font-weight:800;font-size:14px;color:var(--muted);padding:8px 14px 4px;background:var(--sunk)}
+.tr .row{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:none;border:0;padding:10px 14px;cursor:pointer}
+.tr .fl{flex:none;width:46px;font-size:21px;line-height:1.1;text-align:center;letter-spacing:1px;overflow:hidden}
+.tr .b{flex:1;min-width:0}
+.tr .t{font-family:var(--f-display);font-weight:700;font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr .s{display:flex;flex-wrap:wrap;gap:2px 8px;font-size:13px;color:var(--muted);align-items:center}
+.tr .s bdi{color:var(--ink);font-weight:700}
+.tp{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:0 7px;color:#fff}
+.tr .ch{flex:none;color:var(--muted);font-size:14px;transition:transform .2s}
+.tr.open .ch{transform:rotate(-90deg)}
+.det{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease}
+.tr.open .det{grid-template-rows:1fr}
+.det>div{overflow:hidden}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px;padding:0 14px 12px 14px;margin:0}
+.kv dt{color:var(--muted);font-weight:700}.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.new{font-size:11.5px;font-weight:800;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:0 7px}
+/* costs */
+.cr{display:flex;align-items:center;gap:10px;padding:9px 14px;font-size:14px}
+.cr .fl{flex:none;width:30px;font-size:19px;text-align:center}
+.cr .b{flex:1;min-width:0}.cr .b b{display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cr .b small{color:var(--muted)}
+.cr .v{flex:none;text-align:left;font-family:var(--f-display);font-weight:800}
+.cr .v small{display:block;font-family:var(--f-body);font-weight:600;font-size:12px;color:var(--muted)}
+/* insights */
+.ins{display:grid}.ins details{border-top:1px solid var(--line)}.ins details:first-child{border-top:0}
+.ins summary{list-style:none;cursor:pointer;padding:11px 14px;font-weight:700;font-size:14.5px}
+.ins summary::-webkit-details-marker{display:none}
+.ins p{margin:0;padding:0 14px 12px;font-size:14px;line-height:1.55;color:var(--ink)}
+.lnk{display:flex;flex-wrap:wrap;gap:8px}
+.lnk a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px}
+footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
+@media (max-width:420px){.kpi b{font-size:17px}.hero h1{font-size:22px}.kpis{gap:6px}.kpi{padding:8px 7px}}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=9">
+<script src="dash-sub.js?v=9" defer></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+<script src="sq-icons.js?v=2"></script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"></div></header>
+<div class="wrap">
+  <main id="app"><div class="empty">טוען…</div></main>
+  <footer id="foot"></footer>
+</div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https:\/\//.test(u||"")?u:"";
+const arr=a=>Array.isArray(a)?a:[];
+const dd=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(d||"");return m?`${+m[3]}.${+m[2]}.${m[1].slice(2)}`:"";};
+const pics=q=>"https://www.google.com/search?udm=2&q="+encodeURIComponent(q);
+const maps=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
+const UI="sq_il_ui";let ui={rg:{},q:""};try{Object.assign(ui,JSON.parse(sessionStorage.getItem(UI)||"{}"));}catch(e){}
+function save(){try{sessionStorage.setItem(UI,JSON.stringify(ui));}catch(e){}}
+let I=null;
+function hero(){const T=arr(I.trips),R=arr(I.regions).filter(r=>r&&r.name);
+  const K=[[I.visits!=null?I.visits:"—","טיולים"],[I.places!=null?I.places:T.length,"מקומות"],[I.per_year!=null?I.per_year:"—","בשנה"],[R.filter(r=>+r.n>0).length+"/"+(R.length||10),"אזורים"]];
+  return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a></div>
+  <h1>🇮🇱 כל הטיולים בארץ</h1>
+  <p class="sub">מאז ${esc(I.since||"")}${I.as_of?" · נכון ל-"+esc(I.as_of):""}</p>
+  <div class="kpis">${K.map(k=>`<div class="kpi"><b>${esc(k[0])}</b><span>${esc(k[1])}</span></div>`).join("")}</div>`;}
+function place(t){return `<div class="pl" data-sq-item="${esc(t.n)}"><span class="nm">${esc(t.n)}</span>${(+t.v||1)>1?`<span class="x">×${+t.v}</span>`:""}${t.d?`<bdi class="dt" dir="ltr">${esc(dd(t.d))}</bdi>`:""}<a href="${esc(maps(t.n+", ישראל"))}" target="_blank" rel="noopener" aria-label="Google Maps">📍</a><a href="${esc(pics(t.n+", ישראל"))}" target="_blank" rel="noopener" aria-label="תמונות">📷</a></div>`;}
+const srt=(a,b)=>(b.d||"").localeCompare(a.d||"")||String(a.n).localeCompare(String(b.n),"he");
+function regions(){const T=arr(I.trips).filter(t=>t&&t.n),R=arr(I.regions).filter(r=>r&&r.name);const mx=Math.max(1,...R.map(r=>+r.n||0));
+  return `<section class="calm-off"><div class="sh"><h2>🗺️ מצפון לדרום</h2><small>${R.length} אזורים</small></div><div class="list">${R.map(r=>{const L=T.filter(t=>t.r===r.name).sort(srt),o=ui.rg[r.name];
+    return `<div class="rg${o?" open":""}"><button class="row" data-rg="${esc(r.name)}"><span class="ic">${esc(r.icon||"📍")}</span><span class="b"><b>${esc(r.name)}</b><span class="bar2"><u style="width:${Math.round((+r.n||0)/mx*100)}%"></u></span></span><span class="n">${+r.n||0}<small>${L.length} מקומות</small></span><span class="ch">‹</span></button>
+    <div class="det"><div>${L.map(place).join("")}</div></div></div>`;}).join("")}</div></section>`;}
+function recent(){const R=arr(I.recent);if(!R.length&&!I.next)return "";
+  return `<section class="calm-off"><div class="sh"><h2>🆕 אחרונים</h2></div><div class="list">${R.map(x=>`<div class="pl"><span class="nm">🌿 ${esc(x.name)}</span><span class="dt">${esc(x.date||"")}</span></div>`).join("")}${I.next?`<div class="pl"><span class="nm nx">➡️ ${esc(I.next)}</span></div>`:""}</div></section>`;}
+function ideas(){const L=arr(I.ideas).filter(x=>x&&!x._deleted&&(x.t||x.url));if(!L.length)return "";
+  return `<section><div class="sh"><h2>💡 רעיונות לטיולים</h2><small>${L.length}</small></div><div class="list">${L.map(x=>{const u=safe(x.url);return `<div class="pl"><span class="nm">${u?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(x.t||"לינק")}</a>`:esc(x.t)}</span>${x.area?`<span class="dt">${esc(x.area)}</span>`:""}</div>`;}).join("")}</div></section>`;}
+function allPlaces(){const q=ui.q.trim(),T=arr(I.trips).filter(t=>t&&t.n&&(!q||String(t.n).includes(q)||String(t.r||"").includes(q))).sort(srt);
+  return `<section><div class="sh"><h2>📋 כל המקומות</h2><small>${arr(I.trips).length}</small></div><input class="srch" id="q" type="search" placeholder="חיפוש מקום או אזור" value="${esc(ui.q)}"><div class="list" id="pl">${T.map(place).join("")||'<div class="empty">לא נמצא</div>'}</div></section>`;}
+function links(){const L=arr(I.links).filter(l=>safe(l.url)&&!/claude\.ai\/code\//.test(l.url));if(!L.length)return "";
+  return `<section class="calm-off"><div class="lnk">${L.map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div></section>`;}
+function render(){if(!I)return;$("hero").innerHTML=hero();
+  $("app").innerHTML=recent()+regions()+ideas()+allPlaces()+links();
+  $("foot").innerHTML=`טיולים בארץ ${esc(window.IL_BUILD)} · מהמאגר של הביקורים · מתעדכן אחרי כל טיול`;}
+document.addEventListener("click",e=>{const r=e.target.closest("[data-rg]");if(r){const k=r.dataset.rg;ui.rg[k]=!ui.rg[k];save();r.parentElement.classList.toggle("open",!!ui.rg[k]);}});
+document.addEventListener("input",e=>{if(e.target.id!=="q")return;ui.q=e.target.value;save();const q=ui.q.trim();const T=arr(I.trips).filter(t=>t&&t.n&&(!q||String(t.n).includes(q)||String(t.r||"").includes(q))).sort(srt);$("pl").innerHTML=T.map(place).join("")||'<div class="empty">לא נמצא</div>';});
+window.claude.use("db").then(db=>{if(!db)return;db.doc("settings/travel_hub").onSnapshot(x=>{const v=x&&x.exists?x.data():{};I=v.israel||{};render();},()=>{});});
+})();
+</script>
+<script src="sq-tel.js?v=2" defer></script>
+<script src="sq-calm.js?v=2"></script>
+</body>
+</html>
