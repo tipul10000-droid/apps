@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.30";window.SQ_BUILD_AT="21.11.2026 19:37";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.31";window.SQ_BUILD_AT="21.11.2026 19:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1526,6 +1526,52 @@ details.more[open]>summary{margin-bottom:10px}
 .f-foot .danger{color:var(--due)}
 /* the current window */
 /* 24.1 (Oren 19.11.2026): project capsule banner at the top of a quest (settings/quest_info.<quest>, e.g. RWMTC in Work Quest). Folded line, tap opens the facts. */
+.wft{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden;box-shadow:inset 4px 0 0 var(--qlead)}
+.wft>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;min-height:56px}
+.wft>summary::-webkit-details-marker,.wf-s>summary::-webkit-details-marker{display:none}
+.wf-sl{width:34px;height:34px;object-fit:contain;flex:none;border-radius:8px;background:#fff;padding:3px;border:1px solid var(--line)}
+.wf-sln{display:grid;place-items:center;font-size:18px}
+.wf-tt{display:flex;flex-direction:column;min-width:0;flex:1}
+.wf-tt b{font-size:15px}
+.wf-tt small{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wf-chip{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;width:84px;min-height:40px;border-radius:10px;background:var(--sunk);color:var(--ink);line-height:1.1;font-variant-numeric:tabular-nums}
+.wf-chip small{font-size:10.5px;color:var(--muted)}.wf-chip b{font-size:17px}
+.wf-chip.taxi{background:var(--qlead);color:#fff}.wf-chip.taxi small{color:rgba(255,255,255,.85)}
+.wf-chip.air{font-size:12px;font-weight:600;text-align:center;padding:0 4px}
+.wf-b{padding:0 12px 12px;display:grid;gap:8px;animation:sqgrow .22s ease}
+.wf-taxi{display:flex;gap:10px;align-items:center;border-radius:12px;background:var(--sunk);padding:10px 12px}
+.wf-taxi>span{font-size:22px}.wf-taxi b{display:block;font-size:15px;font-variant-numeric:tabular-nums}.wf-taxi small{color:var(--muted);font-size:12.5px}
+.wf-s{border-top:1px solid var(--line)}
+.wf-s>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 0;min-height:44px}
+.wf-si{font-size:18px;width:22px;text-align:center}
+.wf-st{display:flex;flex-direction:column;min-width:0;flex:1}.wf-st b{font-size:14px}
+.wf-st small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wf-ch{color:var(--muted);transition:transform .2s}.wf-s[open] .wf-ch{transform:rotate(-90deg)}
+.wf-sb{display:grid;gap:8px;padding:0 0 10px;animation:sqgrow .22s ease}
+.wf-leg{display:grid;gap:6px;border-radius:12px;background:var(--sunk);padding:10px}
+.wf-lh{display:flex;align-items:center;gap:8px}.wf-lh b{font-size:14px;flex:1}.wf-lh small{color:var(--muted);font-size:12px}
+.wf-al{height:22px;max-width:90px;object-fit:contain}.wf-aln{font-weight:700;font-size:13px}
+.wf-rt{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.wf-rt>div{display:flex;flex-direction:column}.wf-rt b{font-size:20px;font-variant-numeric:tabular-nums}.wf-rt small{color:var(--muted);font-size:12px}
+.wf-rt>div:last-child{text-align:left}.wf-ar{color:var(--muted)}
+.wf-acts{display:flex;flex-wrap:wrap;gap:8px}
+.wf-btn,.wf-cp,.wf-gm,.wf-mail{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px;font-weight:600;text-decoration:none;cursor:pointer}
+.wf-btn{background:var(--qlead);border-color:var(--qlead);color:#fff}
+.wf-cp .wf-cpv{font-variant-numeric:tabular-nums;letter-spacing:.04em;direction:ltr}
+.wf-cp.ok{background:#1f9d55;border-color:#1f9d55;color:#fff}
+.wf-gmi{display:inline-flex;width:12px;height:17px}.wf-gmi svg{width:100%;height:100%}
+.wf-kv{display:grid;grid-template-columns:minmax(76px,28%) 1fr;gap:8px;font-size:13.5px}
+.wf-kv>span{color:var(--muted)}.wf-kv>div{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;min-width:0}.wf-kv small{color:var(--muted);font-size:12px;width:100%}
+.wf-kv a{color:var(--ink);font-weight:600}
+.wf-note{font-size:12.5px;color:var(--muted)}
+.wf-bring{font-size:13.5px}.wf-bring ul{margin:4px 0 0;padding-inline-start:18px;display:grid;gap:2px}
+.wf-q{border-top:1px solid var(--line);padding-top:8px;display:grid;gap:6px}.wf-q b{font-size:13.5px}
+.wf-qo{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.wf-qo button{font:inherit;font-size:13.5px;text-align:start;padding:9px 12px;min-height:40px;background:var(--surface);color:var(--ink);border:0;border-top:1px solid var(--line);cursor:pointer}
+.wf-qo button:first-child{border-top:0}.wf-qo button.on{background:var(--qlead);color:#fff}
+.wf-mail{justify-self:start}
+.wft a[href^="tel:"],.wft .wf-kv a[href*="wa.me"]:not(.wf-wa){direction:ltr;unicode-bidi:isolate;display:inline-block}
+.wf-qs{display:grid;gap:8px}
 .qinfo{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
 .qinfo>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;min-height:44px}
 .qinfo>summary::-webkit-details-marker{display:none}
@@ -4525,7 +4571,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(C.rem.length)top.unshift(foldRows("rem",catT("rem","תזכורות להיום"),C.rem.sort(byDate)));
     if(C.remL.length){const rk=t=>String(t.sleep_until||(t.snooze_until&&t.snooze_until!=="someday"?String(t.snooze_until).slice(0,10):"")||t.next_date||"9999");
       more.push(foldRows("remL",catT("rem","תזכורות בהמשך"),C.remL.sort((a,b)=>rk(a).localeCompare(rk(b)))));}
-    top.unshift(...qInfoBanners());
+    top.unshift(...wfTickets(),...qInfoBanners());
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
     $("doneSec").replaceChildren(...[foldRows("done",catT("done"),doneL)].filter(Boolean));
@@ -5065,6 +5111,80 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   //  Detours are computed live in the browser (OSRM public table API, no traffic): net drive added = A->P->B minus A->B, and with the minimal stop.
   let tvZ="abroad";try{if(localStorage.getItem("sq_tv_z")==="il")tvZ="il";}catch(e){}
   let abTab="trip";try{if(localStorage.getItem("sq_tv_ab")==="work")abTab="work";}catch(e){}
+  // 25.31 (Oren 21.11.2026): "next work flight" ticket on top of Work Quest. Work trips only. Data: collection work_flights, one doc per trip,
+  // built from the travel-agency mail Oren forwards from his Elbit mail to Gmail (routine-hourly.md, "נסיעת עבודה: טיקט טיסה").
+  // {title, city, flag, ref, taxi_min (default 150 = 2.5h before take-off, Oren's rule), legs[{no, airline, logo, from{city,code,t}, to{city,code,t}, dep, arr (ISO with offset), dur, seat, cls, bag, checkin, eticket, ff}],
+  //  hotel{name, addr, maps_q, phone, wa, email, url, res, in, out, nights, plan, notes[]}, car{supplier, model, conf, voucher, pick{at,loc,addr,tel,maps_q}, drop{...}, bring[], notes[]},
+  //  sos[{l, tel, wa, note}], mail_url, questions[{id,q,options[]}], ans{id:label}, _deleted}
+  let wfDocs=[];const wfOpen={};
+  const wfMs=s=>{const t=Date.parse(s||"");return isNaN(t)?null:t;};
+  const wfHM=s=>String(s||"").slice(11,16);
+  const wfDay=s=>{const m=String(s||"").match(/^(\d{4})-(\d{2})-(\d{2})/);if(!m)return "";const d=new Date(Date.UTC(+m[1],+m[2]-1,+m[3]));return ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"][d.getUTCDay()]+" "+(+m[3])+"."+(+m[2]);};
+  const wfIL=ms=>new Date(ms).toLocaleTimeString("he-IL",{timeZone:"Asia/Jerusalem",hour:"2-digit",minute:"2-digit",hour12:false});
+  const wfIn=ms=>{const m=Math.round(ms/60000);if(m<60)return m+" דק׳";const hh=Math.floor(m/60);if(hh<48)return hh+" שע׳"+(m%60&&hh<10?" "+(m%60)+" דק׳":"");return Math.round(hh/24)+" ימים";};
+  const wfMaps=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q||"");
+  const WF_GM='<svg viewBox="0 0 92 132" aria-hidden="true"><path d="M60.2 2.2C55.8.8 51 0 46.1 0 32 0 19.3 6.4 10.8 16.5l21.8 18.3L60.2 2.2z" fill="#1a73e8"/><path d="M10.8 16.5C4.1 24.5 0 34.9 0 46.1c0 8.7 1.7 15.7 4.6 22l28-33.3-21.8-18.3z" fill="#ea4335"/><path d="M46.2 28.5c9.8 0 17.7 7.9 17.7 17.7 0 4.3-1.6 8.3-4.2 11.4 0 0 13.9-16.6 27.5-32.7-5.6-10.8-15.3-19-27-22.7L32.6 34.8c3.3-3.8 8.1-6.3 13.6-6.3" fill="#4285f4"/><path d="M46.2 63.8c-9.8 0-17.7-7.9-17.7-17.7 0-4.3 1.5-8.3 4.1-11.3l-28 33.3c4.8 10.6 12.8 19.2 21 29.9l34.1-40.5c-3.3 3.9-8.1 6.3-13.5 6.3" fill="#fbbc04"/><path d="M59.1 109.2c15.4-24.1 33.3-35 33.3-63 0-7.7-1.9-14.9-5.2-21.3L25.6 98c2.6 3.4 5.3 7.3 7.9 11.3 9.4 14.5 6.8 23.1 12.8 23.1s3.4-8.7 12.8-23.2" fill="#34a853"/></svg>';
+  function wfCopy(txt,lbl){return h("button",{type:"button",class:"wf-cp",onclick:e=>{e.stopPropagation();const b=e.currentTarget;
+    const ok=()=>{b.classList.add("ok");toast((lbl||"")+" "+txt+" הועתק");setTimeout(()=>b.classList.remove("ok"),1500);};
+    try{navigator.clipboard.writeText(txt).then(ok,()=>toast("לא הצלחתי להעתיק"));}catch(x){toast("לא הצלחתי להעתיק");}}},h("span",{class:"wf-cpv"},txt),h("span",{class:"wf-cpi","aria-hidden":"true"},"⧉"));}
+  function wfGm(q,label){return h("a",{class:"wf-gm",href:wfMaps(q),target:"_blank",rel:"noopener",onclick:e=>e.stopPropagation()},h("span",{class:"wf-gmi",html:WF_GM}),label||"Google Maps");}
+  function wfTaxi(d,l){if(!l||(l.from&&l.from.code)!=="TLV")return null;const dep=wfMs(l.dep);if(dep==null)return null;return dep-(Number(d.taxi_min)||150)*60000;}
+  function wfLive(){const now=Date.now();return wfDocs.filter(d=>!d._deleted&&Array.isArray(d.legs)&&d.legs.length).map(d=>{const legs=d.legs.slice().sort((a,b)=>(wfMs(a.dep)||0)-(wfMs(b.dep)||0));
+      const first=wfMs(legs[0].dep),last=wfMs(legs[legs.length-1].arr)||wfMs(legs[legs.length-1].dep);return {d,legs,first,last};})
+    .filter(x=>x.first&&x.last&&now<x.last+6*3600000&&now>x.first-21*86400000).sort((a,b)=>a.first-b.first);}
+  function wfSec(key,icon,title,sub,body){const k=key;const d=h("details",{class:"wf-s"},h("summary",null,h("span",{class:"wf-si","aria-hidden":"true"},icon),h("span",{class:"wf-st"},h("b",null,title),sub?h("small",null,sub):null),h("span",{class:"wf-ch","aria-hidden":"true"},"‹")),h("div",{class:"wf-sb"},...body));
+    if(wfOpen[k])d.open=true;d.addEventListener("toggle",()=>{wfOpen[k]=d.open;});return d;}
+  const wfKV=(k,v)=>v==null||v===""?null:h("div",{class:"wf-kv"},h("span",null,k),h("div",null,v));
+  function wfLeg(d,l){const lg=String(l.logo||"").replace(/[^a-z0-9._-]/gi,"");
+    return h("div",{class:"wf-leg"},
+      h("div",{class:"wf-lh"},lg?h("img",{class:"wf-al",src:"../trips/img/"+lg,alt:l.airline||""}):h("span",{class:"wf-aln"},l.airline||""),
+        h("b",null,(l.no||"")+" · "+wfDay(l.dep)),h("small",null,l.dur||"")),
+      h("div",{class:"wf-rt"},h("div",null,h("b",null,wfHM(l.dep)),h("small",null,(l.from&&l.from.city||"")+(l.from&&l.from.t?" · טרמינל "+l.from.t:""))),
+        h("span",{class:"wf-ar","aria-hidden":"true"},"←"),
+        h("div",null,h("b",null,wfHM(l.arr)),h("small",null,(l.to&&l.to.city||"")+(l.to&&l.to.t?" · טרמינל "+l.to.t:"")))),
+      h("div",{class:"wf-acts"},safeUrl(l.checkin||"")?h("a",{class:"wf-btn",href:safeUrl(l.checkin),target:"_blank",rel:"noopener",onclick:e=>e.stopPropagation()},"צ׳ק-אין"):null,
+        (l.ref||d.ref)?wfCopy(l.ref||d.ref,"מספר הזמנה"):null),
+      wfKV("מושב",l.seat),wfKV("מחלקה",l.cls),wfKV("כבודה",l.bag),wfKV("נוסע מתמיד",l.ff),wfKV("כרטיס",l.eticket));}
+  function wfAnswer(d,q,op){if(!db||!canWrite)return;const ans={...(d.ans||{}),[q.id]:op};const now=new Date().toISOString();
+    db.collection("work_flights").doc(d.id).update({ans,updated_at:now}).then(()=>toast("נשמר. Claude ימשיך מכאן"),()=>toast("השמירה נכשלה"));}
+  function wfTickets(){if(quest!=="work")return [];const now=Date.now();
+    return wfLive().map(({d,legs})=>{
+      const nx=legs.find(l=>(wfMs(l.arr)||wfMs(l.dep))>now)||legs[legs.length-1];
+      const dep=wfMs(nx.dep),arr=wfMs(nx.arr),inAir=dep<=now&&arr>now,tx=wfTaxi(d,nx);
+      const H=d.hotel||{},C=d.car||{};
+      let chip;if(inAir)chip=h("span",{class:"wf-chip air"},"בטיסה · נוחת "+wfHM(nx.arr));
+      else if(tx&&tx>now-15*60000)chip=h("span",{class:"wf-chip taxi"},h("small",null,"למטה למונית"),h("b",null,wfIL(tx)));
+      else if(C.drop&&C.drop.at&&legs.indexOf(nx)>0&&wfMs(C.drop.at)>now)chip=h("span",{class:"wf-chip"},h("small",null,"להחזיר רכב"),h("b",null,wfHM(C.drop.at)));
+      else chip=h("span",{class:"wf-chip"},h("small",null,"המראה"),h("b",null,wfHM(nx.dep)));
+      const lg=String(nx.logo_s||nx.logo||"").replace(/[^a-z0-9._-]/gi,"");
+      const cd=dep>now?"בעוד "+wfIn(dep-now):(inAir?"":"");
+      const det=h("details",{class:"wft","data-sq-item":"wf-"+d.id},
+        h("summary",null,lg?h("img",{class:"wf-sl",src:"../trips/img/"+lg,alt:nx.airline||""}):h("span",{class:"wf-sl wf-sln","aria-hidden":"true"},"✈️"),
+          h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(d.title||"טיסת עבודה")),h("small",null,[nx.no,wfDay(nx.dep)+" "+wfHM(nx.dep),cd].filter(Boolean).join(" · "))),
+          chip),
+        h("div",{class:"wf-b"},
+          tx&&tx>now-15*60000?h("div",{class:"wf-taxi"},h("span",{"aria-hidden":"true"},"🚕"),h("div",null,h("b",null,"להיות למטה למונית: "+wfDay(nx.dep)+" "+wfIL(tx)),h("small",null,((Number(d.taxi_min)||150)===150?"שעתיים וחצי":wfIn((Number(d.taxi_min)||150)*60000))+" לפני ההמראה ב-"+wfHM(nx.dep)))):null,
+          wfSec(d.id+":fl","✈️","טיסות",legs.map(l=>l.no).join(" · "),legs.map(l=>wfLeg(d,l))),
+          H.name?wfSec(d.id+":ht","🏨",H.name,[H.nights?H.nights+" לילות":"",H.in?"צ׳ק-אין "+H.in:"",H.plan||""].filter(Boolean).join(" · "),[
+            H.addr?h("div",{class:"wf-kv"},h("span",null,"כתובת"),h("div",null,H.addr)):null,
+            h("div",{class:"wf-acts"},wfGm(H.maps_q||((H.name||"")+" "+(H.addr||""))),H.res?wfCopy(H.res,"מספר הזמנה"):null),
+            wfKV("כניסה",H.in),wfKV("יציאה",H.out),
+            H.phone?h("div",{class:"wf-kv"},h("span",null,"טלפון"),h("div",null,h("a",{href:"tel:"+String(H.phone).replace(/[^\d+]/g,"")},H.phone))):null,
+            H.wa?h("div",{class:"wf-kv"},h("span",null,"וואטסאפ"),h("div",null,h("a",{href:"https://wa.me/"+String(H.wa).replace(/\D/g,""),target:"_blank",rel:"noopener"},H.wa))):null,
+            ...(Array.isArray(H.notes)?H.notes:[]).map(n=>h("div",{class:"wf-note"},n))]):null,
+          C.supplier?wfSec(d.id+":car","🚗","רכב: "+C.supplier,[C.model,C.pick&&C.pick.at?"איסוף "+wfDay(C.pick.at)+" "+wfHM(C.pick.at):""].filter(Boolean).join(" · "),[
+            C.pick?h("div",{class:"wf-kv"},h("span",null,"איסוף"),h("div",null,wfDay(C.pick.at)+" "+wfHM(C.pick.at)+" · "+(C.pick.loc||""),C.pick.addr?h("small",null,C.pick.addr):null)):null,
+            C.drop?h("div",{class:"wf-kv"},h("span",null,"החזרה"),h("div",null,wfDay(C.drop.at)+" "+wfHM(C.drop.at)+" · "+(C.drop.loc||""))):null,
+            h("div",{class:"wf-acts"},C.pick&&C.pick.maps_q?wfGm(C.pick.maps_q,"איפה הדלפק"):null,C.conf?wfCopy(C.conf,"אישור"):null),
+            wfKV("שובר",C.voucher),
+            C.pick&&C.pick.tel?h("div",{class:"wf-kv"},h("span",null,"טלפון"),h("div",null,h("a",{href:"tel:"+String(C.pick.tel).replace(/[^\d+]/g,"")},C.pick.tel))):null,
+            Array.isArray(C.bring)&&C.bring.length?h("div",{class:"wf-bring"},h("b",null,"להביא לדלפק"),h("ul",null,...C.bring.map(x=>h("li",null,x)))):null,
+            ...(Array.isArray(C.notes)?C.notes:[]).map(n=>h("div",{class:"wf-note"},n))]):null,
+          Array.isArray(d.sos)&&d.sos.length?wfSec(d.id+":sos","☎️","חירום וסוכנות",d.sos.map(s=>s.l).join(" · "),d.sos.map(s=>h("div",{class:"wf-kv"},h("span",null,s.l),
+            h("div",null,s.tel?h("a",{href:"tel:"+String(s.tel).replace(/[^\d+]/g,"")},s.tel):null,s.wa?h("a",{class:"wf-wa",href:"https://wa.me/"+String(s.wa).replace(/\D/g,""),target:"_blank",rel:"noopener"},"וואטסאפ"):null,s.note?h("small",null,s.note):null)))):null,
+          (()=>{const Q=(Array.isArray(d.questions)?d.questions:[]).filter(q=>q&&q.id&&!(d.ans||{})[q.id]);return Q.length?wfSec(d.id+":q","❓","שאלות אליך",Q.length+" לבחירה",Q.map(q=>h("div",{class:"wf-q"},h("b",null,q.q),h("div",{class:"wf-qo"},...(q.options||[]).map(op=>h("button",{type:"button",onclick:e=>{e.stopPropagation();e.currentTarget.classList.add("on");wfAnswer(d,q,String(op));}},String(op))))))):null;})(),
+          safeUrl(d.mail_url||"")?h("a",{class:"wf-mail",href:safeUrl(d.mail_url),target:"_blank",rel:"noopener"},"המייל המקורי ›"):null));
+      if(wfOpen[d.id])det.open=true;det.addEventListener("toggle",()=>{wfOpen[d.id]=det.open;});return det;});}
   let wsDocs=[];const wsUI={};const wsCalc={};
   const WS_AX={west:"🌊 חוף",mid:"🏞️ אמצע",east:"⛰️ מזרח"};
   function wsFmt(m){m=Math.round(m);if(m<60)return m+" דק׳";return Math.floor(m/60)+":"+String(m%60).padStart(2,"0")+" ש׳";}
@@ -6842,6 +6962,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     db.collection("housing").onSnapshot(s=>{houseDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("shopping").onSnapshot(s=>{shopDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("food").onSnapshot(s=>{foodDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
+    db.collection("work_flights").onSnapshot(s=>{wfDocs=s.docs.map(d=>({id:d.id,...d.data()}));if(quest==="work")renderMain();},()=>{});
     db.collection("workstops").onSnapshot(s=>{wsDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderTravel();},()=>{});
     db.collection("knowledge").onSnapshot(s=>{knowDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("work_knowledge").onSnapshot(s=>{wknowDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
