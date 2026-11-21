@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.18";window.SQ_BUILD_AT="21.11.2026 14:35";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.19";window.SQ_BUILD_AT="21.11.2026 14:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1082,6 +1082,17 @@ body.q-travel .tvzone.updhide{display:none}body.q-travel .tvzone{display:flex;fl
 .hx-card b{display:block;font-size:15.5px;font-family:"Rubik",var(--f-display)}
 .hx-card .hx-k{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12.5px;color:var(--muted)}
 .hx-card .hx-k strong{color:var(--ink);font-size:14px;margin-inline-end:3px}
+.il-sum{display:block;width:100%;margin-top:8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);padding:10px 8px;text-align:right;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.il-rg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 4px}
+.il-r{display:flex;flex-direction:column;align-items:center;min-width:0;line-height:1.15}
+.il-r i{font-style:normal;font-size:20px}
+.il-r b{font-family:"Rubik",var(--f-display);font-size:16px;margin-top:2px}
+.il-r small{font-size:10.5px;color:var(--muted);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.il-new{display:block;margin-top:10px;padding:8px 6px 0;border-top:1px solid var(--line)}
+.il-new em{display:block;font-style:normal;font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:2px}
+.il-nw{display:flex;gap:8px;align-items:baseline;font-size:14px;padding:2px 0}
+.il-nw .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.il-nw bdi{flex:none;font-size:12px;color:var(--muted)}
 .hx-card .hx-go{font-size:20px;color:var(--muted);font-weight:800}
 .tz-nav .zic{display:inline-flex;vertical-align:-3px;margin-inline-end:7px}
 .tz-nav .zic svg{display:block}
@@ -5121,6 +5132,12 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const il=h("section",{class:"tz tz-il-z"},
       zoneHead("il","טיולים בארץ",`${ilVis!=null?ilVis+" טיולים · ":""}מאז ${I.since||"12/2017"}`,IL_BANNER),
       hxCard("travel-israel","כל הטיולים בארץ",[[ilVis!=null?ilVis:"—"," טיולים"],[ilPl!=null?ilPl:"—"," מקומות"],[regs.length?regs.length+"/10":""," אזורים"]],IL_FLAG),
+      // 25.19 (Oren 21.11.2026): on the zone itself a short summary only: every region = emoji + number (north to south),
+      // and the places from the latest trips. Everything deeper (places per region, search, ideas) lives in israel.html.
+      regs.length?h("button",{type:"button",class:"il-sum",onclick:()=>openDash("travel-israel"),"aria-label":"טיולים לפי אזורים"},
+        h("span",{class:"il-rg"},regs.map(r=>h("span",{class:"il-r",title:r.name},h("i",{"aria-hidden":"true"},r.icon||"📍"),h("b",null,String(+r.n||0)),h("small",null,r.name)))),
+        Array.isArray(I.recent)&&I.recent.length?h("span",{class:"il-new"},h("em",null,"🆕 לאחרונה"),
+          I.recent.slice(0,4).map(x=>h("span",{class:"il-nw"},h("span",{class:"nm"},x.name||""),x.date?h("bdi",{dir:"ltr"},String(x.date).replace(/\.20(\d\d)$/,".$1")):null))):null):null,
       zoneDash("il"),
       h("div",{class:"tv-chat"},secChat(secUrl("travel_il",...(I.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),chatOf(allTopics.find(x=>x.id==="family-trips")||{})),"טיולים בארץ","שיחה: טיולים בארץ")));
     // abroad zone
