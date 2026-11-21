@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#25272D">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.6";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.7";</script>
 <script src="sq-db.js?v=10"></script>
 <title>קניות ורכישות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,6 +81,25 @@ section{margin-bottom:22px}
 .st.dropped{background:var(--sunk);color:var(--muted)}
 .st.research{background:var(--pick-soft);color:var(--pick)}
 .addcard{border:2px dashed var(--line);border-radius:16px;background:none;min-height:120px;cursor:pointer;font-weight:800;font-size:16px;color:var(--muted)}
+/* strips: the heart of the dashboard */
+.strips{display:grid;gap:8px}
+.strip{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.strip.on{border-color:var(--pick)}
+.strip .sh2{display:flex;align-items:center;gap:10px;width:100%;min-height:58px;padding:8px 12px;background:none;border:0;color:inherit;text-align:start;cursor:pointer;font:inherit}
+.strip .th{flex:none;width:42px;height:42px;border-radius:10px;background:var(--sunk) center/contain no-repeat;display:grid;place-items:center;font-size:22px}
+.strip .th[style]{background-color:#fff}
+.strip .tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.strip .tx b{font-family:var(--f-display);font-weight:800;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strip .tx small{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strip .qn{flex:none;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:800;background:var(--warn-soft);color:var(--warn)}
+.strip .cv{flex:none;width:18px;text-align:center;font-size:20px;color:var(--muted);transition:transform .2s}
+.strip.on .cv{transform:rotate(-90deg)}
+.strip .sb{padding:2px 12px 12px;border-top:1px solid var(--line);animation:sqgrow .22s ease-out}
+.strip .ln{display:flex;gap:10px;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.strip .ln span{color:var(--muted);flex:none}.strip .ln b{text-align:end;min-width:0}
+.strip .deep{display:block;width:100%;margin:10px 0 2px;padding:11px;border-radius:12px;border:0;background:var(--ink);color:var(--bg);font:inherit;font-weight:800;cursor:pointer}
+.strip .fin{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:8px}
+.addstrip{min-height:46px;border:2px dashed var(--line);border-radius:14px;background:none;cursor:pointer;font:inherit;font-weight:800;color:var(--muted)}
 /* item */
 .ihead{display:flex;gap:12px;align-items:center}
 .ihead .pic{flex:none;width:92px;height:92px;border-radius:14px;background:#fff center/contain no-repeat;border:1px solid rgba(255,255,255,.2)}
@@ -238,15 +257,19 @@ function heroItem(x){const p=pickOf(x),c=cheapest(x),img=safe(x.img)||(p&&safe(p
 
 // ---------- home ----------
 function renderHome(){const L=list();$("hero").innerHTML=heroHome(L);
-  $("bar").innerHTML=`<div class="chipsel">${CATS.map(([k,l])=>`<button data-cat="${k}" class="${ui.cat===k?"on":""}">${l}</button>`).join("")}</div>`;
+  $("bar").innerHTML=L.filter(isOpen).length<9?"":`<div class="chipsel">${CATS.map(([k,l])=>`<button data-cat="${k}" class="${ui.cat===k?"on":""}">${l}</button>`).join("")}</div>`;
   const vis=L.filter(x=>(ui.cat==="all"||x.cat===ui.cat));const open=vis.filter(isOpen),done=vis.filter(x=>!isOpen(x));
   const card=x=>{const p=pickOf(x),c=cheapest(x),img=safe(x.img)||(p&&safe(p.img));const nq=(x.questions||[]).filter(q=>!q.answer&&!q.superseded).length;
     return `<button class="tcard" data-open="${esc(x.id)}"><div class="img" ${img?`style="background-image:url('${esc(img)}')"`:""}>${img?"":`<span class="ic">${esc(x.icon||"🛒")}</span>`}</div><div class="bd">
       ${ARCH[x.status]?`<span class="st ${esc(x.status)}">${ARCH[x.status]}</span> `:""}${nq?`<span class="st deciding">? ${nq} שאלות</span>`:""}
       <div class="t"${ARCH[x.status]||nq?' style="margin-top:6px"':""}>${esc(x.icon||"")} ${esc(x.title)}</div>
       <div class="s">${p?"ההמלצה: "+esc(p.name):esc(x.summary||"")}${c?" · מ-"+ils(c.ils):""}</div></div></button>`;};
-  const ocard=x=>`<div class="tcw">${card(x)}${FIN(x)}</div>`;
-  let h=`<section><div class="sh"><h2>הקניות שלי</h2><small>${open.length}</small></div><div class="grid">${open.map(ocard).join("")}<button class="addcard" data-add>＋ נושא קנייה חדש</button></div></section>`;
+  const strip=x=>{const p=pickOf(x),c=cheapest(x),img=safe(x.img)||(p&&safe(p.img));const nq=(x.questions||[]).filter(q=>!q.answer&&!q.superseded).length;const on=ui.xo===x.id;
+    const sub=[p?esc(p.short||p.brand||p.name):"",c?"מ-"+ils(c.ils):""].filter(Boolean).join(" · ")||esc(x.summary||"");
+    return `<div class="strip${on?" on":""}"><button type="button" class="sh2" data-xo="${esc(x.id)}" aria-expanded="${on}"><span class="th"${img?` style="background-image:url('${esc(img)}')"`:""}>${img?"":esc(x.icon||"🛒")}</span><span class="tx"><b>${esc(x.title)}</b><small>${sub}</small></span>${nq?`<span class="qn">${nq} שאלות</span>`:""}<span class="cv">‹</span></button>
+    ${on?`<div class="sb">${p?`<div class="ln"><span>ההמלצה</span><b>${esc(p.name)}</b></div>`:""}${c?`<div class="ln"><span>הכי זול</span><b>${ils(c.ils)} · ${esc(c.store)}</b></div>`:""}${nq?`<div class="ln"><span>מחכה לך</span><b>${nq} שאלות פתוחות</b></div>`:""}${!p&&!c&&x.summary?`<div class="ln"><b style="font-weight:600">${esc(x.summary)}</b></div>`:""}
+      <button type="button" class="deep" data-open="${esc(x.id)}">להעמקה: אפשרויות, מחירים וביקורות ›</button>${FIN(x)}</div>`:""}</div>`;};
+  let h=`<section class="calm-off buy"><div class="sh"><h2>🛒 בדרך לקנייה</h2><small>${open.length}</small></div><div class="strips">${open.map(strip).join("")}<button type="button" class="addstrip" data-add>＋ משהו חדש לקנות</button></div></section>`;
   h+=guideBlock();
   if(done.length)h+=`<details class="arch"${ui.arch?" open":""}><summary>📦 ארכיון: נקנו או אין צורך · ${done.length}</summary><div class="grid">${done.sort((a,b)=>String(b.archived_at||"").localeCompare(String(a.archived_at||""))).map(card).join("")}</div></details>`;
   $("app").innerHTML=loaded||L.length?h:`<div class="empty">טוען…</div>`;}
@@ -320,6 +343,7 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
     setTimeout(()=>{if(k!=="back"&&curId()===id)goHash("");upd(id,patch,txt,()=>upd(id,{status:prev.status,archived_at:prev.archived_at,updated_at:new Date().toISOString(),log:prev.log},"בוטל"));},300);return;}
   if(b=g(".arch>summary")){setTimeout(()=>{ui.arch=b.parentElement.open;saveUi();},0);}
   if(b=g("[data-cat]")){ui.cat=b.dataset.cat;saveUi();render();return;}
+  if(b=g("[data-xo]")){const id=b.dataset.xo;ui.xo=ui.xo===id?"":id;const y=b.getBoundingClientRect().top;render();const nb=document.querySelector(`[data-xo="${CSS.escape(id)}"]`);if(nb)window.scrollBy(0,nb.getBoundingClientRect().top-y);return;}
   if(b=g("[data-open]")){goHash("i="+encodeURIComponent(b.dataset.open));return;}
   if(g("[data-home]")){EMB?goHash(""):history.length>1&&curId()?history.back():(location.hash="");return;}
   if(b=g("[data-tab]")){ui.tab=b.dataset.tab;saveUi();render();scrollTo(0,0);return;}
