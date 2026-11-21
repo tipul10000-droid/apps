@@ -172,6 +172,9 @@
   function img(base, k) { return k ? (/^(data:|https?:)/.test(k) ? k : base + k + (/\.(png|webp|svg|jpg)$/.test(k) ? "" : ".webp")) : ""; }
   // brand logo next to a name (Oren 19.11.2026): hotel, airline, chain. k = "logo-citizenm.png"
   function logo(base, k) { return k ? '<img class="tp-logo" src="' + esc(img(base, k)) + '" alt="" loading="lazy">' : ""; }
+  // all brand logos of one place (Oren 21.11.2026): chain + the place's own logo. x.logo, x.logo2 or x.logos[]
+  function lgs(x) { if (!x) return []; var a = Array.isArray(x.logos) ? x.logos.slice() : [x.logo, x.logo2]; return a.filter(function (k, i) { return k && a.indexOf(k) === i; }); }
+  function logos(base, x) { return lgs(x).map(function (k) { return logo(base, k); }).join(""); }
 
 
   // ---- gear & preparations (Oren 21.11.2026, a fixed part of every trip ticket abroad) ----
@@ -322,7 +325,7 @@
             '<div class="tp-dt"><small>' + esc((isT ? "היום · " : "") + "יום " + dowOf(d.d) + " " + dShort(d.d) + (d.city ? " · " + d.city : "")) + "</small><b>" + esc(d.title) + "</b>" + (d.sub ? "<span>" + esc(d.sub) + "</span>" : "") + "</div>" + chev() + "</summary>" +
             '<ul class="tp-tl">' + (d.items || []).map(function (it) {
               var nx = isT && !nextDone && it.t && it.t >= hm; if (nx) nextDone = true;
-              return '<li class="' + (it.open ? "open " : "") + (nx ? "next" : "") + '"><span class="t">' + esc(it.t || "") + '</span><span class="e">' + esc(it.e || "•") + '</span><span class="x"><b>' + logo(base, it.logo) + esc(it.h) + "</b>" + (it.s ? "<span>" + esc(it.s) + "</span>" : "") + gml(it) + "</span></li>";
+              return '<li class="' + (it.open ? "open " : "") + (nx ? "next" : "") + '"><span class="t">' + esc(it.t || "") + '</span><span class="e">' + esc(it.e || "•") + '</span><span class="x"><b>' + logos(base, it) + esc(it.h) + "</b>" + (it.s ? "<span>" + esc(it.s) + "</span>" : "") + gml(it) + "</span></li>";
             }).join("") + "</ul>" + (gq(d) ? '<div class="tp-dgl">' + gml(d) + "</div>" : "") + "</details>";
         }).join("") + "</div></section>");
     }
@@ -371,8 +374,8 @@
       SEC.hotels=('<section class="tp-sec"><div class="tp-sh">' + ic("hotel", "e") + '<h2>איפה ישנים</h2><small>' + esc(t.nights_l || "") + "</small></div>" +
         ho.map(function (x) {
           var mu = url(x.maps || "");
-          return '<details class="tp-hotel"><summary><div class="tp-himg">' + (x.img ? '<img src="' + esc(img(base, x.img)) + '" alt="" loading="lazy">' : "") + '<span class="tp-hn">' + esc(x.city || "") + " · " + esc(x.nights_l || "") + "</span></div>" +
-            '<div class="tp-hb"><b>' + logo(base, x.logo) + esc(x.name) + "</b><span>" + esc(x.area || x.addr || "") + "</span></div>" +
+          return '<details class="tp-hotel"><summary><div class="tp-himg">' + (x.img ? '<img src="' + esc(img(base, x.img)) + '" alt="" loading="lazy">' : "") + '<span class="tp-hn">' + esc(x.city || "") + " · " + esc(x.nights_l || "") + "</span>" + (lgs(x).length ? '<span class="tp-hbadge">' + lgs(x).map(function (k) { return '<img src="' + esc(img(base, k)) + '" alt="" loading="lazy">'; }).join("") + "</span>" : "") + "</div>" +
+            '<div class="tp-hb"><b>' + logos(base, x) + esc(x.name) + "</b><span>" + esc(x.area || x.addr || "") + "</span></div>" +
             '<div class="tp-hrow"><span class="tp-pill" dir="rtl">📅 ' + esc(dShort(x.in) + " ← " + dShort(x.out)) + "</span>" + (x.pills || []).map(function (p) { return '<span class="tp-pill ' + esc(p.c || "") + '">' + esc(p.t) + "</span>"; }).join("") + "</div>" +
             '<span class="tp-tap">▾ פרטים</span></summary><div class="tp-more">' + (Array.isArray(x.pics) && x.pics.length ? '<div class="tp-gal tp-hgal">' + x.pics.map(function (p) { return '<figure><img src="' + esc(img(base, p.img)) + '" alt="" loading="lazy">' + (p.cap ? "<figcaption>" + esc(p.cap) + "</figcaption>" : "") + "</figure>"; }).join("") + "</div>" : "") + '<dl class="tp-kv">' + (x.kv || []).map(function (k) { return "<dt>" + esc(k[0]) + "</dt><dd>" + esc(k[1]) + "</dd>"; }).join("") + "</dl>" +
             (mu ? '<a class="tp-mapsph" style="margin-top:10px" href="' + esc(mu) + '" target="_blank" rel="noopener">' + GMAPS + "<span>פתיחה ב-Google Maps</span></a>" : "") + "</div></details>";
@@ -438,7 +441,7 @@
     var mv = Array.isArray(t.moves) ? t.moves : [];
     if (mv.length) {
       SEC.moves=(sx("train", "איך מתניידים", "", '<div class="tp-grid">' +
-        mv.map(function (m) { return '<div class="tp-tile' + (m.open ? " open" : "") + (m.full ? " full" : "") + '"><span class="e">' + em(m.e) + "</span><b>" + esc(m.h) + "</b><span>" + esc(m.s || "") + "</span>" + gml(m) + "</div>"; }).join("") + "</div>"));
+        mv.map(function (m) { return '<div class="tp-tile' + (m.open ? " open" : "") + (m.full ? " full" : "") + '"><span class="e">' + em(m.e) + "</span><b>" + logos(base, m) + esc(m.h) + "</b><span>" + esc(m.s || "") + "</span>" + gml(m) + "</div>"; }).join("") + "</div>"));
     }
 
     // ---- weather ----
