@@ -501,3 +501,19 @@ a.tp-mapsph{border-style:solid;color:var(--ink);text-decoration:none}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 0 #000;text-shadow:0 0 6px rgba(255,204,51,.25)}
 .tp-cdg span{color:#9ea3a8;font-size:11.5px;margin-top:5px;letter-spacing:.04em}
 .tp-cd .f{color:#c9ccd0;font-family:var(--f-b);font-weight:700;font-size:12.5px}
+/* weather chip + panel under the header (Oren 21.11.2026) */
+button.tp-chip{border:0;color:inherit;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tp-wxc.on{background:rgba(255,255,255,.34)}
+.tp-wxp{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s ease}
+.tp-wxp.on{grid-template-rows:1fr}
+.tp-wxp>div{overflow:hidden}
+.tp-wxin{margin-top:12px;padding:12px}
+.tp-wxs{margin-top:8px;font-size:12.5px;color:var(--muted)}
+/* Google Maps list = one direct link */
+.tp-glist{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line,rgba(0,0,0,.08));color:inherit;text-decoration:none}
+.tp-glist>svg,.tp-glist>img{flex:none;width:30px;height:30px}
+.tp-glist .x{flex:1;min-width:0}
+.tp-glist b{display:block;font:700 15.5px/1.3 var(--f-d);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tp-glist small{display:block;font-size:13px;color:var(--muted)}
+.tp-glist .go{flex:none;font:700 22px/1 var(--f-d);color:var(--acc)}
+.tp-glist.off{opacity:.7}
