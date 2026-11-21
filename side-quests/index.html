@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.16";window.SQ_BUILD_AT="21.11.2026 14:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.17";window.SQ_BUILD_AT="21.11.2026 14:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 -apple-system,system-ui,sans-serif;direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1253,7 +1253,7 @@ details.tv-wkc:not([open]){gap:0}
 .tp-mini.plan::after{background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.3))}
 .tp-mini.noimg .tm-in{padding-top:48px}
 .tp-mini.tk{display:block;min-height:0;background:#16080c}.tp-mini.tk::after{display:none}
-.tp-mini.tk .tk-img{position:static;display:block;width:100%;height:auto;object-fit:contain}
+.tp-mini.tk .tk-img{position:static;display:block;width:100%;aspect-ratio:3/1;height:auto;object-fit:cover;object-position:var(--pos,center)}
 .tp-mini.tk .tk-ln{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--tc,#8E1B2C);color:#fff}
 .tp-mini.tk .tm-fl{font-size:18px;filter:none;flex:none}
 .tp-mini.tk .tk-x{flex:1;min-width:0;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;font-size:12px;font-weight:600;-webkit-mask-image:linear-gradient(to left,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(to left,#000 calc(100% - 18px),transparent)}

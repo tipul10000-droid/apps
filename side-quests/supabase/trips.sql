@@ -53,13 +53,13 @@ begin
   d := d || coalesce((select jsonb_object_agg(k, v) from jsonb_each(case when jsonb_typeof(d->'pub') = 'object' then d->'pub' else '{}'::jsonb end) as p(k, v)
                       where k = any(array['title','short','flag','who','tagline','when','hero_img','hero_full','desc','stats','next_up','alerts',
                         'map','days','flights','nights_l','hotels','moves','weather','wx_tip','notes','notes_h','notes_i','photos','maps',
-                        'wa_label','wa_sub','foot'])), '{}'::jsonb);
+                        'wa_label','wa_sub','foot','dest','lounge'])), '{}'::jsonb);
   select array_agg(v->>'id') into ids from jsonb_each(coalesce(d->'gfx','{}'::jsonb)) as e(k, v) where v ? 'id';
   return jsonb_build_object(
     'trip', (select coalesce(jsonb_object_agg(k, v), '{}'::jsonb) from jsonb_each(d) as w(k, v)
               where k = any(array['kind','title','short','flag','who','tagline','from','to','tz','stage','snow','theme','when',
                 'hero_img','hero_full','desc','stats','next_up','alerts','map','days','flights','nights_l','hotels','moves','weather','wx_tip',
-                'notes','notes_h','notes_i','photos','maps','wa_label','wa_sub','foot','updated_at']))
+                'notes','notes_h','notes_i','photos','maps','wa_label','wa_sub','foot','dest','lounge','updated_at']))
             || jsonb_build_object('wa', d->'share'->>'wa',
                  'gfx', coalesce((select jsonb_object_agg(e.k, jsonb_build_object('id', e.v->>'id', 'banner', coalesce((e.v->>'banner')::boolean, false))) from jsonb_each(coalesce(d->'gfx','{}'::jsonb)) as e(k, v) where e.v ? 'id'), '{}'::jsonb)),
     'gfx', coalesce((select jsonb_object_agg(g.id, jsonb_build_object('mime',g.mime,'data',g.data,'w',g.w,'h',g.h)) from sq_gfx g where g.id = any(coalesce(ids,'{}'))), '{}'::jsonb));
