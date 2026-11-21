@@ -127,9 +127,13 @@ html.pvm .pvx{display:inline-flex}
     $("f_save").onclick=()=>save({title:$("f_title").value.trim(),tagline:$("f_tag").value.trim(),desc:$("f_desc").value.trim()}).then(()=>{$("fst").textContent="✓ נשמר";setTimeout(()=>{edOpen=false;const d=$("ownBot").querySelector(".edx");if(d)d.open=false;},900);},e=>$("fst").textContent="✕ "+e.message);
     $("sp").onclick=()=>copy(sp||"",$("spst"),"✓ ההנחיה הועתקה");
   }
-  // the fields the public page gets (sq_trip_public whitelist in supabase/trips.sql; keep the two lists the same)
-  const PUB=["kind","title","short","flag","who","tagline","from","to","tz","stage","snow","theme","hero_img","desc","stats","next_up","map","days","flights","nights_l","hotels","moves","weather","wx_tip","notes","photos","maps","wa_label","wa_sub","foot","updated_at"];
-  function pubTrip(){const t={};PUB.forEach(k=>{if(trip[k]!==undefined)t[k]=trip[k];});t.wa=(trip.share||{}).wa;
+  // the fields the public page gets (sq_trip_public in supabase/trips.sql; keep the lists the same). The shared page is clean
+  // and experiential (Oren 21.11.2026): costs, open tasks, problems and worries stay here only. trip.pub = public versions of
+  // display fields (PUB_OVR), which replace the owner's version on the shared page.
+  const PUB=["kind","title","short","flag","who","tagline","from","to","tz","stage","snow","theme","when","hero_img","hero_full","desc","stats","next_up","alerts","map","days","flights","nights_l","hotels","moves","weather","wx_tip","notes","notes_h","notes_i","photos","maps","wa_label","wa_sub","foot","updated_at"];
+  const PUB_OVR=["title","short","flag","who","tagline","when","hero_img","hero_full","desc","stats","next_up","alerts","map","days","flights","nights_l","hotels","moves","weather","wx_tip","notes","notes_h","notes_i","photos","maps","wa_label","wa_sub","foot"];
+  function pubTrip(){const src={...trip},po=trip.pub&&typeof trip.pub==="object"?trip.pub:{};PUB_OVR.forEach(k=>{if(po[k]!==undefined)src[k]=po[k];});
+    const t={};PUB.forEach(k=>{if(src[k]!==undefined)t[k]=src[k];});t.wa=(trip.share||{}).wa;
     t.gfx={};Object.keys(trip.gfx||{}).forEach(k=>{const g=trip.gfx[k];if(g&&g.id)t.gfx[k]={id:g.id,banner:!!g.banner};});return t;}
   function full(on){document.documentElement.classList.toggle("pvm",on);try{if(window.parent!==window)parent.postMessage({type:"sq-full",on},location.origin);}catch(e){}}
   $("pvx").onclick=()=>{mode="edit";try{sessionStorage.setItem("trip_m_"+ID,mode);}catch(e){}draw();scrollTo(0,0);};
