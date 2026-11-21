@@ -36,7 +36,9 @@
     document.head.appendChild(st);}
   function build(){box=el("section","sqnws");box.setAttribute("role","status");var h=el("div","h");h.appendChild(el("b",null,"🆕 מה חדש"));
     var n=data.items.length+(data.more||0);h.appendChild(el("small",null,(n===1?"עדכון אחד":n+" עדכונים")+" מאז הפעם הקודמת"));
-    var x=el("button",null,"✓ הבנתי");x.type="button";x.onclick=function(){data=null;if(box)box.remove();box=null;};h.appendChild(x);box.appendChild(h);
+    var x=el("button",null,"✓ סמן הכל כנקרא");x.type="button";x.onclick=function(){data=null;if(box)box.remove();box=null;
+      /* 25.21 (Oren 21.11.2026): marks the dashboard's news and new items read in the app too */
+      try{parent.postMessage({type:"sq-dash-read"},"*");}catch(e){}};h.appendChild(x);box.appendChild(h);
     var ul=el("ul");data.items.forEach(function(it){var li=el("li");
       /* 20.3: an item about a task = tap opens that task in the app (sq-task) */
       if(it.tid){li.className="go";li.setAttribute("role","button");li.tabIndex=0;li.onclick=function(){try{parent.postMessage({type:"sq-task",id:it.tid},"*");}catch(e){}};}

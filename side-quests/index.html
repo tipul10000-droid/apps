@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.20";window.SQ_BUILD_AT="21.11.2026 17:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.21";window.SQ_BUILD_AT="21.11.2026 18:25";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1924,6 +1924,8 @@ main{padding-bottom:90px}
 .upack .ua-i{font-size:17px;line-height:1}
 .upwrap.acked .upack{background:color-mix(in srgb,#1f9d55 14%,transparent);color:#1f7a45}
 .upwrap.gone{opacity:0;max-height:0;overflow:hidden}
+.rdall{display:flex;align-items:center;justify-content:center;width:calc(100% - 16px);margin:8px 8px 4px;min-height:40px;border:1.5px solid color-mix(in srgb,#1f9d55 45%,var(--line));border-radius:12px;background:color-mix(in srgb,#1f9d55 8%,var(--surface));color:#1f7a45;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.rdall:active{background:color-mix(in srgb,#1f9d55 18%,var(--surface))}
 @media (prefers-reduced-motion:reduce){.upwrap.nw>.uprow::before{animation:none}.upwrap{transition:none}}
 .row.jump{animation:sqjump 1.6s ease-out}@keyframes sqjump{0%,35%{box-shadow:inset 0 0 0 2.5px #2F7BEA;background:color-mix(in srgb,#2F7BEA 12%,transparent)}100%{box-shadow:none}}
 @media (prefers-reduced-motion:reduce){.row.jump{animation:none;box-shadow:inset 0 0 0 2.5px #2F7BEA}}
@@ -3548,6 +3550,12 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     return dgList(out,x=>x.text);}
   function dashUnseen(d){if(!d||d.archived||d._deleted)return [];const s=Math.max(Date.parse(dzSeen[d.id]||"")||0,Date.parse(dzSeen._base||"")||0);
     try{return dashNews(d).filter(x=>x.ms>s);}catch(e){return [];}}
+  // 25.21 (Oren 21.11.2026): "סמן כנקרא" on a dashboard = its news, its new items and its app items are all read
+  function dashRead(id){const d=dashById(id);if(!d)return;const now=new Date().toISOString();
+    for(const x of dashItems(d))itSeen[d.id+":"+x.id]=now;try{localStorage.setItem("sq_item_seen",JSON.stringify(itSeen));}catch(e){}
+    for(const x of newItems)if(x&&x.id&&(x.where==="dash:"+d.id||x.dash===d.id)){upAck[upKeyN(x)]=now;nwSeen[x.id]=now;}
+    try{upSave();localStorage.setItem("sq_new_seen",JSON.stringify(nwSeen));}catch(e){}
+    syncItemNew();dashSeen(id);setTimeout(()=>{try{nwRender();renderQnav();}catch(e){}},0);}
   function dashSeen(id){dzSeen[id]=new Date().toISOString();try{localStorage.setItem("sq_dash_seen",JSON.stringify(dzSeen));}catch(e){}setTimeout(()=>{updDzBtn();renderDash();},0);}
   // ===== 19.5 (Oren 17.11.2026): the "new content" path, a standing rule for every quest and dashboard =====
   // Something new inside a dashboard = a line in dashboards/<id>.news with `item` (the doc id inside the page) and optional
@@ -3559,6 +3567,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function dashItems(d){if(!d||d.archived||d._deleted)return [];const now=Date.now(),base=Date.parse(dzSeen._base||"")||0,out=[];
     for(const n of (Array.isArray(d.news)?d.news:[])){if(!n||!n.item)continue;const ms=Date.parse(n.at||"");if(!ms||now-ms>14*864e5||ms>now+6e4||ms<=base)continue;
       if((Date.parse(itSeen[d.id+":"+n.item]||"")||0)>=ms)continue;
+      // 25.21 (Oren 21.11.2026): an item the page never shows (hotel-clubs "hotels") kept the dot forever. Opened the
+      // dashboard after it and it is 3+ days old = read.
+      if((Date.parse(dzSeen[d.id]||"")||0)>ms&&now-ms>3*864e5)continue;
       if(n.tid&&dgClosed(String(n.tid)))continue;
       {const o=out.find(y=>y.id===String(n.item));if(o){if(ms>o.ms){o.ms=ms;o.at=new Date(ms).toISOString();}continue;}}
       out.push({id:String(n.item),at:new Date(ms).toISOString(),ms,path:Array.isArray(n.path)?n.path.map(String):[]});}
@@ -3931,6 +3942,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const m=modal("dztM",...draw());m.dataset.tid=t.id;}
   function dzTaskRefresh(){const m=$("dztM");if(!m)return;const t=allTopics.find(x=>x.id===m.dataset.tid);
     if(!t||!isOpen(t)){closeModal();return;}openId=t.id;const b=m.querySelector(".dzt-body");if(b)b.replaceChildren(h("div",{class:"group"},dzRow(t)));}
+  window.addEventListener("message",e=>{const d=e.data;if(!d||d.type!=="sq-dash-read")return;const f=dashFrameEl();if(!f||e.source!==f.contentWindow||!nav.dash)return;dashRead(nav.dash);});
   window.addEventListener("message",e=>{const d=e.data;if(!d||(d.type!=="sq-task"&&d.type!=="sq-done"))return;const f=dashFrameEl();if(!f||e.source!==f.contentWindow)return;
     const t=allTopics.find(x=>x.id===String(d.id||""));if(!t)return;
     if(d.type==="sq-task"){if(isOpen(t))dzTaskOpen(t);else jumpTask(t.id);}else if(isOpen(t)&&canWrite)markDone(t);});
@@ -4521,11 +4533,11 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(!qnExp){el.replaceChildren(h("button",{type:"button",class:"qn-line",onclick:()=>{qnExp=true;renderQNew();}},h("span",{class:"wm-nw","aria-hidden":"true"}),h("b",null,"מה חדש"),h("small",null,String(n)),h("span",{class:"fc","aria-hidden":"true"},"‹")));el.hidden=false;return;}
     upOnScreen={items:[...U.A,...U.L],old:U.old};
     for(const x of U.A)G.push(ackWrap(x,nwRow("✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x))));
-    for(const d of D)G.push(nwRow(d.icon||"📊",d.title||d.short||d.id,dashWhy(d)+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id)));
+    for(const d of D)G.push(dashAckWrap(d,nwRow(d.icon||"📊",d.title||d.short||d.id,dashWhy(d)+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id))));
     for(const x of U.L){const t=x.t;G.push(ackWrap(x,nwRow(t.icon||"📌",t.title||"(ללא כותרת)",updLine(x.r),()=>isFun(t)?funJump(t.id):jumpTask(t.id))));}
     el.replaceChildren(h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🆕"),h("b",null,"מה חדש"),
-        h("small",null,U.n?"חדשים · "+U.n:"ראית, עוד לא אישרת · "+n),h("button",{type:"button",class:"qnx","aria-label":"סגירת מה חדש",onclick:()=>{upCommit();qNewShow=null;renderQNew();}},"✕")),
-      h("div",{class:"uplist"},G)));
+        h("small",null,U.n?"חדשים · "+U.n:"ראית · "+n),h("button",{type:"button",class:"qnx","aria-label":"סגירת מה חדש",onclick:()=>{upCommit();qNewShow=null;renderQNew();}},"✕")),
+      readAllBtn(U,D),h("div",{class:"uplist"},G)));
     el.hidden=false;}
   function applyQuest(){
     funMode=quest==="fun";
@@ -5725,8 +5737,21 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(row){row.classList.add("acked");setTimeout(()=>{row.classList.add("gone");setTimeout(()=>{if(updOn)renderList();else renderQNew();updUpdBtn();},280);},650);}}
   // a row + its "👍 קיבלתי" button side by side (the row itself is a button)
   function ackWrap(x,rowEl){const w=h("div",{class:"upwrap"+(x.nw?" nw":"")});
-    w.append(rowEl,h("button",{type:"button",class:"upack","aria-label":"קיבלתי, להעביר לארכיון",title:"קיבלתי",onclick:e=>{e.stopPropagation();upAckOne(x,w);}},
-      h("span",{class:"ua-i","aria-hidden":"true"},"👍"),h("span",{class:"ua-t"},"קיבלתי")));return w;}
+    w.append(rowEl,h("button",{type:"button",class:"upack","aria-label":"סמן כנקרא",title:"סמן כנקרא",onclick:e=>{e.stopPropagation();upAckOne(x,w);}},
+      h("span",{class:"ua-i","aria-hidden":"true"},"✓"),h("span",{class:"ua-t"},"נקרא")));return w;}
+  // the same for a dashboard row: marks its news and items read
+  function dashAckWrap(d,rowEl){const w=h("div",{class:"upwrap nw"});
+    w.append(rowEl,h("button",{type:"button",class:"upack","aria-label":"סמן כנקרא",title:"סמן כנקרא",onclick:e=>{e.stopPropagation();w.classList.add("acked");
+        setTimeout(()=>{w.classList.add("gone");setTimeout(()=>dashRead(d.id),280);},650);}},
+      h("span",{class:"ua-i","aria-hidden":"true"},"✓"),h("span",{class:"ua-t"},"נקרא")));return w;}
+  // "✓ סמן הכל כנקרא": everything in the list goes to 📜 and every dashboard in it is read
+  function readAll(U,D){const now=new Date().toISOString();upOnScreen=null;
+    for(const x of [...U.C,...U.A,...U.L,...(U.old||[])]){upAck[x.k]=now;upShown[x.k]=upShown[x.k]||now;}upSave();
+    nwSee([...U.C,...U.A,...(U.old||[])].filter(x=>x.k&&x.k.startsWith("n:")).map(x=>x.id));
+    for(const x of U.L)updSeen[x.t.id]=now;try{localStorage.setItem("sq_upd_seen",JSON.stringify(updSeen));}catch(e){}
+    for(const d of D||[])dashRead(d.id);
+    toast("✓ הכל סומן כנקרא");setTimeout(()=>{try{if(updOn)renderList();renderQNew();updUpdBtn();updDzBtn();renderQnav();}catch(e){}},30);}
+  const readAllBtn=(U,D)=>h("button",{type:"button",class:"rdall",onclick:()=>readAll(U,D)},"✓ סמן הכל כנקרא");
   addEventListener("pagehide",()=>{try{upCommit();}catch(e){}});
   document.addEventListener("visibilitychange",()=>{if(document.hidden)try{upCommit();}catch(e){}});
   function updItems(){return updSet().L.filter(x=>x.nw);}
@@ -5767,11 +5792,11 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       G.push(h("div",{class:"up-g"},"💬 המשך שיחה"),...CA.map(x=>ackWrap(x,nwRow("❓",x.text,"מחכה לתשובה שלך"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x)))),
         ...CU.map(x=>ackWrap(x,nwRow("📩",x.text,"עדכון ממני שעוד לא קראת"+(x.sub?": "+x.sub:"")+" · "+ago(x.ms),()=>openNw(x)))));}
     if(A.length)G.push(h("div",{class:"up-g"},"✨ חדש באפליקציה"),...A.map(x=>ackWrap(x,nwRow(String(x.where).startsWith("task:")?"📌":String(x.where).startsWith("settings:")?"⚙️":String(x.where).startsWith("dash:")?"📊":"✨",x.text,(x.sub?x.sub+" · ":"")+ago(x.ms),()=>openNw(x)))));
-    if(D.length)G.push(h("div",{class:"up-g"},"📊 דשבורדים"),...D.map(d=>nwRow(d.icon||"📊",d.title||d.short||d.id,((dashUnseen(d).find(x=>!(x.tid&&Lt.has(x.tid)))||{}).text||dashWhy(d))+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id))));
+    if(D.length)G.push(h("div",{class:"up-g"},"📊 דשבורדים"),...D.map(d=>dashAckWrap(d,nwRow(d.icon||"📊",d.title||d.short||d.id,((dashUnseen(d).find(x=>!(x.tid&&Lt.has(x.tid)))||{}).text||dashWhy(d))+(freshMs(d)?" · "+ago(freshMs(d)):""),()=>openDash(d.id)))));
     if(L.length)G.push(...(G.length?[h("div",{class:"up-g"},"≡ משימות")]:[]),...L.map(x=>ackWrap(x,updRow(x))));
     const n=C.length+A.length+D.length+L.length,nn=U.n+D.length;
-    const top=[h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🔔"),h("b",null,"עדכונים"),h("small",null,nn?"חדשים · "+nn:n?"ראית, עוד לא אישרת · "+n:"")),
-      n?h("div",{class:"uplist"},G):h("div",{class:"wc-empty"},"אין עדכונים חדשים מאז הכניסה הקודמת"))];
+    const top=[h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},"🔔"),h("b",null,"עדכונים"),h("small",null,nn?"חדשים · "+nn:n?"ראית · "+n:"")),
+      n?readAllBtn(U,D):null,n?h("div",{class:"uplist"},G):h("div",{class:"wc-empty"},"אין עדכונים חדשים מאז הכניסה הקודמת"))];
     const P=pastLog().filter(x=>!L.some(y=>y.t.id===x.t.id&&y.r.ms===x.r.ms));
     // archived app / chat items too (👍 or replaced by newer ones), under the same 📜 fold
     const PA=newItems.filter(x=>x&&x.id&&upIsAck(upKeyN(x))&&Date.now()-(Date.parse(x.at||"")||0)<30*864e5).map(x=>({...x,ms:Date.parse(x.at||"")||0}));
@@ -5784,7 +5809,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const L=recentList(7).slice(0,60),today=ilDate(),yest=addDays(today,-1);
     const dayOf=ms=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem"}).format(new Date(ms));
     const G=[["היום",x=>dayOf(x.r.ms)===today],["אתמול",x=>dayOf(x.r.ms)===yest],["השבוע",()=>true]];const used=new Set(),top=[];
-    top.push(h("div",{class:"newhd"},h("b",null,"🆕 מה התעדכן לאחרונה"),h("button",{type:"button",onclick:seeAll},"✓ הכול נקרא")));
+    top.push(h("div",{class:"newhd"},h("b",null,"🆕 מה התעדכן לאחרונה"),h("button",{type:"button",onclick:seeAll},"✓ סמן הכל כנקרא")));
     for(const[g,f]of G){const it=L.filter(x=>!used.has(x.t.id)&&f(x));it.forEach(x=>used.add(x.t.id));if(!it.length)continue;
       top.push(h("div",{class:"gwrap"},h("div",{class:"g-head"},g,h("span",{class:"n"},it.length)),h("div",{class:"glist"},it.map(x=>row(x.t,{upd:x.r})))));}
     if(L.length===0)top.push(h("div",{class:"empty"},"שום דבר חדש בשבוע האחרון."));
