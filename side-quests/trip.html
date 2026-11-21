@@ -12,7 +12,7 @@
 <title>טיול</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
-<link rel="stylesheet" href="../trips/trip.css?v=23">
+<link rel="stylesheet" href="../trips/trip.css?v=24">
 <style>
 /* מיני דשבורד לטיול, הדף של אורן (19.11.2026). שלושה מצבים: ✏️ עריכה (פלייסהולדרים, מה עוד לתכנן, טקסטים),
    👀 תצוגה (בדיוק מה שמי שמקבל את הלינק רואה) ו-🔗 שיתוף (הלינק הקבוע, וואטסאפ, הפעלה/כיבוי ותצוגה מקדימה).
@@ -64,7 +64,7 @@ html.pvm .pvx{display:inline-flex}
 <link rel="stylesheet" href="dash-back.css?v=9">
 <script src="dash-sub.js?v=11" defer></script>
 <script src="sq-gfx.js?v=1"></script>
-<script src="../trips/trip-view.js?v=24"></script>
+<script src="../trips/trip-view.js?v=25"></script>
 </head>
 <body>
 <header class="hero"><div class="in">
@@ -130,10 +130,10 @@ html.pvm .pvx{display:inline-flex}
   // the fields the public page gets (sq_trip_public in supabase/trips.sql; keep the lists the same). The shared page is clean
   // and experiential (Oren 21.11.2026): costs, open tasks, problems and worries stay here only. trip.pub = public versions of
   // display fields (PUB_OVR), which replace the owner's version on the shared page.
-  const PUB=["kind","title","short","flag","who","tagline","from","to","tz","stage","snow","theme","when","hero_img","hero_full","desc","stats","next_up","alerts","map","days","flights","nights_l","hotels","moves","weather","wx_tip","notes","notes_h","notes_i","photos","maps","wa_label","wa_sub","foot","dest","lounge","gear","gear_h","pack","updated_at"];
+  const PUB=["kind","title","short","flag","who","tagline","from","to","tz","stage","snow","theme","when","hero_img","hero_full","desc","stats","next_up","alerts","map","days","days_full","flights","nights_l","hotels","moves","weather","wx_tip","notes","notes_h","notes_i","photos","maps","wa_label","wa_sub","foot","dest","lounge","gear","gear_h","pack","updated_at"];
   const PUB_OVR=["title","short","flag","who","tagline","when","hero_img","hero_full","desc","stats","next_up","alerts","map","days","flights","nights_l","hotels","moves","weather","wx_tip","notes","notes_h","notes_i","photos","maps","wa_label","wa_sub","foot","dest","lounge","gear","gear_h","pack"];
   function pubTrip(){const src={...trip},po=trip.pub&&typeof trip.pub==="object"?trip.pub:{};PUB_OVR.forEach(k=>{if(po[k]!==undefined)src[k]=po[k];});
-    const t={};PUB.forEach(k=>{if(src[k]!==undefined)t[k]=src[k];});t.wa=(trip.share||{}).wa;
+    const t={};PUB.forEach(k=>{if(src[k]!==undefined)t[k]=src[k];});t.wa=(trip.share||{}).wa;if(trip.deck&&trip.deck.pub)t.deck=trip.deck;
     /* gear on the shared page = no prices (same as sq_trip_public) */
     if(Array.isArray(t.gear))t.gear=t.gear.map(g=>{const y={...g};delete y.price;delete y.ccy;delete y.order;return y;});
     t.gfx={};Object.keys(trip.gfx||{}).forEach(k=>{const g=trip.gfx[k];if(g&&g.id)t.gfx[k]={id:g.id,banner:!!g.banner};});return t;}
