@@ -236,7 +236,7 @@
           return '<details class="tp-hotel"><summary><div class="tp-himg">' + (x.img ? '<img src="' + esc(img(base, x.img)) + '" alt="" loading="lazy">' : "") + '<span class="tp-hn">' + esc(x.city || "") + " · " + esc(x.nights_l || "") + "</span></div>" +
             '<div class="tp-hb"><b>' + logo(base, x.logo) + esc(x.name) + "</b><span>" + esc(x.area || x.addr || "") + "</span></div>" +
             '<div class="tp-hrow"><span class="tp-pill" dir="rtl">📅 ' + esc(dShort(x.in) + " ← " + dShort(x.out)) + "</span>" + (x.pills || []).map(function (p) { return '<span class="tp-pill ' + esc(p.c || "") + '">' + esc(p.t) + "</span>"; }).join("") + "</div>" +
-            '<span class="tp-tap">▾ פרטים</span></summary><div class="tp-more"><dl class="tp-kv">' + (x.kv || []).map(function (k) { return "<dt>" + esc(k[0]) + "</dt><dd>" + esc(k[1]) + "</dd>"; }).join("") + "</dl>" +
+            '<span class="tp-tap">▾ פרטים</span></summary><div class="tp-more">' + (Array.isArray(x.pics) && x.pics.length ? '<div class="tp-gal tp-hgal">' + x.pics.map(function (p) { return '<figure><img src="' + esc(img(base, p.img)) + '" alt="" loading="lazy">' + (p.cap ? "<figcaption>" + esc(p.cap) + "</figcaption>" : "") + "</figure>"; }).join("") + "</div>" : "") + '<dl class="tp-kv">' + (x.kv || []).map(function (k) { return "<dt>" + esc(k[0]) + "</dt><dd>" + esc(k[1]) + "</dd>"; }).join("") + "</dl>" +
             (mu ? '<a class="tp-mapsph" style="margin-top:10px" href="' + esc(mu) + '" target="_blank" rel="noopener">' + GMAPS + "<span>פתיחה ב-Google Maps</span></a>" : "") + "</div></details>";
         }).join("") + "</section>");
     }
