@@ -5,6 +5,9 @@
   font-family:var(--f-b);color:var(--ink);background:var(--bg);direction:rtl;line-height:1.5;font-size:16px}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tp{--ink:#F3EEE7;--muted:#B5ACA0;--bg:#16130F;--card:#211D18;--line:#3A332B;--soft:#2A241E;--good:#5CC88E;--warn:#EBA654;--acc:color-mix(in srgb,var(--c1) 40%,#fff);--acc2:color-mix(in srgb,var(--c2) 45%,#fff);color-scheme:dark}}
 .tp *{box-sizing:border-box}
+/* פונט אחיד (אורן 21.11.2026): גם מה שמוזרק מחוץ ל-.tp (משימות, חדשות, חלונות) */
+html{font-family:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select,textarea,optgroup,code,pre,kbd,samp{font-family:inherit}
 .tp h1,.tp h2,.tp h3{font-family:var(--f-d);margin:0;text-wrap:balance}
 .tp a{color:inherit}
 .tp button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
