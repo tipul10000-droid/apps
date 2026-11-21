@@ -187,7 +187,7 @@
     // ---- a slideshow (deck) kept with the trip: one cover card, tap = full-screen swipe viewer (Oren 21.11.2026) ----
     // t.deck {h, sub, slides:[{img, cap}]}; not in the public whitelist, so only the owner's page shows it
     var dk = t.deck && Array.isArray(t.deck.slides) ? t.deck.slides.filter(function (x) { return x && x.img; }) : [];
-    if (dk.length) H.push('<section class="tp-sec"><button type="button" class="tp-dk" data-dk="0" aria-label="' + esc(t.deck.h || "מצגת") + '"><img src="' + esc(img(base, dk[0].img)) + '" alt="" loading="lazy"><span class="x"><b>' + ic(t.deck.i || "cam") + esc(t.deck.h || "מצגת") + "</b><span>" + esc(t.deck.sub || "") + '</span></span><span class="n" dir="ltr">' + dk.length + " ▸</span></button></section>");
+    var DKH = !dk.length ? "" : ('<section class="tp-sec"><button type="button" class="tp-dk" data-dk="0" aria-label="' + esc(t.deck.h || "מצגת") + '"><img src="' + esc(img(base, dk[0].img)) + '" alt="" loading="lazy"><span class="x"><b>' + ic(t.deck.i || "cam") + esc(t.deck.h || "מצגת") + "</b><span>" + esc(t.deck.sub || "") + '</span></span><span class="n" dir="ltr">' + dk.length + " ▸</span></button></section>"); // shown last, at the bottom of the ticket (Oren 21.11.2026)
 
     // ---- map ----
     if (t.map) {
@@ -222,7 +222,7 @@
           return '<details class="tp-bp"><summary><div class="tp-fs">' + mk +
             '<div class="tp-fsm"><b dir="ltr">' + esc(f.logo ? (f.no || f.air || "") : (f.air || "") + " " + (f.no || "")) + "</b><span>" + esc(f.dir || "") + " · " + esc(dShort(f.d)) + "</span></div>" +
             '<div class="tp-fst" dir="ltr"><b>' + esc(f.dep || "") + " → " + esc(f.arr || "") + "</b><span>" + esc((A.c || "") + "→" + (B.c || "") + (f.dur ? " · " + f.dur : "")) + "</span></div>" +
-            '<span class="tp-chev">‹</span></div>' +
+            chev() + '</div>' +
             (isT1(A) ? '<div class="tp-t1s">ממריאים מטרמינל 1, לא 3</div>' : "") +
             "</summary><div class=\"tp-more tp-fmore\">" +
             '<div class="tp-bpm"><div class="tp-ap"><b>' + esc(A.c) + "</b><span>" + esc(A.n) + "</span><i>" + esc(f.dep) + '</i></div><div class="tp-fly">' + plane + esc(f.dur || "") + '</div><div class="tp-ap r"><b>' + esc(B.c) + "</b><span>" + esc(B.n) + "</span><i>" + esc(f.arr) + "</i></div></div>" +
@@ -402,7 +402,7 @@
     // links (owner page only; a planned trip keeps its older planning pages here)
     var lk = (Array.isArray(t.links) ? t.links : []).filter(function (l) { return l && url(l.url || ""); });
     if (own && lk.length) H.push(sx("link", "קישורים", String(lk.length), '<div class="tp-grid">' + lk.map(function (l) { return '<a class="tp-tile full tp-lk" href="' + esc(url(l.url)) + '" target="_blank" rel="noopener"><b>' + esc(l.label || "קישור") + "</b>" + (l.s ? "<span>" + esc(l.s) + "</span>" : "") + "</a>"; }).join("") + "</div>"));
-    if (own && Array.isArray(t.gaps) && t.gaps.length) H.push('<section class="tp-sec"><div class="tp-sh"><span class="e">🧩</span><h2>עוד לתכנן</h2><small>רק אצלך</small></div><div class="tp-gaps" data-gaps></div></section>');
+    if (own && Array.isArray(t.gaps) && t.gaps.length) H.push(sx("bulb", "עוד לתכנן", "רק אצלך", '<div class="tp-gaps" data-gaps></div>'));
 
     // ---- WhatsApp to the owner (view) ----
     var wa = String(o.wa || "").replace(/\D/g, "");
@@ -411,6 +411,7 @@
       H.push('<a class="tp-wa" href="https://wa.me/' + wa + "?text=" + encodeURIComponent(txt) + '" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 5c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.2-.3-.2-.6-.4z"/></svg><span>' +
         esc(t.wa_label || "יש לכם המלצה? שלחו לאורן") + "<small>" + esc(t.wa_sub || "מסעדה, מקום, טיפ או תמונה, ישר לוואטסאפ") + "</small></span></a>");
     }
+    if (DKH) H.push(DKH);
     H.push('<div class="tp-foot">' + esc(t.foot || "נבנה באהבה לטיול הזה") + '<div class="tp-credit">Side Quests</div></div></div>');
     root.innerHTML = H.join("");
 
