@@ -37,6 +37,9 @@ create or replace function public.sq_auth(p_key text, p_app text)
 as $function$
 declare s record; t record; good boolean;
 begin
+  -- An empty key is never a guess: reject it without counting, so a page or test with no code
+  -- cannot burn the shared 5 tries and lock Oren out (Oren, 2026-11-22).
+  if coalesce(btrim(p_key), '') = '' then return 'bad'; end if;
   insert into sq_throttle(app) values (p_app) on conflict (app) do nothing;
   select * into t from sq_throttle where app = p_app for update;
   if t.locked_until is not null and t.locked_until > now() then return 'locked'; end if;
