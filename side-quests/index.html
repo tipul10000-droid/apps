@@ -5593,7 +5593,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     else if(tab==="base"&&B){const kb=hot&&hot.lat!=null&&B.lat!=null?Math.round(distM({la:+hot.lat,lo:+hot.lng},{la:+B.lat,lo:+B.lng})/100)/10:null;
       body=[h("a",{class:"wl-go",href:wfBaseDir(B),target:"_blank",rel:"noopener"},h("span",{class:"wf-bi",html:WF_HELI}),h("span",null,h("b",null,"ניווט לבסיס"),h("small",null,(B.he||B.name||"")+(kb!=null&&hot?" · ≈"+drive(kb)+" דק׳ מ-"+hot.n:""))),h("span",{"aria-hidden":"true"},"›")),
         hot&&B.lat!=null?h("a",{class:"wf-mail",href:"https://www.google.com/maps/dir/?api=1&travelmode=driving&origin="+encodeURIComponent(hot.lat!=null?hot.lat+","+hot.lng:hot.maps_q)+"&destination="+B.lat+","+B.lng,target:"_blank",rel:"noopener"},"המסלול מ-"+hot.n+" ›"):null,exRow,hotPick,foot(0)];}
-    else if(!tab){body=[];}
+    else if(!tab){body=[exRow];}
     else{const P=((A&&A.places)||[]).map(p=>({p,o:wfOpenAt(p,T.dow,T.min),k:km(p)}));
       const fx=P.filter(x=>x.p.fixed&&x.o.open),fxc=P.filter(x=>x.p.fixed&&!x.o.open),opA=P.filter(x=>!x.p.fixed&&x.o.open).sort((a,b)=>(b.p.r||0)-(a.p.r||0)||(a.k||99)-(b.k||99)),op=opA.slice(0,3),opM=opA.slice(3),cl=P.filter(x=>!x.p.fixed&&!x.o.open);
       const row=x=>{const p=x.p,o=x.o;return h("div",{class:"wl-r"+(o.open?"":" cl")},h("div",{class:"wl-rt"},h("b",{class:"nolink notel"},(p.fixed?"⭐ ":"")+p.n),
@@ -5605,8 +5605,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
         opM.length?h("details",{class:"wf-bk"},h("summary",null,"עוד פתוחות ("+opM.length+")"),h("div",{class:"wl-l"},...opM.map(row))):null,
         cl.length?h("details",{class:"wf-bk"},h("summary",null,"סגורות עכשיו ("+cl.length+")"),h("div",{class:"wl-l"},...cl.map(row))):null,
         exRow,hotPick,foot(1)];}
-    return h("article",{class:"wl"},h("div",{class:"wl-h"},h("div",null,h("small",null,(d.flag||(window.SQFlags&&SQFlags.of("איטליה"))||"🇮🇹")+" עכשיו ב"+((A&&A.he)||"ויטרבו")),h("b",null,"עכשיו "+wfHm(T.min)+" שעון איטליה")),
-        h("a",{class:"wl-chat",href:wfChat(d)||("https://claude.ai/new?q="+encodeURIComponent("נסיעת עבודה "+(d.title||"")+" ("+(d.id||"")+"), Side Quests. קרא את sq_docs work_flights/"+d.id+" ועזור לי בנסיעה.")),target:"_blank",rel:"noopener","aria-label":"הצ׳אט של הנסיעה"},"💬 צ׳אט")),seg,...body);}
+    return h("article",{class:"wl"},h("div",{class:"wl-h"},h("div",null,h("small",null,(d.flag||(window.SQFlags&&SQFlags.of("איטליה"))||"🇮🇹")+(d.preview?" סוג נסיעה: ":" עכשיו ב")+((A&&A.he)||"ויטרבו")),h("b",null,d.preview?"כך זה ייראה בנסיעה":"עכשיו "+wfHm(T.min)+" שעון איטליה")),
+        d.preview?null:h("a",{class:"wl-chat",href:wfChat(d)||("https://claude.ai/new?q="+encodeURIComponent("נסיעת עבודה "+(d.title||"")+" ("+(d.id||"")+"), Side Quests. קרא את sq_docs work_flights/"+d.id+" ועזור לי בנסיעה.")),target:"_blank",rel:"noopener","aria-label":"הצ׳אט של הנסיעה"},"💬 צ׳אט")),seg,...body);}
   // which comes first in the trip: the flight (before it, on the day home, in the air) or "now" (the road stop / Viterbo)
   function wfFlightFirst(){const now=Date.now(),L=wfLive();if(!L.length)return false;const x=L[0],o=x.legs[0],r=x.legs[x.legs.length-1];
     const oa=wfMs(o.arr)||wfMs(o.dep),rd=wfMs(r.dep);if(now<oa+3600000)return true;if(rd&&now>rd-7*3600000)return true;return false;}
@@ -5887,7 +5887,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     //  the flight first only around the flights (before the trip, the day home, in the air). The rental-car tips folded at the very bottom.
     // 25.59: the two kinds of work trip as ready cards (hotel / work / eat / supermarket / MediaWorld), folded at the bottom
     const TT=(wtTypes&&wtTypes.types)||{},TTK=Object.keys(TT).filter(k=>!(wfLive()||[]).some(x=>wfType(x.d)===TT[k]));
-    const TYP=TTK.length?[wfSec("tt:work","🗂️","סוגי נסיעות העבודה",TTK.map(k=>TT[k].short||TT[k].title).join(" · "),TTK.map(k=>{const T=TT[k];return h("div",{class:"wt-type"},h("b",null,(T.flag||"")+" "+(T.title||k)),T.sub?h("small",null,T.sub):null,wfLocal({id:"tt-"+k,trip_type:k,title:T.title,flag:T.flag}));}))]:[];
+    const TYP=TTK.length?[wfSec("tt:work","🗂️","סוגי נסיעות העבודה",TTK.map(k=>TT[k].short||TT[k].title).join(" · "),TTK.map(k=>{const T=TT[k];return h("div",{class:"wt-type"},h("b",null,(T.flag||"")+" "+(T.title||k)),T.sub?h("small",null,T.sub):null,wfLocal({id:"tt-"+k,trip_type:k,title:T.title,flag:T.flag,preview:1}));}))]:[];
     const CR=[...TYP,wfSec("cr:work","🚗","רכב שכור","מה לבקש בדלפק ואיזו חברה",[crRule({k:"work"}),crBoard()])];
     if(!L.length&&!R.length)return [...wfWrap(),h("p",{class:"ws-note"},"עוד אין כאן כלום. כל נסיעת עבודה חדשה תקבל כאן כרטיס."),...CR];
     const road=wfOnRoad(),FA=R.map(wsFocus).filter(Boolean),FO=road?FA:[],LV=road?[]:wfLive().filter(x=>wfInItaly(x.d,x.legs)).map(x=>wfLocal(x.d)).filter(Boolean),NOW=[...FO,...LV];
