@@ -9,6 +9,7 @@
  *   onFired  = () => {} אחרי שהבדיקה הוערה (למשל לבדוק ציונים לעיתים קרובות יותר)
  *   pop      = (html) => {} חלון של הדף (אחרת חלון של המודול)
  * StudyGrade.ask() = כמו לחיצה על הכפתור. StudyGrade.refresh() = לעדכן את מצב הכפתור (אחרי שליחת תשובה / קבלת ציון).
+ * StudyGrade.next() = מתי הבדיקה הבאה ("היום ב-18:50"). Claude בודק 3 פעמים ביום בלבד (אורן 22.11.2026), הכפתור רק מכניס לתור.
  * StudyGrade.btn(label) = HTML של כפתור "בדוק שאלות" לחלונות של הדף (onclick קורא ל-ask).
  * מפתח במכשיר: study_grq_<kid>_<app> = זמן הבקשה האחרונה (ms). לא באורח (אין שליחה לשרת).
  */
@@ -19,6 +20,15 @@
   function lsk() { return 'study_grq_' + O.kid + '_' + O.app }
   function lastReq() { try { return +localStorage.getItem(lsk()) || 0 } catch (e) { return 0 } }
   function setReq(t) { try { localStorage.setItem(lsk(), String(t)) } catch (e) {} }
+  // Claude בודק 3 פעמים ביום בלבד (אורן 22.11.2026): 15:50, 18:50, 21:50 שעון ישראל
+  var SLOTS = [[15, 50], [18, 50], [21, 50]];
+  function nextT() {
+    var d = new Date(), il;
+    try { il = new Date(d.toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' })) } catch (e) { il = d }
+    var m = il.getHours() * 60 + il.getMinutes();
+    for (var i = 0; i < SLOTS.length; i++) if (SLOTS[i][0] * 60 + SLOTS[i][1] > m) return 'היום ב-' + SLOTS[i][0] + ':' + SLOTS[i][1];
+    return 'מחר ב-' + SLOTS[0][0] + ':' + SLOTS[0][1];
+  }
   function g(m, f) { return O.boy ? m : f }
   function list() { try { return (O.pending() || []).filter(function (o) { return o && o.id }) } catch (e) { return [] } }
   function waiting() { var L = lastReq(); return list().filter(function (o) { return !o.at || Date.parse(o.at) > L }) }
@@ -56,7 +66,7 @@
     var w = waiting(), all = list();
     if (!w.length) {
       if (silent) return;
-      if (all.length) show('<h3>⏳ Claude ' + 'בודק</h3><p>התשובות שלך כבר נשלחו לבדיקה. הציונים יקפצו כאן לבד בעוד כמה דקות.</p>');
+      if (all.length) show('<h3>⏳ Claude ' + 'בודק</h3><p>התשובות שלך כבר נשלחו לבדיקה. הציונים יקפצו כאן אחרי הבדיקה הבאה (' + nextT() + ').</p><p>Claude בודק תשובות 3 פעמים ביום: 15:50, 18:50 ו-21:50.</p>');
       else show('<h3>✅ בדוק שאלות</h3><p>עוד אין תשובות שמחכות לבדיקה. ' + g('כתוב תשובה לשאלה פתוחה ושלח אותה', 'כתבי תשובה לשאלה פתוחה ושלחי אותה') + ', וכש' + g('תסיים', 'תסיימי') + ' ' + g('לחץ', 'לחצי') + ' כאן.</p>');
       return;
     }
@@ -64,10 +74,10 @@
     if (!silent && O.el) { O.el.classList.remove('go'); O.el.innerHTML = '📨 שולח…' }
     call('action=req&kid=' + encodeURIComponent(O.kid) + '&app=' + encodeURIComponent(O.app)).then(function (j) {
       busy = false;
-      if (j && j.ok && (j.fired || j.wait || j.n === 0)) {
+      if (j && j.ok && (j.fired || j.wait || j.sched || j.n === 0)) {
         setReq(t0); refresh(); if (O.onFired) try { O.onFired() } catch (e) {}
         if (!silent) show(j.n === 0 ? '<h3>✓ הכול נבדק</h3><p>אין תשובות שמחכות. הציונים כבר אצלך.</p>' :
-          '<h3>📨 Claude קיבל הודעה!</h3><p>' + (j.n || w.length) + ' ' + ((j.n || w.length) === 1 ? 'תשובה נשלחה' : 'תשובות נשלחו') + ' לבדיקה. הציון וההערה יקפצו כאן לבד בעוד כמה דקות.</p><p>בינתיים אפשר להמשיך ללמוד.</p>');
+          '<h3>📨 התשובות בתור לבדיקה!</h3><p>' + (j.n || w.length) + ' ' + ((j.n || w.length) === 1 ? 'תשובה מחכה' : 'תשובות מחכות') + ' לבדיקה. Claude בודק 3 פעמים ביום, והבדיקה הבאה ' + nextT() + '. הציון וההערה יקפצו כאן לבד.</p><p>בינתיים אפשר להמשיך ללמוד.</p>');
       } else {
         refresh();
         if (!silent) show('<h3>עוד רגע…</h3><p>הבקשה לא יצאה הפעם. התשובות שמורות, ' + g('נסה', 'נסי') + ' ללחוץ שוב בעוד דקה.</p>');
@@ -90,7 +100,7 @@
       refresh(); setTimeout(auto, 4000); setInterval(function () { refresh(); auto() }, 5 * 60e3);
       document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { refresh(); auto() } });
     },
-    ask: function () { ask(false) }, refresh: refresh,
+    ask: function () { ask(false) }, refresh: refresh, next: nextT,
     waiting: function () { return O ? waiting().length : 0 },
     btn: function (label) { return '<button class="sgrb" type="button" onclick="StudyGrade.ask()">' + (label || '✅ בדוק שאלות עכשיו') + '</button>' }
   };
