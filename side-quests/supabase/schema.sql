@@ -32,32 +32,38 @@ alter table public.sq_secrets  enable row level security;
 alter table public.sq_throttle enable row level security;
 
 create or replace function public.sq_auth(p_key text, p_app text)
- returns text language plpgsql security definer
+ returns text
+ language plpgsql
+ security definer
  set search_path to 'public', 'extensions'
 as $function$
-declare s record; t record; good boolean;
+declare s record; t record; good boolean; hdr json; ua text; ref text; bucket text;
 begin
-  -- An empty key is never a guess: reject it without counting, so a page or test with no code
-  -- cannot burn the shared 5 tries and lock Oren out (Oren, 2026-11-22).
+  -- An empty key is never a guess (2026-11-22).
   if coalesce(btrim(p_key), '') = '' then return 'bad'; end if;
-  insert into sq_throttle(app) values (p_app) on conflict (app) do nothing;
-  select * into t from sq_throttle where app = p_app for update;
+  -- The Side Quests code is always 6 digits: anything else is a placeholder, never a guess (2026-11-22, second lockout).
+  if p_app = 'sidequests' and p_key !~ '^\d{6}$' then return 'bad'; end if;
+  -- Test browsers (HeadlessChrome / localhost page) count in their own bucket, so a test can never lock Oren's phone.
+  begin hdr := current_setting('request.headers', true)::json; exception when others then hdr := null; end;
+  ua := coalesce(hdr->>'user-agent',''); ref := coalesce(hdr->>'referer','') || ' ' || coalesce(hdr->>'origin','');
+  bucket := case when ua ilike '%HeadlessChrome%' or ref ~* '//(localhost|127\.0\.0\.1)' then p_app || ':test' else p_app end;
+  insert into sq_throttle(app) values (bucket) on conflict (app) do nothing;
+  select * into t from sq_throttle where app = bucket for update;
   if t.locked_until is not null and t.locked_until > now() then return 'locked'; end if;
   select * into s from sq_secrets where app = p_app;
   good := s.app is not null and s.key_hash = encode(extensions.digest(coalesce(s.salt,'') || coalesce(p_key,''), 'sha256'), 'hex');
-  -- movies also accepts the Side Quests code (Oren, 2026-11-01)
   if not good and p_app = 'movies' then
     good := exists (select 1 from sq_secrets x where x.app = 'sidequests'
       and x.key_hash = encode(extensions.digest(coalesce(x.salt,'') || coalesce(p_key,''), 'sha256'), 'hex'));
   end if;
   if good then
-    update sq_throttle set fails = 0, locked_until = null where app = p_app;
+    update sq_throttle set fails = 0, locked_until = null where app = bucket;
     return 'ok';
   end if;
   update sq_throttle set fails = fails + 1,
     locked_until = case when fails + 1 >= 5 then now() + interval '30 minutes' else null end
-  where app = p_app;
-  update sq_throttle set fails = 0 where app = p_app and fails >= 5;
+  where app = bucket;
+  update sq_throttle set fails = 0 where app = bucket and fails >= 5;
   return 'bad';
 end $function$;
 
