@@ -9,9 +9,18 @@
   var GPT_CHAT = "https://chatgpt.com/share/6afbfe85-fdb0-83ed-8174-3f3036f43cb8";
   var GPT_LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0D0D0D"/><g fill="none" stroke="#fff" stroke-width="1.9"><ellipse cx="16" cy="16" rx="8.5" ry="4.2"/><ellipse cx="16" cy="16" rx="8.5" ry="4.2" transform="rotate(60 16 16)"/><ellipse cx="16" cy="16" rx="8.5" ry="4.2" transform="rotate(120 16 16)"/></g></svg>';
   function key() { try { return localStorage.getItem("sq_pin") || sessionStorage.getItem("sq_pin") || ""; } catch (e) { return ""; } }
+  // Every wrong code counts toward the shared 5-try lock of the whole app (22.11.2026: a test page with no code
+  // called sq_gfx_get again and again and locked Oren out). So: never call without a 6-digit code, and never
+  // try the same code again after the server said it is wrong or locked.
+  var badKey = null;
   function rpc(n, a) {
-    return fetch(URL_ + n, { method: "POST", headers: { "Content-Type": "application/json", apikey: ANON }, body: JSON.stringify(Object.assign({ p_key: key() }, a)) })
-      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error((j && j.message) || "HTTP " + r.status); return j; }); });
+    var k = key();
+    if (!/^\d{6}$/.test(k) || k === badKey) return Promise.reject(new Error("no key"));
+    return fetch(URL_ + n, { method: "POST", headers: { "Content-Type": "application/json", apikey: ANON }, body: JSON.stringify(Object.assign({ p_key: k }, a)) })
+      .then(function (r) { return r.json().then(function (j) {
+        if (!r.ok) throw new Error((j && j.message) || "HTTP " + r.status);
+        if (j && (j.status === "bad" || j.status === "locked")) { badKey = k; throw new Error(j.status); }
+        return j; }); });
   }
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   var css = document.createElement("style");
