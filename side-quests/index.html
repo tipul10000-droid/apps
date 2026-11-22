@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.65";window.SQ_BUILD_AT="22.11.2026 21:35";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.66";window.SQ_BUILD_AT="22.11.2026 21:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -5630,9 +5630,10 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     let body;
     // 25.59: the discreet line under every tab: the big supermarket and MediaWorld near here, with their logos
     const EX=[...((A&&A.extras)||[]),...(TY.extras||[])].filter((x,i,a)=>x&&x.n&&a.findIndex(y=>y.n===x.n)===i);
-    const exRow=EX.length?h("details",{class:"wl-exd"},h("summary",null,h("span",null,"📍 עוד נקודות ניווט"),h("small",null,EX.map(x=>x.n).join(" · ")),h("span",{class:"wl-chev","aria-hidden":"true"},"‹")),h("div",{class:"wl-ex"},...EX.map(x=>{const o=x.hours?wfOpenAt({h:x.hours,hours:x.hours},T.dow,T.min):null;
+    const exRow=EX.length?h("details",{class:"wl-exd"},h("summary",null,h("span",null,"📍 עוד נקודות ניווט"),h("small",null,EX.map(x=>{const o=x.hours?wfOpenAt({h:x.hours,hours:x.hours},T.dow,T.min):null;return x.n+(o&&!o.unk&&!o.open?" (סגור)":"");}).join(" · ")),h("span",{class:"wl-chev","aria-hidden":"true"},"‹")),h("div",{class:"wl-ex"},...EX.map(x=>{const o=x.hours?wfOpenAt({h:x.hours,hours:x.hours},T.dow,T.min):null;
       return h("a",{href:dirTo(x),target:"_blank",rel:"noopener",class:"nolink notel"},x.dom?h("img",{src:wfFav(x.dom),alt:"",width:"16",height:"16",loading:"lazy"}):h("span",{"aria-hidden":"true"},x.k==="mw"?"🔌":x.k==="tools"?"🔧":x.k==="bazar"?"🧺":"🛒"),
-        h("span",null,h("b",null,x.n),x.l?h("small",null,x.l):null),o&&!o.unk?h("small",{class:o.open?"on":""},o.open?"פתוח עד "+o.until:"סגור עכשיו"):null);}))):null;
+        h("span",null,h("b",null,x.n),x.l?h("small",null,x.l):null),// 25.66 (Oren 22.11.2026): every point says open / closed, the same way
+        h("small",{class:o&&!o.unk&&o.open?"on":""},!o||o.unk?"שעות לא ידועות":o.open?"פתוח עד "+o.until:"סגור עכשיו"+(o.next?" · נפתח "+o.next:"")));}))):null;
     if(tab==="hotel"&&hot){const ph=String(hot.phone||(d.hotel&&d.hotel.name===hot.n&&d.hotel.phone)||"").trim();
       body=[h("a",{class:"wl-go",href:dirTo(hot),target:"_blank",rel:"noopener"},h("span",{class:"wf-bi","aria-hidden":"true"},"🏨"),h("span",null,h("b",null,"ניווט למלון"),h("small",{class:"nolink notel"},hot.n+(km(hot)!=null&&!(p0&&p0.la===+hot.lat)?" · "+km(hot)+" ק״מ":""))),h("span",{"aria-hidden":"true"},"›")),
         hotPick0,ph?h("a",{class:"wf-mail wl-tel",href:"tel:"+ph.replace(/[^\d+]/g,"")},"📞 ",h("bdi",{dir:"ltr"},ph)):null,exRow];}
