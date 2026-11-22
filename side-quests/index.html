@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.56";window.SQ_BUILD_AT="22.11.2026 18:22";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.57";window.SQ_BUILD_AT="22.11.2026 18:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2851,6 +2851,16 @@ html.desk .hero .dz-grid{display:flex!important}
 /* slightly larger task text, a bit more height per row */
 .r-title{font-size:17.5px}
 .glist>.row{min-height:56px}
+/* 25.57 (Oren 22.11.2026): a re-render must not replay an "opening" animation on something that was already open (the flash / jump) */
+.noanim,.noanim::after,.noanim>*{animation:none!important}
+/* 25.57: compact flight ticket (flight more than a day away) */
+.wfTop .wft.cmp:not([open]) .wf-ey,.wfTop .wft.cmp:not([open]) .wf-big,.wfTop .wft.cmp:not([open]) .wf-tm,.wfTop .wft.cmp:not([open]) .wf-base{display:none!important}
+:is(#wfTop,.wfTop) .wft.cmp:not([open])>summary{min-height:0;padding:12px 14px}:is(#wfTop,.wfTop) .wft.cmp:not([open])>summary::after{font-size:56px;top:-8px}
+.wf-cmpx{margin-inline-start:auto;font-size:20px;opacity:.75;transform:rotate(-90deg);transition:transform .2s}.wft[open] .wf-cmpx{transform:rotate(90deg)}
+.ab-bank>summary{list-style:none;cursor:pointer}.ab-bank>summary::-webkit-details-marker{display:none}
+.ab-bank>summary .tv-sec-h{display:flex;align-items:center;gap:6px;margin-bottom:0}.ab-bank>summary .tv-sec-h::after{content:"‹";margin-inline-start:auto;transform:rotate(-90deg);transition:transform .2s;opacity:.6}
+.ab-bank[open]>summary .tv-sec-h::after{transform:rotate(90deg)}.ab-bank[open]>summary{margin-bottom:8px}.ab-bank>small{display:block}
+#abNow{scroll-margin-top:12px}
 </style>
 <script>window.SQI_SKIP=".sbar,#cnM,.r-title,.r-upd,.d-line,.d-story,.f-log,.dd-t,.bp-q,.up-t b,.lt b,.ft b";</script><script src="sq-icons.js?v=2"></script>
 <style>/* 23.7 (Oren 19.11.2026): splash screen + loading bar. A = the trail illustration (sq_gfx "sq-splash", cached on the device in
@@ -4789,7 +4799,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(C.remL.length){const rk=t=>String(t.sleep_until||(t.snooze_until&&t.snooze_until!=="someday"?String(t.snooze_until).slice(0,10):"")||t.next_date||"9999");
       more.push(foldRows("remL",catT("rem","תזכורות בהמשך"),C.remL.sort((a,b)=>rk(a).localeCompare(rk(b)))));}
     // 25.33 (Oren 22.11.2026): Work Quest order = work flight banner (from the trip mail until it lands back) > expenses > tasks ... > project capsule (RWMTC) at the very bottom
-    {const wf=wfLink(),ws=$("wfTop");if(ws){ws.hidden=!wf.length;ws.replaceChildren(...wf);}
+    {const wf=quest==="work"?wfLink():[],ws=$("wfTop");if(ws){ws.hidden=!wf.length;ws.replaceChildren(...wf);}
      const qi=qInfoBanners(),qs=$("qiSec");if(qs){qs.hidden=!qi.length;qs.replaceChildren(...qi);}}
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
@@ -4831,7 +4841,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   //     phone is >1.5 km from home in the 4 hours before it) until he lands home; settings/away covers trips without a flight ticket.
   //     Not sure he left = a "יצאת לשדה?" bar from 90 minutes before. A manual on/off overrides the automatic until that trip ends (sq_abm).
   //  2. Whether opening the app jumps straight to the abroad ticket (sq_abjump, default on).
-  let abHidden=0,abLanded=false,abHideAt=0,abCfgOpen=false;
+  let abHidden=0,abLanded=false,abHideAt=0,abCfgOpen=false,abCfgNew=false;
   function abKey(){const tr=tripToday();return tr?String(tr.to||ilDate()):"";}
   function abWin(){const now=Date.now();let L=[];try{L=wfLive();}catch(e){return null;}
     for(const x of L){const o=x.legs[0],r=x.legs[x.legs.length-1],dep=wfMs(o.dep);if(!dep)continue;
@@ -4849,14 +4859,30 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function abMode(){const o=abOv();if(o)return o.m==="on";return abAuto();}
   function abSuggest(){const w=abWin(),now=Date.now();if(!w||abOv()||abMode())return false;try{if(sessionStorage.getItem("sq_abns")==="wf:"+w.d.id)return false;}catch(e){}return now>=w.lv-90*60000&&now<w.lv;}
   function abJump(){try{return localStorage.getItem("sq_abjump")!=="0";}catch(e){return true;}}
-  function abKeep(t){return !isOpen(t)||!!t.critical||isUrgent(t)||t.area==="נסיעות עבודה"||t.tzone==="abroad"||/^(elbit-trip|wf-|work-trip)/.test(t.id||"");}
+  // 25.57 (Oren 22.11.2026): what he asked to see (search, a tap on an update, a link) beats the mode: it stays shown for this session
+  const abForce=new Set((()=>{try{return JSON.parse(sessionStorage.getItem("sq_abforce")||"[]");}catch(e){return [];}})());
+  function abWant(id){if(!id||abForce.has(id))return;abForce.add(id);try{sessionStorage.setItem("sq_abforce",JSON.stringify([...abForce].slice(-40)));}catch(e){}}
+  function abKeep(t){return abForce.has(t.id)||!isOpen(t)||!!t.critical||isUrgent(t)||t.area==="נסיעות עבודה"||t.tzone==="abroad"||/^(elbit-trip|wf-|work-trip)/.test(t.id||"");}
   // m: "on" | "off" | "auto"
   function abSet(m){if(m===true)m="on";if(m===false)m="off";try{localStorage.removeItem("sq_abx");if(m==="auto")localStorage.removeItem("sq_abm");else localStorage.setItem("sq_abm",JSON.stringify({m,k:abCurKey(),at:Date.now()}));}catch(e){}
     if(abMode()){abLanded=false;abLand(true);toast(m==="auto"?"מצב חו״ל: אוטומטי":"מצב חו״ל פועל");}else{splitTopics();renderAll();toast(m==="auto"?"מצב חו״ל: אוטומטי (כרגע כבוי)":"מצב חו״ל כבוי. כל המשימות חזרו");}}
   function abLand(force){if(abLanded||!abMode())return;abLanded=true;if(!force&&!abJump()){splitTopics();renderAll();return;}tvZ="abroad";abTab="work";
     wsDocs.filter(d=>d.type==="route").forEach(r=>{if(wsUI[r.id])wsUI[r.id].open=true;});
     if(quest!=="travel")setQuest("travel");else{splitTopics();renderAll();}
-    setTimeout(()=>{const f=document.getElementById("abNow")||document.getElementById("wsFocus")||document.getElementById("tvSec");if(f)try{f.scrollIntoView({block:"start",behavior:"smooth"});}catch(e){}},500);}
+    abScroll();}
+  // 25.57 (Oren 22.11.2026: "it doesn't land on the right spot"): cancel qTop's scroll-to-top, then land on "now" instantly and
+  //  re-land while the data and fonts settle (re-renders move it), unless he already touched the screen.
+  function abScroll(){qtTok++;let stop=false;const off=()=>{stop=true;};addEventListener("touchstart",off,{once:true,passive:true});addEventListener("wheel",off,{once:true,passive:true});
+    const t0=Date.now();let n=0;
+    // the target's top lands just under whatever sticks to the top of the screen (the בארץ / בחו״ל switch)
+    const stickH=()=>{let b=0;for(const x of [60,195,330]){let e=document.elementFromPoint(x,4);while(e&&e!==document.body){const ps=getComputedStyle(e).position;if(ps==="sticky"||ps==="fixed"){const r=e.getBoundingClientRect();if(r.top<=4&&r.bottom<220)b=Math.max(b,r.bottom);break;}e=e.parentElement;}}return b;};
+    const land=()=>{const f=document.getElementById("abNow")||document.getElementById("tvSec");if(!f)return;let y=f.getBoundingClientRect().top+scrollY-12;window.scrollTo(0,Math.max(0,y));
+      const sh=stickH();if(sh){y=f.getBoundingClientRect().top+scrollY-sh-10;if(Math.abs(scrollY-y)>2)window.scrollTo(0,Math.max(0,y));}};
+    // a popup (the morning brief) holds the screen: wait for it to close, then land and settle for 2.5 more seconds
+    const go=()=>{if(stop||quest!=="travel"||Date.now()-t0>60000)return done();if(document.documentElement.classList.contains("sqlock")){n=0;return setTimeout(go,400);}
+      land();if(++n<6)setTimeout(go,n<2?250:500);else done();};
+    const done=()=>{removeEventListener("touchstart",off);removeEventListener("wheel",off);};
+    setTimeout(go,60);}
   document.addEventListener("visibilitychange",()=>{if(document.hidden){abHideAt=Date.now();return;}if(abHideAt&&Date.now()-abHideAt>20*60e3){abLanded=false;if(db)abLand();}});
   // the automatic switch is time based: check once a minute so the mode turns on by itself when he leaves for the airport
   let abWas=null;setInterval(()=>{if(!db)return;const m=abMode(),s=abSuggest();const k=m+"|"+s;if(abWas!==null&&k!==abWas){abLanded=false;if(m)abLand();else{splitTopics();renderAll();}}abWas=k;try{renderAbBar();}catch(e){}},60000);
@@ -4876,14 +4902,14 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const row=h("div",{class:"ab-row"},h("div",{class:"ab-t"},h("b",null,title),h("small",null,sub)),
       sug?h("button",{type:"button",class:"go",onclick:()=>abSet("on")},"כן, יצאתי"):(on&&quest!=="travel"?h("button",{type:"button",class:"go",onclick:()=>{abLanded=false;abLand(true);}},"✈️ לנסיעה"):null),
       abSw(on,()=>abSet(on?"off":"on"),"מצב חו״ל"),
-      h("button",{type:"button",class:"ab-g"+(abCfgOpen?" on":""),"aria-label":"הגדרות מצב חו״ל","aria-expanded":abCfgOpen?"true":"false",onclick:()=>{abCfgOpen=!abCfgOpen;renderAbBar();}},"⚙"));
-    const cfg=abCfgOpen?h("div",{class:"ab-cfg sqgrow"},
+      h("button",{type:"button",class:"ab-g"+(abCfgOpen?" on":""),"aria-label":"הגדרות מצב חו״ל","aria-expanded":abCfgOpen?"true":"false",onclick:()=>{abCfgOpen=!abCfgOpen;abCfgNew=abCfgOpen;renderAbBar();}},"⚙"));
+    const cfg=abCfgOpen?h("div",{class:"ab-cfg"+(abCfgNew?" sqgrow":"")},
       h("div",{class:"ab-cr"},h("div",null,h("b",null,"מצב חו״ל"),h("small",null,ov?(ov.m==="on"?"פועל ידנית עד סוף הנסיעה":"כבוי ידנית עד סוף הנסיעה"):autoTxt)),
         h("div",{class:"abm-seg"},...[["auto","אוטומטי"],["on","פועל"],["off","כבוי"]].map(([k,l])=>h("button",{type:"button",class:(ov?ov.m===k:k==="auto")?"on":"",onclick:()=>abSet(k)},l)))),
       h("div",{class:"ab-cr"},h("div",null,h("b",null,"פתיחה ישר לטיקט"),h("small",null,"בכל כניסה לאפליקציה במצב חו״ל: ישר לנסיעה")),
-        abSw(abJump(),()=>{try{localStorage.setItem("sq_abjump",abJump()?"0":"1");}catch(e){}renderAbBar();toast(abJump()?"ייפתח ישר לטיקט":"ייפתח במסך הרגיל");},"פתיחה ישר לטיקט")),
+        abSw(abJump(),e=>{try{localStorage.setItem("sq_abjump",abJump()?"0":"1");}catch(x){}const b=e.currentTarget,on=abJump();b.classList.toggle("on",on);b.setAttribute("aria-checked",on?"true":"false");toast(on?"ייפתח ישר לטיקט":"ייפתח במסך הרגיל");},"פתיחה ישר לטיקט")),
       sug?h("button",{type:"button",class:"ab-no",onclick:()=>{try{sessionStorage.setItem("sq_abns","wf:"+w.d.id);}catch(e){}renderAbBar();}},"עוד לא יצאתי"):null):null;
-    el.replaceChildren(row,...(cfg?[cfg]:[]));
+    el.replaceChildren(row,...(cfg?[cfg]:[]));abCfgNew=false;
     [...row.childNodes].forEach(n=>{if(n.nodeType===3&&n.textContent==="null")n.remove();});}
   function splitTopics(){const tq=quest==="fun"?"side":quest;const zz=tq==="travel"?tvZoneNow():"";topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t))&&!(absorbed(t)&&isOpen(t))&&(!zz||tzOf(t)===zz));funTopics=allTopics.filter(isFun);if(abMode()&&tq!=="travel"){const n=topics.length;topics=topics.filter(abKeep);abHidden=n-topics.length;}else abHidden=0;}
   function renderQnav(){
@@ -5547,7 +5573,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       body=[fx.length?h("div",{class:"wl-l"},...fx.map(row)):null,op.length?h("div",{class:"wl-sh"},"פתוחות עכשיו, לפי הדירוג"+(p0&&p0.base?" · מרחק מהבסיס":"")):null,op.length?h("div",{class:"wl-l"},...op.map(row)):h("p",{class:"wl-e"},"אין עכשיו עוד מקום פתוח מהרשימה"),
         cl.length?h("details",{class:"wf-bk"},h("summary",null,"סגורות עכשיו ("+cl.length+")"),h("div",{class:"wl-l"},...cl.map(row))):null,
         hotPick,abFood&&abFood.at?h("small",{class:"wl-src"},"הדירוגים מ-Google Maps, עודכן "+String(abFood.at).slice(0,10).split("-").reverse().join(".")):null];}
-    return h("article",{class:"wl"},h("div",{class:"wl-h"},h("div",null,h("small",null,"📍 עכשיו ב"+((A&&A.he)||"ויטרבו")),h("b",null,"עכשיו "+wfHm(T.min)+" שעון איטליה")),seg),...body);}
+    return h("article",{class:"wl"},h("div",{class:"wl-h"},h("div",null,h("small",null,(d.flag||(window.SQFlags&&SQFlags.of("איטליה"))||"🇮🇹")+" עכשיו ב"+((A&&A.he)||"ויטרבו")),h("b",null,"עכשיו "+wfHm(T.min)+" שעון איטליה")),seg),...body);}
   // which comes first in the trip: the flight (before it, on the day home, in the air) or "now" (the road stop / Viterbo)
   function wfFlightFirst(){const now=Date.now(),L=wfLive();if(!L.length)return false;const x=L[0],o=x.legs[0],r=x.legs[x.legs.length-1];
     const oa=wfMs(o.arr)||wfMs(o.dep),rd=wfMs(r.dep);if(now<oa+3600000)return true;if(rd&&now>rd-7*3600000)return true;return false;}
@@ -5572,11 +5598,13 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       const pick=(e,tile)=>{wfSel[d.id]=wfSel[d.id]===e.k?null:e.k;const t=Date.now(),n=wfPick(d.id,evs,t),det=tile.closest(".wft");if(!det)return;
         const big=det.querySelector(".wf-big");if(big)big.replaceChildren(...[].concat(wfBig(n,t,inAir,nx)));
         det.querySelectorAll("summary .wf-ti").forEach(x=>x.classList.toggle("on",!!n&&x.dataset.k===n.e.k));wfTickOn();};
-      const det=h("details",{class:"wft"+(inAir?" air":""),"data-sq-item":"wf-"+d.id,open:wfOpen["t:"+d.id]?true:null,ontoggle:ev=>{wfOpen["t:"+d.id]=ev.currentTarget.open;}},
+      // 25.57 (Oren 22.11.2026): while the flight is more than a day away, the ticket is one small line with the countdown; tap = everything
+      const cmp=!inAir&&dep-now>86400000;
+      const det=h("details",{class:"wft"+(inAir?" air":"")+(cmp?" cmp":""),"data-sq-item":"wf-"+d.id,open:wfOpen["t:"+d.id]?true:null,ontoggle:ev=>{wfOpen["t:"+d.id]=ev.currentTarget.open;}},
         h("summary",null,h("span",{class:"wf-ey","aria-hidden":"true"},ey),
           h("div",{class:"wf-big",onclick:nxt&&nxt.sel?ev=>{ev.preventDefault();ev.stopPropagation();const b=det.querySelector('summary .wf-ti[data-k="'+nxt.e.k+'"]');wfSel[d.id]=null;if(b)pick({k:null},b);}:null},wfBig(nxt,now,inAir,nx)),
           h("div",{class:"wf-row"},lg?h("img",{class:"wf-sl",src:"../trips/img/"+lg,alt:nx.airline||""}):h("span",{class:"wf-sl wf-sln","aria-hidden":"true"},"✈️"),
-            h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(d.title||"טיסת עבודה")),h("small",null,[wfAir(nx),(nx.from&&nx.from.city||"")+" ← "+(nx.to&&nx.to.city||""),wfDay(nx.dep)].filter(Boolean).join(" · ")))),
+            h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(cmp?"טיסה "+(legs.indexOf(nx)>0?"הביתה":"")+" · "+wfDay(nx.dep):(d.title||"טיסת עבודה"))),h("small",null,cmp&&nxt?nxt.l+" בעוד "+wfIn(nxt.t-now):[wfAir(nx),(nx.from&&nx.from.city||"")+" ← "+(nx.to&&nx.to.city||""),wfDay(nx.dep)].filter(Boolean).join(" · "))),cmp?h("span",{class:"wf-cmpx","aria-hidden":"true"},"‹"):null),
           wfTimes(evs,now,nxt,pick),
           d.base&&trip&&!inAir&&legs.indexOf(nx)>0?wfBaseBtn(d.base):null),
         h("div",{class:"wf-b"},
@@ -5824,7 +5852,10 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(!L.length&&!R.length)return [...wfWrap(),h("p",{class:"ws-note"},"עוד אין כאן כלום. כל נסיעת עבודה חדשה תקבל כאן כרטיס."),...CR];
     const road=wfOnRoad(),FA=R.map(wsFocus).filter(Boolean),FO=road?FA:[],LV=road?[]:wfLive().filter(x=>wfInItaly(x.d,x.legs)).map(x=>wfLocal(x.d)).filter(Boolean),NOW=[...FO,...LV];
     const TOP=wfFlightFirst()?[...wfWrap(),...NOW]:[...NOW,...wfWrap()];
-    return [TOP.length?h("div",{id:"abNow",class:"ab-now"},...TOP):null,...(road?[]:FA),h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank),L.length?h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
+    // 25.57 (Oren 22.11.2026): the road (locked stop + stops explorer) is open only on the drive days; in Viterbo it is one closed drawer
+    const BANK=road?[h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank)]
+      :[h("details",{class:"ab-bank",open:wfOpen["ab:bank"]?true:null,ontoggle:ev=>{wfOpen["ab:bank"]=ev.currentTarget.open;}},h("summary",null,h("div",{class:"tv-sec-h"},"🧭 הדרך רומא ⇄ ויטרבו: עצירות ורגעים")),...FA,...R.map(wsBank))];
+    return [TOP.length?h("div",{id:"abNow",class:"ab-now"},...TOP):null,...BANK,L.length?h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
       return h("details",{class:"tv-wkc"},h("summary",null,h("b",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("small",null,t.stand):null),
         t.summary?h("details",{class:"tv-fold"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
         ls.length?h("div",{class:"lk"},ls.map((l,i)=>h("a",{class:/⭐/.test(l.label||"")?"main":"",href:safeUrl(l.url),target:"_blank",rel:"noopener"},"📍 "+(l.label||"מפה")))):null,
@@ -5939,7 +5970,14 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     el.classList.toggle("open",gateOpen);{const mb=el.querySelector(".tgmore");if(mb)mb.onclick=()=>{gateOpen=!gateOpen;renderGate();};}
     el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>{if(String(b.dataset.id).startsWith("cal:")){toast("אירוע פרטי מהיומן. ההתראות על היציאה מגיעות לבד");return;}openTask(b.dataset.id);});}
   // 25.56: the Claude chat pill = exactly the width of the tool frame under it, in every quest
-  function renderAll(){renderAbBar();renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();statKpi();renderQNew();try{window.tvSync&&tvSync();}catch(e){}}
+  // 25.57 (Oren 22.11.2026): taps re-render big parts of the screen; anything that was already open must not replay its
+  // grow/fade animation (that was the flash, and sqgrow's max-height made the page jump). Only a newly opened thing animates.
+  const RA_SEL=".sqgrow,.wf-b,.wf-sb,.s-done,.r-later,.row.is-open,#qNew,.fcard.zopen,details.wmore>.glist,.tg.tgx,.wcard.nxf .nxb,.pjst.grow,.fitp,.dz-top,.dnews,.pc-sug.has .x,.bp-plan .pf-card";
+  let raPrev=new Set();
+  function raKey(e){const p=[];let n=e;for(let i=0;n&&n!==document.body&&i<5;i++,n=n.parentElement){p.push(n.id||(n.dataset&&(n.dataset.id||n.dataset.k||n.dataset.q))||(n.className&&typeof n.className==="string"?n.className.split(" ").filter(c=>!/^(noanim|on|open|is-open|zopen)$/.test(c)).slice(0,2).join("."):n.tagName));}
+    return p.join("<")+"|"+(e.firstElementChild?(e.firstElementChild.textContent||"").slice(0,24):"");}
+  function noReAnim(){try{const now=new Set();document.querySelectorAll(RA_SEL).forEach(e=>{if(e.closest(".modal,.sheet,[role=dialog]"))return;const k=raKey(e);now.add(k);if(raPrev.has(k))e.classList.add("noanim");});raPrev=now;}catch(e){}}
+  function renderAll(){renderAbBar();renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();statKpi();renderQNew();noReAnim();try{window.tvSync&&tvSync();}catch(e){}}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:"",...(t.sleep_until&&!("sleep_until" in fields)?{sleep_until:""}:{})};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -7480,6 +7518,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     if(!isFun(t)&&questOf(t)==="ai"){const pid=isProjTask(t)?t.project:GEN_ID;view="open";openId=id;if(nav.lvl===3&&nav.id===pid)renderNav();else navGo({lvl:3,id:pid});
       setTimeout(()=>{const r=$("pg3").querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},120);return;}{const q0=isFun(t)?"fun":questOf(t);if(qHidden(q0))setMode("home","🏠 עברתי לבית כדי לפתוח את המשימה");}const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
     if(t.status==="done"||t.status==="promoted")view="done";else if(t.status==="archived")view="archive";else view="open";
+    if(abMode()&&!abKeep(t)){abWant(id);splitTopics();}
     seeUpd(id);if(!ctxOk(t)){ctxNow="all";try{localStorage.setItem("sq_ctx","all");}catch(e){}}filterKind="all";openId=id;renderAll();
     setTimeout(()=>{const r=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},80);}
   let routed=false;
