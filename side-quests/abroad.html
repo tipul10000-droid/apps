@@ -6,9 +6,10 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0B4F57">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.AB_BUILD="1.0";window.SQ_DASH="travel-abroad";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.AB_BUILD="1.1";window.SQ_DASH="travel-abroad";</script>
 <script src="sq-db.js?v=10"></script>
 <script src="flags.js?v=1"></script>
+<script src="trip-icons.js?v=1"></script>
 <title>כל הנסיעות לחו״ל</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
@@ -102,6 +103,19 @@ section{margin-bottom:18px}
 .ins p{margin:0;padding:0 14px 12px;font-size:14px;line-height:1.55;color:var(--ink)}
 .lnk{display:flex;flex-wrap:wrap;gap:8px}
 .lnk a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px}
+/* 1.1: Excel sync + trip-type icons (Oren 22.11.2026) */
+.xl{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.xl a,.xl button{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:var(--hero-ink);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:700;cursor:pointer;text-decoration:none}
+.xl button{width:168px;justify-content:center}
+.xl button[disabled]{opacity:.75;cursor:default}
+.xl small{flex-basis:100%;color:var(--hero-muted);font-size:12.5px}
+.ti{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.ti svg{width:15px;height:15px;color:var(--tc,var(--muted))}
+.tr .fi{flex:none;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--sunk);color:var(--hi)}
+.tr .fi svg{width:20px;height:20px}
+.ucd{flex:none;min-width:52px;text-align:center;border-radius:11px;background:var(--sunk);color:var(--hi);padding:4px 6px;line-height:1.05;font-variant-numeric:tabular-nums}
+.ucd b{display:block;font-family:var(--f-display);font-size:20px}.ucd small{font-size:11.5px;font-weight:700}
+.ucd.soon{background:var(--accent);color:var(--accent-ink)}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.hero h1{font-size:22px}.kpis{gap:6px}.kpi{padding:8px 7px}}
 </style>
@@ -123,7 +137,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safe=u=>/^https:\/\//.test(u||"")?u:"";
 const arr=a=>Array.isArray(a)?a:[];
-const F=window.SQFlags;
+const F=window.SQFlags,TI=window.SQTripIcons;
 const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
 const isD=s=>/^\d{4}-\d\d-\d\d$/.test(s||"");
 const yearOf=t=>{const m=/(\d{4})/.exec(String(t.from||""));return m?+m[1]:0;};
@@ -151,7 +165,21 @@ function hero(L){const A=L.filter(abroad),cc=new Set();A.forEach(t=>ctry(t).forE
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a></div>
   <h1>🌍 כל הנסיעות לחו״ל</h1>
   <p class="sub">מאז ${isFinite(y0)?y0:""} · ${esc(H&&H.source||"")}${H&&H.imported_at?" · עודכן "+esc(H.imported_at.split("-").reverse().join(".")):""}</p>
-  <div class="kpis">${K.map(k=>`<div class="kpi"><b>${esc(k[0])}</b><span>${esc(k[1])}</span></div>`).join("")}</div>`;}
+  <div class="kpis">${K.map(k=>`<div class="kpi"><b>${esc(k[0])}</b><span>${esc(k[1])}</span></div>`).join("")}</div>${xlRow()}`;}
+/* 1.1 (Oren 22.11.2026): the list IS the Excel. "⟳ עדכון מהאקסל" asks the server (sq-travel-sync) to read the file from
+   Dropbox now; the same function runs by itself every morning and imports 5 days after he is back from any trip. */
+const SYNC_URL="https://emgtyfksnofzzlutngbf.supabase.co/functions/v1/sq-travel-sync?action=sync",ANON="sb_publishable_Pa6-CuUavcT0rpD8ei_cxA_8oZ-Ykku";
+let xlBusy=false,xlMsg="";
+function dmy(iso){const d=new Date(iso);if(isNaN(d))return "";return d.toLocaleDateString("he-IL",{day:"numeric",month:"numeric",timeZone:"Asia/Jerusalem"})+" "+d.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit",timeZone:"Asia/Jerusalem"});}
+function xlRow(){const u=safe(H&&H.excel_url)||safe((arr(H&&H.links).find(l=>/dropbox/.test(l.url||""))||{}).url),sy=H&&H.synced;
+  const last=sy&&sy.at?`עודכן מהאקסל ${dmy(sy.at)}${sy.by==="auto"?" (אוטומטית, אחרי חזרה)":""}`:"";
+  return `<div class="xl">${u?`<a href="${esc(u)}" target="_blank" rel="noopener">📗 האקסל</a>`:""}<button type="button" id="xlb"${xlBusy?" disabled":""}>${xlBusy?"⏳ מעדכן…":"⟳ עדכון מהאקסל"}</button>
+  <small>${esc(xlMsg||last)}${xlMsg?"":" · מתעדכן לבד 5 ימים אחרי כל חזרה"}</small></div>`;}
+async function xlSync(){if(xlBusy)return;xlBusy=true;xlMsg="";render();
+  try{const r=await fetch(SYNC_URL,{method:"POST",headers:{"Content-Type":"application/json",apikey:ANON},body:"{}"});const j=await r.json().catch(()=>({}));
+    xlMsg=j&&j.ok?(j.skip?"✓ עודכן לפני רגע":`✓ עודכן: ${j.n} נסיעות${j.added>0?`, ${j.added} חדשות`:""}`):"לא הצלחתי לקרוא את האקסל: "+((j&&j.err)||r.status);}
+  catch(e){xlMsg="אין חיבור לשרת. נסה שוב עוד רגע";}
+  xlBusy=false;render();}
 function bar(L){const cnt=k=>L.filter(t=>abroad(t)&&(k==="all"||(k==="vac"?t.type!=="עבודה"&&t.type!=="צבא":t.type===k))).length;
   const B=[["all","הכול",""],["vac","חופשות",""],...TORD.map(k=>[k,TY[k][0],TY[k][1]])].filter(b=>cnt(b[0]));
   let o=`<div class="chips">${B.map(([k,l,c])=>`<button data-ty="${esc(k)}" class="${ui.ty===k?"on":""}">${c?`<i style="background:${c}"></i>`:""}${esc(l)} · ${cnt(k)}</button>`).join("")}</div>`;
@@ -159,7 +187,11 @@ function bar(L){const cnt=k=>L.filter(t=>abroad(t)&&(k==="all"||(k==="vac"?t.typ
   return o;}
 function upcoming(){const U=TR.filter(t=>(t.stage==="booked"||t.stage==="plan")&&!(isD(t.to)&&t.to<today())).sort((a,b)=>String(a.from).localeCompare(String(b.from)));
   if(!U.length)return "";
-  return `<section class="calm-off"><div class="sh"><h2>✈️ הנסיעות הבאות</h2><small>${U.length}</small></div><div class="list">${U.map(t=>`<div class="tr"><div class="row" style="cursor:default"><span class="fl">${esc(String(t.flag||"").match(/(?:[\u{1F1E6}-\u{1F1FF}]{2})/gu)?.join("")||"")}</span><span class="b"><span class="t">${esc(t.title||"")}</span><span class="s">${t.stage==="plan"?`<span>${esc(t.when||"בתכנון")}</span>`:`<bdi dir="ltr">${esc(rng(t.from,t.to))}</bdi>`}${t.who?`<span>${esc(t.who)}</span>`:""}</span></span></div></div>`).join("")}</div></section>`;}
+  // 1.1: same calm look as the cards in Travel: type icon, dates, and the countdown in days (hours under 24h)
+  const cd=t=>{if(t.stage==="plan"||!TI||!isD(t.from))return "";const f=(Array.isArray(t.flights)?t.flights:[])[0];
+    const [y,m,d]=t.from.split("-").map(Number),[hh,mm]=f&&/^\d{1,2}:\d\d$/.test(f.dep||"")?f.dep.split(":").map(Number):[0,0];
+    const L=TI.left(Date.UTC(y,m-1,d,hh,mm)-2*36e5);return L?`<span class="ucd${L.soon?" soon":""}"><b>${L.v}</b><small>${L.u}</small></span>`:"";};
+  return `<section class="calm-off"><div class="sh"><h2>✈️ הנסיעות הבאות</h2><small>${U.length}</small></div><div class="list">${U.map(t=>`<div class="tr"><div class="row" style="cursor:default"><span class="fi">${TI?TI.svg(TI.key(t)):""}</span><span class="b"><span class="t">${esc(t.title||"")} ${esc(String(t.flag||"").match(/(?:[\u{1F1E6}-\u{1F1FF}]{2})/gu)?.join("")||"")}</span><span class="s">${t.stage==="plan"?`<span>${esc(t.when||"בתכנון")}</span>`:`<bdi dir="ltr">${esc(rng(t.from,t.to))}</bdi>`}${t.who?`<span>${esc(t.who)}</span>`:""}</span></span>${cd(t)}</div></div>`).join("")}</div></section>`;}
 function countries(L){const M={};L.filter(abroad).forEach(t=>ctry(t).forEach(c=>{M[c]=(M[c]||0)+1;}));
   const C=Object.entries(M).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],"he"));
   return `<section><div class="sh"><h2>🗺️ מדינות</h2><small>${C.length}</small></div><div class="cgrid">${C.map(([c,n])=>`<button class="cg${ui.c===c?" on":""}" data-c="${esc(c)}"><span class="f">${esc(F?F.of(c)||"🏳️":"")}</span><span class="n">${esc(c)}</span><span class="c">${n} ${n===1?"נסיעה":"נסיעות"}</span></button>`).join("")}</div></section>`;}
@@ -179,7 +211,7 @@ function row(t){const k=String(t.n||t.from),o=ui.open[k],ty=TY[t.type]||[t.type|
   const city=String(t.cities||"").split(/[,،.]/)[0].trim();
   return `<div class="tr${o?" open":""}" data-sq-item="${esc(k)}"><button class="row" data-x="${esc(k)}"><span class="fl">${esc(flags(t)||"🏳️")}</span>
   <span class="b"><span class="t">${t.n?"#"+esc(t.n)+" ":""}${esc(ctry(t).join(", "))}${city?" · "+esc(city):""}</span>
-  <span class="s"><bdi dir="ltr">${esc(rng(t.from,t.to))}</bdi>${+t.days?`<span>${+t.days} ימים</span>`:""}${ty[0]?`<span class="tp" style="background:${ty[1]||"var(--muted)"}">${esc(ty[0])}</span>`:""}${t._new?'<span class="new">חדש, עוד לא באקסל</span>':""}</span></span><span class="ch">‹</span></button>
+  <span class="s"><bdi dir="ltr">${esc(rng(t.from,t.to))}</bdi>${+t.days?`<span>${+t.days} ימים</span>`:""}${ty[0]?`<span class="ti" style="--tc:${ty[1]||"var(--muted)"}">${TI?TI.svg(TI.key(t)):""}${esc(ty[0])}</span>`:""}${t._new?'<span class="new">חדש, עוד לא באקסל</span>':""}</span></span><span class="ch">‹</span></button>
   <div class="det"><div><dl class="kv">${kv.map(([a,b])=>`<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl></div></div></div>`;}
 function list(L){const A=filt(L).filter(abroad).sort((a,b)=>String(b.from).localeCompare(String(a.from)));
   if(!A.length)return `<section><div class="sh"><h2>🧳 כל הנסיעות</h2></div><div class="list"><div class="empty">אין נסיעות בסינון הזה</div></div></section>`;
@@ -192,9 +224,10 @@ function links(){const L=arr(H&&H.links).filter(l=>safe(l.url));if(!L.length)ret
 function render(){if(!H)return;const L=all();
   $("hero").innerHTML=hero(L);$("bar").innerHTML=bar(L);
   $("app").innerHTML=upcoming()+list(L)+countries(filt(L))+years(ui.y?L:filt(L))+costs(filt(L))+insights()+links();
-  $("foot").innerHTML=`כל הנסיעות ${esc(window.AB_BUILD)} · מהאקסל של אורן ומהנסיעות שהוזמנו · מתעדכן אחרי כל נסיעה`;
+  $("foot").innerHTML=`כל הנסיעות ${esc(window.AB_BUILD)} · מהאקסל של אורן (Dropbox) ומהנסיעות שהוזמנו`;
   if(window.SQCalm&&SQCalm.refresh)try{SQCalm.refresh();}catch(e){}}
 document.addEventListener("click",e=>{
+  if(e.target.closest("#xlb")){xlSync();return;}
   const t=e.target.closest("[data-ty]");if(t){ui.ty=t.dataset.ty;save();render();return;}
   const c=e.target.closest("[data-c]");if(c){ui.c=ui.c===c.dataset.c?"":c.dataset.c;save();render();const a=$("all");if(a)a.scrollIntoView({behavior:"smooth",block:"start"});return;}
   const y=e.target.closest("[data-y]");if(y){ui.y=ui.y===+y.dataset.y?0:+y.dataset.y;save();render();return;}
