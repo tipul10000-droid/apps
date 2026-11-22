@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.60";window.SQ_BUILD_AT="22.11.2026 19:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.61";window.SQ_BUILD_AT="22.11.2026 19:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -5514,7 +5514,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     return sec;}
   // 25.50 (Oren 22.11.2026): the work site of the trip (d.base {he, name, city, url, lat, lng}) = one tap from the ticket, helicopter commute icon. Data only in sq_docs.
   const WF_HELI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h14"/><path d="M10 4v3"/><path d="M6 12a5 5 0 0 1 5-5h3a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M18 10h4l1-3"/><path d="M14 7v5h4"/><path d="M8 14v3"/><path d="M15 14v3"/><path d="M5 19h13l2-2"/></svg>';
-  function wfBaseDir(B){return B.lat!=null&&B.lng!=null?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+B.lat+","+B.lng:wfMaps(B.name);}
+  function wfBaseDir(B){return B.lat!=null&&B.lng!=null?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+B.lat+","+B.lng:(B.url&&safeUrl(B.url))||wfMaps(B.maps_q||B.name);}
   function wfBaseBtn(B){return h("a",{class:"wf-base",href:wfBaseDir(B),target:"_blank",rel:"noopener",onclick:e=>e.stopPropagation()},h("span",{class:"wf-bi",html:WF_HELI}),h("span",{class:"wf-bt"},h("b",null,"לעבודה"),h("small",null,B.he||B.name||"")),h("span",{class:"wf-bgo","aria-hidden":"true"},"ניווט ›"));}
   function wfBase(d){const B=d.base;if(!B||!(B.name||B.he))return null;const u=safeUrl(B.url||"");
     return wfSec(d.id+":base",h("span",{class:"wf-bi",html:WF_HELI}),B.he||B.name,[B.city,B.he&&B.name?B.name:""].filter(Boolean).join(" · "),[
