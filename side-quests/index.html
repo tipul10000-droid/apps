@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.52";window.SQ_BUILD_AT="22.11.2026 15:58";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.53";window.SQ_BUILD_AT="22.11.2026 16:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1161,6 +1161,7 @@ details.tv-wkc:not([open]){gap:0}
 .cr-pa{display:flex;gap:8px;flex-wrap:wrap}.cr-pa button{flex:1;min-width:130px;font:inherit;font-weight:800;font-size:14px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--sunk);color:var(--ink);cursor:pointer}
 .cr-pa button.go{background:#0E6E78;border-color:#0E6E78;color:#fff}
 /* 25.47 abroad mode bar + stop focus ticket + bank v2 */
+.wf-link{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:start;cursor:pointer}.wf-link .wf-li{flex:none;font-size:20px}.wf-link .wf-lt{flex:1;min-width:0;display:grid;gap:2px}.wf-link .wf-lt b{font-size:14.5px}.wf-link .wf-lt small{font-size:12.5px;color:var(--muted)}.wf-link .wf-lg{flex:none;font-size:13px;font-weight:800;color:var(--qlead);white-space:nowrap}
 #abBar.ab-bar{display:flex;align-items:center;gap:8px;margin:0 0 12px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#0E6E78,#14919B);color:#fff}
 #abBar.ab-bar.off{background:var(--sunk);color:var(--ink);border:1px solid var(--line)}
 #abBar .ab-t{flex:1;min-width:0;display:grid;gap:1px}#abBar .ab-t b{font-size:14.5px}#abBar .ab-t small{font-size:12px;opacity:.9}
@@ -1632,22 +1633,22 @@ details.more[open]>summary{margin-bottom:10px}
 .wft a[href^="tel:"],.wft .wf-kv a[href*="wa.me"]:not(.wf-wa){direction:ltr;unicode-bidi:isolate;display:inline-block}
 .wf-qs{display:grid;gap:8px}
 /* 25.33 (Oren 22.11.2026): work flight = a boarding-pass banner, its own look, above everything in Work Quest */
-#wfTop{display:grid;gap:10px;margin-bottom:12px}
-#wfTop .wft{border:0;box-shadow:0 6px 22px rgba(10,40,110,.28);border-radius:18px;background:var(--surface)}
-#wfTop .wft>summary{position:relative;flex-wrap:wrap;row-gap:4px;padding:14px 14px 14px 16px;min-height:78px;color:#fff;
+#wfTop,.wfTop{display:grid;gap:10px;margin-bottom:12px}
+:is(#wfTop,.wfTop) .wft{border:0;box-shadow:0 6px 22px rgba(10,40,110,.28);border-radius:18px;background:var(--surface)}
+:is(#wfTop,.wfTop) .wft>summary{position:relative;flex-wrap:wrap;row-gap:4px;padding:14px 14px 14px 16px;min-height:78px;color:#fff;
   background:radial-gradient(120% 140% at 100% 0%,#3d8bff 0%,rgba(61,139,255,0) 55%),linear-gradient(135deg,#0a2a6b 0%,#0f4fb8 60%,#1a73e8 100%);overflow:hidden}
-#wfTop .wft>summary::after{content:"✈";position:absolute;inset-inline-start:38%;top:-18px;font-size:96px;line-height:1;opacity:.09;transform:rotate(-20deg);pointer-events:none}
-#wfTop .wft[open]>summary{border-radius:18px 18px 0 0}
-#wfTop .wf-ey{flex-basis:100%;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.82)}
-#wfTop .wf-tt b{font-size:17px;color:#fff}
-#wfTop .wf-tt small{color:rgba(255,255,255,.8)}
-#wfTop .wf-sl{width:40px;height:40px;border:0}
-#wfTop .wf-sln{background:rgba(255,255,255,.16)}
-#wfTop .wf-chip{position:relative;background:rgba(255,255,255,.16);color:#fff;border-inline-start:2px dashed rgba(255,255,255,.45);border-radius:12px;width:92px;min-height:48px}
-#wfTop .wf-chip small{color:rgba(255,255,255,.82)}
-#wfTop .wf-chip.taxi{background:#ffb020;color:#1a1200}#wfTop .wf-chip.taxi small{color:rgba(26,18,0,.75)}
-#wfTop .wft.air>summary{background:radial-gradient(120% 140% at 100% 0%,#7ab8ff 0%,rgba(122,184,255,0) 55%),linear-gradient(135deg,#0b3d91 0%,#1e88e5 100%)}
-#wfTop .wf-b{padding-top:10px}
+:is(#wfTop,.wfTop) .wft>summary::after{content:"✈";position:absolute;inset-inline-start:38%;top:-18px;font-size:96px;line-height:1;opacity:.09;transform:rotate(-20deg);pointer-events:none}
+:is(#wfTop,.wfTop) .wft[open]>summary{border-radius:18px 18px 0 0}
+:is(#wfTop,.wfTop) .wf-ey{flex-basis:100%;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.82)}
+:is(#wfTop,.wfTop) .wf-tt b{font-size:17px;color:#fff}
+:is(#wfTop,.wfTop) .wf-tt small{color:rgba(255,255,255,.8)}
+:is(#wfTop,.wfTop) .wf-sl{width:40px;height:40px;border:0}
+:is(#wfTop,.wfTop) .wf-sln{background:rgba(255,255,255,.16)}
+:is(#wfTop,.wfTop) .wf-chip{position:relative;background:rgba(255,255,255,.16);color:#fff;border-inline-start:2px dashed rgba(255,255,255,.45);border-radius:12px;width:92px;min-height:48px}
+:is(#wfTop,.wfTop) .wf-chip small{color:rgba(255,255,255,.82)}
+:is(#wfTop,.wfTop) .wf-chip.taxi{background:#ffb020;color:#1a1200}:is(#wfTop,.wfTop) .wf-chip.taxi small{color:rgba(26,18,0,.75)}
+:is(#wfTop,.wfTop) .wft.air>summary{background:radial-gradient(120% 140% at 100% 0%,#7ab8ff 0%,rgba(122,184,255,0) 55%),linear-gradient(135deg,#0b3d91 0%,#1e88e5 100%)}
+:is(#wfTop,.wfTop) .wf-b{padding-top:10px}
 #qiSec{margin-top:18px}
 /* 25.50: work site (helicopter commute) */
 .wf-bi{display:inline-flex;width:22px;height:22px}.wf-bi svg{width:100%;height:100%}
@@ -1658,17 +1659,17 @@ details.more[open]>summary{margin-bottom:10px}
 .qbtn .qwf{position:absolute;top:3px;inset-inline-end:3px;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:11px;line-height:1;color:#fff;background:linear-gradient(135deg,#0f4fb8,#1a73e8);border:1.5px solid #fff;box-shadow:0 1px 5px rgba(10,40,110,.5);z-index:3;animation:qwfb 3.2s ease-in-out infinite}
 .qbtn.haswf{opacity:.8;filter:none}
 @keyframes qwfb{0%,80%,100%{transform:none}88%{transform:translateY(-2px) rotate(-12deg)}}
-#wfTop .wft.wfpulse{animation:wfpl 1.6s ease-out 2}
+:is(#wfTop,.wfTop) .wft.wfpulse{animation:wfpl 1.6s ease-out 2}
 @keyframes wfpl{0%{box-shadow:0 0 0 0 rgba(26,115,232,.75)}100%{box-shadow:0 0 0 16px rgba(26,115,232,0)}}
-@media (prefers-reduced-motion:reduce){.qbtn .qwf,#wfTop .wft.wfpulse{animation:none}}
+@media (prefers-reduced-motion:reduce){.qbtn .qwf,:is(#wfTop,.wfTop) .wft.wfpulse{animation:none}}
 
 /* 25.34: countdown + 6 times */
-#wfTop .wft>summary{display:grid;grid-template-columns:1fr;gap:8px;padding:16px 16px 14px;min-height:150px}
-#wfTop .wf-big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-#wfTop .wf-cd{font-family:var(--f-display,inherit);font-size:30px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.01em;direction:ltr;unicode-bidi:isolate}
-#wfTop .wf-cd.dy{direction:rtl;font-size:22px;letter-spacing:0}
-#wfTop .wf-cdl{font-size:13.5px;color:rgba(255,255,255,.88)}
-#wfTop .wf-row{display:flex;align-items:center;gap:10px;min-width:0}
+:is(#wfTop,.wfTop) .wft>summary{display:grid;grid-template-columns:1fr;gap:8px;padding:16px 16px 14px;min-height:150px}
+:is(#wfTop,.wfTop) .wf-big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+:is(#wfTop,.wfTop) .wf-cd{font-family:var(--f-display,inherit);font-size:30px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.01em;direction:ltr;unicode-bidi:isolate}
+:is(#wfTop,.wfTop) .wf-cd.dy{direction:rtl;font-size:22px;letter-spacing:0}
+:is(#wfTop,.wfTop) .wf-cdl{font-size:13.5px;color:rgba(255,255,255,.88)}
+:is(#wfTop,.wfTop) .wf-row{display:flex;align-items:center;gap:10px;min-width:0}
 .wf-tm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 @media (max-width:520px){.wf-tm{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .wf-ti{display:grid;grid-template-columns:auto 1fr;column-gap:5px;align-items:center;border-radius:10px;padding:6px 7px;background:var(--sunk);line-height:1.15;min-width:0}
@@ -1678,12 +1679,12 @@ details.more[open]>summary{margin-bottom:10px}
 .wf-ti small{font-size:10.5px;color:var(--muted)}
 .wf-ti small.wf-tz{grid-column:2;font-size:10px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wf-ti.past{opacity:.45}.wf-ti.on{outline:2px solid var(--qlead)}
-#wfTop summary .wf-ti{background:rgba(255,255,255,.14);color:#fff}
-#wfTop summary .wf-ti .wf-til,#wfTop summary .wf-ti small{color:rgba(255,255,255,.8)}
-#wfTop summary .wf-ti.on{outline:2px solid #ffb020;background:rgba(255,255,255,.22)}
-#wfTop summary .wf-ti.open{box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)}
+:is(#wfTop,.wfTop) summary .wf-ti{background:rgba(255,255,255,.14);color:#fff}
+:is(#wfTop,.wfTop) summary .wf-ti .wf-til,:is(#wfTop,.wfTop) summary .wf-ti small{color:rgba(255,255,255,.8)}
+:is(#wfTop,.wfTop) summary .wf-ti.on{outline:2px solid #ffb020;background:rgba(255,255,255,.22)}
+:is(#wfTop,.wfTop) summary .wf-ti.open{box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)}
 .wf-tmb{display:grid;gap:6px;padding:4px 0 8px}.wf-tmb>b{font-size:13px}
-@media (max-width:360px){.wf-tm{grid-template-columns:repeat(2,minmax(0,1fr))}#wfTop .wf-cd{font-size:26px}#wfTop .wf-cd.dy{font-size:20px}}
+@media (max-width:360px){.wf-tm{grid-template-columns:repeat(2,minmax(0,1fr))}:is(#wfTop,.wfTop) .wf-cd{font-size:26px}:is(#wfTop,.wfTop) .wf-cd.dy{font-size:20px}}
 
 
 .qinfo{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
@@ -4753,7 +4754,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(C.remL.length){const rk=t=>String(t.sleep_until||(t.snooze_until&&t.snooze_until!=="someday"?String(t.snooze_until).slice(0,10):"")||t.next_date||"9999");
       more.push(foldRows("remL",catT("rem","תזכורות בהמשך"),C.remL.sort((a,b)=>rk(a).localeCompare(rk(b)))));}
     // 25.33 (Oren 22.11.2026): Work Quest order = work flight banner (from the trip mail until it lands back) > expenses > tasks ... > project capsule (RWMTC) at the very bottom
-    {const wf=wfTickets(),ws=$("wfTop");if(ws){ws.hidden=!wf.length;ws.replaceChildren(...wf);}
+    {const wf=wfLink(),ws=$("wfTop");if(ws){ws.hidden=!wf.length;ws.replaceChildren(...wf);}
      const qi=qInfoBanners(),qs=$("qiSec");if(qs){qs.hidden=!qi.length;qs.replaceChildren(...qi);}}
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
@@ -4821,7 +4822,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       const wfOn=q==="work"&&wfLive().length>0; // 25.36 (Oren 22.11.2026): a work flight is coming / under way = small plane badge on Work Quest
       return h("button",{class:"qbtn q-"+q+(any?" hasnw":"")+(wfOn?" haswf":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":any?Q.a+" "+Q.b+": יש תוכן חדש":null,
         onclick:()=>{const G=q!==quest?questFresh(q):[],A0=q!==quest?nwQuest(q):[],L0=q!==quest?questTasksNew(q).map(t=>({t,r:freshOf(t)})).filter(x=>x.r):[],TT=A0.length+L0.length;setQuest(q);
-          if(q==="work"&&wfLive().length)setTimeout(()=>{const b=document.querySelector("#wfTop .wft");if(b){b.classList.remove("wfpulse");void b.offsetWidth;b.classList.add("wfpulse");}},250);
+          if(q==="travel"&&wfLive().length)setTimeout(()=>{const b=document.querySelector(".wfTop .wft");if(b){b.classList.remove("wfpulse");void b.offsetWidth;b.classList.add("wfpulse");}},250);
           if(TT&&WQ.includes(q))return; // 25.0 (Oren 20.11.2026): new stays closed; the 🔔 עדכונים button carries the count, he taps it
           // 22.5 (Oren 18.11.2026): Fun / AI have no "🔔 עדכונים" list, so a tap shows "🆕 מה חדש" at the top and the dot clears
           if(!WQ.includes(q)&&(TT||G.length)){qNewOpen(q,A0,L0,G);return;}
@@ -5420,7 +5421,17 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       wfKV("מושב",l.seat),wfKV("מחלקה",l.cls),wfKV("כבודה",l.bag),wfKV("נוסע מתמיד",l.ff),wfKV("כרטיס",l.eticket));}
   function wfAnswer(d,q,op){if(!db||!canWrite)return;const ans={...(d.ans||{}),[q.id]:op};const now=new Date().toISOString();
     db.collection("work_flights").doc(d.id).update({ans,updated_at:now}).then(()=>toast("נשמר. Claude ימשיך מכאן"),()=>toast("השמירה נכשלה"));}
-  function wfTickets(){if(quest!=="work")return [];const now=Date.now();
+  // 25.53 (Oren 22.11.2026): Travel Quest is the single home of every abroad trip. The full flight ticket lives in Travel > abroad > work;
+  //  Work Quest keeps only a small banner (wfLink) that jumps there.
+  function wfLink(){const now=Date.now();return wfLive().map(({d,legs})=>{const nx=legs.find(l=>(wfMs(l.arr)||wfMs(l.dep))>now)||legs[legs.length-1];
+      const evs=wfEvents(d,nx),nxt=wfNext(evs,now);
+      return h("button",{type:"button",class:"wf-link",onclick:()=>{tvZ="abroad";abTab="work";try{localStorage.setItem("sq_tv_ab","work");}catch(e){}setQuest("travel");
+          setTimeout(()=>{const f=document.querySelector('[data-sq-item="wf-'+d.id+'"]');if(f)try{f.scrollIntoView({block:"start",behavior:"smooth"});}catch(e){}},400);}},
+        h("span",{class:"wf-li","aria-hidden":"true"},"✈️"),
+        h("span",{class:"wf-lt"},h("b",null,(d.title||"נסיעת עבודה")),h("small",null,nxt?nxt.l+" בעוד "+wfIn(nxt.t-now):"הטיסה, המלון, הרכב והעצירות בטראבל")),
+        h("span",{class:"wf-lg"},"לנסיעה ›"));});}
+  function wfWrap(){const t=wfTickets();return t.length?[h("div",{class:"wfTop"},...t)]:[];}
+  function wfTickets(){if(quest!=="travel")return [];const now=Date.now();
     return wfLive().map(({d,legs,first})=>{
       const nx=legs.find(l=>(wfMs(l.arr)||wfMs(l.dep))>now)||legs[legs.length-1];
       const dep=wfMs(nx.dep),arr=wfMs(nx.arr),inAir=dep<=now&&arr>now,tx=wfTaxi(d,nx);
@@ -5679,9 +5690,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   //  25.47: a topic that a route doc points to (rt.topic) is merged into that route's bank, not shown as a second ticket.
   function workTrips(){const R=wsDocs.filter(d=>d.type==="route"&&!d._deleted&&d.a&&d.b);const RT=R.map(r=>r.topic).filter(Boolean);
     const L=allTopics.filter(t=>!t._deleted&&t.area==="נסיעות עבודה"&&!["archived","promoted"].includes(t.status)&&!RT.includes(t.id)&&!(R.length&&/^work-trip-rome-viterbo/.test(t.id))).sort((a,b)=>(a.status==="done")-(b.status==="done")||(b.priority==="high")-(a.priority==="high"));
-    if(!L.length&&!R.length)return [h("div",{class:"tv-sec-h"},"🚗 רכב שכור"),crRule({k:"work"}),crBoard(),h("p",{class:"ws-note"},"עוד אין כאן כלום. כל נסיעת עבודה חדשה תקבל כאן כרטיס.")];
+    if(!L.length&&!R.length)return [...wfWrap(),h("div",{class:"tv-sec-h"},"🚗 רכב שכור"),crRule({k:"work"}),crBoard(),h("p",{class:"ws-note"},"עוד אין כאן כלום. כל נסיעת עבודה חדשה תקבל כאן כרטיס.")];
     const CR=[h("div",{class:"tv-sec-h"},"🚗 רכב שכור"),crRule({k:"work"}),crBoard()];
-    return [...R.map(wsFocus).filter(Boolean),...CR,h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank),L.length?h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
+    return [...wfWrap(),...R.map(wsFocus).filter(Boolean),...CR,h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank),L.length?h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
       return h("details",{class:"tv-wkc"},h("summary",null,h("b",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("small",null,t.stand):null),
         t.summary?h("details",{class:"tv-fold"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
         ls.length?h("div",{class:"lk"},ls.map((l,i)=>h("a",{class:/⭐/.test(l.label||"")?"main":"",href:safeUrl(l.url),target:"_blank",rel:"noopener"},"📍 "+(l.label||"מפה")))):null,
