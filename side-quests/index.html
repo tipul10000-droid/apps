@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.68";window.SQ_BUILD_AT="22.11.2026 22:00";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.69";window.SQ_BUILD_AT="22.11.2026 21:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -5352,7 +5352,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const sp=list.filter(t=>t.zone==="spotify"),rest=list.filter(t=>t.zone!=="spotify");
     const cards=[],tail=rest.map((t,i)=>funCard(t,i));
     // movies zone keeps finished games (shown struck through) so the list grows as a record
-    const mz=live.filter(t=>isMovieZone(t)&&(t.zone==="games"||t.zone==="series"||t.status!=="done")),fh=projById("frame-horizon");
+    // 25.69 (Oren 22.11.2026): the external movie list (zone "movies") is a standing list, not a task: closing its topic
+    // in a task sweep (20.11) hid its link, so it stays in the card whatever its status (only archived/_deleted hide it)
+    const mz=live.filter(t=>isMovieZone(t)),fh=projById("frame-horizon");
     cards.push(seriesCard());
     const lore=dashes.filter(d=>!d._deleted&&!d.archived&&d.quest==="fun"&&d.zone==="movies").sort((a,b)=>(a.order||99)-(b.order||99));
     if(mz.some(t=>t.zone==="movies")||fh||lore.length)cards.push(moviesCard(mz,fh,lore));
