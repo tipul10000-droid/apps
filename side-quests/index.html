@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.40";window.SQ_BUILD_AT="22.11.2026 06:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.41";window.SQ_BUILD_AT="22.11.2026 06:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1851,6 +1851,21 @@ details.more[open]>summary{margin-bottom:10px}
 .wdrive{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border:2px solid rgba(255,255,255,.6);border-radius:14px;background:rgba(255,255,255,.06);color:var(--hero-ink);font-size:16px;font-weight:800;white-space:nowrap}
 .wdrive .e{font-size:22px;line-height:1}.wdrive small{font-size:13px;font-weight:600;opacity:.8}
 .wdrive[aria-pressed="true"]{background:#fff;color:#111}
+/* 25.41 (Oren 22.11.2026): window picker = symmetric frames, small, little text; rows adapt their column count */
+.wov,.wchips,.wgrid{display:grid;gap:0;border:1.5px solid rgba(255,255,255,.45);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.05)}
+.wov{grid-template-columns:repeat(5,minmax(0,1fr))}
+.wgrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.wov button,.wchips .wchip,.wgrid .wchip{height:50px;min-height:0;border:0;border-radius:0;background:transparent;padding:0 2px;gap:1px;font-size:12px;font-weight:700}
+.wov button .e,.wchip .e{font-size:18px;line-height:1}
+.wchip .l{font-size:12px}
+.wchip small{font-size:10px;line-height:1}
+.wov button+button,.wchips .wchip+.wchip{border-inline-start:1.5px solid rgba(255,255,255,.3)}
+.wgrid .wchip{border-inline-start:1.5px solid rgba(255,255,255,.3);border-top:1.5px solid rgba(255,255,255,.3)}
+.wgrid .wchip:nth-child(4n+1){border-inline-start:0}.wgrid .wchip:nth-child(-n+4){border-top:0}
+.wov button[aria-pressed="true"],.wchips .wchip[aria-pressed="true"],.wgrid .wchip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.wchip:active{transform:none}
+.wfold{min-height:34px;font-size:13px;border-color:rgba(255,255,255,.25)}
+
 .wfold{width:100%;min-height:40px;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;background:transparent;color:var(--hero-ink);font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ctxrow .wseg button.pk{overflow:hidden;min-width:0}.ctxrow .wseg button.pk .pk-l{overflow:hidden;text-overflow:ellipsis;min-width:0}
 /* 17.4 (Oren 16.11): something new = a calm, slow pulse on "חדש" (no auto-open) */
@@ -4282,14 +4297,14 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
         const other=!ids.includes(w.id)&&!W.ov?w.id:null;
         const ovb=id=>h("button",{type:"button","aria-pressed":w.id===id?"true":"false",onclick:()=>{winMore=false;if(w.id===id){setWin(null);toast("חזרה לחלונות הזמן של היום");return;}setWin(id);wMode="pick";toast(WINS[id].e+" "+WINS[id].l+": "+WINS[id].sub);}},
           h("span",{class:"e","aria-hidden":"true"},WINS[id].e),h("span",{class:"l"},WINS[id].l));
-        kids.push(h("button",{type:"button",class:"wdrive","aria-pressed":w.id==="driving"?"true":"false",onclick:()=>{winMore=false;if(w.id==="driving"){setWin(null);toast("חזרה לחלונות הזמן של היום");return;}setWin("driving");wMode="pick";toast("🚘 נוהג: רק שיחות, לשעתיים");}},
+        if(0)kids.push(h("button",{type:"button",class:"wdrive","aria-pressed":w.id==="driving"?"true":"false",onclick:()=>{winMore=false;if(w.id==="driving"){setWin(null);toast("חזרה לחלונות הזמן של היום");return;}setWin("driving");wMode="pick";toast("🚘 נוהג: רק שיחות, לשעתיים");}},
           h("span",{class:"e","aria-hidden":"true"},"🚘"),h("span",{class:"l"},"נוהג"),h("small",null,"רק שיחות טלפון")));
-        kids.push(h("div",{class:"wov",role:"group","aria-label":"עוקף את סדר היום"},ovb("walk"),ovb("out"),ovb("house"),ovb("pc")));
-        kids.push(h("div",{class:"wchips"},...trio.map(x=>chip(x[1],x[0])),
+        kids.push(h("div",{class:"wov",role:"group","aria-label":"עוקף את סדר היום"},ovb("driving"),ovb("walk"),ovb("out"),ovb("house"),ovb("pc")));
+        kids.push(h("div",{class:"wchips",style:"grid-template-columns:repeat("+(trio.length+1)+",minmax(0,1fr))"},...trio.map(x=>chip(x[1],x[0])),
           h("button",{type:"button",class:"wchip more","aria-expanded":winMore?"true":"false","aria-pressed":other?"true":"false",onclick:()=>{winMore=!winMore;renderCtx();}},
             h("span",{class:"e","aria-hidden":"true"},other?WINS[other].e:"⋯"),h("span",{class:"l"},other?WINS[other].l:"עוד חלונות"),h("small",null,winMore?"▲":"▼"))));
         if(winMore)kids.push(h("div",{class:"wgrid"},...WIN_PICK.map(id=>chip(id,null))));
-        kids.push(h("button",{type:"button",class:"wfold",onclick:()=>{pickOpen=false;winMore=false;renderCtx();}},w.manual?"▲ סגירת התפריט · נשאר "+W.e+" "+W.l:"▲ סגירת התפריט"));
+        kids.push(h("button",{type:"button",class:"wfold",onclick:()=>{pickOpen=false;winMore=false;renderCtx();}},"▲ סגירה"));
       }
     }
     $("avail").replaceChildren(...kids);
