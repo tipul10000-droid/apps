@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.62";window.SQ_BUILD_AT="22.11.2026 20:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.63";window.SQ_BUILD_AT="22.11.2026 20:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -5619,7 +5619,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const p0=(()=>{const p=here();if(p&&!inIsrael(p))return {la:p.la,lo:p.lo,me:1};return hot&&hot.lat!=null?{la:+hot.lat,lo:+hot.lng}:(B&&B.lat!=null?{la:+B.lat,lo:+B.lng,base:1}:null);})();
     const km=x=>p0&&x&&x.lat!=null?Math.round(distM(p0,{la:+x.lat,lo:+x.lng})/100)/10:null;
     const drive=k=>k==null?null:Math.max(3,Math.round(k*1.35/45*60)+3);
-    const dirTo=x=>x.lat!=null?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+x.lat+","+x.lng:wsNav(x.maps_q||x.n);
+    const dirTo=x=>x.lat!=null?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+x.lat+","+x.lng:(x.url&&safeUrl(x.url))||wsNav(x.maps_q||x.n);
     const seg=h("div",{class:"wl-seg",role:"tablist"},...[hot?["hotel","🏨 למלון"]:null,B?["base",(TY.base_icon||"🚁")+" לעבודה"]:null,A?["food","🍽️ לאכול"]:null].filter(Boolean).map(([k,l])=>h("button",{type:"button",role:"tab","aria-selected":tab===k?"true":"false",class:tab===k?"on":"",onclick:e=>{ui.tab=k;const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},l)));
     const hotPick0=hotels.length>1?h("div",{class:"wl-hot"},h("small",null,"המלון שבו אני עכשיו:"),...hotels.map(x=>h("button",{type:"button",class:x===hot?"on":"",onclick:e=>{try{localStorage.setItem("sq_wfhot_"+d.id,x.id);}catch(er){}const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},x.n))):null;
     const srcL=abFood&&abFood.at?h("small",{class:"wl-src"},"הדירוגים מ-Google Maps, עודכן "+String(abFood.at).slice(0,10).split("-").reverse().join(".")):null;
