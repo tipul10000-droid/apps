@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.63";window.SQ_BUILD_AT="22.11.2026 20:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.64";window.SQ_BUILD_AT="22.11.2026 21:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1162,7 +1162,7 @@ details.tv-wkc:not([open]){gap:0}
 .cr-pa button.go{background:#0E6E78;border-color:#0E6E78;color:#fff}
 /* 25.47 abroad mode bar + stop focus ticket + bank v2 */
 .wf-link{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:start;cursor:pointer}.wf-link .wf-li{flex:none;font-size:20px}.wf-link .wf-lt{flex:1;min-width:0;display:grid;gap:2px}.wf-link .wf-lt b{font-size:14.5px}.wf-link .wf-lt small{font-size:12.5px;color:var(--muted)}.wf-link .wf-lg{flex:none;font-size:13px;font-weight:800;color:var(--qlead);white-space:nowrap}
-#abBar.ab-bar{display:block;margin:0 0 12px;padding:10px 12px;border-radius:14px;border:1px solid transparent;background:linear-gradient(135deg,#0E6E78,#14919B);color:#fff}
+#abBar.ab-bar{display:block;margin:0 0 -2px;padding:10px 12px;border-radius:14px;border:1px solid transparent;background:linear-gradient(135deg,#0E6E78,#14919B);color:#fff}
 #abBar.ab-bar.off{background:var(--sunk);color:var(--ink);border:1px solid var(--line)}
 #abBar.ab-bar.sug{background:linear-gradient(135deg,#B26A00,#E59400);color:#fff}
 #abBar .ab-row{display:flex;align-items:center;gap:8px}
@@ -1370,7 +1370,7 @@ details.tv-wkc:not([open]){gap:0}
 .tz-il .tz-txt p{color:#FFE7B0}
 .tz-abroad .tz-txt{right:12px;top:10px;color:#fff;background:rgba(8,59,65,.55)}
 .tz-abroad .tz-txt p{color:#FFE3A3}
-.tz-ab-z{margin-top:10px}
+.tz-ab-z{margin-top:-2px}
 .tv-ideas{margin-top:6px}.tv-ideas>summary{padding:8px 0;margin:0}.tv-ideas[open]>summary{margin-bottom:2px}.tv-ideas ul{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;animation:sqgrowA .18s ease-out}
 .tv-ideas li+li{border-top:1px solid var(--line)}
 .tv-ideas li>a,.tv-ideas li>div{display:flex;align-items:center;gap:8px;padding:8px 10px;min-height:38px;color:var(--ink);text-decoration:none;font-size:13.5px}
@@ -2909,6 +2909,7 @@ html.desk .hero .dz-grid{display:flex!important}
 .ab-w>.tv-wk>details.tv-wkc>summary b{font-size:16px}.ab-w>.tv-wk>details.tv-wkc>summary small{font-size:13px}
 .ab-w>.tv-wk>details.tv-wkc{gap:10px}.ab-w>.tv-wk>details.tv-wkc[open],.ab-w>details.ab-bank[open]{padding-bottom:12px}
 .ab-w>.tv-wk{margin-top:12px;gap:0}
+.ab-w>.wf-s,.ab-w>details.ab-bank,.ab-w>.tv-wk{margin-top:0}.ab-w>.ab-now{margin-bottom:0}.ab-w>.tv-wk>details.tv-wkc+details.tv-wkc{margin-top:12px}
 .wl-ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
 .wl-ex a{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:700;color:var(--ink);text-decoration:none;background:var(--surface)}
 .wl-ex img{width:16px;height:16px;border-radius:3px}.wl-ex small{font-size:10.5px;color:var(--muted,#777);font-weight:600}.wl-ex small.on{color:#0E7A3B}
@@ -5622,8 +5623,6 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const dirTo=x=>x.lat!=null?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+x.lat+","+x.lng:(x.url&&safeUrl(x.url))||wsNav(x.maps_q||x.n);
     const seg=h("div",{class:"wl-seg",role:"tablist"},...[hot?["hotel","🏨 למלון"]:null,B?["base",(TY.base_icon||"🚁")+" לעבודה"]:null,A?["food","🍽️ לאכול"]:null].filter(Boolean).map(([k,l])=>h("button",{type:"button",role:"tab","aria-selected":tab===k?"true":"false",class:tab===k?"on":"",onclick:e=>{ui.tab=k;const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},l)));
     const hotPick0=hotels.length>1?h("div",{class:"wl-hot"},h("small",null,"המלון שבו אני עכשיו:"),...hotels.map(x=>h("button",{type:"button",class:x===hot?"on":"",onclick:e=>{try{localStorage.setItem("sq_wfhot_"+d.id,x.id);}catch(er){}const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},x.n))):null;
-    const srcL=abFood&&abFood.at?h("small",{class:"wl-src"},"הדירוגים מ-Google Maps, עודכן "+String(abFood.at).slice(0,10).split("-").reverse().join(".")):null;
-    const hotPick=null,foot=(x)=>{const k=[x?srcL:null].filter(Boolean);return k.length?h("details",{class:"wf-bk wl-ft"},h("summary",null,"מקור הנתונים"),...k):null;};
     let body;
     // 25.59: the discreet line under every tab: the big supermarket and MediaWorld near here, with their logos
     const EX=[...((A&&A.extras)||[]),...(TY.extras||[])].filter((x,i,a)=>x&&x.n&&a.findIndex(y=>y.n===x.n)===i);
@@ -5635,7 +5634,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
         hotPick0,ph?h("a",{class:"wf-mail wl-tel",href:"tel:"+ph.replace(/[^\d+]/g,"")},"📞 ",h("bdi",{dir:"ltr"},ph)):null,exRow];}
     else if(tab==="base"&&B){const kb=hot&&hot.lat!=null&&B.lat!=null?Math.round(distM({la:+hot.lat,lo:+hot.lng},{la:+B.lat,lo:+B.lng})/100)/10:null;
       body=[h("a",{class:"wl-go",href:wfBaseDir(B),target:"_blank",rel:"noopener"},h("span",{class:"wf-bi",html:WF_HELI}),h("span",null,h("b",null,"ניווט לבסיס"),h("small",null,(B.he||B.name||"")+(kb!=null&&hot?" · ≈"+drive(kb)+" דק׳ מ-"+hot.n:""))),h("span",{"aria-hidden":"true"},"›")),
-        hot&&B.lat!=null?h("a",{class:"wf-mail",href:"https://www.google.com/maps/dir/?api=1&travelmode=driving&origin="+encodeURIComponent(hot.lat!=null?hot.lat+","+hot.lng:hot.maps_q)+"&destination="+B.lat+","+B.lng,target:"_blank",rel:"noopener"},"המסלול מ-"+hot.n+" ›"):null,exRow,hotPick,foot(0)];}
+        hot&&B.lat!=null?h("a",{class:"wf-mail",href:"https://www.google.com/maps/dir/?api=1&travelmode=driving&origin="+encodeURIComponent(hot.lat!=null?hot.lat+","+hot.lng:hot.maps_q)+"&destination="+B.lat+","+B.lng,target:"_blank",rel:"noopener"},"המסלול מ-"+hot.n+" ›"):null,exRow];}
     else if(!tab){body=[exRow];}
     else{const P=((A&&A.places)||[]).map(p=>({p,o:wfOpenAt(p,T.dow,T.min),k:km(p)}));
       const fx=P.filter(x=>x.p.fixed&&x.o.open),fxc=P.filter(x=>x.p.fixed&&!x.o.open),opA=P.filter(x=>!x.p.fixed&&x.o.open).sort((a,b)=>(b.p.r||0)-(a.p.r||0)||(a.k||99)-(b.k||99)),op=opA.slice(0,3),opM=opA.slice(3),cl=P.filter(x=>!x.p.fixed&&!x.o.open);
@@ -5646,7 +5645,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       body=[fx.length?h("div",{class:"wl-l"},...fx.map(row)):null,
         fxc.length?h("details",{class:"wf-bk wl-fxc"},h("summary",null,...fxc.map(x=>h("span",{class:"wl-fx1"},"⭐ ",h("bdi",{class:"nolink notel"},x.p.n)," · "+(x.o.unk?"שעות לא ידועות":x.o.closed?"סגור השבוע":"נפתח "+x.o.next)))),h("div",{class:"wl-l"},...fxc.map(row))):null,opA.length?h("details",{class:"wl-dr"},h("summary",null,h("span",null,"מסעדות פתוחות עכשיו, לפי הדירוג"),h("b",{class:"wl-cnt"},String(opA.length)),h("span",{class:"wl-chev","aria-hidden":"true"},"‹")),h("div",{class:"wl-l"},...opA.map(row))):h("p",{class:"wl-e"},"אין עכשיו עוד מקום פתוח מהרשימה"),
         cl.length?h("details",{class:"wl-dr wl-drc"},h("summary",null,h("span",null,"סגורות עכשיו"),h("b",{class:"wl-cnt"},String(cl.length)),h("span",{class:"wl-chev","aria-hidden":"true"},"‹")),h("div",{class:"wl-l"},...cl.map(row))):null,
-        exRow,hotPick,foot(1)];}
+        exRow];}
     return h("article",{class:"wl"+(d.preview?"":" live")},h("div",{class:"wl-h"},h("div",null,d.preview?null:h("span",{class:"wl-live"},h("i",null),"נסיעה פעילה"),h("small",null,(d.flag||(window.SQFlags&&SQFlags.of("איטליה"))||"🇮🇹")+(d.preview?" סוג נסיעה: ":" עכשיו ב")+((A&&A.he)||"ויטרבו")),h("b",null,d.preview?"כך זה ייראה בנסיעה":"עכשיו "+wfHm(T.min)+" שעון איטליה")),
         d.preview?null:h("a",{class:"wl-chat",href:wfChat(d)||("https://claude.ai/new?q="+encodeURIComponent("נסיעת עבודה "+(d.title||"")+" ("+(d.id||"")+"), Side Quests. קרא את sq_docs work_flights/"+d.id+" ועזור לי בנסיעה.")),target:"_blank",rel:"noopener","aria-label":"הצ׳אט של הנסיעה"},"💬 צ׳אט")),seg,...body);}
   // which comes first in the trip: the flight (before it, on the day home, in the air) or "now" (the road stop / Viterbo)
@@ -5675,21 +5674,23 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
         det.querySelectorAll("summary .wf-ti").forEach(x=>x.classList.toggle("on",!!n&&x.dataset.k===n.e.k));wfTickOn();};
       // 25.57 (Oren 22.11.2026): while the flight is more than a day away, the ticket is one small line with the countdown; tap = everything
       const cmp=!inAir&&dep-now>86400000;
+      // 25.64 (Oren 22.11.2026): in Italy the "עכשיו ב..." card already has work / hotel / chat; the ticket keeps only what is its own
+      const lv=wfInItaly(d,legs)&&!wfOnRoad();
       const det=h("details",{class:"wft"+(inAir?" air":"")+(cmp?" cmp":""),"data-sq-item":"wf-"+d.id,open:wfOpen["t:"+d.id]?true:null,ontoggle:ev=>{wfOpen["t:"+d.id]=ev.currentTarget.open;}},
         h("summary",null,h("span",{class:"wf-ey","aria-hidden":"true"},ey),
           h("div",{class:"wf-big",onclick:nxt&&nxt.sel?ev=>{ev.preventDefault();ev.stopPropagation();const b=det.querySelector('summary .wf-ti[data-k="'+nxt.e.k+'"]');wfSel[d.id]=null;if(b)pick({k:null},b);}:null},wfBig(nxt,now,inAir,nx)),
           h("div",{class:"wf-row"},lg?h("img",{class:"wf-sl",src:"../trips/img/"+lg,alt:nx.airline||""}):h("span",{class:"wf-sl wf-sln","aria-hidden":"true"},"✈️"),
-            h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(cmp?"טיסה "+(legs.indexOf(nx)>0?"הביתה":"")+" · "+wfDay(nx.dep):(d.title||"טיסת עבודה"))),h("small",null,cmp&&nxt?nxt.l+" בעוד "+wfIn(nxt.t-now):[wfAir(nx),(nx.from&&nx.from.city||"")+" ← "+(nx.to&&nx.to.city||""),wfDay(nx.dep)].filter(Boolean).join(" · "))),cmp?h("span",{class:"wf-cmpx","aria-hidden":"true"},"‹"):null),
+            h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(cmp?"טיסה "+(legs.indexOf(nx)>0?"הביתה":"")+" · "+wfDay(nx.dep):(d.title||"טיסת עבודה"))),h("small",null,[wfAir(nx),(nx.from&&nx.from.city||"")+" ← "+(nx.to&&nx.to.city||""),cmp?"":wfDay(nx.dep)].filter(Boolean).join(" · "))),cmp?h("span",{class:"wf-cmpx","aria-hidden":"true"},"‹"):null),
           wfTimes(evs,now,nxt,pick),
-          d.base&&trip&&!inAir&&legs.indexOf(nx)>0?wfBaseBtn(d.base):null),
+          d.base&&trip&&!inAir&&!lv&&legs.indexOf(nx)>0?wfBaseBtn(d.base):null),
         h("div",{class:"wf-b"},
-          wfChat(d)?h("a",{class:"wf-chatl",href:wfChat(d),target:"_blank",rel:"noopener"},"💬 הצ׳אט של הנסיעה"):null,
+          wfChat(d)&&!lv?h("a",{class:"wf-chatl",href:wfChat(d),target:"_blank",rel:"noopener"},"💬 הצ׳אט של הנסיעה"):null,
           tx&&tx>now-15*60000?h("div",{class:"wf-taxi"},h("span",{"aria-hidden":"true"},"🚕"),h("div",null,h("b",null,"להיות למטה למונית: "+wfDay(nx.dep)+" "+wfIL(tx)),h("small",null,((Number(d.taxi_min)||150)===150?"שעתיים וחצי":wfIn((Number(d.taxi_min)||150)*60000))+" לפני ההמראה ב-"+wfHM(nx.dep)))):null,
           wfRetTop(d,C)?wfRet(d,legs,C):null,
           d.wifi&&d.wifi.code?wfSec(d.id+":wifi","📶","Wi-Fi חינם"+(d.wifi.leg?" · "+d.wifi.leg:""),"קוד "+d.wifi.code,[h("div",{class:"wf-acts"},wfCopy(d.wifi.code,"קוד Wi-Fi")),d.wifi.how?h("div",{class:"wf-note"},d.wifi.how):null,safeUrl(d.wifi.mail_url||"")?h("a",{class:"wf-mail",href:safeUrl(d.wifi.mail_url),target:"_blank",rel:"noopener"},"המייל ›"):null]):null,
           legs.length>1?wfSec(d.id+":tm","🕒","כל הזמנים","הלוך וחזור",legs.map(l=>h("div",{class:"wf-tmb"},h("b",null,wfAir(l)+" · "+(l.from&&l.from.city||"")+" ← "+(l.to&&l.to.city||"")),wfTimes(wfEvents(d,l),now,null)))):null,
           wfSec(d.id+":fl","✈️","טיסות",legs.map(l=>wfAir(l)).join(" · "),legs.map(l=>wfLeg(d,l))),
-          wfBase(d),
+          lv?null:wfBase(d),
           H.name?wfSec(d.id+":ht","🏨",H.name,[H.nights?H.nights+" לילות":"",H.in?"צ׳ק-אין "+H.in:"",H.plan||""].filter(Boolean).join(" · "),[
             H.addr?h("div",{class:"wf-kv"},h("span",null,"כתובת"),h("div",null,H.addr)):null,
             h("div",{class:"wf-acts"},wfGm(H.maps_q||((H.name||"")+" "+(H.addr||""))),H.res?wfCopy(H.res,"מספר הזמנה"):null),
@@ -5698,7 +5699,6 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
             H.wa?h("div",{class:"wf-kv"},h("span",null,"וואטסאפ"),h("div",null,h("a",{href:"https://wa.me/"+String(H.wa).replace(/\D/g,""),target:"_blank",rel:"noopener"},H.wa))):null,
             ...(Array.isArray(H.notes)?H.notes:[]).map(n=>h("div",{class:"wf-note"},n))]):null,
           wfRetTop(d,C)?null:wfRet(d,legs,C),
-          (()=>{const ap=(C.pick&&C.pick.code)||(legs[0]&&legs[0].to&&legs[0].to.code)||"";const pk=wfMs(C.pick&&C.pick.at),ar=wfMs(legs[0]&&legs[0].arr);return crRule({k:d.id,code:ap,open:(ar&&now>ar-3600000&&now<(pk||ar)+3600000)});})(),
           C.supplier?wfSec(d.id+":car","🚗","רכב: "+C.supplier,[C.model,C.pick&&C.pick.at?"איסוף "+wfDay(C.pick.at)+" "+wfHM(C.pick.at):""].filter(Boolean).join(" · "),[
             C.pick?h("div",{class:"wf-kv"},h("span",null,"איסוף"),h("div",null,wfDay(C.pick.at)+" "+wfHM(C.pick.at)+" · "+(C.pick.loc||""),C.pick.addr?h("small",null,C.pick.addr):null)):null,
             C.drop?h("div",{class:"wf-kv"},h("span",null,"החזרה"),h("div",null,wfDay(C.drop.at)+" "+wfHM(C.drop.at)+" · "+(C.drop.loc||""))):null,
