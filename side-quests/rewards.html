@@ -172,7 +172,7 @@ function dlRow(x){const n=daysTo(x.d),p=x.prog&&prog(x.prog);
   return `<div class="row"${p?` data-tab="${esc(p.id)}"`:""}><span class="i">${p&&LOGO[p.brand]?LOGO[p.brand]:esc(x.e||"⏰")}</span><span class="b"><span class="t">${esc(x.t)}</span>${x.s?`<span class="s">${esc(x.s)}</span>`:""}</span><span class="v">${esc(d6(x.d))}<small>${n==null?"":n<0?"עבר":n===0?"היום":"עוד "+n+" ימים"}</small></span></div>`;}
 function tabSum(){let o="";const Q=openQs();
   const D=arr(meta.deadlines).slice().sort((a,b)=>(a.d||"").localeCompare(b.d||""));
-  if(D.length)o+=`<section><div class="sh"><h2>⏰ תאריכים שחשוב לזכור</h2></div><div class="list dl">${D.map(dlRow).join("")}</div></section>`;
+  if(D.length)o+=`<section data-role="now"><div class="sh"><h2>⏰ תאריכים שחשוב לזכור</h2></div><div class="list dl">${D.map(dlRow).join("")}</div></section>`;
   o+=`<section><div class="sh"><h2>המצב שלי</h2></div><div class="list">${progs.map(p=>`<button class="row" data-tab="${esc(p.id)}" data-sq-item="${esc(p.id)}"><span class="i">${LOGO[p.brand]||""}</span><span class="b"><span class="t">${esc(p.name)} · ${esc(p.tier||"")}</span><span class="s">${esc(p.line||"")}</span></span><span class="v">${p.cash?money(p.cash.v,p.cash.cur):p.saved?money(p.saved.v,p.saved.cur):""}<small>${p.cash?esc(p.cash.l||"יתרה"):p.saved?esc(p.saved.l||"נחסך"):""}</small></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
   if(Q.length)o+=`<section><div class="sh"><h2>❓ שאלות פתוחות</h2><small>${Q.length}</small></div><div class="list">${Q.map(q=>`<button class="row wr" data-tab="q"><span class="i">❓</span><span class="b"><span class="t">${esc(q.q)}</span></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
   if(arr(meta.tips).length)o+=`<section data-sq-path="tips"><div class="sh"><h2>💡 טיפים מעשיים</h2><small>לחיצה לפירוט</small></div><div class="list">${meta.tips.map((t,i)=>xr(t,"tip"+i)).join("")}</div></section>`;
@@ -222,6 +222,6 @@ window.claude.use("db").then(d=>{db=d;if(!db)return;
 })();
 </script>
 <script src="sq-tel.js?v=3" defer></script>
-<script src="sq-calm.js?v=2"></script>
+<script src="sq-calm.js?v=3"></script>
 </body>
 </html>

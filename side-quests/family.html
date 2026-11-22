@@ -323,7 +323,7 @@ function render(){
   const soon=fut.filter(e=>diff(e.d)<=14||(e.to&&e.d<=t));
   const later=fut.filter(e=>diff(e.d)>14&&(e.big||e.type==="trip"));
   let h="";
-  h+=`<section><div class="sh"><h2>⭐ חשוב השבוע</h2></div><div class="card wk" id="wk">${wk.length?wk.map(x=>actRow(x,false)).join(""):`<div class="empty">✓ אין כלום פתוח לשבוע הקרוב</div>`}</div></section>`;
+  h+=`<section data-role="act"><div class="sh"><h2>⭐ חשוב השבוע</h2></div><div class="card wk" id="wk">${wk.length?wk.map(x=>actRow(x,false)).join(""):`<div class="empty">✓ אין כלום פתוח לשבוע הקרוב</div>`}</div></section>`;
   const wr=weekRoutine();
   h+=`<section><div class="sh"><h2>🗓️ לו״ז קבוע</h2><small>חוגים והסעות</small></div><div class="card">${wr||`<div class="rtnone">עוד אין לו״ז קבוע. שלח לי את המערכות והחוגים ואכניס.</div>`}</div></section>`;
   h+=`<section><div class="sh"><h2>📅 השבועיים הקרובים</h2><small>★ מבחן גדול${kids.some(k=>k.class_n==null&&(k.events||[]).some(e=>e.cls))?" · קטן = לא בטוח":""}</small></div><div class="card">${soon.length?timeline(soon):`<div class="empty">אין כלום בלוח בשבועיים הקרובים</div>`}</div></section>`;
@@ -366,6 +366,6 @@ window.claude.use("db").then(d=>{db=d;if(!db)return;
 })();
 </script>
 <script src="sq-tel.js?v=3" defer></script>
-<script src="sq-calm.js?v=2"></script>
+<script src="sq-calm.js?v=3"></script>
 </body>
 </html>

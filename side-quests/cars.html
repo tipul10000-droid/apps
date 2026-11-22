@@ -381,7 +381,7 @@ function renderMine(){
     <div id="mtop">${mineTop()}</div>
     <details class="more" style="margin-top:8px"><summary>איך תמכור: ${esc((ROUTE[(meta.ans||{}).route]||ROUTE.private).l)} ✓</summary><div class="opts" style="margin-top:6px">${Object.entries(ROUTE).map(([v,o])=>`<button class="opt${((meta.ans||{}).route||"private")===v?" on":""}" data-route="${v}">${esc(o.l)}${o.f?" ("+Math.round(o.f*100)+"%)":""}</button>`).join("")}</div></details>
   </div></section>`;
-  h+=`<section><div class="sh"><h2>🚙 הרכבים</h2></div><div style="display:grid;gap:14px" id="mcars">${mineCars()}</div></section>`;
+  h+=`<section data-role="primary"><div class="sh"><h2>🚙 הרכבים</h2></div><div style="display:grid;gap:14px" id="mcars">${mineCars()}</div></section>`;
   const open=cars.reduce((s,c)=>s+qKeys(c).filter(k2=>!(c.ans||{})[k2]).length,0);
   if(open)h+=`<section><div class="sh"><h2>🎯 לדייק את השווי המשוקלל</h2><small>${open} שאלות פתוחות</small></div><div style="display:grid;gap:12px">${cars.filter(c=>qKeys(c).some(k2=>!(c.ans||{})[k2])).map(c=>questionsFor(c)).join("")}</div></section>`;
   const doneCars=cars.filter(c=>!qKeys(c).some(k2=>!(c.ans||{})[k2]));
@@ -569,6 +569,6 @@ window.claude.use("db").then(d=>{db=d;if(!db)return;
 })();
 </script>
 <script src="sq-tel.js?v=3" defer></script>
-<script src="sq-calm.js?v=2"></script>
+<script src="sq-calm.js?v=3"></script>
 </body>
 </html>

@@ -278,13 +278,13 @@ function renderList(){const T=all("ticket").filter(x=>(ui.topic==="all"||(x.topi
   if(!T.length)body=`<div class="card empty">${loaded?(ui.q?"לא נמצא":"עוד אין"):"טוען…"}</div>`;
   else if(ui.topic==="all")body=topics().map(tp=>{const L=T.filter(x=>(x.topic||"other")===tp[0]);return L.length?`<div class="grp">${tp[2]} ${esc(tp[1])} · ${L.length}</div><div class="tlist">${L.map(ticketRow).join("")}</div>`:"";}).join("");
   else body=`<div class="tlist">${T.map(ticketRow).join("")}</div>`;
-  return `<section><div class="sh"><h2>🎫 טיקטי מידע</h2><small>${T.length}</small></div>${body}<button class="addrow" data-add>＋ מלינק</button></section>`;}
+  return `<section data-role="primary"><div class="sh"><h2>🎫 טיקטי מידע</h2><small>${T.length}</small></div>${body}<button class="addrow" data-add>＋ מלינק</button></section>`;}
 
 // ---------- ticket ----------
 function tabIns(x){let h="";
   if(x.tldr)h+=`<div class="tldr"><b>בשורה אחת</b>${(W?bx:esc)(x.tldr)}</div>`;
   if((x.images||[]).length)h+=`<section><div class="sh"><h2>🖼️ תמונות</h2></div><div class="card">${x.images.filter(m=>safe(m.url)).map(m=>`<figure class="kimg"><a href="${esc(m.url)}" target="_blank" rel="noopener"><img src="${esc(m.url)}" alt="${esc(m.caption||"")}" loading="lazy"></a>${m.caption?`<figcaption>${esc(m.caption)}</figcaption>`:""}</figure>`).join("")}</div></section>`;
-  if((x.insights||[]).length)h+=`<section><div class="sh"><h2>💡 תובנות</h2></div><div class="card"><ul class="ins">${x.insights.map((i,n)=>W&&i.text?`<li><details class="fx"><summary><h3><span class="n">${n+1}</span><span>${bx(i.h||"")}</span><span class="mo">הסבר</span></h3></summary><div class="det">${bx(i.text)}</div></details></li>`:`<li><h3><span class="n">${n+1}</span><span>${esc(i.h||"")}</span></h3>${i.text?`<p>${esc(i.text)}</p>`:""}</li>`).join("")}</ul></div></section>`;
+  if((x.insights||[]).length)h+=`<section data-role="primary"><div class="sh"><h2>💡 תובנות</h2></div><div class="card"><ul class="ins">${x.insights.map((i,n)=>W&&i.text?`<li><details class="fx"><summary><h3><span class="n">${n+1}</span><span>${bx(i.h||"")}</span><span class="mo">הסבר</span></h3></summary><div class="det">${bx(i.text)}</div></details></li>`:`<li><h3><span class="n">${n+1}</span><span>${esc(i.h||"")}</span></h3>${i.text?`<p>${esc(i.text)}</p>`:""}</li>`).join("")}</ul></div></section>`;
   if((x.actions||[]).length)h+=`<section><div class="sh"><h2>🛠️ מה אפשר לעשות עם זה</h2></div><div class="card"><ul class="todo">${x.actions.map(a=>`<li><span>${(W?bx:esc)(typeof a==="string"?a:a.text)}</span></li>`).join("")}</ul></div></section>`;
   if((x.caveats||[]).length)h+=`<section><div class="sh"><h2>⚖️ לקחת בעירבון מוגבל</h2></div><div class="warnbox"><ul>${x.caveats.map(c=>`<li>${(W?bx:esc)(c)}</li>`).join("")}</ul></div></section>`;
   if((x.glossary||[]).length)h+=`<section><div class="sh"><h2>📖 מונחים</h2></div><div class="card"><ul class="glos">${x.glossary.map(g=>`<li><b>${esc(g.term)}</b>${g.en?` <span class="muted" dir="ltr">(${esc(g.en)})</span>`:""}: ${esc(g.text)}</li>`).join("")}</ul></div></section>`;
@@ -368,6 +368,6 @@ window.claude.use("db").then(d=>{db=d;if(!db)return;
 })();
 </script>
 <script src="sq-tel.js?v=3" defer></script>
-<script src="sq-calm.js?v=2"></script>
+<script src="sq-calm.js?v=3"></script>
 </body>
 </html>

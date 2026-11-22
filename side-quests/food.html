@@ -189,7 +189,7 @@ function card(x){const img=imgSrc(x.img),t=x.time||{},n=leftToBuy(x);
 function renderRecipes(){const R=list("recipe").filter(x=>ui.cat==="all"||x.cat===ui.cat);const cart=list("recipe").filter(x=>x.cart);
   let h="";
   if(cart.length)h+=`<section><button class="chatbtn" data-cart style="width:100%;border:0;cursor:pointer;text-align:start;margin:0"><span style="font-size:18px">🛒</span><span>רשימת קניות · ${cart.length} מתכונים</span></button></section>`;
-  h+=`<section><div class="sh"><h2>המתכונים שלי</h2><small>${R.length}</small></div><div class="grid">${R.map(card).join("")}<button class="addcard" data-add>＋ מלינק</button></div></section>`;
+  h+=`<section data-role="primary"><div class="sh"><h2>המתכונים שלי</h2><small>${R.length}</small></div><div class="grid">${R.map(card).join("")}<button class="addcard" data-add>＋ מלינק</button></div></section>`;
   return loaded||R.length?h:`<div class="empty">טוען…</div>`;}
 function renderRest(){const L=list("restaurant");
   if(!L.length)return `<div class="card soon"><div class="ic">🍽️</div><h3>עוד אין מסעדות</h3></div>`;
@@ -261,6 +261,6 @@ window.claude.use("db").then(d=>{db=d;if(!db)return;
 })();
 </script>
 <script src="sq-tel.js?v=3" defer></script>
-<script src="sq-calm.js?v=2"></script>
+<script src="sq-calm.js?v=3"></script>
 </body>
 </html>

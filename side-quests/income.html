@@ -167,7 +167,7 @@ function bar(){return `<div class="seg">${[["month","📅 חודשי"],["year","
 function row(x,href){const tag=href?`a href="${esc(href)}" target="_top"`:"div";const end=href?"a":"div";
   return `<${tag} class="row">${who(x.who)}<span class="b"><span class="t">${esc(x.l||x.t)}${x.warn?'<span class="pill p-warn">!</span>':""}${x.pill?`<span class="pill ${x.pill[1]}">${esc(x.pill[0])}</span>`:""}</span>${x.note?`<span class="s">${esc(x.note)}</span>`:""}</span>${x.v!=null?`<span class="v ${x.v<0?"neg":""}">${ils(x.v)}${x.rng?`<small>${esc(x.rng)}</small>`:""}</span>`:""}</${end}>`;}
 function openBlock(){const O=arr(meta.open);if(!O.length)return "";
-  return `<section><div class="sh"><h2>▶️ פתוח</h2><small>${O.length}</small></div><div class="list">${O.map(x=>row({who:x.who,l:x.t},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
+  return `<section data-role="act"><div class="sh"><h2>▶️ פתוח</h2><small>${O.length}</small></div><div class="list">${O.map(x=>row({who:x.who,l:x.t},x.topic?"./#t="+encodeURIComponent(x.topic):"")).join("")}</div></section>`;}
 function tabMonth(){const M=arr(meta.monthly),m=mil();let o="";
   o+=`<section><div class="sh"><h2>קבוע</h2><small>נטו</small></div><div class="list">${M.map(x=>row(x)).join("")}
     <div class="row"><span class="who">Σ</span><span class="b"><span class="t">סה״כ קבוע</span></span><span class="v">${ils(regular())}</span></div></div></section>`;
@@ -206,7 +206,7 @@ function tabLior(){const L=lior;if(!L)return '<div class="empty">אין עדיי
   const Q=arr(L.questions),A=L.ans||{};
   const qBox=q=>`<div class="q"><h3>${esc(q.q)}</h3><div class="opts">${arr(q.opts).map(x=>`<button data-qa="${esc(q.id)}" data-v="${esc(x)}" class="${(A[q.id]||{}).a===x?"on":""}">${(A[q.id]||{}).a===x?"✓ ":""}${esc(x)}</button>`).join("")}</div>${A[q.id]&&q.r?`<p class="qr">${esc(q.r)}</p>`:""}</div>`;
   const QO=Q.filter(q=>!A[q.id]||hold[q.id]),QA=Q.filter(q=>A[q.id]&&!hold[q.id]);
-  if(QO.length)o+=`<section><div class="sh"><h2>❓ שאלות אליך</h2><small>${QO.filter(q=>!A[q.id]).length} פתוחות</small></div><div class="card">${QO.map(qBox).join("")}</div></section>`;
+  if(QO.length)o+=`<section data-role="act"><div class="sh"><h2>❓ שאלות אליך</h2><small>${QO.filter(q=>!A[q.id]).length} פתוחות</small></div><div class="card">${QO.map(qBox).join("")}</div></section>`;
   if(QA.length)o+=`<details class="sqarch${hold._q?" na":""}" data-k="lior-ans"><summary>✓ שאלות שנענו · ${QA.length}</summary><div class="ab"><div class="card">${QA.map(qBox).join("")}</div></div></details>`;
   const N=arr(L.need);
   if(N.length)o+=`<section><div class="sh"><h2>📥 מה עוד חסר לי</h2><small>שלח בצ׳אט</small></div><div class="list">${N.map(x=>`<div class="row"><span class="b"><span class="t">${esc(x.t)}</span><span class="s">${esc(x.why)}</span></span></div>`).join("")}</div></section>`;
@@ -237,6 +237,6 @@ window.claude.use("db").then(db=>{if(!db)return;dbr=db;
 })();
 </script>
 <script src="sq-tel.js?v=3" defer></script>
-<script src="sq-calm.js?v=2"></script>
+<script src="sq-calm.js?v=3"></script>
 </body>
 </html>

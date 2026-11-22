@@ -182,15 +182,15 @@ function itemRow(x){const s=ST[x.st]||["",""],o=ui.open[x.id];
 function xr(i,k){const o=ui.open["i"+k];return `<div class="it xr${o?" open":""}"><button class="row wr" data-x="i${k}"><span class="i">${esc(i.e||"💡")}</span><span class="b"><span class="t">${esc(i.h)}</span></span><span class="ch">▾</span></button><div class="det"><div><div class="in">${esc(i.t)}</div></div></div></div>`;}
 function tabSum(){let o="";const Q=openQs();
   const todo=real().filter(x=>["todo","tbd","unknown"].includes(x.st)).sort((a,b)=>(a.order||0)-(b.order||0));
-  if(Q.length)o+=`<section><div class="sh"><h2>❓ מחכה לתשובה שלך</h2><small>${Q.length}</small></div><div class="list">${Q.map(q=>`<button class="row wr" data-tab="q"><span class="i">❓</span><span class="b"><span class="t">${esc(q.q)}</span></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
-  o+=`<section><div class="sh"><h2>📌 פתוח להגשה</h2><small>${todo.length}</small></div><div class="list">${todo.map(itemRow).join("")||'<div class="empty">✓ הכול הוגש</div>'}</div></section>`;
+  if(Q.length)o+=`<section data-role="act"><div class="sh"><h2>❓ מחכה לתשובה שלך</h2><small>${Q.length}</small></div><div class="list">${Q.map(q=>`<button class="row wr" data-tab="q"><span class="i">❓</span><span class="b"><span class="t">${esc(q.q)}</span></span><span class="ch">‹</span></button>`).join("")}</div></section>`;
+  o+=`<section data-role="act"><div class="sh"><h2>📌 פתוח להגשה</h2><small>${todo.length}</small></div><div class="list">${todo.map(itemRow).join("")||'<div class="empty">✓ הכול הוגש</div>'}</div></section>`;
   o+=`<section><div class="sh"><h2>💡 מה רואים</h2></div><div class="list">${arr(meta.insights).map(xr).join("")}</div></section>`;
   if(meta.v6_note)o+=`<section><div class="card v6"><span>🛣️</span><span>${esc(meta.v6_note)}</span></div></section>`;
   o+=`<section><div class="sh"><h2>🔗 טפסים ולינקים</h2></div><div class="list">${arr(meta.links).map(l=>safe(l.u)?`<a class="row" href="${esc(l.u)}" target="_blank" rel="noopener"><span class="b"><span class="t">${esc(l.l)}</span></span><span class="ch">‹</span></a>`:"").join("")}</div></section>`;
   return o;}
 function tabExp(){const S=real().slice().sort((a,b)=>(a.order||0)-(b.order||0));
   const open=S.filter(x=>["todo","tbd","unknown"].includes(x.st)),sent=S.filter(x=>x.st==="sent"),done=S.filter(x=>["received","rejected"].includes(x.st));
-  let o=`<section><div class="sh"><h2>📌 להגיש או לברר</h2><small>${open.length}</small></div><div class="list">${open.map(itemRow).join("")||'<div class="empty">אין</div>'}</div></section>`;
+  let o=`<section data-role="act"><div class="sh"><h2>📌 להגיש או לברר</h2><small>${open.length}</small></div><div class="list">${open.map(itemRow).join("")||'<div class="empty">אין</div>'}</div></section>`;
   if(sent.length)o+=`<section><div class="sh"><h2>⏳ הוגש, מחכה לתשובה</h2><small>${sent.length}</small></div><div class="list">${sent.map(itemRow).join("")}</div></section>`;
   const v6=items.find(x=>x.note_only);
   o+=`<section><details class="fold"${ui.fold?" open":""} id="fold"><summary>✅ התקבל או נסגר (${done.length}) · ${ils(got())}</summary><div class="list">${done.map(itemRow).join("")}${v6?itemRow(v6):""}</div></details></section>`;
@@ -225,6 +225,6 @@ window.claude.use("db").then(d=>{db=d;if(!db)return;
 })();
 </script>
 <script src="sq-tel.js?v=3" defer></script>
-<script src="sq-calm.js?v=2"></script>
+<script src="sq-calm.js?v=3"></script>
 </body>
 </html>
