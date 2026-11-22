@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.67";window.SQ_BUILD_AT="22.11.2026 21:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.68";window.SQ_BUILD_AT="22.11.2026 22:00";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2909,6 +2909,7 @@ html.desk .hero .dz-grid{display:flex!important}
 .ab-w>.tv-wk>details.tv-wkc>summary b{font-size:16px}.ab-w>.tv-wk>details.tv-wkc>summary small{font-size:13px}
 .ab-w>.tv-wk>details.tv-wkc{gap:10px}.ab-w>.tv-wk>details.tv-wkc[open],.ab-w>details.ab-bank[open]{padding-bottom:12px}
 .ab-w>.tv-wk{margin-top:12px;gap:0}
+.ab-bt{display:grid;gap:2px;flex:1;min-width:0}.ab-bt small{font-size:13px;font-weight:500;color:var(--muted)}.ws.ws-flat{border:0;background:none;padding:0;box-shadow:none}
 .ws-base{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}.ws-live{font-weight:800;font-size:13px;text-decoration:none;color:#14919B;white-space:nowrap}
 .ab-w>.wf-s,.ab-w>details.ab-bank,.ab-w>.tv-wk{margin-top:0}.ab-w>.ab-now{margin-bottom:0}.ab-w>.tv-wk>details.tv-wkc+details.tv-wkc{margin-top:12px}
 .wl-ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
@@ -5864,7 +5865,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
         h("a",{href:picsUrl([p.name||p.he,p.region||rt.region||"Lazio",p.country||rt.country||"Italy"].join(", ")),target:"_blank",rel:"noopener"},"📷 תמונות")),
       h("div",{class:"wf-end"},h("button",{type:"button",onclick:()=>wsUnpick(rt,true,p)},"✓ הייתי שם, סיימתי"),h("button",{type:"button",onclick:()=>wsUnpick(rt,false)},"✕ ביטול הבחירה")),
       u?null:h("p",{class:"wf-note"},"אין עדיין שיחה קבועה למקום הזה: הכפתור פותח שיחה חדשה עם פרומפט התכנון."));}
-  function wsBank(rt){const ui=wsUI[rt.id]||(wsUI[rt.id]={dir:"go",ax:"all",bud:0,here:false,sort:"drive",open:abMode()});
+  function wsBank(rt,flat){const ui=wsUI[rt.id]||(wsUI[rt.id]={dir:"go",ax:"all",bud:0,here:false,sort:"drive",open:abMode()});
     const back=ui.dir==="back";const A=back?rt.b:rt.a,B=back?rt.a:rt.b;
     const C=wsCalc[rt.id];const wF=ui.here&&ui.pos?ui.pos:(ui.dir==="back"?rt.b:rt.a),wT=ui.dir==="back"?rt.a:rt.b;const want=(ui.here&&ui.pos?"here":"")+rt.id+"_"+ui.dir+"_"+wsDocs.filter(d=>d.type!=="route"&&d.route===rt.id&&isFinite(+d.lat)&&isFinite(+d.lng)).length+"_"+(+wF.lat).toFixed(3)+(+wT.lat).toFixed(3);if(!C||(!C.busy&&C.key!==want))setTimeout(()=>wsRun(rt),0);
     const set=(k,v)=>()=>{ui[k]=v;if(k==="dir"||k==="here")delete wsCalc[rt.id];renderTravel();};
@@ -5884,6 +5885,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const tg=()=>{ui.open=!ui.open;renderTravel();};
     const head=h("button",{type:"button",class:"ws-hd","aria-expanded":ui.open?"true":"false",onclick:tg},
       h("span",{class:"ws-ht"},h("b",null,"🇮🇹 "+(rt.title||"בנק עצירות")),h("small",null,`${tot-VIS.length} מקומות שעוד לא הייתי בהם · ביקרתי ב-${VIS.length}`)),h("span",{class:"ws-chev","aria-hidden":"true"},"‹"));
+    // 25.68 (Oren 22.11.2026): inside the folded road drawer no second box: the drawer opens straight into the content
+    if(flat)ui.open=true;
     if(!ui.open)return h("article",{class:"ws ws-c"},head);
     const pics=p=>picsUrl([p.name||p.he,p.region||rt.region||"Lazio",p.country||rt.country||"Italy"].join(", "));
     const inf=ui.inf&&WS_INFO[ui.inf]?h("p",{class:"ws-infp sqgrow"},WS_INFO[ui.inf]):null;
@@ -5906,7 +5909,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
           h("button",{type:"button",class:"ws-go",onclick:()=>wsGo(p,rt)},"🚀 יוצאים לדרך · זו הבחירה שלי")):null);};
     const sortBar=h("div",{class:"ws-sort"},h("div",{class:"ws-sl"},"מיון לפי",wsInfo(ui,ui.sort==="score"?"score":ui.sort)),
       seg("sort",[["drive","🚗 תוספת נסיעה"],["total","⏱ תוספת כוללת"],["score","★ ציון"],["route","🧭 לפי הדרך"]],"big"));
-    return h("article",{class:"ws ws-o"},head,
+    return h("article",{class:"ws ws-o"+(flat?" ws-flat":"")},flat?null:head,
       h("div",{class:"ws-body sqgrow"},
         seg("dir",[["go",`${rt.a.he} ← ${rt.b.he}`],["back",`${rt.b.he} ← ${rt.a.he}`]]),
         // 25.67 (Oren 22.11.2026): the direct drive with no delays (OSRM, free, no traffic) + one tap to Google Maps for the time in traffic right now
@@ -5944,7 +5947,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const TOP=wfFlightFirst()?[...wfWrap(),...NOW]:[...NOW,...wfWrap()];
     // 25.57 (Oren 22.11.2026): the road (locked stop + stops explorer) is open only on the drive days; in Viterbo it is one closed drawer
     const BANK=road?[h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank)]
-      :[h("details",{class:"ab-bank",open:wfOpen["ab:bank"]?true:null,ontoggle:ev=>{wfOpen["ab:bank"]=ev.currentTarget.open;}},h("summary",null,h("div",{class:"tv-sec-h"},wfBackSoon()||"🧭 הדרך רומא ⇄ ויטרבו: עצירות ורגעים")),...FA,...R.map(wsBank))];
+      :[h("details",{class:"ab-bank",open:wfOpen["ab:bank"]?true:null,ontoggle:ev=>{wfOpen["ab:bank"]=ev.currentTarget.open;}},h("summary",null,h("div",{class:"tv-sec-h"},h("span",{class:"ab-bt"},h("span",null,wfBackSoon()||"🧭 הדרך רומא ⇄ ויטרבו: עצירות ורגעים"),(()=>{const A=wsDocs.filter(d=>d.type!=="route"&&R.some(r=>r.id===d.route)),v=A.filter(p=>p.visited).length;return A.length?h("small",null,(A.length-v)+" מקומות שעוד לא הייתי בהם · ביקרתי ב-"+v):null;})()))),...FA,...R.map(r=>wsBank(r,1)))];
     return [TOP.length?h("div",{id:"abNow",class:"ab-now"},...TOP):null,...BANK,L.length?h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
       return h("details",{class:"tv-wkc"},h("summary",null,h("b",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("small",null,t.stand):null),
         t.summary?h("details",{class:"tv-fold"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
