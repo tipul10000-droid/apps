@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.38";window.SQ_BUILD_AT="22.11.2026 06:00";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.39";window.SQ_BUILD_AT="22.11.2026 06:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -5224,6 +5224,26 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function wfLive(){const now=Date.now();return wfDocs.filter(d=>!d._deleted&&Array.isArray(d.legs)&&d.legs.length).map(d=>{const legs=d.legs.slice().sort((a,b)=>(wfMs(a.dep)||0)-(wfMs(b.dep)||0));
       const first=wfMs(legs[0].dep),last=wfMs(legs[legs.length-1].arr)||wfMs(legs[legs.length-1].dep);return {d,legs,first,last};})
     .filter(x=>x.first&&x.last&&now<x.last+6*3600000).sort((a,b)=>a.first-b.first);}
+  // 25.39 (Oren 22.11.2026, standing rule for every trip with a rental car): before the flight home, two Google Maps buttons: fuel before the airport, then the exact return point (+ a route through both when the station is known).
+  const WF_AP={FCO:{en:"Fiumicino Airport",lat:41.7999,lng:12.2462},CIA:{en:"Ciampino Airport",lat:41.7994,lng:12.5949},MXP:{en:"Milan Malpensa Airport",lat:45.6301,lng:8.7231},LIN:{en:"Milan Linate Airport",lat:45.4451,lng:9.2767},BGY:{en:"Bergamo Airport",lat:45.6689,lng:9.7004},VCE:{en:"Venice Airport",lat:45.5053,lng:12.3519},NAP:{en:"Naples Airport",lat:40.886,lng:14.2908}};
+  const wfRetTop=(d,C)=>{const t=C&&C.drop&&wfMs(C.drop.at);return !!t&&Date.now()>t-24*3600000;};
+  function wfRet(d,legs,C){if(!C||!C.supplier||!C.drop)return null;const dt=wfMs(C.drop.at),now=Date.now();
+    const L=legs.find(l=>(wfMs(l.dep)||0)>=(dt||0))||legs[legs.length-1],code=(C.drop.code||(L&&L.from&&L.from.code)||"").toUpperCase(),A=WF_AP[code]||{};
+    if(code==="TLV")return null;
+    const lat=C.drop.lat||A.lat,lng=C.drop.lng||A.lng,apName=(L&&L.from&&L.from.city)||C.drop.loc||code;
+    const retQ=C.drop.maps_q||(C.supplier+" car rental return "+(A.en||apName)),F=C.fuel||null;
+    const fuelUrl=F&&(F.g||F.q)?(F.g||wfMaps(F.q)):(lat?"https://www.google.com/maps/search/gas+station/@"+lat+","+lng+",13z":wfMaps("gas station near "+(A.en||apName)));
+    const route=F&&F.q?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+encodeURIComponent(retQ)+"&waypoints="+encodeURIComponent(F.q):null;
+    const gm=(u,l)=>h("a",{class:"wf-gm",href:u,target:"_blank",rel:"noopener",onclick:e=>e.stopPropagation()},h("span",{class:"wf-gmi",html:WF_GM}),l);
+    const sec=wfSec(d.id+":ret","⛽","תדלוק והחזרת רכב",[apName,C.supplier].filter(Boolean).join(" · "),[
+      h("div",{class:"wf-kv"},h("span",null,"1. דלק"),h("div",null,F&&F.name?F.name:"תחנות דלק לפני השדה",F&&F.note?h("small",null,F.note):(F?null:h("small",null,"מפה של התחנות הקרובות לשדה")))),
+      h("div",{class:"wf-acts"},gm(fuelUrl,"⛽ ניווט לתדלוק")),
+      h("div",{class:"wf-kv"},h("span",null,"2. החזרה"),h("div",null,C.drop.where||("נקודת ההחזרה של "+C.supplier),C.drop.where_note?h("small",null,C.drop.where_note):null)),
+      h("div",{class:"wf-acts"},gm(C.drop.g||wfMaps(retQ),"🔑 ניווט להחזרת הרכב"),route?gm(route,"🛣️ מסלול עם שניהם"):null),
+      h("div",{class:"wf-note"},"מחזירים עם מיכל מלא.")]);
+    // open by itself on the way home: from 6h before the drop-off until it
+    if(dt&&now>dt-6*3600000&&now<dt+2*3600000)sec.open=true;
+    return sec;}
   function wfSec(key,icon,title,sub,body){const k=key;const d=h("details",{class:"wf-s"},h("summary",null,h("span",{class:"wf-si","aria-hidden":"true"},icon),h("span",{class:"wf-st"},h("b",null,title),sub?h("small",null,sub):null),h("span",{class:"wf-ch","aria-hidden":"true"},"‹")),h("div",{class:"wf-sb"},...body));
     if(wfOpen[k])d.open=true;d.addEventListener("toggle",()=>{wfOpen[k]=d.open;});return d;}
   const wfKV=(k,v)=>v==null||v===""?null:h("div",{class:"wf-kv"},h("span",null,k),h("div",null,v));
@@ -5260,6 +5280,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
           wfTimes(evs,now,nxt)),
         h("div",{class:"wf-b"},
           tx&&tx>now-15*60000?h("div",{class:"wf-taxi"},h("span",{"aria-hidden":"true"},"🚕"),h("div",null,h("b",null,"להיות למטה למונית: "+wfDay(nx.dep)+" "+wfIL(tx)),h("small",null,((Number(d.taxi_min)||150)===150?"שעתיים וחצי":wfIn((Number(d.taxi_min)||150)*60000))+" לפני ההמראה ב-"+wfHM(nx.dep)))):null,
+          wfRetTop(d,C)?wfRet(d,legs,C):null,
           d.wifi&&d.wifi.code?wfSec(d.id+":wifi","📶","Wi-Fi חינם"+(d.wifi.leg?" · "+d.wifi.leg:""),"קוד "+d.wifi.code,[h("div",{class:"wf-acts"},wfCopy(d.wifi.code,"קוד Wi-Fi")),d.wifi.how?h("div",{class:"wf-note"},d.wifi.how):null,safeUrl(d.wifi.mail_url||"")?h("a",{class:"wf-mail",href:safeUrl(d.wifi.mail_url),target:"_blank",rel:"noopener"},"המייל ›"):null]):null,
           legs.length>1?wfSec(d.id+":tm","🕒","כל הזמנים","הלוך וחזור",legs.map(l=>h("div",{class:"wf-tmb"},h("b",null,(l.no||"")+" · "+(l.from&&l.from.city||"")+" ← "+(l.to&&l.to.city||"")),wfTimes(wfEvents(d,l),now,null)))):null,
           wfSec(d.id+":fl","✈️","טיסות",legs.map(l=>l.no).join(" · "),legs.map(l=>wfLeg(d,l))),
@@ -5270,6 +5291,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
             H.phone?h("div",{class:"wf-kv"},h("span",null,"טלפון"),h("div",null,h("a",{href:"tel:"+String(H.phone).replace(/[^\d+]/g,"")},H.phone))):null,
             H.wa?h("div",{class:"wf-kv"},h("span",null,"וואטסאפ"),h("div",null,h("a",{href:"https://wa.me/"+String(H.wa).replace(/\D/g,""),target:"_blank",rel:"noopener"},H.wa))):null,
             ...(Array.isArray(H.notes)?H.notes:[]).map(n=>h("div",{class:"wf-note"},n))]):null,
+          wfRetTop(d,C)?null:wfRet(d,legs,C),
           C.supplier?wfSec(d.id+":car","🚗","רכב: "+C.supplier,[C.model,C.pick&&C.pick.at?"איסוף "+wfDay(C.pick.at)+" "+wfHM(C.pick.at):""].filter(Boolean).join(" · "),[
             C.pick?h("div",{class:"wf-kv"},h("span",null,"איסוף"),h("div",null,wfDay(C.pick.at)+" "+wfHM(C.pick.at)+" · "+(C.pick.loc||""),C.pick.addr?h("small",null,C.pick.addr):null)):null,
             C.drop?h("div",{class:"wf-kv"},h("span",null,"החזרה"),h("div",null,wfDay(C.drop.at)+" "+wfHM(C.drop.at)+" · "+(C.drop.loc||""))):null,
