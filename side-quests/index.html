@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.51";window.SQ_BUILD_AT="22.11.2026 15:35";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.52";window.SQ_BUILD_AT="22.11.2026 15:58";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1190,7 +1190,7 @@ details.tv-wkc:not([open]){gap:0}
 .ws-it2 .wh1{font-size:13px;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .ws-it2.op .wh1{display:block}
 .ws-r2{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ws-r2 .t1,.ws-r2 .t2{font-size:13px;font-weight:800;color:var(--ink);background:var(--sunk);border-radius:8px;padding:4px 8px;white-space:nowrap}
-.ws-r2 .pic{margin-inline-start:auto;white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:800;text-decoration:none;color:var(--qlead);border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+.ws-r2 .pic{margin-inline-start:auto;white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:800;text-decoration:none;color:var(--qlead);border:1px solid var(--line);border-radius:10px;padding:6px 10px;width:auto;height:auto;min-width:max-content;overflow:visible;background:none;box-shadow:none;line-height:1.2}
 .ws-it2 .ws-x{grid-column:auto}
 .ws-x .ac{display:flex;gap:6px;flex-wrap:wrap}.ws-x .ac a,.ws-x .ac button{font:inherit;font-size:13px;font-weight:700;text-decoration:none;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
 .ws-go{font:inherit;font-size:15px;font-weight:800;padding:13px;border-radius:12px;border:0;background:#0E6E78;color:#fff;cursor:pointer}
