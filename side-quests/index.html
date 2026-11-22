@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.45";window.SQ_BUILD_AT="22.11.2026 11:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.46";window.SQ_BUILD_AT="22.11.2026 11:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -30,6 +30,7 @@ window.addEventListener("load",function(){navigator.serviceWorker.register("sw.j
 <script src="sq-fid.js?v=1"></script>
 <script src="workcal-engine.js?v=2"></script>
 <script src="timegate.js?v=4"></script>
+<script src="trip-icons.js?v=1"></script>
 <script src="personal-events.js?v=1"></script>
 <script src="sqctx.js?v=2"></script>
 <title>Side Quests</title>
@@ -1060,22 +1061,27 @@ body.q-ai{--hero:#1F1E1D;--hero-ink:#F5F0E8;--hero-muted:#B7AFA3;--accent:#D9775
 /* 4.7: Travel Quest is a full travel zone (data in settings/travel_hub): upcoming trips, Israel (stats by region, report, links), abroad (Holiday Optimizer, 20 years, Excel). Tasks stay below. */
 .tvzone{display:none}
 body.q-travel .tvzone.updhide{display:none}body.q-travel .tvzone{display:flex;flex-direction:column;gap:14px;margin-bottom:6px}
+.tp-mini{display:grid;grid-template-columns:44px 1fr auto 14px;align-items:center;gap:12px;width:100%;position:relative;overflow:hidden;cursor:pointer;text-align:start;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 12px 12px 10px;margin:0 0 10px;min-height:76px}
+.tp-mini .tm-fx{position:absolute;inset-inline-end:0;top:0;width:150px;height:60px;color:var(--qlead);opacity:.16;pointer-events:none}
+.tp-mini .tm-fx svg{width:100%;height:100%;transform:scaleX(-1)}
+.tp-mini .tm-ic{position:relative;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:var(--sunk);color:var(--qlead)}
+.tp-mini .tm-ic svg{width:22px;height:22px}
+.tp-mini .tm-in{position:relative;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tp-mini b{font-size:16px;line-height:1.25;font-family:"Rubik",var(--f-display);font-weight:700}
+.tp-mini .tm-fl{font-size:14px;margin-inline-start:6px;letter-spacing:1px;vertical-align:1px}
+.tp-mini .tm-dt{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;font-size:13px;color:var(--muted)}
+.tp-mini .tm-dt .tm-d{color:var(--ink);font-weight:700}
+.tp-mini .tm-dt>*+*::before{content:"·";margin-inline-end:8px;opacity:.7}
+.tp-mini .tm-nx{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-mini .tm-cd2{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:54px;padding:5px 8px;border-radius:12px;background:var(--sunk);color:var(--qlead);line-height:1.05;font-variant-numeric:tabular-nums}
+.tp-mini .tm-cd2 b{font-family:"Rubik",var(--f-display);font-size:22px;font-weight:800;color:inherit}
+.tp-mini .tm-cd2 small{font-size:11.5px;font-weight:700}
+.tp-mini .tm-cd2.soon{background:var(--accent);color:var(--accent-ink)}
+.tp-mini .tm-cd2.pl{color:var(--muted)}.tp-mini .tm-cd2.pl small{font-size:12.5px}
+.tp-mini .tm-go{color:var(--muted);font-weight:800;font-size:18px;line-height:1}
+.tp-mini.plan{border-style:dashed}
 .tv-sec-h{display:flex;align-items:center;gap:8px;margin:2px 2px -4px;font-size:12.5px;font-weight:800;letter-spacing:.4px;color:var(--muted)}
 /* 25.7 (Oren 21.11.2026): compact trip cards: flags, countdown and › on top; title, then dates big in the reading line */
-.tp-mini{display:flex;flex-direction:column;justify-content:flex-end;width:100%;position:relative;border:0;padding:0;border-radius:16px;overflow:hidden;cursor:pointer;text-align:start;font:inherit;color:#fff;background:linear-gradient(135deg,var(--tc,#3a1218),#1a0a0e);box-shadow:0 3px 12px rgba(60,10,20,.22);min-height:150px;margin:0 0 10px}
-.tp-mini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.tp-mini::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,.05) 35%,rgba(12,4,8,.86) 100%)}
-.tp-mini .tm-top{position:absolute;z-index:1;top:10px;inset-inline:12px;display:flex;align-items:center;gap:8px}
-.tp-mini .tm-fl{font-size:22px;line-height:1;letter-spacing:2px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
-.tp-mini .tm-cd{background:var(--tc,#8E1B2C);color:#fff;border-radius:999px;padding:3px 10px;font-weight:800;font-size:12.5px;box-shadow:0 2px 6px rgba(0,0,0,.3);white-space:nowrap}
-.tp-mini .tm-go{margin-inline-start:auto;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.9);color:#2a0a10;font-weight:800;font-size:18px;line-height:1}
-.tp-mini .tm-in{position:relative;z-index:1;display:flex;flex-direction:column;gap:3px;padding:52px 14px 12px}
-.tp-mini b{font-size:17px;line-height:1.25;font-family:"Rubik",var(--f-display)}
-.tp-mini .tm-dt{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-size:13px;opacity:.95}
-.tp-mini .tm-dt .tm-d{font-size:15px;font-weight:800;letter-spacing:.2px}
-.tp-mini .tm-dt>span+span::before,.tp-mini .tm-dt .tm-d+span::before{content:"·";margin-inline-end:10px;opacity:.7}
-.tp-mini .tm-nx{font-size:13px;opacity:.9}
-.tp-mini .tm-ch{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.tp-mini .tm-ch span{background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);border-radius:999px;padding:2px 8px;font-size:12px;font-weight:700;white-space:nowrap}
 /* 25.7: history mini dashboards (Israel / abroad), one compact line card */
 .hx-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;width:100%;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);padding:12px 14px;font:inherit;text-align:start;cursor:pointer;margin:0 0 10px}
 .hx-card .hx-art{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--sunk);color:#0E6E78}
@@ -1251,20 +1257,6 @@ details.tv-wkc:not([open]){gap:0}
 .tz-nav button.z-il.on{background:#1F4FC2}.tz-nav button.z-abroad.on{background:#0E6E78}
 .tv-sec-h .n{font-size:11.5px;font-weight:800;background:var(--line);color:var(--ink);border-radius:999px;padding:1px 7px;letter-spacing:0}
 .tv-empty{margin:0;font-size:13px;color:var(--muted)}
-.tp-mini.plan{min-height:118px;background:linear-gradient(135deg,var(--tc),var(--tc2));box-shadow:0 3px 12px rgba(30,20,60,.2)}
-.tp-mini.plan::after{background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.3))}
-.tp-mini.noimg .tm-in{padding-top:48px}
-.tp-mini.tk{display:block;min-height:0;background:#16080c}.tp-mini.tk::after{display:none}
-.tp-mini.tk .tk-img{position:static;display:block;width:100%;aspect-ratio:3/1;height:auto;object-fit:cover;object-position:var(--pos,center)}
-.tp-mini.tk .tk-ln{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--tc,#8E1B2C);color:#fff}
-.tp-mini.tk .tm-fl{font-size:18px;filter:none;flex:none}
-.tp-mini.tk .tk-x{flex:1;min-width:0;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;font-size:12px;font-weight:600;-webkit-mask-image:linear-gradient(to left,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(to left,#000 calc(100% - 18px),transparent)}
-.tp-mini.tk .tk-x::-webkit-scrollbar{display:none}
-.tp-mini.tk .tk-x>*{flex:none}.tp-mini.tk .tk-x>*+*::before{content:"·";margin-inline-end:6px;opacity:.65}
-.tp-mini.tk .tm-cd{background:rgba(255,255,255,.95);color:var(--tc,#8E1B2C);box-shadow:none;padding:2px 9px}
-.tp-mini.tk .tm-cd+*::before{content:none}
-.tp-mini.tk .tm-d{font-weight:800;font-size:13px}
-.tp-mini.tk .tm-go{flex:none;width:24px;height:24px;font-size:16px;margin:0}
 .tz{display:flex;flex-direction:column;gap:12px;scroll-margin-top:64px}
 .tz-hero{position:relative;height:118px;border-radius:18px;overflow:hidden;scroll-margin-top:64px;box-shadow:0 3px 14px rgba(0,0,0,.12)}
 .tz-art,.tz-art svg{position:absolute;inset:0;width:100%;height:100%}
@@ -3734,8 +3726,12 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function dgNw(L){return dgList(L.filter(x=>{const tid=linkTid(x);if(tid&&dgClosed(tid)){dgStat.closed.add(tid+"|"+x.text);return false;}
       if(x.ask&&tid&&dgDecided(tid)){dgStat.dec.add(x.id);return false;}return true;}).map(x=>({...x,tid:x.tid||linkTid(x)})),x=>x.text+" "+(x.sub||""));}
   const EXT_NEW=/gmail|ג׳?ימייל|מייל|mail|סריקה|smart|סמארט|משו״?ב|mashov|אתר|portal/i;
+  // 25.46 (Oren 22.11.2026, fourth time for hotel-clubs): a dashboard with news_quiet:true is a log of what Oren himself did
+  // (his bookings, his screenshots). Its news lines stay in the page but never light a dot, unless a line carries alert:true
+  // (money credited, an expiry warning: things he does not know). The weekly OneKeyCash run kept writing "new booking" lines.
+  function newsLoud(d,n){return !(d&&d.news_quiet)||!!(n&&n.alert);}
   function dashNews(d){const out=[],now=Date.now(),wk=7*864e5;
-    for(const n of (Array.isArray(d.news)?d.news:[])){const ms=Date.parse(n&&n.at||"");if(ms&&now-ms<wk&&ms<=now+6e4&&n.text)out.push({ms,k:"news",title:"",what:String(n.text),text:String(n.text),tid:newsTid(n),item:n.item?String(n.item):""});}
+    for(const n of (Array.isArray(d.news)?d.news:[])){if(!newsLoud(d,n))continue;const ms=Date.parse(n&&n.at||"");if(ms&&now-ms<wk&&ms<=now+6e4&&n.text)out.push({ms,k:"news",title:"",what:String(n.text),text:String(n.text),tid:newsTid(n),item:n.item?String(n.item):""});}
     // 15.2 (Oren 11.11): only real news about the dashboard's own subject: a task that came from outside (upd: mail/scan)
     // or a new task from outside, shown as "<task>: <what changed>". Claude's bookkeeping (sync/log lines) is not news.
     const clean=x=>String(x||"").replace(/\s+/g," ").replace(/^(All Arounder|סריקה|Gmail|ג׳ימייל|מייל|הוראה מהאפליקציה|סנכרון|סידור|חדש מהמייל|עדכון מהמייל)\s*[:：]\s*/i,"").trim();
@@ -3764,7 +3760,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // quest and the tile keep blinking. Seen items: sq_item_seen {"<dash>:<item>": at}, shared with the pages (same origin).
   let itSeen={};try{itSeen=JSON.parse(localStorage.getItem("sq_item_seen")||"{}")||{};}catch(e){itSeen={};}
   function dashItems(d){if(!d||d.archived||d._deleted)return [];const now=Date.now(),base=Date.parse(dzSeen._base||"")||0,out=[];
-    for(const n of (Array.isArray(d.news)?d.news:[])){if(!n||!n.item)continue;const ms=Date.parse(n.at||"");if(!ms||now-ms>14*864e5||ms>now+6e4||ms<=base)continue;
+    for(const n of (Array.isArray(d.news)?d.news:[])){if(!n||!n.item||!newsLoud(d,n))continue;const ms=Date.parse(n.at||"");if(!ms||now-ms>14*864e5||ms>now+6e4||ms<=base)continue;
       if((Date.parse(itSeen[d.id+":"+n.item]||"")||0)>=ms||rdIs(ms,n.text||"",{d:d.id}))continue;
       // 25.21 (Oren 21.11.2026): an item the page never shows (hotel-clubs "hotels") kept the dot forever. Opened the
       // dashboard after it and it is 3+ days old = read.
@@ -5455,31 +5451,34 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const cd=plan?"":n==null?"":n>1?"עוד "+n+" ימים":n===1?"מחר טסים!":"יום "+(1-n)+" מתוך "+len;
     const fl=(t.flights||[])[0],st=(t.stats||[]).find(x=>/°/.test(x.v||""));
     const t1=(t.flights||[]).some(f=>f&&f.from&&(f.from.c==="TLV"||/נתב/.test(f.from.n||""))&&/^\s*1\b/.test(String(f.from.t||""))&&!/\?/.test(String(f.from.t||""))&&(n==null||n>=0));
-    const ch=plan?[]:[fl&&n>0?"✈️ "+fl.dep:"",(t.hotels||[]).length?"🏨 "+heN(t.hotels.length,"מלון אחד","מלונות"):"",st?"🌡️ \u2066"+st.v+"\u2069":"",t1?"טרמינל 1":"",n<=0&&t.next_up?(t.next_up.e||"")+" "+t.next_up.h:""].filter(Boolean);
-    const img=/^[a-z0-9-]+$/.test(t.hero_img||"")?"../trips/img/"+t.hero_img+".webp":"";
-    // 25.13 (Oren 21.11.2026): a trip with a ready ticket graphic (card_img) shows it whole and clean, and every detail sits in one line under it.
-    const tk=/^[a-z0-9-]+$/.test(t.card_img||"")?"../trips/img/"+t.card_img+".webp":"";
+    // 25.46 (Oren 22.11.2026): no more trip photos / ChatGPT tickets on the cards (the loud colours broke the Travel theme).
+    // Booked and planned trips share one calm card: a line icon for what the trip is (SQTripIcons: couple, family, concert,
+    // work...), a quiet flight path in the corner, title + dates + who, and on the left the countdown in days only
+    // (under 24 hours it switches to hours). Planned trips show "בתכנון" there instead.
     const go=()=>{if(t.dash&&dashById(t.dash))openDash(t.dash);else location.href="trip.html?id="+encodeURIComponent(t.id);};
-    const hx=v=>/^#[0-9a-fA-F]{6}$/.test(v||"");const th=t.theme||{};
     const flags=String(t.flag||"").match(/(?:[\u{1F1E6}-\u{1F1FF}]{2})/gu)||[];
     const when=plan?(t.when||"בתכנון"):tvRange(t.from,t.to);
-    if(tk){const nh=(t.hotels||[]).length,sx=x=>x?h("span",null,x):null;
-      const it=[cd?h("span",{class:"tm-cd"},cd):null,h("bdi",{class:"tm-d",dir:"ltr"},when),len>0?sx(heN(len,"יום אחד","ימים")):null,sx(fl&&n>0?"✈️ "+fl.dep:""),sx(t1?"טרמינל 1":""),sx(nh?"🏨 "+nh:""),sx(st?"🌡️ \u2066"+st.v+"\u2069":""),sx(n<=0&&t.next_up?(t.next_up.e||"")+" "+t.next_up.h:""),sx(t.who||"")].filter(Boolean);
-      return h("button",{type:"button",class:"tp-mini tk",style:"--tc:"+(hx(th.c1)?th.c1:"#8E1B2C"),onclick:go,"aria-label":"דשבורד "+(t.title||"")},
-        h("img",{class:"tk-img",src:tk,alt:t.title||"",loading:"lazy"}),
-        h("span",{class:"tk-ln"},flags.length?h("span",{class:"tm-fl"},flags.join(" ")):null,h("span",{class:"tk-x"},it),h("span",{class:"tm-go","aria-hidden":"true"},"‹")));}
-    return h("button",{type:"button",class:"tp-mini"+(plan?" plan":"")+(img?"":" noimg"),style:"--tc:"+(hx(th.c1)?th.c1:plan?"#5B3A8E":"#8E1B2C")+";--tc2:"+(hx(th.c2)?th.c2:hx(th.c1)?th.c1:"#2B6CB0"),onclick:go,"aria-label":"דשבורד "+(t.title||"")},
-      img?h("img",{src:img,alt:"",loading:"lazy"}):null,
-      h("span",{class:"tm-top"},flags.length?h("span",{class:"tm-fl"},flags.join(" ")):null,cd?h("span",{class:"tm-cd"},cd):null,h("span",{class:"tm-go","aria-hidden":"true"},"‹")),
-      h("span",{class:"tm-in"},h("b",null,t.title||""),
-        h("span",{class:"tm-dt"},h("bdi",{class:"tm-d",dir:"ltr"},when),!plan&&len>0?h("span",null,heN(len,"יום אחד","ימים")):null,t.who?h("span",null,t.who):null),
-        plan&&t.next_up&&t.next_up.h?h("span",{class:"tm-nx"},"הבא: "+t.next_up.h):null,
-        ch.length?h("span",{class:"tm-ch"},ch.map(x=>h("span",null,x))):null));
+    const TI=window.SQTripIcons,k=TI?TI.key(t):"trip";
+    let at=NaN;if(fl&&/^\d{4}-\d\d-\d\d$/.test(fl.d||t.from||"")&&/^\d{1,2}:\d\d$/.test(fl.dep||"")){const [y,mo,da]=(fl.d||t.from).split("-").map(Number),[hh,mm]=fl.dep.split(":").map(Number),g=Date.UTC(y,mo-1,da,hh,mm);at=g-wfILoff(g)*6e4;}
+    else if(/^\d{4}-\d\d-\d\d$/.test(t.from||"")){const g=Date.parse(t.from+"T00:00:00Z");at=g-wfILoff(g)*6e4;}
+    const lf=!plan&&TI?TI.left(at):null;
+    const cdEl=plan?h("span",{class:"tm-cd2 pl"},h("small",null,"בתכנון")):lf?h("span",{class:"tm-cd2"+(lf.soon?" soon":"")},h("b",null,String(lf.v)),h("small",null,lf.u)):n!=null&&n<=0?h("span",{class:"tm-cd2 now"},h("small",null,"יום"),h("b",null,String(1-n)),h("small",null,"מתוך "+len)):null;
+    const sub=[h("bdi",{class:"tm-d",dir:"ltr"},when),!plan&&len>0?h("span",null,heN(len,"יום אחד","ימים")):null,t.who?h("span",null,t.who):null].filter(Boolean);
+    const xtra=plan?(t.next_up&&t.next_up.h?"הבא: "+t.next_up.h:""):[fl&&n>0?"✈️ "+fl.dep:"",t1?"טרמינל 1":"",n<=0&&t.next_up?(t.next_up.e||"")+" "+t.next_up.h:""].filter(Boolean).join(" · ");
+    return h("button",{type:"button",class:"tp-mini v2"+(plan?" plan":""),onclick:go,"aria-label":"דשבורד "+(t.title||"")},
+      h("span",{class:"tm-fx noico","aria-hidden":"true",html:TI?TI.FLIGHT:""}),
+      h("span",{class:"tm-ic noico",title:TI?TI.label(k):"","aria-hidden":"true",html:TI?TI.svg(k):""}),
+      h("span",{class:"tm-in"},h("b",null,t.title||"",flags.length?h("span",{class:"tm-fl"},flags.join(" ")):null),
+        h("span",{class:"tm-dt"},sub),
+        xtra?h("span",{class:"tm-nx"},xtra):null),
+      cdEl,h("span",{class:"tm-go","aria-hidden":"true"},"‹"));
   }
   // 25.7: the two history mini dashboards (all trips abroad since 1985, all trips in Israel), one compact card each
   function hxCard(id,title,kp,art){const d=dashById(id);if(!d)return null;
     return h("button",{type:"button",class:"hx-card hx-"+id,onclick:()=>openDash(id)},h("span",{class:"hx-art noico","aria-hidden":"true",html:art}),
       h("span",{class:"hx-tx"},h("b",null,title),h("span",{class:"hx-k"},kp.filter(Boolean).map(([v,l])=>h("span",null,h("strong",null,String(v)),l)))),h("span",{class:"hx-go","aria-hidden":"true"},"‹"));}
+  // 25.46: the countdown on the trip cards drops to hours under 24h, so redraw the zone every 5 minutes while it is on screen
+  setInterval(()=>{try{if(quest==="travel"&&!document.hidden&&!nav.dash)renderTravel();}catch(e){}},300000);
   function renderTravel(){
     const sec=$("tvSec");if(!sec)return;
     if(quest!=="travel"||!travelHub){sec.replaceChildren();return;}

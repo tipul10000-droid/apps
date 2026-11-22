@@ -277,7 +277,7 @@
     // no image yet (e.g. gfx.hero still waiting for its file) = a compact text header, no empty banner
     else H.push('<header class="tp-hero' + (hero ? "" : " noimg") + '">' + (hero ? '<img src="' + esc(hero) + '" alt="">' : "") + (t.snow ? '<div class="tp-snow"></div>' : "") +
       '<div class="in">' + (t.flag ? '<div class="tp-flag">' + em(t.flag) + "</div>" : "") + "<h1>" + esc(t.title) + '</h1><p class="sub">' + esc(t.tagline || "") + "</p>" + chips + "</div></header>");
-    if (own && o.slot) H.push('<div class="w"><div data-slot="hero" style="margin-top:12px"></div></div>');
+    // (no ChatGPT prompt frame under the header any more, also on Oren's own page; Oren 22.11.2026)
 
     H.push('<div class="w">');
     if (wx.length) H.push('<div class="tp-wxp" data-wxp><div><div class="tp-card tp-wxin"><div class="tp-grid">' +
