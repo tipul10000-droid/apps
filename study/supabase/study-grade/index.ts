@@ -1,10 +1,9 @@
 // study-grade: "✅ בדוק שאלות" (אורן 21.11.2026, כלל לכל תוכן עם תשובות פתוחות, לכל הילדים).
-// במקום ריצה מתוזמנת כל שעה: הילד לוחץ "בדוק שאלות" (study/grade.js) ← הפונקציה הזו מעירה פעם אחת את המשימה
-// "Study: בדיקת תשובות פתוחות (בלחיצת "בדוק שאלות")" דרך ה-API trigger שלה, עם kid ו-app. Claude בודק ומחזיר ציון ל-study_answers.
-//  ?action=req&kid=&app=  → אם יש תשובות שלא נבדקו: מעיר את הבדיקה (לכל היותר פעם ב-3 דקות לכל ילד ותוכן, ועד 12 בשעה לכל הילדים).
-//                           מחזיר {ok, n (כמה מחכות), fired, wait (כבר נשלח לאחרונה), nokey (אין עדיין טוקן)}.
+// הילד לוחץ "בדוק שאלות" (study/grade.js) ← הבקשה נרשמת. מ-22.11.2026 הבדיקה עצמה רצה 3 פעמים ביום (לא מעירים יותר את המשימה
+// דרך ה-API trigger; הניסיון קיבל 403 "project is paused"). Claude בודק ומחזיר ציון ל-study_answers.
+//  ?action=req&kid=&app=  → רושם את הבקשה ביומן ומחזיר {ok, n (כמה מחכות), sched: true}. לא מעיר ריצה.
 //  ?action=st&kid=&app=   → {ok, n, last (מתי נשלחה הבקשה האחרונה)}
-// בלי שינוי סכמה: הטוקן וה-URL ב-study_secrets ('grade_fire_token', 'grade_fire_url'), יומן ב-study_push_log ('gradereq:<kid>:<app>:<ms>').
+// בלי שינוי סכמה: יומן ב-study_push_log ('gradereq:<kid>:<app>:<ms>').
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -26,29 +25,9 @@ Deno.serve(async (req) => {
   const last = lg && lg[0] ? lg[0].at : null;
   if (action === "st") return json({ ok: true, n, last });
   if (!n) return json({ ok: true, n: 0 });
-  // אותה בקשה פעמיים ברצף = לא מעירים שוב (הבדיקה כבר בדרך), אלא אם נוספו תשובות מאז
-  if (last && now - Date.parse(last) < 3 * 60e3 && (lg![0].info?.n || 0) >= n) return json({ ok: true, n, wait: true, last });
-  const { count: hr } = await sb.from("study_push_log").select("key", { count: "exact", head: true }).like("key", "gradereq:%").gte("at", new Date(now - 36e5).toISOString());
-  if ((hr || 0) >= 12) return json({ ok: true, n, wait: true, last });
-  const { data: ks } = await sb.from("study_secrets").select("k,h").in("k", ["grade_fire_token", "grade_fire_url"]);
-  const S: Record<string, string> = {};
-  (ks || []).forEach((r: any) => (S[r.k] = r.h));
-  const key = `gradereq:${kid}:${app}:${now}`;
-  if (!S.grade_fire_token || !S.grade_fire_url) {
-    await sb.from("study_push_log").insert({ key, info: { n, fired: false, err: "nokey" } });
-    return json({ ok: true, n, fired: false, nokey: true });
-  }
-  let fired = false, err = "", sess = "";
-  try {
-    const r = await fetch(S.grade_fire_url, {
-      method: "POST",
-      headers: { Authorization: "Bearer " + S.grade_fire_token, "anthropic-beta": "experimental-cc-routine-2026-04-01", "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
-      body: JSON.stringify({ text: `kid=${kid} app=${app} n=${n} req=${now}` }),
-    });
-    const t = await r.text();
-    fired = r.ok;
-    if (r.ok) { try { sess = JSON.parse(t).claude_code_session_id || ""; } catch { /* */ } } else err = r.status + " " + t.slice(0, 200);
-  } catch (e) { err = String(e).slice(0, 200); }
-  await sb.from("study_push_log").insert({ key, info: { n, fired, err: err || undefined, sess: sess || undefined } });
-  return json({ ok: true, n, fired, err: fired ? undefined : "fire" });
+  // מ-22.11.2026 (אורן): Claude בודק 3 פעמים ביום בלבד (משימה מתוזמנת "Study: בדיקת תשובות פתוחות 3 פעמים ביום", 15:50/18:50/21:50).
+  // הכפתור רק מכניס לתור ונרשם ביומן; לא מעירים ריצה.
+  if (!(last && now - Date.parse(last) < 3 * 60e3 && (lg![0].info?.n || 0) >= n))
+    await sb.from("study_push_log").insert({ key: `gradereq:${kid}:${app}:${now}`, info: { n, sched: true } });
+  return json({ ok: true, n, sched: true, last });
 });
