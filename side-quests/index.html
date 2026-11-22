@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.41";window.SQ_BUILD_AT="22.11.2026 06:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.42";window.SQ_BUILD_AT="22.11.2026 06:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -5208,6 +5208,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   const wfOff=s=>{const m=String(s||"").match(/([+-])(\d{2}):(\d{2})$/);return m?(m[1]==="-"?-1:1)*(+m[2]*60+ +m[3]):120;};
   const wfILoff=ms=>{try{const p=new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Jerusalem",timeZoneName:"shortOffset"}).formatToParts(new Date(ms)).find(x=>x.type==="timeZoneName").value.match(/GMT([+-])(\d+)(?::(\d+))?/);return p?(p[1]==="-"?-1:1)*(+p[2]*60+(+p[3]||0)):120;}catch(e){return 120;}};
   const wfAt=(ms,off)=>{const d=new Date(ms+off*60000);return {hm:String(d.getUTCHours()).padStart(2,"0")+":"+String(d.getUTCMinutes()).padStart(2,"0"),day:["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"][d.getUTCDay()]+" "+d.getUTCDate()+"."+(d.getUTCMonth()+1)};};
+  // 25.42 (Oren 22.11.2026): the airline in words first ("טיסת אל על LY 385"), a code or logo alone says nothing
+  const WF_AIR={LY:"אל על",AZ:"ITA",IZ:"ישראייר","6H":"ארקיע",W6:"Wizz Air",W4:"Wizz Air",FR:"Ryanair",U2:"easyJet",LH:"Lufthansa",LX:"Swiss",OS:"Austrian",AF:"Air France",KL:"KLM",BA:"British Airways",TK:"Turkish Airlines",A3:"Aegean",UX:"Air Europa",IB:"Iberia",VY:"Vueling",EK:"Emirates",FZ:"flydubai",ET:"Ethiopian",UA:"United",DL:"Delta",AA:"American"};
+  function wfAir(l){const no=String(l&&l.no||"").trim(),c=(no.match(/^([A-Z0-9]{2})\s?\d/i)||[])[1],n=(l&&l.airline_he)||(c&&WF_AIR[c.toUpperCase()])||(l&&l.airline)||"";return ((n?"טיסת "+n+" ":"")+no).trim();}
   function wfEvents(d,l){const dep=wfMs(l.dep),arr=wfMs(l.arr);if(dep==null)return [];const off=wfOff(l.dep),offA=wfOff(l.arr),H=3600000,M=60000;
     const elal=/el\s*al/i.test(l.airline||"")||/^LY/i.test(String(l.no||"").trim()),tlv=(l.from&&l.from.code)==="TLV";
     // 25.35 (Oren 22.11.2026): rule of thumb unless the airline/boarding pass says otherwise: boarding opens 40 min before take-off, closes 15 min before
@@ -5265,7 +5268,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   function wfLeg(d,l){const lg=String(l.logo||"").replace(/[^a-z0-9._-]/gi,"");
     return h("div",{class:"wf-leg"},
       h("div",{class:"wf-lh"},lg?h("img",{class:"wf-al",src:"../trips/img/"+lg,alt:l.airline||""}):h("span",{class:"wf-aln"},l.airline||""),
-        h("b",null,(l.no||"")+" · "+wfDay(l.dep)),h("small",null,l.dur||"")),
+        h("b",null,wfAir(l)+" · "+wfDay(l.dep)),h("small",null,l.dur||"")),
       h("div",{class:"wf-rt"},h("div",null,h("b",null,wfHM(l.dep)),h("small",null,(l.from&&l.from.city||"")+(l.from&&l.from.t?" · טרמינל "+l.from.t:""))),
         h("span",{class:"wf-ar","aria-hidden":"true"},"←"),
         h("div",null,h("b",null,wfHM(l.arr)),h("small",null,(l.to&&l.to.city||"")+(l.to&&l.to.t?" · טרמינל "+l.to.t:"")))),
@@ -5291,14 +5294,14 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
         h("summary",null,h("span",{class:"wf-ey","aria-hidden":"true"},ey),
           h("div",{class:"wf-big"},nxt?[h("b",{class:"wf-cd","data-wfcd":nxt.t<now+86400000?String(nxt.t):null},wfCD(nxt.t-now)),h("span",{class:"wf-cdl"},"עד "+nxt.l+" · "+wfAt(nxt.t,nxt.e.off).hm)]:h("b",{class:"wf-cd"},inAir?"נוחת "+wfHM(nx.arr):"")),
           h("div",{class:"wf-row"},lg?h("img",{class:"wf-sl",src:"../trips/img/"+lg,alt:nx.airline||""}):h("span",{class:"wf-sl wf-sln","aria-hidden":"true"},"✈️"),
-            h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(d.title||"טיסת עבודה")),h("small",null,[nx.no,(nx.from&&nx.from.city||"")+" ← "+(nx.to&&nx.to.city||""),wfDay(nx.dep)].filter(Boolean).join(" · ")))),
+            h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(d.title||"טיסת עבודה")),h("small",null,[wfAir(nx),(nx.from&&nx.from.city||"")+" ← "+(nx.to&&nx.to.city||""),wfDay(nx.dep)].filter(Boolean).join(" · ")))),
           wfTimes(evs,now,nxt)),
         h("div",{class:"wf-b"},
           tx&&tx>now-15*60000?h("div",{class:"wf-taxi"},h("span",{"aria-hidden":"true"},"🚕"),h("div",null,h("b",null,"להיות למטה למונית: "+wfDay(nx.dep)+" "+wfIL(tx)),h("small",null,((Number(d.taxi_min)||150)===150?"שעתיים וחצי":wfIn((Number(d.taxi_min)||150)*60000))+" לפני ההמראה ב-"+wfHM(nx.dep)))):null,
           wfRetTop(d,C)?wfRet(d,legs,C):null,
           d.wifi&&d.wifi.code?wfSec(d.id+":wifi","📶","Wi-Fi חינם"+(d.wifi.leg?" · "+d.wifi.leg:""),"קוד "+d.wifi.code,[h("div",{class:"wf-acts"},wfCopy(d.wifi.code,"קוד Wi-Fi")),d.wifi.how?h("div",{class:"wf-note"},d.wifi.how):null,safeUrl(d.wifi.mail_url||"")?h("a",{class:"wf-mail",href:safeUrl(d.wifi.mail_url),target:"_blank",rel:"noopener"},"המייל ›"):null]):null,
-          legs.length>1?wfSec(d.id+":tm","🕒","כל הזמנים","הלוך וחזור",legs.map(l=>h("div",{class:"wf-tmb"},h("b",null,(l.no||"")+" · "+(l.from&&l.from.city||"")+" ← "+(l.to&&l.to.city||"")),wfTimes(wfEvents(d,l),now,null)))):null,
-          wfSec(d.id+":fl","✈️","טיסות",legs.map(l=>l.no).join(" · "),legs.map(l=>wfLeg(d,l))),
+          legs.length>1?wfSec(d.id+":tm","🕒","כל הזמנים","הלוך וחזור",legs.map(l=>h("div",{class:"wf-tmb"},h("b",null,wfAir(l)+" · "+(l.from&&l.from.city||"")+" ← "+(l.to&&l.to.city||"")),wfTimes(wfEvents(d,l),now,null)))):null,
+          wfSec(d.id+":fl","✈️","טיסות",legs.map(l=>wfAir(l)).join(" · "),legs.map(l=>wfLeg(d,l))),
           H.name?wfSec(d.id+":ht","🏨",H.name,[H.nights?H.nights+" לילות":"",H.in?"צ׳ק-אין "+H.in:"",H.plan||""].filter(Boolean).join(" · "),[
             H.addr?h("div",{class:"wf-kv"},h("span",null,"כתובת"),h("div",null,H.addr)):null,
             h("div",{class:"wf-acts"},wfGm(H.maps_q||((H.name||"")+" "+(H.addr||""))),H.res?wfCopy(H.res,"מספר הזמנה"):null),
