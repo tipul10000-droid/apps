@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.35";window.SQ_BUILD_AT="22.11.2026 05:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.36";window.SQ_BUILD_AT="22.11.2026 05:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1590,6 +1590,13 @@ details.more[open]>summary{margin-bottom:10px}
 #wfTop .wft.air>summary{background:radial-gradient(120% 140% at 100% 0%,#7ab8ff 0%,rgba(122,184,255,0) 55%),linear-gradient(135deg,#0b3d91 0%,#1e88e5 100%)}
 #wfTop .wf-b{padding-top:10px}
 #qiSec{margin-top:18px}
+.qbtn .qwf{position:absolute;top:3px;inset-inline-end:3px;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:11px;line-height:1;color:#fff;background:linear-gradient(135deg,#0f4fb8,#1a73e8);border:1.5px solid #fff;box-shadow:0 1px 5px rgba(10,40,110,.5);z-index:3;animation:qwfb 3.2s ease-in-out infinite}
+.qbtn.haswf{opacity:.8;filter:none}
+@keyframes qwfb{0%,80%,100%{transform:none}88%{transform:translateY(-2px) rotate(-12deg)}}
+#wfTop .wft.wfpulse{animation:wfpl 1.6s ease-out 2}
+@keyframes wfpl{0%{box-shadow:0 0 0 0 rgba(26,115,232,.75)}100%{box-shadow:0 0 0 16px rgba(26,115,232,0)}}
+@media (prefers-reduced-motion:reduce){.qbtn .qwf,#wfTop .wft.wfpulse{animation:none}}
+
 /* 25.34: countdown + 6 times */
 #wfTop .wft>summary{display:grid;grid-template-columns:1fr;gap:8px;padding:16px 16px 14px;min-height:150px}
 #wfTop .wf-big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
@@ -4656,14 +4663,17 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     // 19.5: a quest (not the one on screen) with something new in one of its dashboards = blinking blue dot; tap = into it
     // 19.8: also its own task changes and new features (settings/new_items quest:<q>); tap = into the quest with "🔔 עדכונים" on
     $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q],F=q!==quest?questFresh(q):[],T=q!==quest?questTasksNew(q).length+nwQuest(q).length:0,any=F.length+T>0;
-      return h("button",{class:"qbtn q-"+q+(any?" hasnw":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":any?Q.a+" "+Q.b+": יש תוכן חדש":null,
+      const wfOn=q==="work"&&wfLive().length>0; // 25.36 (Oren 22.11.2026): a work flight is coming / under way = small plane badge on Work Quest
+      return h("button",{class:"qbtn q-"+q+(any?" hasnw":"")+(wfOn?" haswf":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":any?Q.a+" "+Q.b+": יש תוכן חדש":null,
         onclick:()=>{const G=q!==quest?questFresh(q):[],A0=q!==quest?nwQuest(q):[],L0=q!==quest?questTasksNew(q).map(t=>({t,r:freshOf(t)})).filter(x=>x.r):[],TT=A0.length+L0.length;setQuest(q);
+          if(q==="work"&&wfLive().length)setTimeout(()=>{const b=document.querySelector("#wfTop .wft");if(b){b.classList.remove("wfpulse");void b.offsetWidth;b.classList.add("wfpulse");}},250);
           if(TT&&WQ.includes(q))return; // 25.0 (Oren 20.11.2026): new stays closed; the 🔔 עדכונים button carries the count, he taps it
           // 22.5 (Oren 18.11.2026): Fun / AI have no "🔔 עדכונים" list, so a tap shows "🆕 מה חדש" at the top and the dot clears
           if(!WQ.includes(q)&&(TT||G.length)){qNewOpen(q,A0,L0,G);return;}
           // Oren 19.11.2026: never open a dashboard by itself; scroll to the tiles, the new one blinks, he taps it
           if(G.length)setTimeout(()=>goDashes(),180);}},
         any?h("span",{class:"qnw",title:"יש תוכן חדש","aria-hidden":"true"}):null,
+        wfOn?h("span",{class:"qwf",title:"טיסת עבודה","aria-hidden":"true"},"✈"):null,
         h("span",{class:"qe","aria-hidden":"true"},ico(Q.e)),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }
   // ===== 22.5 (Oren 18.11.2026): "🆕 מה חדש" at the top of a quest without the updates list (Fun, AI Projects) =====
@@ -7047,7 +7057,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     db.collection("housing").onSnapshot(s=>{houseDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("shopping").onSnapshot(s=>{shopDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("food").onSnapshot(s=>{foodDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
-    db.collection("work_flights").onSnapshot(s=>{wfDocs=s.docs.map(d=>({id:d.id,...d.data()}));if(quest==="work")renderMain();},()=>{});
+    db.collection("work_flights").onSnapshot(s=>{wfDocs=s.docs.map(d=>({id:d.id,...d.data()}));try{renderQnav();}catch(e){}if(quest==="work")renderMain();},()=>{});
     db.collection("workstops").onSnapshot(s=>{wsDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderTravel();},()=>{});
     db.collection("knowledge").onSnapshot(s=>{knowDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
     db.collection("work_knowledge").onSnapshot(s=>{wknowDocs=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x._deleted);renderDash();},()=>{});
