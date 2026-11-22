@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.55";window.SQ_BUILD_AT="22.11.2026 17:25";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.56";window.SQ_BUILD_AT="22.11.2026 18:22";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2217,7 +2217,7 @@ body.q-fun .topbtns>.tb:not(.tundo):not(.tset):not(.tchat),body.q-ai .topbtns>.t
 .qb-fun .fz-eq{left:124px!important;right:auto!important;bottom:30px!important;height:24px!important;gap:3px}
 .qb-fun .fz-eq i{width:5px}
 /* army: radar in the top strip, a dotted patrol line to a flag, the unit emblem left of the title */
-.qa-radar{position:absolute;z-index:1;left:16px;bottom:62px;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(170,230,110,.6);
+.qa-radar{position:absolute;z-index:1;left:180px;bottom:62px;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(170,230,110,.6);
   background:repeating-radial-gradient(circle,transparent 0 30%,rgba(170,230,110,.35) 30% calc(30% + 1px)),linear-gradient(90deg,transparent calc(50% - .5px),rgba(170,230,110,.35) 0 calc(50% + .5px),transparent 0),linear-gradient(0deg,transparent calc(50% - .5px),rgba(170,230,110,.35) 0 calc(50% + .5px),transparent 0),radial-gradient(circle,#1E3214,#0F1A0A);box-shadow:0 0 12px rgba(140,220,80,.3)}
 .qa-radar::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(150,255,90,.6),rgba(150,255,90,0) 70deg,transparent);animation:abspin 3.2s linear infinite}
 .qa-radar i{position:absolute;width:4px;height:4px;border-radius:50%;background:#B8FF6A;box-shadow:0 0 6px #B8FF6A;animation:abblip 3.2s linear infinite}
@@ -2730,8 +2730,9 @@ html.desk .co-mark{font-size:2.4cqi}
 .topbtns .tb.tsun{order:-1}
 .topbtns .tb.tundo{color:#fff!important}
 /* 25.49: Claude voice chat button, above the tool frame (Oren 22.11.2026) */
-.tvoice{position:absolute;z-index:7;top:calc(env(safe-area-inset-top,0px) + 11px);left:max(12px,env(safe-area-inset-left,0px));width:152px;height:36px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;border-radius:12px;background:#D97757;color:#fff;font:700 14px/1 var(--f-body,Assistant,sans-serif);text-decoration:none;white-space:nowrap;box-shadow:0 0 0 1.5px rgba(255,255,255,.55),0 4px 14px rgba(217,119,87,.55);animation:tvglow 3.2s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
-.tvoice svg{width:18px;height:18px;flex:0 0 18px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+/* 25.56 (Oren 22.11.2026): "Claude צ׳אט", small, exactly the width of the tool frame under it (--tvw, synced by JS), same place in every quest */
+.tvoice{position:absolute;z-index:7;top:calc(env(safe-area-inset-top,0px) + 17px);left:max(12px,env(safe-area-inset-left,0px));width:var(--tvw,116px);height:30px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:5px;padding:0 8px;border-radius:10px;background:#D97757;color:#fff;font:700 13px/1 var(--f-body,Assistant,sans-serif);text-decoration:none;white-space:nowrap;box-shadow:0 0 0 1.5px rgba(255,255,255,.55),0 4px 14px rgba(217,119,87,.55);animation:tvglow 3.2s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
+.tvoice svg{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .tvoice .vmic{stroke-width:2}
 .tvoice:active{background:#C4643F}
 @keyframes tvglow{0%,100%{box-shadow:0 0 0 1.5px rgba(255,255,255,.55),0 4px 14px rgba(217,119,87,.45)}50%{box-shadow:0 0 0 1.5px rgba(255,255,255,.7),0 4px 22px rgba(217,119,87,.85)}}
@@ -2741,7 +2742,7 @@ html.desk #dtop .tvoice{position:static;animation:none;width:auto;height:38px;ma
 .topbtns .tb.tundo:not(.off){background:rgba(255,255,255,.06)!important}
 .qb-fun .fz-sun{left:150px!important;bottom:16px!important}
 .qb-fun .fz-eq{left:22px!important;bottom:60px!important;height:22px!important}
-.qa-term{left:14px!important;bottom:56px!important;width:116px!important}
+.qa-term{left:180px!important;bottom:56px!important;width:96px!important}
 .qa-term .qa-trow{padding:3px 8px 4px}.qa-term .ai-bar{padding:3px 6px}
 /* Netflix banner = a button */
 .fcard.nf .nfapp.img{position:relative;overflow:visible;margin:0 0 26px;border-radius:14px;box-shadow:0 0 0 1.5px rgba(229,9,20,.55),0 6px 18px rgba(0,0,0,.45);transition:filter .12s,box-shadow .12s;-webkit-tap-highlight-color:transparent}
@@ -2945,10 +2946,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   <svg class="qa-art" viewBox="0 0 390 102" aria-hidden="true">
     <path class="sb-coast" d="M-4 96 C30 84 52 100 86 90 S150 70 190 84 S260 104 300 92 S360 74 410 84 S520 100 600 88 S760 76 900 90"/>
     <path class="sb-hill" d="M226 30 l9 -12 l9 12 M246 33 l7 -9 l7 9"/>
-    <path class="sb-route" d="M22 36 C30 10 60 6 80 18 S112 40 134 28 S182 22 190 64"/>
-    <g class="sb-pin" transform="translate(22 36)"><circle r="4.5"/></g>
-    <g class="sb-pin p2" transform="translate(80 18)"><circle r="4.5"/></g>
-    <g class="sb-pin p3" transform="translate(134 28)"><circle r="4.5"/></g>
+    <path class="sb-route" d="M180 40 C184 14 204 6 214 20 S204 52 191 66"/>
+    <g class="sb-pin" transform="translate(180 40)"><circle r="4.5"/></g>
+    <g class="sb-pin p2" transform="translate(214 20)"><circle r="4.5"/></g>
     <g class="sb-x" transform="translate(191 75)"><path d="M-7 -7 L7 7 M7 -7 L-7 7"/></g>
   </svg>
   <div class="qb-in gut"><span class="sb-tag qa-tag" aria-hidden="true">NEXT STOP</span><h2>SIDE <i>QUESTS</i></h2><p>העוזר האישי: בית, כסף, משפחה וסידורים.</p></div>
@@ -2966,14 +2966,14 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
 <div class="qband qb-army">
   <div class="qa-radar" aria-hidden="true"><i></i><i></i><i></i></div>
   <svg class="qa-art" viewBox="0 0 390 102" aria-hidden="true">
-    <path class="ab-path" d="M60 22 C92 8 116 32 146 20 S186 14 200 28"/>
-    <g class="ab-flag" transform="translate(200 28)"><path d="M0 0 V-16"/><path class="f" d="M0 -16 L11 -12 L0 -8 Z"/></g>
+    <path class="ab-path" d="M222 30 C230 16 240 34 252 24"/>
+    <g class="ab-flag" transform="translate(252 24)"><path d="M0 0 V-16"/><path class="f" d="M0 -16 L11 -12 L0 -8 Z"/></g>
   </svg>
   <div class="qb-in gut"><span class="ab-tag qa-tag" aria-hidden="true">MISSION BRIEFING</span><h2>ARMY <i>QUEST</i></h2><img class="qlogo" id="logo-army" alt="9122" hidden><p>משימות של הצבא והמילואים.</p></div>
 </div>
 <div class="qband qb-work">
   <svg class="qa-art" viewBox="0 0 390 102" aria-hidden="true">
-    <path class="wb-tick" d="M0 34 L22 28 L40 32 L62 18 L84 24 L104 12 L128 20 L150 8 L172 16 L196 6 L224 14 L250 4"/>
+    <path class="wb-tick" d="M176 30 L188 26 L198 28 L210 18 L220 22 L232 12 L244 16 L256 6"/>
   </svg>
   <div class="qa-chart" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M2 84 L24 66 L44 72 L64 40 L82 48 L98 14"/></svg></div>
   <div class="qb-in gut"><span class="wb-tag qa-tag" aria-hidden="true">&gt; SYNCING</span><h2>WORK <i>QUEST</i></h2><img class="qlogo" id="logo-work" alt="Elbit" hidden><p>משימות העבודה. חיבור מלא בהמשך.</p></div>
@@ -2989,8 +2989,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     <g transform="translate(164 87)"><path class="tb-rock" d="M-12 9 L-11 -3 Q-8 -9 0 -10 Q9 -9 11 -2 L13 9 Z"/>
       <rect x="-6.5" y="-6" width="3.4" height="10" rx=".8" fill="#fff"/><rect x="-1.7" y="-6.5" width="3.4" height="10.5" rx=".8" fill="#2F6FD6"/><rect x="3.1" y="-6" width="3.4" height="10" rx=".8" fill="#F08A24"/></g>
     <circle class="tb-flower" cx="142" cy="95" r="1.8"/><circle class="tb-flower r" cx="210" cy="96" r="1.8"/><circle class="tb-flower" cx="180" cy="97" r="1.5"/>
-    <path id="tbRoute" class="tb-route" d="M22 42 C40 4 128 -6 164 66"/>
-    <g class="tb-pin" transform="translate(22 42)"><circle r="4"/></g>
+    <path id="tbRoute" class="tb-route" d="M182 30 C190 4 150 26 164 66"/>
+    <g class="tb-pin" transform="translate(182 30)"><circle r="4"/></g>
     <g class="tb-pin" transform="translate(164 66)"><circle r="4"/></g>
     <g class="tb-plane"><path d="M-11 -1.6 L4 -1.6 L-3 -11 L1 -11 L10 -1.6 L14 -1.6 Q17 0 14 1.6 L10 1.6 L1 11 L-3 11 L4 1.6 L-11 1.6 L-14 6 L-16 6 L-14 0 L-16 -6 L-14 -6 Z" transform="scale(.8)"/>
       <animateMotion dur="5s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .55 1"><mpath href="#tbRoute"/></animateMotion></g>
@@ -3011,7 +3011,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   <div class="qb-in gut"><span class="ai-tag qa-tag" aria-hidden="true">✻ CLAUDE CODE</span><h2>AI <i>PROJECTS</i></h2><p>כל הפרויקטים והמשימות.</p></div>
 </div>
 <button id="upBtn" type="button" aria-label="למעלה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button><button class="tfind fab" id="findBtn" type="button" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button><button class="tadd fab" id="addBtn" type="button" aria-label="הוראה חדשה" aria-expanded="false">+</button><div class="imenu" id="imenu" hidden role="group" aria-label="משימה או הוראה"><div class="im-r k-quick"><span class="im-l"><span class="e" aria-hidden="true">⚡</span>משימה מהירה</span><button type="button" id="qText" aria-label="משימה מהירה בכתיבה">⌨️</button><button type="button" id="qVoice" aria-label="משימה מהירה בהקלטה">🎤</button></div><div class="im-r k-ins"><span class="im-l"><span class="e" aria-hidden="true">🧠</span>הוראה חכמה</span><button type="button" id="iText" aria-label="הוראה בכתיבה">⌨️</button><button type="button" id="iVoice" aria-label="הוראה בהקלטה">🎤</button></div></div><div class="ibar" id="ibar" hidden></div><div class="ires" id="ires" hidden role="status"></div>
-<a class="tvoice noico" id="tvoice" aria-label="שיחה קולית עם Claude על Side Quests" href="https://claude.ai/new?q=Side%20Quests%3A%20%D7%90%D7%AA%D7%94%20%D7%94%D7%A2%D7%95%D7%96%D7%A8%20%D7%A9%D7%9C%D7%99%20%D7%A2%D7%9C%20%D7%9B%D7%9C%20Side%20Quests%20%28%D7%9B%D7%9C%20%D7%94%D7%A7%D7%95%D7%95%D7%A1%D7%98%D7%99%D7%9D%2C%20%D7%94%D7%93%D7%A9%D7%91%D7%95%D7%A8%D7%93%D7%99%D7%9D%20%D7%95%D7%94%D7%A0%D7%AA%D7%95%D7%A0%D7%99%D7%9D%29.%20%D7%91%D7%A9%D7%A7%D7%98%2C%20%D7%91%D7%9C%D7%99%20%D7%9C%D7%94%D7%A7%D7%A8%D7%99%D7%90%20%D7%9B%D7%9C%D7%95%D7%9D%2C%20%D7%AA%D7%A7%D7%A8%D7%90%20%D7%A2%D7%9D%20%D7%94%D7%97%D7%99%D7%91%D7%95%D7%A8%20%22Supabase%20%D7%A7%D7%A8%D7%99%D7%90%D7%94%22%20%28%D7%A4%D7%A8%D7%95%D7%99%D7%A7%D7%98%20emgtyfksnofzzlutngbf%29%3A%20select%20data%20from%20sq_docs%20where%20app%3D%27sidequests%27%20and%20collection%3D%27voice%27%20and%20id%3D%27briefing%27%3B%20%D7%95%D7%AA%D7%A4%D7%A2%D7%9C%20%D7%9C%D7%A4%D7%99%20rules%20%D7%A9%D7%91%D7%95.%20%D7%90%D7%9C%20%D7%AA%D7%A4%D7%AA%D7%97%20%D7%91%D7%91%D7%A8%D7%99%D7%A3%20%D7%95%D7%90%D7%9C%20%D7%AA%D7%A1%D7%9B%D7%9D.%20%D7%AA%D7%A2%D7%A0%D7%94%20%D7%A8%D7%A7%20%22%D7%9B%D7%9F%2C%20%D7%90%D7%A0%D7%99%20%D7%9B%D7%90%D7%9F%22%20%D7%95%D7%AA%D7%97%D7%9B%D7%94%20%D7%9C%D7%9E%D7%94%20%D7%A9%D7%90%D7%A0%D7%99%20%D7%90%D7%95%D7%9E%D7%A8.%20%D7%91%D7%A8%D7%99%D7%A3%20%D7%A8%D7%A7%20%D7%9B%D7%A9%D7%90%D7%A0%D7%99%20%D7%9E%D7%91%D7%A7%D7%A9.%20%D7%90%D7%9D%20%D7%90%D7%A0%D7%99%20%D7%9E%D7%9E%D7%A9%D7%99%D7%9A%20%D7%A0%D7%95%D7%A9%D7%90%20%D7%9E%D7%A9%D7%99%D7%97%D7%94%20%D7%A7%D7%95%D7%93%D7%9E%D7%AA%2C%20%D7%AA%D7%97%D7%A4%D7%A9%20%D7%90%D7%95%D7%AA%D7%95%20%D7%91%D7%A0%D7%AA%D7%95%D7%A0%D7%99%D7%9D%20%28%D7%95%D7%91%D7%A9%D7%99%D7%97%D7%95%D7%AA%20%D7%94%D7%A7%D7%95%D7%93%D7%9E%D7%95%D7%AA%20%D7%90%D7%9D%20%D7%90%D7%A4%D7%A9%D7%A8%29." target="_blank" rel="noopener"><svg class="vcm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.2 10.8 13.5 1.6M12.8 11.1 17.6 6.2M13.2 11.8 21.8 10.3M13.1 12.5 18.7 15.3M12.6 13.1 16.9 21.3M11.8 13.2 10.8 20.4M11.2 12.9 5.4 18.8M10.8 12.2 4.6 13.3M10.9 11.5 3.0 7.6M11.4 10.9 8.2 4.9"/></svg><span>שיחה עם Claude</span><svg class="vmic" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></a><div class="topbtns"><a class="tb tchat" id="tchat" aria-label="All Arounder: העוזר האישי" href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span><i class="tdot nw" id="chatDot" hidden></i></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tgm" id="gmBtn" type="button" aria-label="סריקת Gmail לפי דרישה"><svg class="gmic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M1.5 5.6v9.4c0 .6.4 1 1 1h2.4V8.9z"/><path fill="#34A853" d="M17.5 5.6v4.3a5.6 5.6 0 0 0-3.4 1V8.9z"/><path fill="#EA4335" d="M1.5 5.6 9.5 11.6l8-6V4.9c0-1.2-1.4-1.9-2.4-1.2L9.5 7.9 3.9 3.7c-1-.7-2.4 0-2.4 1.2z"/><circle cx="16.6" cy="15.6" r="3.7" fill="none" stroke="#fff" stroke-width="2"/><path d="M19.3 18.3 22.4 21.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg><i class="tdot" id="gmDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button><button class="tb tundo" id="undoBtn" type="button" aria-label="ביטול הפעולה האחרונה (Undo)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><b class="un" id="undoN" hidden></b></button></div>
+<a class="tvoice noico" id="tvoice" aria-label="Claude צ׳אט על Side Quests" href="https://claude.ai/new?q=Side%20Quests%3A%20%D7%90%D7%AA%D7%94%20%D7%94%D7%A2%D7%95%D7%96%D7%A8%20%D7%A9%D7%9C%D7%99%20%D7%A2%D7%9C%20%D7%9B%D7%9C%20Side%20Quests%20%28%D7%9B%D7%9C%20%D7%94%D7%A7%D7%95%D7%95%D7%A1%D7%98%D7%99%D7%9D%2C%20%D7%94%D7%93%D7%A9%D7%91%D7%95%D7%A8%D7%93%D7%99%D7%9D%20%D7%95%D7%94%D7%A0%D7%AA%D7%95%D7%A0%D7%99%D7%9D%29.%20%D7%91%D7%A9%D7%A7%D7%98%2C%20%D7%91%D7%9C%D7%99%20%D7%9C%D7%94%D7%A7%D7%A8%D7%99%D7%90%20%D7%9B%D7%9C%D7%95%D7%9D%2C%20%D7%AA%D7%A7%D7%A8%D7%90%20%D7%A2%D7%9D%20%D7%94%D7%97%D7%99%D7%91%D7%95%D7%A8%20%22Supabase%20%D7%A7%D7%A8%D7%99%D7%90%D7%94%22%20%28%D7%A4%D7%A8%D7%95%D7%99%D7%A7%D7%98%20emgtyfksnofzzlutngbf%29%3A%20select%20data%20from%20sq_docs%20where%20app%3D%27sidequests%27%20and%20collection%3D%27voice%27%20and%20id%3D%27briefing%27%3B%20%D7%95%D7%AA%D7%A4%D7%A2%D7%9C%20%D7%9C%D7%A4%D7%99%20rules%20%D7%A9%D7%91%D7%95.%20%D7%90%D7%9C%20%D7%AA%D7%A4%D7%AA%D7%97%20%D7%91%D7%91%D7%A8%D7%99%D7%A3%20%D7%95%D7%90%D7%9C%20%D7%AA%D7%A1%D7%9B%D7%9D.%20%D7%AA%D7%A2%D7%A0%D7%94%20%D7%A8%D7%A7%20%22%D7%9B%D7%9F%2C%20%D7%90%D7%A0%D7%99%20%D7%9B%D7%90%D7%9F%22%20%D7%95%D7%AA%D7%97%D7%9B%D7%94%20%D7%9C%D7%9E%D7%94%20%D7%A9%D7%90%D7%A0%D7%99%20%D7%90%D7%95%D7%9E%D7%A8.%20%D7%91%D7%A8%D7%99%D7%A3%20%D7%A8%D7%A7%20%D7%9B%D7%A9%D7%90%D7%A0%D7%99%20%D7%9E%D7%91%D7%A7%D7%A9.%20%D7%90%D7%9D%20%D7%90%D7%A0%D7%99%20%D7%9E%D7%9E%D7%A9%D7%99%D7%9A%20%D7%A0%D7%95%D7%A9%D7%90%20%D7%9E%D7%A9%D7%99%D7%97%D7%94%20%D7%A7%D7%95%D7%93%D7%9E%D7%AA%2C%20%D7%AA%D7%97%D7%A4%D7%A9%20%D7%90%D7%95%D7%AA%D7%95%20%D7%91%D7%A0%D7%AA%D7%95%D7%A0%D7%99%D7%9D%20%28%D7%95%D7%91%D7%A9%D7%99%D7%97%D7%95%D7%AA%20%D7%94%D7%A7%D7%95%D7%93%D7%9E%D7%95%D7%AA%20%D7%90%D7%9D%20%D7%90%D7%A4%D7%A9%D7%A8%29." target="_blank" rel="noopener"><svg class="vcm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.2 10.8 13.5 1.6M12.8 11.1 17.6 6.2M13.2 11.8 21.8 10.3M13.1 12.5 18.7 15.3M12.6 13.1 16.9 21.3M11.8 13.2 10.8 20.4M11.2 12.9 5.4 18.8M10.8 12.2 4.6 13.3M10.9 11.5 3.0 7.6M11.4 10.9 8.2 4.9"/></svg><span>Claude צ׳אט</span></a><div class="topbtns"><a class="tb tchat" id="tchat" aria-label="All Arounder: העוזר האישי" href="https://claude.ai/code/project/chan_01W6chmD4NUMHZzo1ehTjzCP" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">💬</span><i class="tdot nw" id="chatDot" hidden></i></a><button class="tb tsun" id="sunBtn" type="button" aria-label="הבריף האחרון (בוקר או ערב)"><svg class="sunmoon" viewBox="0 0 24 24" aria-hidden="true"><path class="sm-sun" d="M12 6a6 6 0 0 0 0 12z"/><path class="sm-ray" d="M3 12h1.8M5.6 5.6l1.3 1.3M5.6 18.4l1.3-1.3M12 1.8v2M12 20.2v2"/><path class="sm-moon" d="M12 4a8 8 0 0 1 0 16a4.6 8 0 0 0 0-16z"/></svg><i class="tdot" id="sunDot" hidden></i></button><button class="tb tloc" id="locBtn" type="button" aria-label="איפה אני עכשיו"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.5s-6.5-6.1-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.1-6.5 11.2-6.5 11.2z"/><circle cx="12" cy="10.2" r="2.4"/></svg></button><button class="tb tgm" id="gmBtn" type="button" aria-label="סריקת Gmail לפי דרישה"><svg class="gmic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M1.5 5.6v9.4c0 .6.4 1 1 1h2.4V8.9z"/><path fill="#34A853" d="M17.5 5.6v4.3a5.6 5.6 0 0 0-3.4 1V8.9z"/><path fill="#EA4335" d="M1.5 5.6 9.5 11.6l8-6V4.9c0-1.2-1.4-1.9-2.4-1.2L9.5 7.9 3.9 3.7c-1-.7-2.4 0-2.4 1.2z"/><circle cx="16.6" cy="15.6" r="3.7" fill="none" stroke="#fff" stroke-width="2"/><path d="M19.3 18.3 22.4 21.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg><i class="tdot" id="gmDot" hidden></i></button><button class="tb tset" id="setBtn" type="button" aria-label="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="tdot" id="setDot" hidden></i></button><button class="tb tundo" id="undoBtn" type="button" aria-label="ביטול הפעולה האחרונה (Undo)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><b class="un" id="undoN" hidden></b></button></div>
 <div class="hero gut">
   <div class="inner">
     <nav class="qnav" id="qnav" aria-label="בחירת קווסט"></nav>
@@ -4874,7 +4874,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     else{cls+=" off";title="✈️ מצב חו״ל כבוי";sub=ov?"כיבית ידנית. אפשר להחזיר לאוטומטי":"עוד לא יצאת לשדה";}
     el.className=cls;
     const row=h("div",{class:"ab-row"},h("div",{class:"ab-t"},h("b",null,title),h("small",null,sub)),
-      sug?h("button",{type:"button",class:"go",onclick:()=>abSet("on")},"כן, יצאתי"):(on&&quest!=="travel"?h("button",{type:"button",class:"go",onclick:()=>{abLanded=false;abLand(true);}},"🎯 ליעד"):null),
+      sug?h("button",{type:"button",class:"go",onclick:()=>abSet("on")},"כן, יצאתי"):(on&&quest!=="travel"?h("button",{type:"button",class:"go",onclick:()=>{abLanded=false;abLand(true);}},"✈️ לנסיעה"):null),
       abSw(on,()=>abSet(on?"off":"on"),"מצב חו״ל"),
       h("button",{type:"button",class:"ab-g"+(abCfgOpen?" on":""),"aria-label":"הגדרות מצב חו״ל","aria-expanded":abCfgOpen?"true":"false",onclick:()=>{abCfgOpen=!abCfgOpen;renderAbBar();}},"⚙"));
     const cfg=abCfgOpen?h("div",{class:"ab-cfg sqgrow"},
@@ -5938,7 +5938,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     // 25.0 (Oren 20.11.2026): only the nearest "צא עד" shows; the others wait behind "עוד N היום", which opens below itself
     el.classList.toggle("open",gateOpen);{const mb=el.querySelector(".tgmore");if(mb)mb.onclick=()=>{gateOpen=!gateOpen;renderGate();};}
     el.hidden=false;el.querySelectorAll(".tg").forEach(b=>b.onclick=()=>{if(String(b.dataset.id).startsWith("cal:")){toast("אירוע פרטי מהיומן. ההתראות על היציאה מגיעות לבד");return;}openTask(b.dataset.id);});}
-  function renderAll(){renderAbBar();renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();statKpi();renderQNew();}
+  // 25.56: the Claude chat pill = exactly the width of the tool frame under it, in every quest
+  function renderAll(){renderAbBar();renderGate();renderQnav();renderCtx();renderStrip();renderList();renderTiles();renderFun();renderTravel();renderDash();statKpi();renderQNew();try{window.tvSync&&tvSync();}catch(e){}}
 
   async function patch(t,fields,msg,noUndo){if(!db)return;if(!("snooze_until" in fields)&&returned(t))fields={...fields,snooze_until:"",...(t.sleep_until&&!("sleep_until" in fields)?{sleep_until:""}:{})};
     const prev={};for(const k of [...Object.keys(fields),"updated_at"])prev[k]=k in t?JSON.parse(JSON.stringify(t[k])):null;
@@ -7474,7 +7475,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
       ds.length?h("div",{class:"asub"},"דשבורדים ("+ds.length+")"):null,
       ds.length?h("div",{class:"alist"},ds.map(dRow)):null);
   }
-  function abroadOn(){return notify.abroad===true&&(!notify.abroad_until||notify.abroad_until>=todayISO());}
+  function abroadOn(){try{return notify.abroad===true&&(!notify.abroad_until||notify.abroad_until>=todayISO());}catch(e){return false;}}
   function openTask(id){const t=allTopics.find(x=>x.id===id);if(!t)return;
     if(!isFun(t)&&questOf(t)==="ai"){const pid=isProjTask(t)?t.project:GEN_ID;view="open";openId=id;if(nav.lvl===3&&nav.id===pid)renderNav();else navGo({lvl:3,id:pid});
       setTimeout(()=>{const r=$("pg3").querySelector(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.scrollIntoView({block:"center",behavior:"smooth"});},120);return;}{const q0=isFun(t)?"fun":questOf(t);if(qHidden(q0))setMode("home","🏠 עברתי לבית כדי לפתוח את המשימה");}const q=isFun(t)?"fun":questOf(t);if(q!==quest)setQuest(q);
@@ -7568,5 +7569,9 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
 <script src="sq-tel.js?v=3" defer></script>
 <script src="sq-gfx.js?v=2" defer></script>
 <script src="../appstat.js?v=1"></script><script>window.AppStat&&AppStat.init({app:"side-quests",ver:function(){return window.SQ_BUILD},uid:"oren"})</script>
+<script>/* 25.56: the Claude chat pill = exactly the width of the tool frame under it, in every quest */
+(function(){function tvSync(){try{var f=document.querySelector(".topbtns"),t=document.getElementById("tvoice");if(!f||!t)return;var w=Math.round(f.getBoundingClientRect().width);if(w>40)document.documentElement.style.setProperty("--tvw",w+"px");}catch(e){}}
+window.tvSync=tvSync;try{var f=document.querySelector(".topbtns");if(f&&window.ResizeObserver)new ResizeObserver(tvSync).observe(f);}catch(e){}
+tvSync();addEventListener("load",tvSync);addEventListener("resize",tvSync);setInterval(tvSync,1500);})();</script>
 </body>
 </html>
