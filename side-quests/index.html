@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.71";window.SQ_BUILD_AT="23.11.2026 01:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.72";window.SQ_BUILD_AT="23.11.2026 01:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2973,6 +2973,49 @@ html.desk .hero .dz-grid{display:flex!important}
 </style>
 </head>
 <body>
+<script>/* 25.72 (Oren 23.11.2026): no automatic reload while he reads or navigates. A new build found by the background check
+   (fullSync every 10 min, return to the app) waits until 5 minutes with no touch, scroll or key (in the app or inside a
+   dashboard frame), or until he taps ⟳ / the version. A reload keeps his place: same page, same dashboard sub-page
+   (the frame's own address), same scroll, and no splash (sessionStorage sq_resume, 2 min). The same note is written when the
+   app goes to the background, so if iOS drops the page from memory it comes back where he was (10 min). */
+(function(){
+var R=null,K="sq_resume",last=Date.now(),lastT=0,hid=0;
+try{R=JSON.parse(sessionStorage.getItem(K)||"null");sessionStorage.removeItem(K);}catch(e){}
+if(R&&R.hash&&!location.hash&&R.bg){try{history.replaceState(history.state,"",location.pathname+location.search+R.hash);}catch(e){}}
+if(R&&Date.now()-R.at<(R.bg?10*60e3:2*60e3)&&R.hash===location.hash)window.SQ_RESUME=R;else R=null;
+function act(e){last=Date.now();if(e&&e.type&&e.type!=="scroll")lastT=last;}
+var EV=["pointerdown","touchstart","keydown","wheel","scroll"];
+function hook(w){try{for(var i=0;i<EV.length;i++)w.addEventListener(EV[i],act,{capture:true,passive:true});}catch(e){}}
+hook(window);
+function frame(){var f=document.querySelector("#pgD iframe.dfr");return f&&f.offsetParent!==null?f:null;}
+function inner(d){var o=[],s=d.scrollingElement||d.documentElement;if(s&&s.scrollTop>0)o.push({i:-1,y:s.scrollTop});
+  var all=d.querySelectorAll("*");for(var i=0;i<all.length&&o.length<6;i++){if(all[i]!==s&&all[i].scrollTop>0)o.push({i:i,y:all[i].scrollTop});}return o;}
+function layers(){var a=[["m",document.scrollingElement||document.documentElement]];
+  ["pg2","pg3"].forEach(function(id){var e=document.getElementById(id);if(e)a.push([id,e]);});
+  var ds=document.querySelector("#pgD .dscroll");if(ds)a.push(["ds",ds]);return a;}
+function save(bg){var s={at:Date.now(),hash:location.hash,bg:!!bg,y:{}};
+  layers().forEach(function(x){if(x[1].scrollTop>0)s.y[x[0]]=x[1].scrollTop;});
+  var f=frame();if(f){try{s.frame={href:f.contentWindow.location.href,y:inner(f.contentDocument)};}catch(e){}}
+  try{sessionStorage.setItem(K,JSON.stringify(s));}catch(e){}}
+// put the saved scroll back while the screen is still being drawn (data arrives async); stop as soon as he touches
+function restore(get,want){if(!want||!want.length)return;var t0=Date.now(),a0=lastT;
+  (function st(){if(lastT!==a0)return;var ok=0;
+    for(var i=0;i<want.length;i++){var e=get(want[i]);if(!e)continue;if(Math.abs(e.scrollTop-want[i].y)<2){ok++;continue;}e.scrollTop=want[i].y;if(Math.abs(e.scrollTop-want[i].y)<2)ok++;}
+    if(Date.now()-t0<6000&&(ok<want.length||Date.now()-t0<1200))setTimeout(st,150);})();}
+if(R){var W=Object.keys(R.y||{}).map(function(k){return {k:k,y:R.y[k]};});
+  var lay=function(w){var L=layers();for(var i=0;i<L.length;i++)if(L[i][0]===w.k)return L[i][1];return null;};
+  setTimeout(function(){restore(lay,W);},50);}
+document.addEventListener("load",function(e){var f=e.target;if(!f||f.tagName!=="IFRAME")return;
+  try{hook(f.contentWindow);}catch(x){}
+  if(R&&R.frame&&!R.frameDone){try{if(f.contentWindow.location.href===R.frame.href){R.frameDone=1;var d=f.contentDocument;
+    restore(function(w){if(w.i<0)return d.scrollingElement||d.documentElement;return d.querySelectorAll("*")[w.i]||null;},R.frame.y);}}catch(x){}}},true);
+document.addEventListener("visibilitychange",function(){if(document.hidden){save(true);hid=Date.now();}else{if(!hid||Date.now()-hid<10*60e3)last=Date.now();hid=0;}});
+window.SQResume={
+  idle:function(){return Date.now()-last;},
+  // the dashboard frame opens on the sub-page he was on before the reload (once)
+  src:function(fr){if(!R||!R.frame||R.frameUsed)return fr;try{if(new URL(fr,location.href).pathname===new URL(R.frame.href).pathname){R.frameUsed=1;return R.frame.href;}}catch(e){}return fr;},
+  reload:function(url){save(false);location.replace(url);}};
+})();</script>
 <script>/* 23.7-23.8: splash controller. The bar moves on real steps (30% code, 55% data on the device, 85% server answered, 100% screen drawn)
    and creeps slowly toward the next step in between, so it never stops and never hits 100% early. Min 0.8s, max 6s.
    23.8 (Oren 19.11.2026): style choice (sq_splash_style: art = the ChatGPT illustration, basic = the built-in one), entry mode
@@ -3019,7 +3062,7 @@ else{document.addEventListener("DOMContentLoaded",function(){stage(30);});
   window.addEventListener("sq-refreshed",function(){stage(85);});
   setTimeout(function(){stage(30);},400);setTimeout(function(){stage(55);},1500);setTimeout(function(){stage(70);},3000);}
 requestAnimationFrame(tick);return {stage:stage,done:done};}
-window.SQSplash=make();window.SQSplash.preview=function(style){return make({preview:true,style:style});};
+window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();window.SQSplash.preview=function(style){return make({preview:true,style:style});};
 })();</script>
 
 <div class="qband qb-side">
@@ -4299,7 +4342,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const withNews=b=>[bar,b,edge];
     let body;
     pD.classList.remove("pvfull");
-    if(fr){body=h("iframe",{class:"dfr",src:fr,title:d.title||"דשבורד",allow:"clipboard-write"});dashPg={id,frame:true,back,sub:null};
+    if(fr){body=h("iframe",{class:"dfr",src:window.SQResume?SQResume.src(fr):fr,title:d.title||"דשבורד",allow:"clipboard-write"});dashPg={id,frame:true,back,sub:null};
       {const f=body,send=()=>dzSend(f);f.addEventListener("load",()=>{send();setTimeout(send,600);});}
       if(newsData){const f=body,send=()=>{try{f.contentWindow.postMessage(newsData,location.origin);}catch(e){}};f.addEventListener("load",()=>{send();setTimeout(send,600);});}}
     else{const y=pD.querySelector(".dscroll")?pD.querySelector(".dscroll").scrollTop:0;
@@ -6374,17 +6417,23 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   // the iPhone home-screen app keeps the old page in memory and the CDN caches it ~10 min.
   // When the app comes back to the screen (or on refresh), fetch the page fresh and reload if a newer build is up.
   let lastVer=0;
-  async function checkUpdate(force){
-    if(!force&&Date.now()-lastVer<60000)return;lastVer=Date.now();
+  // 25.72: a new build reloads at once only on his tap (user); otherwise it waits for 5 idle minutes (SQResume) and keeps his place
+  let newBuild=null;
+  async function checkUpdate(force,user){
+    if(!force&&Date.now()-lastVer<60000){buildGo(user);return;}lastVer=Date.now();
     try{const r=await fetch(location.pathname+"?v="+Date.now(),{cache:"no-store"});if(!r.ok)return;const m=(await r.text()).match(/SQ_BUILD="([^"]+)"/);
-      if(m&&m[1]!==window.SQ_BUILD){location.replace(location.pathname+"?u="+Date.now()+location.hash);}}catch(e){}
+      if(m&&m[1]!==window.SQ_BUILD){newBuild=m[1];buildGo(user);}}catch(e){}
   }
+  function buildGo(user){if(!newBuild)return;const R=window.SQResume,url=location.pathname+"?u="+Date.now()+location.hash;
+    if(!R){if(user)location.replace(url);return;}
+    if(user||R.idle()>5*60e3)R.reload(url);}
+  setInterval(()=>buildGo(false),30000);
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")checkUpdate();});
   window.addEventListener("pageshow",e=>{if(e.persisted)checkUpdate(true);});
   setTimeout(()=>checkUpdate(true),3000);
   const verAt=()=>{const m=String(window.SQ_BUILD_AT||"").match(/(\d+)\.(\d+)\.(\d+)\s*(\S*)/);return m?`${+m[1]} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m[2]-1]} ${m[3]}${m[4]?" · "+m[4]:""}`:String(window.SQ_BUILD_AT||"");};
   $("verN").textContent=`v${window.SQ_BUILD}`;$("verT").textContent=verAt();
-  $("ver").onclick=async()=>{$("verT").textContent="Checking for updates…";await checkUpdate(true);setTimeout(()=>{$("verT").textContent="Up to date ✓ · "+verAt();},600);};
+  $("ver").onclick=async()=>{$("verT").textContent="Checking for updates…";await checkUpdate(true,true);setTimeout(()=>{$("verT").textContent="Up to date ✓ · "+verAt();},600);};
   // 3.0: the refresh button really syncs: pulls fresh data, asks the Claude run for a full scan
   // (settings/sync_request), and shows exactly what changed. Stays at least ~2s so it is visible.
   let syncState={};
@@ -6420,7 +6469,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const show=()=>{$("refrTxt").textContent=`${Math.min(step+1,FS.length)}/${FS.length}`;if($("scSt"))$("scSt").textContent="מעדכן";
       if(manual)sheet(true,"מעדכן… עד כ-20 שניות",FS.map((x,i)=>(i<step?"✓ ":i===step?"⟳ ":"○ ")+x),"מחכה לתשובות כדי להציג תמונה עדכנית ומאוחדת");};
     const go=async f=>{show();try{await f();}catch(e){}step++;};
-    await go(()=>checkUpdate(true));
+    await go(()=>checkUpdate(true,manual));
     await go(async()=>{try{if(db.refresh)await db.refresh();}catch(e){ok=false;}});
     if(ok)await go(async()=>{if(!manual||!canWrite)return;
       await db.collection("settings").doc("sync_request").set({at:new Date().toISOString(),from:"app"}).catch(()=>{});
