@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.43";window.SQ_BUILD_AT="22.11.2026 06:25";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.44";window.SQ_BUILD_AT="22.11.2026 10:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1600,7 +1600,8 @@ details.more[open]>summary{margin-bottom:10px}
 /* 25.34: countdown + 6 times */
 #wfTop .wft>summary{display:grid;grid-template-columns:1fr;gap:8px;padding:16px 16px 14px;min-height:150px}
 #wfTop .wf-big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-#wfTop .wf-cd{font-family:var(--f-display,inherit);font-size:38px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.01em;direction:ltr;unicode-bidi:isolate}
+#wfTop .wf-cd{font-family:var(--f-display,inherit);font-size:30px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.01em;direction:ltr;unicode-bidi:isolate}
+#wfTop .wf-cd.dy{direction:rtl;font-size:22px;letter-spacing:0}
 #wfTop .wf-cdl{font-size:13.5px;color:rgba(255,255,255,.88)}
 #wfTop .wf-row{display:flex;align-items:center;gap:10px;min-width:0}
 .wf-tm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
@@ -1617,7 +1618,7 @@ details.more[open]>summary{margin-bottom:10px}
 #wfTop summary .wf-ti.on{outline:2px solid #ffb020;background:rgba(255,255,255,.22)}
 #wfTop summary .wf-ti.open{box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)}
 .wf-tmb{display:grid;gap:6px;padding:4px 0 8px}.wf-tmb>b{font-size:13px}
-@media (max-width:360px){.wf-tm{grid-template-columns:repeat(2,minmax(0,1fr))}#wfTop .wf-cd{font-size:32px}}
+@media (max-width:360px){.wf-tm{grid-template-columns:repeat(2,minmax(0,1fr))}#wfTop .wf-cd{font-size:26px}#wfTop .wf-cd.dy{font-size:20px}}
 
 
 .qinfo{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
@@ -5292,7 +5293,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       const evs=wfEvents(d,nx),nxt=wfNext(evs,now);if(nxt&&nxt.t-now<86400000)wfTickOn();
       const det=h("details",{class:"wft"+(inAir?" air":""),"data-sq-item":"wf-"+d.id},
         h("summary",null,h("span",{class:"wf-ey","aria-hidden":"true"},ey),
-          h("div",{class:"wf-big"},nxt?[h("b",{class:"wf-cd","data-wfcd":nxt.t<now+86400000?String(nxt.t):null},wfCD(nxt.t-now)),h("span",{class:"wf-cdl"},"עד "+nxt.l+" · "+wfAt(nxt.t,nxt.e.off).hm)]:h("b",{class:"wf-cd"},inAir?"נוחת "+wfHM(nx.arr):"")),
+          h("div",{class:"wf-big"},nxt?[h("b",{class:"wf-cd"+(nxt.t>=now+86400000?" dy":""),"data-wfcd":nxt.t<now+86400000?String(nxt.t):null},wfCD(nxt.t-now)),h("span",{class:"wf-cdl"},"עד "+nxt.l+" · "+wfAt(nxt.t,nxt.e.off).hm)]:h("b",{class:"wf-cd"},inAir?"נוחת "+wfHM(nx.arr):"")),
           h("div",{class:"wf-row"},lg?h("img",{class:"wf-sl",src:"../trips/img/"+lg,alt:nx.airline||""}):h("span",{class:"wf-sl wf-sln","aria-hidden":"true"},"✈️"),
             h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(d.title||"טיסת עבודה")),h("small",null,[wfAir(nx),(nx.from&&nx.from.city||"")+" ← "+(nx.to&&nx.to.city||""),wfDay(nx.dep)].filter(Boolean).join(" · ")))),
           wfTimes(evs,now,nxt)),
