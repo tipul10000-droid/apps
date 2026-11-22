@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.66";window.SQ_BUILD_AT="22.11.2026 21:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.67";window.SQ_BUILD_AT="22.11.2026 21:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2909,6 +2909,7 @@ html.desk .hero .dz-grid{display:flex!important}
 .ab-w>.tv-wk>details.tv-wkc>summary b{font-size:16px}.ab-w>.tv-wk>details.tv-wkc>summary small{font-size:13px}
 .ab-w>.tv-wk>details.tv-wkc{gap:10px}.ab-w>.tv-wk>details.tv-wkc[open],.ab-w>details.ab-bank[open]{padding-bottom:12px}
 .ab-w>.tv-wk{margin-top:12px;gap:0}
+.ws-base{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}.ws-live{font-weight:800;font-size:13px;text-decoration:none;color:#14919B;white-space:nowrap}
 .ab-w>.wf-s,.ab-w>details.ab-bank,.ab-w>.tv-wk{margin-top:0}.ab-w>.ab-now{margin-bottom:0}.ab-w>.tv-wk>details.tv-wkc+details.tv-wkc{margin-top:12px}
 .wl-ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
 .wl-ex a{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:700;color:var(--ink);text-decoration:none;background:var(--surface)}
@@ -5804,7 +5805,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     return out;}
   function wsRun(rt){const ui=wsUI[rt.id];const pl=wsDocs.filter(d=>d.type!=="route"&&d.route===rt.id&&isFinite(+d.lat)&&isFinite(+d.lng));
     const back=ui.dir==="back";let from=back?rt.b:rt.a;const to=back?rt.a:rt.b;if(ui.here&&ui.pos)from=ui.pos;
-    const key=(ui.here&&ui.pos?"here":"")+rt.id+"_"+ui.dir+"_"+pl.length;
+    const key=(ui.here&&ui.pos?"here":"")+rt.id+"_"+ui.dir+"_"+pl.length+"_"+(+from.lat).toFixed(3)+(+to.lat).toFixed(3);
     wsCalc[rt.id]={busy:true,key};renderTravel();
     wsTable(key,from,pl,to).then(o=>{const m={};pl.forEach((p,i)=>m[p.id]=o.det[i]);wsCalc[rt.id]={key,base:o.base,det:m,live:true};renderTravel();})
       .catch(()=>{const m={};const b=wsRough(from,to);pl.forEach(p=>m[p.id]=Math.max(0,wsRough(from,p)+wsRough(p,to)-b));wsCalc[rt.id]={key,base:b,det:m,live:false};renderTravel();});}
@@ -5865,7 +5866,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       u?null:h("p",{class:"wf-note"},"אין עדיין שיחה קבועה למקום הזה: הכפתור פותח שיחה חדשה עם פרומפט התכנון."));}
   function wsBank(rt){const ui=wsUI[rt.id]||(wsUI[rt.id]={dir:"go",ax:"all",bud:0,here:false,sort:"drive",open:abMode()});
     const back=ui.dir==="back";const A=back?rt.b:rt.a,B=back?rt.a:rt.b;
-    const C=wsCalc[rt.id];const want=(ui.here&&ui.pos?"here":"")+rt.id+"_"+ui.dir+"_"+wsDocs.filter(d=>d.type!=="route"&&d.route===rt.id&&isFinite(+d.lat)&&isFinite(+d.lng)).length;if(!C||(!C.busy&&C.key!==want))setTimeout(()=>wsRun(rt),0);
+    const C=wsCalc[rt.id];const wF=ui.here&&ui.pos?ui.pos:(ui.dir==="back"?rt.b:rt.a),wT=ui.dir==="back"?rt.a:rt.b;const want=(ui.here&&ui.pos?"here":"")+rt.id+"_"+ui.dir+"_"+wsDocs.filter(d=>d.type!=="route"&&d.route===rt.id&&isFinite(+d.lat)&&isFinite(+d.lng)).length+"_"+(+wF.lat).toFixed(3)+(+wT.lat).toFixed(3);if(!C||(!C.busy&&C.key!==want))setTimeout(()=>wsRun(rt),0);
     const set=(k,v)=>()=>{ui[k]=v;if(k==="dir"||k==="here")delete wsCalc[rt.id];renderTravel();};
     const seg=(k,opts,cls)=>h("div",{class:"ws-seg"+(cls?" "+cls:"")},opts.map(([v,l])=>h("button",{type:"button",class:ui[k]===v?"on":"",onclick:set(k,v)},l)));
     const hereBtn=h("button",{type:"button",class:ui.here?"on":"",onclick:()=>{if(ui.here){ui.here=false;delete wsCalc[rt.id];renderTravel();return;}
@@ -5908,7 +5909,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     return h("article",{class:"ws ws-o"},head,
       h("div",{class:"ws-body sqgrow"},
         seg("dir",[["go",`${rt.a.he} ← ${rt.b.he}`],["back",`${rt.b.he} ← ${rt.a.he}`]]),
-        h("div",{class:"ws-base"},C&&C.base!=null?h("span",null,"הדרך הקצרה: ",h("b",null,wsFmt(C.base)),ui.here&&ui.pos?" · מהמיקום שלך":""):"מחשב זמנים…"),
+        // 25.67 (Oren 22.11.2026): the direct drive with no delays (OSRM, free, no traffic) + one tap to Google Maps for the time in traffic right now
+        h("div",{class:"ws-base"},C&&C.base!=null?h("span",null,"הדרך הישירה בלי עיכובים: ",h("b",null,wsFmt(C.base)),ui.here&&ui.pos?" · מהמיקום שלך":""):"מחשב זמנים…",
+          h("a",{class:"ws-live",href:"https://www.google.com/maps/dir/?api=1&travelmode=driving&origin="+(+wF.lat)+","+(+wF.lng)+"&destination="+(+wT.lat)+","+(+wT.lng),target:"_blank",rel:"noopener"},"🚦 כמה עכשיו בתנועה ›")),
         sortBar,inf,
         h("details",{class:"ws-flt"},h("summary",null,"סינון"+(nf?` (${nf})`:"")),
           h("div",{class:"ws-fb"},h("div",{class:"ws-seg"},hereBtn),
