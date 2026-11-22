@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.69";window.SQ_BUILD_AT="22.11.2026 21:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.70";window.SQ_BUILD_AT="22.11.2026 22:05";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2841,6 +2841,21 @@ html.desk .hero .dz-grid{display:flex!important}
 .fcard.gm .fbtn{background:#A970FF;color:#fff}.fcard.gm .fbtn.ghost{background:transparent;color:#F2F2F2;border-color:#3A3A44}
 .fcard.gm .cont,.fcard.gm .opt.chat{border-color:#3A3A44}
 .fcard.gm .game .gnext::before{color:#C9A7FF}
+/* 25.70 (Oren 22.11.2026): Fun zone headers. Every brand mark sits on one line pinned to the left edge, and is only a mark
+   (tapping it does nothing beyond the header). The chevron is a drawn arrow: left when closed, down when open, bigger.
+   Games = Steam blue with the real Steam logo. Physical margins: the LTR marks flip margin-inline-start. */
+.fzgrid .zhead{display:flex;flex-direction:row;direction:rtl}
+.fzgrid .zhead .fc-h{order:0;flex:0 1 auto}
+.fzgrid .zhead .zc-c{order:1;flex:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin:0!important;font-size:0;opacity:.95;transform:none;transition:transform .2s}
+.fzgrid .zhead .zc-c svg{width:24px;height:24px;display:block}
+.fcard.zc.zopen .zhead .zc-c{transform:rotate(-90deg)}
+.fzgrid .zhead .zlogo{order:2;margin-left:0!important;margin-right:auto!important;pointer-events:none;cursor:default;-webkit-user-select:none;user-select:none}
+.fcard.gm{--fc:#1A9FFF}
+.fzgrid .steam{border-color:#1E4E7A;background:#0B1622;color:#fff}
+.fzgrid .steam svg{width:24px;height:24px}
+.fcard.gm .fbtn{background:#1A9FFF;color:#fff}.fcard.gm .fbtn.ghost{background:transparent;color:#F2F2F2;border-color:#2A3E55}
+.fcard.gm .cont,.fcard.gm .opt.chat{border-color:#2A3E55}
+.fcard.gm .game .gnext::before{color:#66C0F4}
 .fcard.fdash .fdk,.fcard.fdash .fdwhy{display:none}
 #qNew .qn-line{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;font-size:16.5px;cursor:pointer;text-align:start}
 #qNew .qn-line b{flex:1}
@@ -5150,7 +5165,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
         :h("div",{class:"sp-next"},h("h4",null,`✨ הסשן הבא: סשן ${nextN}`),...body);
     }
     return h("article",{class:"fcard sp","data-id":t.id},
-      h("div",{class:"sp-head zhead"},h("div",{class:"fc-h"},h("h3",null,"מוזיקה")),h("a",{class:"sp-logo zlogo",href:"https://open.spotify.com/",target:"_blank",rel:"noopener","aria-label":"Spotify",html:SPOT_SVG+"<span>Spotify</span>"})),
+      h("div",{class:"sp-head zhead"},h("div",{class:"fc-h"},h("h3",null,"מוזיקה")),h("span",{class:"sp-logo zlogo","aria-label":"Spotify",html:SPOT_SVG+"<span>Spotify</span>"})),
       live.length?h("div",{class:"fc-rounds"},live.map((s,i)=>sessBlock(t,s,i===0))):null,
       next,
       arch.length?(()=>{const k=t.id+":arch",d=h("details",{class:"sp-arch",open:funFold[k]||null},h("summary",null,"📦 ארכיון · "+(arch.length===1?"סשן אחד":arch.length+" סשנים")),h("div",{class:"fc-rounds"},arch.map(s=>sessBlock(t,s,false))));d.addEventListener("toggle",()=>{funFold[k]=d.open;});return d;})():null,
@@ -5306,7 +5321,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const mvPages=mv?linksOf(mv).filter(l=>linkType(l)!=="chat"):[];
     const fhGo=h("span",{class:"nfgo zgo","aria-hidden":"true"});fhGo.innerHTML=NF_HAND+"<span>פתיחה</span>";
     return h("article",{class:"fcard mv"},
-      h("div",{class:"mv-head zhead"},lore.some(dashFresh)?h("i",{class:"fdnw","aria-hidden":"true"}):null,h("div",{class:"fc-h"},h("h3",null,"סרטים")),h("a",{class:"imdb zlogo",href:"https://www.imdb.com/",target:"_blank",rel:"noopener","aria-label":"IMDb"},"IMDb")),
+      h("div",{class:"mv-head zhead"},lore.some(dashFresh)?h("i",{class:"fdnw","aria-hidden":"true"}):null,h("div",{class:"fc-h"},h("h3",null,"סרטים")),h("span",{class:"imdb zlogo","aria-label":"IMDb"},"IMDb")),
       fh?h("a",{class:"zapp fhapp",href:app||cl||"#",target:"_blank",rel:"noopener","aria-label":"פתח את Frame Horizon"},h("img",{src:"fh-logo.png",alt:"Frame Horizon",width:"560",height:"178"}),fhGo):null,
       ...lore.map(loreTicket),
       fh?sec(1,"FRAME HORIZON",
@@ -5321,7 +5336,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   const NF_SVG='<svg viewBox="0 0 22 40" aria-hidden="true"><path d="M1 0h6.2v40C5 39.6 3 39.5 1 39.5z" fill="#B1060F"/><path d="M14.8 0H21v39.5c-2 0-4 .1-6.2.5z" fill="#B1060F"/><path d="M1 0h6.2L21 39.5c-2.1 0-4.2.2-6.2.5z" fill="#E50914"/></svg>';
   const NF_HAND='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11.5V5a1.6 1.6 0 0 1 3.2 0v5.6m0-1.4a1.6 1.6 0 0 1 3.2 0v1.6m0-.6a1.6 1.6 0 0 1 3.2 0v1.2m0-.2a1.5 1.5 0 0 1 3 0v3.4c0 3.6-2.6 6.4-6.2 6.4h-1.4c-2 0-3.4-.8-4.6-2.4L5 14.2a1.6 1.6 0 0 1 2.6-1.9L9 14"/></svg>';
   function seriesCard(){
-    const lg=h("a",{class:"nf-logo zlogo",href:"https://www.netflix.com/",target:"_blank",rel:"noopener","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
+    const lg=h("span",{class:"nf-logo zlogo","aria-label":"Netflix"});lg.innerHTML=NF_SVG;
     // 21.5 (Oren 17.11): the "מה בנטפליקס?" banner sits above the Netflix ribbon and reads as a button (hand + "פתיחה" pill, press state)
     const go=h("span",{class:"nfgo","aria-hidden":"true"});go.innerHTML=NF_HAND+"<span>פתיחה</span>";
     return h("article",{class:"fcard nf"},
@@ -5330,9 +5345,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       ...seriesHub(),
       secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן"));
   }
-  const STEAM_SVG='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#fff"/><circle cx="16" cy="16" r="13.2" fill="#1B2838"/><circle cx="20.6" cy="12.4" r="4.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="20.6" cy="12.4" r="2.2" fill="#fff"/><path d="M3 18.2 L10.6 21.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M11.2 21.6 L18 15.2" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="11.2" cy="21.6" r="3.1" fill="#1B2838" stroke="#fff" stroke-width="1.8"/></svg>';
+  const STEAM_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1A9FFF" d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></svg>';
   function gamesCard(games){
-    const steam=h("a",{class:"steam zlogo",href:"https://store.steampowered.com/",target:"_blank",rel:"noopener","aria-label":"Steam"});steam.innerHTML=STEAM_SVG+"STEAM";
+    const steam=h("span",{class:"steam zlogo","aria-label":"Steam"});steam.innerHTML=STEAM_SVG+"STEAM";
     return h("article",{class:"fcard gm"},
       h("div",{class:"gm-head zhead"},h("div",{class:"fc-h"},h("h3",null,"משחקים")),steam),
       games.length?h("div",{class:"fc-rounds"},games.map(gameRow)):h("div",{class:"mv-empty"},"עוד אין משחקים."),
@@ -5374,7 +5389,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   const ZOPEN={};
   function calmZones(root){if(!root)return;root.querySelectorAll("article.fcard").forEach(c=>{const z=c.querySelector(":scope>.zhead");if(!z)return;
     const k=String(c.className).replace(/\bfcard\b|\bzc\b|\bzopen\b/g,"").trim()||"z";c.classList.add("zc");c.classList.toggle("zopen",!!ZOPEN[k]);
-    if(!z.querySelector(".zc-c")){const ch=h("span",{class:"zc-c fc","aria-hidden":"true"},"‹");z.appendChild(ch);z.setAttribute("role","button");z.tabIndex=0;
+    if(!z.querySelector(".zc-c")){const ch=h("span",{class:"zc-c fc","aria-hidden":"true",html:'<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'});z.appendChild(ch);z.setAttribute("role","button");z.tabIndex=0;
       z.addEventListener("click",e=>{if(e.target.closest("a,button:not(.zhead),input"))return;ZOPEN[k]=!ZOPEN[k];c.classList.toggle("zopen",ZOPEN[k]);z.setAttribute("aria-expanded",ZOPEN[k]?"true":"false");});}
     z.setAttribute("aria-expanded",ZOPEN[k]?"true":"false");});}
 
