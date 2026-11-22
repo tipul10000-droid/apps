@@ -100,3 +100,13 @@ title, year, genre, lang, imdb_rating, note, source, seen, seen_at, downloaded, 
 ## 10.4: מקום מסוים מול משימה כללית, וכפתור 📍
 - `fit.alts` [{name, area, km, open, src}] למשימה שכל מקום יכול לעשות (פיתות, סופר). `SQGate.gate` בוחר את הקרוב שעוד מספיקים להגיע אליו; אם הקרוב סגור, את הפתוח עד מאוחר יותר, והטקסט אומר לאן ללכת ולמה. `key` = `id@index`, ו-sq-push שומר את שלבי ההתראה לפי המפתח הזה.
 - כפתור 📍 (`#locBtn`) בשורה העליונה: מפעיל מיקום, מזהה עיר מ-`CITIES` (בלי שירות חיצוני), חלון `#locM` עם מה שאפשר לעשות כאן. כשלא בבית, הסידור לפי אזור והפס האדום מחשבים מרחק מהמיקום הנוכחי (`kmHere`, `hereFit`). המיקום נשאר ב-`sq_loc` במכשיר בלבד.
+
+## Voice bridge: Side Quests from a regular Claude chat (25.49, Oren 22.11.2026)
+A regular claude.ai chat (voice mode) has the Supabase connector but none of this project's files or memory. Its one entry point is a single doc in `sq_docs`:
+
+- `voice/briefing`: `{v, generated_at, generated_at_il, how_to_use, headline, map[{c, what, keys, q, fed_by, sensitive}], projects[{id, name, status, last_change, next}], open[{p, text, topic}], today{date, summary, tomorrow, trip, events, home}, recent[], rules[]}`. Written for listening: short plain Hebrew sentences. `map` = every collection, one line each, with the query to read it. `rules` = what a voice chat must respect (no emails except drafts Oren approves, no messages to people, no money, read-only except the inbox, secrets never read aloud).
+- `voice/inbox`: `{v, note, items[{ts, text, kind: task|decision|note, topic?, status: new|done, done_at?}]}`. The voice chat only appends (the exact SQL is in `briefing.rules`); the scheduled runs consume `status: new` items and turn them into topics.
+- First query for a voice chat: `select data from sq_docs where app='sidequests' and collection='voice' and id='briefing';`
+- The app ignores the `voice` collection (it is loaded with everything else and not shown).
+- Deep link: the orange "שיחה עם Claude" button above the tool frame (`#tvoice`, every quest, same place) and `voice.html` (its own manifest and icon `img/voice-icon-*.png`, so it can be added to the iPhone home screen; opened from the home screen it jumps straight to the chat) open `https://claude.ai/new?q=<opening prompt>`. The prompt text is duplicated in both files: change both. Voice mode itself can't be deep-linked: tap the voice button in the chat.
+- Security: the voice docs hold no secret. But the Supabase connector in a regular chat has full SQL, so it CAN read `sq_secrets`, `settings/dash_lock`, `push_subs`, `work_calendar` and the cashflow tables, and can write. The rules in the briefing are a request, not a lock.
