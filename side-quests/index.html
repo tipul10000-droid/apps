@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.70";window.SQ_BUILD_AT="22.11.2026 22:05";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.71";window.SQ_BUILD_AT="23.11.2026 01:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -6018,7 +6018,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     // 25.2 (Oren 21.11.2026): one clear hierarchy. Level 1: 🇮🇱 בארץ | 🌍 בחו״ל (only the chosen zone shows).
     //  Abroad level 2: ✈️ פרטי | 💼 עבודה. Private = (1) flights booked → trip mini dashboards, (2) planned, no flights yet →
     //  planned mini dashboards (trips docs with stage "plan") + Holiday Optimizer, (3) every other abroad dashboard.
-    const zSet=v=>()=>{if(tvZ===v)return;tvZ=v;try{localStorage.setItem("sq_tv_z",v);}catch(e){}splitTopics();renderAll();};
+    const segPin=(ev,sel,fn)=>{const b0=ev&&ev.currentTarget,t0=b0?b0.getBoundingClientRect().top:null,ix=b0?[...b0.parentNode.children].indexOf(b0):-1;document.body.style.minHeight="";fn();if(t0==null)return;const fix=()=>{const nb=document.querySelectorAll(sel)[0];const btn=nb&&nb.children[ix];if(!btn)return;const d=btn.getBoundingClientRect().top-t0;if(Math.abs(d)<=0.5)return;const want=scrollY+d;if(want+innerHeight>document.documentElement.scrollHeight)document.body.style.minHeight=Math.ceil(want+innerHeight)+"px";window.scrollTo(0,Math.max(0,want));};fix();requestAnimationFrame(fix);setTimeout(fix,60);};
+    const zSet=v=>ev=>{if(tvZ===v)return;segPin(ev,".tz-nav",()=>{tvZ=v;try{localStorage.setItem("sq_tv_z",v);}catch(e){}splitTopics();renderAll();});};
     const jump=h("nav",{class:"ab-seg tz-nav","aria-label":"אזורי הטיולים",role:"tablist"},
       [["il","בארץ",IL_FLAG],["abroad","בחו״ל",GLOBE_IC]].map(([v,l,ic])=>h("button",{type:"button",role:"tab","aria-selected":tvZ===v?"true":"false",class:(tvZ===v?"on ":"")+"z-"+v,onclick:zSet(v)},h("span",{class:"zic noico","aria-hidden":"true",html:ic}),l)));
     // Israel zone
@@ -6043,7 +6044,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const other=zoneDash("abroad",false);
     const ab=h("section",{class:"tz tz-ab-z"+(abTab==="work"?" ab-w":"")},
       abMode()&&abTab==="work"?null:zoneHead("abroad","בחו״ל",[nB?heN(nB,"נסיעה אחת","נסיעות")+" עם טיסות":"",nP?nP+" בתכנון":""].filter(Boolean).join(" · ")||"תכנון, היסטוריה ונתונים",AB_BANNER),
-      h("div",{class:"ab-seg",role:"tablist"},[["trip","✈️ פרטי"],["work","💼 עבודה"]].map(([v,l])=>h("button",{type:"button",role:"tab","aria-selected":abTab===v?"true":"false",class:abTab===v?"on":"",onclick:()=>{if(abTab===v)return;abTab=v;try{localStorage.setItem("sq_tv_ab",v);}catch(e){}splitTopics();renderAll();}},l))),
+      h("div",{class:"ab-seg",role:"tablist"},[["trip","✈️ פרטי"],["work","💼 עבודה"]].map(([v,l])=>h("button",{type:"button",role:"tab","aria-selected":abTab===v?"true":"false",class:abTab===v?"on":"",onclick:ev=>{if(abTab===v)return;segPin(ev,".tz-ab-z>.ab-seg",()=>{abTab=v;try{localStorage.setItem("sq_tv_ab",v);}catch(e){}splitTopics();renderAll();});}},l))),
       ...(abTab==="work"?workTrips(true):[
       // (1) flights booked
       hd("✈️ נסיעות מוזמנות · הטיסות הוזמנו",nB),
