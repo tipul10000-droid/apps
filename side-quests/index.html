@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.47";window.SQ_BUILD_AT="22.11.2026 12:55";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.48";window.SQ_BUILD_AT="22.11.2026 12:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1131,6 +1131,35 @@ details.tv-wkc:not([open]){gap:0}
 .tv-wkc .op{justify-self:start;font:inherit;font-size:12.5px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0}
 .ws h3{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ws h3 a{font-size:12.5px;font-weight:700;color:var(--qlead);text-decoration:none}
+/* 25.48 rental car: newest-car reminder + companies ranking + pop-up */
+.cr-card{border:1px solid var(--line);border-radius:14px;background:var(--surface);margin:0 0 10px;overflow:hidden}
+.wf-b .cr-card{margin:8px 0}
+.cr-card>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer}.cr-card>summary::-webkit-details-marker{display:none}
+.cr-i{font-size:20px;flex:none}.cr-t{flex:1;min-width:0;display:grid;gap:2px}.cr-t b{font-size:14.5px;color:var(--ink)}.cr-t small{font-size:12px;color:var(--muted)}
+.cr-card[open]>summary .wf-ch{transform:rotate(-90deg)}
+.cr-bb{padding:0 12px 12px;display:grid;gap:10px}
+.cr-l{margin:0;padding-inline-start:18px;display:grid;gap:4px;font-size:13.5px;color:var(--ink)}
+.cr-ask{display:grid;gap:4px}.cr-ask small{font-size:11.5px;color:var(--muted)}.cr-ask .wf-cp{max-width:100%;border-radius:14px;padding:8px 12px;align-items:flex-start}.cr-ask .wf-cp .wf-cpv{white-space:normal;text-align:start;unicode-bidi:plaintext;letter-spacing:0;font-weight:600;font-size:13px;line-height:1.45}
+.cr-pick{display:flex;gap:8px;align-items:flex-start;padding:9px 10px;border-radius:12px;background:var(--sunk);border:1px solid var(--line)}.cr-pick div{display:grid;gap:2px}.cr-pick b{font-size:13.5px;color:var(--ink)}.cr-pick small{font-size:12px;color:var(--muted)}
+.cr-w{margin:0;font-size:12.5px;color:var(--muted)}
+.cr-ap{border:1px solid var(--line);border-radius:12px;background:var(--sunk)}
+.cr-ap>summary{list-style:none;cursor:pointer;padding:10px 11px;display:grid;gap:2px}.cr-ap>summary::-webkit-details-marker{display:none}.cr-ap>summary b{font-size:14px;color:var(--ink)}.cr-ap>summary small{font-size:12.5px;color:var(--muted)}
+.cr-rows{list-style:none;margin:0;padding:0 8px 8px;display:grid;gap:6px}
+.cr-r{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:grid;gap:4px}
+.cr-r.g1{border-color:#D4A017;box-shadow:inset 3px 0 0 #D4A017}.cr-r.g2{border-color:#9AA4AE;box-shadow:inset 3px 0 0 #9AA4AE}.cr-r.bad{opacity:.85}
+.cr-rh{display:flex;align-items:center;gap:8px}.cr-rh b{flex:1;font-size:14px;color:var(--ink)}.cr-n{min-width:22px;text-align:center}
+.cr-tot{font-weight:800;font-size:14px;padding:2px 8px;border-radius:999px;background:var(--sunk);color:var(--ink)}
+.cr-wh{font-size:12px;color:var(--muted)}
+.cr-kv{display:grid;grid-template-columns:auto 1fr;gap:8px;font-size:12.5px;align-items:baseline}.cr-kv span{font-weight:700;color:var(--ink);white-space:nowrap}.cr-kv small{color:var(--muted)}
+.cr-tip{font-size:12.5px;color:var(--ink)}
+.cr-own{display:grid;gap:6px;padding:9px 10px;border-radius:12px;border:1px dashed var(--line)}.cr-own>b{font-size:13px;color:var(--ink)}.cr-o small{font-size:11.5px;color:var(--muted)}.cr-o div{font-size:13px;color:var(--ink)}
+.cr-src summary{cursor:pointer;font-size:12.5px;color:var(--muted)}.cr-src a{display:block;font-size:12px;padding:3px 0;overflow-wrap:anywhere}
+.cr-at{font-size:11.5px;color:var(--muted)}
+.cr-pop{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px}
+.cr-pb{width:min(440px,100%);max-height:90vh;overflow:auto;background:var(--surface);color:var(--ink);border-radius:18px;padding:16px;display:grid;gap:10px;border:1px solid var(--line);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.cr-pe{font-size:12.5px;font-weight:700;color:var(--muted)}.cr-ph{font-size:18px}.cr-pb p{margin:0;font-size:13.5px;color:var(--muted)}
+.cr-pa{display:flex;gap:8px;flex-wrap:wrap}.cr-pa button{flex:1;min-width:130px;font:inherit;font-weight:800;font-size:14px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--sunk);color:var(--ink);cursor:pointer}
+.cr-pa button.go{background:#0E6E78;border-color:#0E6E78;color:#fff}
 /* 25.47 abroad mode bar + stop focus ticket + bank v2 */
 #abBar.ab-bar{display:flex;align-items:center;gap:8px;margin:0 0 12px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#0E6E78,#14919B);color:#fff}
 #abBar.ab-bar.off{background:var(--sunk);color:var(--ink);border:1px solid var(--line)}
@@ -5400,6 +5429,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
             H.wa?h("div",{class:"wf-kv"},h("span",null,"וואטסאפ"),h("div",null,h("a",{href:"https://wa.me/"+String(H.wa).replace(/\D/g,""),target:"_blank",rel:"noopener"},H.wa))):null,
             ...(Array.isArray(H.notes)?H.notes:[]).map(n=>h("div",{class:"wf-note"},n))]):null,
           wfRetTop(d,C)?null:wfRet(d,legs,C),
+          (()=>{const ap=(C.pick&&C.pick.code)||(legs[0]&&legs[0].to&&legs[0].to.code)||"";const pk=wfMs(C.pick&&C.pick.at),ar=wfMs(legs[0]&&legs[0].arr);return crRule({k:d.id,code:ap,open:(ar&&now>ar-3600000&&now<(pk||ar)+3600000)});})(),
           C.supplier?wfSec(d.id+":car","🚗","רכב: "+C.supplier,[C.model,C.pick&&C.pick.at?"איסוף "+wfDay(C.pick.at)+" "+wfHM(C.pick.at):""].filter(Boolean).join(" · "),[
             C.pick?h("div",{class:"wf-kv"},h("span",null,"איסוף"),h("div",null,wfDay(C.pick.at)+" "+wfHM(C.pick.at)+" · "+(C.pick.loc||""),C.pick.addr?h("small",null,C.pick.addr):null)):null,
             C.drop?h("div",{class:"wf-kv"},h("span",null,"החזרה"),h("div",null,wfDay(C.drop.at)+" "+wfHM(C.drop.at)+" · "+(C.drop.loc||""))):null,
@@ -5413,6 +5443,77 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
           (()=>{const Q=(Array.isArray(d.questions)?d.questions:[]).filter(q=>q&&q.id&&!(d.ans||{})[q.id]);return Q.length?wfSec(d.id+":q","❓","שאלות אליך",Q.length+" לבחירה",Q.map(q=>h("div",{class:"wf-q"},h("b",null,q.q),h("div",{class:"wf-qo"},...(q.options||[]).map(op=>h("button",{type:"button",onclick:e=>{e.stopPropagation();e.currentTarget.classList.add("on");wfAnswer(d,q,String(op));}},String(op))))))):null;})(),
           safeUrl(d.mail_url||"")?h("a",{class:"wf-mail",href:safeUrl(d.mail_url),target:"_blank",rel:"noopener"},"המייל המקורי ›"):null));
       if(wfOpen[d.id])det.open=true;det.addEventListener("toggle",()=>{wfOpen[d.id]=det.open;});return det;});}
+  // 25.48 (Oren 22.11.2026, driving an old Drivalia Sportage out of FCO): rental cars abroad.
+  //  (1) standing reminder for EVERY trip abroad with a car: at the desk ask for the NEWEST car (model year), any make or model.
+  //      A small info ticket (work flight ticket, abroad tabs) + a one-time pop-up on landing / at car pickup.
+  //  (2) work trips: rental companies per airport ranked 80% fleet newness + 20% airport waiting time (price and service ignored).
+  //      #1 = what to ask the travel agency by default, #2 = plan B. Shown in the work tab and on every work flight ticket to that airport.
+  //  Data: settings/car_rental {rule{t,s,lines[],ask}, weights{n,w}, agent, airports[{code,he,flag,first,second,rows[{co,where,n,ne,w,we,tot,tip,bad}]}], own[{at,ap,co,t}], sources[{l,u}], at}
+  let carRent=null;
+  const CR_DEF={t:"בדלפק: לבקש את הרכב הכי חדש",s:"לא משנה הסוכנות, היצרן או הדגם. רק שנת הייצור.",ask:"Which is the newest car you have in my category? I prefer the latest model year, any make.",
+    lines:["לשאול בדלפק, לפני החתימה: מה הרכב הכי חדש שיש בקטגוריה","לבדוק את שנת הייצור (מדבקה בשמשה / מסמכי הרכב / ק״מ במד)","סימנים לרכב חדש: CarPlay אלחוטי, התנעה בכפתור","רכב ישן? להחליף מיד בדלפק, לא אחרי שיצאת מהחניון"]};
+  function crR(){return Object.assign({},CR_DEF,(carRent&&carRent.rule)||{});}
+  function crAp(code){code=String(code||"").toUpperCase();return code&&carRent&&Array.isArray(carRent.airports)?carRent.airports.find(a=>a&&a.code===code)||null:null;}
+  function crRows(a){return (Array.isArray(a&&a.rows)?a.rows:[]).slice().sort((x,y)=>(+y.tot||0)-(+x.tot||0));}
+  function crTop(a){const R=crRows(a);return [a.first||(R[0]&&R[0].co)||"",a.second||(R[1]&&R[1].co)||""];}
+  function crPickLine(code){const a=crAp(code);if(!a)return null;const [f,s]=crTop(a);if(!f)return null;
+    return h("div",{class:"cr-pick"},h("span",{"aria-hidden":"true"},"🏁"),h("div",null,h("b",null,"בהזמנה מהסוכנות לבקש: "+f),h("small",null,(s?"Plan B: "+s+" · ":"")+"הכי חדשים ב"+(a.he||a.code))));}
+  function crRule(o){o=o||{};const R=crR();
+    const d=h("details",{class:"cr-card","data-sq-item":"car-newest"},h("summary",null,h("span",{class:"cr-i","aria-hidden":"true"},"🆕"),h("span",{class:"cr-t"},h("b",null,R.t),h("small",null,R.s)),h("span",{class:"wf-ch","aria-hidden":"true"},"‹")),
+      h("div",{class:"cr-bb"},h("ul",{class:"cr-l"},...(R.lines||[]).map(x=>h("li",null,x))),
+        R.ask?h("div",{class:"cr-ask"},h("small",null,"לומר בדלפק"),wfCopy(R.ask,"המשפט")):null,
+        o.code?crPickLine(o.code):null));
+    const k="cr:rule:"+(o.k||"");if(o.open||wfOpen[k])d.open=true;d.addEventListener("toggle",()=>{wfOpen[k]=d.open;});return d;}
+  function crBoard(){if(!carRent||!Array.isArray(carRent.airports)||!carRent.airports.length)return null;const W=carRent.weights||{n:80,w:20};
+    const row=(r,i,f,s)=>h("li",{class:"cr-r"+(r.co===f?" g1":r.co===s?" g2":"")+(r.bad?" bad":"")},
+      h("div",{class:"cr-rh"},h("span",{class:"cr-n"},r.co===f?"🥇":r.co===s?"🥈":r.bad?"⚠️":String(i+1)),h("b",null,r.co),h("span",{class:"cr-tot"},(+r.tot||0).toFixed(1))),
+      r.where?h("small",{class:"cr-wh"},r.where):null,
+      h("div",{class:"cr-kv"},h("span",null,"🆕 צי "+r.n+"/10"),h("small",null,r.ne||"")),
+      h("div",{class:"cr-kv"},h("span",null,"⏱ המתנה "+r.w+"/10"),h("small",null,r.we||"")),
+      r.tip?h("div",{class:"cr-tip"},"💡 "+r.tip):null);
+    const d=h("details",{class:"cr-card","data-sq-item":"car-rental-rank"},
+      h("summary",null,h("span",{class:"cr-i","aria-hidden":"true"},"🚗"),h("span",{class:"cr-t"},h("b",null,"חברות השכרה: מי עם הצי הכי חדש"),
+        h("small",null,carRent.airports.map(a=>a.code+": "+crTop(a)[0]).join(" · "))),h("span",{class:"wf-ch","aria-hidden":"true"},"‹")),
+      h("div",{class:"cr-bb"},
+        h("p",{class:"cr-w"},"ציון = "+W.n+"% כמה הצי חדש + "+W.w+"% זמן המתנה בשדה. מחיר ושירות לא נספרים (נסיעות עבודה). 🥇 = לבקש מהסוכנות, 🥈 = Plan B."),
+        carRent.note?h("div",{class:"wf-note"},carRent.note):null,
+        carRent.agent?h("div",{class:"cr-ask"},h("small",null,"מה לכתוב לסוכנות"),wfCopy(carRent.agent,"הבקשה")):null,
+        ...carRent.airports.map(a=>{const [f,s]=crTop(a);const k="cr:ap:"+a.code;
+          const ad=h("details",{class:"cr-ap"},h("summary",null,h("b",null,(a.flag?a.flag+" ":"")+(a.he||a.code)+" · "+a.code),h("small",null,"🥇 "+f+(s?" · 🥈 "+s:""))),
+            h("ol",{class:"cr-rows"},...crRows(a).map((r,i)=>row(r,i,f,s))),a.note?h("div",{class:"wf-note"},a.note):null);
+          if(wfOpen[k])ad.open=true;ad.addEventListener("toggle",()=>{wfOpen[k]=ad.open;});return ad;}),
+        Array.isArray(carRent.own)&&carRent.own.length?h("div",{class:"cr-own"},h("b",null,"📝 מהניסיון שלך"),...carRent.own.map(x=>h("div",{class:"cr-o"},h("small",null,[x.at,x.ap,x.co].filter(Boolean).join(" · ")),h("div",null,x.t)))):null,
+        Array.isArray(carRent.sources)&&carRent.sources.length?h("details",{class:"cr-src"},h("summary",null,"מקורות ("+carRent.sources.length+")"),...carRent.sources.filter(x=>x&&safeUrl(x.u||"")).map(x=>h("a",{href:safeUrl(x.u),target:"_blank",rel:"noopener"},x.l||x.u))):null,
+        carRent.at?h("small",{class:"cr-at"},"עודכן "+carRent.at):null));
+    if(wfOpen["cr:board"])d.open=true;d.addEventListener("toggle",()=>{wfOpen["cr:board"]=d.open;});return d;}
+  // the moment that matters: landed abroad (until the car is picked up) or 90 min before pickup .. 1h after. Once per trip per device,
+  // unless he taps "תזכיר לי בדלפק" on the landing pop-up (then the pickup one still comes).
+  function crSeen(){try{return JSON.parse(localStorage.getItem("sq_crpop")||"{}")||{};}catch(e){return {};}}
+  function crMark(keys){const s=crSeen();keys.forEach(k=>{s[k]=Date.now();});try{localStorage.setItem("sq_crpop",JSON.stringify(s));}catch(e){}}
+  function crWhen(){const now=Date.now(),M=60000;let work=false;
+    for(const {d,legs} of wfLive()){const C=d.car||{};const pk=wfMs(C.pick&&C.pick.at);const ap=(C.pick&&C.pick.code)||(legs[0]&&legs[0].to&&legs[0].to.code)||"";
+      if(legs.some(l=>{const a=wfMs(l.dep),b=wfMs(l.arr)||a;return a&&now>a-6*3600000&&now<b+12*3600000;}))work=true;
+      if(C.supplier&&pk&&now>pk-90*M&&now<pk+60*M)return {k:"pick:"+d.id,trip:"trip:"+d.id,code:ap,sup:C.supplier,why:"איסוף הרכב"};
+      for(const l of legs){const ar=wfMs(l.arr);if(!ar||!l.to||l.to.code==="TLV")continue;
+        if(now>ar-15*M&&now<ar+3*3600000&&!(pk&&pk<now))return {k:"land:"+d.id+":"+(l.no||ar),trip:"trip:"+d.id,code:l.to.code,sup:C.supplier||"",why:"נחתת"};}}
+    if(work)return null;
+    let tr=null;try{tr=tripToday();}catch(e){}
+    if(tr&&tr.from&&tr.from===ilDate()&&new Date().getHours()>=5)return {k:"day:"+tr.from,trip:"day:"+tr.from,why:"יום הנחיתה",fam:true};
+    return null;}
+  function crPop(){if(document.querySelector(".cr-pop"))return;const w=crWhen();if(!w)return;const s=crSeen();if(s[w.k]||s[w.trip])return;
+    const R=crR(),close=keys=>{crMark(keys);o.remove();};
+    const o=h("div",{class:"cr-pop",role:"dialog","aria-modal":"true","aria-label":R.t,onclick:e=>{if(e.target===o)close([w.k]);}},
+      h("div",{class:"cr-pb"},
+        h("div",{class:"cr-pe"},"🚗 "+w.why+(w.sup?" · "+w.sup:"")+(w.fam?" · אם לוקחים רכב":"")),
+        h("b",{class:"cr-ph"},"🆕 "+R.t),h("p",null,R.s),
+        h("ul",{class:"cr-l"},...(R.lines||[]).map(x=>h("li",null,x))),
+        R.ask?h("div",{class:"cr-ask"},h("small",null,"לומר בדלפק"),wfCopy(R.ask,"המשפט")):null,
+        w.code?crPickLine(w.code):null,
+        h("div",{class:"cr-pa"},h("button",{type:"button",class:"go",onclick:()=>close([w.k,w.trip])},"✓ אבקש את הכי חדש"),
+          w.k.startsWith("land:")?h("button",{type:"button",onclick:()=>close([w.k])},"⏰ תזכיר לי בדלפק"):h("button",{type:"button",onclick:()=>close([w.k])},"סגור"))));
+    document.body.append(o);}
+  setInterval(()=>{try{if(!document.hidden)crPop();}catch(e){}},60000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{try{crPop();}catch(e){}},1500);});
   let wsDocs=[];const wsUI={};const wsCalc={};
   const WS_AX={west:"🌊 חוף",mid:"🏞️ אמצע",east:"⛰️ מזרח"};
   function wsFmt(m){m=Math.round(m);if(m<60)return m+" דק׳";return Math.floor(m/60)+":"+String(m%60).padStart(2,"0")+" ש׳";}
@@ -5552,8 +5653,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   //  25.47: a topic that a route doc points to (rt.topic) is merged into that route's bank, not shown as a second ticket.
   function workTrips(){const R=wsDocs.filter(d=>d.type==="route"&&!d._deleted&&d.a&&d.b);const RT=R.map(r=>r.topic).filter(Boolean);
     const L=allTopics.filter(t=>!t._deleted&&t.area==="נסיעות עבודה"&&!["archived","promoted"].includes(t.status)&&!RT.includes(t.id)&&!(R.length&&/^work-trip-rome-viterbo/.test(t.id))).sort((a,b)=>(a.status==="done")-(b.status==="done")||(b.priority==="high")-(a.priority==="high"));
-    if(!L.length&&!R.length)return [h("p",{class:"ws-note"},"עוד אין כאן כלום. כל נסיעת עבודה חדשה תקבל כאן כרטיס.")];
-    return [...R.map(wsFocus).filter(Boolean),h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank),L.length?h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
+    if(!L.length&&!R.length)return [h("div",{class:"tv-sec-h"},"🚗 רכב שכור"),crRule({k:"work"}),crBoard(),h("p",{class:"ws-note"},"עוד אין כאן כלום. כל נסיעת עבודה חדשה תקבל כאן כרטיס.")];
+    const CR=[h("div",{class:"tv-sec-h"},"🚗 רכב שכור"),crRule({k:"work"}),crBoard()];
+    return [...R.map(wsFocus).filter(Boolean),...CR,h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank),L.length?h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
       return h("details",{class:"tv-wkc"},h("summary",null,h("b",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("small",null,t.stand):null),
         t.summary?h("details",{class:"tv-fold"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
         ls.length?h("div",{class:"lk"},ls.map((l,i)=>h("a",{class:/⭐/.test(l.label||"")?"main":"",href:safeUrl(l.url),target:"_blank",rel:"noopener"},"📍 "+(l.label||"מפה")))):null,
@@ -5636,6 +5738,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       // (1) flights booked
       hd("✈️ נסיעות מוזמנות · הטיסות הוזמנו",nB),
       booked.length?h("div",{class:"tp-minis"},booked):null,onCal.length?h("div",{class:"tv-trips"},onCal.map(x=>x.el)):null,
+      nB?crRule({k:"trip"}):null,
       nB?null:h("p",{class:"tv-empty"},"אין כרגע"),
       // (2) planned, no flights yet + Holiday Optimizer
       hd("🗓️ נסיעות בתכנון · עוד בלי טיסות",nP),
@@ -7245,7 +7348,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
     db.collection("settings").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="quest_logos");const L=d?d.data():{};
       const rq=s.docs.find(x=>x.id==="sync_request"),ss=s.docs.find(x=>x.id==="sync_state");syncState={req:rq?rq.data():null,state:ss?ss.data():null};const gs=s.docs.find(x=>x.id==="gmail_scan");gmScan=gs?gs.data():null;fillGm();const wa=s.docs.find(x=>x.id==="whatsapp");waConn=wa?wa.data():null;const cp=s.docs.find(x=>x.id==="cashflow_ping");cfPing=cp?cp.data():null;const cr=s.docs.find(x=>x.id==="cashflow_refresh");cfReq=cr?cr.data():null;renderConn();{const ur=s.docs.find(x=>x.id==="upd_read");if(ur)rdLoad(ur.data());}const ni=s.docs.find(x=>x.id==="new_items"),nd=ni?ni.data():null;newItems=nd&&Array.isArray(nd.items)?nd.items:[];nwRender();try{syncItemNew();updDzBtn();renderDash();renderCtx();}catch(e){}
       const pc=s.docs.find(x=>x.id==="places");calPlaces=pc?pc.data():{};const ll=s.docs.find(x=>x.id==="loc_last");calLoc=ll?ll.data():null;
-      const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const thx=s.docs.find(x=>x.id==="travel_history");travelHist=thx?thx.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};const qi=s.docs.find(x=>x.id==="quest_info");const qiN=qi?qi.data():{};if(JSON.stringify(qiN)!==JSON.stringify(questInfo)){questInfo=qiN;try{renderMain();}catch(e){}}renderTravel();renderFun();renderDash();
+      const th=s.docs.find(x=>x.id==="travel_hub");travelHub=th?th.data():null;const thx=s.docs.find(x=>x.id==="travel_history");travelHist=thx?thx.data():null;const ch=s.docs.find(x=>x.id==="chats");secChats=ch?ch.data():{};const crd=s.docs.find(x=>x.id==="car_rental");carRent=crd?crd.data():null;setTimeout(()=>{try{crPop();}catch(e){}},1500);const qi=s.docs.find(x=>x.id==="quest_info");const qiN=qi?qi.data():{};if(JSON.stringify(qiN)!==JSON.stringify(questInfo)){questInfo=qiN;try{renderMain();}catch(e){}}renderTravel();renderFun();renderDash();
       for(const q of ["army","work"]){const img=$("logo-"+q),u=String(L[q]||"");const ok=u.startsWith("data:image/")||!!safeUrl(u);img.hidden=!ok;if(ok&&img.src!==u)img.src=u;}},()=>{});
     // 18.7: the work calendar shapes the automatic windows (never shown here; the details page is in settings)
     db.collection("work_calendar").onSnapshot(s=>{const ev=[];let pr={};s.docs.forEach(d=>{const v=d.data();if(d.id==="_profile")pr=v;else if(d.id==="_meta")wcMeta=v;else ev.push({...v,_id:d.id});});renderConn();
