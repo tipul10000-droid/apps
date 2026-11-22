@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.44";window.SQ_BUILD_AT="22.11.2026 10:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.45";window.SQ_BUILD_AT="22.11.2026 11:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2684,7 +2684,7 @@ details.wmore>.glist{border:0;border-top:1px solid var(--line);border-radius:0;a
 .dz-grp{margin-top:18px}
 html.desk .hero .dz-grid{display:flex!important}
 /* 25.0: Fun zones closed to the title row; "מה חדש" as one line; the events card without its numbers */
-.fcard.zc:not(.zopen)>:not(.zhead):not(.nfapp):not(.lore-tk){display:none!important}
+.fcard.zc:not(.zopen)>:not(.zhead):not(.nfapp):not(.zapp){display:none!important}
 .lore-tk{position:relative;display:block;width:100%;aspect-ratio:3/1;margin:0 0 12px;padding:0;border:0;border-radius:14px;overflow:hidden;background:#2a1608;color:#F6E7CF;font:inherit;text-align:start;cursor:pointer;box-shadow:0 0 0 1.5px rgba(240,138,44,.55),0 6px 18px rgba(0,0,0,.4);-webkit-tap-highlight-color:transparent;transition:filter .12s}
 .lore-tk:active{filter:brightness(.85)}
 .lore-tk .lt-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
@@ -2697,7 +2697,39 @@ html.desk .hero .dz-grid{display:flex!important}
 .fcard.zc>.zhead{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .fcard.zc .zc-c{margin-inline-start:6px;font-size:22px;opacity:.6;transition:transform .2s}
 .fcard.zc.zopen .zc-c{transform:rotate(-90deg)}
-.fcard.zc.zopen>:not(.zhead){animation:moreIn .22s ease-out}
+.fcard.zc.zopen>:not(.zhead):not(.nfapp):not(.zapp){animation:moreIn .22s ease-out}
+/* ===== 25.45 (Oren 22.11.2026): one look for every Fun zone. Same dark card, same title row, accent per zone:
+   series red, movies yellow, music green, concerts pink, games purple. */
+.fzgrid{grid-template-columns:1fr}
+.fzgrid>.fcard.nf,.fzgrid>.fcard.mv,.fzgrid>.fcard.sp,.fzgrid>.fcard.ev,.fzgrid>.fcard.gm{background:#141416;border:1px solid #26262C;border-top:4px solid var(--fc);box-shadow:none;color:#F2F2F2;--line:#2C2C34;--muted:#A7A7A7;--bg:#1A1A1F;--surface:#202026;--ink:#F2F2F2;gap:12px;padding:12px 14px;position:relative;overflow:visible}
+.fcard.ev{--fc:#FF3D9A}
+.fcard.gm{--fc:#A970FF}
+.fzgrid .zhead{min-height:44px;position:relative}
+.fzgrid .zhead .fc-h h3{font-family:var(--f-display);font-size:21px;font-weight:800;color:#F2F2F2}
+.fzgrid .zhead .zlogo{height:34px;box-sizing:border-box}
+.fzgrid .zhead .zc-c{color:var(--fc);opacity:.9}
+.fzgrid .nf-logo{width:28px;height:34px;border-radius:6px}.fzgrid .nf-logo svg{width:15px;height:28px}
+.fzgrid .imdb{height:28px!important;align-self:center}
+.fzgrid .sp-logo{font-size:19px}.fzgrid .sp-logo svg{width:28px;height:28px}
+.fzgrid .steam{height:34px;border-color:#4A3A6E;background:#0E0B16}
+.fzgrid .zhead .fdnw{top:-4px;inset-inline-start:-6px}
+.ev-ic{flex:none;width:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:color-mix(in srgb,var(--fc) 22%,transparent);color:var(--fc);font-size:18px}
+.ev-ic svg{width:19px;height:19px}
+.zrow{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;text-align:start;cursor:pointer}
+.zrow:active{background:var(--surface)}
+.zr-t{flex:1;min-width:0;display:flex;flex-direction:column}.zr-t b{font-size:15.5px}.zr-t small{font-size:12.5px;color:var(--muted)}
+.zr-go{flex:none;font-size:13px;font-weight:800;border-radius:999px;padding:5px 12px;background:var(--fc);color:#fff}
+.fcard.ev .fdk{padding:0}.fcard.ev .fdk>div{background:var(--bg);border:1px solid var(--line)}
+.fcard.ev .fdwhy{padding:0}
+.zapp{position:relative;display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:3/1;margin:0 0 14px;border-radius:14px;background:radial-gradient(90% 120% at 50% 0%,#2A2410,#0E0E12 70%);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--fc) 60%,transparent),0 6px 18px rgba(0,0,0,.45);text-decoration:none;-webkit-tap-highlight-color:transparent;transition:filter .12s}
+.zapp:active{filter:brightness(.82)}
+.zapp img{display:block;width:62%;max-width:300px;height:auto;pointer-events:none}
+.fcard.nf .nfapp.img{margin:0 0 14px}
+.zgo{border-color:var(--fc)!important}
+.fcard.mv .lore-tk{margin:0}
+.fcard.gm .fbtn{background:#A970FF;color:#fff}.fcard.gm .fbtn.ghost{background:transparent;color:#F2F2F2;border-color:#3A3A44}
+.fcard.gm .cont,.fcard.gm .opt.chat{border-color:#3A3A44}
+.fcard.gm .game .gnext::before{color:#C9A7FF}
 .fcard.fdash .fdk,.fcard.fdash .fdwhy{display:none}
 #qNew .qn-line{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;font-size:16.5px;cursor:pointer;text-align:start}
 #qNew .qn-line b{flex:1}
@@ -5010,13 +5042,13 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const sec=(n,title,...kids)=>h("section",{class:"mv-sec"},h("h4",null,h("span",{class:"n"},n),title),...kids);
     const app=fh&&safeUrl(fh.app_url||""),cl=fh&&safeUrl(fh.claude_url||"");
     const mvPages=mv?linksOf(mv).filter(l=>linkType(l)!=="chat"):[];
+    const fhGo=h("span",{class:"nfgo zgo","aria-hidden":"true"});fhGo.innerHTML=NF_HAND+"<span>פתיחה</span>";
     return h("article",{class:"fcard mv"},
+      h("div",{class:"mv-head zhead"},lore.some(dashFresh)?h("i",{class:"fdnw","aria-hidden":"true"}):null,h("div",{class:"fc-h"},h("h3",null,"סרטים")),h("a",{class:"imdb zlogo",href:"https://www.imdb.com/",target:"_blank",rel:"noopener","aria-label":"IMDb"},"IMDb")),
+      fh?h("a",{class:"zapp fhapp",href:app||cl||"#",target:"_blank",rel:"noopener","aria-label":"פתח את Frame Horizon"},h("img",{src:"fh-logo.png",alt:"Frame Horizon",width:"560",height:"178"}),fhGo):null,
       ...lore.map(loreTicket),
-      h("div",{class:"mv-head zhead"},h("div",{class:"fc-h"},h("h3",null,"סרטים")),h("a",{class:"imdb zlogo",href:"https://www.imdb.com/",target:"_blank",rel:"noopener","aria-label":"IMDb"},"IMDb")),
       fh?sec(1,"FRAME HORIZON",
-        h("a",{class:"fh-logo",href:app||cl||"#",target:"_blank",rel:"noopener","aria-label":"פתח את Frame Horizon"},h("img",{src:"fh-logo.png",alt:"Frame Horizon",width:"560",height:"178"})),
-        h("p",null,"ערבי סרטים שהופכים למסע"),
-        h("div",{class:"fc-links"},app?h("a",{class:"fbtn",href:app,target:"_blank",rel:"noopener"},"פתח את האפליקציה"):null,null),secChat(secUrl("frame_horizon",cl),"Frame Horizon","שיחה על Frame Horizon")):null,
+        h("p",null,"ערבי סרטים שהופכים למסע"),secChat(secUrl("frame_horizon",cl),"Frame Horizon","שיחה על Frame Horizon")):null,
       mv?sec(2,"עוד סרטים לראות",
         h("b",{class:"t"},"הרשימה שלי מחוץ ל-Frame Horizon"),mv.stand?h("p",null,mv.stand):null,
         mvPages.length?h("div",{class:"fc-links"},mvPages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
@@ -5031,8 +5063,8 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     // 21.5 (Oren 17.11): the "מה בנטפליקס?" banner sits above the Netflix ribbon and reads as a button (hand + "פתיחה" pill, press state)
     const go=h("span",{class:"nfgo","aria-hidden":"true"});go.innerHTML=NF_HAND+"<span>פתיחה</span>";
     return h("article",{class:"fcard nf"},
-      h("button",{class:"nfapp img",type:"button","aria-label":"מה בנטפליקס? סרטים וסדרות בנטפליקס ישראל",onclick:()=>openDash("netflix")},h("img",{src:"img/nf-banner.webp",alt:"",width:"780",height:"260",loading:"lazy"}),go),
       h("div",{class:"nf-head zhead"},h("div",{class:"fc-h"},h("h3",null,"סדרות")),lg),
+      h("button",{class:"nfapp img",type:"button","aria-label":"מה בנטפליקס? סרטים וסדרות בנטפליקס ישראל",onclick:()=>openDash("netflix")},h("img",{src:"img/nf-banner.webp",alt:"",width:"780",height:"260",loading:"lazy"}),go),
       ...seriesHub(),
       secChat(secUrl("series",...funTopics.filter(t=>t.zone==="series").map(chatOf)),"הסדרות","הוסף סדרה · שאל · תקן"));
   }
@@ -5045,17 +5077,15 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
       secChat(secUrl("games",...games.map(chatOf)),"המשחקים","הוסף משחק · שאל · תקן"));
   }
   function funDashCard(d){const fr=dashFresh(d),K=Array.isArray(d.kpis)?d.kpis.slice(0,3):[];
-    return h("article",{class:"fcard fdash","data-dash":d.id,style:"--c1:"+(d.c1||"#1B0B33")+";--c2:"+(d.c2||"#4A1A7A")},
-      h("button",{class:"fdgo",type:"button","aria-label":"פתיחת "+(d.title||"הדשבורד"),onclick:()=>openDash(d.id)},
-        fr?h("i",{class:"fdnw","aria-hidden":"true"}):null,
-        h("span",{class:"fdi","aria-hidden":"true"},d.icon||"🎤"),
-        h("span",{class:"fdb"},h("b",null,d.title||d.short||d.id),d.note?h("small",null,d.note):null),
-        h("span",{class:"fdp"},"פתיחה ›")),
+    return h("article",{class:"fcard ev","data-dash":d.id},
+      h("div",{class:"zhead"},fr?h("i",{class:"fdnw","aria-hidden":"true"}):null,h("div",{class:"fc-h"},h("h3",null,d.short||d.title||d.id)),h("span",{class:"zlogo ev-ic","aria-hidden":"true"},d.icon||"🎤")),
+      h("button",{class:"zrow",type:"button","aria-label":"פתיחת "+(d.title||"הדשבורד"),onclick:()=>openDash(d.id)},
+        h("span",{class:"zr-t"},h("b",null,d.title||d.short||d.id),d.note?h("small",null,d.note):null),h("span",{class:"zr-go"},"פתיחה ›")),
       K.length?h("div",{class:"fdk"},K.map(k=>h("div",null,h("b",null,String(k.v)),h("span",null,String(k.l))))):null,
       fr?h("div",{class:"fdwhy"},"🆕 "+dashWhy(d)):null);}
   function renderFun(){
     const live=funTopics.filter(t=>t.status!=="archived");
-    const list=live.filter(t=>t.status!=="done"&&!isMovieZone(t)).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
+    const list=live.filter(t=>(t.status!=="done"||t.zone==="spotify")&&!isMovieZone(t)).sort((a,b)=>(a.fun_order||99)-(b.fun_order||99));
     // 21.5 (Oren 17.11): fixed order: Netflix (banner + series), movies, music, games, then any other fun card
     const sp=list.filter(t=>t.zone==="spotify"),rest=list.filter(t=>t.zone!=="spotify");
     const cards=[],tail=rest.map((t,i)=>funCard(t,i));
@@ -5065,11 +5095,12 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const lore=dashes.filter(d=>!d._deleted&&!d.archived&&d.quest==="fun"&&d.zone==="movies").sort((a,b)=>(a.order||99)-(b.order||99));
     if(mz.some(t=>t.zone==="movies")||fh||lore.length)cards.push(moviesCard(mz,fh,lore));
     cards.push(...sp.map(spotifyCard));
+    // 25.45 (Oren 22.11.2026): fixed order series, movies, music, concerts, games
+    const fd=dashes.filter(d=>!d._deleted&&!d.archived&&d.quest==="fun"&&d.zone!=="movies").sort((a,b)=>(a.order||99)-(b.order||99));
+    cards.push(...fd.map(funDashCard));
     const games=mz.filter(t=>t.zone==="games").sort((a,b)=>(a.status==="done")-(b.status==="done")||(a.fun_order||99)-(b.fun_order||99));
     if(games.length)cards.push(gamesCard(games));
     // 24.9 (Oren 19.11.2026): Fun dashboards (quest "fun", first: events = הופעות ואירועים) as a banner card that opens the dashboard
-    const fd=dashes.filter(d=>!d._deleted&&!d.archived&&d.quest==="fun"&&d.zone!=="movies").sort((a,b)=>(a.order||99)-(b.order||99));
-    cards.splice(1,0,...fd.map(funDashCard));
     cards.push(...tail);
     $("funGrid").replaceChildren(...(cards.length?cards:[h("div",{class:"empty"},"עוד אין")]));
     calmZones($("funGrid"));
