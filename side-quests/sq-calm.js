@@ -53,17 +53,25 @@
   function isCalmable(sec){if(sec.classList.contains("calm-off"))return false;if(sec.closest(".hero,.sqtsk,.sqnws,dialog,.sheet,.ov,.modal"))return false;
     var f=sec.firstElementChild;return !!(f&&f.classList&&f.classList.contains("sh")&&f.querySelector("h2"));}
   function defOpen(sec,i,first){if(sec.classList.contains("calm-closed"))return false;
+    // 25.58 (Oren 22.11.2026, "beware of over-collapsing"): a section says what it is (data-role). The page's main content and
+    // things to do are open; reference and history stay a closed line. No role = the old rule (title words).
+    var role=sec.getAttribute("data-role")||"";if(role==="ref"||role==="hist")return false;if(role==="primary"||role==="act"||role==="now")return true;
     var t=txt(sec.querySelector(":scope>.sh h2"));if(URG.test(t))return true;
+    if(nCalm===1&&!subView())return true; // the only section of the page is the page: closing it is just one more tap
+    if(tiny(sec))return true;              // up to 3 short rows: show them, a drawer would hide less than its own title takes
     if(subView()&&first)return true; // inside one item he tapped into: its first block shows, the rest fold
     return false;}
   function countOf(sec){var c=sec.children[1];if(!c)return 0;if(c.children.length<2&&c.firstElementChild&&c.firstElementChild.children.length>=2)c=c.firstElementChild;
     var k=[].slice.call(c.children).filter(function(x){return x.offsetParent!==null||!sec.classList.contains("calm-open");});if(k.length<2)return 0;
     var sig=function(x){return x.tagName+"."+(x.className||"").toString().split(" ")[0];},s0=sig(k[0]),same=k.filter(function(x){return sig(x)===s0;}).length;
     return same>=k.length-1&&same>=2?same:0;}
+  var nCalm=0;
+  function tiny(sec){var kids=[].slice.call(sec.children).slice(1);if(!kids.length)return false;var tx=kids.map(function(k){return k.textContent||"";}).join(" ").replace(/\s+/g," ").trim();
+    if(!tx||tx.length>220)return false;if(sec.querySelector(":scope>:not(.sh) img,:scope>:not(.sh) canvas,:scope>:not(.sh) svg.chart,:scope>:not(.sh) table"))return false;return countOf(sec)<=3;}
   function setOpen(sec,on){sec.classList.toggle("calm-open",on);var sh=sec.firstElementChild;if(sh)sh.setAttribute("aria-expanded",on?"true":"false");}
   function apply(){
     css();document.documentElement.classList.add("calm-on");
-    var secs=[].slice.call(document.querySelectorAll("section")).filter(isCalmable),first=true;
+    var secs=[].slice.call(document.querySelectorAll("section")).filter(isCalmable),first=true;nCalm=secs.length;
     secs.forEach(function(sec,i){
       var sh=sec.firstElementChild,k=keyOf(sec);
       if(!sec.classList.contains("calm")){sec.classList.add("calm");sh.setAttribute("role","button");sh.tabIndex=0;

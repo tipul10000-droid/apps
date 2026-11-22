@@ -236,7 +236,7 @@ function renderWeek(){
     const ad=longs.map(e=>`<div class="allday">📌 ${esc(e.subject)}</div>`).join("");
     out.push(`<div class="day"><div class="dh"><b>${i===0?"היום":i===1?"מחר":"יום "+DOW[dw]}</b><span class="muted">${fmt(d,{day:"numeric",month:"numeric"})}</span><span class="mode ${mode.away?"away":""} ${i===0?"today":""}">${esc(mode.t)}</span></div>${ad}${rows}</div>`);
   }
-  return `<section><div class="sh"><h2>הימים הקרובים</h2><small>חלונות פנויים לפי שעות העבודה שלך</small></div>${out.join("")||'<div class="empty">אין זימונים</div>'}</section>`;
+  return `<section data-role="primary"><div class="sh"><h2>הימים הקרובים</h2><small>חלונות פנויים לפי שעות העבודה שלך</small></div>${out.join("")||'<div class="empty">אין זימונים</div>'}</section>`;
 }
 
 const NEED=[["must","חובה"],["high","מאוד כדאי"],["rec","מומלץ"],["opt","לא חובה"],["avoid","להימנע"]];
@@ -347,6 +347,6 @@ window.claude.use("db").then(d=>{db=d;if(!db)return;
 })();
 </script>
 <script src="sq-tel.js?v=3" defer></script>
-<script src="sq-calm.js?v=2"></script>
+<script src="sq-calm.js?v=3"></script>
 </body>
 </html>

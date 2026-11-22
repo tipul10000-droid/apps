@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.57";window.SQ_BUILD_AT="22.11.2026 18:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.58";window.SQ_BUILD_AT="22.11.2026 19:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1201,7 +1201,7 @@ details.tv-wkc:not([open]){gap:0}
 .wl-o{font-size:11.5px;font-weight:800;color:var(--muted)}.wl-o.on{color:#1B8A4A}.wl-o.soon{color:#B26A00}
 .wl-b{display:flex;flex:none;border:1px solid var(--line);border-radius:10px;overflow:hidden}.wl-b a{font-size:12.5px;font-weight:800;padding:8px 9px;text-decoration:none;color:var(--ink);background:var(--surface)}.wl-b a+a{border-inline-start:1px solid var(--line)}.wl-b a.nav{background:#14919B;color:#fff}
 .wl-sh{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:-4px}.wl-e{margin:0;font-size:12.5px;color:var(--muted)}.wl-src{font-size:11px;color:var(--muted)}
-.wl-hot{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.wl-hot small{font-size:12px;color:var(--muted)}
+.wl-hot{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.wl-fx1{display:block}.wl-fxc>summary{display:grid;gap:2px;list-style:none}.wl-fxc>summary::-webkit-details-marker{display:none}.wl-fxc>summary,.wl-ft>summary{font-weight:600;color:var(--muted);font-size:12.5px}.wl-hot small{font-size:12px;color:var(--muted)}
 .wl-hot button{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:5px 10px;background:var(--surface);color:var(--ink);cursor:pointer}.wl-hot button.on{background:#0E6E78;color:#fff;border-color:#0E6E78}
 .ws-focus{margin:0 0 14px;padding:14px;border-radius:16px;border:2px solid #FFC857;background:var(--surface);display:grid;gap:10px;box-shadow:0 4px 18px rgba(0,0,0,.08)}
 .wf-h{display:grid;gap:2px}.wf-h small{font-size:12px;font-weight:800;color:#B07A00}.wf-h b{font-size:19px;color:var(--ink)}.wf-h span{font-size:12.5px;color:var(--muted)}
@@ -1741,7 +1741,7 @@ details.more[open]>summary{margin-bottom:10px}
 .wc-head .e{font-size:20px}
 .wc-head b{font-size:21px;font-weight:700;font-family:var(--f-display)}
 .wc-head small{margin-inline-start:auto;color:var(--muted);font-size:14px;font-weight:600}
-.wc-empty{background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:18px;color:var(--muted);text-align:center;font-size:15.5px}
+.wc-empty{padding:6px 4px;color:var(--muted);text-align:start;font-size:13.5px}
 .plancard{margin:0}
 /* folded rows */
 .fold{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
@@ -2446,7 +2446,7 @@ html.desk .sqpanel{border-radius:18px!important;max-height:84vh}
 .wcard.nxf[open]>summary{border-bottom:1px solid var(--line)}
 .wcard.nxf .nxb{padding:0;animation:nxin .22s ease-out}
 .wcard.nxf .nxb>.glist{border:0;border-radius:0}
-.wcard.nxf .nxb .wc-empty{border:0;padding:10px}
+.wcard.nxf .nxb .wc-empty{padding:6px 10px}
 @keyframes nxin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .r-roll{flex:none;font-style:normal;color:#8B5CF6;font-weight:800;font-size:15px}
 .ctxrow .wseg{grid-template-columns:1.1fr 1fr 1fr!important}
@@ -4758,6 +4758,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const d=h("details",{class:"wmore",open:op?"":null},h("summary",null,h("span",{class:"wm-ic","aria-hidden":"true"},"≡"),h("span",{class:"wm-t"},R.length===1?"עוד משימה אחת לחלון הזה":`עוד ${R.length} משימות לחלון הזה`),nw?h("span",{class:"wm-nw","aria-label":"יש משהו חדש"}):null,h("span",{class:"fc","aria-hidden":"true"},"‹")),h("div",{class:"glist"},orderL(R).map(row)));
     d.addEventListener("toggle",()=>{folded[k]=d.open;try{sessionStorage.setItem("sq_fold",JSON.stringify(folded));}catch(e){}});return d;}
   function winBox(e,l,tag,L,empty,o){o=o||{};
+    if(!o.next&&!L.length)return h("div",{class:"wc-empty wc-none"},h("span",{"aria-hidden":"true"},e)," ",h("b",null,l)," · ",empty);
     if(!o.next){const U=orderL(L.filter(urgNow)),R=L.filter(t=>!U.includes(t));
       return h("div",{class:"wcard"},h("div",{class:"wc-head"},h("span",{class:"e","aria-hidden":"true"},e),h("b",null,l),tag?h("small",null,tag):null),
         U.length?h("div",{class:"glist"},U.map(row)):(L.length?null:h("div",{class:"wc-empty"},empty)),R.length?winRest(l,R):null);}
@@ -4799,7 +4800,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     if(C.remL.length){const rk=t=>String(t.sleep_until||(t.snooze_until&&t.snooze_until!=="someday"?String(t.snooze_until).slice(0,10):"")||t.next_date||"9999");
       more.push(foldRows("remL",catT("rem","תזכורות בהמשך"),C.remL.sort((a,b)=>rk(a).localeCompare(rk(b)))));}
     // 25.33 (Oren 22.11.2026): Work Quest order = work flight banner (from the trip mail until it lands back) > expenses > tasks ... > project capsule (RWMTC) at the very bottom
-    {const wf=quest==="work"?wfLink():[],ws=$("wfTop");if(ws){ws.hidden=!wf.length;ws.replaceChildren(...wf);}
+    {const wf=quest==="work"&&!abMode()?wfLink():[],ws=$("wfTop");if(ws){ws.hidden=!wf.length;ws.replaceChildren(...wf);}
      const qi=qInfoBanners(),qs=$("qiSec");if(qs){qs.hidden=!qi.length;qs.replaceChildren(...qi);}}
     $("list").replaceChildren(...top);
     $("more").replaceChildren(...more.filter(Boolean));
@@ -5553,26 +5554,33 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const tz=d.tz||"Europe/Rome",T=wfTzNow(tz),wk=T.dow>=1&&T.dow<=5;
     const hotels=[...(d.hotel&&d.hotel.name?[{id:"trip",n:d.hotel.name,lat:d.hotel.lat,lng:d.hotel.lng,maps_q:d.hotel.maps_q||(d.hotel.name+" "+(d.hotel.addr||""))}]:[]),...((A&&A.hotels)||[]).filter(x=>!d.hotel||x.n!==d.hotel.name)];
     let hk="";try{hk=localStorage.getItem("sq_wfhot_"+d.id)||"";}catch(e){}const hot=hotels.find(x=>x.id===hk)||hotels[0]||null;
-    const ui=wfLocUI[d.id]||(wfLocUI[d.id]={});const def=B&&wk&&T.min<10*60?"base":(A?"food":"base");const tab=ui.tab||def;
+    const ui=wfLocUI[d.id]||(wfLocUI[d.id]={});const def=B&&wk&&T.min<10*60?"base":(A?"food":"base");
+    // 25.58 (dynamic view): outside the hours it is for (drive to work before 10:00, lunch 11:30-15:00, dinner 18:00-23:00) only the head and the two tabs; a tap on a tab is his ask and opens it
+    const rel=def==="base"?true:((T.min>=690&&T.min<=900)||(T.min>=1080&&T.min<=1380));const tab=ui.tab||(rel?def:"");
     const p0=(()=>{const p=here();if(p&&!inIsrael(p))return {la:p.la,lo:p.lo,me:1};return hot&&hot.lat!=null?{la:+hot.lat,lo:+hot.lng}:(B&&B.lat!=null?{la:+B.lat,lo:+B.lng,base:1}:null);})();
     const km=x=>p0&&x&&x.lat!=null?Math.round(distM(p0,{la:+x.lat,lo:+x.lng})/100)/10:null;
     const drive=k=>k==null?null:Math.max(3,Math.round(k*1.35/45*60)+3);
     const dirTo=x=>x.lat!=null?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+x.lat+","+x.lng:wsNav(x.maps_q||x.n);
     const seg=h("div",{class:"wl-seg",role:"tablist"},...[B?["base","🚁 לעבודה"]:null,A?["food","🍽️ לאכול"]:null].filter(Boolean).map(([k,l])=>h("button",{type:"button",role:"tab","aria-selected":tab===k?"true":"false",class:tab===k?"on":"",onclick:e=>{ui.tab=k;const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},l)));
-    const hotPick=hotels.length>1?h("div",{class:"wl-hot"},h("small",null,"ישנתי ב:"),...hotels.map(x=>h("button",{type:"button",class:x===hot?"on":"",onclick:e=>{try{localStorage.setItem("sq_wfhot_"+d.id,x.id);}catch(er){}const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},x.n))):null;
+    const hotPick0=hotels.length>1?h("div",{class:"wl-hot"},h("small",null,"ישנתי ב:"),...hotels.map(x=>h("button",{type:"button",class:x===hot?"on":"",onclick:e=>{try{localStorage.setItem("sq_wfhot_"+d.id,x.id);}catch(er){}const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},x.n))):null;
+    const srcL=abFood&&abFood.at?h("small",{class:"wl-src"},"הדירוגים מ-Google Maps, עודכן "+String(abFood.at).slice(0,10).split("-").reverse().join(".")):null;
+    const hotPick=hotPick0&&!hk?hotPick0:null,foot=(x)=>{const k=[hk?hotPick0:null,x?srcL:null].filter(Boolean);return k.length?h("details",{class:"wf-bk wl-ft"},h("summary",null,hk&&hotPick0?"המלון שלי: "+(hot?hot.n:"")+(x&&srcL?" · מקור הנתונים":""):"מקור הנתונים"),...k):null;};
     let body;
     if(tab==="base"&&B){const kb=hot&&hot.lat!=null&&B.lat!=null?Math.round(distM({la:+hot.lat,lo:+hot.lng},{la:+B.lat,lo:+B.lng})/100)/10:null;
       body=[h("a",{class:"wl-go",href:wfBaseDir(B),target:"_blank",rel:"noopener"},h("span",{class:"wf-bi",html:WF_HELI}),h("span",null,h("b",null,"ניווט לבסיס"),h("small",null,(B.he||B.name||"")+(kb!=null&&hot?" · ≈"+drive(kb)+" דק׳ מ-"+hot.n:""))),h("span",{"aria-hidden":"true"},"›")),
-        hot&&B.lat!=null?h("a",{class:"wf-mail",href:"https://www.google.com/maps/dir/?api=1&travelmode=driving&origin="+encodeURIComponent(hot.lat!=null?hot.lat+","+hot.lng:hot.maps_q)+"&destination="+B.lat+","+B.lng,target:"_blank",rel:"noopener"},"המסלול מ-"+hot.n+" ›"):null,hotPick];}
+        hot&&B.lat!=null?h("a",{class:"wf-mail",href:"https://www.google.com/maps/dir/?api=1&travelmode=driving&origin="+encodeURIComponent(hot.lat!=null?hot.lat+","+hot.lng:hot.maps_q)+"&destination="+B.lat+","+B.lng,target:"_blank",rel:"noopener"},"המסלול מ-"+hot.n+" ›"):null,hotPick,foot(0)];}
+    else if(!tab){body=[];}
     else{const P=((A&&A.places)||[]).map(p=>({p,o:wfOpenAt(p,T.dow,T.min),k:km(p)}));
-      const fx=P.filter(x=>x.p.fixed),op=P.filter(x=>!x.p.fixed&&x.o.open).sort((a,b)=>(b.p.r||0)-(a.p.r||0)||(a.k||99)-(b.k||99)).slice(0,5),cl=P.filter(x=>!x.p.fixed&&!x.o.open&&!op.includes(x));
+      const fx=P.filter(x=>x.p.fixed&&x.o.open),fxc=P.filter(x=>x.p.fixed&&!x.o.open),opA=P.filter(x=>!x.p.fixed&&x.o.open).sort((a,b)=>(b.p.r||0)-(a.p.r||0)||(a.k||99)-(b.k||99)),op=opA.slice(0,3),opM=opA.slice(3),cl=P.filter(x=>!x.p.fixed&&!x.o.open);
       const row=x=>{const p=x.p,o=x.o;return h("div",{class:"wl-r"+(o.open?"":" cl")},h("div",{class:"wl-rt"},h("b",{class:"nolink notel"},(p.fixed?"⭐ ":"")+p.n),
           h("small",null,[p.cu,p.r?"★ "+p.r+(p.nr?" ("+p.nr+")":""):null,x.k!=null?x.k+" ק״מ":null].filter(Boolean).join(" · ")),
           h("span",{class:"wl-o"+(o.open?(o.soon?" soon":" on"):"")},o.unk?"שעות לא ידועות":o.open?"פתוח עד "+o.until:o.closed?"סגור השבוע":"סגור · נפתח "+o.next),p.note?h("small",{class:"wl-n"},p.note):null),
         h("div",{class:"wl-b"},h("a",{class:"nav",href:dirTo(p),target:"_blank",rel:"noopener"},"🧭 ניווט"),h("a",{href:p.g||wsMap(p.maps_q||p.n),target:"_blank",rel:"noopener","aria-label":"Google Maps"},"📍")));};
-      body=[fx.length?h("div",{class:"wl-l"},...fx.map(row)):null,op.length?h("div",{class:"wl-sh"},"פתוחות עכשיו, לפי הדירוג"+(p0&&p0.base?" · מרחק מהבסיס":"")):null,op.length?h("div",{class:"wl-l"},...op.map(row)):h("p",{class:"wl-e"},"אין עכשיו עוד מקום פתוח מהרשימה"),
+      body=[fx.length?h("div",{class:"wl-l"},...fx.map(row)):null,
+        fxc.length?h("details",{class:"wf-bk wl-fxc"},h("summary",null,...fxc.map(x=>h("span",{class:"wl-fx1"},"⭐ ",h("bdi",{class:"nolink notel"},x.p.n)," · "+(x.o.unk?"שעות לא ידועות":x.o.closed?"סגור השבוע":"נפתח "+x.o.next)))),h("div",{class:"wl-l"},...fxc.map(row))):null,op.length?h("div",{class:"wl-sh"},"פתוחות עכשיו, לפי הדירוג"+(p0&&p0.base?" · מרחק מהבסיס":"")):null,op.length?h("div",{class:"wl-l"},...op.map(row)):h("p",{class:"wl-e"},"אין עכשיו עוד מקום פתוח מהרשימה"),
+        opM.length?h("details",{class:"wf-bk"},h("summary",null,"עוד פתוחות ("+opM.length+")"),h("div",{class:"wl-l"},...opM.map(row))):null,
         cl.length?h("details",{class:"wf-bk"},h("summary",null,"סגורות עכשיו ("+cl.length+")"),h("div",{class:"wl-l"},...cl.map(row))):null,
-        hotPick,abFood&&abFood.at?h("small",{class:"wl-src"},"הדירוגים מ-Google Maps, עודכן "+String(abFood.at).slice(0,10).split("-").reverse().join(".")):null];}
+        hotPick,foot(1)];}
     return h("article",{class:"wl"},h("div",{class:"wl-h"},h("div",null,h("small",null,(d.flag||(window.SQFlags&&SQFlags.of("איטליה"))||"🇮🇹")+" עכשיו ב"+((A&&A.he)||"ויטרבו")),h("b",null,"עכשיו "+wfHm(T.min)+" שעון איטליה")),seg),...body);}
   // which comes first in the trip: the flight (before it, on the day home, in the air) or "now" (the road stop / Viterbo)
   function wfFlightFirst(){const now=Date.now(),L=wfLive();if(!L.length)return false;const x=L[0],o=x.legs[0],r=x.legs[x.legs.length-1];
@@ -5844,6 +5852,9 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
         u?h("a",{class:"ws-chat",href:u,target:"_blank",rel:"noopener"},"💬 שיחה על העצירות"):null));}
   // 13.x (Oren 10.11.2026): work trips abroad = the experience side (stops on the way, not the work). Topics with area "נסיעות עבודה", open ones first.
   //  25.47: a topic that a route doc points to (rt.topic) is merged into that route's bank, not shown as a second ticket.
+  // 25.58: from 30h before the flight home the road drawer says so ("tomorrow you drive back: pick a stop?")
+  function wfBackSoon(){const L=wfLive();if(!L.length)return "";const x=L[0],r=x.legs[x.legs.length-1],rd=wfMs(r.dep),now=Date.now();if(!rd||x.legs.length<2||rd<now||rd-now>30*3600000)return "";
+    const tz=x.d.tz||"Europe/Rome",dk=t=>new Date(t).toLocaleDateString("en-CA",{timeZone:tz});return "🧭 "+(dk(rd)===dk(now)?"היום":"מחר")+" חוזרים לרומא: לבחור עצירה בדרך?";}
   function workTrips(){const R=wsDocs.filter(d=>d.type==="route"&&!d._deleted&&d.a&&d.b);const RT=R.map(r=>r.topic).filter(Boolean);
     const L=allTopics.filter(t=>!t._deleted&&t.area==="נסיעות עבודה"&&!["archived","promoted"].includes(t.status)&&!RT.includes(t.id)&&!(R.length&&/^work-trip-rome-viterbo/.test(t.id))).sort((a,b)=>(a.status==="done")-(b.status==="done")||(b.priority==="high")-(a.priority==="high"));
     // 25.54 (Oren 22.11.2026): a dynamic order. First what is now: the locked stop on the road, or in Viterbo the drive to the base / dinner;
@@ -5854,7 +5865,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const TOP=wfFlightFirst()?[...wfWrap(),...NOW]:[...NOW,...wfWrap()];
     // 25.57 (Oren 22.11.2026): the road (locked stop + stops explorer) is open only on the drive days; in Viterbo it is one closed drawer
     const BANK=road?[h("div",{class:"tv-sec-h"},"🧭 עצירות ורגעים בדרך"),...R.map(wsBank)]
-      :[h("details",{class:"ab-bank",open:wfOpen["ab:bank"]?true:null,ontoggle:ev=>{wfOpen["ab:bank"]=ev.currentTarget.open;}},h("summary",null,h("div",{class:"tv-sec-h"},"🧭 הדרך רומא ⇄ ויטרבו: עצירות ורגעים")),...FA,...R.map(wsBank))];
+      :[h("details",{class:"ab-bank",open:wfOpen["ab:bank"]?true:null,ontoggle:ev=>{wfOpen["ab:bank"]=ev.currentTarget.open;}},h("summary",null,h("div",{class:"tv-sec-h"},wfBackSoon()||"🧭 הדרך רומא ⇄ ויטרבו: עצירות ורגעים")),...FA,...R.map(wsBank))];
     return [TOP.length?h("div",{id:"abNow",class:"ab-now"},...TOP):null,...BANK,L.length?h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
       return h("details",{class:"tv-wkc"},h("summary",null,h("b",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("small",null,t.stand):null),
         t.summary?h("details",{class:"tv-fold"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
@@ -5932,7 +5943,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
     const hd=(t,n)=>h("div",{class:"tv-sec-h"},t,n?h("span",{class:"n"},String(n)):null);
     const other=zoneDash("abroad",false);
     const ab=h("section",{class:"tz tz-ab-z"},
-      zoneHead("abroad","בחו״ל",[nB?heN(nB,"נסיעה אחת","נסיעות")+" עם טיסות":"",nP?nP+" בתכנון":""].filter(Boolean).join(" · ")||"תכנון, היסטוריה ונתונים",AB_BANNER),
+      abMode()&&abTab==="work"?null:zoneHead("abroad","בחו״ל",[nB?heN(nB,"נסיעה אחת","נסיעות")+" עם טיסות":"",nP?nP+" בתכנון":""].filter(Boolean).join(" · ")||"תכנון, היסטוריה ונתונים",AB_BANNER),
       h("div",{class:"ab-seg",role:"tablist"},[["trip","✈️ פרטי"],["work","💼 עבודה"]].map(([v,l])=>h("button",{type:"button",role:"tab","aria-selected":abTab===v?"true":"false",class:abTab===v?"on":"",onclick:()=>{if(abTab===v)return;abTab=v;try{localStorage.setItem("sq_tv_ab",v);}catch(e){}renderTravel();}},l))),
       ...(abTab==="work"?workTrips(true):[
       // (1) flights booked
@@ -5962,7 +5973,7 @@ window.SQSplash=make();window.SQSplash.preview=function(style){return make({prev
   let gateOpen=false;
   function renderGate(){const el=document.getElementById("tgate");if(!el||!window.SQGate)return;
     const n=ilNow(),G=window.SQGate,today=ilDate(),esc=v=>String(v==null?"":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
-    updLocBtn();const L=G.list([...allTopics.map(hereFit),...calTasks(today)],today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past"&&(!String(g.id).startsWith("cal:")||g.by-n.m<=240));
+    updLocBtn();const L=G.list([...allTopics.map(hereFit),...calTasks(today)],today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past"&&g.by-n.m<=(String(g.id).startsWith("cal:")?240:180));
     if(!L.length){el.hidden=true;el.innerHTML="";return;}
     const left=g=>{const m=g.by-n.m;return m<=0?"עכשיו!":m<60?`עוד ${m} דק׳`:`עוד ${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} ש׳`;};
     const L4=L.slice(0,4);el.innerHTML=L4.map((g,i)=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}${i?" tgx":""}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`+(i===0&&L4.length>1?`<button type="button" class="tgmore" aria-expanded="${gateOpen}"><span>${gateOpen?"פחות":"עוד "+(L4.length-1)+" היום"}</span><span class="fc" aria-hidden="true">‹</span></button>`:"");}).join("");

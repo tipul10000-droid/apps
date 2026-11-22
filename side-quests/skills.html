@@ -223,8 +223,8 @@ function renderHome(){$("hero").innerHTML=heroHome();
   const S=all("skill").filter(fOk).sort(byOrder),V=all("video").sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));
   let h=`<div class="rule">🔒 מכאן לא מתקינים כלום. כל כלי נבדק (מה הוא מבטיח מול מה שיש בריפו, בטיחות, כוכבים), ומותקן רק אם תבקש בצ׳אט.</div>`;
   const G=all("guide").sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")));
-  if(ui.f==="all"&&G.length)h+=`<section><div class="sh"><h2 data-sq-path="sec:guides">📚 טיקטי מידע</h2><small>${G.length}</small></div><div class="tlist">${G.map(guideRow).join("")}</div></section>`;
-  if(ui.f==="all")h+=`<section><div class="sh"><h2 data-sq-path="sec:videos">🎬 הסרטונים</h2><small>${V.length}</small></div>${V.length?`<div class="vids">${V.map(vidRow).join("")}</div>`:`<div class="card empty">${loaded?"עוד אין":"טוען…"}</div>`}
+  if(ui.f==="all"&&G.length)h+=`<section data-role="primary"><div class="sh"><h2 data-sq-path="sec:guides">📚 טיקטי מידע</h2><small>${G.length}</small></div><div class="tlist">${G.map(guideRow).join("")}</div></section>`;
+  if(ui.f==="all")h+=`<section data-role="primary"><div class="sh"><h2 data-sq-path="sec:videos">🎬 הסרטונים</h2><small>${V.length}</small></div>${V.length?`<div class="vids">${V.map(vidRow).join("")}</div>`:`<div class="card empty">${loaded?"עוד אין":"טוען…"}</div>`}
     <button class="addrow" data-add>＋ סרטון או סקיל חדש<small>מדביקים לינק, והבדיקה נעשית בצ׳אט</small></button></section>`;
   // not recommended and not installed = not relevant now → folded archive (Oren 16.11.2026)
   const NO=x=>inst(x)==="no"&&rec(x)==="no",SA=S.filter(x=>!NO(x)),SN=S.filter(NO);
@@ -325,6 +325,6 @@ window.claude.use("db").then(d=>{db=d;if(!db)return;
 })();
 </script>
 <script src="sq-tel.js?v=3" defer></script>
-<script src="sq-calm.js?v=2"></script>
+<script src="sq-calm.js?v=3"></script>
 </body>
 </html>
