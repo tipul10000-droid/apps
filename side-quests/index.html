@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.74";window.SQ_BUILD_AT="23.11.2026 02:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.75";window.SQ_BUILD_AT="23.11.2026 09:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1776,7 +1776,7 @@ details.more[open]>summary{margin-bottom:10px}
 .dpg .pgbar{position:relative;flex:none;--accent:#fff}
 .dpg .pgback{color:#fff}
 .dpg.pvfull{padding-top:env(safe-area-inset-top,0px);background:#111}.dpg.pvfull .pgbar,.dpg.pvfull .pgedge{display:none}
-.dpg .dfr{flex:1;min-height:0;width:100%;border:0;display:block;background:var(--bg)}
+.dpg .dfr.ld{opacity:1}.dpg .dfr{opacity:0;transition:opacity .25s ease;flex:1;min-height:0;width:100%;border:0;display:block;background:var(--bg)}
 .dpg .dscroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .dpg .pgedge{position:absolute;left:0;top:0;bottom:0;width:22px;z-index:6;display:none}
 @media (display-mode: standalone){.dpg .pgedge{display:block}}
@@ -2093,7 +2093,7 @@ main{padding-bottom:90px}
 .dz-top .b{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.dz-top .b b{font-size:17px;line-height:1.25}.dz-top .b .s{font-size:13.5px;opacity:.9}
 .dz-top .go{flex:none;font-size:26px;opacity:.8;line-height:1}
 .dz-top .dot{position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:#E5483B;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)}.dz-top .dot.soft{background:#F0A23B}
-.dz-top .nw{position:absolute;top:-4px;right:16px;width:12px;height:12px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;animation:sqbeat 2.4s ease-in-out infinite}
+.dz-top .nw{position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:#2F7BEA;border:2px solid #fff;animation:sqbeat 2.4s ease-in-out infinite}
 .dz-top:active{filter:brightness(.95)}
 @keyframes dztin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .qbtn.hasnw{opacity:.82;filter:none}
@@ -4096,7 +4096,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       const nw=dashFresh(d);
       const line=[me?heN(me,"דבר אחד לטיפול","דברים לטיפול"):"",wt?heN(wt,"נושא במעקב","נושאים במעקב"):""].filter(Boolean).join(" · ");
       return h("button",{class:"dz-top",type:"button",style:dashVars(d),"data-dz":d.id,onclick:()=>openDash(d.id),"aria-label":(d.title||"")+": "+line},
-        h("span",{class:"dot"+(me?"":" soft"),"aria-hidden":"true"}),nw?h("span",{class:"nw","aria-hidden":"true"}):null,
+        nw?h("span",{class:"nw","aria-hidden":"true"}):h("span",{class:"dot"+(me?"":" soft"),"aria-hidden":"true"}),
         h("span",{class:"ti","aria-hidden":"true"},ico(d.icon,"📊")),
         h("span",{class:"b"},h("b",null,d.title||d.short||""),h("span",{class:"s"},line||"פתוח")),
         h("span",{class:"go","aria-hidden":"true"},"›"));}));}
@@ -4345,7 +4345,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     let body;
     pD.classList.remove("pvfull");
     if(fr){body=h("iframe",{class:"dfr",src:window.SQResume?SQResume.src(fr):fr,title:d.title||"דשבורד",allow:"clipboard-write"});dashPg={id,frame:true,back,sub:null};
-      {const f=body,send=()=>dzSend(f);f.addEventListener("load",()=>{send();setTimeout(send,600);});}
+      {const f=body,send=()=>dzSend(f);f.addEventListener("load",()=>{f.classList.add("ld");send();setTimeout(send,600);});}
       if(newsData){const f=body,send=()=>{try{f.contentWindow.postMessage(newsData,location.origin);}catch(e){}};f.addEventListener("load",()=>{send();setTimeout(send,600);});}}
     else{const y=pD.querySelector(".dscroll")?pD.querySelector(".dscroll").scrollTop:0;
       body=h("div",{class:"dscroll"},h("div",{class:"pgbody"},d?withBox(dashCard(d,true),newsData):h("div",{class:"empty"},dashes.length?"הדשבורד לא נמצא.":"טוען…")));dashPg={id:d?id:null,frame:false};
