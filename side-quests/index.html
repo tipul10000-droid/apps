@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.73";window.SQ_BUILD_AT="23.11.2026 02:15";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.74";window.SQ_BUILD_AT="23.11.2026 02:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -353,6 +353,8 @@ body.fun-on .tasks-only{display:none!important}
 .game>summary::after{content:"▾";color:var(--muted);margin-inline-start:auto;transition:transform .15s}
 .game[open]>summary::after{transform:rotate(180deg)}
 .game .gi{flex:none;font-size:22px}
+.game .gimg{width:34px;height:34px;border-radius:9px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+.game .gsum{font-size:13px;line-height:1.45;color:var(--muted);margin-bottom:8px}
 .game .gt{min-width:0;display:flex;flex-direction:column}
 .game .gt b{font-size:15px;font-weight:700}
 .game .gt small{font-size:12.5px;color:var(--muted);font-weight:600}
@@ -5221,14 +5223,19 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   // Movies zone: topic zone "movies" (the external list), topics with zone "games" (one per game) and the Frame Horizon project,
   // shown together as one cinema card with a small IMDb badge: 1 Frame Horizon, 2 the external list, 3 games.
   function isMovieZone(t){return t.zone==="movies"||t.zone==="games"||t.zone==="series";}
+  // 25.74 (Oren 23.11.2026): a game can carry its real app icon, `img` = path under side-quests/ (img/games/<id>.jpg) or an https App Store image
+  function gameIco(t){const u=/^img\/[\w\/.-]+$/.test(t.img||"")?t.img:(/^https:\/\//.test(t.img||"")?safeUrl(t.img):"");
+    if(!u)return h("span",{class:"gi","aria-hidden":"true"},t.icon||"🎮");
+    const im=h("img",{class:"gi gimg",src:u,alt:"",loading:"lazy",referrerpolicy:"no-referrer"});im.onerror=()=>{im.replaceWith(h("span",{class:"gi","aria-hidden":"true"},t.icon||"🎮"));};return im;}
   function gameRow(t){
     const pages=linksOf(t).filter(l=>linkType(l)!=="chat");
     const qs=questionsOf(t).filter(q=>!q.answer), offs=offersOf(t).filter(o=>(o.state||"open")==="open");
     const key=t.id+":game",open=key in funFold?funFold[key]:false;
     const d=h("details",{class:"game"+(t.status==="done"?" done":""),open:open||null,"data-id":t.id},
-      h("summary",null,h("span",{class:"gi","aria-hidden":"true"},t.icon||"🎮"),h("span",{class:"gt"},h("b",null,t.name?h("bdi",{dir:"ltr"},t.name):(t.title||"")),t.name&&t.title?h("small",null,t.title):null,t.stand?h("small",null,t.stand):null)),
+      h("summary",null,gameIco(t),h("span",{class:"gt"},h("b",null,t.name?h("bdi",{dir:"ltr"},t.name):(t.title||"")),t.name&&t.title?h("small",null,t.title):null,t.stand?h("small",null,t.stand):null)),
       h("div",{class:"gb"},
         t.next_step?h("div",{class:"gnext"},t.next_step):null,
+        t.status!=="done"&&t.summary?h("div",{class:"gsum"},t.summary):null,
         pages.length?h("div",{class:"fc-links"},pages.map((l,j)=>h("a",{class:"fbtn"+(j?" ghost":""),href:safeUrl(l.url),target:"_blank",rel:"noopener"},l.label||"פתח"))):null,
         ...qs.map(q=>questionCard(t,q,false)),...offs.map(o=>offerCard(t,o,false)),
         contBtn(t,"cont")));
