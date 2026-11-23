@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#25272D">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.8";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SHOP_BUILD="1.9";</script>
 <script src="sq-db.js?v=10"></script>
 <title>קניות ורכישות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -199,6 +199,24 @@ table.cmp td.pk{background:var(--pick-soft)}
 @keyframes sqgrow{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.7}
 @media (max-width:420px){.kpi b{font-size:17px}.offer .ph{width:72px;height:86px}.facts div{padding:6px 8px;font-size:13px}}
+/* 1.9 (Oren 23.11.2026): Black Friday strategy on top: one line per open item, tap opens the full text in place */
+.bf{background:var(--surface);border:1px solid var(--accent);border-radius:14px;overflow:hidden}
+.bf .bfr{border-top:1px solid var(--line)}.bf .bfr:first-child{border-top:0}
+.bf .bfh{display:flex;align-items:center;gap:10px;width:100%;min-height:54px;padding:7px 12px;background:none;border:0;color:inherit;text-align:start;cursor:pointer;font:inherit}
+.bf .th{flex:none;width:36px;height:36px;border-radius:9px;background:var(--sunk) center/contain no-repeat;display:grid;place-items:center;font-size:18px}
+.bf .th[style]{background-color:#fff}
+.bf .tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.bf .tx b{font-family:var(--f-display);font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bf .tx small{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bf .wh{flex:none;width:64px;text-align:center;border-radius:999px;padding:2px 0;font-size:12px;font-weight:800;background:var(--sunk);white-space:nowrap}
+.bf .wh.it{background:var(--pick-soft);color:var(--pick)}.bf .wh.il{background:var(--warn-soft);color:var(--warn)}.bf .wh.web{background:var(--good-soft);color:var(--good)}
+.bf .cv{flex:none;width:14px;text-align:center;font-size:18px;color:var(--muted);transition:transform .2s}
+.bf .bfr.on .cv{transform:rotate(-90deg)}
+.bf .bfb{padding:0 12px 12px 12px;font-size:14px;line-height:1.5;animation:sqgrow .22s ease-out}
+.bf .bfb p{margin:0 0 6px}.bf .bfb .by{font-weight:800}
+.bf .bfb .go{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px}
+.bf .lnk{border:0;background:none;padding:0;color:var(--link);font-weight:700;cursor:pointer}
+.bf .tip .th{background:none;font-size:16px}
 .qdone{margin:0 0 18px}.qdone>.card{margin-top:8px}.qdone .q .opt:not(.on){opacity:.7}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=10">
@@ -269,10 +287,19 @@ function renderHome(){const L=list();$("hero").innerHTML=heroHome(L);
     return `<div class="strip${on?" on":""}"><button type="button" class="sh2" data-xo="${esc(x.id)}" aria-expanded="${on}"><span class="th"${img?` style="background-image:url('${esc(img)}')"`:""}>${img?"":esc(x.icon||"🛒")}</span><span class="tx"><b>${esc(x.title)}</b><small>${sub}</small></span>${nq?`<span class="qn">${nq} שאלות</span>`:""}<span class="cv">‹</span></button>
     ${on?`<div class="sb">${p?`<div class="ln"><span>ההמלצה</span><b>${esc(p.name)}</b></div>`:""}${c?`<div class="ln"><span>הכי זול</span><b>${ils(c.ils)} · ${esc(c.store)}</b></div>`:""}${nq?`<div class="ln"><span>מחכה לך</span><b>${nq} שאלות פתוחות</b></div>`:""}${!p&&!c&&x.summary?`<div class="ln"><b style="font-weight:600">${esc(x.summary)}</b></div>`:""}
       <button type="button" class="deep" data-open="${esc(x.id)}">להעמקה: אפשרויות, מחירים וביקורות ›</button>${FIN(x)}</div>`:""}</div>`;};
-  let h=`<section class="calm-off buy"><div class="sh"><h2>🛒 בדרך לקנייה</h2><small>${open.length}</small></div><div class="strips">${open.map(strip).join("")}<button type="button" class="addstrip" data-add>＋ משהו חדש לקנות</button></div></section>`;
+  let h=bfBlock(open)+`<section class="calm-off buy"><div class="sh"><h2>🛒 בדרך לקנייה</h2><small>${open.length}</small></div><div class="strips">${open.map(strip).join("")}<button type="button" class="addstrip" data-add>＋ משהו חדש לקנות</button></div></section>`;
   h+=guideBlock();
   if(done.length)h+=`<details class="arch"${ui.arch?" open":""}><summary>📦 ארכיון: נקנו או אין צורך · ${done.length}</summary><div class="grid">${done.sort((a,b)=>String(b.archived_at||"").localeCompare(String(a.archived_at||""))).map(card).join("")}</div></details>`;
   $("app").innerHTML=loaded||L.length?h:`<div class="empty">טוען…</div>`;}
+// 1.9: Black Friday strategy (Oren 23.11.2026). Data: item.bf {where: it|il|web|skip, line, full, by, url, url_label}, _meta.bf {h, sub, tips[{h,t}]}
+const BFW={it:"🇮🇹 איטליה",il:"🇮🇱 בארץ",web:"🌍 באתר",skip:"⏸️ לא עכשיו"};
+function bfBlock(open){const m=meta.bf;if(!m)return "";const L=open.filter(x=>x.bf&&x.bf.line).sort((a,b)=>(a.bf.where==="skip")-(b.bf.where==="skip"));if(!L.length)return "";
+  const row=(k,th,t,sub,wh,body)=>{const on=ui.bf===k;return `<div class="bfr${on?" on":""}${wh?"":" tip"}"><button type="button" class="bfh" data-bf="${esc(k)}" aria-expanded="${on}">${th}<span class="tx"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</span>${wh?`<span class="wh ${esc(wh)}">${esc(BFW[wh]||"")}</span>`:""}<span class="cv">‹</span></button>${on?`<div class="bfb">${body}</div>`:""}</div>`;};
+  const item=x=>{const p=pickOf(x),img=safe(x.img)||(p&&safe(p.img)),b=x.bf;
+    return row("i:"+x.id,`<span class="th"${img?` style="background-image:url('${esc(img)}')"`:""}>${img?"":esc(x.icon||"🛒")}</span>`,esc(x.title),esc(b.line),b.where,
+      `${b.by?`<p class="by">⏰ ${esc(b.by)}</p>`:""}<p>${esc(b.full||b.line)}</p><div class="go">${safe(b.url)?`<a href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.url_label||"לקנייה")} ›</a>`:""}<button type="button" class="lnk" data-open="${esc(x.id)}">כל הפרטים ›</button></div>`);};
+  const T=m.tips||[];const tips=T.length?row("tips",`<span class="th">💡</span>`,"איך קונים נכון",`${T.length} כללים: מועדים, Tax Free, מכס`,"",T.map(t=>`<p><b>${esc(t.h)}.</b> ${esc(t.t)}</p>`).join("")):"";
+  return `<section class="calm-off" data-role="now"><div class="sh"><h2>${esc(m.h||"🏷️ Black Friday")}</h2>${m.sub?`<small>${esc(m.sub)}</small>`:""}</div><div class="bf">${L.map(item).join("")}${tips}</div></section>`;}
 function guideBlock(){const g=meta.guide;if(!Array.isArray(g)||!g.length)return "";
   return `<section><div class="sh"><h2>📚 ידע קבוע לקניות</h2></div><div class="card guide">${g.map(s=>`<h3>${esc(s.h)}</h3><ul>${(s.items||[]).map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`).join("")}${meta.guide_note?`<div class="note">${esc(meta.guide_note)}</div>`:""}</div></section>`;}
 
@@ -345,6 +372,7 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
     setTimeout(()=>{if(k!=="back"&&curId()===id)goHash("");upd(id,patch,txt,()=>upd(id,{status:prev.status,archived_at:prev.archived_at,updated_at:new Date().toISOString(),log:prev.log},"בוטל"));},300);return;}
   if(b=g(".arch>summary")){setTimeout(()=>{ui.arch=b.parentElement.open;saveUi();},0);}
   if(b=g("[data-cat]")){ui.cat=b.dataset.cat;saveUi();render();return;}
+  if(b=g("[data-bf]")){const k=b.dataset.bf;ui.bf=ui.bf===k?"":k;const y=b.getBoundingClientRect().top;render();const nb=document.querySelector(`[data-bf="${CSS.escape(k)}"]`);if(nb)window.scrollBy(0,nb.getBoundingClientRect().top-y);return;}
   if(b=g("[data-xo]")){const id=b.dataset.xo;ui.xo=ui.xo===id?"":id;const y=b.getBoundingClientRect().top;render();const nb=document.querySelector(`[data-xo="${CSS.escape(id)}"]`);if(nb)window.scrollBy(0,nb.getBoundingClientRect().top-y);return;}
   if(b=g("[data-open]")){goHash("i="+encodeURIComponent(b.dataset.open));return;}
   if(g("[data-home]")){EMB?goHash(""):history.length>1&&curId()?history.back():(location.hash="");return;}
