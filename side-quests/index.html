@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.76";window.SQ_BUILD_AT="24.11.2026 19:00";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.77";window.SQ_BUILD_AT="24.11.2026 19:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -4983,9 +4983,20 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   // 25.57 (Oren 22.11.2026): what he asked to see (search, a tap on an update, a link) beats the mode: it stays shown for this session
   const abForce=new Set((()=>{try{return JSON.parse(sessionStorage.getItem("sq_abforce")||"[]");}catch(e){return [];}})());
   function abWant(id){if(!id||abForce.has(id))return;abForce.add(id);try{sessionStorage.setItem("sq_abforce",JSON.stringify([...abForce].slice(-40)));}catch(e){}}
-  function abKeep(t){return abForce.has(t.id)||!isOpen(t)||t.status==="waiting_other"||!!t.critical||isUrgent(t)||t.area==="נסיעות עבודה"||t.tzone==="abroad"||/^(elbit-trip|wf-|work-trip)/.test(t.id||"");}
+  // 25.77 (Oren 24.11.2026): abroad, every item shown must pass three questions: (1) can it be done from abroad?
+  // (2) is it relevant to him while there? (3) is it important enough to bother him there? One central rule, no per-surface exceptions.
+  const abTrip=t=>t.tzone==="abroad"||t.area==="נסיעות עבודה"||/^(elbit-trip|wf-|work-trip)/.test(t.id||"");
+  function abDoable(t){const f=t.fit||{};return !(f.appt||f.open||f.area||f.km>0||f.loc==="walk"||f.loc==="car"||(f.how||[]).includes("place")||(f.how||[]).includes("lior")||f.party==="shop"||f.party==="office");}
+  function abKeep(t){if(abForce.has(t.id)||!isOpen(t)||abTrip(t))return true;           // asked to see it, not an open task, or part of the trip
+    if(t.critical)return true;                                                             // (3) critical: tell him even if he cannot act
+    if(!abDoable(t))return false;                                                          // (1)+(2) needs him in Israel: not relevant now
+    return t.status==="waiting_other"||isUrgent(t);}                                       // (3) doable and important enough
   // 25.76 (Oren 24.11.2026): abroad, nothing that needs him in Israel (football in Herzliya, calendar events, "צא עד") is relevant; only trip items
-  function abLocalOut(L,on){return on?L.filter(t=>String(t.id||"").indexOf("cal:")!==0&&(t.tzone==="abroad"||t.area==="נסיעות עבודה"||/^(elbit-trip|wf-|work-trip)/.test(t.id||""))):L;}
+  // 25.77 (Oren 24.11.2026): ONE source of truth for "what is relevant now". allTopics = raw data (lookups, history, search);
+  // every surface that tells him what to do now (brief, window list, updates, "צא עד", calendar) reads liveTopics() / calTasks(),
+  // which apply abroad mode in one place. A new surface must use liveTopics(), never allTopics, for "now" content.
+  function liveTopics(){return abMode()?allTopics.filter(abKeep):allTopics;}
+  function abLocalOut(L,on){return on?L.filter(t=>String(t.id||"").indexOf("cal:")!==0&&abTrip(t)):L;}
   // m: "on" | "off" | "auto"
   function abSet(m){if(m===true)m="on";if(m===false)m="off";try{localStorage.removeItem("sq_abx");if(m==="auto")localStorage.removeItem("sq_abm");else localStorage.setItem("sq_abm",JSON.stringify({m,k:abCurKey(),at:Date.now()}));}catch(e){}
     if(abMode()){abLanded=false;abLand(true);toast(m==="auto"?"מצב חו״ל: אוטומטי":"מצב חו״ל פועל");}else{splitTopics();renderAll();toast(m==="auto"?"מצב חו״ל: אוטומטי (כרגע כבוי)":"מצב חו״ל כבוי. כל המשימות חזרו");}}
@@ -6613,7 +6624,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     const c=cityAt(p),pl=locPlace(),ago=Math.round((Date.now()-p.at)/60000);
     el.append(h("div",{class:"lnow"},c&&c.abroad?"✈️ בחו״ל":pl==="home"?"🏠 בבית"+(c?" ("+c.name+")":""):pl==="work"?"💼 בעבודה":c?"עכשיו ב"+c.name:"לא ליד עיר שאני מכיר",
       h("small",null,(ago<1?"עכשיו":"לפני "+ago+" דק׳")+(locBusy?" · מעדכן…":"")+" · המיקום נשאר רק במכשיר")));
-    const L=allTopics.filter(t=>isOpen(t)&&t.status!=="waiting_other"&&t.status!=="paused"&&!snoozed(t)&&!isFun(t)&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&stageOf(t)!=="home"&&stageOf(t)!=="call"&&howOf(t).includes("place"));
+    const L=liveTopics().filter(t=>isOpen(t)&&t.status!=="waiting_other"&&t.status!=="paused"&&!snoozed(t)&&!isFun(t)&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&stageOf(t)!=="home"&&stageOf(t)!=="call"&&howOf(t).includes("place"));
     const G=window.SQGate,n=ilNow(),today=ilDate();
     const row=(t,k)=>{const g=G?G.gate(hereFit(t),today,n.d,n.m):null;const tx=g&&g.kind!=="unknown"&&g.state!=="past"?G.text(g):null;
       return h("button",{type:"button",onclick:()=>{closeModal();openTask(t.id);}},h("span",{class:"lt"},h("b",null,t.title||""),tx?h("small",null,tx.head+" · "+tx.body):fitOf(t).where?h("small",null,fitOf(t).where):null),k!=null?h("span",{class:"lk"},k<1?"כאן":k+" ק״מ"):null);};
@@ -6645,7 +6656,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   const updBase=()=>Date.parse(updSeen._base||"")||0;
   // 16.4 (Oren 13.11.2026): "what's new" = only real news, never tasks that were completed, and each quest shows only its own.
   const DONE_ST=["done","promoted","archived"];
-  const newPool=q=>{const qq=q||quest;return allTopics.filter(t=>!t._deleted&&!t.background&&!absorbed(t)&&!(t.fit&&t.fit.owner==="claude")&&!DONE_ST.includes(t.status)&&!t.merged_into&&(qq==="fun"?isFun(t):!isFun(t)&&questOf(t)===qq));};
+  const newPool=q=>{const qq=q||quest;return liveTopics().filter(t=>!t._deleted&&!t.background&&!absorbed(t)&&!(t.fit&&t.fit.owner==="claude")&&!DONE_ST.includes(t.status)&&!t.merged_into&&(qq==="fun"?isFun(t):!isFun(t)&&questOf(t)===qq));};
   function isNewUpd(t){return isFresh(t)?freshOf(t):null;} // 17.5: new since the previous visit; the dot stays this visit
   function newCount(){try{return updItems().length;}catch(e){return 0;}}
   function saveSeen(){const ks=Object.keys(updSeen).filter(k=>k!=="_base");if(ks.length>300)ks.sort((a,b)=>String(updSeen[a]).localeCompare(String(updSeen[b]))).slice(0,ks.length-300).forEach(k=>delete updSeen[k]);
@@ -6799,7 +6810,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   // {last_at} once the bridge is live; until then a grey "not connected yet".
   var calEv=[],calProf={},calPlaces={},calLoc=null;
   // 24.6: today's private calendar events (personal-events.js) as pseudo tasks for the "צא עד" strip and the brief top
-  function calTasks(iso){if(!window.SQPersonal)return [];try{return SQPersonal.tasks(calEv,iso||ilDate(),{prof:calProf,places:calPlaces,loc:loc.on&&loc.last?{lat:loc.last.la,lng:loc.last.lo,at:new Date(loc.last.at).toISOString(),label:"המיקום שלך"}:calLoc,day:window.SQWorkCal?SQWorkCal.day:null});}catch(e){return [];}}
+  function calTasks(iso){if(!window.SQPersonal||abMode())return [];try{return SQPersonal.tasks(calEv,iso||ilDate(),{prof:calProf,places:calPlaces,loc:loc.on&&loc.last?{lat:loc.last.la,lng:loc.last.lo,at:new Date(loc.last.at).toISOString(),label:"המיקום שלך"}:calLoc,day:window.SQWorkCal?SQWorkCal.day:null});}catch(e){return [];}}
   var wcMeta=null,waConn=null,cfPing=null,cfReq=null,cfBusy=0;
   const CN_ICON={};document.querySelectorAll(".sbar .cx").forEach(x=>{CN_ICON[x.dataset.c]=x.querySelector("svg");});
   const GM_SLOTS=[451,631,811,991,1171];
@@ -6998,7 +7009,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   // tasks that fit at least one of the windows on day iso (strict window match, see fitsWin), best first
   // at = minute of that day when he would do it: a place / call center already closed then is dropped (timegate.js)
   function openAt(t,iso,at){if(at==null||!window.SQGate)return true;const g=window.SQGate.gate(t,iso,new Date(iso+"T12:00:00").getDay(),at);return !g||g.kind==="unknown"||(g.kind!=="closed"&&g.state!=="past");}
-  function bFit(iso,wins,at){return allTopics.filter(t=>bOk(t,iso)&&!bCrit(t)&&wins.some(w=>fitsWin(t,w,{d:new Date(iso+"T12:00:00").getDay(),s:at!=null?at:undefined}))&&openAt(t,iso,at)).sort((a,b)=>bRank(a,iso)-bRank(b,iso));}
+  function bFit(iso,wins,at){return liveTopics().filter(t=>bOk(t,iso)&&!bCrit(t)&&wins.some(w=>fitsWin(t,w,{d:new Date(iso+"T12:00:00").getDay(),s:at!=null?at:undefined}))&&openAt(t,iso,at)).sort((a,b)=>bRank(a,iso)-bRank(b,iso));}
   // a row written earlier (by Claude at 07:38 or by the app) whose task is closed / paused / snoozed since then disappears
   function liveItem(x){if(!x||!x.text)return false;if(!x.id)return true;const t=allTopics.find(z=>z.id===x.id);if(!t)return true;return isOpen(t)&&t.status!=="paused"&&!snoozed(t);}
   const cut=(s,n)=>{s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s;};
@@ -7007,7 +7018,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     const now=new Date(),y=new Date(now);y.setDate(y.getDate()-1);y.setHours(20,0,0,0);const since=y.getTime();
     const wk=now.getDay()<=4,today=ilDate();
     const it=t=>({id:t.id,text:t.title||"",sub:t.next_step||t.waiting_for||""});
-    const critical=allTopics.filter(bCrit).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
+    const critical=liveTopics().filter(bCrit).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
     const news=bNews(since).map(t=>({id:t.id,text:t.title||"",sub:t.stand||""}));
     const used=new Set([...critical,...news].map(x=>x.id));
     const pick=(wins,n)=>{const r=bFit(today,wins).filter(t=>!used.has(t.id)).slice(0,n);r.forEach(t=>used.add(t.id));return r.map(it);};
@@ -7021,7 +7032,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   function autoEve(){
     const now=new Date(),s=new Date(now);s.setHours(8,0,0,0);const since=s.getTime(),today=ilDate();
     const it=t=>({id:t.id,text:t.title||"",sub:t.next_step||t.waiting_for||""});
-    const critical=allTopics.filter(bCrit).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
+    const critical=liveTopics().filter(bCrit).slice(0,2).map(t=>({id:t.id,text:t.title||"",sub:t.critical_reason||t.next_step||""}));
     const news=bNews(since).map(t=>({id:t.id,text:t.title||"",sub:t.stand||""}));
     const used=new Set([...critical,...news].map(x=>x.id));
     const pick=(wins,n,at)=>{const r=bFit(today,wins,at).filter(t=>!used.has(t.id)).slice(0,n);r.forEach(t=>used.add(t.id));return r.map(it);};
@@ -7032,7 +7043,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     return {auto:true,headline:critical.length?cut(critical[0].text,32):way.length?"בדרך הביתה: "+cut(way[0].text,24):"לשאול את ליאור אם צריך משהו מהדרך",top:[...critical.slice(0,1).map(x=>({...x,e:"🚨"})),...way.slice(0,1).map(x=>({...x,e:"🛒"})),call[0],...night.slice(0,1).map(x=>({...x,e:"🌙"}))].slice(0,3),critical,news,way,call,night};
   }
   // news = arrived from outside since `since` (a sync from a project/scan, or created not by hand), only open life tasks
-  function bNews(since){return allTopics.filter(t=>isOpen(t)&&t.status!=="paused"&&!isFun(t)&&!isBg(t)&&t.quest!=="ai"&&!(t.project&&!t.dash)&&
+  function bNews(since){return liveTopics().filter(t=>isOpen(t)&&t.status!=="paused"&&!isFun(t)&&!isBg(t)&&t.quest!=="ai"&&!(t.project&&!t.dash)&&
     ((t.sync&&t.sync.at&&Date.parse(t.sync.at)>=since)||(t.created_at&&Date.parse(t.created_at)>=since&&!MANUAL.test(t.source||"")))).slice(0,2);}
   // 18.8: one line of the work day from the work calendar (workcal-engine.js), never the meetings themselves
   function wcLine(iso){const W=window.SQWorkCal,D=W&&W.day(iso);if(!D||D.office==null&&!D.away)return "";
@@ -7045,10 +7056,10 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   function autoX(kind,date){const used=new Set(),S=[];
     const take=(arr,n)=>{const r=arr.filter(t=>!used.has(t.id)).slice(0,n);r.forEach(t=>used.add(t.id));return r;};
     const sec=(hd,e,ts)=>{if(ts.length)S.push({h:hd,e,items:ts.map(t=>({id:t.id,text:t.title||"",sub:t.next_step||"",e}))});};
-    const crit=take(allTopics.filter(bCrit),2);sec("🚨 קריטי","🚨",crit);let head="";
+    const crit=take(liveTopics().filter(bCrit),2);sec("🚨 קריטי","🚨",crit);let head="";
     const how=t=>howOf(t);
     if(kind==="tom"||kind==="night"){const iso=addDays(date,1); // tomorrow: what has a day, deadlines, the morning before work
-      const L=allTopics.filter(t=>bOk(t,iso)&&!bCrit(t)&&!used.has(t.id));
+      const L=liveTopics().filter(t=>bOk(t,iso)&&!bCrit(t)&&!used.has(t.id));
       const dn=t=>t.day_plan&&t.day_plan.date===iso&&t.day_plan.n!=null?+t.day_plan.n:99;
       const dated=take(L.filter(t=>planDay(t)===iso).sort((a,b)=>dn(a)-dn(b)),kind==="night"?3:6);
       const dls=take(L.filter(t=>{const dl=dlOf(t);return dl&&dl.d<=addDays(iso,2);}),2);
@@ -7064,14 +7075,14 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     else if(kind==="wkend"){const iso=addDays(date,1); // Friday 13:00 to Saturday night: family, home, small things. No offices.
       const atHome=t=>{const f=fitOf(t),h0=how(t);if(Array.isArray(f.when)&&f.when.length)return ["weekend","sat_am","light","deep","family"].some(w=>fitsWin(t,w));
         return h0.length>0&&h0.every(x=>["home","phone","lior","family","pc"].includes(x))&&t.quest!=="work"&&(t.quest!=="army"||armyCls(t)==="ops");}; // 11.9: only operational Army tasks on the weekend
-      const L=allTopics.filter(t=>bOk(t,iso)&&!bCrit(t)&&atHome(t)).sort((a,b)=>bRank(a,iso)-bRank(b,iso));
+      const L=liveTopics().filter(t=>bOk(t,iso)&&!bCrit(t)&&atHome(t)).sort((a,b)=>bRank(a,iso)-bRank(b,iso));
       const fam=take(L.filter(t=>t.dash==="family"||how(t).some(x=>x==="family"||x==="lior")||(Array.isArray(fitOf(t).with)&&fitOf(t).with.some(p=>p==="lior"||p==="parents"))),3);
       const home=take(L.filter(t=>how(t).includes("home")),3);
       const small=take(L.filter(t=>sizeOf(t)==="quick"||(isOwn(t)&&sizeOf(t)!=="long")),3);
       sec("👨‍👩‍👧 משפחה","👨‍👩‍👧",fam);sec("🔧 בבית","🔧",home);sec("⚡ קטנות","⚡",small);
       head=crit.length?cut(crit[0].title,32):fam.length?"בסופ״ש: "+cut(fam[0].title,24):home.length?"בסופ״ש: "+cut(home[0].title,24):"סופ״ש רגוע, אין משהו דחוף";}
     else{const from=addDays(date,1),to=addDays(date,5); // Saturday night: Sunday to Thursday
-      const L=allTopics.filter(t=>bOk(t,to)&&!bCrit(t)&&!used.has(t.id));
+      const L=liveTopics().filter(t=>bOk(t,to)&&!bCrit(t)&&!used.has(t.id));
       const dated=L.filter(t=>planDay(t)&&planDay(t)<=to).sort((a,b)=>planDay(a)<planDay(b)?-1:planDay(a)>planDay(b)?1:bRank(a,planDay(a))-bRank(b,planDay(b))).slice(0,10);
       dated.forEach(t=>used.add(t.id));
       // 12.9 (Oren 7.11.2026): the week opens with what is urgent for Sunday morning, not with a big weekend thing.
