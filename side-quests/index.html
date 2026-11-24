@@ -4983,13 +4983,20 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   // 25.57 (Oren 22.11.2026): what he asked to see (search, a tap on an update, a link) beats the mode: it stays shown for this session
   const abForce=new Set((()=>{try{return JSON.parse(sessionStorage.getItem("sq_abforce")||"[]");}catch(e){return [];}})());
   function abWant(id){if(!id||abForce.has(id))return;abForce.add(id);try{sessionStorage.setItem("sq_abforce",JSON.stringify([...abForce].slice(-40)));}catch(e){}}
-  function abKeep(t){return abForce.has(t.id)||!isOpen(t)||t.status==="waiting_other"||!!t.critical||isUrgent(t)||t.area==="נסיעות עבודה"||t.tzone==="abroad"||/^(elbit-trip|wf-|work-trip)/.test(t.id||"");}
+  // 25.77 (Oren 24.11.2026): abroad, every item shown must pass three questions: (1) can it be done from abroad?
+  // (2) is it relevant to him while there? (3) is it important enough to bother him there? One central rule, no per-surface exceptions.
+  const abTrip=t=>t.tzone==="abroad"||t.area==="נסיעות עבודה"||/^(elbit-trip|wf-|work-trip)/.test(t.id||"");
+  function abDoable(t){const f=t.fit||{};return !(f.appt||f.open||f.area||f.km>0||f.loc==="walk"||f.loc==="car"||(f.how||[]).includes("place")||(f.how||[]).includes("lior")||f.party==="shop"||f.party==="office");}
+  function abKeep(t){if(abForce.has(t.id)||!isOpen(t)||abTrip(t))return true;           // asked to see it, not an open task, or part of the trip
+    if(t.critical)return true;                                                             // (3) critical: tell him even if he cannot act
+    if(!abDoable(t))return false;                                                          // (1)+(2) needs him in Israel: not relevant now
+    return t.status==="waiting_other"||isUrgent(t);}                                       // (3) doable and important enough
   // 25.76 (Oren 24.11.2026): abroad, nothing that needs him in Israel (football in Herzliya, calendar events, "צא עד") is relevant; only trip items
   // 25.77 (Oren 24.11.2026): ONE source of truth for "what is relevant now". allTopics = raw data (lookups, history, search);
   // every surface that tells him what to do now (brief, window list, updates, "צא עד", calendar) reads liveTopics() / calTasks(),
   // which apply abroad mode in one place. A new surface must use liveTopics(), never allTopics, for "now" content.
   function liveTopics(){return abMode()?allTopics.filter(abKeep):allTopics;}
-  function abLocalOut(L,on){return on?L.filter(t=>String(t.id||"").indexOf("cal:")!==0&&(t.tzone==="abroad"||t.area==="נסיעות עבודה"||/^(elbit-trip|wf-|work-trip)/.test(t.id||""))):L;}
+  function abLocalOut(L,on){return on?L.filter(t=>String(t.id||"").indexOf("cal:")!==0&&abTrip(t)):L;}
   // m: "on" | "off" | "auto"
   function abSet(m){if(m===true)m="on";if(m===false)m="off";try{localStorage.removeItem("sq_abx");if(m==="auto")localStorage.removeItem("sq_abm");else localStorage.setItem("sq_abm",JSON.stringify({m,k:abCurKey(),at:Date.now()}));}catch(e){}
     if(abMode()){abLanded=false;abLand(true);toast(m==="auto"?"מצב חו״ל: אוטומטי":"מצב חו״ל פועל");}else{splitTopics();renderAll();toast(m==="auto"?"מצב חו״ל: אוטומטי (כרגע כבוי)":"מצב חו״ל כבוי. כל המשימות חזרו");}}
