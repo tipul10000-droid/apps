@@ -4961,7 +4961,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   //     phone is >1.5 km from home in the 4 hours before it) until he lands home; settings/away covers trips without a flight ticket.
   //     Not sure he left = a "יצאת לשדה?" bar from 90 minutes before. A manual on/off overrides the automatic until that trip ends (sq_abm).
   //  2. Whether opening the app jumps straight to the abroad ticket (sq_abjump, default on).
-  let abHidden=0,abLanded=false,abHideAt=0,abCfgOpen=false,abCfgNew=false;
+  let abHidden=0,abAll=false,abLanded=false,abHideAt=0,abCfgOpen=false,abCfgNew=false;
   function abKey(){const tr=tripToday();return tr?String(tr.to||ilDate()):"";}
   function abWin(){const now=Date.now();let L=[];try{L=wfLive();}catch(e){return null;}
     for(const x of L){const o=x.legs[0],r=x.legs[x.legs.length-1],dep=wfMs(o.dep);if(!dep)continue;
@@ -4982,7 +4982,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   // 25.57 (Oren 22.11.2026): what he asked to see (search, a tap on an update, a link) beats the mode: it stays shown for this session
   const abForce=new Set((()=>{try{return JSON.parse(sessionStorage.getItem("sq_abforce")||"[]");}catch(e){return [];}})());
   function abWant(id){if(!id||abForce.has(id))return;abForce.add(id);try{sessionStorage.setItem("sq_abforce",JSON.stringify([...abForce].slice(-40)));}catch(e){}}
-  function abKeep(t){return abForce.has(t.id)||!isOpen(t)||!!t.critical||isUrgent(t)||t.area==="נסיעות עבודה"||t.tzone==="abroad"||/^(elbit-trip|wf-|work-trip)/.test(t.id||"");}
+  function abKeep(t){return abForce.has(t.id)||!isOpen(t)||t.status==="waiting_other"||!!t.critical||isUrgent(t)||t.area==="נסיעות עבודה"||t.tzone==="abroad"||/^(elbit-trip|wf-|work-trip)/.test(t.id||"");}
   // m: "on" | "off" | "auto"
   function abSet(m){if(m===true)m="on";if(m===false)m="off";try{localStorage.removeItem("sq_abx");if(m==="auto")localStorage.removeItem("sq_abm");else localStorage.setItem("sq_abm",JSON.stringify({m,k:abCurKey(),at:Date.now()}));}catch(e){}
     if(abMode()){abLanded=false;abLand(true);toast(m==="auto"?"מצב חו״ל: אוטומטי":"מצב חו״ל פועל");}else{splitTopics();renderAll();toast(m==="auto"?"מצב חו״ל: אוטומטי (כרגע כבוי)":"מצב חו״ל כבוי. כל המשימות חזרו");}}
@@ -5016,11 +5016,12 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     const autoTxt=w?"אוטומטי: מהיציאה לשדה ב-"+wfAt(w.lv,wfILoff(w.lv)).hm+" ("+wfAt(w.lv,wfILoff(w.lv)).day.split(" ")[1]+") ועד הנחיתה בבית":"אוטומטי: בימים של הנסיעה";
     let title,sub,cls="ab-bar";
     if(sug){cls+=" sug";title="✈️ יצאת לשדה?";sub="אם כן, נכנסים למצב חו״ל עכשיו. אוטומטית זה קורה ב-"+wfAt(w.lv,wfILoff(w.lv)).hm;}
-    else if(on){title="✈️ מצב חו״ל · "+place+(to?" עד "+to:"");sub=quest==="travel"?"רק מה שקשור לנסיעה":abHidden?`מוצגים רק דברים קריטיים מהארץ · ${abHidden} מוסתרים`:"מוצגים רק דברים קריטיים מהארץ";}
+    else if(on){title="✈️ מצב חו״ל · "+place+(to?" עד "+to:"");sub=quest==="travel"?"רק מה שקשור לנסיעה":abAll?"מוצגות כל המשימות (גם מהארץ)":abHidden?`מוצג: דחופות, קריטיות, ממתינות לאחרים ונסיעות · ${abHidden} מוסתרות (דורשות נוכחות בארץ)`:"מוצג: דחופות, קריטיות, ממתינות לאחרים ונסיעות";}
     else{cls+=" off";title="✈️ מצב חו״ל כבוי";sub=ov?"כיבית ידנית. אפשר להחזיר לאוטומטי":"עוד לא יצאת לשדה";}
     el.className=cls;
     const row=h("div",{class:"ab-row"},h("div",{class:"ab-t"},h("b",null,title),h("small",null,sub)),
       sug?h("button",{type:"button",class:"go",onclick:()=>abSet("on")},"כן, יצאתי"):(on&&quest!=="travel"?h("button",{type:"button",class:"go",onclick:()=>{abLanded=false;abLand(true);}},"✈️ לנסיעה"):null),
+      (on&&quest!=="travel"&&(abHidden||abAll)?h("button",{type:"button",class:"go",onclick:()=>{abAll=!abAll;splitTopics();renderAll();renderAbBar();}},abAll?"הסתר שוב":"הצג "+abHidden+" מוסתרות"):null),
       abSw(on,()=>abSet(on?"off":"on"),"מצב חו״ל"),
       h("button",{type:"button",class:"ab-g"+(abCfgOpen?" on":""),"aria-label":"הגדרות מצב חו״ל","aria-expanded":abCfgOpen?"true":"false",onclick:()=>{abCfgOpen=!abCfgOpen;abCfgNew=abCfgOpen;renderAbBar();}},"⚙"));
     const cfg=abCfgOpen?h("div",{class:"ab-cfg"+(abCfgNew?" sqgrow":"")},
@@ -5031,7 +5032,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       sug?h("button",{type:"button",class:"ab-no",onclick:()=>{try{sessionStorage.setItem("sq_abns","wf:"+w.d.id);}catch(e){}renderAbBar();}},"עוד לא יצאתי"):null):null;
     el.replaceChildren(row,...(cfg?[cfg]:[]));abCfgNew=false;
     [...row.childNodes].forEach(n=>{if(n.nodeType===3&&n.textContent==="null")n.remove();});}
-  function splitTopics(){const tq=quest==="fun"?"side":quest;const zz=tq==="travel"?tvZoneNow():"";topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t))&&!(absorbed(t)&&isOpen(t))&&(!zz||tzOf(t)===zz)&&(zz!=="abroad"||isWorkTrip(t)===(abTabNow()==="work")));funTopics=allTopics.filter(isFun);if(abMode()&&tq!=="travel"){const n=topics.length;topics=topics.filter(abKeep);abHidden=n-topics.length;}else abHidden=0;}
+  function splitTopics(){const tq=quest==="fun"?"side":quest;const zz=tq==="travel"?tvZoneNow():"";topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t))&&!(absorbed(t)&&isOpen(t))&&(!zz||tzOf(t)===zz)&&(zz!=="abroad"||isWorkTrip(t)===(abTabNow()==="work")));funTopics=allTopics.filter(isFun);if(abMode()&&tq!=="travel"&&!abAll){const n=topics.length;topics=topics.filter(abKeep);abHidden=n-topics.length;}else abHidden=0;}
   function renderQnav(){
     const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)&&!isBg(t)&&!absorbed(t)).length;
     const vis=Object.keys(QUESTS).filter(q=>!qHidden(q));$("qnav").dataset.n=vis.length;
