@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.75";window.SQ_BUILD_AT="23.11.2026 09:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.76";window.SQ_BUILD_AT="24.11.2026 19:00";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1172,6 +1172,7 @@ details.tv-wkc:not([open]){gap:0}
 #abBar button{flex:none;font:inherit;font-size:12.5px;font-weight:800;border-radius:10px;padding:8px 10px;cursor:pointer;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.14);color:inherit}
 #abBar.off button{border-color:var(--line);background:var(--surface)}
 #abBar button.go{background:#FFC857;color:#3A2600;border-color:#FFC857}
+#abBar button.ab-hid{width:104px;white-space:nowrap;text-align:center;transition:background .15s,color .15s}#abBar button.ab-hid.on{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.7)}
 #abBar button.ab-g{width:36px;height:36px;padding:0;font-size:17px;line-height:1}#abBar button.ab-g.on{background:rgba(255,255,255,.32)}
 #abBar.off button.ab-g.on{background:var(--sunk)}
 #abBar button.ab-sw{position:relative;width:46px;height:28px;padding:0;border-radius:999px;background:rgba(0,0,0,.22);border-color:rgba(255,255,255,.5)}
@@ -4961,7 +4962,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   //     phone is >1.5 km from home in the 4 hours before it) until he lands home; settings/away covers trips without a flight ticket.
   //     Not sure he left = a "יצאת לשדה?" bar from 90 minutes before. A manual on/off overrides the automatic until that trip ends (sq_abm).
   //  2. Whether opening the app jumps straight to the abroad ticket (sq_abjump, default on).
-  let abHidden=0,abAll=false,abLanded=false,abHideAt=0,abCfgOpen=false,abCfgNew=false;
+  let abHidden=0,abCnt=0,abAll=false,abLanded=false,abHideAt=0,abCfgOpen=false,abCfgNew=false;
   function abKey(){const tr=tripToday();return tr?String(tr.to||ilDate()):"";}
   function abWin(){const now=Date.now();let L=[];try{L=wfLive();}catch(e){return null;}
     for(const x of L){const o=x.legs[0],r=x.legs[x.legs.length-1],dep=wfMs(o.dep);if(!dep)continue;
@@ -4983,6 +4984,8 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   const abForce=new Set((()=>{try{return JSON.parse(sessionStorage.getItem("sq_abforce")||"[]");}catch(e){return [];}})());
   function abWant(id){if(!id||abForce.has(id))return;abForce.add(id);try{sessionStorage.setItem("sq_abforce",JSON.stringify([...abForce].slice(-40)));}catch(e){}}
   function abKeep(t){return abForce.has(t.id)||!isOpen(t)||t.status==="waiting_other"||!!t.critical||isUrgent(t)||t.area==="נסיעות עבודה"||t.tzone==="abroad"||/^(elbit-trip|wf-|work-trip)/.test(t.id||"");}
+  // 25.76 (Oren 24.11.2026): abroad, nothing that needs him in Israel (football in Herzliya, calendar events, "צא עד") is relevant; only trip items
+  function abLocalOut(L,on){return on?L.filter(t=>String(t.id||"").indexOf("cal:")!==0&&(t.tzone==="abroad"||t.area==="נסיעות עבודה"||/^(elbit-trip|wf-|work-trip)/.test(t.id||""))):L;}
   // m: "on" | "off" | "auto"
   function abSet(m){if(m===true)m="on";if(m===false)m="off";try{localStorage.removeItem("sq_abx");if(m==="auto")localStorage.removeItem("sq_abm");else localStorage.setItem("sq_abm",JSON.stringify({m,k:abCurKey(),at:Date.now()}));}catch(e){}
     if(abMode()){abLanded=false;abLand(true);toast(m==="auto"?"מצב חו״ל: אוטומטי":"מצב חו״ל פועל");}else{splitTopics();renderAll();toast(m==="auto"?"מצב חו״ל: אוטומטי (כרגע כבוי)":"מצב חו״ל כבוי. כל המשימות חזרו");}}
@@ -5016,12 +5019,12 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     const autoTxt=w?"אוטומטי: מהיציאה לשדה ב-"+wfAt(w.lv,wfILoff(w.lv)).hm+" ("+wfAt(w.lv,wfILoff(w.lv)).day.split(" ")[1]+") ועד הנחיתה בבית":"אוטומטי: בימים של הנסיעה";
     let title,sub,cls="ab-bar";
     if(sug){cls+=" sug";title="✈️ יצאת לשדה?";sub="אם כן, נכנסים למצב חו״ל עכשיו. אוטומטית זה קורה ב-"+wfAt(w.lv,wfILoff(w.lv)).hm;}
-    else if(on){title="✈️ מצב חו״ל · "+place+(to?" עד "+to:"");sub=quest==="travel"?"רק מה שקשור לנסיעה":abAll?"מוצגות כל המשימות (גם מהארץ)":abHidden?`מוצג: דחופות, קריטיות, ממתינות לאחרים ונסיעות · ${abHidden} מוסתרות (דורשות נוכחות בארץ)`:"מוצג: דחופות, קריטיות, ממתינות לאחרים ונסיעות";}
+    else if(on){title="✈️ מצב חו״ל · "+place+(to?" עד "+to:"");sub=quest==="travel"?"רק מה שקשור לנסיעה":abCnt?`מוצג: דחופות, קריטיות, ממתינות לאחרים ונסיעות · ${abCnt} דורשות נוכחות בארץ`:"מוצג: דחופות, קריטיות, ממתינות לאחרים ונסיעות";}
     else{cls+=" off";title="✈️ מצב חו״ל כבוי";sub=ov?"כיבית ידנית. אפשר להחזיר לאוטומטי":"עוד לא יצאת לשדה";}
     el.className=cls;
     const row=h("div",{class:"ab-row"},h("div",{class:"ab-t"},h("b",null,title),h("small",null,sub)),
       sug?h("button",{type:"button",class:"go",onclick:()=>abSet("on")},"כן, יצאתי"):(on&&quest!=="travel"?h("button",{type:"button",class:"go",onclick:()=>{abLanded=false;abLand(true);}},"✈️ לנסיעה"):null),
-      (on&&quest!=="travel"&&(abHidden||abAll)?h("button",{type:"button",class:"go",onclick:()=>{abAll=!abAll;splitTopics();renderAll();renderAbBar();}},abAll?"הסתר שוב":"הצג "+abHidden+" מוסתרות"):null),
+      (on&&quest!=="travel"&&abCnt?h("button",{type:"button",class:"go ab-hid"+(abAll?" on":""),"aria-pressed":abAll?"true":"false",onclick:()=>{abAll=!abAll;splitTopics();renderAll();renderAbBar();}},"מוסתרות "+abCnt):null),
       abSw(on,()=>abSet(on?"off":"on"),"מצב חו״ל"),
       h("button",{type:"button",class:"ab-g"+(abCfgOpen?" on":""),"aria-label":"הגדרות מצב חו״ל","aria-expanded":abCfgOpen?"true":"false",onclick:()=>{abCfgOpen=!abCfgOpen;abCfgNew=abCfgOpen;renderAbBar();}},"⚙"));
     const cfg=abCfgOpen?h("div",{class:"ab-cfg"+(abCfgNew?" sqgrow":"")},
@@ -5032,7 +5035,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       sug?h("button",{type:"button",class:"ab-no",onclick:()=>{try{sessionStorage.setItem("sq_abns","wf:"+w.d.id);}catch(e){}renderAbBar();}},"עוד לא יצאתי"):null):null;
     el.replaceChildren(row,...(cfg?[cfg]:[]));abCfgNew=false;
     [...row.childNodes].forEach(n=>{if(n.nodeType===3&&n.textContent==="null")n.remove();});}
-  function splitTopics(){const tq=quest==="fun"?"side":quest;const zz=tq==="travel"?tvZoneNow():"";topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t))&&!(absorbed(t)&&isOpen(t))&&(!zz||tzOf(t)===zz)&&(zz!=="abroad"||isWorkTrip(t)===(abTabNow()==="work")));funTopics=allTopics.filter(isFun);if(abMode()&&tq!=="travel"&&!abAll){const n=topics.length;topics=topics.filter(abKeep);abHidden=n-topics.length;}else abHidden=0;}
+  function splitTopics(){const tq=quest==="fun"?"side":quest;const zz=tq==="travel"?tvZoneNow():"";topics=allTopics.filter(t=>!isFun(t)&&questOf(t)===tq&&!(isBg(t)&&isOpen(t))&&!(absorbed(t)&&isOpen(t))&&(!zz||tzOf(t)===zz)&&(zz!=="abroad"||isWorkTrip(t)===(abTabNow()==="work")));funTopics=allTopics.filter(isFun);if(abMode()&&tq!=="travel"){const n=topics.length,kept=topics.filter(abKeep);abCnt=n-kept.length;if(!abAll)topics=kept;abHidden=abAll?0:abCnt;}else{abHidden=0;abCnt=0;}}
   function renderQnav(){
     const cnt=q=>q==="fun"?funTopics.filter(t=>t.status!=="archived"&&t.status!=="done").length:allTopics.filter(t=>!isFun(t)&&questOf(t)===q&&isOpen(t)&&!isBg(t)&&!absorbed(t)).length;
     const vis=Object.keys(QUESTS).filter(q=>!qHidden(q));$("qnav").dataset.n=vis.length;
@@ -6124,8 +6127,8 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   // 9.9 (Oren 6.11.2026): "צא עד Y, סוגרים ב-X" for today's tasks that depend on opening hours (timegate.js; same math as the push)
   let gateOpen=false;
   function renderGate(){const el=document.getElementById("tgate");if(!el||!window.SQGate)return;
-    const n=ilNow(),G=window.SQGate,today=ilDate(),esc=v=>String(v==null?"":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
-    updLocBtn();const L=G.list([...allTopics.map(hereFit),...calTasks(today)],today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past"&&g.by-n.m<=(String(g.id).startsWith("cal:")?240:180));
+    const n=ilNow(),G=window.SQGate,today=ilDate(),abx=abMode(),esc=v=>String(v==null?"":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+    updLocBtn();const L=G.list(abLocalOut([...allTopics.map(hereFit),...calTasks(today)],abx),today,n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!(t.fit&&t.fit.owner==="claude")&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past"&&g.by-n.m<=(String(g.id).startsWith("cal:")?240:180));
     if(!L.length){el.hidden=true;el.innerHTML="";return;}
     const left=g=>{const m=g.by-n.m;return m<=0?"עכשיו!":m<60?`עוד ${m} דק׳`:`עוד ${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} ש׳`;};
     const L4=L.slice(0,4);el.innerHTML=L4.map((g,i)=>{const tx=G.text(g);const cls=g.closed?"closed":g.state;return `<button type="button" class="tg ${cls}${i?" tgx":""}" data-id="${esc(g.id)}"><span class="tg-t"><div class="tg-h">${esc(tx.head)} · ${esc(g.title)}</div><div class="tg-s">${esc(tx.body)}${g.est?" (שעות משוערות)":""}</div></span>${g.closed?"":`<span class="tg-c">${left(g)}</span>`}</button>`+(i===0&&L4.length>1?`<button type="button" class="tgmore" aria-expanded="${gateOpen}"><span>${gateOpen?"פחות":"עוד "+(L4.length-1)+" היום"}</span><span class="fc" aria-hidden="true">‹</span></button>`:"");}).join("");
@@ -7174,7 +7177,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     :[["critical","🚨"],["now","📞"],["news","🆕"],...(errandsOn?[["errands","🛒"]]:[]),["work","⚡"],["evening","🛒"]];}
   // 10.0: today's "צא עד" deadlines always lead the brief (timegate.js)
   function gateTop(){if(!window.SQGate)return [];const n=ilNow(),G=window.SQGate;
-    return G.list([...allTopics,...calTasks()],ilDate(),n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past").slice(0,2)
+    return G.list(abLocalOut([...allTopics,...calTasks()],abMode()),ilDate(),n.d,n.m,t=>OPEN.includes(t.status||"active")&&t.status!=="paused"&&!t.background&&!snoozed(t)&&!isFun(t)).filter(g=>g.state!=="past").slice(0,2)
       .map(g=>{const tx=G.text(g);return {text:`${tx.head.replace(/^\S+\s/,"")} · ${g.title}`,id:g.id,e:g.closed?"🚫":g.call?"📞":"🚗"};});}
   function briefTop(b,md){const g=md==="eve"?[]:gateTop(),gi=new Set(g.map(x=>x.id));return [...g,...briefTop0(b,md).filter(x=>!x.id||!gi.has(x.id))].slice(0,3);}
   function briefTop0(b,md){const own=(Array.isArray(b.top)?b.top:[]).filter(liveItem);if(own.length)return own.slice(0,3);
