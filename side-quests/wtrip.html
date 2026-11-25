@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="nozoom.js?v=3"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#123B45">
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.WT_BUILD="1.0";window.SQ_WT_ID=(new URLSearchParams(location.search).get("id")||"").replace(/[^a-z0-9_-]/gi,"");window.SQ_DASH="wtrip-"+window.SQ_WT_ID;</script>
+<script src="sq-db.js?v=10"></script>
+<title>נסיעת עבודה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Rubik:wght@500;700;800&display=swap">
+<style>
+/* מיני דשבורד לנסיעת עבודה (25.11.2026, אורן): כל האפשרויות של נסיעה אחת במקום אחד, לבחירה לפי מזג האוויר או מצב הרוח:
+   טיסות וחלופות, מלונות, ספא, מסלולים, מזג אוויר. לכל פריט ציון Google, Google Maps, זמן נסיעה, מחיר ופירוט.
+   הנתונים לא בקוד (מאגר ציבורי): sq_docs, collection work_flights, השדה board במסמך של הנסיעה (?id=wf-YYYY-MM-DD).
+   board {title, sub, flag, as_of, picks[{e,h,s}], sections[{id, i, h, sub, role, note, items[{e, h, sub, pick, tag, rate, n, drive, price,
+   when, text, rows[[k,v]], pros[], cons[], q (Google Maps search), dir {o, d}, url, url_l}]}]}. הדף רק מציג, לא מזמין ולא קונה כלום. */
+:root{
+  --bg:#F1F5F5; --surface:#FFFFFF; --sunk:#E5ECEC; --ink:#122126; --muted:#56676C; --line:#D3DEDF;
+  --hero:#123B45; --hero2:#1F5E5B; --hero-ink:#F1F7F7; --hero-muted:#B7CFCF; --accent:#F2B84B;
+  --good:#1F8457; --good-soft:#DCF1E5; --warn:#A35C0B; --warn-soft:#FBEAD2; --link:#17639E; --pick:#1F8457;
+  --f-display:"Rubik","Assistant",system-ui,sans-serif; --f-body:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1517; --surface:#162124; --sunk:#1E2C30; --ink:#E7F0F0; --muted:#9FB2B5; --line:#2A3A3E;
+  --hero:#0F2C33; --hero2:#1A4A48; --hero-ink:#ECF5F5; --hero-muted:#A6C2C2; --good:#5CC88E; --good-soft:#15301F; --warn:#EBA654; --warn-soft:#3A2814; --link:#86BEEA; --pick:#5CC88E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1517; --surface:#162124; --sunk:#1E2C30; --ink:#E7F0F0; --muted:#9FB2B5; --line:#2A3A3E;
+  --hero:#0F2C33; --hero2:#1A4A48; --hero-ink:#ECF5F5; --hero-muted:#A6C2C2; --good:#5CC88E; --good-soft:#15301F; --warn:#EBA654; --warn-soft:#3A2814; --link:#86BEEA; --pick:#5CC88E; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;direction:rtl}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 64px}
+.hero{background:linear-gradient(160deg,var(--hero),var(--hero2));color:var(--hero-ink);padding:16px 16px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+.hero .in{max-width:760px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.top .back{font-size:12.5px;color:var(--hero-muted)}
+.hero h1{font-family:var(--f-display);font-size:23px;margin:10px 0 2px;line-height:1.25}
+.hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
+h2{font-family:var(--f-display)}
+section{margin-top:18px}
+.sh{display:flex;align-items:center;gap:8px}
+.sh h2{font-size:19px;margin:0}
+.sh small{color:var(--muted);font-size:13px}
+.note{font-size:14px;color:var(--muted);background:var(--sunk);border-radius:12px;padding:9px 12px;margin:8px 0 4px}
+.picks{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin-top:8px;overflow:hidden}
+.pk1{display:flex;gap:10px;align-items:flex-start;padding:11px 14px}
+.pk1+.pk1{border-top:1px solid var(--line)}
+.pk1 .e{flex:none;width:26px;text-align:center;font-size:18px;line-height:1.4}
+.pk1 b{display:block;font-size:15px}
+.pk1 span{display:block;font-size:13.5px;color:var(--muted)}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin-top:8px;overflow:hidden}
+details.it+details.it{border-top:1px solid var(--line)}
+details.it>summary{list-style:none;display:flex;gap:10px;align-items:center;padding:11px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:56px}
+details.it>summary::-webkit-details-marker{display:none}
+.it .e{flex:none;width:30px;height:30px;border-radius:9px;background:var(--sunk);display:flex;align-items:center;justify-content:center;font-size:17px}
+.it.pick .e{background:var(--good-soft);color:var(--pick)}
+.it .t{flex:1;min-width:0}
+.it .t b{font-size:15.5px;display:block;line-height:1.3}
+.it .t small{display:block;font-size:13px;color:var(--muted);line-height:1.35;margin-top:2px}
+.it .tg{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:1px 8px;margin-inline-start:6px;vertical-align:2px;background:var(--sunk);color:var(--muted)}
+.it.pick .tg{background:var(--good-soft);color:var(--pick)}
+.it .ch{flex:none;color:var(--muted);font-size:19px;transition:transform .2s}
+details.it[open] .ch{transform:rotate(-90deg)}
+.it .b{padding:0 14px 14px 14px;padding-inline-start:54px;animation:wtin .22s ease-out}
+@keyframes wtin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.it .b p{margin:0 0 8px;font-size:14.5px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:14px;margin:4px 0 8px}
+.kv span{color:var(--muted);white-space:nowrap}
+.pc{margin:4px 0 8px;padding:0;list-style:none;font-size:14px}
+.pc li{padding-inline-start:20px;position:relative;margin:2px 0}
+.pc li::before{position:absolute;inset-inline-start:0;font-weight:800}
+.pc.pro li::before{content:"✓";color:var(--good)}
+.pc.con li::before{content:"✕";color:var(--warn)}
+.acts{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:6px}
+.acts a{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:40px;font-weight:800;font-size:13.5px;color:var(--link);text-decoration:none;white-space:nowrap;padding:4px 6px}
+.acts a+a{border-inline-start:1px solid var(--line)}
+.acts svg{width:15px;height:15px;flex:none}
+.rt{color:#C68A00;font-weight:800}
+@media (prefers-color-scheme: dark){.rt{color:#F2B84B}}
+.empty{padding:60px 0;text-align:center;color:var(--muted)}
+footer{margin-top:28px;font-size:12.5px;color:var(--muted);text-align:center}
+</style>
+<link rel="stylesheet" href="dash-back.css?v=10">
+<script src="dash-sub.js?v=11" defer></script>
+<script>if(window.self!==window.top)document.documentElement.classList.add("embed");</script>
+<script src="sq-icons.js?v=2"></script>
+</head>
+<body>
+<header class="hero"><div class="in" id="hero"><div class="top"><a class="sqhome" href="./#travel"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a></div><h1>נסיעת עבודה</h1></div></header>
+<div class="wrap"><main id="app"><div class="empty">טוען…</div></main><footer id="foot"></footer></div>
+<script>
+(function(){
+  "use strict";
+  const ID=window.SQ_WT_ID;
+  const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const safe=u=>/^https:\/\//i.test(String(u||""))?String(u):"";
+  const PIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg>';
+  const gmq=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
+  const gmd=d=>"https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(d.o)+"&destination="+encodeURIComponent(d.d)+"&travelmode=driving";
+  function meta(x){const m=[];
+    if(x.rate)m.push('<span class="rt">★ '+esc(x.rate)+"</span>"+(x.n?" ("+esc(x.n)+")":""));
+    if(x.drive)m.push("🚗 "+esc(x.drive));if(x.price)m.push(esc(x.price));if(x.when)m.push(esc(x.when));
+    return m.join(" · ");}
+  function item(x,k){
+    const a=[];
+    if(x.q)a.push('<a href="'+esc(gmq(x.q))+'" target="_blank" rel="noopener">'+PIN+'<span dir="ltr">Google Maps</span></a>');
+    if(x.dir&&x.dir.o&&x.dir.d)a.push('<a href="'+esc(gmd(x.dir))+'" target="_blank" rel="noopener">🧭 מסלול נסיעה</a>');
+    if(safe(x.url))a.push('<a href="'+esc(safe(x.url))+'" target="_blank" rel="noopener">'+esc(x.url_l||"אתר")+" ›</a>");
+    const rows=Array.isArray(x.rows)&&x.rows.length?'<div class="kv">'+x.rows.map(r=>"<span>"+esc(r[0])+"</span><div>"+esc(r[1])+"</div>").join("")+"</div>":"";
+    const pc=(arr,c)=>Array.isArray(arr)&&arr.length?'<ul class="pc '+c+'">'+arr.map(t=>"<li>"+esc(t)+"</li>").join("")+"</ul>":"";
+    return '<details class="it'+(x.pick?" pick":"")+'" data-sq-item="'+esc(k)+'"><summary><span class="e" aria-hidden="true">'+esc(x.e||"•")+'</span><span class="t"><b>'+esc(x.h)+
+      (x.tag||x.pick?'<span class="tg">'+esc(x.tag||"הבחירה")+"</span>":"")+"</b>"+(meta(x)?"<small>"+meta(x)+"</small>":"")+(x.sub?"<small>"+esc(x.sub)+"</small>":"")+
+      '</span><span class="ch" aria-hidden="true">‹</span></summary><div class="b">'+(x.text?"<p>"+esc(x.text)+"</p>":"")+rows+pc(x.pros,"pro")+pc(x.cons,"con")+(a.length?'<div class="acts">'+a.join("")+"</div>":"")+"</div></details>";
+  }
+  function draw(d){
+    const B=d&&d.board;
+    if(!B){document.getElementById("app").innerHTML='<div class="empty">אין עדיין מיני דשבורד לנסיעה הזו</div>';return;}
+    document.title=B.title||d.title||"נסיעת עבודה";
+    document.getElementById("hero").innerHTML='<div class="top"><a class="sqhome" href="./#travel"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">'+(B.as_of?"עודכן "+esc(B.as_of):"")+"</span></div>"+
+      "<h1>"+esc((B.flag||d.flag||"")+" "+(B.title||d.title||""))+"</h1>"+(B.sub?'<p class="sub">'+esc(B.sub)+"</p>":"");
+    const H=[];
+    if(Array.isArray(B.picks)&&B.picks.length)H.push('<section class="calm-off" data-role="primary"><div class="sh"><h2>'+esc(B.picks_h||"התוכנית כרגע")+'</h2></div><div class="picks">'+
+      B.picks.map(p=>'<div class="pk1"><span class="e" aria-hidden="true">'+esc(p.e||"•")+"</span><div><b>"+esc(p.h)+"</b>"+(p.s?"<span>"+esc(p.s)+"</span>":"")+"</div></div>").join("")+"</div></section>");
+    (Array.isArray(B.sections)?B.sections:[]).forEach(s=>{const it=(Array.isArray(s.items)?s.items:[]).filter(x=>x&&x.h);if(!it.length&&!s.note)return;
+      H.push('<section data-role="'+esc(s.role||"ref")+'"><div class="sh"><h2>'+esc((s.i?s.i+" ":"")+s.h)+"</h2>"+(s.sub?"<small>"+esc(s.sub)+"</small>":"")+"</div>"+
+        (s.note?'<div class="note">'+esc(s.note)+"</div>":"")+(it.length?'<div class="list">'+it.map((x,i)=>item(x,(s.id||"s")+":"+(x.id||i))).join("")+"</div>":"")+"</section>");});
+    document.getElementById("app").innerHTML=H.join("");
+    document.getElementById("foot").textContent="רק מידע לבחירה. שום דבר לא מוזמן מכאן.";
+    if(window.SQCalm&&SQCalm.run)SQCalm.run();
+  }
+  window.claude.use("db").then(db=>{if(!db)return;
+    db.collection("work_flights").onSnapshot(s=>{const x=s.docs.find(z=>z.id===ID);const d=x?x.data():null;
+      if(!d||d._deleted){document.getElementById("app").innerHTML='<div class="empty">הנסיעה לא נמצאה</div>';return;}draw(d);});});
+})();
+</script>
+<script src="sq-tel.js?v=3" defer></script>
+<script src="sq-calm.js?v=3"></script>
+</body>
+</html>
