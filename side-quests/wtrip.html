@@ -38,6 +38,7 @@ body{color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;d
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .top .back{font-size:12.5px;color:var(--hero-muted)}
 .hero h1{font-family:var(--f-display);font-size:23px;margin:10px 0 2px;line-height:1.25}
+.hero .stg{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:800;border-radius:999px;padding:3px 11px;background:rgba(255,255,255,.16);color:var(--hero-ink)}
 .hero .sub{color:var(--hero-muted);font-size:14.5px;margin:0}
 h2{font-family:var(--f-display)}
 section{margin-top:18px}
@@ -120,7 +121,7 @@ footer{margin-top:28px;font-size:12.5px;color:var(--muted);text-align:center}
     if(!B){document.getElementById("app").innerHTML='<div class="empty">אין עדיין מיני דשבורד לנסיעה הזו</div>';return;}
     document.title=B.title||d.title||"נסיעת עבודה";
     document.getElementById("hero").innerHTML='<div class="top"><a class="sqhome" href="./#travel"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a><span class="back">'+(B.as_of?"עודכן "+esc(B.as_of):"")+"</span></div>"+
-      "<h1>"+esc((B.flag||d.flag||"")+" "+(B.title||d.title||""))+"</h1>"+(B.sub?'<p class="sub">'+esc(B.sub)+"</p>":"");
+      "<h1>"+esc((B.flag||d.flag||"")+" "+(B.title||d.title||""))+"</h1>"+'<span class="stg">'+(d.planned?"🧭 תכנון תיאורטי · אפשרויות פתוחות, עוד בלי כרטיסים":"🧾 תכנון מעשי · הוזמן")+"</span>"+(B.sub?'<p class="sub">'+esc(B.sub)+"</p>":"");
     const H=[];
     if(Array.isArray(B.picks)&&B.picks.length)H.push('<section class="calm-off" data-role="primary"><div class="sh"><h2>'+esc(B.picks_h||"התוכנית כרגע")+'</h2></div><div class="picks">'+
       B.picks.map(p=>'<div class="pk1"><span class="e" aria-hidden="true">'+esc(p.e||"•")+"</span><div><b>"+esc(p.h)+"</b>"+(p.s?"<span>"+esc(p.s)+"</span>":"")+"</div></div>").join("")+"</div></section>");
