@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.79";window.SQ_BUILD_AT="25.11.2026 21:00";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.80";window.SQ_BUILD_AT="25.11.2026 22:00";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1189,10 +1189,32 @@ details.tv-wkc:not([open]){gap:0}
 #abBar.off .abm-seg button+button{border-inline-start-color:var(--line)}
 #abBar .abm-seg button.on{background:#FFC857;color:#3A2600}
 #abBar button.ab-no{justify-self:start;background:transparent}
-.wt-act{display:grid;gap:0;border:1.5px solid color-mix(in srgb,var(--qlead) 60%,transparent);border-radius:20px;overflow:hidden;background:var(--surface);margin-bottom:14px}
-.wt-act>*{margin:0!important;border-radius:0!important;box-shadow:none!important}.wt-act>*+*{border-top:1px solid var(--line)}
-.wt-act .wfTop .wft,.wt-act .wfTop .wft>summary{border-radius:0!important;box-shadow:none!important}.wt-act .ab-bank,.wt-act .wf-s{border-radius:0}
-.wt-act>.tv-sec-h{padding:12px 14px 4px}.wt-act .tv-wkc{border-radius:0}
+.wt-act{position:relative;border:0!important;background:none!important;overflow:visible!important;margin-bottom:22px}
+.wt-pass{position:relative;border-radius:22px 22px 0 0;padding:16px 18px 20px;color:#fff;background:linear-gradient(135deg,color-mix(in srgb,var(--qlead) 92%,#000) 0%,color-mix(in srgb,var(--qlead) 55%,#0b1d3a) 100%);overflow:hidden;box-shadow:0 8px 22px color-mix(in srgb,var(--qlead) 35%,transparent)}
+.wt-pass:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 0,rgba(255,255,255,.22),transparent 55%);pointer-events:none}
+.wt-pt{display:flex;justify-content:space-between;align-items:center;font-size:12px;position:relative}
+.wt-chip{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.45);padding:3px 10px;border-radius:99px;font-weight:800;letter-spacing:.3px}
+.wt-day{opacity:.9;font-weight:700}
+.wt-pr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin:14px 0 10px;position:relative;direction:ltr}
+.wt-pr b{font:800 32px/1 var(--f-display,inherit);letter-spacing:1px}
+.wt-arc{position:relative;height:34px}
+.wt-arc i{position:absolute;left:0;right:0;top:50%;border-top:2px dashed rgba(255,255,255,.6);border-radius:50%/100% 100% 0 0;height:0;transform:translateY(-50%)}
+.wt-pl{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;color:#fff;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.wt-pl svg{width:100%;height:100%;transform:rotate(-45deg) scaleX(-1)}
+.wt-pm{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:700;position:relative}
+.wt-body{position:relative;display:grid;border:1.5px solid color-mix(in srgb,var(--qlead) 60%,transparent);border-top:0;border-radius:0 0 22px 22px;overflow:hidden;background:var(--surface);margin-top:0}
+.wt-body:before{content:"";position:absolute;top:0;left:14px;right:14px;border-top:2px dashed color-mix(in srgb,var(--qlead) 55%,transparent);z-index:2}
+.wt-body>*{margin:0!important;border-radius:0!important;box-shadow:none!important}.wt-body>*+*{border-top:1px solid var(--line)}
+.wt-body>*:first-child{padding-top:6px}
+.wt-body .wfTop .wft,.wt-body .wfTop .wft>summary{border-radius:0!important;box-shadow:none!important}.wt-body .ab-bank,.wt-body .wf-s{border-radius:0}.wt-body .tv-wkc{border-radius:0}
+.wt-act:before,.wt-act:after{content:"";position:absolute;top:calc(var(--passH,96px) - 6px);width:18px;height:18px;border-radius:50%;background:var(--bg,var(--sunk));z-index:3;display:none}
+.wt-band{display:flex;align-items:center;gap:10px;margin:26px 0 12px;padding:10px 12px;border-radius:14px;background:var(--sunk);border-inline-start:5px solid var(--bc,var(--qlead));position:relative}
+.wt-band:after{content:"";position:absolute;inset-inline:0;bottom:-7px;height:2px;background:linear-gradient(90deg,var(--bc,var(--qlead)),transparent);opacity:.5;border-radius:2px}
+.wt-bi{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;background:var(--bc,var(--qlead));color:#fff;font-size:17px}
+.wt-bi svg{width:18px;height:18px;color:#fff;stroke:#fff}
+.wt-bt{flex:1;min-width:0;display:grid;gap:1px}.wt-bt b{font-size:15px;font-weight:800;color:var(--ink)}.wt-bt small{font-size:12px;color:var(--mute,var(--ink));opacity:.75;line-height:1.3}
+.wt-band .n{flex:none;min-width:26px;text-align:center;padding:3px 8px;border-radius:99px;background:var(--bc,var(--qlead));color:#fff;font-weight:800;font-size:13px}
+.wt-band.act{--bc:#16a34a}.wt-band.pra{--bc:#2563eb}.wt-band.the{--bc:#a855f7}.wt-band.gen{--bc:#d97706}
 .wt-pra,.wt-the{display:grid;gap:10px;margin-bottom:14px}
 .wt-th{border:1px solid var(--line);border-radius:18px;background:var(--surface);overflow:hidden}
 .wt-thb{display:flex;align-items:center;gap:12px;width:100%;min-height:76px;padding:14px;background:none;border:0;color:var(--ink);font:inherit;text-align:start;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -6037,6 +6059,15 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   //  active (only while travelling; one wrapper: now + the flight home folded + the road back) -> practical planning (flights/hotels booked)
   //  -> theoretical planning (options open, no tickets: a card that opens its own mini dashboard full screen) | fixed topics (types, rental car, road stops).
   //  A task/reminder belongs to one trip through topic.wf = "<work_flights id>" and shows only inside that trip; the rest are the fixed topics.
+  // 25.80 (Oren 25.11.2026): bold zone bands + a boarding-pass header for the active trip
+  const WT_PLANE='<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M58 30 38 24 24 6h-6l7 19-13 4-5-6H0l4 11-4 11h1l5-6 13 4-7 19h6l14-18 20-6c4-1 6-3 6-5s-2-4-6-5z"/></svg>';
+  function wtBand(t,n,tone){const m=String(t).match(/^(\S+)\s+(.*)$/),ic=m?m[1]:"",tx=m?m[2]:String(t),p=tx.split(" · ");
+    return h("div",{class:"wt-band "+(tone||"")},h("span",{class:"wt-bi"},ic),h("span",{class:"wt-bt"},h("b",null,p[0]),p[1]?h("small",null,p.slice(1).join(" · ")):null),n!=null&&n!==""?h("span",{class:"n"},String(n)):null);}
+  function wtPass(x){const L=x.legs,o=L[0],r=L[L.length-1],now=Date.now(),a=(o.from&&o.from.code)||"TLV",b=(o.to&&o.to.code)||"",d0=wfDay(o.dep),d1=wfDay(r.dep||r.arr);
+    const day=Math.max(1,Math.floor((now-(wfMs(o.dep)||now))/864e5)+1),tot=Math.max(day,Math.round(((wfMs(r.dep)||now)-(wfMs(o.dep)||now))/864e5)+1);
+    return h("div",{class:"wt-pass"},h("div",{class:"wt-pt"},h("span",{class:"wt-chip"},"נסיעה פעילה"),h("span",{class:"wt-day"},"יום "+day+" מתוך "+tot)),
+      h("div",{class:"wt-pr"},h("b",{dir:"ltr"},a),h("div",{class:"wt-arc"},h("i",null),h("span",{class:"wt-pl",html:WT_PLANE})),h("b",{dir:"ltr"},b||"")),
+      h("div",{class:"wt-pm"},h("span",null,(x.d.flag||"")+" "+(x.d.title||"")),h("bdi",{dir:"ltr"},d0+" – "+d1)));}
   function wfState(x){if(x.d.planned)return "theory";const taxi=(Number(x.d.taxi_min)||150)*60000;return Date.now()>=x.first-taxi?"active":"practical";}
   function wfPlan(){return wfDocs.filter(d=>!d._deleted&&d.planned&&Array.isArray(d.legs)&&d.legs.length).map(d=>{const legs=d.legs.slice().sort((a,b)=>(wfMs(a.dep)||0)-(wfMs(b.dep)||0));return {d,legs,first:wfMs(legs[0].dep),last:wfMs(legs[legs.length-1].arr)||wfMs(legs[legs.length-1].dep)};}).sort((a,b)=>(a.first||0)-(b.first||0));}
   function wtTasks(id){const L=allTopics.filter(t=>!t._deleted&&t.wf===id&&isOpen(t));
@@ -6061,7 +6092,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     const TT=(wtTypes&&wtTypes.types)||{},TTK=Object.keys(TT).filter(k=>!live.some(x=>wfType(x.d)===TT[k]));
     const TYP=TTK.length?[wfSec("tt:work","🗂️","סוגי נסיעות העבודה",TTK.map(k=>TT[k].short||TT[k].title).join(" · "),TTK.map(k=>{const T=TT[k];return h("div",{class:"wt-type"},h("b",null,(T.flag||"")+" "+(T.title||k)),T.sub?h("small",null,T.sub):null,wfLocal({id:"tt-"+k,trip_type:k,title:T.title,flag:T.flag,preview:1}));}))]:[];
     const genIn=id=>wfSec("gen:"+id,"🧰","נושאים קבועים לנסיעה","רכב שכור: מה לבקש בדלפק",[crRule({k:"work"})]);
-    const hd=(t,n)=>h("div",{class:"tv-sec-h"},t,n?h("span",{class:"n"},String(n)):null);
+    const hd=(t,n,tn)=>wtBand(t,n,tn);
     const none=t=>h("p",{class:"tv-empty"},t);
     // the road Rome <-> Viterbo: open on the drive days, otherwise one closed drawer (in the active trip it is the way back, inside its wrapper)
     const road=wfOnRoad(),FA=R.map(wsFocus).filter(Boolean),FO=road?FA:[],LV=road?[]:ACT.filter(x=>wfInItaly(x.d,x.legs)).map(x=>wfLocal(x.d)).filter(Boolean),NOW=[...FO,...LV];
@@ -6069,10 +6100,10 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       :[h("details",{class:"ab-bank",open:wfOpen["ab:bank"]?true:null,ontoggle:ev=>{wfOpen["ab:bank"]=ev.currentTarget.open;}},h("summary",null,h("div",{class:"tv-sec-h"},h("span",{class:"ab-bt"},h("span",null,wfBackSoon()||"🧭 הדרך ויטרבו ⇄ רומא: עצירות ורגעים"),(()=>{const A=wsDocs.filter(d=>d.type!=="route"&&R.some(r=>r.id===d.route)),v=A.filter(p=>p.visited).length;return A.length?h("small",null,(A.length-v)+" מקומות שעוד לא הייתי בהם · ביקרתי ב-"+v):null;})()))),...FA,...R.map(r=>wsBank(r,1)))]):[];
     const ids=ACT.map(x=>x.d.id),tk=wfWrap(ids);
     const actBody=ACT.length?(wfFlightFirst()?[...tk,...NOW]:[...NOW,...tk]):[];
-    const S_ACT=ACT.length?[hd("🟢 נסיעה פעילה"),h("div",{id:"abNow",class:"wt-act"},...actBody,...BANK,...ACT.map(x=>wtTasks(x.d.id)).filter(Boolean),...ACT.map(x=>genIn(x.d.id)))]:[];
-    const S_PRA=[hd("🧾 תכנון מעשי · הוזמנו טיסות ומלונות",PRA.length),PRA.length?h("div",{class:"wt-pra"},...wfWrap(PRA.map(x=>x.d.id)),...PRA.map(x=>wtTasks(x.d.id)).filter(Boolean),...PRA.map(x=>genIn(x.d.id))):none("אין כרגע נסיעה בתכנון מעשי")];
-    const S_THE=[hd("🧭 תכנון תיאורטי · אפשרויות פתוחות, עוד בלי כרטיסים",THE.length),THE.length?h("div",{class:"wt-the"},...THE.map(wtTheory)):none("אין כרגע נסיעה בתכנון תיאורטי")];
-    const GEN=[hd("🧰 נושאים קבועים"),...(ACT.length?[]:BANK),
+    const S_ACT=ACT.length?[h("div",{id:"abNow",class:"wt-act"},wtPass(ACT[0]),h("div",{class:"wt-body"},...actBody,...BANK,...ACT.map(x=>wtTasks(x.d.id)).filter(Boolean),...ACT.map(x=>genIn(x.d.id))))]:[];
+    const S_PRA=[hd("🧾 תכנון מעשי · הוזמנו טיסות ומלונות",PRA.length,"pra"),PRA.length?h("div",{class:"wt-pra"},...wfWrap(PRA.map(x=>x.d.id)),...PRA.map(x=>wtTasks(x.d.id)).filter(Boolean),...PRA.map(x=>genIn(x.d.id))):none("אין כרגע נסיעה בתכנון מעשי")];
+    const S_THE=[hd("🧭 תכנון תיאורטי · אפשרויות פתוחות, עוד בלי כרטיסים",THE.length,"the"),THE.length?h("div",{class:"wt-the"},...THE.map(wtTheory)):none("אין כרגע נסיעה בתכנון תיאורטי")];
+    const GEN=[hd("🧰 נושאים קבועים",null,"gen"),...(ACT.length?[]:BANK),
       L.length?h("div",{class:"tv-wk"},L.map(t=>{const ls=(t.links||[]).filter(l=>l&&l.type!=="chat"&&safeUrl(l.url||""));
         return h("details",{class:"tv-wkc"},h("summary",null,h("b",null,(t.status==="done"?"✓ ":"")+t.title),t.stand?h("small",null,t.stand):null),
           t.summary?h("details",{class:"tv-fold"},h("summary",null,"הנקודות לפי הסדר בדרך"),h("div",{class:"sm"},t.summary)):null,
@@ -6152,22 +6183,22 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     const onCal=trips.filter(x=>!x.concept),ideas=trips.filter(x=>x.concept);
     const ap=A.app||{},apu=safeUrl(ap.url||"");
     const nB=booked.length+onCal.length,nP=planned.length+ideas.length;
-    const hd=(t,n)=>h("div",{class:"tv-sec-h"},t,n?h("span",{class:"n"},String(n)):null);
+    const hd=(t,n,tn)=>wtBand(t,n,tn);
     const other=zoneDash("abroad",false);
     const ab=h("section",{class:"tz tz-ab-z"+(abTab==="work"?" ab-w":"")},
       abMode()&&abTab==="work"?null:zoneHead("abroad","בחו״ל",[nB?heN(nB,"נסיעה אחת","נסיעות")+" עם טיסות":"",nP?nP+" בתכנון":""].filter(Boolean).join(" · ")||"תכנון, היסטוריה ונתונים",AB_BANNER),
       h("div",{class:"ab-seg",role:"tablist"},[["trip","✈️ פרטי"],["work","💼 עבודה"]].map(([v,l])=>h("button",{type:"button",role:"tab","aria-selected":abTab===v?"true":"false",class:abTab===v?"on":"",onclick:ev=>{if(abTab===v)return;segPin(ev,".tz-ab-z>.ab-seg",()=>{abTab=v;try{localStorage.setItem("sq_tv_ab",v);}catch(e){}splitTopics();renderAll();});}},l))),
       ...(abTab==="work"?workTrips(true):[
       // 25.79 (Oren 25.11.2026): the same lifecycle as work trips: active -> practical planning (booked) -> theoretical planning (options open), then the fixed topics
-      active.length?hd("🟢 נסיעה פעילה"):null,
+      active.length?hd("🟢 נסיעה פעילה",null,"act"):null,
       active.length?h("div",{class:"tp-minis"},active):null,
-      hd("🧾 תכנון מעשי · הוזמנו טיסות",nB),
+      hd("🧾 תכנון מעשי · הוזמנו טיסות",nB,"pra"),
       booked.length?h("div",{class:"tp-minis"},booked):null,onCal.length?h("div",{class:"tv-trips"},onCal.map(x=>x.el)):null,
       nB?null:h("p",{class:"tv-empty"},"אין כרגע נסיעה בתכנון מעשי"),
-      hd("🧭 תכנון תיאורטי · אפשרויות פתוחות, עוד בלי טיסות",nP),
+      hd("🧭 תכנון תיאורטי · אפשרויות פתוחות, עוד בלי טיסות",nP,"the"),
       planned.length?h("div",{class:"tp-minis"},planned):null,ideas.length?h("div",{class:"tv-trips"},ideas.map(x=>x.el)):null,
       nP?null:h("p",{class:"tv-empty"},"אין כרגע נסיעה בתכנון תיאורטי"),
-      hd("🧰 נושאים קבועים"),
+      hd("🧰 נושאים קבועים",null,"gen"),
       crRule({k:"trip"}),
       apu?h("a",{class:"tv-app",href:apu,target:"_blank",rel:"noopener"},ap.icon?h("img",{src:ap.icon,alt:"",width:"44",height:"44"}):null,h("div",null,h("b",null,ap.name||""),ap.tag?h("span",null,ap.tag):null)):null,
       (()=>{const T=(travelHist&&Array.isArray(travelHist.trips)?travelHist.trips:[]).filter(x=>x&&x.countries);const yrs=T.length?new Date().getFullYear()-(+String(T[0].from||"").slice(0,4)||1985):0;
