@@ -6,7 +6,7 @@
 <script src="nozoom.js?v=3"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#1F4FC2">
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IL_BUILD="1.0";window.SQ_DASH="travel-israel";</script>
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.IL_BUILD="2.0";window.SQ_DASH="travel-israel";</script>
 <script src="sq-db.js?v=10"></script>
 <title>כל הטיולים בארץ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -145,28 +145,24 @@ let I=null;
 function hero(){const T=arr(I.trips),R=arr(I.regions).filter(r=>r&&r.name);
   const K=[[I.visits!=null?I.visits:"—","טיולים"],[I.places!=null?I.places:T.length,"מקומות"],[I.per_year!=null?I.per_year:"—","בשנה"],[R.filter(r=>+r.n>0).length+"/"+(R.length||10),"אזורים"]];
   return `<div class="top"><a class="sqhome" href="./"><span class="ar">→</span><img src="icon-192.png?v=2" alt=""><span>Side Quests</span></a></div>
-  <h1>🇮🇱 כל הטיולים בארץ</h1>
+  <h1>📋 כל המקומות בארץ</h1>
   <p class="sub">מאז ${esc(I.since||"")}${I.as_of?" · נכון ל-"+esc(I.as_of):""}</p>
   <div class="kpis">${K.map(k=>`<div class="kpi"><b>${esc(k[0])}</b><span>${esc(k[1])}</span></div>`).join("")}</div>`;}
 function place(t){return `<div class="pl" data-sq-item="${esc(t.n)}"><span class="nm">${esc(t.n)}</span>${(+t.v||1)>1?`<span class="x">×${+t.v}</span>`:""}${t.d?`<bdi class="dt" dir="ltr">${esc(dd(t.d))}</bdi>`:""}<a href="${esc(maps(t.n+", ישראל"))}" target="_blank" rel="noopener" aria-label="Google Maps">📍</a><a href="${esc(pics(t.n+", ישראל"))}" target="_blank" rel="noopener" aria-label="תמונות">📷</a></div>`;}
 const srt=(a,b)=>(b.d||"").localeCompare(a.d||"")||String(a.n).localeCompare(String(b.n),"he");
 function regions(){const T=arr(I.trips).filter(t=>t&&t.n),R=arr(I.regions).filter(r=>r&&r.name);const mx=Math.max(1,...R.map(r=>+r.n||0));
-  return `<section class="calm-off"><div class="sh"><h2>🗺️ מצפון לדרום</h2><small>${R.length} אזורים</small></div><div class="list">${R.map(r=>{const L=T.filter(t=>t.r===r.name).sort(srt),o=ui.rg[r.name];
+  return `<section class="calm-off"><div class="sh"><h2>📋 כל המקומות</h2><small>${arr(I.trips).length} מקומות · לפי אזורים</small></div><div class="list">${R.map(r=>{const L=T.filter(t=>t.r===r.name).sort(srt),o=ui.rg[r.name];
     return `<div class="rg${o?" open":""}"><button class="row" data-rg="${esc(r.name)}"><span class="ic">${esc(r.icon||"📍")}</span><span class="b"><b>${esc(r.name)}</b><span class="bar2"><u style="width:${Math.round((+r.n||0)/mx*100)}%"></u></span></span><span class="n">${+r.n||0}<small>${L.length} מקומות</small></span><span class="ch">‹</span></button>
     <div class="det"><div>${L.map(place).join("")}</div></div></div>`;}).join("")}</div></section>`;}
-function recent(){const R=arr(I.recent);if(!R.length&&!I.next)return "";
-  return `<section class="calm-off"><div class="sh"><h2>🆕 אחרונים</h2></div><div class="list">${R.map(x=>`<div class="pl"><span class="nm">🌿 ${esc(x.name)}</span><span class="dt">${esc(x.date||"")}</span></div>`).join("")}${I.next?`<div class="pl"><span class="nm nx">➡️ ${esc(I.next)}</span></div>`:""}</div></section>`;}
-function ideas(){const L=arr(I.ideas).filter(x=>x&&!x._deleted&&(x.t||x.url));if(!L.length)return "";
-  return `<section><div class="sh"><h2>💡 רעיונות לטיולים</h2><small>${L.length}</small></div><div class="list">${L.map(x=>{const u=safe(x.url);return `<div class="pl"><span class="nm">${u?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(x.t||"לינק")}</a>`:esc(x.t)}</span>${x.area?`<span class="dt">${esc(x.area)}</span>`:""}</div>`;}).join("")}</div></section>`;}
-function allPlaces(){const q=ui.q.trim(),T=arr(I.trips).filter(t=>t&&t.n&&(!q||String(t.n).includes(q)||String(t.r||"").includes(q))).sort(srt);
-  return `<section><div class="sh"><h2>📋 כל המקומות</h2><small>${arr(I.trips).length}</small></div><input class="srch" id="q" type="search" placeholder="חיפוש מקום או אזור" value="${esc(ui.q)}"><div class="list" id="pl">${T.map(place).join("")||'<div class="empty">לא נמצא</div>'}</div></section>`;}
-function links(){const L=arr(I.links).filter(l=>safe(l.url)&&!/claude\.ai\/code\//.test(l.url));if(!L.length)return "";
-  return `<section class="calm-off"><div class="lnk">${L.map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div></section>`;}
+function listHtml(){const q=ui.q.trim();
+  if(q){const T=arr(I.trips).filter(t=>t&&t.n&&(String(t.n).includes(q)||String(t.r||"").includes(q))).sort(srt);
+    return `<div class="list">${T.map(place).join("")||'<div class="empty">לא נמצא</div>'}</div>`;}
+  return regions();}
 function render(){if(!I)return;$("hero").innerHTML=hero();
-  $("app").innerHTML=recent()+regions()+ideas()+allPlaces()+links();
-  $("foot").innerHTML=`טיולים בארץ ${esc(window.IL_BUILD)} · מהמאגר של הביקורים · מתעדכן אחרי כל טיול`;}
+  $("app").innerHTML=`<input class="srch" id="q" type="search" placeholder="חיפוש מקום או אזור" value="${esc(ui.q)}"><div id="pl">${listHtml()}</div>`;
+  $("foot").innerHTML=`כל המקומות ${esc(window.IL_BUILD)} · מהמאגר של הביקורים · מתעדכן אחרי כל טיול`;}
 document.addEventListener("click",e=>{const r=e.target.closest("[data-rg]");if(r){const k=r.dataset.rg;ui.rg[k]=!ui.rg[k];save();r.parentElement.classList.toggle("open",!!ui.rg[k]);}});
-document.addEventListener("input",e=>{if(e.target.id!=="q")return;ui.q=e.target.value;save();const q=ui.q.trim();const T=arr(I.trips).filter(t=>t&&t.n&&(!q||String(t.n).includes(q)||String(t.r||"").includes(q))).sort(srt);$("pl").innerHTML=T.map(place).join("")||'<div class="empty">לא נמצא</div>';});
+document.addEventListener("input",e=>{if(e.target.id!=="q")return;ui.q=e.target.value;save();$("pl").innerHTML=listHtml();});
 window.claude.use("db").then(db=>{if(!db)return;db.doc("settings/travel_hub").onSnapshot(x=>{const v=x&&x.exists?x.data():{};I=v.israel||{};render();},()=>{});});
 })();
 </script>
