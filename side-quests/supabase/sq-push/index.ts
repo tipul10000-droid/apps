@@ -348,6 +348,48 @@ async function evTick(p: any, t: ReturnType<typeof il>) {
   return { ev: out, today: L.map((e: any) => ({ id: e.id, appt: e.fit.appt, travel: e.fit.travel, from: e.from, where: e.fit.where, guess: e.guess })) };
 }
 
+// ---------- flight milestones (SQ 25.81, Oren 26.11.2026): a trip with remind:true in work_flights gets one push per milestone, the moment it arrives ----------
+// Same six milestones the ticket shows (wfEvents in index.html): upgrade window opens, check-in opens, leave, boarding opens, boarding closes, take-off, landing.
+// Not quiet-hours gated and not skipped abroad (that is exactly when they matter). Only milestones that arrived in the last 15 minutes fire, once each (state/wfrem).
+const wfMsS = (s: any) => { const v = Date.parse(String(s || "")); return isNaN(v) ? null : v; };
+function wfMilestones(d: any, l: any) {
+  const dep = wfMsS(l.dep), arr = wfMsS(l.arr); if (dep == null) return [];
+  const H = 3600000, M = 60000;
+  const elal = /el\s*al/i.test(l.airline || "") || /^LY/i.test(String(l.no || "").trim()), tlv = (l.from && l.from.code) === "TLV";
+  const gm = l.gate_min != null ? Number(l.gate_min) : (d.gate_min != null ? Number(d.gate_min) : 15), bm = l.board_min != null ? Number(l.board_min) : (d.board_min != null ? Number(d.board_min) : 40);
+  const leaveMin = tlv ? (Number(d.taxi_min) || 150) : (Number(l.leave_min) || Number(d.leave_min) || 240);
+  const ci = l.checkin_h != null ? Number(l.checkin_h) : 24;
+  const city = (l.from && l.from.city) || "", to = (l.to && l.to.city) || "";
+  const E: any[] = [];
+  if (elal && l.upgrade !== false) E.push({ k: "up", at: dep - 72 * H, t: "⬆️ נפתח חלון השדרוג", b: "בקשת שדרוג פתוחה עד 6 שעות לפני ההמראה" });
+  E.push({ k: "ci", at: dep - ci * H, t: "🎫 צ׳ק-אין נפתח", b: "ל" + String(l.no || "") + " · " + city + " ← " + to });
+  E.push({ k: "go", at: dep - leaveMin * M, t: tlv ? "🚕 למטה למונית" : "🚗 הגיע הזמן לצאת לשדה", b: "ההמראה ב-" + new Intl.DateTimeFormat("he-IL", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Jerusalem" }).format(new Date(dep)) });
+  E.push({ k: "board", at: wfMsS(l.board_at) || dep - bm * M, t: "🚪 בורדינג נפתח" + (l.gate ? " · שער " + l.gate : ""), b: String(l.no || "") + " ← " + to });
+  E.push({ k: "gate", at: wfMsS(l.gate_at) || dep - gm * M, t: "⛔ בורדינג נסגר", b: "השער נסגר עכשיו · " + String(l.no || "") });
+  E.push({ k: "dep", at: dep, t: "🛫 המראה", b: String(l.no || "") + " ← " + to });
+  if (arr != null) E.push({ k: "arr", at: arr, t: "🛬 נחיתה", b: "נחתת ב" + to });
+  return E;
+}
+async function wfRemTick() {
+  const docs = (await listColl(APP, "work_flights")).filter((d: any) => !d._deleted && d.remind === true && Array.isArray(d.legs));
+  if (!docs.length) return { wf: 0 };
+  const st = (await getDoc(SRV, "state", "wfrem")) || {};
+  const sent: Record<string, number> = st.sent || {};
+  const now = Date.now(), out: any[] = [];
+  let list: any[] | null = null;
+  for (const d of docs) for (const l of d.legs) for (const e of wfMilestones(d, l)) {
+    if (e.at > now || now - e.at > 15 * 60000) continue;
+    const key = d.id + "|" + String(l.no || l.dep) + "|" + e.k;
+    if (sent[key]) continue;
+    list = list || (await subs());
+    await sendTo(list, { title: e.t, body: short(e.b, 120), tag: "sq-wf-" + key, url: APP_URL + "#travel" });
+    sent[key] = now; out.push(key);
+  }
+  for (const k of Object.keys(sent)) if (now - sent[k] > 3 * 86400000) delete sent[k];
+  await putDoc(SRV, "state", "wfrem", { sent, at: new Date().toISOString() });
+  return { wf: out };
+}
+
 async function ctxTick(t: any) {
   const now = { date: t.date, mins: t.mins };
   const all = (await listColl(APP, "topics")).filter((x: any) => SQCtx.wants(x));
@@ -428,6 +470,7 @@ async function tick() {
   }
   out.crit = await criticalTick(p, t);
   try { out.gates = await gateTick(p, t); } catch (e: any) { out.gates = { error: String(e?.message || e) }; }
+  try { out.wf = await wfRemTick(); } catch (e: any) { out.wf = { error: String(e?.message || e) }; }
   try { out.ev = await evTick(p, t); } catch (e: any) { out.ev = { error: String(e?.message || e) }; }
   return out;
 }
