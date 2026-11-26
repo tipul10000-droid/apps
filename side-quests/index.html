@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.82";window.SQ_BUILD_AT="26.11.2026 21:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.83";window.SQ_BUILD_AT="27.11.2026 01:55";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2876,7 +2876,7 @@ html.desk .hero .dz-grid{display:flex!important}
 /* ===== 25.45 (Oren 22.11.2026): one look for every Fun zone. Same dark card, same title row, accent per zone:
    series red, movies yellow, music green, concerts pink, games purple. */
 .fzgrid{grid-template-columns:1fr}
-.fzgrid>.fcard.nf,.fzgrid>.fcard.mv,.fzgrid>.fcard.sp,.fzgrid>.fcard.ev,.fzgrid>.fcard.gm{background:#141416;border:1px solid #26262C;border-top:4px solid var(--fc);box-shadow:none;color:#F2F2F2;--line:#2C2C34;--muted:#A7A7A7;--bg:#1A1A1F;--surface:#202026;--ink:#F2F2F2;gap:12px;padding:12px 14px;position:relative;overflow:visible}
+.fzgrid>.fcard.nf,.fzgrid>.fcard.mv,.fzgrid>.fcard.sp,.fzgrid>.fcard.ev,.fzgrid>.fcard.gm,.fzgrid>.fcard.yt{background:#141416;border:1px solid #26262C;border-top:4px solid var(--fc);box-shadow:none;color:#F2F2F2;--line:#2C2C34;--muted:#A7A7A7;--bg:#1A1A1F;--surface:#202026;--ink:#F2F2F2;gap:12px;padding:12px 14px;position:relative;overflow:visible}
 .fcard.ev{--fc:#FF3D9A}
 .fcard.gm{--fc:#A970FF}
 .fzgrid .zhead{min-height:44px;position:relative}
@@ -2915,6 +2915,15 @@ html.desk .hero .dz-grid{display:flex!important}
 .fcard.zc.zopen .zhead .zc-c{transform:rotate(-90deg)}
 .fzgrid .zhead .zlogo{order:2;margin-left:0!important;margin-right:auto!important;pointer-events:none;cursor:default;-webkit-user-select:none;user-select:none}
 .fcard.gm{--fc:#1A9FFF}
+/* 25.83 (Oren 26.11.2026): YouTube watch-list card, last in Fun Quest */
+.fcard.yt{--fc:#FF0033}
+.ytlogo{flex:none;display:inline-flex;align-items:center;gap:6px;direction:ltr;color:#fff;font-weight:800;font-size:15px;background:#0E0E10;border:1px solid #3A2A2E;border-radius:999px;padding:4px 11px 4px 6px;height:34px;box-sizing:border-box}
+.ytlogo svg{width:30px;height:21px}
+.ytlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.ytlist a{display:flex;flex-direction:column;gap:2px;padding:11px 14px;text-decoration:none;color:var(--ink);border-top:1px solid var(--line)}
+.ytlist a:first-child{border-top:0}
+.ytlist a b{font-size:15px;direction:ltr;text-align:right;line-height:1.3}
+.ytlist a small{font-size:12.5px;color:var(--muted)}
 .fzgrid .steam{border-color:#1E4E7A;background:#0B1622;color:#fff}
 .fzgrid .steam svg{width:24px;height:24px}
 .fcard.gm .fbtn{background:#1A9FFF;color:#fff}.fcard.gm .fbtn.ghost{background:transparent;color:#F2F2F2;border-color:#2A3E55}
@@ -5299,7 +5308,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   }
   // Movies zone: topic zone "movies" (the external list), topics with zone "games" (one per game) and the Frame Horizon project,
   // shown together as one cinema card with a small IMDb badge: 1 Frame Horizon, 2 the external list, 3 games.
-  function isMovieZone(t){return t.zone==="movies"||t.zone==="games"||t.zone==="series";}
+  function isMovieZone(t){return t.zone==="movies"||t.zone==="games"||t.zone==="series"||t.zone==="videos";}
   // 25.74 (Oren 23.11.2026): a game can carry its real app icon, `img` = path under side-quests/ (img/games/<id>.jpg) or an https App Store image
   function gameIco(t){const u=/^img\/[\w\/.-]+$/.test(t.img||"")?t.img:(/^https:\/\//.test(t.img||"")?safeUrl(t.img):"");
     if(!u)return h("span",{class:"gi","aria-hidden":"true"},t.icon||"🎮");
@@ -5481,6 +5490,16 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       games.length?h("div",{class:"fc-rounds"},games.map(gameRow)):h("div",{class:"mv-empty"},"עוד אין משחקים."),
       secChat(secUrl("games",...games.map(chatOf)),"המשחקים","הוסף משחק · שאל · תקן"));
   }
+  // 25.83 (Oren 26.11.2026): "סרטוני יוטיוב לצפייה": topic zone "videos", items [{label, sub, url}], card is always last in Fun Quest
+  const YT_SVG='<svg viewBox="0 0 30 21" aria-hidden="true"><rect width="30" height="21" rx="6" fill="#FF0033"/><path d="M12 6l8 4.5-8 4.5z" fill="#fff"/></svg>';
+  function videosCard(vt){
+    const lg=h("span",{class:"ytlogo zlogo","aria-label":"YouTube"});lg.innerHTML=YT_SVG+"YouTube";
+    const its=(Array.isArray(vt.items)?vt.items:[]).filter(i=>i&&safeUrl(i.url||""));
+    return h("article",{class:"fcard yt"},
+      h("div",{class:"zhead"},h("div",{class:"fc-h"},h("h3",null,"סרטוני יוטיוב לצפייה")),lg),
+      its.length?h("div",{class:"ytlist"},its.map(i=>h("a",{href:safeUrl(i.url),target:"_blank",rel:"noopener"},h("b",null,i.label||i.url),i.sub?h("small",null,i.sub):null))):h("div",{class:"mv-empty"},"עוד אין סרטונים."),
+      secChat(secUrl("videos",chatOf(vt)),"הסרטונים","הוסף סרטון · שאל · תקן"));
+  }
   function funDashCard(d){const fr=dashFresh(d),K=Array.isArray(d.kpis)?d.kpis.slice(0,3):[];
     return h("article",{class:"fcard ev","data-dash":d.id},
       h("div",{class:"zhead"},fr?h("i",{class:"fdnw","aria-hidden":"true"}):null,h("div",{class:"fc-h"},h("h3",null,d.short||d.title||d.id)),h("span",{class:"zlogo ev-ic","aria-hidden":"true"},d.icon||"🎤")),
@@ -5507,8 +5526,10 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     cards.push(...fd.map(funDashCard));
     const games=mz.filter(t=>t.zone==="games").sort((a,b)=>(a.status==="done")-(b.status==="done")||(a.fun_order||99)-(b.fun_order||99));
     if(games.length)cards.push(gamesCard(games));
+    const vid=mz.find(t=>t.zone==="videos");
     // 24.9 (Oren 19.11.2026): Fun dashboards (quest "fun", first: events = הופעות ואירועים) as a banner card that opens the dashboard
     cards.push(...tail);
+    if(vid)cards.push(videosCard(vid)); // 25.83: always last
     $("funGrid").replaceChildren(...(cards.length?cards:[h("div",{class:"empty"},"עוד אין")]));
     calmZones($("funGrid"));
   }
