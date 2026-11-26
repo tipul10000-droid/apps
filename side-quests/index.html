@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.81";window.SQ_BUILD_AT="26.11.2026 21:00";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.82";window.SQ_BUILD_AT="26.11.2026 21:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1093,6 +1093,27 @@ body.q-travel .tvzone.updhide{display:none}body.q-travel .tvzone{display:flex;fl
 .hx-card .hx-k{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12.5px;color:var(--muted)}
 .hx-card .hx-k strong{color:var(--ink);font-size:14px;margin-inline-end:3px}
 .hx-card .hx-go{font-size:20px;color:var(--muted);font-weight:800}
+/* 25.82 (Oren 26.11.2026): Israel stats card on the main page: colourful, compact, regions + latest places; only the full list opens a mini dashboard */
+.ilc{border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:12px 12px 10px;margin:0 0 10px;display:flex;flex-direction:column;gap:10px}
+.ilc-h{display:flex;align-items:center;gap:10px}
+.ilc-h .fl{width:34px;height:34px;border-radius:11px;background:#E8EEFB;display:grid;place-items:center;flex:none}
+.ilc-h .fl svg{width:22px;height:auto}
+.ilc-h b{display:block;font-size:15.5px;font-family:"Rubik",var(--f-display);line-height:1.2}
+.ilc-h .k{display:flex;flex-wrap:wrap;gap:0 12px;font-size:12.5px;color:var(--muted)}
+.ilc-h .k strong{color:var(--ink);font-size:14px;margin-inline-end:3px}
+.ilc-h .sp{flex:1}
+.ilc-h a.ch{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;border:1px solid var(--line);color:var(--ink);flex:none}
+.ilc-h a.ch svg{width:18px;height:18px}
+.ilc-rg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.ilc-rg>div{border-radius:12px;padding:6px 2px 7px;text-align:center;background:var(--rb,var(--sunk));color:var(--rc,var(--ink));min-width:0;line-height:1.1}
+.ilc-rg .e{display:block;font-size:15px}
+.ilc-rg b{display:block;font-family:"Rubik",var(--f-display);font-size:19px;font-weight:800;margin-top:1px}
+.ilc-rg small{display:block;font-size:10.5px;font-weight:700;color:var(--ink);opacity:.8;padding:0 2px;min-height:2.2em;line-height:1.1}
+.ilc-rc{display:flex;flex-wrap:wrap;gap:6px}
+.ilc-rc>span{display:inline-flex;gap:6px;align-items:center;border-radius:999px;background:var(--sunk);padding:3px 10px;font-size:12.5px;max-width:100%}
+.ilc-rc>span i{font-style:normal;color:var(--muted);font-size:11.5px}
+.ilc-rc>span b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ilc-all{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;border-radius:12px;background:#0B4F57;color:#F0FAF9;padding:9px 14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer}
 .tz-nav .zic{display:inline-flex;vertical-align:-3px;margin-inline-end:7px}
 .tz-nav .zic svg{display:block}
 .tv-chat{display:flex;justify-content:flex-start}
@@ -4927,7 +4948,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   function renderMain(){
     {const tv=$("tvSec");if(tv)tv.classList.toggle("updhide",updOn);}
     if(updOn){renderUpd();return;}
-    const side=WQ.includes(quest),w=curWin(),winOn=side&&(wMode!=="off"||w.manual);
+    const side=WQ.includes(quest),w=curWin(),winOn=side&&(wMode!=="off"||w.manual)&&!(quest==="travel"&&tvZ==="il"); // 25.82: the Israel trips page has no time-window cards, only its own tasks
     const C={task:[],roll:[],wait:[],dorm:[],done:[],rem:[],remL:[]};for(const t of topics){if(inStrip(t))continue;const k=catOf(t);if(C[k])C[k].push(t);}
     const act=[...C.task,...C.roll],top=[],more=[];let L=[],NL=[];
     if(winOn){
@@ -4948,7 +4969,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       more.push(foldRows("out",catT("task","משימות מחוץ לחלון"),orderL(out)),foldRows("roll",catT("roll"),orderL(ro)));
     }else{
       if(act.length)top.push(h("div",{class:"wcard"},h("div",{class:"wc-head"},catIc("task"),h("b",null,"כל המשימות"),h("small",null,String(act.length))),h("div",{class:"glist"},orderL(act).map(row))));
-      else top.push(h("div",{class:"empty"},topics.length?"אין משימות פתוחות.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה ב-+ למטה.`));
+      else if(!(quest==="travel"&&tvZ==="il"))top.push(h("div",{class:"empty"},topics.length?"אין משימות פתוחות.":`עוד אין משימות ב-${QUESTS[quest].name}. כתוב משימה ב-+ למטה.`));
     }
     const wk=t=>String(t.sleep_until||(t.snooze_until==="someday"?"9999":t.snooze_until)||"9998");
     more.push(foldRows("wait",catT("wait"),C.wait.sort((a,b)=>byDate(a,b))),foldRows("dorm",catT("dorm"),C.dorm.sort((a,b)=>wk(a).localeCompare(wk(b)))));
@@ -5572,7 +5593,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   const GLOBE_IC='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>';
   const HX_DASH=["travel-israel","travel-abroad"];
   function travelDashes(z){return dashes.filter(d=>!d._deleted&&d.quest==="travel"&&(d.tzone==="il"?"il":"abroad")===z);}
-  function zoneDash(z,title){const tD=tripDocs.filter(t=>!t._deleted&&(t.stage==="plan"||!(daysUntil(t.to||t.from)<0))).map(t=>t.dash),all=travelDashes(z).filter(d=>!tD.includes(d.id)&&!HX_DASH.includes(d.id)),act=all.filter(d=>!d.archived).sort((a,b)=>(a.order||99)-(b.order||99));
+  function zoneDash(z,title){const tD=tripDocs.filter(t=>!t._deleted&&(t.stage==="plan"||!(daysUntil(t.to||t.from)<0))).map(t=>t.dash),all=travelDashes(z).filter(d=>!tD.includes(d.id)&&!HX_DASH.includes(d.id)&&!/^https:\/\/(www\.)?notion\.so\/|claude\.ai\/code\//.test(d.url||"")),act=all.filter(d=>!d.archived).sort((a,b)=>(a.order||99)-(b.order||99));
     if(!act.length)return null;
     return h("div",{class:"tv-dash"},title===false?null:h("p",{class:"tv-sub"},title||"דשבורדים"),act.length?h("div",{class:"dz-grid"+(act.length===2||act.length===4?" c2":"")},act.map(d=>dashTile(d))):null);}
   // 11.9: the full list of Israel trips (settings/travel_hub israel.trips [{n, r (region name as in israel.regions), v visits, d last date}])
@@ -6153,6 +6174,20 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
         xtra?h("span",{class:"tm-nx"},xtra):null),
       cdEl,h("span",{class:"tm-go","aria-hidden":"true"},"‹"));
   }
+  // 25.82: Israel stats card (visits per region + latest places) on the main page. Data: travel_hub israel {visits, places, regions[{name,n,icon}], recent[{name,date}]}
+  const IL_RC=[["#E3EEFF","#1D5FD1"],["#E3F6E8","#1E8A3C"],["#DDF4F2","#0E7C86"],["#E4F5DA","#4B8A12"],["#FFF1CC","#A8760B"],["#FFE6D6","#C2561B"],["#F6E3F6","#9A3A9A"],["#FFE2E2","#C23B3B"],["#FFEAC9","#B26A00"],["#E9E6FF","#5B49C9"]];
+  function ilCard(I,regs,chatUrl){
+    const d=dashById("travel-israel"),vis=I.visits,pl=I.places!=null?I.places:(Array.isArray(I.trips)?I.trips.length:null);
+    const rec=(Array.isArray(I.recent)?I.recent:[]).filter(x=>x&&x.name).slice(0,4);
+    const cu=safeUrl(chatUrl||"");
+    return h("div",{class:"ilc"},
+      h("div",{class:"ilc-h"},h("span",{class:"fl noico","aria-hidden":"true",html:IL_FLAG}),
+        h("div",null,h("b",null,"הטיולים שלנו בארץ"),h("div",{class:"k"},[[vis!=null?vis:"—"," טיולים"],[pl!=null?pl:"—"," מקומות"],[regs.length?regs.length+"/10":""," אזורים"]].filter(x=>x[0]!=="").map(([v,l])=>h("span",null,h("strong",null,String(v)),l)))),
+        h("span",{class:"sp"}),
+        cu?h("a",{class:"ch noico",href:cu,target:"_blank",rel:"noopener","aria-label":"שיחה: טיולים בארץ",html:ICON.chat}):null),
+      regs.length?h("div",{class:"ilc-rg"},regs.map((r,i)=>{const c=IL_RC[i%IL_RC.length];return h("div",{style:"--rb:"+c[0]+";--rc:"+c[1]},h("span",{class:"e","aria-hidden":"true"},r.icon||"📍"),h("b",null,String(+r.n||0)),h("small",null,r.name));})):null,
+      rec.length?h("div",{class:"ilc-rc"},rec.map(x=>h("span",null,h("b",null,x.name),x.date?h("i",{dir:"ltr"},String(x.date).replace(/\.20(\d\d)$/,".$1")):null))):null,
+      d?h("button",{type:"button",class:"ilc-all",onclick:()=>openDash("travel-israel")},h("span",null,"📋 כל המקומות"),h("span",{"aria-hidden":"true"},"‹")):null);}
   // 25.7: the two history mini dashboards (all trips abroad since 1985, all trips in Israel), one compact card each
   function hxCard(id,title,kp,art){const d=dashById(id);if(!d)return null;
     return h("button",{type:"button",class:"hx-card hx-"+id,onclick:()=>openDash(id)},h("span",{class:"hx-art noico","aria-hidden":"true",html:art}),
@@ -6177,9 +6212,9 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     const ilVis=I.visits!=null?I.visits:null,ilPl=I.places!=null?I.places:(Array.isArray(I.trips)?I.trips.length:null);
     const il=h("section",{class:"tz tz-il-z"},
       zoneHead("il","טיולים בארץ",`${ilVis!=null?ilVis+" טיולים · ":""}מאז ${I.since||"12/2017"}`,IL_BANNER),
-      hxCard("travel-israel","כל הטיולים בארץ",[[ilVis!=null?ilVis:"—"," טיולים"],[ilPl!=null?ilPl:"—"," מקומות"],[regs.length?regs.length+"/10":""," אזורים"]],IL_FLAG),
+      ilCard(I,regs,secUrl("travel_il",...(I.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),chatOf(allTopics.find(x=>x.id==="family-trips")||{}))),
       zoneDash("il"),
-      h("div",{class:"tv-chat"},secChat(secUrl("travel_il",...(I.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),chatOf(allTopics.find(x=>x.id==="family-trips")||{})),"טיולים בארץ","שיחה: טיולים בארץ")));
+      tvIdeas(I.ideas));
     // abroad zone
     const liveT=tripDocs.filter(t=>!t._deleted&&(t.stage==="plan"||t.stage==="booked"));
     const tIds=liveT.map(t=>t.id),tTop=liveT.map(t=>t.topic).filter(Boolean);
@@ -6218,7 +6253,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
         Array.isArray(A.highlights)&&A.highlights.length?h("details",{class:"tv-fold"},h("summary",null,"Holiday Optimizer: מה יש שם"),h("ul",{class:"tv-hl"},A.highlights.map(x=>h("li",null,h("i",{"aria-hidden":"true"},x.icon||"•"),h("span",null,x.text))))):null,
         tvLinks(noDup(A.links,"abroad").filter(l=>safeUrl(l.url||"")!==apu)),
         secChat(secUrl("travel_abroad",...(A.links||[]).map(l=>/claude\.ai\/code\//.test(l.url||"")?l.url:""),(projById("holiday-optimizer")||{}).claude_url),"טיולים בחו״ל","שיחה: טיולים בחו״ל"))]));
-    sec.replaceChildren(jump,tvZ==="il"?il:ab,h("div",{class:"tv-sec-h tz-tasks"},"🧳 משימות הטיולים"));
+    sec.replaceChildren(jump,tvZ==="il"?il:ab,tvZ==="il"&&!topics.length?null:h("div",{class:"tv-sec-h tz-tasks"},"🧳 משימות הטיולים"));
   }
   window.addEventListener("hashchange",()=>{if(location.hash.startsWith("#/"))return;const q=questFromHash();if(qHidden(q)){setMode("home","🏠 עברתי לבית כדי לפתוח את "+QUESTS[q].name);return;}if(q!==quest){quest=q;applyQuest();if(db)renderAll();}});
   applyQuest();
