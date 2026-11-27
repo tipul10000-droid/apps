@@ -352,6 +352,9 @@ async function evTick(p: any, t: ReturnType<typeof il>) {
 // Same six milestones the ticket shows (wfEvents in index.html): upgrade window opens, check-in opens, leave, boarding opens, boarding closes, take-off, landing.
 // Not quiet-hours gated and not skipped abroad (that is exactly when they matter). Only milestones that arrived in the last 15 minutes fire, once each (state/wfrem).
 const wfMsS = (s: any) => { const v = Date.parse(String(s || "")); return isNaN(v) ? null : v; };
+// Flight times are always shown in the DEPARTURE airport's local time (the offset written in l.dep, e.g. 22:50+01:00 = Rome). Never Asia/Jerusalem. (Bug 27.11.2026: AZ810 FCO 22:50 shown as 23:50.)
+function wfOffMin(iso: any) { const m = String(iso || "").match(/([+-])(\d{2}):?(\d{2})$/); if (!m) return 0; return (m[1] === "-" ? -1 : 1) * (+m[2] * 60 + +m[3]); }
+function wfLocalHM(iso: any, ms: number) { const m = String(iso || "").match(/T(\d{2}:\d{2})/); if (m) return m[1]; const d = new Date(ms + wfOffMin(iso) * 60000); return String(d.getUTCHours()).padStart(2, "0") + ":" + String(d.getUTCMinutes()).padStart(2, "0"); }
 function wfMilestones(d: any, l: any) {
   const dep = wfMsS(l.dep), arr = wfMsS(l.arr); if (dep == null) return [];
   const H = 3600000, M = 60000;
@@ -363,7 +366,7 @@ function wfMilestones(d: any, l: any) {
   const E: any[] = [];
   if (elal && l.upgrade !== false) E.push({ k: "up", at: dep - 72 * H, t: "⬆️ נפתח חלון השדרוג", b: "בקשת שדרוג פתוחה עד 6 שעות לפני ההמראה" });
   E.push({ k: "ci", at: dep - ci * H, t: "🎫 צ׳ק-אין נפתח", b: "ל" + String(l.no || "") + " · " + city + " ← " + to });
-  E.push({ k: "go", at: dep - leaveMin * M, t: tlv ? "🚕 למטה למונית" : "🚗 הגיע הזמן לצאת לשדה", b: "ההמראה ב-" + new Intl.DateTimeFormat("he-IL", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Jerusalem" }).format(new Date(dep)) });
+  E.push({ k: "go", at: dep - leaveMin * M, t: tlv ? "🚕 למטה למונית" : "🚗 הגיע הזמן לצאת לשדה", b: "ההמראה ב-" + wfLocalHM(l.dep, dep) + (wfOffMin(l.dep) !== 120 && wfOffMin(l.dep) !== 180 ? " (שעון מקומי ב" + city + ")" : "") });
   E.push({ k: "board", at: wfMsS(l.board_at) || dep - bm * M, t: "🚪 בורדינג נפתח" + (l.gate ? " · שער " + l.gate : ""), b: String(l.no || "") + " ← " + to });
   E.push({ k: "gate", at: wfMsS(l.gate_at) || dep - gm * M, t: "⛔ בורדינג נסגר", b: "השער נסגר עכשיו · " + String(l.no || "") });
   E.push({ k: "dep", at: dep, t: "🛫 המראה", b: String(l.no || "") + " ← " + to });
