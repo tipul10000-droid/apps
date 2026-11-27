@@ -60,11 +60,13 @@ html.pvm .hero,html.pvm #ownTop,html.pvm #ownBot,html.pvm .sqnws,html.pvm .sqtsk
   font:800 13px/1 Assistant,system-ui,sans-serif;background:rgba(20,18,16,.78);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
 html.pvm .pvx{display:inline-flex}
 .pv{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:12px;background:rgba(232,181,74,.18);font-weight:800;font-size:13.5px;margin-top:14px}
+.vbtn{display:block;width:100%;margin:12px 0 0;padding:12px;border-radius:12px;border:0;background:#D97757;color:#fff;font:800 15px/1.2 Assistant,system-ui,sans-serif;cursor:pointer}
 </style>
 <link rel="stylesheet" href="dash-back.css?v=10">
 <script src="dash-sub.js?v=11" defer></script>
 <script src="sq-gfx.js?v=2"></script>
 <script src="../trips/trip-view.js?v=29"></script>
+<script src="sq-voice.js?v=1"></script>
 </head>
 <body>
 <header class="hero"><div class="in">
@@ -113,6 +115,8 @@ html.pvm .pvx{display:inline-flex}
     $("tg").onclick=()=>{const tok=s.token||newTok();save({share:{...s,token:tok,on:!(s.on&&s.token),wa:s.wa||""}}).then(()=>{st.textContent="✓ נשמר";},e=>st.textContent="✕ "+e.message);};
     if($("rg"))$("rg").onclick=()=>{if(!confirm("ליצור לינק חדש? מי שיש לו את הלינק הישן לא יוכל להיכנס."))return;save({share:{...s,token:newTok(),on:true}}).then(()=>{st.textContent="✓ לינק חדש נוצר";});};
   }
+  // 25.88 (Oren 27.11.2026): one voice-chat button per trip, a new chat that starts with everything the trip card knows (sq-voice.js)
+  function drawVoice(){if(!window.SQVoice)return;$("ownTop").innerHTML=`<button type="button" class="vbtn" id="vbtn">🎙 צ׳אט קולי לנסיעה</button>`;$("vbtn").onclick=()=>SQVoice.open(SQVoice.trip(live(trip)));}
   function drawEditExtras(){
     const sp=trip.sync_prompt||"";
     /* collapsed to one small button; opens below, closes again after a save (Oren 21.11.2026) */
@@ -151,7 +155,7 @@ html.pvm .pvx{display:inline-flex}
     if(mode==="share"){$("app").innerHTML="";drawShare();return;}
     if(mode==="view"){const t=pubTrip();TripView.render($("app"),t,{mode:"view",img:"../trips/img/",gfx,wa:t.wa,onPack});return;}
     TripView.render($("app"),live(trip),{mode:"edit",img:"../trips/img/",gfx,wa:(trip.share||{}).wa,slot:slotUI,gaps:gapsUI,onPack});
-    if(mode==="edit")drawEditExtras();
+    if(mode==="edit"){drawEditExtras();drawVoice();}
   }
   // 25.20 (Oren 21.11.2026: "tasks I closed stay stuck at the top"): an item in next_up / alerts / gaps may carry tid = "<topic>" or
   // "<topic>:<step>". Once that task is closed (or that step is done) the item drops from the owner page at once.
