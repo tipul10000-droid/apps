@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.84";window.SQ_BUILD_AT="27.11.2026 02:20";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.85";window.SQ_BUILD_AT="27.11.2026 02:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -26,7 +26,7 @@ setTimeout(function(){var l=document.getElementById("list"),pin=document.getElem
 (function(){if(!("serviceWorker" in navigator)||(location.protocol!=="https:"&&location.hostname!=="localhost"))return;
 if(/[?&]nosw=1/.test(location.search)){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister();}));}).then(function(){return window.caches?caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf("sq-")===0;}).map(function(k){return caches.delete(k);}));}):0;}).then(function(){location.replace(location.pathname+"?u="+Date.now()+location.hash);});return;}
 window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});})();</script>
-<script src="sq-db.js?v=10"></script>
+<script src="sq-db.js?v=11"></script>
 <script src="sq-fid.js?v=1"></script>
 <script src="workcal-engine.js?v=2"></script>
 <script src="timegate.js?v=4"></script>
@@ -2582,6 +2582,15 @@ html:not(.desk) .ctxrow .toolrow .sbar .refr{gap:8px!important;padding:0 12px!im
 .sbar .refr .sct{color:var(--hero-muted);font-weight:600;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .sbar .refr .sct:empty{display:none}
 .sbar .refr.offl .scw{color:#FCA5A5}
+/* 25.84 (Oren 27.11.2026): "מוד אופליין" pill. Floats at the bottom center (fixed: nothing on the page moves), shows only while
+   there is no internet, with the time of the last real sync. Everything still opens from the copy on the device. */
+#offPill{position:fixed;z-index:80;left:50%;bottom:calc(30px + env(safe-area-inset-bottom,0px));transform:translate(-50%,8px);opacity:0;visibility:hidden;
+  display:flex;align-items:center;gap:7px;height:30px;padding:0 14px;border-radius:999px;background:#1d2326;color:#FFE3A6;border:1px solid rgba(255,213,138,.45);
+  box-shadow:0 6px 18px rgba(0,0,0,.35);font:700 13px/1 var(--f-body);white-space:nowrap;pointer-events:none;transition:opacity .25s,transform .25s,visibility 0s .25s;direction:rtl}
+#offPill.on{opacity:1;visibility:visible;transform:translate(-50%,0);transition:opacity .25s,transform .25s}
+#offPill i{width:8px;height:8px;border-radius:50%;background:#EF4444;box-shadow:0 0 6px #EF4444;flex:none}
+#offPill span{font-weight:600;color:rgba(255,227,166,.75)}
+html.desk #offPill{left:calc((100% - var(--drail,0px)) / 2)}
 .sbar .refr.offl .sqx{display:none}
 html.desk #dhead .ctxrow{flex-wrap:wrap!important;row-gap:8px!important}html.desk #dhead .toolrow{flex:1 0 100%;margin-inline-start:0!important;justify-content:flex-start}html.desk #dhead .toolrow .sbar{flex:0 0 auto!important}html.desk .sbar .conn{flex:none}html.desk #dhead .toolrow .updbtn{margin-inline-start:auto!important}
 /* 19.10 (Oren 17.11.2026): location and Gmail live in the connections panel now, not in the top ribbon */
@@ -3045,6 +3054,11 @@ html.desk .hero .dz-grid{display:flex!important}
 #sqSplash .ssL{position:relative;width:168px;height:50px;display:flex;align-items:center;justify-content:center}
 #sqSplash .ssT button{border:0;background:none;color:rgba(255,236,190,.85);font:inherit;text-decoration:underline;padding:0 2px;cursor:pointer}
 #sqSplash .ssGo:focus-visible{outline:2px solid #F4B63A;outline-offset:3px}
+/* 25.84 (Oren 27.11.2026): the dots show the connection. Connected = each dot in its quest color; offline (no answer in 1.5s) =
+   the dots turn grey and the line says "מוד אופליין". Same size and place, only the color changes. */
+#sqSplash .ssD i{transition:box-shadow .3s}
+#sqSplash.off .ssD i{--c:#8C979C!important}
+#sqSplash.off .ssT{color:#FFD58A}
 @media (prefers-reduced-motion:reduce){#sqSplash{transition:opacity .2s}#sqSplash.out{transform:none}#sqSplash.ready .ssGo{animation:none}}
 </style>
 </head>
@@ -3092,6 +3106,13 @@ window.SQResume={
   src:function(fr){if(!R||!R.frame||R.frameUsed)return fr;try{if(new URL(fr,location.href).pathname===new URL(R.frame.href).pathname){R.frameUsed=1;return R.frame.href;}}catch(e){}return fr;},
   reload:function(url){save(false);location.replace(url);}};
 })();</script>
+<script>/* 25.84 (Oren 27.11.2026): "מוד אופליין" pill, on its own (does not wait for the app to start): it follows SQ_NET from sq-db.js. */
+(function(){function ago(ms){var m=Math.floor((Date.now()-ms)/60000);if(m<1)return"עודכן עכשיו";if(m<60)return"עודכן לפני "+m+" דק׳";var h=Math.floor(m/60);return h<48?"עודכן לפני "+h+" שע׳":"עודכן לפני "+Math.floor(h/24)+" ימים";}
+function draw(){var N=window.SQ_NET||{},on=N.ok===false&&N.kind==="net",p=document.getElementById("offPill");
+  if(!p){if(!on||!document.body)return;p=document.createElement("div");p.id="offPill";p.setAttribute("role","status");p.setAttribute("aria-live","polite");
+    p.innerHTML='<i></i>✈️ מוד אופליין <span></span>';document.body.appendChild(p);}
+  p.classList.toggle("on",on);var last=window.SQ_LAST_REFRESH||N.last||0;p.querySelector("span").textContent="· "+(last?ago(last):"מהעותק השמור");}
+window.addEventListener("sq-net",draw);setInterval(draw,30000);})();</script>
 <script>/* 23.7-23.8: splash controller. The bar moves on real steps (30% code, 55% data on the device, 85% server answered, 100% screen drawn)
    and creeps slowly toward the next step in between, so it never stops and never hits 100% early. Min 0.8s, max 6s.
    23.8 (Oren 19.11.2026): style choice (sq_splash_style: art = the ChatGPT illustration, basic = the built-in one), entry mode
@@ -3118,8 +3139,11 @@ function tick(){if(gone)return;var now=performance.now(),el=now-t0,target=fin?10
   p+=(target-p)*(fin?0.3:0.04);if(red)p=target;if(p>target)p=target;var lim=el/1000*100;if(p>lim)p=lim;
   var u=p/100*dots.length;for(var i=0;i<dots.length;i++){var f=Math.max(0,Math.min(1,u-i));dots[i].style.setProperty("--f",f.toFixed(3));dots[i].classList.toggle("on",f>=.999);}
   if(!fin){
-    if(!o.preview&&navigator.onLine===false&&el>600)txt.textContent="בלי רשת, פותח מהעותק השמור";
+    var NN=window.SQ_NET||{},offl=!o.preview&&(navigator.onLine===false||(NN.ok===false&&NN.kind==="net"));
+    S.classList.toggle("off",offl);
+    if(offl)txt.textContent="✈️ מוד אופליין · פותח מהעותק השמור";
     else if(!o.preview&&el>2500)txt.textContent="הקליטה חלשה, עוד רגע";
+    else if(!o.preview&&NN.ok)txt.textContent="";
     var pin=document.getElementById("sq-pin"),l=document.getElementById("list");
     if(o.preview){if(el>2200)done();}
     else if(pin){tap=false;done();}
@@ -3128,7 +3152,7 @@ function tick(){if(gone)return;var now=performance.now(),el=now-t0,target=fin?10
     /* 24.8 (Oren 19.11.2026): the dots fill during loading and then simply stay lit, no flash and no sweep. */
     for(var j=0;j<dots.length;j++){dots[j].style.setProperty("--f","1");dots[j].classList.add("on");}
     if(!tap){out();return;}
-    if(!ready){ready=1;txt.textContent="";S.classList.add("ready");}
+    if(!ready){ready=1;var N2=window.SQ_NET||{};txt.textContent=(N2.ok===false&&N2.kind==="net")?"✈️ מוד אופליין":"";S.classList.add("ready");}
     return;}
   requestAnimationFrame(tick);}
 function done(){if(fin)return;fin=Math.max(performance.now()+250,t0+1000);}
