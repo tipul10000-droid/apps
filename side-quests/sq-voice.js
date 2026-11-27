@@ -19,7 +19,10 @@
 ${o.extra?o.extra+"\n":""}מה Side Quests יודע על הנסיעה:
 ${ctx}`;}
   function url(o){return "https://claude.ai/new?q="+encodeURIComponent(build(o));}
-  function open(o){window.open(url(o),"_blank","noopener");}
+  // 25.89: with the "SQ Claude" iPhone shortcut installed and switched on (sq_claude_sc), the chat opens in the Claude app (voice mode), not in Safari
+  function sc(on){try{if(on!==undefined)localStorage.setItem("sq_claude_sc",on?"1":"0");return localStorage.getItem("sq_claude_sc")==="1";}catch(e){return false;}}
+  function go(u){if(sc()){location.href="shortcuts://run-shortcut?name="+encodeURIComponent("SQ Claude")+"&input=text&text="+encodeURIComponent(u);return;}window.open(u,"_blank","noopener");}
+  function open(o){go(url(o));}
   // a private trip from the trips collection (trip.html)
   function trip(t){const L=[];
     L.push("נסיעה: "+[t.title,t.from&&t.to?t.from+" עד "+t.to:"",t.who].filter(Boolean).join(" · "));
@@ -31,5 +34,5 @@ ${ctx}`;}
     (t.notes||[]).slice(0,8).forEach(n=>{if(n&&(n.h||n.t))L.push("הערה: "+cut((n.h||"")+" "+(n.s||n.t||""),130));});
     const P=(t.maps&&t.maps.places)||[];if(P.length)L.push("הליסט שלנו ב-Google Maps ("+P.length+" מקומות): "+P.slice(0,60).map(p=>p.n+(p.city?" ("+p.city+")":"")+(p.rank==="must"?" ★":"")).join(", "));
     return {title:(t.flag?t.flag+" ":"")+(t.title||"טיול"),tz:t.tz||"Europe/Rome",place:(t.dest&&t.dest.h)||"היעד",ctx:L};}
-  window.SQVoice={build,url,open,trip,hm,cut};
+  window.SQVoice={build,url,open,go,sc,trip,hm,cut};
 })();

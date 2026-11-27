@@ -6063,7 +6063,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   function wsPrompt(p,rt,back,d,st){return decodeURIComponent(wsPlan(p,rt,back,d,st).split("?q=")[1]||"");}
   // return day (the flight home leaves within 30 hours): the road and the planning prompt default to Viterbo -> Rome
   function wsAutoBack(){try{const L=wfLive();if(!L.length)return false;const x=L[0];if(!x.legs||x.legs.length<2)return false;const rd=wfMs(x.legs[x.legs.length-1].dep),now=Date.now();return !!rd&&rd>now&&rd-now<=30*3600000;}catch(e){return false;}}
-  function wsChatOpen(p,rt,back,d,st){window.open(wsPlan(p,rt,back,d,st),"_blank","noopener");}
+  function wsChatOpen(p,rt,back,d,st){const u=wsPlan(p,rt,back,d,st);window.SQVoice?SQVoice.go(u):window.open(u,"_blank","noopener");}
   // 25.87 (Oren 27.11.2026): a saved chat link opens in the browser without voice mode, so the button always opens a NEW chat with the full prompt
   function wsChatBtn(p,rt,back,d,st,cls){return h("button",{type:"button",class:cls||"",onclick:()=>wsChatOpen(p,rt,back,d,st)},"🧠 תכנון "+(p.he||p.name));}
   // 25.87: "🎙 עצירה בדרך": one new chat whose prompt is built now from the app: date/time, direction, every stop with
@@ -6084,7 +6084,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
 בדוק ברשת ואל תמציא: אם לא מצאת שעות או דירוג, תגיד שלא מצאת. אני אמשיך לשאול באותה שיחה.
 העצירות (שם | ציון | ציר | זמן עצירה מומלץ | תוספת נסיעה | הייתי):
 ${P.map(row).join("\n")}`;
-    window.open("https://claude.ai/new?q="+encodeURIComponent(q),"_blank","noopener");}
+    const u="https://claude.ai/new?q="+encodeURIComponent(q);window.SQVoice?SQVoice.go(u):window.open(u,"_blank","noopener");}
   function wsGo(p,rt){if(!db||!canWrite)return;const at=new Date().toISOString();
     db.collection("workstops").doc(rt.id).update({active:p.id,active_at:at})
       .then(()=>db.collection("workstops").doc(p.id).update({pick:{...(p.pick||{}),at}}))
@@ -7670,12 +7670,15 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
         h("div",{class:"sqbtns"},h("button",{class:"sqbtn ghost",type:"button",onclick:()=>{closeModal();setTimeout(()=>openDash("work_calendar"),60);}},"⚙️ חידוד התשובות"))),
       grp("📱 אייפון"),
       // 19.4 (Oren 17.11.2026): every iPhone shortcut listed with what it does; install page = shortcuts/
-      sec("sc","⚡ קיצורי דרך לאייפון","3 קיצורים",
+      sec("sc","⚡ קיצורי דרך לאייפון","4 קיצורים",
         ...[["⚡","סייד קווסט","מדברים בלי לחץ, ונוגעים במסך כשמסיימים. \"משימה מהירה ...\" = משימה מיד, כל השאר = הוראה ל-All Arounder (עד שעה). הכי טוב על כפתור Action.","quest"],
           ["📥","ל-SQ","מתפריט השיתוף: יוטיוב, ריל, כתבה או לינק נכנסים ל-SQ, נקראים ומתויקים לדשבורד המתאים עם תובנות (עד שעה).","share"],
-          ["📍","סייד לוקיישן","איפה אני עכשיו (נוהג, בבית, סמוך לבית, בכפר סבא, על המחשב). ובנוסף לבד: מתחבר לבלוטוס של הפורד או הקיה = \"נוהג\" (רק שיחות), מתנתק = חוזר לאוטומטי.","where"]]
+          ["📍","סייד לוקיישן","איפה אני עכשיו (נוהג, בבית, סמוך לבית, בכפר סבא, על המחשב). ובנוסף לבד: מתחבר לבלוטוס של הפורד או הקיה = \"נוהג\" (רק שיחות), מתנתק = חוזר לאוטומטי.","where"],
+          ["🎙","SQ Claude","פותח את הצ׳אטים של Claude מהאפליקציה (תכנון עצירה, צ׳אט קולי לנסיעה) ישר באפליקציית Claude, שם יש שיחה קולית, ולא בדפדפן.","claude"]]
           .map(([e,n,d,a])=>h("div",{class:"sqrow"},h("div",{class:"lb"},e+" "+n,h("small",null,d)),
             h("a",{class:"sqbtn ghost",style:"text-decoration:none;min-height:36px;padding:0 10px;font-size:14px",href:"shortcuts/#"+a,target:"_blank",rel:"noopener"},"⬇️"))),
+        // 25.89 (Oren 27.11.2026): Claude chats open through the "SQ Claude" shortcut, so they land in the Claude app (voice mode) and not in Safari
+        h("div",{class:"sqrow"},h("div",{class:"lb"},"🎙 צ׳אטים באפליקציית Claude",h("small",null,"רק אחרי שהתקנת את SQ Claude")),sw(!!(window.SQVoice&&SQVoice.sc()),v=>{window.SQVoice&&SQVoice.sc(v);toast(v?"צ׳אטים ייפתחו באפליקציית Claude":"צ׳אטים ייפתחו בדפדפן");},"צ׳אטים באפליקציית Claude")),
         h("div",{class:"sqhint"},"גישה מהירה: כפתור Action, וידג׳ט Shortcuts במסך הנעילה או בהיום, או הקשה כפולה בגב האייפון. ההסבר בדף ההתקנה."),
         h("div",{class:"sqbtns"},h("a",{class:"sqbtn ghost",style:"text-decoration:none",href:"shortcuts/",target:"_blank",rel:"noopener"},"⬇️ דף ההתקנה"))),
       grp("🔔 התראות ובריפים"),
@@ -8008,7 +8011,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
 </script>
 <script src="sq-tel.js?v=3" defer></script>
 <script src="sq-gfx.js?v=2" defer></script>
-<script src="sq-voice.js?v=1"></script><script src="../appstat.js?v=1"></script><script>window.AppStat&&AppStat.init({app:"side-quests",ver:function(){return window.SQ_BUILD},uid:"oren"})</script>
+<script src="sq-voice.js?v=2"></script><script src="../appstat.js?v=1"></script><script>window.AppStat&&AppStat.init({app:"side-quests",ver:function(){return window.SQ_BUILD},uid:"oren"})</script>
 <script>/* 25.56: the Claude chat pill = exactly the width of the tool frame under it, in every quest */
 (function(){function tvSync(){try{var f=document.querySelector(".topbtns"),t=document.getElementById("tvoice");if(!f||!t)return;var w=Math.round(f.getBoundingClientRect().width);if(w>40)document.documentElement.style.setProperty("--tvw",w+"px");}catch(e){}}
 window.tvSync=tvSync;try{var f=document.querySelector(".topbtns");if(f&&window.ResizeObserver)new ResizeObserver(tvSync).observe(f);}catch(e){}
