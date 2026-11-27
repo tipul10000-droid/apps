@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.89";window.SQ_BUILD_AT="27.11.2026 19:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.90";window.SQ_BUILD_AT="27.11.2026 20:40";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1757,6 +1757,14 @@ details.more[open]>summary{margin-bottom:10px}
 .wf-bi{display:inline-flex;width:22px;height:22px}.wf-bi svg{width:100%;height:100%}
 .wf-base{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 12px;border-radius:12px;background:rgba(255,255,255,.16);color:#fff;text-decoration:none}
 .wf-base .wf-bi{width:26px;height:26px;flex:none}
+.wf-more{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:2px;padding-top:8px;border-top:1px solid rgba(255,255,255,.22);font-size:12.5px;font-weight:700;opacity:.85}
+.wf-more i{width:8px;height:8px;border-inline-end:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.wf-more .wm-o,.wft[open] .wf-more .wm-c{display:none}.wft[open] .wf-more .wm-o{display:inline}.wft[open] .wf-more i{transform:rotate(-135deg) translateY(-2px)}
+.wfTop .wft.cmp:not([open]) .wf-more{display:none}
+.wf-apw{display:grid;gap:6px}.wf-apb{width:100%;border:0;font:inherit;text-align:start;cursor:pointer}.wf-apb[aria-expanded=true] .wf-bgo{opacity:.7}
+.wf-apm{display:grid;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card,#fff);color:var(--ink,#111)}.wf-apm[hidden]{display:none}
+.wf-apr{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}.wf-apr:first-child{border-top:0}.wf-apr span{flex:1;font-weight:700;font-size:14px}
+.wf-apr a{min-height:36px;display:inline-flex;align-items:center;padding:0 12px;border-radius:10px;background:rgba(14,110,120,.12);color:inherit;text-decoration:none;font-size:13px;font-weight:600}
 .wf-bt{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.2}.wf-bt b{font-size:14.5px}.wf-bt small{font-size:12px;color:rgba(255,255,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wf-bgo{flex:none;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;background:#fff;color:#0f4fb8}
 .qbtn .qwf{position:absolute;top:3px;inset-inline-end:3px;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:11px;line-height:1;color:#fff;background:linear-gradient(135deg,#0f4fb8,#1a73e8);border:1.5px solid #fff;box-shadow:0 1px 5px rgba(10,40,110,.5);z-index:3;animation:qwfb 3.2s ease-in-out infinite}
@@ -2937,6 +2945,12 @@ html.desk .hero .dz-grid{display:flex!important}
 .ytlist a:first-child{border-top:0}
 .ytlist a b{font-size:15px;direction:ltr;text-align:right;line-height:1.3}
 .ytlist a small{font-size:12.5px;color:var(--muted)}
+.ytr{display:flex;align-items:center;gap:8px;padding:9px 12px;border-top:1px solid var(--line)}.ytr:first-child{border-top:0}
+.ytlist .ytr a.ytt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding:0;border:0;text-decoration:none;color:var(--ink)}
+.ytr.w .ytt{opacity:.55}
+.ytlist .ytr .yta{flex:none;min-height:40px;min-width:64px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;flex-direction:row}
+.ytlist .ytr .yta.ok{background:rgba(30,150,80,.12);border-color:rgba(30,150,80,.4)}
+.ytseen{margin-top:8px}.ytseen summary{font-size:13px;color:var(--muted);cursor:pointer;padding:6px 2px}
 .fzgrid .steam{border-color:#1E4E7A;background:#0B1622;color:#fff}
 .fzgrid .steam svg{width:24px;height:24px}
 .fcard.gm .fbtn{background:#1A9FFF;color:#fff}.fcard.gm .fbtn.ghost{background:transparent;color:#F2F2F2;border-color:#2A3E55}
@@ -5521,12 +5535,21 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   }
   // 25.83 (Oren 26.11.2026): "סרטוני יוטיוב לצפייה": topic zone "videos", items [{label, sub, url}], card is always last in Fun Quest
   const YT_SVG='<svg viewBox="0 0 30 21" aria-hidden="true"><rect width="30" height="21" rx="6" fill="#FF0033"/><path d="M12 6l8 4.5-8 4.5z" fill="#fff"/></svg>';
+  // 25.90 (Oren 27.11.2026): each video has only two actions: ✓ צפיתי (item.watched = ISO time, moves it to the collapsed "נצפו" list) and share = WhatsApp with the YouTube link only
+  function ytBody(vt,its){const all=Array.isArray(vt.items)?vt.items:[];
+    const save=(item,val)=>{const items=all.map(x=>x===item?{...x,watched:val}:x);const card=document.querySelector("article.fcard.yt");vt.items=items;if(card)card.replaceWith(videosCard(vt));patch(vt,{items:items},val?"סומן כנצפה":"הוחזר לרשימה");};
+    const row=(i,w)=>h("div",{class:"ytr"+(w?" w":"")},h("a",{class:"ytt",href:safeUrl(i.url),target:"_blank",rel:"noopener"},h("b",null,i.label||i.url),i.sub?h("small",null,i.sub):null),
+      w?h("button",{type:"button",class:"yta","aria-label":"החזרה לרשימה",onclick:()=>save(i,"")},"↩"):h("button",{type:"button",class:"yta ok","aria-label":"צפיתי",onclick:()=>save(i,new Date().toISOString())},"✓ צפיתי"),
+      w?null:h("a",{class:"yta sh","aria-label":"שיתוף בוואטסאפ",href:"https://wa.me/?text="+encodeURIComponent(safeUrl(i.url)),target:"_blank",rel:"noopener"},"שיתוף"));
+    const todo=its.filter(i=>!i.watched),seen=its.filter(i=>i.watched);
+    return h("div",{class:"ytwrap"},todo.length?h("div",{class:"ytlist"},...todo.map(i=>row(i,0))):h("div",{class:"mv-empty"},its.length?"✓ צפית בהכול":"עוד אין סרטונים."),
+      seen.length?h("details",{class:"ytseen"},h("summary",null,"נצפו ("+seen.length+")"),h("div",{class:"ytlist"},...seen.map(i=>row(i,1)))):null);}
   function videosCard(vt){
     const lg=h("span",{class:"ytlogo zlogo","aria-label":"YouTube"});lg.innerHTML=YT_SVG+"YouTube";
     const its=(Array.isArray(vt.items)?vt.items:[]).filter(i=>i&&safeUrl(i.url||""));
     return h("article",{class:"fcard yt"},
       h("div",{class:"zhead"},h("div",{class:"fc-h"},h("h3",null,"סרטוני יוטיוב לצפייה")),lg),
-      its.length?h("div",{class:"ytlist"},its.map(i=>h("a",{href:safeUrl(i.url),target:"_blank",rel:"noopener"},h("b",null,i.label||i.url),i.sub?h("small",null,i.sub):null))):h("div",{class:"mv-empty"},"עוד אין סרטונים."),
+      ytBody(vt,its),
       secChat(secUrl("videos",chatOf(vt)),"הסרטונים","הוסף סרטון · שאל · תקן"));
   }
   function funDashCard(d){const fr=dashFresh(d),K=Array.isArray(d.kpis)?d.kpis.slice(0,3):[];
@@ -5760,6 +5783,26 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   // 25.50 (Oren 22.11.2026): the work site of the trip (d.base {he, name, city, url, lat, lng}) = one tap from the ticket, helicopter commute icon. Data only in sq_docs.
   const WF_HELI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h14"/><path d="M10 4v3"/><path d="M6 12a5 5 0 0 1 5-5h3a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M18 10h4l1-3"/><path d="M14 7v5h4"/><path d="M8 14v3"/><path d="M15 14v3"/><path d="M5 19h13l2-2"/></svg>';
   function wfBaseDir(B){return B.lat!=null&&B.lng!=null?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+B.lat+","+B.lng:(B.url&&safeUrl(B.url))||wfMaps(B.maps_q||B.name);}
+  // 25.90 (Oren 27.11.2026): from one hour before "leave for the airport" until take-off (a flight not from TLV), the work navigation gives way to the airport:
+  // one small menu, straight to the airport or via a fuel station, Google Maps or Waze (deep links). Data: the leg's from.code, WF_AP coordinates, d.car.fuel when known.
+  function wfApNow(d){if(!d||!Array.isArray(d.legs))return null;const now=Date.now(),legs=d.legs.slice().sort((a,b)=>(wfMs(a.dep)||0)-(wfMs(b.dep)||0));
+    const nx=legs.find(l=>(wfMs(l.arr)||wfMs(l.dep)||0)>now);if(!nx)return null;const code=String(nx.from&&nx.from.code||"").toUpperCase();if(!code||code==="TLV")return null;
+    const dep=wfMs(nx.dep);if(dep==null||dep<=now)return null;const lm=Number(nx.leave_min)||Number(d.leave_min)||240;if(now<dep-lm*60000-3600000)return null;
+    const A=WF_AP[code]||{},en=A.en||((nx.from&&nx.from.city)||code)+" Airport";return {code,en,lat:A.lat,lng:A.lng,dep,fuel:(d.car&&d.car.fuel)||null};}
+  function wfApLinks(ap){const ll=ap.lat!=null?ap.lat+","+ap.lng:null,F=ap.fuel;
+    const mDir=ll?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+ll:wfMaps(ap.en);
+    const mFuel=F&&F.q?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+encodeURIComponent(ll||ap.en)+"&waypoints="+encodeURIComponent(F.q):(ll?"https://www.google.com/maps/search/gas+station/@"+ll+",13z":wfMaps("gas station near "+ap.en));
+    const wDir=ll?"https://waze.com/ul?ll="+ll+"&navigate=yes":"https://waze.com/ul?q="+encodeURIComponent(ap.en)+"&navigate=yes";
+    const wFuel=F&&F.q?"https://waze.com/ul?q="+encodeURIComponent(F.q)+"&navigate=yes":(ll?"https://waze.com/ul?q=gas%20station&ll="+ll+"&navigate=no":"https://waze.com/ul?q="+encodeURIComponent("gas station near "+ap.en)+"&navigate=no");
+    return {mDir,mFuel,wDir,wFuel};}
+  function wfApMenu(ap){const L=wfApLinks(ap),a=(u,t)=>h("a",{href:u,target:"_blank",rel:"noopener",onclick:e=>e.stopPropagation()},t);
+    return h("div",{class:"wf-apm",onclick:e=>e.stopPropagation()},
+      h("div",{class:"wf-apr"},h("span",null,"ישר לשדה"),a(L.mDir,"Google Maps"),a(L.wDir,"Waze")),
+      h("div",{class:"wf-apr"},h("span",null,"דרך תחנת דלק"),a(L.mFuel,"Google Maps"),a(L.wFuel,"Waze")));}
+  // the summary version: one button that opens the menu below it (the button itself does not move)
+  function wfApBtn(ap){const m=wfApMenu(ap);m.hidden=true;
+    return h("div",{class:"wf-apw"},h("button",{type:"button",class:"wf-base wf-apb","aria-expanded":"false",onclick:e=>{e.preventDefault();e.stopPropagation();const b=e.currentTarget,o=m.hidden;m.hidden=!o;b.setAttribute("aria-expanded",o?"true":"false");}},
+      h("span",{class:"wf-bi","aria-hidden":"true"},"🛫"),h("span",{class:"wf-bt"},h("b",null,"לשדה התעופה"),h("small",null,ap.en)),h("span",{class:"wf-bgo","aria-hidden":"true"},"ניווט ›")),m);}
   function wfBaseBtn(B){return h("a",{class:"wf-base",href:wfBaseDir(B),target:"_blank",rel:"noopener",onclick:e=>e.stopPropagation()},h("span",{class:"wf-bi",html:WF_HELI}),h("span",{class:"wf-bt"},h("b",null,"לעבודה"),h("small",null,B.he||B.name||"")),h("span",{class:"wf-bgo","aria-hidden":"true"},"ניווט ›"));}
   function wfBase(d){const B=d.base;if(!B||!(B.name||B.he))return null;const u=safeUrl(B.url||"");
     return wfSec(d.id+":base",h("span",{class:"wf-bi",html:WF_HELI}),B.he||B.name,[B.city,B.he&&B.name?B.name:""].filter(Boolean).join(" · "),[
@@ -5811,18 +5854,18 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     for(const k in T){const m=[].concat(T[k].match||[]);if(m.some(c=>codes.includes(c)||String(d.title||"").includes(c)))return T[k];}return {};}
   function wfChat(d){return safeUrl(d.chat_url||"")||"";}
   function wfFav(dom){return dom?"https://www.google.com/s2/favicons?domain="+encodeURIComponent(dom)+"&sz=64":"";}
-  function wfLocal(d){const now=Date.now(),TY=wfType(d),A=(abFood&&abFood.areas&&abFood.areas[d.food_area||TY.food_area||"viterbo"])||null,B=d.base||TY.base;if(!A&&!B)return null;
+  function wfLocal(d){const now=Date.now(),TY=wfType(d),A=(abFood&&abFood.areas&&abFood.areas[d.food_area||TY.food_area||"viterbo"])||null,B=d.base||TY.base;if(!A&&!B&&!wfApNow(d))return null;
     const tz=d.tz||"Europe/Rome",T=wfTzNow(tz),wk=T.dow>=1&&T.dow<=5;
     const hotels=[...(d.hotel&&d.hotel.name?[{id:"trip",n:d.hotel.name,lat:d.hotel.lat,lng:d.hotel.lng,maps_q:d.hotel.maps_q||(d.hotel.name+" "+(d.hotel.addr||""))}]:[]),...[...(TY.hotels||[]),...((A&&A.hotels)||[])].filter((x,i,a)=>(!d.hotel||x.n!==d.hotel.name)&&a.findIndex(y=>y.n===x.n)===i)];
     let hk="";try{hk=localStorage.getItem("sq_wfhot_"+d.id)||"";}catch(e){}const hot=hotels.find(x=>x.id===hk)||hotels[0]||null;
-    const ui=wfLocUI[d.id]||(wfLocUI[d.id]={});const night=T.min>=21*60+30||T.min<5*60;const def=night&&hot?"hotel":B&&wk&&T.min<10*60?"base":(A?"food":"base");
+    const ap=wfApNow(d);const ui=wfLocUI[d.id]||(wfLocUI[d.id]={});const night=T.min>=21*60+30||T.min<5*60;const def=ap?"base":night&&hot?"hotel":B&&wk&&T.min<10*60?"base":(A?"food":"base");
     // 25.58 (dynamic view): outside the hours it is for (drive to work before 10:00, lunch 11:30-15:00, dinner 18:00-23:00) only the head and the two tabs; a tap on a tab is his ask and opens it
     const rel=def==="base"||def==="hotel"?true:((T.min>=690&&T.min<=900)||(T.min>=1080&&T.min<=1380));const tab=ui.tab||(rel?def:"");
     const p0=(()=>{const p=here();if(p&&!inIsrael(p))return {la:p.la,lo:p.lo,me:1};return hot&&hot.lat!=null?{la:+hot.lat,lo:+hot.lng}:(B&&B.lat!=null?{la:+B.lat,lo:+B.lng,base:1}:null);})();
     const km=x=>p0&&x&&x.lat!=null?Math.round(distM(p0,{la:+x.lat,lo:+x.lng})/100)/10:null;
     const drive=k=>k==null?null:Math.max(3,Math.round(k*1.35/45*60)+3);
     const dirTo=x=>x.lat!=null?"https://www.google.com/maps/dir/?api=1&travelmode=driving&destination="+x.lat+","+x.lng:(x.url&&safeUrl(x.url))||wsNav(x.maps_q||x.n);
-    const seg=h("div",{class:"wl-seg",role:"tablist"},...[hot?["hotel","🏨 למלון"]:null,B?["base",(TY.base_icon||"🚁")+" לעבודה"]:null,A?["food","🍽️ לאכול"]:null].filter(Boolean).map(([k,l])=>h("button",{type:"button",role:"tab","aria-selected":tab===k?"true":"false",class:tab===k?"on":"",onclick:e=>{ui.tab=k;const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},l)));
+    const seg=h("div",{class:"wl-seg",role:"tablist"},...[hot?["hotel","🏨 למלון"]:null,ap?["base","🛫 לשדה"]:B?["base",(TY.base_icon||"🚁")+" לעבודה"]:null,A?["food","🍽️ לאכול"]:null].filter(Boolean).map(([k,l])=>h("button",{type:"button",role:"tab","aria-selected":tab===k?"true":"false",class:tab===k?"on":"",onclick:e=>{ui.tab=k;const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},l)));
     const hotPick0=hotels.length>1?h("div",{class:"wl-hot"},h("small",null,"המלון שבו אני עכשיו:"),...hotels.map(x=>h("button",{type:"button",class:x===hot?"on":"",onclick:e=>{try{localStorage.setItem("sq_wfhot_"+d.id,x.id);}catch(er){}const c=e.currentTarget.closest(".wl");c.replaceWith(wfLocal(d));}},x.n))):null;
     let body;
     // 25.59: the discreet line under every tab: the big supermarket and MediaWorld near here, with their logos
@@ -5834,6 +5877,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     if(tab==="hotel"&&hot){const ph=String(hot.phone||(d.hotel&&d.hotel.name===hot.n&&d.hotel.phone)||"").trim();
       body=[h("a",{class:"wl-go",href:dirTo(hot),target:"_blank",rel:"noopener"},h("span",{class:"wf-bi","aria-hidden":"true"},"🏨"),h("span",null,h("b",null,"ניווט למלון"),h("small",{class:"nolink notel"},hot.n+(km(hot)!=null&&!(p0&&p0.la===+hot.lat)?" · "+km(hot)+" ק״מ":""))),h("span",{"aria-hidden":"true"},"›")),
         hotPick0,ph?h("a",{class:"wf-mail wl-tel",href:"tel:"+ph.replace(/[^\d+]/g,"")},"📞 ",h("bdi",{dir:"ltr"},ph)):null,exRow];}
+    else if(tab==="base"&&ap){body=[wfApMenu(ap),exRow];}
     else if(tab==="base"&&B){const kb=hot&&hot.lat!=null&&B.lat!=null?Math.round(distM({la:+hot.lat,lo:+hot.lng},{la:+B.lat,lo:+B.lng})/100)/10:null;
       body=[h("a",{class:"wl-go",href:wfBaseDir(B),target:"_blank",rel:"noopener"},h("span",{class:"wf-bi",html:WF_HELI}),h("span",null,h("b",null,"ניווט לבסיס"),h("small",null,(B.he||B.name||"")+(kb!=null&&hot?" · ≈"+drive(kb)+" דק׳ מ-"+hot.n:""))),h("span",{"aria-hidden":"true"},"›")),
         hot&&B.lat!=null?h("a",{class:"wf-mail",href:"https://www.google.com/maps/dir/?api=1&travelmode=driving&origin="+encodeURIComponent(hot.lat!=null?hot.lat+","+hot.lng:hot.maps_q)+"&destination="+B.lat+","+B.lng,target:"_blank",rel:"noopener"},"המסלול מ-"+hot.n+" ›"):null,exRow];}
@@ -5905,7 +5949,9 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
           h("button",{type:"button",class:"wf-rem"+(d.remind===true?" on":""),role:"switch","aria-label":"תזכורות לכל מועד","aria-checked":d.remind===true?"true":"false",onclick:ev=>{ev.preventDefault();ev.stopPropagation();const b=ev.currentTarget,v=!(b.getAttribute("aria-checked")==="true");b.setAttribute("aria-checked",v?"true":"false");b.classList.toggle("on",v);d.remind=v;
             db.collection("work_flights").doc(d.id).update({remind:v,updated_at:new Date().toISOString()}).then(()=>toast(v?"תזכורות פועלות: תקבל התראה בכל מועד":"תזכורות כבויות"),()=>{b.setAttribute("aria-checked",v?"false":"true");b.classList.toggle("on",!v);d.remind=!v;toast("השמירה נכשלה");});}},
             h("span",{class:"wf-rl"},"תזכורות"),h("span",{class:"wf-sw","aria-hidden":"true"},h("i",null))),
-          d.base&&trip&&!inAir&&!lv&&legs.indexOf(nx)>0?wfBaseBtn(d.base):null),
+          (()=>{const ap=wfApNow(d);return ap?wfApBtn(ap):(d.base&&trip&&!inAir&&!lv&&legs.indexOf(nx)>0?wfBaseBtn(d.base):null);})(),
+          // 25.90 (Oren 27.11.2026): a visible hint that the card opens: tapping the body shows more details
+          h("div",{class:"wf-more","aria-hidden":"true"},h("span",{class:"wm-c"},"עוד פרטים"),h("span",{class:"wm-o"},"סגירה"),h("i",null))),
         h("div",{class:"wf-b"},
           // 25.78 (Oren 25.11.2026): a work trip with many options gets a mini dashboard (wtrip.html, data in work_flights/<id>.board)
           d.board&&d.board_dash&&dashById(d.board_dash)?h("button",{type:"button",class:"wf-board",onclick:ev=>{ev.stopPropagation();openDash(d.board_dash);}},h("span",{"aria-hidden":"true"},"🗂️"),h("span",null,h("b",null,"כל האפשרויות של הנסיעה"),h("small",null,"לו״ז, מלונות, ספא, טיולים, מזג אוויר וטיסות")),h("span",{class:"wf-ch","aria-hidden":"true"},"‹")):null,
@@ -5916,7 +5962,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
           d.wifi&&d.wifi.code?wfSec(d.id+":wifi","📶","Wi-Fi חינם"+(d.wifi.leg?" · "+d.wifi.leg:""),"קוד "+d.wifi.code,[h("div",{class:"wf-acts"},wfCopy(d.wifi.code,"קוד Wi-Fi")),d.wifi.how?h("div",{class:"wf-note"},d.wifi.how):null,safeUrl(d.wifi.mail_url||"")?h("a",{class:"wf-mail",href:safeUrl(d.wifi.mail_url),target:"_blank",rel:"noopener"},"המייל ›"):null]):null,
           legs.length>1?wfSec(d.id+":tm","🕒","כל הזמנים","הלוך וחזור",legs.map(l=>h("div",{class:"wf-tmb"},h("b",null,wfAir(l)+" · "+(l.from&&l.from.city||"")+" ← "+(l.to&&l.to.city||"")),wfTimes(wfEvents(d,l),now,null)))):null,
           wfSec(d.id+":fl","✈️","טיסות",legs.map(l=>wfAir(l)).join(" · "),legs.map(l=>wfLeg(d,l))),
-          lv?null:wfBase(d),
+          lv||wfApNow(d)?null:wfBase(d),
           H.name?wfSec(d.id+":ht","🏨",H.name,[H.nights?H.nights+" לילות":"",H.in?"צ׳ק-אין "+H.in:"",H.plan||""].filter(Boolean).join(" · "),[
             H.addr?h("div",{class:"wf-kv"},h("span",null,"כתובת"),h("div",null,H.addr)):null,
             h("div",{class:"wf-acts"},wfGm(H.maps_q||((H.name||"")+" "+(H.addr||""))),H.res?wfCopy(H.res,"מספר הזמנה"):null),
