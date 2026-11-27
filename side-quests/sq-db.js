@@ -9,6 +9,8 @@
   var URL_ = "https://emgtyfksnofzzlutngbf.supabase.co";
   var ANON = "sb_publishable_Pa6-CuUavcT0rpD8ei_cxA_8oZ-Ykku";
   var APP = window.SQ_APP;
+  // 25.84: a tiny file of the app, asked straight from the network (no-store skips the saved copy), to know within 1.5s if there is internet
+  var PROBE = (function () { try { return new URL("manifest.json", (document.currentScript && document.currentScript.src) || location.href).toString(); } catch (e) { return "manifest.json"; } })();
   var LS = "sq_key";
   var EN = window.SQ_LANG === "en";
   function T(he, en) { return EN ? en : he; }
@@ -98,6 +100,26 @@
   function netOk() { net.ok = true; net.kind = ""; net.at = Date.now(); pub(); }
   function netBad(e) { if (e && (e.net || e.server)) { net.ok = false; net.kind = e.net ? "net" : "server"; net.fail = Date.now(); pub(); } }
   function soft(e) { return e && (e.net || e.server); }
+  // 25.84 (Oren 27.11.2026): offline is known within ~1.5s, not after the 12s server limit. A quick check of the app's own
+  // site: no answer in 1.5s (plane Wi-Fi), an error, or the phone says offline = "net" (מוד אופליין). The server call keeps going;
+  // if it answers, it turns back to connected. While offline it checks again every 10s and syncs as soon as the network is back.
+  var probing = null;
+  function probe() {
+    if (probing) return probing;
+    var t0 = Date.now();
+    if (navigator.onLine === false) { netBad({ net: true }); return Promise.resolve(false); }
+    var ac = typeof AbortController === "function" ? new AbortController() : null;
+    probing = new Promise(function (res) {
+      var fin = function (ok) { if (!probing) return; probing = null; clearTimeout(tm);
+        if (!ok && !(net.ok && net.at >= t0)) netBad({ net: true });
+        if (ok && net.ok === false && net.kind === "net" && key && !lockTimer) refresh().catch(function () {});
+        res(ok); };
+      var tm = setTimeout(function () { fin(false); if (ac) ac.abort(); }, 1500);
+      fetch(PROBE + (PROBE.indexOf("?") < 0 ? "?" : "&") + "p=" + Date.now(), { cache: "no-store", signal: ac ? ac.signal : undefined })
+        .then(function (r) { fin(!!(r && r.ok && !r.redirected)); }, function () { fin(false); });
+    });
+    return probing;
+  }
   function saveQ() { lsSet(QK, queue); pub(); }
   function applyOp(m, o) {
     var k = o.c + "/" + o.id;
@@ -162,6 +184,7 @@
   var lockTimer = null;
   function refresh() {
     if (!key) { var e0 = new Error("no key"); e0.badKey = true; e0.noKey = true; if (PIN) pinScreen(""); return Promise.reject(e0); }
+    probe();
     return flush().then(function () { return rpc("sq_open"); }).then(function (res) {
       if (!res || res.status !== "ok") { var e = new Error(res && res.status === "locked" ? "locked" : "bad key"); e.badKey = true; e.locked = res && res.status === "locked"; throw e; }
       var rows = res.rows, next = {};
@@ -294,7 +317,10 @@
   setInterval(function () { if (key && !lockTimer && !document.hidden) refresh().catch(function () {}); }, 30000);
   window.addEventListener("online", function () { if (key && !lockTimer) refresh().catch(function () {}); });
   window.addEventListener("offline", function () { netBad({ net: true }); });
+  setInterval(function () { if (net.ok === false && net.kind === "net" && !document.hidden) probe(); }, 10000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) probe(); });
   pub();
+  probe();
   // boot from the device copy: with a saved code and saved data the app opens at once, also with no network.
   // the server still checks the code on the first real sync (a wrong code clears the copy and shows the code screen).
   var bootP = key ? cacheGet().then(function (c) {
