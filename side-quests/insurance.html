@@ -119,6 +119,8 @@ table.cov{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
 .legend .st{min-width:0;cursor:default;height:28px;padding:0 8px;font-size:12px;line-height:1;margin:0;border:0;border-radius:999px;box-sizing:border-box;white-space:nowrap}
 .legend>span:not(.st){flex-basis:100%;text-align:center}
 /* 25.11 (Oren): cost fan, tap a category to see who you pay and for what */
+details.bcat.trip>summary>span:first-child{white-space:nowrap}
+details.bcat.trip{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line,#ddd)}details.bcat.trip .tnote{font-size:12px;opacity:.7;align-self:center}details.bcat.trip .v small{font-size:11px;opacity:.7;margin-inline-start:3px}
 details.bcat>summary{list-style:none;cursor:pointer;border-radius:10px}
 details.bcat>summary::-webkit-details-marker{display:none}
 details.bcat>summary .chev{display:inline-block;color:var(--muted);font-size:11px;margin-inline-start:4px;transition:transform .2s}
@@ -553,7 +555,7 @@ function render(){
   {const b=document.querySelector(".hero .sqsub");if(b)b.remove();}
   chips();
   const V=visible(), act=V.filter(p=>p.status!=="ended");
-  const m=act.reduce((s,p)=>s+monthly(p),0);
+  const m=act.filter(p=>p.status!=="per_trip").reduce((s,p)=>s+monthly(p),0); // נסיעות לחו״ל: הוצאה לפי טיול, לא חלק מהעלות הקבועה
   // רשימת "דורש תשומת לב" מגיעה מ-_meta.flags (רשימה מנופה). ממצאים לכל פוליסה מוצגים בכרטיס שלה.
   const flags=[];
   (data.meta.flags||[]).forEach(f=>{if(fWho==="all"||!f.who||f.who.includes(fWho)){const p=f.pid&&data.pol.find(x=>x.id===f.pid);
@@ -628,14 +630,16 @@ function render(){
       (safe(DP.chat_url)?`<a class="more" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="${esc(safe(DP.chat_url))}" target="_blank" rel="noopener">💬 השיחה על הכפילויות</a>`:"")+`</section>`;
   }
   // costs + renewals
-  const byCat={},polCat={};act.forEach(p=>{const v=monthly(p);if(v>0){byCat[p.cat]=(byCat[p.cat]||0)+v;(polCat[p.cat]=polCat[p.cat]||[]).push(p);}});
+  const byCat={},polCat={};act.forEach(p=>{const v=p.status==="per_trip"?0:monthly(p);if(v>0){byCat[p.cat]=(byCat[p.cat]||0)+v;(polCat[p.cat]=polCat[p.cat]||[]).push(p);}});
   const mx=Math.max(1,...Object.values(byCat));
   const bars=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>{const cc=`var(${CATS[c]?.c||"--c-other"})`,ps=polCat[c].sort((a,b)=>monthly(b)-monthly(a));
     return `<details class="bcat" style="--cc:${cc}"><summary class="brow"><span>${CATS[c]?.i||""} ${CATS[c]?.l||c}<span class="chev">▾</span></span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;background:${cc}"></span></span><span class="v">${ils(v)}</span></summary>`+
       `<div class="bdet">${ps.map(p=>`<button data-p="${esc(p.id)}"><span class="bi">${esc(p.insurer||"")}</span><span class="bt">${esc(p.title)}</span><span class="bw">${(p.who||[]).map(w=>`<i>${WHO_TAG[w]||esc(w)}</i>`).join("")}</span><span class="bv">${ils(monthly(p))}<small>${p.monthly!=null?"לחודש":"שנתי ÷ 12"}</small></span></button>`).join("")}`+
       `<div class="bs"><span>${ps.length} פוליסות</span><span>סה״כ ${ils(v)} לחודש</span></div></div></details>`;}).join("");
+  const tps=act.filter(p=>p.status==="per_trip"&&+p.annual>0), tsum=tps.reduce((t,p)=>t+(+p.annual),0);
+  const trip=tps.length?`<details class="bcat trip" style="--cc:var(--c-other)"><summary class="brow"><span>✈️ הוצאות חו״ל<span class="chev">▾</span></span><span class="tnote">לפי טיול, לא קבוע</span><span class="v">${ils(tsum)}<small>בשנה</small></span></summary><div class="bdet">${tps.map(p=>`<button data-p="${esc(p.id)}"><span class="bi">${esc(p.insurer||"")}</span><span class="bt">${esc(p.title)}</span><span class="bw">${(p.who||[]).map(w=>`<i>${WHO_TAG[w]||esc(w)}</i>`).join("")}</span><span class="bv">${ils(+p.annual)}<small>בשנה האחרונה</small></span></button>`).join("")}<div class="bs"><span>משולם רק כשיש טיול</span><span>לא נכלל בסה״כ החודשי</span></div></div></details>`:"";
   const ren=act.filter(p=>p.renew).map(p=>({p,d:daysTo(p.renew)})).sort((a,b)=>a.d-b.d).slice(0,7);
-  h+=`<section class="two" id="s-cost"><div><div class="sh"><h2>לאן הולך הכסף</h2><span class="hint">ממוצע חודשי</span></div><div class="card bars">${bars||'<div class="empty">אין נתוני עלות</div>'}<div class="bnote fold">${esc(meta.cost_note||"")}</div></div></div>`+
+  h+=`<section class="two" id="s-cost"><div><div class="sh"><h2>לאן הולך הכסף</h2><span class="hint">ממוצע חודשי</span></div><div class="card bars">${bars||'<div class="empty">אין נתוני עלות</div>'}${trip}<div class="bnote fold">${esc(meta.cost_note||"")}</div></div></div>`+
      `<div><div class="sh"><h2>חידושים ותפוגות</h2></div><div class="card ren">${ren.map(r=>`<div class="rrow" data-p="${esc(r.p.id)}" style="cursor:pointer"><span class="d ${r.d<0?"past":r.d<60?"soon":""}">${fmtD(r.p.renew)}</span><span><b>${esc(r.p.title)}</b><small>${esc(r.p.renew_note||"")}${r.d!=null?` · ${r.d<0?"עבר לפני "+(-r.d)+" ימים":"בעוד "+r.d+" ימים"}`:""}</small></span></div>`).join("")||'<div class="empty">אין תאריכים</div>'}</div></div></section>`;
   // coverage matrix
   const cov=meta.coverage||[];
