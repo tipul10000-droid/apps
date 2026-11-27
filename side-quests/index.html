@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.87";window.SQ_BUILD_AT="27.11.2026 18:10";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.88";window.SQ_BUILD_AT="27.11.2026 18:20";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -3017,6 +3017,7 @@ html.desk .hero .dz-grid{display:flex!important}
 .wl-ex a{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:700;color:var(--ink);text-decoration:none;background:var(--surface)}
 .wl-ex img{width:16px;height:16px;border-radius:3px}.wl-ex small{font-size:10.5px;color:var(--muted,#777);font-weight:600}.wl-ex small.on{color:#0E7A3B}
 .wf-board{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 8px;padding:10px 12px;border-radius:12px;border:1px solid rgba(127,127,127,.35);background:rgba(31,94,91,.08);color:inherit;font:inherit;text-align:start;cursor:pointer}.wf-board>span:first-child{font-size:20px}.wf-board>span:nth-child(2){flex:1;min-width:0}.wf-board b{display:block;font-size:15px}.wf-board small{display:block;font-size:12.5px;opacity:.75}
+.wf-voice{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;border-radius:12px;border:0;background:#D97757;color:#fff;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
 .wf-chatl{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;border-radius:12px;background:#D97757;color:#fff;font-weight:800;text-decoration:none}
 </style>
 <script>window.SQI_SKIP=".sbar,#cnM,.r-title,.r-upd,.d-line,.d-story,.f-log,.dd-t,.bp-q,.up-t b,.lt b,.ft b";</script><script src="sq-icons.js?v=2"></script>
@@ -5857,6 +5858,23 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     const oa=wfMs(x.legs[0].arr)||wfMs(x.legs[0].dep),rd=wfMs(x.legs[x.legs.length-1].dep);return now<oa+6*3600000||(rd&&now>rd-10*3600000);}
   function wfInItaly(d,legs){const now=Date.now(),oa=wfMs(legs[0].arr)||wfMs(legs[0].dep),rd=wfMs(legs[legs.length-1].dep);return now>=oa&&(!rd||now<rd)&&legs.length>1;}
   function wfWrap(ids){const t=wfTickets(ids);return t.length?[h("div",{class:"wfTop"},...t)]:[];}
+  // 25.88 (Oren 27.11.2026): "🎙 צ׳אט קולי לנסיעה" on every work-trip ticket: a new chat that starts with all the trip knowledge (sq-voice.js)
+  function wfVoice(d){if(!window.SQVoice)return;const V=SQVoice,TY=wfType(d)||{},L=[];
+    L.push("(כל השעות בשעון איטליה) נסיעת עבודה: "+[d.title,d.from&&d.to?d.from+" עד "+d.to:"",TY.title].filter(Boolean).join(" · "));
+    (d.legs||[]).forEach(g=>{const a=g.from||{},b=g.to||{};L.push("טיסה "+[g.no,(a.city||a.code||"")+(a.t?" T"+a.t:"")+" ← "+(b.city||b.code||""),g.dep?V.hm(g.dep):"",g.arr?"נוחת "+V.hm(g.arr):"",g.planned?"(בתכנון)":""].filter(Boolean).join(" · "));});
+    const H=d.hotel;if(H&&H.name)L.push("מלון: "+[H.name,H.addr,H.in,H.out,H.plan].filter(Boolean).join(" · ")+((H.notes||[]).length?" · "+H.notes.join(" "):""));
+    (d.hotels||[]).forEach(x=>{if(x&&x.city)L.push("מלונות "+x.city+" ("+(x.n||"")+"): "+(x.opts||[]).join(" | "));});
+    const C=d.car;if(C&&(C.supplier||C.note))L.push("רכב: "+[C.supplier,C.model,C.pick&&C.pick.at?"איסוף "+V.hm(C.pick.at)+" "+(C.pick.loc||""):"",C.drop&&C.drop.at?"החזרה "+V.hm(C.drop.at)+" "+(C.drop.loc||""):"",C.note].filter(Boolean).join(" · "));
+    const B=d.base||TY.base;if(B)L.push("מקום העבודה: "+[B.name||B.he,B.city,B.addr].filter(Boolean).join(", "));
+    if(d.meeting&&d.meeting.he)L.push("פגישה: "+[d.meeting.he,d.meeting.at?V.hm(d.meeting.at):"",d.meeting.city,d.meeting.confirmed===false?"עוד לא מאושר":""].filter(Boolean).join(" · "));
+    (d.plan||[]).forEach(x=>L.push("תוכנית: "+x));
+    const bd=d.board;if(bd&&bd.picks)bd.picks.forEach(p=>L.push("בחירה: "+V.cut((p.h||"")+(p.s?" · "+p.s:""),160)));
+    (TY.extras||[]).forEach(x=>L.push(x.l+": "+x.n+(x.maps_q?" ("+x.maps_q+")":"")));
+    const A=abFood&&abFood.areas&&abFood.areas[d.food_area||TY.food_area||""];if(A&&A.places)L.push("מסעדות שאספנו ב"+(A.he||"אזור")+": "+A.places.map(p=>p.n+(p.r?" "+p.r:"")+(p.fixed?" ⭐קבועה":"")).join(", "));
+    const R=wsDocs.filter(x=>x.type==="route");R.forEach(rt=>{if(!/viterbo/i.test(rt.id+(TY.title||"")+(d.city||"")))return;
+      const P=wsDocs.filter(x=>x.type!=="route"&&x.route===rt.id).sort((a,b)=>(+!!a.visited)-(+!!b.visited)||(+b.score||0)-(+a.score||0));
+      L.push("עצירות בדרך "+(rt.title||rt.id)+" (שם | ציון | עצירה | הייתי):\n"+P.map(p=>"- "+(p.name||p.he)+" | "+(p.score||"?")+"/10 | "+(p.stop||"?")+"m"+(p.visited?" | VISITED "+(p.visited_at||""):"")).join("\n"));});
+    V.open({title:(d.flag||"")+" "+(d.title||"נסיעת עבודה"),tz:"Europe/Rome",place:d.city||"היעד",ctx:L,max:5200});}
   function wfTickets(ids){if(quest!=="travel")return [];const now=Date.now();
     return wfLive().filter(x=>!ids||ids.includes(x.d.id)).map(({d,legs,first})=>{
       const nx=legs.find(l=>(wfMs(l.arr)||wfMs(l.dep))>now)||legs[legs.length-1];
@@ -5891,6 +5909,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
         h("div",{class:"wf-b"},
           // 25.78 (Oren 25.11.2026): a work trip with many options gets a mini dashboard (wtrip.html, data in work_flights/<id>.board)
           d.board&&d.board_dash&&dashById(d.board_dash)?h("button",{type:"button",class:"wf-board",onclick:ev=>{ev.stopPropagation();openDash(d.board_dash);}},h("span",{"aria-hidden":"true"},"🗂️"),h("span",null,h("b",null,"כל האפשרויות של הנסיעה"),h("small",null,"לו״ז, מלונות, ספא, טיולים, מזג אוויר וטיסות")),h("span",{class:"wf-ch","aria-hidden":"true"},"‹")):null,
+          h("button",{type:"button",class:"wf-voice",onclick:ev=>{ev.stopPropagation();wfVoice(d);}},"🎙 צ׳אט קולי לנסיעה"),
           wfChat(d)&&!lv?h("a",{class:"wf-chatl",href:wfChat(d),target:"_blank",rel:"noopener"},"💬 הצ׳אט של הנסיעה"):null,
           tx&&tx>now-15*60000?h("div",{class:"wf-taxi"},h("span",{"aria-hidden":"true"},"🚕"),h("div",null,h("b",null,"להיות למטה למונית: "+wfDay(nx.dep)+" "+wfIL(tx)),h("small",null,((Number(d.taxi_min)||150)===150?"שעתיים וחצי":wfIn((Number(d.taxi_min)||150)*60000))+" לפני ההמראה ב-"+wfHM(nx.dep)))):null,
           wfRetTop(d,C)?wfRet(d,legs,C):null,
@@ -7989,7 +8008,7 @@ Do NOT include: any text, letters, logos, UI elements, people, animals, building
 </script>
 <script src="sq-tel.js?v=3" defer></script>
 <script src="sq-gfx.js?v=2" defer></script>
-<script src="../appstat.js?v=1"></script><script>window.AppStat&&AppStat.init({app:"side-quests",ver:function(){return window.SQ_BUILD},uid:"oren"})</script>
+<script src="sq-voice.js?v=1"></script><script src="../appstat.js?v=1"></script><script>window.AppStat&&AppStat.init({app:"side-quests",ver:function(){return window.SQ_BUILD},uid:"oren"})</script>
 <script>/* 25.56: the Claude chat pill = exactly the width of the tool frame under it, in every quest */
 (function(){function tvSync(){try{var f=document.querySelector(".topbtns"),t=document.getElementById("tvoice");if(!f||!t)return;var w=Math.round(f.getBoundingClientRect().width);if(w>40)document.documentElement.style.setProperty("--tvw",w+"px");}catch(e){}}
 window.tvSync=tvSync;try{var f=document.querySelector(".topbtns");if(f&&window.ResizeObserver)new ResizeObserver(tvSync).observe(f);}catch(e){}
