@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.85";window.SQ_BUILD_AT="27.11.2026 02:45";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.86";window.SQ_BUILD_AT="27.11.2026 14:50";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1295,6 +1295,7 @@ details.tv-wkc:not([open]){gap:0}
 .ws-r2 .pic{margin-inline-start:auto;white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:800;text-decoration:none;color:var(--qlead);border:1px solid var(--line);border-radius:10px;padding:6px 10px;width:auto;height:auto;min-width:max-content;overflow:visible;background:none;box-shadow:none;line-height:1.2}
 .ws-it2 .ws-x{grid-column:auto}
 .ws-x .ac{display:flex;gap:6px;flex-wrap:wrap}.ws-x .ac a,.ws-x .ac button{font:inherit;font-size:13px;font-weight:700;text-decoration:none;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.ws-cl{display:grid;gap:6px;font-size:12.5px;color:var(--muted)}.ws-cl .row{display:flex;gap:6px}.ws-cl input{flex:1;min-width:0;font:inherit;font-size:16px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}.ws-cl button{font:inherit;font-size:13px;font-weight:700;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.ws-cl .sv{background:#0E6E78;color:#fff;border-color:#0E6E78}.ws-cl .lnk{border:0;background:none;padding:2px 0;color:var(--muted);text-decoration:underline;justify-self:start;font-weight:600}
 .ws-go{font:inherit;font-size:15px;font-weight:800;padding:13px;border-radius:12px;border:0;background:#0E6E78;color:#fff;cursor:pointer}
 .ws-log{margin-top:8px}.ws-log>summary{cursor:pointer;font-size:13.5px;font-weight:800;color:var(--qlead);padding:6px 0}
 .ws-log ul{list-style:none;margin:0;padding:0}.ws-log li{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--ink)}
@@ -6010,15 +6011,23 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       .catch(()=>{const m={};const b=wsRough(from,to);pl.forEach(p=>m[p.id]=Math.max(0,wsRough(from,p)+wsRough(p,to)-b));wsCalc[rt.id]={key,base:b,det:m,live:false};renderTravel();});}
   function wsToggle(p){if(!db||!canWrite)return;const v=!p.visited;db.collection("workstops").doc(p.id).update({visited:v,visited_at:v?new Date().toISOString().slice(0,10):""})
       .then(()=>toast(v?"✓ סומן: הייתי שם":"הסימון הוסר")).catch(e=>fail(e));}
+  // 25.86 (Oren 27.11.2026, on the way to Cerveteri): the planning prompt is back in full, and the chat button is ONE button:
+  //  no saved chat = a new chat with the full planning prompt; then a small field under it saves that chat's link
+  //  (claude.ai never tells this app the address of a new chat), and from then on the same button returns to that chat.
   function wsPlan(p,rt,back,d,st){const from=back?rt.b.he:rt.a.he,to=back?rt.a.he:rt.b.he;
-    const q=`אני בנסיעת עבודה באיטליה, נוהג ברכב מ${from} ל${to}, ורוצה לעצור בדרך ב-${p.name} (${p.he}). עצירה קצרה: בערך ${st||30} דקות, לכל היותר שעה. ${p.what||""}
-תכין לי תכנון קצר לעצירה, בעברית, מסודר לפי הסדר שבו כדאי ללכת ברגל:
-1. חנייה בראש: החנייה הכי טובה וקרובה (עדיף טובה על פני חינם, תשלום זה בסדר), עם לינק לגוגל מפס לניווט אליה, ואם צריך לשלם: איך משלמים (מכונה, אפליקציה כמו EasyPark).
-2. המקומות העיקריים לראות ונקודות שאסור לפספס.
-3. נקודות תצפית ונקודות צילום (מאיפה ובאיזו שעה האור טוב).
-4. חוויה קצרה אם יש (משהו שעושים מהר ושווה).
-5. מקום אחד טוב לאכול משהו מהיר, ומשהו מעניין לקנות או לשתות שמיוחד לעיירה (מאכל, משקה, מוצר מקומי).
-לכל מקום: דירוג בגוגל (כוכבים ומספר ביקורות), כמה דקות הליכה מהחנייה, ולינק ישיר לגוגל מפס (https://www.google.com/maps/search/?api=1&query=...). בסוף: מסלול הליכה מוצע עם סך הזמן, ושעות פתיחה של מה שסוגר. בדוק ברשת את המידע העדכני ואל תמציא דירוגים: אם לא מצאת, תכתוב שלא מצאת.`;
+    const nm=p.he||p.name,en=p.name&&p.name!==p.he?" ("+p.name+")":"";
+    const now=new Date(),day=now.toLocaleDateString("he-IL",{weekday:"long",day:"numeric",month:"numeric",timeZone:"Europe/Rome"}),hr=now.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Rome"});
+    const q=`תכנון עצירה ב${nm}${en}
+אני בנסיעת עבודה באיטליה, נוהג ברכב מ${from} ל${to}, ורוצה לעצור בדרך ב${nm}. היום ${day}, השעה אצלי ${hr} (שעון איטליה). זמן עצירה: בערך ${st||p.stop||30} דקות${p.stop_note?" ("+p.stop_note+")":""}. ${p.what||""}
+תכין לי תכנון מלא לעצירה, בעברית, קצר ומסודר לפי הסדר שבו כדאי ללכת ברגל:
+1. חנייה בראש: החנייה הכי טובה וקרובה (עדיף טובה על פני חינם), לינק ניווט בגוגל מפס, ואיך משלמים (מכונה, EasyPark, מזומן). אזורי ZTL שאסור להיכנס אליהם ברכב.
+2. מה פתוח ומה סגור היום ובשעה שאגיע: שעות פתיחה של כל מקום שאני ממליץ עליו, יום סגירה קבוע, כניסה אחרונה, כרטיסים והזמנה מראש אם צריך.
+3. המקומות העיקריים לראות ונקודות שאסור לפספס.
+4. נקודות תצפית וצילום (מאיפה ובאיזו שעה האור טוב).
+5. איפה לאכול: 2-3 מסעדות או טרטוריות טובות שפתוחות היום בשעה הזו (דירוג, מחיר, מה להזמין, טלפון להזמנה), ומקום לקפה או משהו מהיר. משהו מיוחד לעיירה לטעום או לקנות.
+6. ניואנסים: מה כדאי לדעת מראש (טיפוס ועליות, נעליים, מזומן, שירותים, אירועים היום, עבודות או סגירות, מקומות מתיירים מדי שעדיף לדלג).
+לכל מקום: דירוג בגוגל (כוכבים ומספר ביקורות), כמה דקות הליכה מהחנייה, ולינק ישיר לגוגל מפס (https://www.google.com/maps/search/?api=1&query=...). בסוף: מסלול הליכה מוצע עם סך הזמן, וכמה זמן נסיעה משם ל${to}.
+בדוק ברשת את המידע העדכני ואל תמציא: אם לא מצאת שעות או דירוג, תכתוב שלא מצאת. אחרי התכנון אני אמשיך לשאול שאלות באותה שיחה.`;
     return "https://claude.ai/new?q="+encodeURIComponent(q);}
   // 25.47 (Oren 22.11.2026, driving FCO -> Viterbo): the bank is a decision tool. By default only places he has NOT been to
   //  (visited ones = a log at the bottom). One big sort bar: + drive time | + total (drive + stop) | score | along the road.
@@ -6032,11 +6041,30 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     route:"לפי הדרך = לפי הסדר שבו המקומות מופיעים לאורך הנסיעה."};
   function wsInfo(ui,k){const on=ui.inf===k;return h("button",{type:"button",class:"ws-i"+(on?" on":""),"aria-label":"הסבר",onclick:e=>{e.stopPropagation();ui.inf=on?null:k;renderTravel();}},"ⓘ");}
   function wsPrompt(p,rt,back,d,st){return decodeURIComponent(wsPlan(p,rt,back,d,st).split("?q=")[1]||"");}
-  function wsChatOpen(p,rt,back,d,st){const u=safeUrl(p.chat||"");const q=wsPrompt(p,rt,back,d,st);
-    if(u){try{navigator.clipboard&&navigator.clipboard.writeText(q);}catch(e){}
-      if(!(p.pick&&p.pick.planned))toast("📋 פרומפט התכנון הועתק. הדבק אותו בשיחה של "+(p.he||p.name),null,4000);
-      window.open(u,"_blank","noopener");return;}
-    window.open(wsPlan(p,rt,back,d,st),"_blank","noopener");}
+  // return day (the flight home leaves within 30 hours): the road and the planning prompt default to Viterbo -> Rome
+  function wsAutoBack(){try{const L=wfLive();if(!L.length)return false;const x=L[0];if(!x.legs||x.legs.length<2)return false;const rd=wfMs(x.legs[x.legs.length-1].dep),now=Date.now();return !!rd&&rd>now&&rd-now<=30*3600000;}catch(e){return false;}}
+  const WS_PEND="ws_chat_pend";
+  function wsPendGet(){try{return JSON.parse(localStorage.getItem(WS_PEND)||"{}")||{};}catch(e){return {};}}
+  function wsPendSet(id,on){const m=wsPendGet();if(on)m[id]=Date.now();else delete m[id];try{localStorage.setItem(WS_PEND,JSON.stringify(m));}catch(e){}}
+  const wsChatOk=u=>{const x=safeUrl(u||"");return x&&/^https:\/\/claude\.ai\//.test(x)?x:null;};
+  function wsChatOpen(p,rt,back,d,st){const u=safeUrl(p.chat||"");
+    if(u){window.open(u,"_blank","noopener");return;}
+    wsPendSet(p.id,true);window.open(wsPlan(p,rt,back,d,st),"_blank","noopener");setTimeout(()=>renderTravel(),300);}
+  function wsChatSave(p,v){const u=wsChatOk(String(v||"").trim().match(/https?:\/\/\S+/)?.[0]);
+    if(!u){toast("זה לא לינק של שיחה ב-claude.ai");return;}
+    if(!db||!canWrite)return;db.collection("workstops").doc(p.id).update({chat:u,chat_at:new Date().toISOString()})
+      .then(()=>{wsPendSet(p.id,false);toast("✓ השיחה נשמרה. מעכשיו הכפתור חוזר אליה");}).catch(e=>fail(e));}
+  function wsChatReset(p){if(!db||!canWrite)return;db.collection("workstops").doc(p.id).update({chat:"",chat_old:p.chat||"",chat_at:""})
+      .then(()=>{wsPendSet(p.id,false);toast("השיחה נותקה. הלחיצה הבאה פותחת תכנון חדש");}).catch(e=>fail(e));}
+  // one button + (only after the first tap, while no chat is saved) a small "save this chat" field under it
+  function wsChatBtn(p,rt,back,d,st,cls){const has=!!safeUrl(p.chat||""),nm=p.he||p.name;
+    return h("button",{type:"button",class:cls||"",onclick:()=>wsChatOpen(p,rt,back,d,st)},has?"💬 השיחה של "+nm:"🧠 תכנון "+nm);}
+  function wsChatLink(p){if(safeUrl(p.chat||""))return h("div",{class:"ws-cl"},h("button",{type:"button",class:"lnk",onclick:()=>wsChatReset(p)},"↺ לפתוח תכנון חדש במקום השיחה הזו"));
+    if(!wsPendGet()[p.id])return null;
+    const inp=h("input",{type:"url",inputmode:"url",placeholder:"הדבק כאן את הלינק של השיחה",dir:"ltr","aria-label":"לינק לשיחה"});
+    const paste=navigator.clipboard&&navigator.clipboard.readText?h("button",{type:"button",onclick:()=>navigator.clipboard.readText().then(t=>{inp.value=t;wsChatSave(p,t);}).catch(()=>toast("אין גישה ללוח. הדבק ידנית בשדה"))},"📋 הדבק"):null;
+    return h("div",{class:"ws-cl sqgrow"},h("small",null,"כדי שהכפתור יחזור לשיחת התכנון: העתק את הלינק שלה (שורת הכתובת, או ⋯ ← Copy link) ושמור כאן."),
+      h("div",{class:"row"},inp,paste,h("button",{type:"button",class:"sv",onclick:()=>wsChatSave(p,inp.value)},"שמור")));}
   function wsGo(p,rt){if(!db||!canWrite)return;const at=new Date().toISOString();
     db.collection("workstops").doc(rt.id).update({active:p.id,active_at:at})
       .then(()=>db.collection("workstops").doc(p.id).update({pick:{...(p.pick||{}),at}}))
@@ -6051,7 +6079,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     const pk=k.park||{q:p.park||p.maps||p.name},fd=k.food;
     const line=(ic,lbl,x)=>x?h("div",{class:"wf-pt"},h("span",{class:"ic","aria-hidden":"true"},ic),h("div",{class:"tx"},h("small",null,lbl),h("b",null,x.label||x.q),x.sub?h("span",null,x.sub):null),
       h("div",{class:"bt"},h("a",{class:"nav",href:wsNav(x.q),target:"_blank",rel:"noopener"},"🧭 ניווט"),x.tel?h("a",{href:"tel:"+x.tel.replace(/[^\d+]/g,"")},"📞"):null,h("a",{href:wsMap(x.q),target:"_blank",rel:"noopener"},"📍"))):null;
-    const u=safeUrl(p.chat||"");const ui=wsUI[rt.id]||{};
+    const ui=wsUI[rt.id]||{dir:wsAutoBack()?"back":"go"};
     return h("article",{class:"ws-focus",id:"wsFocus"},
       h("div",{class:"wf-h"},h("small",null,"🚀 היעד שלי עכשיו"),h("b",null,(p.he||p.name)+(p.name&&p.name!==p.he?" · "+p.name:"")),k.when?h("span",null,k.when):null),
       line("🅿️","חנייה",pk),line("🍝","מסעדה",fd),
@@ -6059,11 +6087,12 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       Array.isArray(k.backups)&&k.backups.length?h("details",{class:"wf-bk"},h("summary",null,"גיבוי אם מלא ("+k.backups.length+")"),k.backups.map(b=>line("🍴","גיבוי",b))):null,
       Array.isArray(k.tips)&&k.tips.length?h("details",{class:"wf-bk"},h("summary",null,"טיפים מהתכנון"),h("ul",null,k.tips.map(t=>h("li",null,t)))):null,
       h("div",{class:"wf-act"},
-        h("button",{type:"button",class:"chat",onclick:()=>wsChatOpen(p,rt,ui.dir==="back")},"💬 השיחה של "+(p.he||p.name)),
+        wsChatBtn(p,rt,ui.dir==="back",null,null,"chat"),
         h("a",{href:picsUrl([p.name||p.he,p.region||rt.region||"Lazio",p.country||rt.country||"Italy"].join(", ")),target:"_blank",rel:"noopener"},"📷 תמונות")),
+      wsChatLink(p),
       h("div",{class:"wf-end"},h("button",{type:"button",onclick:()=>wsUnpick(rt,true,p)},"✓ הייתי שם, סיימתי"),h("button",{type:"button",onclick:()=>wsUnpick(rt,false)},"✕ ביטול הבחירה")),
-      u?null:h("p",{class:"wf-note"},"אין עדיין שיחה קבועה למקום הזה: הכפתור פותח שיחה חדשה עם פרומפט התכנון."));}
-  function wsBank(rt,flat){const ui=wsUI[rt.id]||(wsUI[rt.id]={dir:"go",ax:"all",bud:0,here:false,sort:"drive",open:abMode()});
+      null);}
+  function wsBank(rt,flat){const ui=wsUI[rt.id]||(wsUI[rt.id]={dir:wsAutoBack()?"back":"go",ax:"all",bud:0,here:false,sort:"drive",open:abMode()});
     const back=ui.dir==="back";const A=back?rt.b:rt.a,B=back?rt.a:rt.b;
     const C=wsCalc[rt.id];const wF=ui.here&&ui.pos?ui.pos:(ui.dir==="back"?rt.b:rt.a),wT=ui.dir==="back"?rt.a:rt.b;const want=(ui.here&&ui.pos?"here":"")+rt.id+"_"+ui.dir+"_"+wsDocs.filter(d=>d.type!=="route"&&d.route===rt.id&&isFinite(+d.lat)&&isFinite(+d.lng)).length+"_"+(+wF.lat).toFixed(3)+(+wT.lat).toFixed(3);if(!C||(!C.busy&&C.key!==want))setTimeout(()=>wsRun(rt),0);
     const set=(k,v)=>()=>{ui[k]=v;if(k==="dir"||k==="here")delete wsCalc[rt.id];renderTravel();};
@@ -6102,8 +6131,9 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
         op?h("div",{class:"ws-x sqgrow"},
           p.name&&p.name!==p.he?h("small",{class:"en",dir:"ltr"},p.name):null,
           h("div",{class:"tm"},`עצירה מומלצת: ${st||"?"} דק׳`+(p.stop_note?" · "+p.stop_note:"")+(p.night?" · 🌙 גם בערב":"")),
-          h("div",{class:"ac"},h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"🅿️ ניווט"),h("button",{type:"button",onclick:()=>wsChatOpen(p,rt,back,d,st)},p.chat?"💬 השיחה של המקום":"🧠 תכנון"),
+          h("div",{class:"ac"},h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"🅿️ ניווט"),wsChatBtn(p,rt,back,d,st),
             h("button",{type:"button",class:"ck2",onclick:()=>wsToggle(p)},"✓ כבר הייתי")),
+          wsChatLink(p),
           h("button",{type:"button",class:"ws-go",onclick:()=>wsGo(p,rt)},"🚀 יוצאים לדרך · זו הבחירה שלי")):null);};
     const sortBar=h("div",{class:"ws-sort"},h("div",{class:"ws-sl"},"מיון לפי",wsInfo(ui,ui.sort==="score"?"score":ui.sort)),
       seg("sort",[["drive","🚗 תוספת נסיעה"],["total","⏱ תוספת כוללת"],["score","★ ציון"],["route","🧭 לפי הדרך"]],"big"));
