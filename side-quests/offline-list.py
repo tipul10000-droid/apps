@@ -12,6 +12,16 @@ for root, dirs, fs in os.walk(here):
     for f in fs:
         if f.endswith(ext) and f not in skip:
             files.append(os.path.relpath(os.path.join(root, f), here).replace(os.sep, '/'))
+# 25.84: the trip dashboard's view + pictures and appstat.js live next to side-quests/ (the service worker saves them too)
+par = os.path.dirname(here)
+for root, dirs, fs in os.walk(os.path.join(par, 'trips')):
+    dirs[:] = [d for d in dirs if d not in {'tools'} and not d.startswith('.')]
+    if os.path.abspath(root) != os.path.join(par, 'trips') and os.path.basename(root) != 'img':
+        continue
+    for f in fs:
+        if f.endswith(ext) and f != 'index.html':
+            files.append('../' + os.path.relpath(os.path.join(root, f), par).replace(os.sep, '/'))
+files.append('../appstat.js')
 files.sort(key=lambda p: (p != 'index.html', p))
 sw = os.path.join(here, 'sw.js')
 s = open(sw, encoding='utf-8').read()
