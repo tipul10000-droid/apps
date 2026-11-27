@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.84";window.SQ_BUILD_AT="27.11.2026 02:40";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.85";window.SQ_BUILD_AT="27.11.2026 02:45";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1210,11 +1210,13 @@ details.tv-wkc:not([open]){gap:0}
 #abBar.off .abm-seg button+button{border-inline-start-color:var(--line)}
 #abBar .abm-seg button.on{background:#FFC857;color:#3A2600}
 #abBar button.ab-no{justify-self:start;background:transparent}
-.wf-rem{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;height:40px;margin-top:10px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--sunk);color:var(--ink);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
-.wf-rem .wf-rl{display:flex;align-items:center;gap:8px}
-.wf-sw{position:relative;flex:none;width:42px;height:24px;border-radius:99px;background:color-mix(in srgb,var(--ink) 25%,transparent);transition:background .2s}
-.wf-sw i{position:absolute;top:3px;inset-inline-start:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:inset-inline-start .2s}
-.wf-rem.on{border-color:var(--qlead)}.wf-rem.on .wf-sw{background:var(--qlead)}.wf-rem.on .wf-sw i{inset-inline-start:21px}
+.wf-rem{position:absolute;top:8px;inset-inline-end:10px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:2px;width:52px;padding:2px 0 4px;margin:0;border:0;background:none;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wf-rem .wf-rl{font-size:9.5px;line-height:11px;font-weight:700;letter-spacing:.02em;opacity:.85;white-space:nowrap}
+.wf-sw{position:relative;flex:none;width:32px;height:19px;border-radius:99px;background:#e5e5ea;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);transition:background .2s;direction:ltr}
+.wf-sw i{position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}
+.wf-rem.on .wf-sw{background:#34c759;box-shadow:none}.wf-rem.on .wf-sw i{left:15px}
+.wft>summary{position:relative}
+:is(#wfTop,.wfTop) .wft.cmp:not([open])>summary.wfs{padding-inline-end:66px}
 .wt-act{position:relative;border:0!important;background:none!important;overflow:visible!important;margin-bottom:22px}
 .wt-pass{position:relative;border-radius:22px 22px 0 0;padding:16px 18px 20px;color:#fff;background:linear-gradient(135deg,color-mix(in srgb,var(--qlead) 92%,#000) 0%,color-mix(in srgb,var(--qlead) 55%,#0b1d3a) 100%);overflow:hidden;box-shadow:0 8px 22px color-mix(in srgb,var(--qlead) 35%,transparent)}
 .wt-pass:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 0,rgba(255,255,255,.22),transparent 55%);pointer-events:none}
@@ -5874,15 +5876,15 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       // 25.64 (Oren 22.11.2026): in Italy the "עכשיו ב..." card already has work / hotel / chat; the ticket keeps only what is its own
       const lv=wfInItaly(d,legs)&&!wfOnRoad();
       const det=h("details",{class:"wft"+(inAir?" air":"")+(cmp?" cmp":""),"data-sq-item":"wf-"+d.id,open:wfOpen["t:"+d.id]?true:null,ontoggle:ev=>{wfOpen["t:"+d.id]=ev.currentTarget.open;}},
-        h("summary",null,h("span",{class:"wf-ey","aria-hidden":"true"},ey),
+        h("summary",{class:"wfs"},h("span",{class:"wf-ey","aria-hidden":"true"},ey),
           h("div",{class:"wf-big",onclick:nxt&&nxt.sel?ev=>{ev.preventDefault();ev.stopPropagation();const b=det.querySelector('summary .wf-ti[data-k="'+nxt.e.k+'"]');wfSel[d.id]=null;if(b)pick({k:null},b);}:null},wfBig(nxt,now,inAir,nx)),
           h("div",{class:"wf-row"},lg?h("img",{class:"wf-sl",src:"../trips/img/"+lg,alt:nx.airline||""}):h("span",{class:"wf-sl wf-sln","aria-hidden":"true"},"✈️"),
             h("span",{class:"wf-tt"},h("b",null,(d.flag?d.flag+" ":"")+(cmp?"טיסה "+(legs.indexOf(nx)>0?"הביתה":"")+" · "+wfDay(nx.dep):(d.title||"טיסת עבודה"))),h("small",null,[wfAir(nx),(nx.from&&nx.from.city||"")+" ← "+(nx.to&&nx.to.city||""),cmp?"":wfDay(nx.dep)].filter(Boolean).join(" · "))),cmp?h("span",{class:"wf-cmpx","aria-hidden":"true"},"‹"):null),
           wfTimes(evs,now,nxt,pick),
-          // 25.81 (Oren 26.11.2026): reminders switch: when on, every time above fires a Side Quests push the moment it arrives (sq-push wfRemTick reads work_flights/<id>.remind)
-          h("button",{type:"button",class:"wf-rem"+(d.remind===true?" on":""),role:"switch","aria-checked":d.remind===true?"true":"false",onclick:ev=>{ev.preventDefault();ev.stopPropagation();const b=ev.currentTarget,v=!(b.getAttribute("aria-checked")==="true");b.setAttribute("aria-checked",v?"true":"false");b.classList.toggle("on",v);d.remind=v;
+          // 25.84 (Oren 27.11.2026): a tiny iOS switch in the top-left corner of the ticket, "תזכורות" above it, no row of its own. 25.81: reminders switch: when on, every time above fires a Side Quests push the moment it arrives (sq-push wfRemTick reads work_flights/<id>.remind)
+          h("button",{type:"button",class:"wf-rem"+(d.remind===true?" on":""),role:"switch","aria-label":"תזכורות לכל מועד","aria-checked":d.remind===true?"true":"false",onclick:ev=>{ev.preventDefault();ev.stopPropagation();const b=ev.currentTarget,v=!(b.getAttribute("aria-checked")==="true");b.setAttribute("aria-checked",v?"true":"false");b.classList.toggle("on",v);d.remind=v;
             db.collection("work_flights").doc(d.id).update({remind:v,updated_at:new Date().toISOString()}).then(()=>toast(v?"תזכורות פועלות: תקבל התראה בכל מועד":"תזכורות כבויות"),()=>{b.setAttribute("aria-checked",v?"false":"true");b.classList.toggle("on",!v);d.remind=!v;toast("השמירה נכשלה");});}},
-            h("span",{class:"wf-rl"},h("span",{"aria-hidden":"true"},"🔔"),h("span",null,"תזכורות לכל מועד")),h("span",{class:"wf-sw","aria-hidden":"true"},h("i",null))),
+            h("span",{class:"wf-rl"},"תזכורות"),h("span",{class:"wf-sw","aria-hidden":"true"},h("i",null))),
           d.base&&trip&&!inAir&&!lv&&legs.indexOf(nx)>0?wfBaseBtn(d.base):null),
         h("div",{class:"wf-b"},
           // 25.78 (Oren 25.11.2026): a work trip with many options gets a mini dashboard (wtrip.html, data in work_flights/<id>.board)
