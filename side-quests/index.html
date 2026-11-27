@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.86";window.SQ_BUILD_AT="27.11.2026 14:50";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.87";window.SQ_BUILD_AT="27.11.2026 18:10";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -1295,6 +1295,7 @@ details.tv-wkc:not([open]){gap:0}
 .ws-r2 .pic{margin-inline-start:auto;white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:800;text-decoration:none;color:var(--qlead);border:1px solid var(--line);border-radius:10px;padding:6px 10px;width:auto;height:auto;min-width:max-content;overflow:visible;background:none;box-shadow:none;line-height:1.2}
 .ws-it2 .ws-x{grid-column:auto}
 .ws-x .ac{display:flex;gap:6px;flex-wrap:wrap}.ws-x .ac a,.ws-x .ac button{font:inherit;font-size:13px;font-weight:700;text-decoration:none;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.ws-voice{font:inherit;font-size:15px;font-weight:800;padding:13px;border-radius:12px;border:0;background:#D97757;color:#fff;cursor:pointer;width:100%}
 .ws-cl{display:grid;gap:6px;font-size:12.5px;color:var(--muted)}.ws-cl .row{display:flex;gap:6px}.ws-cl input{flex:1;min-width:0;font:inherit;font-size:16px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}.ws-cl button{font:inherit;font-size:13px;font-weight:700;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.ws-cl .sv{background:#0E6E78;color:#fff;border-color:#0E6E78}.ws-cl .lnk{border:0;background:none;padding:2px 0;color:var(--muted);text-decoration:underline;justify-self:start;font-weight:600}
 .ws-go{font:inherit;font-size:15px;font-weight:800;padding:13px;border-radius:12px;border:0;background:#0E6E78;color:#fff;cursor:pointer}
 .ws-log{margin-top:8px}.ws-log>summary{cursor:pointer;font-size:13.5px;font-weight:800;color:var(--qlead);padding:6px 0}
@@ -6043,28 +6044,28 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   function wsPrompt(p,rt,back,d,st){return decodeURIComponent(wsPlan(p,rt,back,d,st).split("?q=")[1]||"");}
   // return day (the flight home leaves within 30 hours): the road and the planning prompt default to Viterbo -> Rome
   function wsAutoBack(){try{const L=wfLive();if(!L.length)return false;const x=L[0];if(!x.legs||x.legs.length<2)return false;const rd=wfMs(x.legs[x.legs.length-1].dep),now=Date.now();return !!rd&&rd>now&&rd-now<=30*3600000;}catch(e){return false;}}
-  const WS_PEND="ws_chat_pend";
-  function wsPendGet(){try{return JSON.parse(localStorage.getItem(WS_PEND)||"{}")||{};}catch(e){return {};}}
-  function wsPendSet(id,on){const m=wsPendGet();if(on)m[id]=Date.now();else delete m[id];try{localStorage.setItem(WS_PEND,JSON.stringify(m));}catch(e){}}
-  const wsChatOk=u=>{const x=safeUrl(u||"");return x&&/^https:\/\/claude\.ai\//.test(x)?x:null;};
-  function wsChatOpen(p,rt,back,d,st){const u=safeUrl(p.chat||"");
-    if(u){window.open(u,"_blank","noopener");return;}
-    wsPendSet(p.id,true);window.open(wsPlan(p,rt,back,d,st),"_blank","noopener");setTimeout(()=>renderTravel(),300);}
-  function wsChatSave(p,v){const u=wsChatOk(String(v||"").trim().match(/https?:\/\/\S+/)?.[0]);
-    if(!u){toast("זה לא לינק של שיחה ב-claude.ai");return;}
-    if(!db||!canWrite)return;db.collection("workstops").doc(p.id).update({chat:u,chat_at:new Date().toISOString()})
-      .then(()=>{wsPendSet(p.id,false);toast("✓ השיחה נשמרה. מעכשיו הכפתור חוזר אליה");}).catch(e=>fail(e));}
-  function wsChatReset(p){if(!db||!canWrite)return;db.collection("workstops").doc(p.id).update({chat:"",chat_old:p.chat||"",chat_at:""})
-      .then(()=>{wsPendSet(p.id,false);toast("השיחה נותקה. הלחיצה הבאה פותחת תכנון חדש");}).catch(e=>fail(e));}
-  // one button + (only after the first tap, while no chat is saved) a small "save this chat" field under it
-  function wsChatBtn(p,rt,back,d,st,cls){const has=!!safeUrl(p.chat||""),nm=p.he||p.name;
-    return h("button",{type:"button",class:cls||"",onclick:()=>wsChatOpen(p,rt,back,d,st)},has?"💬 השיחה של "+nm:"🧠 תכנון "+nm);}
-  function wsChatLink(p){if(safeUrl(p.chat||""))return h("div",{class:"ws-cl"},h("button",{type:"button",class:"lnk",onclick:()=>wsChatReset(p)},"↺ לפתוח תכנון חדש במקום השיחה הזו"));
-    if(!wsPendGet()[p.id])return null;
-    const inp=h("input",{type:"url",inputmode:"url",placeholder:"הדבק כאן את הלינק של השיחה",dir:"ltr","aria-label":"לינק לשיחה"});
-    const paste=navigator.clipboard&&navigator.clipboard.readText?h("button",{type:"button",onclick:()=>navigator.clipboard.readText().then(t=>{inp.value=t;wsChatSave(p,t);}).catch(()=>toast("אין גישה ללוח. הדבק ידנית בשדה"))},"📋 הדבק"):null;
-    return h("div",{class:"ws-cl sqgrow"},h("small",null,"כדי שהכפתור יחזור לשיחת התכנון: העתק את הלינק שלה (שורת הכתובת, או ⋯ ← Copy link) ושמור כאן."),
-      h("div",{class:"row"},inp,paste,h("button",{type:"button",class:"sv",onclick:()=>wsChatSave(p,inp.value)},"שמור")));}
+  function wsChatOpen(p,rt,back,d,st){window.open(wsPlan(p,rt,back,d,st),"_blank","noopener");}
+  // 25.87 (Oren 27.11.2026): a saved chat link opens in the browser without voice mode, so the button always opens a NEW chat with the full prompt
+  function wsChatBtn(p,rt,back,d,st,cls){return h("button",{type:"button",class:cls||"",onclick:()=>wsChatOpen(p,rt,back,d,st)},"🧠 תכנון "+(p.he||p.name));}
+  // 25.87: "🎙 עצירה בדרך": one new chat whose prompt is built now from the app: date/time, direction, every stop with
+  //  visited / not visited, score, stop time and extra drive. The chat first asks (by voice) how much time he has, checks the weather, then picks.
+  function wsVoice(rt,ui){const back=ui.dir==="back",from=back?rt.b.he:rt.a.he,to=back?rt.a.he:rt.b.he,C=wsCalc[rt.id];
+    const now=new Date(),day=now.toLocaleDateString("he-IL",{weekday:"long",day:"numeric",month:"numeric",year:"numeric",timeZone:"Europe/Rome"}),hr=now.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Rome"});
+    const AX={west:"coast",mid:"middle",east:"east"};
+    const P=wsDocs.filter(d=>d.type!=="route"&&d.route===rt.id).sort((a,b)=>(+!!a.visited)-(+!!b.visited)||(+b.score||0)-(+a.score||0));
+    const row=p=>{const d=C&&C.det?C.det[p.id]:null;return "- "+(p.name||p.he)+" | "+(p.score||"?")+"/10 | "+(AX[p.axis]||"")+" | stop "+(p.stop||"?")+"m"+(d!=null?" | +"+Math.round(Math.max(0,d))+"m drive":"")+(p.visited?" | VISITED "+(p.visited_at||""):"");};
+    const pos=ui.here&&ui.pos?` אני עכשיו ליד ${(+ui.pos.lat).toFixed(3)},${(+ui.pos.lng).toFixed(3)}.`:"";
+    const q=`עצירה בדרך: ${from} ← ${to}
+אני בנסיעת עבודה באיטליה, נוהג עכשיו מ${from} ל${to}.${pos} היום ${day}, השעה ${hr} (שעון איטליה). הדרך הישירה${C&&C.base!=null?" בלי פקקים: "+Math.round(C.base)+" דק׳":""}.
+זו שיחה קולית בזמן נהיגה: תענה קצר וברור, משפט או שניים בכל פעם, בלי טבלאות ובלי רשימות ארוכות.
+1. קודם תשאל אותי כמה זמן יש לי לעצירה (ואם יש שעה שאני חייב להגיע עד אליה), ותחכה לתשובה.
+2. תבדוק ברשת את מזג האוויר עכשיו ובשעות הקרובות לאורך הדרך (גשם, רוח, שקיעה). ברוח או בגשם לא לשלוח אותי לחוף או לטיול בחוץ.
+3. תמליץ על 2-3 עצירות מהרשימה למטה שעוד לא הייתי בהן (VISITED = כבר הייתי, לא להציע אלא אם אבקש), לפי הזמן שיש לי, תוספת הנסיעה, הציון, מזג האוויר ומה פתוח עכשיו. לכל אחת: למה, כמה זמן בסך הכול, ומה עושים שם. תן לי לבחור.
+4. אחרי שבחרתי: חנייה (לינק ניווט בגוגל מפס, איך משלמים, ZTL), מה פתוח ומה סגור היום ובשעה שאגיע, מה לראות, איפה לאכול עם דירוג וטלפון, וניואנסים. לינקים ישירים לגוגל מפס (https://www.google.com/maps/search/?api=1&query=...).
+בדוק ברשת ואל תמציא: אם לא מצאת שעות או דירוג, תגיד שלא מצאת. אני אמשיך לשאול באותה שיחה.
+העצירות (שם | ציון | ציר | זמן עצירה מומלץ | תוספת נסיעה | הייתי):
+${P.map(row).join("\n")}`;
+    window.open("https://claude.ai/new?q="+encodeURIComponent(q),"_blank","noopener");}
   function wsGo(p,rt){if(!db||!canWrite)return;const at=new Date().toISOString();
     db.collection("workstops").doc(rt.id).update({active:p.id,active_at:at})
       .then(()=>db.collection("workstops").doc(p.id).update({pick:{...(p.pick||{}),at}}))
@@ -6089,7 +6090,6 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
       h("div",{class:"wf-act"},
         wsChatBtn(p,rt,ui.dir==="back",null,null,"chat"),
         h("a",{href:picsUrl([p.name||p.he,p.region||rt.region||"Lazio",p.country||rt.country||"Italy"].join(", ")),target:"_blank",rel:"noopener"},"📷 תמונות")),
-      wsChatLink(p),
       h("div",{class:"wf-end"},h("button",{type:"button",onclick:()=>wsUnpick(rt,true,p)},"✓ הייתי שם, סיימתי"),h("button",{type:"button",onclick:()=>wsUnpick(rt,false)},"✕ ביטול הבחירה")),
       null);}
   function wsBank(rt,flat){const ui=wsUI[rt.id]||(wsUI[rt.id]={dir:wsAutoBack()?"back":"go",ax:"all",bud:0,here:false,sort:"drive",open:abMode()});
@@ -6133,12 +6133,12 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
           h("div",{class:"tm"},`עצירה מומלצת: ${st||"?"} דק׳`+(p.stop_note?" · "+p.stop_note:"")+(p.night?" · 🌙 גם בערב":"")),
           h("div",{class:"ac"},h("a",{href:mapsUrl(p),target:"_blank",rel:"noopener"},"🅿️ ניווט"),wsChatBtn(p,rt,back,d,st),
             h("button",{type:"button",class:"ck2",onclick:()=>wsToggle(p)},"✓ כבר הייתי")),
-          wsChatLink(p),
           h("button",{type:"button",class:"ws-go",onclick:()=>wsGo(p,rt)},"🚀 יוצאים לדרך · זו הבחירה שלי")):null);};
     const sortBar=h("div",{class:"ws-sort"},h("div",{class:"ws-sl"},"מיון לפי",wsInfo(ui,ui.sort==="score"?"score":ui.sort)),
       seg("sort",[["drive","🚗 תוספת נסיעה"],["total","⏱ תוספת כוללת"],["score","★ ציון"],["route","🧭 לפי הדרך"]],"big"));
     return h("article",{class:"ws ws-o"+(flat?" ws-flat":"")},flat?null:head,
       h("div",{class:"ws-body sqgrow"},
+        h("button",{type:"button",class:"ws-voice",onclick:()=>wsVoice(rt,ui)},"🎙 עצירה בדרך · שיחה עם Claude"),
         seg("dir",[["go",`${rt.a.he} ← ${rt.b.he}`],["back",`${rt.b.he} ← ${rt.a.he}`]]),
         // 25.67 (Oren 22.11.2026): the direct drive with no delays (OSRM, free, no traffic) + one tap to Google Maps for the time in traffic right now
         h("div",{class:"ws-base"},C&&C.base!=null?h("span",null,"הדרך הישירה בלי עיכובים: ",h("b",null,wsFmt(C.base)),ui.here&&ui.pos?" · מהמיקום שלך":""):"מחשב זמנים…",
