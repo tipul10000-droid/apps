@@ -1768,12 +1768,12 @@ details.more[open]>summary{margin-bottom:10px}
 .wf-apr a{min-height:36px;display:inline-flex;align-items:center;padding:0 12px;border-radius:10px;background:#fff;color:#0b4f58!important;text-decoration:none;font-size:13px;font-weight:700}
 .wf-bt{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.2}.wf-bt b{font-size:14.5px}.wf-bt small{font-size:12px;color:rgba(255,255,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wf-bgo{flex:none;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;background:#fff;color:#0f4fb8}
-.qbtn .qwf{position:absolute;top:3px;inset-inline-end:3px;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:11px;line-height:1;color:#fff;background:linear-gradient(135deg,#0f4fb8,#1a73e8);border:1.5px solid #fff;box-shadow:0 1px 5px rgba(10,40,110,.5);z-index:3;animation:qwfb 3.2s ease-in-out infinite}
-.qbtn.haswf{opacity:.8;filter:none}
-@keyframes qwfb{0%,80%,100%{transform:none}88%{transform:translateY(-2px) rotate(-12deg)}}
+/* 28.11.2026 (Oren): no badge on Work; abroad = the Travel icon itself drifts gently */
+.qbtn.abon .qe{display:inline-block;animation:abfly 4.5s ease-in-out infinite}
+@keyframes abfly{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(2px,-2px) rotate(-8deg)}}
 :is(#wfTop,.wfTop) .wft.wfpulse{animation:wfpl 1.6s ease-out 2}
 @keyframes wfpl{0%{box-shadow:0 0 0 0 rgba(26,115,232,.75)}100%{box-shadow:0 0 0 16px rgba(26,115,232,0)}}
-@media (prefers-reduced-motion:reduce){.qbtn .qwf,:is(#wfTop,.wfTop) .wft.wfpulse{animation:none}}
+@media (prefers-reduced-motion:reduce){.qbtn.abon .qe,:is(#wfTop,.wfTop) .wft.wfpulse{animation:none}}
 
 /* 25.34: countdown + 6 times */
 :is(#wfTop,.wfTop) .wft>summary{display:grid;grid-template-columns:1fr;gap:8px;padding:16px 16px 14px;min-height:150px}
@@ -5139,7 +5139,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     setTimeout(go,60);}
   document.addEventListener("visibilitychange",()=>{if(document.hidden){abHideAt=Date.now();return;}if(abHideAt&&Date.now()-abHideAt>20*60e3){abLanded=false;if(db)abLand();}});
   // the automatic switch is time based: check once a minute so the mode turns on by itself when he leaves for the airport
-  let abWas=null;setInterval(()=>{if(!db)return;const m=abMode(),s=abSuggest();const k=m+"|"+s;if(abWas!==null&&k!==abWas){abLanded=false;if(m)abLand();else{splitTopics();renderAll();}}abWas=k;try{renderAbBar();}catch(e){}},60000);
+  let abWas=null;setInterval(()=>{if(!db)return;const m=abMode(),s=abSuggest();const k=m+"|"+s;if(abWas!==null&&k!==abWas){try{renderQnav();}catch(e){}abLanded=false;if(m)abLand();else{splitTopics();renderAll();}}abWas=k;try{renderAbBar();}catch(e){}},60000);
   function abSw(on,fn,lbl){return h("button",{type:"button",class:"ab-sw"+(on?" on":""),role:"switch","aria-checked":on?"true":"false","aria-label":lbl,onclick:fn},h("i",null));}
   function renderAbBar(){const el=$("abBar");if(!el)return;let tr=null;try{tr=tripToday();}catch(e){}const w=abWin(),ov=abOv(),on=abMode(),sug=abSuggest(),now=Date.now();
     if(!tr&&!w&&!ov&&!on){el.hidden=true;el.replaceChildren();return;}
@@ -5175,8 +5175,8 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     // 19.5: a quest (not the one on screen) with something new in one of its dashboards = blinking blue dot; tap = into it
     // 19.8: also its own task changes and new features (settings/new_items quest:<q>); tap = into the quest with "🔔 עדכונים" on
     $("qnav").replaceChildren(...vis.map(q=>{const Q=QUESTS[q],F=q!==quest?questFresh(q):[],T=q!==quest?questTasksNew(q).length+nwQuest(q).length:0,any=F.length+T>0;
-      const wfOn=q==="work"&&wfLive().length>0; // 25.36 (Oren 22.11.2026): a work flight is coming / under way = small plane badge on Work Quest
-      return h("button",{class:"qbtn q-"+q+(any?" hasnw":"")+(wfOn?" haswf":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":any?Q.a+" "+Q.b+": יש תוכן חדש":null,
+      let abOnQ=false;try{abOnQ=q==="travel"&&abMode();}catch(e){}
+      return h("button",{class:"qbtn q-"+q+(any?" hasnw":"")+(abOnQ?" abon":""),type:"button","data-q":q,"aria-current":q===quest?"true":"false","aria-label":any?Q.a+" "+Q.b+": יש תוכן חדש":null,
         onclick:()=>{const G=q!==quest?questFresh(q):[],A0=q!==quest?nwQuest(q):[],L0=q!==quest?questTasksNew(q).map(t=>({t,r:freshOf(t)})).filter(x=>x.r):[],TT=A0.length+L0.length;setQuest(q);
           if(q==="travel"&&wfLive().length)setTimeout(()=>{const b=document.querySelector(".wfTop .wft");if(b){b.classList.remove("wfpulse");void b.offsetWidth;b.classList.add("wfpulse");}},250);
           if(TT&&WQ.includes(q))return; // 25.0 (Oren 20.11.2026): new stays closed; the 🔔 עדכונים button carries the count, he taps it
@@ -5185,7 +5185,6 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
           // Oren 19.11.2026: never open a dashboard by itself; scroll to the tiles, the new one blinks, he taps it
           if(G.length)setTimeout(()=>goDashes(),180);}},
         any?h("span",{class:"qnw",title:"יש תוכן חדש","aria-hidden":"true"}):null,
-        wfOn?h("span",{class:"qwf",title:"טיסת עבודה","aria-hidden":"true"},"✈"):null,
         h("span",{class:"qe","aria-hidden":"true"},ico(Q.e)),h("span",{class:"qn",html:`${Q.a} <i>${Q.b}</i>`}));}));
   }
   // ===== 22.5 (Oren 18.11.2026): "🆕 מה חדש" at the top of a quest without the updates list (Fun, AI Projects) =====
