@@ -7077,7 +7077,7 @@ ${P.map(row).join("\n")}`;
   // and writes settings/gmail_scan. The 5-a-day sweep does the same pass automatically.
   const gmReqs=()=>iDocs.filter(x=>x.kind==="gmail_scan").sort((a,b)=>String(b.at||"").localeCompare(String(a.at||"")));
   const gmPending=()=>gmReqs().find(x=>x.status==="pending"||x.status==="working");
-  function nextIns(){const m=ilNow().m;for(let hh=7;hh<=23;hh++){if(hh*60+47>m+1)return (hh<10?"0":"")+hh+":47";}return "מחר 07:47";}
+  function nextIns(){const m=ilNow().m;for(const [hh,mm] of [[8,25],[13,25],[19,25]]){if(hh*60+mm>m+1)return String(hh).padStart(2,"0")+":"+mm;}return "מחר 08:25";}
   // ===== 19.2 (Oren 17.11.2026): connection lights in the status bar =====
   // Gmail = the sweep (07:31, 10:31, 13:31, 16:31, 19:31 Israel time) writes settings/gmail_scan.last_at: green when the last
   // due sweep ran, orange when one was missed, red beyond. Outlook calendar = work_calendar/_meta.last_ingest_at (Power Automate
@@ -7088,7 +7088,7 @@ ${P.map(row).join("\n")}`;
   function calTasks(iso){if(!window.SQPersonal||abMode())return [];try{return SQPersonal.tasks(calEv,iso||ilDate(),{prof:calProf,places:calPlaces,loc:loc.on&&loc.last?{lat:loc.last.la,lng:loc.last.lo,at:new Date(loc.last.at).toISOString(),label:"המיקום שלך"}:calLoc,day:window.SQWorkCal?SQWorkCal.day:null});}catch(e){return [];}}
   var wcMeta=null,waConn=null,cfPing=null,cfReq=null,cfBusy=0;
   const CN_ICON={};document.querySelectorAll(".sbar .cx").forEach(x=>{CN_ICON[x.dataset.c]=x.querySelector("svg");});
-  const GM_SLOTS=[451,631,811,991,1171];
+  const GM_SLOTS=[493,793,1153];
   function gmLastAt(){const R=gmReqs(),last=R.find(x=>x.status==="done");return Math.max(Date.parse((gmScan&&gmScan.last_at)||"")||0,Date.parse((last&&(last.done_at||last.at))||"")||0);}
   // 22.2 (Oren 18.11.2026): a tap on Gmail / location in the connections panel refreshes it in place, no extra screen.
   let gmQAt=0;
@@ -7109,10 +7109,10 @@ ${P.map(row).join("\n")}`;
     locHook=()=>{locHook=null;updLocBtn();renderAll();renderConn();toast(locErr||"✓ המיקום עודכן");};sampleLoc(true);updLocBtn();renderConn();}
   function connGm(){const q=gmQueued(),r=connGm0();return q?{...r,off:q,sum:"נסרק עד "+nextIns()+" ומעדכן את המשימות"}:r;}
   function connGm0(){const last=gmLastAt();if(!last)return {lv:"bad",t:"עוד לא נסרק"};
-    const now=ilNow().m,age=(Date.now()-last)/60000,due=[];
-    for(let k=0;k<4&&due.length<2;k++)for(let i=GM_SLOTS.length-1;i>=0&&due.length<2;i--){const a=now-GM_SLOTS[i]+k*1440;if(a>=25)due.push(a);}
-    const lv=age<=due[0]+10?"ok":age<=due[1]+10?"late":"bad";
-    let nx="";for(let k=0;k<2&&!nx;k++)for(const sl of GM_SLOTS){if(sl+k*1440>now){nx=(k?"מחר ":"")+String(Math.floor(sl/60)).padStart(2,"0")+":"+String(sl%60).padStart(2,"0");break;}}
+    // 28.11.2026 (Oren): queue now runs 3x/day (08:13/13:13/19:13) and scans Gmail on request, so the old "5 scans a day" slots
+    // made the light red for no reason. Green up to 26h, orange up to 50h, red older.
+    const age=(Date.now()-last)/3600e3,lv=age<26?"ok":age<50?"late":"bad";
+    let nx="";const now=ilNow().m;for(let k=0;k<2&&!nx;k++)for(const sl of GM_SLOTS){if(sl+k*1440>now){nx=(k?"מחר ":"")+String(Math.floor(sl/60)).padStart(2,"0")+":"+String(sl%60).padStart(2,"0");break;}}
     return {lv,last,t:"סריקה אחרונה "+ago(last)+(nx?" · הבאה "+nx:""),sum:gmScan&&gmScan.summary||""};}
   function workHours(from){let h2=0;const f=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Jerusalem",weekday:"short"});
     for(let t=from;t<Date.now()&&h2<200;t+=3600e3){const d=f.format(new Date(t));if(d!=="Fri"&&d!=="Sat")h2++;}return h2;}
@@ -7187,7 +7187,7 @@ ${P.map(row).join("\n")}`;
     const p=gmPending(),R=gmReqs(),last=R.find(x=>x.status==="done");
     const lastAt=Math.max(Date.parse((gmScan&&gmScan.last_at)||"")||0,Date.parse((last&&(last.done_at||last.at))||"")||0);
     const st=p?(p.status==="working"?["🔍 סורק עכשיו…","עוד רגע זה מופיע כאן"]:["⏳ בתור","אסרוק עד "+nextIns()+" ואעדכן את המשימות"]):
-      [lastAt?"סריקה אחרונה: "+ago(lastAt):"עוד לא נסרק",(gmScan&&gmScan.summary)||(last&&last.reply)||"אוטומטית 5 פעמים ביום, או עכשיו בכפתור"];
+      [lastAt?"סריקה אחרונה: "+ago(lastAt):"עוד לא נסרק",(gmScan&&gmScan.summary)||(last&&last.reply)||"3 פעמים ביום (08:13, 13:13, 19:13), או עכשיו בכפתור"];
     let ta=el.querySelector(".gnote");const keep=ta?ta.value:"";
     ta=h("textarea",{class:"gnote",rows:"1",placeholder:"על מה לשים לב? (לא חובה)","aria-label":"על מה לשים לב"});ta.value=keep;
     const go=h("button",{class:"ggo",type:"button",disabled:p||!canWrite?"":null},p?"⏳ בתור לסריקה":"🔍 לסרוק את Gmail");
