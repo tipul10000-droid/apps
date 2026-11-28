@@ -5143,6 +5143,8 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
   function abSw(on,fn,lbl){return h("button",{type:"button",class:"ab-sw"+(on?" on":""),role:"switch","aria-checked":on?"true":"false","aria-label":lbl,onclick:fn},h("i",null));}
   function renderAbBar(){const el=$("abBar");if(!el)return;let tr=null;try{tr=tripToday();}catch(e){}const w=abWin(),ov=abOv(),on=abMode(),sug=abSuggest(),now=Date.now();
     if(!tr&&!w&&!ov&&!on){el.hidden=true;el.replaceChildren();return;}
+    // 25.9x (Oren 28.11.2026): in Israel / not abroad = no bar at all. The "off" bar only stays after a manual off while he is really abroad
+    {const p0=here();if(!on&&!sug&&(!ov||(p0&&inIsrael(p0)))){el.hidden=true;el.replaceChildren();return;}}
     if(w&&!on&&!sug&&!ov&&now<w.lv-90*60000){el.hidden=true;el.replaceChildren();return;}   // a trip is coming, not yet time to leave
     el.hidden=false;
     const to=tr&&tr.to?tr.to.split("-").slice(1).reverse().map(Number).join("."):(w&&w.home?wfAt(w.home,wfILoff(w.home)).day.split(" ")[1]:"");
