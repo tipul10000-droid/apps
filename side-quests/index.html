@@ -5097,7 +5097,9 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     try{const f=tr.from?Date.parse(tr.from+"T00:00:00Z")-12*3600e3:0;for(const d of wfDocs){if(d._deleted||d.planned||!Array.isArray(d.legs)||!d.legs.length)continue;
       const r=d.legs.slice().sort((a,b)=>(wfMs(a.dep)||0)-(wfMs(b.dep)||0)).pop(),t=wfMs(r.arr)||wfMs(r.dep);if(r.to&&r.to.code==="TLV"&&t&&t<=now&&t>=f)return false;}}catch(e){}
     return true;}
-  function abMode(){const o=abOv();if(o)return o.m==="on";return abAuto();}
+  // 25.9x (Oren 28.11.2026): ?abroad_preview=1 = see abroad mode without being abroad (this tab only, nothing saved to the data; ?abroad_preview=0 ends it)
+  const abPrev=(()=>{try{const m=/[?&]abroad_preview=([01])/.exec(location.search);if(m){if(m[1]==="1")sessionStorage.setItem("sq_abprev","1");else sessionStorage.removeItem("sq_abprev");}return sessionStorage.getItem("sq_abprev")==="1";}catch(e){return false;}})();
+  function abMode(){if(abPrev)return true;const o=abOv();if(o)return o.m==="on";return abAuto();}
   function abSuggest(){const w=abWin(),now=Date.now();if(!w||abOv()||abMode())return false;try{if(sessionStorage.getItem("sq_abns")==="wf:"+w.d.id)return false;}catch(e){}return now>=w.lv-90*60000&&now<w.lv;}
   function abJump(){try{return localStorage.getItem("sq_abjump")!=="0";}catch(e){return true;}}
   // 25.57 (Oren 22.11.2026): what he asked to see (search, a tap on an update, a link) beats the mode: it stays shown for this session
@@ -5148,7 +5150,7 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     if(w&&!on&&!sug&&!ov&&now<w.lv-90*60000){el.hidden=true;el.replaceChildren();return;}   // a trip is coming, not yet time to leave
     el.hidden=false;
     const to=tr&&tr.to?tr.to.split("-").slice(1).reverse().map(Number).join("."):(w&&w.home?wfAt(w.home,wfILoff(w.home)).day.split(" ")[1]:"");
-    const place=(tr&&tr.place)||(w&&w.d.title)||"חו״ל";
+    const place=((tr&&tr.place)||(w&&w.d.title)||"חו״ל")+(abPrev?" (תצוגה בלבד)":"");
     const autoTxt=w?"אוטומטי: מהיציאה לשדה ב-"+wfAt(w.lv,wfILoff(w.lv)).hm+" ("+wfAt(w.lv,wfILoff(w.lv)).day.split(" ")[1]+") ועד הנחיתה בבית":"אוטומטי: בימים של הנסיעה";
     let title,sub,cls="ab-bar";
     if(sug){cls+=" sug";title="✈️ יצאת לשדה?";sub="אם כן, נכנסים למצב חו״ל עכשיו. אוטומטית זה קורה ב-"+wfAt(w.lv,wfILoff(w.lv)).hm;}
