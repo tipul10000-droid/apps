@@ -17,9 +17,11 @@
   },{passive:false});
 })();
 
-// 16.1 (אורן 13.11.2026): באייפון (iOS 26) אחרי שהמקלדת נסגרת ה-layout viewport לפעמים נשאר מכווץ,
-// וכל מה שמוצמד לתחתית (position:fixed; bottom) "עולה" לאמצע המסך בזמן גלילה. מודדים איפה התחתית של
-// ה-fixed בפועל מול התחתית של המסך הנראה, ומזיזים את הכפתורים הצפים בהפרש (--vvfix). בלי מקלדת פתוחה בלבד.
+// 28.11.2026 (אורן: "כפתורי הצד עולים למעלה, לתקן לתמיד"): מנגנון אחד בלבד לעיגון הכפתורים הצפים.
+// שורש הבעיה: היו שלושה מנגנונים שנלחמו זה בזה (bottom ב-CSS, translate כאן, ו-top לפי visualViewport.height ב-index.html).
+// ה-top חושב מגובה ה-visual viewport, שמצטמצם בזמן מקלדת / חזרה לאפליקציה / קפיצת גלילה, ולכן הכפתורים נתקעו למעלה.
+// החוק עכשיו (בודק אותו tests/fab-guard.mjs): הכפתורים תמיד מעוגנים ב-bottom ב-CSS, ורק מותר להזיז אותם מטה
+// (translate חיובי, עם תקרה) כשה-layout viewport של iOS נשאר מכווץ. אף פעם לא למעלה, ואף פעם לא עם top.
 (function(){
   var st=document.createElement('style');
   st.textContent='.fab,.toast,.syncsheet{translate:0 var(--vvfix,0px)}';
@@ -35,13 +37,13 @@
       var vv=window.visualViewport,target=vv?vv.offsetTop+vv.height:window.innerHeight;
       var cur=probe.getBoundingClientRect().bottom;
       d=Math.round(target-cur);
-      if(d<2)d=0;
+      if(!(d>=2))d=0;                                   // רק מטה. מספר שלילי / NaN = אין תיקון
+      d=Math.min(d,Math.round(window.innerHeight*0.4)); // תקרה: תיקון חריג לא יזרוק את הכפתורים מהמסך
     }
     if(d!==last){last=d;document.documentElement.style.setProperty('--vvfix',d+'px');}
     if(d>0&&!editing()&&!fix.n){fix.n=1;setTimeout(function(){fix.n=0;try{window.scrollTo(window.scrollX,window.scrollY);}catch(e){}},60);}
   }
-  // 16.10 (אורן 15.11.2026): בקפיצה של סוף הגלילה (rubber band) iOS מזיז את ה-visual viewport, והתיקון הזה
-  // "תיקן" אותה: הכפתורים הצפים קפצו ו-scrollTo נלחם בקפיצה, והכל רטט. ליד הקצוות מחכים שהגלילה תיעצר.
+  // 16.10 (אורן 15.11.2026): בקפיצה של סוף הגלילה (rubber band) iOS מזיז את ה-visual viewport. ליד הקצוות מחכים שהגלילה תיעצר.
   var idle=0;
   function edge(){var y=window.scrollY,mx=document.documentElement.scrollHeight-window.innerHeight;return y<=1||y>=mx-1;}
   function q(){if(!raf)raf=requestAnimationFrame(fix);}
@@ -49,8 +51,10 @@
   window.addEventListener('scroll',qs,{passive:true});
   window.addEventListener('resize',q);
   window.addEventListener('orientationchange',function(){setTimeout(q,300);});
+  window.addEventListener('pageshow',function(){q();setTimeout(q,400);});
   document.addEventListener('focusout',function(){setTimeout(q,50);setTimeout(q,400);});
-  document.addEventListener('visibilitychange',q);
+  document.addEventListener('visibilitychange',function(){q();setTimeout(q,400);});
   if(window.visualViewport){visualViewport.addEventListener('resize',qs);visualViewport.addEventListener('scroll',qs);}
+  setInterval(function(){if(!document.hidden&&!editing())q();},1000); // רשת ביטחון: iOS לפעמים לא שולח אירוע
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',q);else q();
 })();
