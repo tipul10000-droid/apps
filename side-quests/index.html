@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<script src="nozoom.js?v=3"></script>
+<script src="nozoom.js?v=4"></script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0f3b57">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
 <script>/* 21.0: phase-lock every "sqbeat" animation to the wall clock (same in dashboards via dash-sub.js) */(function(){var D=2400;function lk(a){try{if(a.animationName!=="sqbeat")return;var t=document.timeline;if(!t||t.currentTime==null)return;a.startTime=t.currentTime-(Date.now()%D);}catch(e){}}document.addEventListener("animationstart",function(e){if(e.animationName!=="sqbeat"||!e.target.getAnimations)return;e.target.getAnimations({subtree:!!e.pseudoElement}).forEach(lk);},true);})();</script>
-<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.91";window.SQ_BUILD_AT="27.11.2026 21:30";
+<script>window.SQ_APP="sidequests";window.SQ_PIN=true;window.SQ_BUILD="25.92";window.SQ_BUILD_AT="28.11.2026 14:30";
 /* 8.1: if anything breaks while loading, show the real error on screen (with a reload button) instead of an endless "טוען…" */
 (function(){var shown=false;function bar(msg){if(shown||!document.body||/ResizeObserver|^Script error/.test(String(msg)))return;if(/Load failed|Failed to fetch|NetworkError|offline|aborted|AbortError/i.test(String(msg))||navigator.onLine===false)return;shown=true;var d=document.createElement("div");d.id="sqErr";d.setAttribute("role","alert");
 d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#B3261E;color:#fff;border-radius:14px;padding:12px 14px;font:15px/1.4 var(--f-body);direction:rtl;box-shadow:0 6px 24px rgba(0,0,0,.3)";
@@ -2243,10 +2243,7 @@ main{padding-bottom:90px}
 #upBtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 #upBtn:active{filter:brightness(1.3)}
 html.desk #upBtn{left:calc(var(--dpane,0px) + 18px);bottom:18px}
-/* 25.37: iOS משאיר את הכפתורים הצפים באמצע המסך כשה-layout viewport מתקצר (אחרי מקלדת/חזרה לאפליקציה). מעגנים אותם לתחתית האמיתית של המסך (visualViewport). */
-html.vvfix:not(.desk) .tadd.fab{bottom:auto;top:calc(var(--vb) - 136px - env(safe-area-inset-bottom,0px))}
-html.vvfix:not(.desk) .tfind.fab{bottom:auto;top:calc(var(--vb) - 80px - env(safe-area-inset-bottom,0px))}
-html.vvfix:not(.desk) #upBtn{bottom:auto;top:calc(var(--vb) - 182px - env(safe-area-inset-bottom,0px))}
+/* חוק (28.11.2026): .fab / #upBtn מעוגנים רק ב-bottom. אסור top או משתנה גובה viewport עליהם; התיקון לאייפון נמצא רק ב-nozoom.js (translate מטה בלבד). נבדק ב-tests/fab-guard.mjs */
 main{padding-bottom:150px}
 body.q-ai #mainSec,body.q-ai #askSec,body.q-ai #tail,body.q-ai section[aria-labelledby="hProj"]{display:none!important}
 /* 11.2 (Oren 6.11): Fun and AI Projects are clean: only the quest switcher, then their content. No chat/brief/location/settings, time windows, refresh, search or +. */
@@ -6570,12 +6567,6 @@ ${P.map(row).join("\n")}`;
   function iClose(){iCancelRec();iMode="";const b=$("ibar");b.hidden=true;b.replaceChildren();b.classList.remove("busy","k-quick","k-ins");iMenu(false);}
   function iBarKind(){const b=$("ibar");b.classList.remove("k-quick","k-ins");b.classList.add("k-"+iKind);return h("span",{class:"ikind","aria-hidden":"true"},iKind==="quick"?"⚡":"🧠");}
   function iGo(v,via){if(iKind==="quick")qAdd(v,via);else iSend(v,via);}
-  (function(){const vv=window.visualViewport;if(!vv)return;const R=document.documentElement;let last=0;
-    function typing(){const a=document.activeElement;return a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA"||a.isContentEditable);}
-    function fix(){if(typing()&&last)return;const h=Math.round(vv.height);if(h<200)return;if(h!==last){last=h;R.style.setProperty("--vb",h+"px");}R.classList.add("vvfix");}
-    vv.addEventListener("resize",fix);window.addEventListener("resize",fix);
-    window.addEventListener("orientationchange",()=>setTimeout(fix,300));document.addEventListener("focusout",()=>setTimeout(fix,350));
-    document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){fix();setTimeout(fix,400);}});window.addEventListener("pageshow",fix);fix();})();
   function iKb(){const vv=window.visualViewport;if(!vv)return;const kb=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);document.documentElement.style.setProperty("--kb",(kb>60?kb-10:0)+"px");}
   if(window.visualViewport){visualViewport.addEventListener("resize",iKb);visualViewport.addEventListener("scroll",iKb);}
   function iTextOpen(k){if(k)iKind=k;iMenu(false);iMode="text";const bar=$("ibar");bar.hidden=false;bar.classList.remove("busy");const tag=iBarKind();

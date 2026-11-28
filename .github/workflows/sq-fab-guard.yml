@@ -1,0 +1,11 @@
+name: sq-fab-guard
+on:
+  pull_request:
+    paths: ['side-quests/index.html', 'side-quests/nozoom.js', 'side-quests/tests/**']
+jobs:
+  fab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i --no-save playwright@1.49.1 && npx playwright install --with-deps chromium
+      - run: node side-quests/tests/fab-guard.mjs

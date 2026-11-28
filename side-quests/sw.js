@@ -2,7 +2,7 @@
 // Pages and files of the app: network first (new versions load as before); if the network doesn't answer
 // within 3s (plane Wi-Fi) or fails, the last saved copy opens. Data (Supabase) is never cached here: sq-db.js
 // keeps it in IndexedDB. Kill switch: open the app with ?nosw=1 (clears this cache and unregisters).
-var CACHE = "sq-app-v56"; // bump on every PRE change
+var CACHE = "sq-app-v57"; // bump on every PRE change
 var FONTS = "sq-fonts-v1";
 var IMGS = "sq-img-v1"; // 25.84: pictures from other sites (YouTube thumbnails etc.), so they show on a flight too
 // 25.84 (Oren 27.11.2026): files of the app that live next to side-quests/ (the trip dashboard's view, its pictures, appstat.js).
