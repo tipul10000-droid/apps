@@ -5091,7 +5091,12 @@ window.SQSplash=window.SQ_RESUME?{stage:function(){},done:function(){}}:make();w
     if(o.k!==abCurKey())return null;if(o.k==="none"&&Date.now()-(o.at||0)>14*86400e3)return null;return o;}
   function abLeft(w){const p=here(),now=Date.now();if(!p)return false;if(!inIsrael(p))return true;
     return !!(w&&loc.home&&now>w.lv-4*3600e3&&now<w.lv&&distM(p,loc.home)>1500);}
-  function abAuto(){const w=abWin(),now=Date.now();if(w)return now>=w.lv||abLeft(w);try{return !!tripToday();}catch(e){return false;}}
+  function abAuto(){const w=abWin(),now=Date.now();if(w)return now>=w.lv||abLeft(w);let tr=null;try{tr=tripToday();}catch(e){}if(!tr)return false;
+    // 25.9x (Oren 28.11.2026): back home = mode off by itself, even if settings/away still lists today: the phone is in Israel, or a work flight to TLV landed after the trip began
+    const p=here();if(p&&inIsrael(p))return false;
+    try{const f=tr.from?Date.parse(tr.from+"T00:00:00Z")-12*3600e3:0;for(const d of wfDocs){if(d._deleted||d.planned||!Array.isArray(d.legs)||!d.legs.length)continue;
+      const r=d.legs.slice().sort((a,b)=>(wfMs(a.dep)||0)-(wfMs(b.dep)||0)).pop(),t=wfMs(r.arr)||wfMs(r.dep);if(r.to&&r.to.code==="TLV"&&t&&t<=now&&t>=f)return false;}}catch(e){}
+    return true;}
   function abMode(){const o=abOv();if(o)return o.m==="on";return abAuto();}
   function abSuggest(){const w=abWin(),now=Date.now();if(!w||abOv()||abMode())return false;try{if(sessionStorage.getItem("sq_abns")==="wf:"+w.d.id)return false;}catch(e){}return now>=w.lv-90*60000&&now<w.lv;}
   function abJump(){try{return localStorage.getItem("sq_abjump")!=="0";}catch(e){return true;}}
